@@ -1,0 +1,25 @@
+{
+  "document_set": "Feature-by-Feature Build Plan",
+  "version": "1.0",
+  "created": "2026-06-10",
+  "source_roadmap": "aedify-v1-implementation-roadmap-tech-stack-updated-v1.3.md",
+  "source_architecture_plan": "aedify-v1-architecture-implementation-plan-v1.0.md",
+  "source_baseline": "PRD v1.10 / v1 Final \u2014 Re-locked after Package Validation",
+  "files": [
+    "00-feature-build-plan-index-v1.0.md",
+    "01-foundation-local-data-spine-v1.0.md",
+    "02-exercise-dataset-library-bodymap-v1.0.md",
+    "03-onboarding-profile-settings-byok-v1.0.md",
+    "04-manual-programmes-workouts-logging-v1.0.md",
+    "05-analytics-prs-plateau-base-v1.0.md",
+    "06-progress-media-tracking-v1.0.md",
+    "07-ai-infrastructure-v1.0.md",
+    "08-ai-workout-programme-generation-v1.0.md",
+    "09-ai-trainer-chat-update-flows-v1.0.md",
+    "10-sharing-pdf-export-aedifyplan-v1.0.md",
+    "11-external-text-file-import-v1.0.md",
+    "12-image-screenshot-import-v1.0.md",
+    "13-ai-physique-analysis-v1.0.md",
+    "14-privacy-resilience-release-hardening-v1.0.md"
+  ]
+}
