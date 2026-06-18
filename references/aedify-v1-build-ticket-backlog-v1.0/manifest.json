@@ -1,0 +1,31 @@
+{
+  "package": "v1-build-ticket-backlog-v1.0",
+  "created": "2026-06-17",
+  "total_tickets": 129,
+  "priority_counts": {
+    "P0": 94,
+    "P1": 34,
+    "P2": 1
+  },
+  "files": [
+    "00-build-ticket-backlog-index-v1.0.md",
+    "01-ticket-governance-and-template-v1.0.md",
+    "02-m0-implementation-lock-backlog-setup-tickets-v1.0.md",
+    "03-m1-app-foundation-local-data-spine-tickets-v1.0.md",
+    "04-m2-exercise-dataset-sync-exercise-library-tickets-v1.0.md",
+    "05-m3-onboarding-profile-settings-byok-setup-tickets-v1.0.md",
+    "06-m4-manual-programmes-workouts-logging-tickets-v1.0.md",
+    "07-m5-analytics-prs-plateau-base-logic-tickets-v1.0.md",
+    "08-m6-progress-media-tracking-tickets-v1.0.md",
+    "09-m7-ai-infrastructure-tickets-v1.0.md",
+    "10-m8-ai-workout-programme-generation-tickets-v1.0.md",
+    "11-m9-ai-trainer-chat-ai-update-flows-tickets-v1.0.md",
+    "12-m10-local-sharing-pdf-export-tickets-v1.0.md",
+    "13-m11-external-text-file-import-tickets-v1.0.md",
+    "14-m12-image-screenshot-external-import-tickets-v1.0.md",
+    "15-m13-optional-ai-physique-analysis-tickets-v1.0.md",
+    "16-m14-privacy-resilience-release-hardening-tickets-v1.0.md",
+    "17-cross-cutting-dependencies-and-release-sequence-v1.0.md",
+    "18-backlog-traceability-matrix-v1.0.md"
+  ]
+}
