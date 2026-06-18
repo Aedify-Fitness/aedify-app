@@ -1,0 +1,52 @@
+{
+  "package": "Aedify \u2014 Data Model Implementation Plan",
+  "version": "v1.0",
+  "created": "2026-06-12T00:00:00Z",
+  "source_baseline": {
+    "prd": "PRD-Aedify-v1-FINAL-relocked.md",
+    "roadmap": "aedify-v1-implementation-roadmap-tech-stack-updated-v1.3.md",
+    "architecture": "aedify-v1-architecture-implementation-plan-v1.0.md",
+    "feature_plan": "v1-feature-by-feature-build-plan-v1.0/"
+  },
+  "storage_stack": {
+    "durable_structured_data": "Drift / SQLite",
+    "simple_preferences": "shared_preferences",
+    "secrets": "flutter_secure_storage",
+    "files": "local app sandbox",
+    "remote_static_dataset": "Firebase Storage"
+  },
+  "files": [
+    "00-data-model-plan-index-v1.0.md",
+    "01-storage-boundaries-versioning-v1.0.md",
+    "02-drift-foundation-migrations-v1.0.md",
+    "03-exercise-library-data-model-v1.0.md",
+    "04-profile-settings-secure-preferences-v1.0.md",
+    "05-programmes-workouts-logging-data-model-v1.0.md",
+    "06-analytics-prs-plateau-data-model-v1.0.md",
+    "07-progress-media-data-model-v1.0.md",
+    "08-ai-data-model-structured-output-chat-v1.0.md",
+    "09-sharing-aedifyplan-pdf-data-model-v1.0.md",
+    "10-external-import-data-model-v1.0.md",
+    "11-image-import-data-model-v1.0.md",
+    "12-physique-analysis-data-model-v1.0.md",
+    "13-privacy-retention-deletion-data-rules-v1.0.md",
+    "14-migration-test-acceptance-checklist-v1.0.md"
+  ],
+  "milestone_order": [
+    "M0 Implementation Lock & Backlog Setup",
+    "M1 App Foundation + Local Data Spine",
+    "M2 Exercise Dataset Sync + Exercise Library",
+    "M3 Onboarding, Profile, Settings, and BYOK Setup",
+    "M4 Manual Programmes, Workouts, and Logging",
+    "M5 Analytics, PRs, and Plateau Base Logic",
+    "M6 Progress Media Tracking",
+    "M7 AI Infrastructure",
+    "M8 AI Workout + Programme Generation",
+    "M9 AI Trainer Chat + AI Update Flows",
+    "M10 Local Sharing + PDF Export",
+    "M11 External Text File Import",
+    "M12 Image/Screenshot External Import",
+    "M13 Optional AI Physique Analysis",
+    "M14 Privacy, Resilience, and Release Hardening"
+  ]
+}
