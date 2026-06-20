@@ -17,10 +17,18 @@ When instructions conflict, follow this order:
 
 1. Direct user instructions in the current task.
 2. This `AGENTS.md` file.
-3. The locked Aedify product and implementation documents.
-4. `rules.md`(rules.md) for general Flutter and Dart coding rules.
-5. `skills/skill.md`(skills/skill.md) for available Flutter agent skills and skill references.
-6. Existing code conventions in the repository.
+3. The locked Aedify product and implementation documents:
+   - `references/PRD-Aedify-v1-FINAL-relocked.md`
+   - `references/aedify-v1-architecture-implementation-plan-v1.0.md`
+   - `references/aedify-v1-implementation-roadmap-tech-stack-updated-v1.3.md`
+   - `references/aedify-package-validation-decision-log-v1.md`
+   - `references/aedify-ai-companion-instruction-set-v1.10.md`
+4. `DESIGN.md` for the approved Flutter mobile visual system, design tokens,
+   component guidance, and interaction direction.
+5. `rules.md` for general Flutter and Dart coding rules.
+6. `skills/skills.md` for available Flutter agent skills and skill references.
+7. The Flutter mobile design skill pack for mobile UI craft workflow.
+8. Existing code conventions in the repository.
 
 If generic Flutter rules conflict with the locked Aedify architecture, follow
 the Aedify architecture.
@@ -102,13 +110,66 @@ and folders:
   and structured-output behavior.
 - Use the bundled reference files for AI coaching knowledge and source-gated
   fitness behavior.
+- Use `DESIGN.md` for user-facing Flutter mobile UI, design tokens, component
+  feel, typography, spacing, shape, depth, and interaction direction.
+- Use the Flutter mobile design skill pack when creating, modifying, critiquing,
+  or validating mobile screens, widgets, flows, empty states, loading states,
+  motion, or reusable UI patterns.
 - Use `rules.md` for general Dart and Flutter style, testing, formatting, and
   coding practices.
-- Use `skills/skill.md` to identify the correct Flutter skill workflow when a task
+- Use `skills/skills.md` to identify the correct Flutter skill workflow when a task
   matches one of the listed skills.
 
 Do not invent a new architecture. The project uses the architecture already
-written down in `references/aedifyv1-architecture-implementation-plan-v1.0.md`.
+written down in `references/aedify-v1-architecture-implementation-plan-v1.0.md`.
+
+## Design System and Mobile UI References
+
+`DESIGN.md` is the approved design-system source for Aedify's Flutter mobile
+application. It is self-contained and replaces earlier design-input files.
+Agents must not depend on `apple-DESIGN.md`, `DESIGN_DARK.md`, or
+`DESIGN_LIGHT.md` being present in the codebase.
+
+Use `DESIGN.md` for:
+
+- light and dark color tokens;
+- typography tokens and Flutter text-style mapping;
+- spacing and radius tokens in Flutter logical pixels;
+- elevation, tonal layering, surface hierarchy, and shadows;
+- shapes, cards, buttons, inputs, chips, navigation, empty states, and other
+  reusable UI patterns;
+- UI do's and don'ts;
+- design iteration guidance.
+
+The Flutter mobile design skill pack is the supporting workflow for mobile
+interface craft. When unzipped, it should be available as
+`skills/flutter_mobile_design_skill_pack/` and contain:
+
+- `SKILL.md` — primary mobile design skill instructions;
+- `principles.md` — Flutter mobile craft principles;
+- `example.md` — applied examples and decision-making guidance;
+- `validation.md` — pattern memory and consistency checks;
+- `critique.md` — post-build craft critique workflow;
+- `LICENSE.txt` — license terms.
+
+If only `flutter_mobile_design_skill_pack.zip` is present, unzip it before using
+the pack as a repository reference. If the pack is installed under a different
+agent-skills folder, treat that installed folder as the mobile design skill
+pack and apply the same files.
+
+Rules:
+
+- Read `DESIGN.md` before building or changing user-facing UI.
+- Apply the mobile design skill pack before creating, modifying, or critiquing
+  Flutter mobile screens and shared UI components.
+- Build for iOS and Android mobile first, respecting safe areas, touch targets,
+  gestures, accessibility settings, text scaling, and small-screen constraints.
+- Prefer reusable theme tokens and shared components over one-off visual values.
+- Do not introduce random hex colors, spacing values, radii, shadows, fonts, or
+  animation curves when a `DESIGN.md` token or pattern exists.
+- If `DESIGN.md` conflicts with the locked PRD, architecture plan, privacy
+  rules, platform constraints, or direct user instructions, the higher-priority
+  source wins.
 
 ## Project Constraints
 
@@ -368,10 +429,12 @@ Update rules:
 
 ## Skill Reference Usage
 
-`skills/skill.md` is the reference index for Flutter skills.
+`skills/skills.md` is the reference index for Flutter skills. The Flutter mobile
+design skill pack is the supporting design-craft workflow for mobile UI tasks.
 
 When a task matches a listed skill, use that skill workflow as supporting
-guidance. Examples:
+guidance. When a task touches user-facing UI, also apply `DESIGN.md` and the
+Flutter mobile design skill pack. Examples:
 
 - Use widget-test guidance when adding or changing component-level UI behavior.
 - Use integration-test guidance for end-to-end app flows.
@@ -381,8 +444,13 @@ guidance. Examples:
   approach.
 - Use architecture best-practice guidance only where it does not conflict with
   the Aedify architecture plan.
+- Use the Flutter mobile design skill pack when designing or refining screens,
+  components, interaction states, motion, empty states, onboarding flows,
+  dashboards, settings surfaces, or reusable UI patterns.
 
-Skills are helpers, not source-of-truth documents.
+Skills are helpers, not source-of-truth documents. `DESIGN.md` is the UI design
+system source of truth; the mobile design skill pack explains how to apply it
+well in Flutter.
 
 ## Implementation Workflow
 
@@ -393,15 +461,17 @@ For every code task:
    exists.
 3. Review `changelog.md` for recent project changes when it exists and the task
    may build on prior work.
-4. Identify the owning feature/module before editing.
-5. Make the smallest complete change that satisfies the task.
-6. Keep product behavior within the locked v1 scope.
-7. Preserve local-first behavior and privacy boundaries.
-8. Add or update tests when behavior changes.
-9. Run formatting, analysis, code generation, and tests where applicable.
-10. Update `changelog.md` and `implementation.md` whenever the change is
+4. For user-facing UI work, read `DESIGN.md` and apply the Flutter mobile
+   design skill pack before changing widgets, screens, or shared components.
+5. Identify the owning feature/module before editing.
+6. Make the smallest complete change that satisfies the task.
+7. Keep product behavior within the locked v1 scope.
+8. Preserve local-first behavior and privacy boundaries.
+9. Add or update tests when behavior changes.
+10. Run formatting, analysis, code generation, and tests where applicable.
+11. Update `changelog.md` and `implementation.md` whenever the change is
     meaningful or affects project status.
-11. Summarize what changed and call out any files or checks that could not be
+12. Summarize what changed and call out any files or checks that could not be
     completed.
 
 Avoid broad rewrites unless the task explicitly asks for one.

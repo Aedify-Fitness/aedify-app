@@ -25,6 +25,18 @@ To update, run the following command:
 npx skills update
 ```
 
+
+## Local Project Skills
+
+This project also includes a local Flutter mobile design skill pack. Use it
+whenever creating, updating, reviewing, or critiquing user-facing Flutter mobile
+screens, widgets, layouts, navigation surfaces, empty states, interaction states,
+or motion behavior.
+
+| Skill | Description | Example prompt |
+|---|---|---|
+| [flutter-mobile-design](flutter_mobile_design_skill_pack/SKILL.md) | Applies the project-adapted mobile interface design workflow for Flutter. Use with `DESIGN.md` to preserve the app's design system, mobile spacing, typography, surfaces, component polish, accessibility, and interaction craft. | Redesign the workout execution screen using the Aedify design system |
+
 ## Available Skills
 
 | Skill | Description | Example prompt |
