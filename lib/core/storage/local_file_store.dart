@@ -63,4 +63,10 @@ class LocalFileStore {
       await file.delete();
     }
   }
+
+  Future<void> ensureCoreDirectories() async {
+    for (final category in FileCategory.values) {
+      await categoryDir(category);
+    }
+  }
 }

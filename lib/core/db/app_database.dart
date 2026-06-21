@@ -11,7 +11,7 @@ part 'app_database.g.dart';
 
 @DriftDatabase(tables: [SchemaMeta, Exercises])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
   int get schemaVersion => 1;
@@ -21,10 +21,17 @@ class AppDatabase extends _$AppDatabase {
     onCreate: (m) async {
       await m.createAll();
       await into(schemaMeta).insert(
-        SchemaMetaCompanion.insert(key: DbConstants.driftSchemaVersionKey, value: DbConstants.initialDriftSchemaVersion),
+        SchemaMetaCompanion.insert(
+          key: DbConstants.driftSchemaVersionKey,
+          value: DbConstants.initialDriftSchemaVersion,
+        ),
       );
     },
   );
+
+  Future<void> readiness() async {
+    await customSelect('SELECT 1').get();
+  }
 }
 
 LazyDatabase _openConnection() {
