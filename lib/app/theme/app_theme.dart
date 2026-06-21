@@ -63,13 +63,20 @@ final lightTheme = ThemeData(
   ),
   cardTheme: CardThemeData(
     elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+    ),
     color: AedifyLightColors.surfaceContainerLowest,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: 12,
+      ),
       textStyle: AppTextStyles.labelMd,
     ),
   ),
@@ -84,10 +91,15 @@ final lightTheme = ThemeData(
       borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
       borderSide: BorderSide(color: AedifyLightColors.secondary),
     ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.md,
+      vertical: 14,
+    ),
   ),
   chipTheme: ChipThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadius.full),
+    ),
     labelStyle: AppTextStyles.labelSm,
   ),
   textTheme: const TextTheme(
@@ -162,13 +174,20 @@ final darkTheme = ThemeData(
   ),
   cardTheme: CardThemeData(
     elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+    ),
     color: AedifyDarkColors.surfaceContainer,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: 12,
+      ),
       textStyle: AppTextStyles.labelMd,
     ),
   ),
@@ -183,10 +202,15 @@ final darkTheme = ThemeData(
       borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
       borderSide: BorderSide(color: AedifyDarkColors.secondaryFixedDim),
     ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.md,
+      vertical: 14,
+    ),
   ),
   chipTheme: ChipThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.full)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadius.full),
+    ),
     labelStyle: AppTextStyles.labelSm,
   ),
   textTheme: const TextTheme(

@@ -35,10 +35,7 @@ void main() {
     });
 
     test('allows public static in export', () {
-      expect(
-        classifier.isAllowedInExport(PrivacyClass.publicStatic),
-        isTrue,
-      );
+      expect(classifier.isAllowedInExport(PrivacyClass.publicStatic), isTrue);
     });
 
     test('allows exportable plan content in export', () {
