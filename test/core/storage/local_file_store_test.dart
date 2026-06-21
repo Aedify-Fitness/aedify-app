@@ -68,6 +68,12 @@ void main() {
         final dir = Directory(p.join(tempDir.path, cat.path));
         expect(await dir.exists(), isTrue, reason: 'Missing: ${cat.path}');
       }
+      expect(
+        await Directory(
+          p.join(tempDir.path, 'media', 'progress', 'sessions', 'bootstrap', 'originals'),
+        ).exists(),
+        isTrue,
+      );
     });
 
     test('subDir creates nested subdirectory', () async {
@@ -85,6 +91,53 @@ void main() {
     test('toAbsolutePath converts relative to absolute', () async {
       final absolute = await store.toAbsolutePath('media/test.jpg');
       expect(absolute, equals(p.join(tempDir.path, 'media', 'test.jpg')));
+    });
+
+    test('nested helper directories are created', () async {
+      final originals = await store.progressSessionOriginalsDir('session-1');
+      final extracted = await store.importExtractedDir('draft-1');
+      final exports = await store.aedifyPlanExportDir();
+
+      expect(await originals.exists(), isTrue);
+      expect(
+        originals.path,
+        contains(p.join('media', 'progress', 'sessions', 'session-1')),
+      );
+      expect(await extracted.exists(), isTrue);
+      expect(
+        extracted.path,
+        contains(p.join('imports', 'temp', 'draft-1', 'extracted')),
+      );
+      expect(await exports.exists(), isTrue);
+      expect(exports.path, contains(p.join('exports', 'temp', 'aedifyplan')));
+    });
+
+    test('cleanupStartupTemporaryArtifacts clears temp import and export roots', () async {
+      final importFile = File(
+        p.join((await store.importExtractedDir('draft-2')).path, 'payload.txt'),
+      );
+      await importFile.create(recursive: true);
+      final exportFile = File(
+        p.join((await store.aedifyPlanExportDir()).path, 'plan.aedifyplan'),
+      );
+      await exportFile.create(recursive: true);
+
+      await store.cleanupStartupTemporaryArtifacts();
+
+      expect(await importFile.exists(), isFalse);
+      expect(await exportFile.exists(), isFalse);
+      expect(await (await store.categoryDir(FileCategory.media)).exists(), isTrue);
+    });
+
+    test('cleanupStartupTemporaryArtifacts does not remove durable roots', () async {
+      final durableFile = File(
+        p.join((await store.progressSessionOriginalsDir('session-3')).path, 'image.jpg'),
+      );
+      await durableFile.create(recursive: true);
+
+      await store.cleanupStartupTemporaryArtifacts();
+
+      expect(await durableFile.exists(), isTrue);
     });
   });
 }

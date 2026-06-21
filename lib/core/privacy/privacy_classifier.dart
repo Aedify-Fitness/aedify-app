@@ -22,6 +22,12 @@ class PrivacyClassifier {
     'route_name',
     'error_code',
     'operation_name',
+    'operation_name_without_payload',
+    'non_sensitive_feature_flag',
+    'drift_schema_version',
+    'exercise_dataset_schema_version',
+    'exercise_library_version',
+    'redacted_stack_trace',
   };
 
   static const _forbiddenFields = {
@@ -30,8 +36,18 @@ class PrivacyClassifier {
     'response',
     'chat_history',
     'file_path',
+    'progress_media_path',
     'body_measurements',
     'set_logs',
+    'candidate_exercise_list',
+    'candidate_exercise_lists',
+    'injury_note',
+    'injuries',
+    'screenshot_path',
+    'source_file_excerpt',
+    'local_database_dump',
+    'prompt_text',
+    'ai_response_json',
   };
 
   bool isAllowedInCrashlytics(PrivacyClass privacyClass) {
@@ -59,7 +75,7 @@ class PrivacyClassifier {
   }
 
   bool isDiagnosticFieldAllowed(String key) {
-    return isAllowedInLog(classifyField(key));
+    return _allowedFields.contains(key);
   }
 
   PrivacyClass classifyField(String key) {

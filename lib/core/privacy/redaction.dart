@@ -10,8 +10,18 @@ class Redaction {
     'response',
     'chat_history',
     'file_path',
+    'progress_media_path',
     'body_measurements',
     'set_logs',
+    'candidate_exercise_list',
+    'candidate_exercise_lists',
+    'injury_note',
+    'injuries',
+    'screenshot_path',
+    'source_file_excerpt',
+    'local_database_dump',
+    'prompt_text',
+    'ai_response_json',
   };
 
   static const _sensitiveHeaderPrefixes = [
@@ -42,7 +52,22 @@ class Redaction {
 
   static Object? valueForField(String key, Object? value) {
     if (value == null) return null;
-    if (_sensitiveFields.contains(key)) return sensitive(value.toString());
+    final normalizedKey = key.toLowerCase();
+    if (_sensitiveFields.contains(normalizedKey)) {
+      return sensitive(value.toString());
+    }
+    if (normalizedKey.contains('api_key') ||
+        normalizedKey.contains('token') ||
+        normalizedKey.contains('secret') ||
+        normalizedKey.contains('prompt') ||
+        normalizedKey.contains('response') ||
+        normalizedKey.contains('candidate') ||
+        normalizedKey.contains('injur') ||
+        normalizedKey.contains('screenshot') ||
+        normalizedKey.contains('file_path') ||
+        normalizedKey.contains('database_dump')) {
+      return sensitive(value.toString());
+    }
     return value;
   }
 

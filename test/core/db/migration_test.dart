@@ -1,7 +1,9 @@
 import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/shared/constants/db_constants.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
 
 void main() {
   group('Migration', () {
@@ -10,8 +12,18 @@ void main() {
 
       final metaRows = await db.select(db.schemaMeta).get();
       expect(
-        metaRows.where((r) => r.key == DbConstants.driftSchemaVersionKey),
-        isNotEmpty,
+        metaRows.map((row) => row.key).toSet(),
+        containsAll({
+          DbConstants.driftSchemaVersionKey,
+          DbConstants.firebaseExerciseSupportedSchemaMinKey,
+          DbConstants.firebaseExerciseSupportedSchemaMaxKey,
+          DbConstants.lastSuccessfulExerciseLibraryVersionKey,
+          DbConstants.shareSchemaSupportedVersionKey,
+          DbConstants.aiOutputSchemaSupportedMinKey,
+          DbConstants.aiOutputSchemaSupportedMaxKey,
+          DbConstants.instructionSetVersionKey,
+          DbConstants.dataModelPlanVersionKey,
+        }),
       );
 
       final logRows = await db.select(db.schemaMigrationsLog).get();
@@ -32,6 +44,22 @@ void main() {
       expect(logRows, isNotEmpty);
 
       db.close();
+    });
+
+    test('current to current open is a no-op migration', () async {
+      final tempDir = Directory.systemTemp.createTempSync('migration_noop_');
+      final dbFile = File(p.join(tempDir.path, 'test.sqlite'));
+
+      final firstDb = AppDatabase(NativeDatabase(dbFile));
+      await firstDb.readiness();
+      await firstDb.close();
+
+      final secondDb = AppDatabase(NativeDatabase(dbFile));
+      await secondDb.readiness();
+      final logs = await secondDb.select(secondDb.schemaMigrationsLog).get();
+      expect(logs, isNotEmpty);
+      await secondDb.close();
+      await tempDir.delete(recursive: true);
     });
   });
 }

@@ -83,8 +83,8 @@ void main() {
         expect(classifier.isDiagnosticFieldAllowed('set_logs'), isFalse);
       });
 
-      test('allows unknown fields as public static', () {
-        expect(classifier.isDiagnosticFieldAllowed('unknown_field'), isTrue);
+      test('blocks unknown fields by default', () {
+        expect(classifier.isDiagnosticFieldAllowed('unknown_field'), isFalse);
       });
     });
 

@@ -40,6 +40,22 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _seedSchemaMeta(Migrator m) async {
     final seedRows = <String, String>{
       DbConstants.driftSchemaVersionKey: DbConstants.initialDriftSchemaVersion,
+      DbConstants.firebaseExerciseSupportedSchemaMinKey:
+          DbConstants.defaultFirebaseExerciseSupportedSchemaMin,
+      DbConstants.firebaseExerciseSupportedSchemaMaxKey:
+          DbConstants.defaultFirebaseExerciseSupportedSchemaMax,
+      DbConstants.lastSuccessfulExerciseLibraryVersionKey:
+          DbConstants.defaultExerciseLibraryVersion,
+      DbConstants.shareSchemaSupportedVersionKey:
+          DbConstants.defaultShareSchemaSupportedVersion,
+      DbConstants.aiOutputSchemaSupportedMinKey:
+          DbConstants.defaultAiOutputSchemaSupportedMin,
+      DbConstants.aiOutputSchemaSupportedMaxKey:
+          DbConstants.defaultAiOutputSchemaSupportedMax,
+      DbConstants.instructionSetVersionKey:
+          DbConstants.defaultInstructionSetVersion,
+      DbConstants.dataModelPlanVersionKey:
+          DbConstants.defaultDataModelPlanVersion,
     };
     for (final entry in seedRows.entries) {
       await into(schemaMeta).insertOnConflictUpdate(

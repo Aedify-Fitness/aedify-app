@@ -5,20 +5,9 @@ import 'package:aedify/shared/constants/directory_constants.dart';
 
 enum FileCategory {
   media(DirectoryConstants.media),
-  progress(DirectoryConstants.progress),
-  sessions(DirectoryConstants.sessions),
-  originals(DirectoryConstants.originals),
-  thumbnails(DirectoryConstants.thumbnails),
-  frames(DirectoryConstants.frames),
-  extracted(DirectoryConstants.extracted),
-  imagesOriginal(DirectoryConstants.imagesOriginal),
-  imagesEnhanced(DirectoryConstants.imagesEnhanced),
   imports(DirectoryConstants.imports),
   exports(DirectoryConstants.exports),
-  aedifyPlan(DirectoryConstants.aedifyPlan),
-  pdf(DirectoryConstants.pdf),
   audioCache(DirectoryConstants.audioCache),
-  exerciseSteps(DirectoryConstants.exerciseSteps),
   db(DirectoryConstants.db),
   temp(DirectoryConstants.temp);
 
@@ -77,14 +66,27 @@ class LocalFileStore {
   }
 
   Future<void> ensureCoreDirectories() async {
-    for (final category in FileCategory.values) {
-      await categoryDir(category);
-    }
+    await categoryDir(FileCategory.db);
+    await categoryDir(FileCategory.media);
+    await categoryDir(FileCategory.imports);
+    await categoryDir(FileCategory.exports);
+    await categoryDir(FileCategory.audioCache);
+    await categoryDir(FileCategory.temp);
+    await progressSessionOriginalsDir('bootstrap');
+    await progressSessionThumbnailsDir('bootstrap');
+    await progressSessionFramesDir('bootstrap');
+    await importExtractedDir('bootstrap');
+    await importImagesOriginalDir('bootstrap');
+    await importImagesEnhancedDir('bootstrap');
+    await aedifyPlanExportDir();
+    await pdfExportDir();
+    await exerciseAudioCacheDir('bootstrap');
   }
 
   Future<Directory> progressSessionOriginalsDir(String sessionId) => subDir(
-    FileCategory.progress,
+    FileCategory.media,
     p.join(
+      DirectoryConstants.progress,
       DirectoryConstants.sessions,
       sessionId,
       DirectoryConstants.originals,
@@ -92,8 +94,9 @@ class LocalFileStore {
   );
 
   Future<Directory> progressSessionThumbnailsDir(String sessionId) => subDir(
-    FileCategory.progress,
+    FileCategory.media,
     p.join(
+      DirectoryConstants.progress,
       DirectoryConstants.sessions,
       sessionId,
       DirectoryConstants.thumbnails,
@@ -101,33 +104,55 @@ class LocalFileStore {
   );
 
   Future<Directory> progressSessionFramesDir(String sessionId) => subDir(
-    FileCategory.progress,
-    p.join(DirectoryConstants.sessions, sessionId, DirectoryConstants.frames),
+    FileCategory.media,
+    p.join(
+      DirectoryConstants.progress,
+      DirectoryConstants.sessions,
+      sessionId,
+      DirectoryConstants.frames,
+    ),
   );
 
   Future<Directory> importExtractedDir(String draftId) => subDir(
     FileCategory.imports,
-    p.join(DirectoryConstants.extracted, draftId),
+    p.join(DirectoryConstants.temp, draftId, DirectoryConstants.extracted),
   );
 
   Future<Directory> importImagesOriginalDir(String draftId) => subDir(
     FileCategory.imports,
-    p.join(DirectoryConstants.imagesOriginal, draftId),
+    p.join(
+      DirectoryConstants.temp,
+      draftId,
+      DirectoryConstants.imagesOriginal,
+    ),
   );
 
   Future<Directory> importImagesEnhancedDir(String draftId) => subDir(
     FileCategory.imports,
-    p.join(DirectoryConstants.imagesEnhanced, draftId),
+    p.join(
+      DirectoryConstants.temp,
+      draftId,
+      DirectoryConstants.imagesEnhanced,
+    ),
   );
 
   Future<Directory> aedifyPlanExportDir() =>
-      subDir(FileCategory.exports, DirectoryConstants.aedifyPlan);
+      subDir(
+        FileCategory.exports,
+        p.join(DirectoryConstants.temp, DirectoryConstants.aedifyPlan),
+      );
 
   Future<Directory> pdfExportDir() =>
-      subDir(FileCategory.exports, DirectoryConstants.pdf);
+      subDir(
+        FileCategory.exports,
+        p.join(DirectoryConstants.temp, DirectoryConstants.pdf),
+      );
 
   Future<Directory> exerciseAudioCacheDir(String exerciseId) =>
-      subDir(FileCategory.audioCache, exerciseId);
+      subDir(
+        FileCategory.audioCache,
+        p.join(DirectoryConstants.exerciseSteps, exerciseId),
+      );
 
   Future<void> cleanupTemporaryImports() async {
     await clearCategory(FileCategory.imports);

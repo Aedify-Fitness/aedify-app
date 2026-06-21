@@ -20,7 +20,7 @@ void main() {
     });
 
     test('getString returns null for missing key', () async {
-      final value = await service.getString(PreferenceKey.lastSeenVersion);
+      final value = await service.getString(PreferenceKey.lastSelectedTab);
       expect(value, isNull);
     });
 
@@ -31,8 +31,8 @@ void main() {
     });
 
     test('setInt and getInt round-trip', () async {
-      await service.setInt(PreferenceKey.lastSeenVersion, 42);
-      final value = await service.getInt(PreferenceKey.lastSeenVersion);
+      await service.setInt(PreferenceKey.lastSelectedTab, 42);
+      final value = await service.getInt(PreferenceKey.lastSelectedTab);
       expect(value, equals(42));
     });
 
@@ -47,6 +47,20 @@ void main() {
       await service.setString(PreferenceKey.themeMode, 'dark');
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('theme_mode'), equals('dark'));
+    });
+
+    test('preference key allowlist matches non-critical supported keys', () {
+      expect(
+        PreferenceKey.values.map((key) => key.key).toSet(),
+        equals({
+          'onboarding_completed',
+          'has_seen_onboarding_intro',
+          'last_selected_tab',
+          'theme_mode',
+          'last_opened_library_filter',
+          'feature_flag_overrides',
+        }),
+      );
     });
   });
 }

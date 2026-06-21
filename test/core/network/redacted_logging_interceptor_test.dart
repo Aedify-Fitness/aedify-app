@@ -1,16 +1,37 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/interceptors/redacted_logging_interceptor.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RedactedLoggingInterceptor', () {
     test('onRequest completes without throwing', () {
-      final interceptor = RedactedLoggingInterceptor(logger: AppLogger());
-      final options = RequestOptions(path: '/test');
+      late String capturedMessage;
+      final interceptor = RedactedLoggingInterceptor(
+        logger: AppLogger(
+          sink: (
+            message, {
+            required String name,
+            required int level,
+            Object? error,
+            StackTrace? stackTrace,
+          }) {
+            capturedMessage = message;
+          },
+        ),
+      );
+      final options = RequestOptions(
+        path: '/test',
+        headers: {'Authorization': 'Bearer secret-token'},
+        queryParameters: {'api_key': 'secret-key', 'page': 1},
+      );
       interceptor.onRequest(options, RequestInterceptorHandler());
+
+      expect(capturedMessage, contains('[REDACTED]'));
+      expect(capturedMessage, isNot(contains('secret-token')));
+      expect(capturedMessage, isNot(contains('secret-key')));
     });
 
     test('onResponse completes without throwing', () {

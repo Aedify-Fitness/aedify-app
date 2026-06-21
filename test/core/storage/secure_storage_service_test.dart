@@ -54,6 +54,60 @@ class _FakeFlutterSecureStorage extends FlutterSecureStorage {
   }) async => _store.clear();
 }
 
+class _ThrowingFlutterSecureStorage extends FlutterSecureStorage {
+  @override
+  Future<void> write({
+    required String key,
+    required String? value,
+    AndroidOptions? aOptions,
+    AppleOptions? iOptions,
+    LinuxOptions? lOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+    WebOptions? webOptions,
+  }) async {
+    throw Exception('secret should not leak: $value');
+  }
+
+  @override
+  Future<String?> read({
+    required String key,
+    AndroidOptions? aOptions,
+    AppleOptions? iOptions,
+    LinuxOptions? lOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+    WebOptions? webOptions,
+  }) async {
+    throw Exception('secret should not leak');
+  }
+
+  @override
+  Future<void> delete({
+    required String key,
+    AndroidOptions? aOptions,
+    AppleOptions? iOptions,
+    LinuxOptions? lOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+    WebOptions? webOptions,
+  }) async {
+    throw Exception('delete failure');
+  }
+
+  @override
+  Future<void> deleteAll({
+    AndroidOptions? aOptions,
+    AppleOptions? iOptions,
+    LinuxOptions? lOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+    WebOptions? webOptions,
+  }) async {
+    throw Exception('delete all failure');
+  }
+}
+
 void main() {
   group('SecureStorageService', () {
     late _FakeFlutterSecureStorage fakeStorage;
@@ -112,6 +166,35 @@ void main() {
       expect(
         await service.readProviderApiKey('anthropic'),
         equals('sk-anthropic'),
+      );
+    });
+
+    test('write failure throws sanitized SecureStorageFailure', () async {
+      service = SecureStorageService(storage: _ThrowingFlutterSecureStorage());
+
+      await expectLater(
+        () => service.saveProviderApiKey('openai', 'sk-secret-1234'),
+        throwsA(
+          isA<SecureStorageFailure>()
+              .having((e) => e.code, 'code', 'secure_storage_write_failed')
+              .having(
+                (e) => e.message,
+                'message',
+                isNot(contains('sk-secret-1234')),
+              ),
+        ),
+      );
+    });
+
+    test('read failure throws sanitized SecureStorageFailure', () async {
+      service = SecureStorageService(storage: _ThrowingFlutterSecureStorage());
+
+      await expectLater(
+        () => service.readProviderApiKey('openai'),
+        throwsA(
+          isA<SecureStorageFailure>()
+              .having((e) => e.code, 'code', 'secure_storage_read_failed'),
+        ),
       );
     });
   });

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/error_mapper.dart';
@@ -33,6 +34,40 @@ void main() {
         (i) => i is RedactedLoggingInterceptor,
       );
       expect(hasRedactedInterceptor, isTrue);
+    });
+
+    test('logger sink can be injected for safe network logging', () {
+      late String capturedMessage;
+      final client = DioClient(
+        logger: AppLogger(
+          sink: (
+            message, {
+            required String name,
+            required int level,
+            Object? error,
+            StackTrace? stackTrace,
+          }) {
+            capturedMessage = message;
+          },
+        ),
+        errorMapper: const ErrorMapper(),
+      );
+
+      final interceptor = client.dio.interceptors
+          .whereType<RedactedLoggingInterceptor>()
+          .single;
+      interceptor.onRequest(
+        RequestOptions(
+          path: '/chat',
+          headers: {'Authorization': 'Bearer secret-token'},
+          queryParameters: {'api_key': 'sk-secret'},
+        ),
+        RequestInterceptorHandler(),
+      );
+
+      expect(capturedMessage, contains('[REDACTED]'));
+      expect(capturedMessage, isNot(contains('secret-token')));
+      expect(capturedMessage, isNot(contains('sk-secret')));
     });
   });
 }
