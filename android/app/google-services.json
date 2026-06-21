@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97067925399",
+    "project_id": "aedify-8fcc0",
+    "storage_bucket": "aedify-8fcc0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97067925399:android:743a7edd9797f6b103ced2",
+        "android_client_info": {
+          "package_name": "com.example.aedify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhq7fWuALJLMsrhx6UU6SRM6y5WAA8RCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
