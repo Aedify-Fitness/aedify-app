@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppDatabase', () {
-    test('schema version is 2', () {
+    test('schema version is 3', () {
       final db = AppDatabase(NativeDatabase.memory());
-      expect(db.schemaVersion, equals(2));
+      expect(db.schemaVersion, equals(3));
       db.close();
     });
 
@@ -45,6 +45,27 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       final rows = await db.select(db.schemaMigrationsLog).get();
       expect(rows, isNotEmpty);
+      db.close();
+    });
+
+    test('libraryMeta table is accessible', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final rows = await db.select(db.libraryMeta).get();
+      expect(rows, isEmpty);
+      db.close();
+    });
+
+    test('exerciseVideos table is accessible', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final rows = await db.select(db.exerciseVideos).get();
+      expect(rows, isEmpty);
+      db.close();
+    });
+
+    test('exerciseAudioCache table is accessible', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final rows = await db.select(db.exerciseAudioCache).get();
+      expect(rows, isEmpty);
       db.close();
     });
 

@@ -94,9 +94,20 @@
 - **Tests**: 27 new parser tests covering all valid/invalid scenarios.
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 211/211 passed.
 
+### V1-M2-003 — Persist Canonical Exercise Library in Drift (complete)
+
+- **3 new Drift tables**: `LibraryMeta`, `ExerciseVideos`, `ExerciseAudioCache`.
+- **Exercises table expanded**: M2 canonical shape (19+ columns), removed `autoIncrement`.
+- **Schema bumped to v3**: Migration creates tables + adds columns to existing exercises.
+- **3 DAOs**: `LibraryMetaDao`, `ExerciseVideoDao`, `ExerciseDao` (expanded with user-state preservation).
+- **ExerciseLibraryImporter**: Transactional import preserving user state (favorites, substitutions, notes), bulk-insert, LibraryMeta write. Custom exercises preserved.
+- **Failure + Result models**: Typed import failure (4 codes), import result with counts.
+- **Tests**: 12 new (DAO + importer), migration/DB tests updated for v3.
+- `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 223/223 passed.
+
 ## Planned Work
 
-- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 8 tickets)
+- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 7 tickets)
 - M3 — Onboarding, Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic

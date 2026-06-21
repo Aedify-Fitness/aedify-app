@@ -6,6 +6,31 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Refactored (syncStatus string constants → LibrarySyncStatus enum)
+
+- Created `LibrarySyncStatus` enum (`lib/core/db/enums/library_sync_status.dart`) with `neverSynced`, `syncing`, `synced`, `failed` values and a `.value` getter.
+- Replaced 4 `String` constants in `DbConstants` with the enum.
+- Updated `LibraryMetaDao.setSyncStatus()` to accept `LibrarySyncStatus` instead of `String`.
+- Updated `ExerciseLibraryImporter` to use `LibrarySyncStatus.synced`.
+- Updated test to compare against `LibrarySyncStatus.synced.value`.
+
+### Added (V1-M2-003 — Persist Canonical Exercise Library in Drift)
+
+- **`LibraryMeta` table** (`lib/core/db/tables/library_meta.dart`): Tracks sync status, schema version, library version, exercise count, manifest metadata, error state.
+- **`ExerciseVideos` table** (`lib/core/db/tables/exercise_videos.dart`): Video metadata per exercise (url, angle, gender, ogImageUrl, sortOrder).
+- **`ExerciseAudioCache` table** (`lib/core/db/tables/exercise_audio_cache.dart`): TTS cache entries per exercise step (text hash, file path, voice).
+- **`Exercises` table expanded** (`lib/core/db/tables/exercises.dart`): M2 canonical shape with `isCustom`, `nameNormalized`, `primaryMusclesJson`, `muscleGroupsJson`, `gripsJson`, `stepsJson`, `isSubstitutedOut`, `userNotes`, `importedFromShare`, `sourceDatasetVersion`, `sourceSchemaVersion`, `deletedAt`, timestamps. Removed `autoIncrement` from `id` (now dataset-sourced).
+- **`AppDatabase` updated** (`lib/core/db/app_database.dart`): Schema bumped to v3. Registers 3 new tables. Migration creates tables and adds new exercise columns with ALTER TABLE (non-nullable columns given defaults). Schema meta seeding updated.
+- **`LibraryMetaDao`** (`lib/core/db/daos/library_meta_dao.dart`): `getLibraryMeta()`, `upsertLibraryMeta()`, `setSyncStatus()`.
+- **`ExerciseVideoDao`** (`lib/core/db/daos/exercise_video_dao.dart`): `insertVideosBulk()`, `deleteAllForExerciseIds()`, `deleteAllVideos()`.
+- **`ExerciseDao` expanded** (`lib/core/db/daos/exercise_dao.dart`): `getSourceExercises()`, `getCustomExercises()`, `getUserStateByExerciseIds()`, `deleteSourceExercises()`, `restoreUserState()`, `searchExercisesByName()`.
+- **`ExerciseLibraryImportFailure`** (`lib/features/exercise_library/data/dataset/exercise_library_import_failure.dart`): Typed failure with 4 codes.
+- **`ExerciseLibraryImportResult`** (`lib/features/exercise_library/data/dataset/exercise_library_import_result.dart`): Counts and version.
+- **`ExerciseLibraryImporter`** (`lib/features/exercise_library/data/dataset/exercise_library_importer.dart`): Transactional import that preserves user state (favorites, substitutions, notes), deletes old source exercises, bulk-inserts new exercises + videos, writes `LibraryMeta`. Custom exercises never deleted.
+- **`DbConstants` additions**: `exerciseLibraryMetaId`, `syncStatusNeverSynced/Syncing/Synced/Failed`.
+- **Tests**: 12 new — 3 video DAO tests (bulk insert, delete all, delete by IDs), 5 importer tests (imports exercises/videos, writes meta, preserves user state, doesn't delete custom, returns counts), 4 database/migration tests updated for v3 schema.
+- Verification: `dart run build_runner build`, `dart format`, `flutter analyze`, `flutter test` — 223/223 passed.
+
 ### Added (V1-M2-002 — Exercise Dataset Parser & Schema Validator)
 
 - **`ExerciseDatasetValidationFailure`** (`lib/features/exercise_library/data/dataset/exercise_dataset_validation_failure.dart`): Typed exception with `ExerciseDatasetValidationFailureCode` enum (14 codes) and optional `field`/`exerciseId` context.

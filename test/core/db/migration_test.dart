@@ -29,7 +29,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(2));
+      expect(logRows.first.toVersion, equals(3));
 
       db.close();
     });
@@ -42,6 +42,15 @@ void main() {
 
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
+
+      final libraryMeta = await db.select(db.libraryMeta).get();
+      expect(libraryMeta, isEmpty);
+
+      final exerciseVideos = await db.select(db.exerciseVideos).get();
+      expect(exerciseVideos, isEmpty);
+
+      final exerciseAudioCache = await db.select(db.exerciseAudioCache).get();
+      expect(exerciseAudioCache, isEmpty);
 
       db.close();
     });
@@ -60,6 +69,22 @@ void main() {
       expect(logs, isNotEmpty);
       await secondDb.close();
       await tempDir.delete(recursive: true);
+    });
+
+    test('schema v3 tables accessible via in-memory DB', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+
+      await expectLater(db.select(db.libraryMeta).get(), completion(isEmpty));
+      await expectLater(
+        db.select(db.exerciseVideos).get(),
+        completion(isEmpty),
+      );
+      await expectLater(
+        db.select(db.exerciseAudioCache).get(),
+        completion(isEmpty),
+      );
+
+      db.close();
     });
   });
 }

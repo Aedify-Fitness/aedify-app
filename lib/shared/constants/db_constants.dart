@@ -3,7 +3,7 @@ class DbConstants {
 
   static const String databaseFileName = 'aedify.sqlite';
 
-  static const String initialDriftSchemaVersion = '2';
+  static const String initialDriftSchemaVersion = '3';
   static const String defaultExerciseLibraryVersion = '0';
   static const String defaultDataModelPlanVersion = '1.0';
   static const String defaultInstructionSetVersion = '1.10';
@@ -15,6 +15,7 @@ class DbConstants {
   static const String defaultFirebaseExerciseSupportedSchemaMax = '1';
   static const String driftSchemaVersionKey = 'drift_schema_version';
 
+  static const String exerciseLibraryMetaId = 'exercise_library';
   static const String dataModelPlanVersionKey = 'data_model_plan_version';
   static const String instructionSetVersionKey = 'instruction_set_version';
   static const String aiOutputSchemaSupportedMinKey = 'ai_output_schema_min';
