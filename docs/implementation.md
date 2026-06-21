@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                  |
-| --------------------- | -------------------------------------- |
-| **Current Milestone** | M1 — App Foundation + Local Data Spine |
-| **Status**            | In Progress (partial)                  |
-| **Blockers**          | None                                   |
+| Field                 | Value                                          |
+| --------------------- | ---------------------------------------------- |
+| **Current Milestone** | M1 — App Foundation + Local Data Spine         |
+| **Status**            | Group 3 implemented; Group 4 pending before M2 |
+| **Blockers**          | Group 4 completion                             |
 
 ## Completed Work
 
@@ -48,7 +48,22 @@
 - 75 unit tests (privacy, redaction, error model, database/schema/migration, DAO, file store, file record service, secure storage BYOK, preferences allowlist, bootstrap controller, provider overrides, app shell)
 - `flutter analyze` — 0 issues
 - `flutter test` — 75/75 passed
-- `dart run build_runner build` — successful
+- `dart run build_runner build` — completed successfully
+
+### Group 3 — Privacy + Networking + Router Guards (implemented baseline)
+
+Router guards are complete. Privacy and networking baseline infrastructure is implemented and documented to current behavior. Group 4 remains required before M2.
+
+- **Privacy infrastructure**: `PrivacyClassifier` with `isAllowedInCrashlytics`, `isAllowedInExport`, `isAllowedInLog`, `isDiagnosticFieldAllowed`, `classifyField` methods; `Redaction` class with `sensitive`, `apiKey`, `filePath`, `valueForField`, `metadata`, `headers`, `queryParameters` static helpers; `CrashlyticsService` with `setCustomKeySafe`, `recordErrorSafe`, `logSafe` methods using allowlist-based key filtering and redaction.
+- **Networking**: `DioClient` wrapping Dio with 30s connect/receive/send timeouts and `RedactedLoggingInterceptor`; `RetryPolicy` (configurable max retries, exponential backoff, no retry on 4xx or cancellation); `ErrorMapper` mapping `DioException` to `AppError`; `NetworkStatus` with DNS-based connectivity check via `InternetAddress.lookup`.
+- **Router guards**: `OnboardingStatus`, `AiAvailability`, `DraftGuard` enum providers; bootstrap guard (initializing/failure -> startup), onboarding guard (incomplete -> onboarding), AI guard (missingKey -> aiUnavailable, unsupported -> aiUnsupported), draft guard (blockedByUnsavedDraft on 8 guarded routes -> draftBlocked). Strict guard ordering enforced.
+- **Placeholder guard routes**: `/ai-unavailable`, `/ai-unsupported`, `/draft-blocked` each with descriptive Scaffold + Text
+- **Constants**: `AppRoutes.aiUnavailable`, `AppRoutes.aiUnsupported`, `AppRoutes.draftBlocked`; `AppStrings.aiUnavailable`, `AppStrings.aiUnavailableMessage`, `AppStrings.aiUnsupported`, `AppStrings.aiUnsupportedMessage`, `AppStrings.draftBlocked`, `AppStrings.draftBlockedMessage`
+- 12 new tests (9 router redirect unit + 3 app widget guard)
+- Total: 144 tests
+- `flutter analyze` — 0 issues
+- `flutter test` — 144/144 passed
+- `dart run build_runner build` — not needed (no code-gen changes)
 
 ## Planned Work
 
@@ -69,5 +84,5 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 75/75 passed
-- `dart run build_runner build` — completed successfully
+- `flutter test` — 144/144 passed
+- `dart run build_runner build` — not needed since last run (no code-gen changes)

@@ -6,6 +6,31 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (Group 3 — Privacy + Networking + Router Guards)
+
+#### Privacy Infrastructure
+
+- **`PrivacyClassifier`**: Policy-driven classification with `isAllowedInCrashlytics`, `isAllowedInExport`, `isAllowedInLog`, `isDiagnosticFieldAllowed`, `classifyField` methods. Categorizes data into allowed/forbidden/redactable by feature area.
+- **`Redaction`**: Static utility class with `sensitive`, `apiKey`, `filePath`, `valueForField`, `metadata`, `headers`, `queryParameters` methods.
+- **`CrashlyticsService`**: Allowlist-based key filtering via `setCustomKeySafe`, `recordErrorSafe`, `logSafe`. Forbidden keys silently dropped; error metadata redacted via `Redaction`.
+- **Tests**: 8 privacy tests (classification, forbidden/allowed field checks, redaction helpers, Crashlytics allowlist, disabled/no-op behavior).
+
+#### Networking
+
+- **`DioClient`**: Dio wrapper with 30s connect/receive/send timeouts, `RedactedLoggingInterceptor`, and `RetryPolicy`-driven retry loop (configurable max retries, exponential backoff, no retry on 4xx or cancellation). Routes GET/POST/PUT/DELETE through the same retry path. `ErrorMapper` maps `DioException` to `AppError`.
+- **`NetworkStatus`**: Connectivity check via `InternetAddress.lookup`. Exposes `isOnline` getter, `onStatusChanged` stream, and `check()` one-shot method.
+- **Tests**: `retry_policy_test.dart` (retry decisions, delay math), `error_mapper_test.dart` (all Dio error type mappings + status codes), `dio_client_test.dart` (construction, default retry, interceptor install).
+
+#### Router Guards
+
+- **Guard providers** (`lib/app/guard/guard_state.dart` + `lib/app/providers/providers.dart`): `OnboardingStatus` enum, `AiAvailability` enum (available/missingKey/unsupported), `DraftGuard` enum (clear/blockedByUnsavedDraft). All simple overridable Riverpod providers.
+- **`app_router.dart`**: Added bootstrap guard (initializing/failure -> startup), onboarding guard (incomplete -> onboarding), AI availability guard (missingKey -> aiUnavailable, unsupported -> aiUnsupported), draft guard (blockedByUnsavedDraft on 8 guarded routes -> draftBlocked). Strict guard ordering: bootstrap -> onboarding -> AI -> draft.
+- **Placeholder routes**: `aiUnavailable`, `aiUnsupported`, `draftBlocked` each with descriptive `Scaffold` + `Text` UI.
+- **Route constants**: `AppRoutes.aiUnavailable()`, `AppRoutes.aiUnsupported()`, `AppRoutes.draftBlocked()` in `app_routes.dart`.
+- **String constants**: `aiUnavailable`, `aiUnavailableMessage`, `aiUnsupported`, `aiUnsupportedMessage`, `draftBlocked`, `draftBlockedMessage` in `app_strings.dart`.
+- **Tests**: 9 router unit tests (redirect outcomes: startup redirects, onboarding redirects, ai redirects, draft redirects, guard precedence, safe routes pass through). 3 app widget tests (missing key, unsupported, draft blocked — all navigate and assert visible text).
+- `flutter analyze` — 0 issues; `flutter test` — 144/144 passed
+
 ### Added (Group 2 — Storage/Data Foundation)
 
 #### Batch A — DB Tables & DAO
