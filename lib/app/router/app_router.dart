@@ -1,6 +1,9 @@
+import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
+import 'package:aedify/app/bootstrap/bootstrap_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
@@ -17,9 +20,28 @@ import 'package:aedify/features/external_import/presentation/external_import_scr
 import 'package:aedify/features/image_import/presentation/image_import_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
+
   return GoRouter(
     initialLocation: AppRoutes.initialRoute,
+    redirect: (context, state) {
+      final isOnStartup = state.matchedLocation == AppRoutes.startup().path;
+
+      if (bootstrapState.phase == StartupPhase.initializing ||
+          bootstrapState.phase == StartupPhase.failure) {
+        if (!isOnStartup) return AppRoutes.startup().path;
+        return null;
+      }
+
+      if (isOnStartup) return AppRoutes.onboarding().path;
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: AppRoutes.startup().path,
+        name: AppRoutes.startup().name,
+        builder: (context, state) => const BootstrapScreen(),
+      ),
       GoRoute(
         path: AppRoutes.onboarding().path,
         name: AppRoutes.onboarding().name,

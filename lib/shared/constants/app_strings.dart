@@ -4,6 +4,7 @@ class AppStrings {
   static const String appTitle = 'Aedify';
 
   static const String share = 'Share';
+  static const String retry = 'Retry';
   static const String import = 'Import';
   static const String aiChat = 'AI Chat';
   static const String workout = 'Workout';
@@ -18,10 +19,15 @@ class AppStrings {
   static const String imageImport = 'Image Import';
   static const String pageNotFound = 'Page Not Found';
   static const String progressMedia = 'Progress Media';
+  static const String startingApp = 'Starting Aedify...';
   static const String externalImport = 'External Import';
   static const String exerciseLibrary = 'Exercise Library';
+  static const String startupComplete = 'Startup complete.';
   static const String onboardingTitle = 'Welcome to Aedify';
   static const String workoutExecution = 'Workout Execution';
+  static const String startupFailed = 'Something went wrong during startup.';
   static const String pageNotFoundMessage =
       'The requested page does not exist.';
+  static const String offlineModeInfo =
+      'Running in offline mode. Some features may be unavailable.';
 }

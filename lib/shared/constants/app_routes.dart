@@ -4,8 +4,9 @@ class AppRoutes {
 
   AppRoutes._({required this.path, required this.name});
 
-  static const String initialRoute = '/onboarding';
+  static const String initialRoute = '/startup';
 
+  factory AppRoutes.startup() => AppRoutes._(path: '/startup', name: 'startup');
   factory AppRoutes.home() => AppRoutes._(path: '/', name: 'home');
   factory AppRoutes.chat() => AppRoutes._(path: '/chat', name: 'chat');
   factory AppRoutes.share() => AppRoutes._(path: '/share', name: 'share');
