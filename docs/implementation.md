@@ -68,9 +68,25 @@
 - **Test suite strengthened**: privacy/logging/network tests now assert real redaction behavior instead of only `returnsNormally`; migration, rollback, file-store cleanup, secure-storage failure, feature-flag, diagnostics, and route fail-closed coverage expanded.
 - **Verification**: `dart run build_runner build` succeeded, `flutter analyze` passed with 0 issues, `flutter test` passed with 162/162 tests.
 
+### V1-M2-001 — Exercise Dataset Sync Foundation (complete)
+
+- **`FirebaseAuthService`**: `ensureAnonymousSignIn()` with `FirebaseAuthFailure` exception.
+- **`FirebaseStorageClient`**: `getText()` (via `getData()`) and `downloadToFile()` (via `writeToFile`) with `FirebaseStorageFailure` exception.
+- **`ExerciseDatasetManifest`**: Full JSON model set (`ExerciseDatasetManifest`, `ExerciseDatasetActiveFile`, `ExerciseDatasetHistoryEntry`) with strict type validation in `fromJson()`.
+- **`ExerciseDatasetDownloadFailure`**: Typed enum with 9 failure codes (offline, authFailed, manifestFetchFailed, invalidManifest, unsupportedAppSchema, datasetDownloadFailed, interruptedDownload, sizeMismatch, checksumMismatch).
+- **`ExerciseDatasetDownloadResult`**: Result model bundling manifest, local paths, download timestamp, and size.
+- **`ExerciseDatasetDownloadService`**: Orchestrates auth → manifest fetch → schema compatibility → download → SHA-256 + size verification. Cleans up on failure.
+- **`LocalFileStore`**: Added `exerciseDatasetTempDir()` / `exerciseDatasetTempFile()` under `temp/exercise_dataset/`.
+- **`DirectoryConstants`**: Added `exerciseDataset` string constant.
+- **`DbConstants`**: Added `supportedExerciseDatasetSchemaVersion = 1`.
+- **Providers**: `firebaseAuthServiceProvider`, `firebaseStorageClientProvider`, `exerciseDatasetDownloadServiceProvider`.
+- **Tests**: 22 tests covering manifest parsing (10) and download service (12). All pass.
+- `dart run build_runner build` — N/A (no code generation for this ticket).
+- `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 184/184 passed.
+
 ## Planned Work
 
-- **M2 — Exercise Dataset Sync + Exercise Library** (10 tickets)
+- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 9 tickets)
 - M3 — Onboarding, Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic

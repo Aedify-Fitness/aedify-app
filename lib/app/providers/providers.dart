@@ -3,7 +3,9 @@ import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/local_file_record_dao.dart';
 import 'package:aedify/core/firebase/crashlytics_service.dart';
+import 'package:aedify/core/firebase/firebase_auth_service.dart';
 import 'package:aedify/core/firebase/firebase_bootstrap.dart';
+import 'package:aedify/core/firebase/firebase_storage_client.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/dio_client.dart';
 import 'package:aedify/core/network/error_mapper.dart';
@@ -14,6 +16,7 @@ import 'package:aedify/core/storage/local_file_record_service.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
+import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// App-wide Riverpod provider definitions.
@@ -107,6 +110,28 @@ class AppProviders {
         return LocalFileRecordService(
           dao: ref.read(localFileRecordDaoProvider),
           fileStore: ref.read(localFileStoreProvider),
+        );
+      });
+
+  static final firebaseAuthServiceProvider = Provider<FirebaseAuthService>((
+    ref,
+  ) {
+    return FirebaseAuthService();
+  });
+
+  static final firebaseStorageClientProvider = Provider<FirebaseStorageClient>((
+    ref,
+  ) {
+    return FirebaseStorageClient();
+  });
+
+  static final exerciseDatasetDownloadServiceProvider =
+      Provider<ExerciseDatasetDownloadService>((ref) {
+        return ExerciseDatasetDownloadService(
+          authService: ref.read(firebaseAuthServiceProvider),
+          storageClient: ref.read(firebaseStorageClientProvider),
+          fileStore: ref.read(localFileStoreProvider),
+          logger: ref.read(appLoggerProvider),
         );
       });
 }

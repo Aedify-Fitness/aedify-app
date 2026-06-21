@@ -95,7 +95,9 @@ void main() {
           AppProviders.aiAvailabilityProvider.overrideWith(
             (ref) => AiAvailability.available,
           ),
-          AppProviders.draftGuardProvider.overrideWith((ref) => DraftGuard.clear),
+          AppProviders.draftGuardProvider.overrideWith(
+            (ref) => DraftGuard.clear,
+          ),
         ],
         child: const AedifyApp(),
       ),
@@ -124,7 +126,9 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _SucceedingBootstrapController(),
             ),
-            AppProviders.onboardingStatusProvider.overrideWith((ref) => onboarding),
+            AppProviders.onboardingStatusProvider.overrideWith(
+              (ref) => onboarding,
+            ),
             AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
             AppProviders.draftGuardProvider.overrideWith((ref) => draft),
           ],

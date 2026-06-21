@@ -6,6 +6,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (V1-M2-001 — Exercise Dataset Sync Foundation)
+
+- **`FirebaseAuthService`** (`lib/core/firebase/firebase_auth_service.dart`): Wraps `FirebaseAuth` with `ensureAnonymousSignIn()`. Throws `FirebaseAuthFailure` on error.
+- **`FirebaseStorageClient`** (`lib/core/firebase/firebase_storage_client.dart`): Wraps `FirebaseStorage` with `getText()` (via `getData()`) and `downloadToFile()` (via `writeToFile`). Throws `FirebaseStorageFailure`.
+- **`ExerciseDatasetManifest` / `ActiveFile` / `HistoryEntry`** (`lib/features/exercise_library/data/dataset/exercise_dataset_manifest.dart`): JSON-deserializable models with strict type validation in `fromJson()`. Includes transport-shape validation (`schema_version`, `active` required).
+- **`ExerciseDatasetDownloadFailure`** (`lib/features/exercise_library/data/dataset/exercise_dataset_download_failure.dart`): Typed failure enum covering all download error modes (auth, manifest fetch, invalid manifest, unsupported schema, download failure, interrupted, size mismatch, checksum mismatch).
+- **`ExerciseDatasetDownloadResult`** (`lib/features/exercise_library/data/dataset/exercise_dataset_download_result.dart`): Result model with manifest, local paths, timestamp, and size.
+- **`ExerciseDatasetDownloadService`** (`lib/features/exercise_library/data/dataset/exercise_dataset_download_service.dart`): Orchestrates anonymous auth, manifest fetch, schema compatibility check, dataset download to temp directory, and SHA-256 + size verification. Cleans up files on failure.
+- **`LocalFileStore` additions**: `exerciseDatasetTempDir()` and `exerciseDatasetTempFile()` helpers under `temp/exercise_dataset/`.
+- **`DirectoryConstants` addition**: `exerciseDataset` constant.
+- **`DbConstants` addition**: `supportedExerciseDatasetSchemaVersion = 1`.
+- **Providers** (`lib/app/providers/providers.dart`): Added `firebaseAuthServiceProvider`, `firebaseStorageClientProvider`, `exerciseDatasetDownloadServiceProvider`.
+- **Tests**: 22 new tests — 10 manifest parse/validation tests, 12 download service tests (success, auth failure, manifest fetch failure, invalid JSON/array/missing field, size mismatch, checksum mismatch, unsupported schema).
+- Added `crypto` dependency to `pubspec.yaml` for SHA-256 verification.
+- Verification: `dart format`, `flutter analyze`, `flutter test` — 184/184 passed.
+
 ### Changed
 
 - **`lib/app/providers/providers.dart`**: Converted from top-level providers to `AppProviders` class with `static final` members. All references updated across source and test files to use `AppProviders.providerName` syntax.

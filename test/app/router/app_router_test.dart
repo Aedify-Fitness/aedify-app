@@ -29,7 +29,9 @@ void main() {
               () => _CompleteBootstrapController(),
             ),
             AppProviders.featureFlagsProvider.overrideWithValue(flags),
-            AppProviders.onboardingStatusProvider.overrideWith((ref) => onboarding),
+            AppProviders.onboardingStatusProvider.overrideWith(
+              (ref) => onboarding,
+            ),
             AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
             AppProviders.draftGuardProvider.overrideWith((ref) => draft),
           ],
