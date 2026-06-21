@@ -28,4 +28,10 @@ class AppRoutes {
       AppRoutes._(path: '/programmes', name: 'programmes');
   factory AppRoutes.importImage() =>
       AppRoutes._(path: '/import-image', name: 'importImage');
+  factory AppRoutes.aiUnavailable() =>
+      AppRoutes._(path: '/ai-unavailable', name: 'aiUnavailable');
+  factory AppRoutes.aiUnsupported() =>
+      AppRoutes._(path: '/ai-unsupported', name: 'aiUnsupported');
+  factory AppRoutes.draftBlocked() =>
+      AppRoutes._(path: '/draft-blocked', name: 'draftBlocked');
 }

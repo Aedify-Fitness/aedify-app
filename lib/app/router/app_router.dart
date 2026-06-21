@@ -1,4 +1,5 @@
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
+import 'package:aedify/app/guard/guard_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,15 +19,32 @@ import 'package:aedify/features/progress_media/presentation/progress_media_scree
 import 'package:aedify/features/sharing/presentation/sharing_screen.dart';
 import 'package:aedify/features/external_import/presentation/external_import_screen.dart';
 import 'package:aedify/features/image_import/presentation/image_import_screen.dart';
+import 'package:aedify/app/providers/providers.dart';
+
+final _draftGuardedRoutes = <String>{
+  AppRoutes.chat().path,
+  AppRoutes.import().path,
+  AppRoutes.importImage().path,
+  AppRoutes.workout().path,
+  AppRoutes.programmes().path,
+  AppRoutes.liftLog().path,
+  AppRoutes.progress().path,
+  AppRoutes.share().path,
+};
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
+  final onboardingStatus = ref.watch(onboardingStatusProvider);
+  final aiAvailability = ref.watch(aiAvailabilityProvider);
+  final draftGuard = ref.watch(draftGuardProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.initialRoute,
     redirect: (context, state) {
-      final isOnStartup = state.matchedLocation == AppRoutes.startup().path;
+      final location = state.matchedLocation;
+      final isOnStartup = location == AppRoutes.startup().path;
 
+      // 1. Bootstrap guard — always first
       if (bootstrapState.phase == StartupPhase.initializing ||
           bootstrapState.phase == StartupPhase.failure) {
         if (!isOnStartup) return AppRoutes.startup().path;
@@ -34,6 +52,29 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       }
 
       if (isOnStartup) return AppRoutes.onboarding().path;
+
+      // 2. Onboarding guard
+      if (onboardingStatus == OnboardingStatus.incomplete) {
+        final isOnOnboarding = location == AppRoutes.onboarding().path;
+        if (!isOnOnboarding) return AppRoutes.onboarding().path;
+      }
+
+      // 3. AI availability guard (chat only)
+      if (aiAvailability == AiAvailability.missingKey &&
+          location == AppRoutes.chat().path) {
+        return AppRoutes.aiUnavailable().path;
+      }
+      if (aiAvailability == AiAvailability.unsupported &&
+          location == AppRoutes.chat().path) {
+        return AppRoutes.aiUnsupported().path;
+      }
+
+      // 4. Unsaved draft guard (broad strict blocking)
+      if (draftGuard == DraftGuard.blockedByUnsavedDraft &&
+          _draftGuardedRoutes.contains(location)) {
+        return AppRoutes.draftBlocked().path;
+      }
+
       return null;
     },
     routes: [
@@ -81,6 +122,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.chat().path,
         name: AppRoutes.chat().name,
         builder: (context, state) => const AiChatScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.aiUnavailable().path,
+        name: AppRoutes.aiUnavailable().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.aiUnavailable)),
+          body: const Center(child: Text(AppStrings.aiUnavailableMessage)),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.aiUnsupported().path,
+        name: AppRoutes.aiUnsupported().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.aiUnsupported)),
+          body: const Center(child: Text(AppStrings.aiUnsupportedMessage)),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.draftBlocked().path,
+        name: AppRoutes.draftBlocked().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.draftBlocked)),
+          body: const Center(child: Text(AppStrings.draftBlockedMessage)),
+        ),
       ),
       GoRoute(
         path: AppRoutes.progress().path,

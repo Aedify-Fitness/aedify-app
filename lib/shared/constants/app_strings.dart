@@ -17,8 +17,11 @@ class AppStrings {
   static const String getStarted = 'Get Started';
   static const String importImage = 'Import Image';
   static const String imageImport = 'Image Import';
+  static const String draftBlocked = 'Unsaved Draft';
   static const String pageNotFound = 'Page Not Found';
   static const String progressMedia = 'Progress Media';
+  static const String aiUnavailable = 'AI Unavailable';
+  static const String aiUnsupported = 'AI Not Supported';
   static const String startingApp = 'Starting Aedify...';
   static const String externalImport = 'External Import';
   static const String exerciseLibrary = 'Exercise Library';
@@ -28,6 +31,12 @@ class AppStrings {
   static const String startupFailed = 'Something went wrong during startup.';
   static const String pageNotFoundMessage =
       'The requested page does not exist.';
+  static const String aiUnsupportedMessage =
+      'This AI capability is not available on your device.';
   static const String offlineModeInfo =
       'Running in offline mode. Some features may be unavailable.';
+  static const String aiUnavailableMessage =
+      'AI features require an API key. Please add one in Settings.';
+  static const String draftBlockedMessage =
+      'Please save or discard your current draft before continuing.';
 }
