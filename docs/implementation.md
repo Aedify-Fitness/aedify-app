@@ -84,9 +84,19 @@
 - `dart run build_runner build` — N/A (no code generation for this ticket).
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 184/184 passed.
 
+### V1-M2-002 — Exercise Dataset Parser & Schema Validator (complete)
+
+- **`ExerciseDatasetValidationFailure`**: Typed exception with 14-code enum, optional `field`/`exerciseId`.
+- **`ExerciseDatasetVideo`**: Leaf DTO with `Uri url`, `angle`, `gender`, nullable `ogImage`.
+- **`ExerciseDatasetExercise`**: Exercise DTO with `id`, `name`, `difficulty`, `primaryMuscles`, `muscleGroups`, `modality`, `equipment`, `grips`, `steps`, `videos`.
+- **`ExerciseDataset`**: Root dataset model with `schemaVersion`, `generatedAt`, `source`, `exerciseCount`, `exercises`.
+- **`ExerciseDatasetParser`**: Deterministic parser validating: top-level shape (JSON object), required fields, schema version bounds, exercise count vs actual, duplicate IDs, difficulty (4 supported), modality (4 supported), muscle groups (14 buckets), strength-equipment rule, non-empty steps, non-empty primary_muscles, valid video URLs.
+- **Tests**: 27 new parser tests covering all valid/invalid scenarios.
+- `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 211/211 passed.
+
 ## Planned Work
 
-- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 9 tickets)
+- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 8 tickets)
 - M3 — Onboarding, Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic

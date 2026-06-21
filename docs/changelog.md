@@ -6,6 +6,20 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (V1-M2-002 — Exercise Dataset Parser & Schema Validator)
+
+- **`ExerciseDatasetValidationFailure`** (`lib/features/exercise_library/data/dataset/exercise_dataset_validation_failure.dart`): Typed exception with `ExerciseDatasetValidationFailureCode` enum (14 codes) and optional `field`/`exerciseId` context.
+- **`ExerciseDatasetVideo`** (`lib/features/exercise_library/data/dataset/exercise_dataset_video.dart`): Leaf DTO with `Uri url`, `angle`, `gender`, nullable `ogImage`.
+- **`ExerciseDatasetExercise`** (`lib/features/exercise_library/data/dataset/exercise_dataset_exercise.dart`): Exercise DTO with typed lists and nullable fields.
+- **`ExerciseDataset`** (`lib/features/exercise_library/data/dataset/exercise_dataset.dart`): Root validated dataset model with `DateTime generatedAt` and declared `exerciseCount`.
+- **`ExerciseDatasetParser`** (`lib/features/exercise_library/data/dataset/exercise_dataset_parser.dart`): Single parser class with deterministic validation:
+  - Validates top-level shape, required fields, schema version bounds, exercise count, duplicate IDs.
+  - Validates per-exercise: non-empty name, difficulty (4 supported values), modality (4 supported), muscle groups (14 buckets), strength-equipment rule, steps non-empty, primary_muscles non-empty.
+  - Validates videos: URL parsed to `Uri`, must have scheme + authority.
+  - Rejects malformed JSON, non-object roots, missing/invalid fields with typed failure codes.
+- **Tests**: 27 new tests covering valid parsing, all rejection scenarios, nullable field handling, and empty video lists.
+- Verification: `dart format`, `flutter analyze`, `flutter test` — 211/211 passed.
+
 ### Added (V1-M2-001 — Exercise Dataset Sync Foundation)
 
 - **`FirebaseAuthService`** (`lib/core/firebase/firebase_auth_service.dart`): Wraps `FirebaseAuth` with `ensureAnonymousSignIn()`. Throws `FirebaseAuthFailure` on error.
