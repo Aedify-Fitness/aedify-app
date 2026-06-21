@@ -1,11 +1,13 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/local_file_record_dao.dart';
 import 'package:aedify/core/firebase/crashlytics_service.dart';
 import 'package:aedify/core/firebase/firebase_bootstrap.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/dio_client.dart';
 import 'package:aedify/core/network/network_status.dart';
 import 'package:aedify/core/privacy/privacy_classifier.dart';
+import 'package:aedify/core/storage/local_file_record_service.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
@@ -53,4 +55,15 @@ final privacyClassifierProvider = Provider<PrivacyClassifier>((ref) {
 
 final featureFlagsProvider = Provider<FeatureFlags>((ref) {
   return FeatureFlags.defaultFlags;
+});
+
+final localFileRecordDaoProvider = Provider<LocalFileRecordDao>((ref) {
+  return LocalFileRecordDao(ref.read(appDatabaseProvider));
+});
+
+final localFileRecordServiceProvider = Provider<LocalFileRecordService>((ref) {
+  return LocalFileRecordService(
+    dao: ref.read(localFileRecordDaoProvider),
+    fileStore: ref.read(localFileStoreProvider),
+  );
 });
