@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'preference_key.dart';
 
 class PreferencesService {
   PreferencesService({SharedPreferences? prefs}) : _prefs = prefs;
@@ -8,38 +9,38 @@ class PreferencesService {
   Future<SharedPreferences> get prefs async =>
       _prefs ?? await SharedPreferences.getInstance();
 
-  Future<String?> getString(String key) async {
+  Future<String?> getString(PreferenceKey key) async {
     final p = await prefs;
-    return p.getString(key);
+    return p.getString(key.key);
   }
 
-  Future<void> setString(String key, String value) async {
+  Future<void> setString(PreferenceKey key, String value) async {
     final p = await prefs;
-    await p.setString(key, value);
+    await p.setString(key.key, value);
   }
 
-  Future<bool?> getBool(String key) async {
+  Future<bool?> getBool(PreferenceKey key) async {
     final p = await prefs;
-    return p.getBool(key);
+    return p.getBool(key.key);
   }
 
-  Future<void> setBool(String key, bool value) async {
+  Future<void> setBool(PreferenceKey key, bool value) async {
     final p = await prefs;
-    await p.setBool(key, value);
+    await p.setBool(key.key, value);
   }
 
-  Future<int?> getInt(String key) async {
+  Future<int?> getInt(PreferenceKey key) async {
     final p = await prefs;
-    return p.getInt(key);
+    return p.getInt(key.key);
   }
 
-  Future<void> setInt(String key, int value) async {
+  Future<void> setInt(PreferenceKey key, int value) async {
     final p = await prefs;
-    await p.setInt(key, value);
+    await p.setInt(key.key, value);
   }
 
-  Future<void> remove(String key) async {
+  Future<void> remove(PreferenceKey key) async {
     final p = await prefs;
-    await p.remove(key);
+    await p.remove(key.key);
   }
 }

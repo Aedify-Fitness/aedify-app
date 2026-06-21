@@ -6,17 +6,29 @@ class SecureStorageService {
 
   final FlutterSecureStorage _storage;
 
-  Future<void> write(String key, String value) =>
-      _storage.write(key: key, value: value);
+  static const _keyPrefix = 'ai_provider_api_key:';
 
-  Future<String?> read(String key) => _storage.read(key: key);
+  String _aliasKey(String alias) => '$_keyPrefix$alias';
 
-  Future<void> delete(String key) => _storage.delete(key: key);
+  Future<void> saveProviderApiKey(String alias, String value) =>
+      _storage.write(key: _aliasKey(alias), value: value);
 
-  Future<void> deleteAll() => _storage.deleteAll();
+  Future<String?> readProviderApiKey(String alias) =>
+      _storage.read(key: _aliasKey(alias));
 
-  Future<bool> containsKey(String key) async {
-    final value = await _storage.read(key: key);
+  Future<void> deleteProviderApiKey(String alias) =>
+      _storage.delete(key: _aliasKey(alias));
+
+  Future<void> rotateProviderApiKey(String alias, String newValue) async {
+    final key = _aliasKey(alias);
+    await _storage.delete(key: key);
+    await _storage.write(key: key, value: newValue);
+  }
+
+  Future<bool> hasProviderApiKey(String alias) async {
+    final value = await _storage.read(key: _aliasKey(alias));
     return value != null;
   }
+
+  Future<void> deleteAll() => _storage.deleteAll();
 }
