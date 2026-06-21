@@ -1,0 +1,27 @@
+class AppStrings {
+  AppStrings._();
+
+  static const String appTitle = 'Aedify';
+
+  static const String share = 'Share';
+  static const String import = 'Import';
+  static const String aiChat = 'AI Chat';
+  static const String workout = 'Workout';
+  static const String sharing = 'Sharing';
+  static const String liftLog = 'Lift Log';
+  static const String settings = 'Settings';
+  static const String analytics = 'Analytics';
+  static const String aiTrainer = 'AI Trainer';
+  static const String programmes = 'Programmes';
+  static const String getStarted = 'Get Started';
+  static const String importImage = 'Import Image';
+  static const String imageImport = 'Image Import';
+  static const String pageNotFound = 'Page Not Found';
+  static const String progressMedia = 'Progress Media';
+  static const String externalImport = 'External Import';
+  static const String exerciseLibrary = 'Exercise Library';
+  static const String onboardingTitle = 'Welcome to Aedify';
+  static const String workoutExecution = 'Workout Execution';
+  static const String pageNotFoundMessage =
+      'The requested page does not exist.';
+}
