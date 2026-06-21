@@ -2,18 +2,20 @@
 
 ## Current Status
 
-| Field | Value |
-|---|---|
+| Field                 | Value                                  |
+| --------------------- | -------------------------------------- |
 | **Current Milestone** | M1 — App Foundation + Local Data Spine |
-| **Status** | Complete |
-| **Blockers** | None |
+| **Status**            | In Progress (partial)                  |
+| **Blockers**          | None                                   |
 
 ## Completed Work
 
 ### M0 — Implementation Lock & Backlog Setup
+
 - Created `docs/implementation.md` and `docs/changelog.md` tracking files
 
-### M1 — App Foundation + Local Data Spine (all 11 tickets)
+### M1 — App Foundation + Local Data Spine (foundation scaffold completed)
+
 - Added validated stack dependencies: `flutter_riverpod`, `drift`, `sqlite3_flutter_libs`, `sqlcipher_flutter_libs`, `path_provider`, `flutter_secure_storage`, `shared_preferences`, `dio`, `firebase_core`, `firebase_storage`, `firebase_auth`, `firebase_crashlytics`, `flutter_svg`, `fl_chart`, `flutter_tts`, `video_player`, `chewie`, `flutter_local_notifications`, `health`, `go_router`, `intl`, `uuid`, `path`, `equatable`
 - Dev deps: `flutter_test`, `flutter_lints`, `drift_dev`, `build_runner`
 - Removed `retrofit`, `retrofit_generator`, `json_serializable`, `json_annotation` (no code-gen approach)
@@ -23,31 +25,30 @@
 - `app/app.dart` with `MaterialApp.router`, light/dark theme from DESIGN.md
 - `app/theme/app_theme.dart` — DESIGN.md color tokens, explicit `ColorScheme` slots, `textTheme` set
 - `app/theme/app_colors.dart` — all light/dark color tokens
-- `app/router/app_router.dart` — go_router routes using `AppRoutes` factory constructors
-- `app/providers/providers.dart` — Riverpod DI graph for all core services
-- `app/bootstrap/app_bootstrap.dart` — startup initialization controller
+- `app/router/app_router.dart` — go_router routes using `AppRoutes` factory constructors, startup route + bootstrap-driven redirect
+- `app/providers/providers.dart` — Riverpod DI graph for all core services including firebaseBootstrapProvider
+- `app/bootstrap/app_bootstrap.dart` — provider entry point (`AppBootstrap.controllerProvider`)
+- `app/bootstrap/controllers/bootstrap_controller.dart` — `BootstrapController` as `Notifier<BootstrapState>` with explicit phases, failure model, startup sequence, retry
+- `app/bootstrap/bootstrap_screen.dart` — startup loading/failure/retry/offline UI
 - `app/feature_flags/feature_flags.dart` — feature flag registry
-- `core/db/app_database.dart` — Drift foundation + migration harness
+- `core/db/app_database.dart` — Drift foundation + migration harness + `readiness()` method
 - `core/db/tables/` — `schema_meta`, `exercises` tables
 - `core/db/daos/exercise_dao.dart` — DriftAccessor
-- `core/storage/` — `secure_storage_service`, `preferences_service`, `local_file_store`
+- `core/storage/` — `secure_storage_service`, `preferences_service`, `local_file_store` (incl. `ensureCoreDirectories()`)
 - `core/network/` — `dio_client`, `network_status`
 - `core/firebase/` — `firebase_bootstrap`, `crashlytics_service`
 - `core/privacy/` — `privacy_classifier`, `redaction` (refactored to `Redaction` class)
 - `core/logging/app_logger.dart` — structured logging
 - `core/errors/app_error.dart` — error model
 - `shared/` — `app_text_styles`, `app_text_styles` (dark variants), `app_spacing` (incl. `AppWhiteSpace`), `placeholder_screen`, `context_extensions`
-- `shared/constants/` — `app_strings`, `app_routes`, `db_constants`, `directory_constants`
-- Placeholder screens for all 12 feature areas (no hardcoded strings)
+- `shared/constants/` — `app_strings`, `app_routes` (incl. `startup`), `db_constants`, `directory_constants`
+- `features/onboarding/presentation/onboarding_screen.dart` — shows offline informational state after bootstrap redirect
+- Placeholder screens for all other 11 feature areas (no hardcoded strings)
 - `AGENTS.md` updated with Aedify-specific conventions
-- 21 unit tests (privacy classifier, redaction, error model, database)
+- 33 unit tests (privacy classifier, redaction, error model, database, bootstrap controller, provider overrides, app shell)
 - `flutter analyze` — 0 issues
-- `flutter test` — 21/21 passed
+- `flutter test` — 33/33 passed
 - `dart run build_runner build` — successful
-
-## Active Work
-
-_None. M1 is complete._
 
 ## Planned Work
 
@@ -68,5 +69,5 @@ _None. M1 is complete._
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 21/21 passed
+- `flutter test` — 33/33 passed
 - `dart run build_runner build` — completed successfully
