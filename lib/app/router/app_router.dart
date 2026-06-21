@@ -61,6 +61,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     initialLocation: AppRoutes.initialRoute,
+    debugLogDiagnostics: true,
     redirect: (context, state) {
       final location = state.matchedLocation;
       final isOnStartup = location == AppRoutes.startup().path;
@@ -90,7 +91,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 location == AppRoutes.importImage().path)) {
           return AppRoutes.importDisabled().path;
         }
-        if (!featureFlags.sharingEnabled && location == AppRoutes.share().path) {
+        if (!featureFlags.sharingEnabled &&
+            location == AppRoutes.share().path) {
           return AppRoutes.shareDisabled().path;
         }
         if (!featureFlags.progressMediaEnabled &&
