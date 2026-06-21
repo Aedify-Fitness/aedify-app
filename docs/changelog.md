@@ -6,6 +6,21 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (Strict M1 closure pass)
+
+- Wired `featureFlagsProvider` into runtime behavior, including `crashlyticsEnabled` gating and fail-closed router behavior for AI/imports/sharing/progress routes
+- Added `DeveloperDiagnosticsScreen` plus diagnostics route guarded by `diagnosticsEnabled`
+- Added disabled-feature routes and strings: `aiDisabled`, `importDisabled`, `shareDisabled`, `progressDisabled`
+- Expanded privacy allowlist/forbidden-field policy and strengthened `Redaction` heuristics for diagnostic metadata
+- Refactored `AppLogger` to support injectable sinks and sanitized error emission for assertion-based privacy tests
+- Refactored `CrashlyticsService` to use a `CrashlyticsClient` boundary and sanitized error/reason forwarding
+- Tightened file-store path contract to match the storage plan (`media/progress/...`, `imports/temp/...`, `exports/temp/...`, `audio-cache/exercise_steps/...`)
+- Expanded `schema_meta` seeding and tightened `PreferenceKey` allowlist to non-critical recoverable keys only
+- Added `SecureStorageFailure` and sanitized unavailable-storage handling
+- Added `.github/workflows/foundation.yml` for build_runner + analyze + test enforcement
+- Strengthened tests to strict assertions for privacy/logging/network redaction, feature flags, diagnostics routing, migration rollback, file-store cleanup, and secure-storage failure behavior
+- Verification: `dart run build_runner build` passed, `flutter analyze` passed, `flutter test` passed (162/162)
+
 ### Added (Group 3 — Privacy + Networking + Router Guards)
 
 #### Privacy Infrastructure

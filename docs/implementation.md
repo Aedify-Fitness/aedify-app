@@ -4,9 +4,9 @@
 
 | Field                 | Value                                          |
 | --------------------- | ---------------------------------------------- |
-| **Current Milestone** | M1 — App Foundation + Local Data Spine         |
-| **Status**            | Group 3 implemented; Group 4 pending before M2 |
-| **Blockers**          | Group 4 completion                             |
+| **Current Milestone** | M1 — App Foundation + Local Data Spine |
+| **Status**            | M1 closure pass implemented; manual device QA evidence pending |
+| **Blockers**          | iOS/Android manual QA not executed in this environment |
 
 ## Completed Work
 
@@ -50,20 +50,22 @@
 - `flutter test` — 75/75 passed
 - `dart run build_runner build` — completed successfully
 
-### Group 3 — Privacy + Networking + Router Guards (implemented baseline)
+### M1 closure pass — strict acceptance alignment
 
-Router guards are complete. Privacy and networking baseline infrastructure is implemented and documented to current behavior. Group 4 remains required before M2.
-
-- **Privacy infrastructure**: `PrivacyClassifier` with `isAllowedInCrashlytics`, `isAllowedInExport`, `isAllowedInLog`, `isDiagnosticFieldAllowed`, `classifyField` methods; `Redaction` class with `sensitive`, `apiKey`, `filePath`, `valueForField`, `metadata`, `headers`, `queryParameters` static helpers; `CrashlyticsService` with `setCustomKeySafe`, `recordErrorSafe`, `logSafe` methods using allowlist-based key filtering and redaction.
-- **Networking**: `DioClient` wrapping Dio with 30s connect/receive/send timeouts and `RedactedLoggingInterceptor`; `RetryPolicy` (configurable max retries, exponential backoff, no retry on 4xx or cancellation); `ErrorMapper` mapping `DioException` to `AppError`; `NetworkStatus` with DNS-based connectivity check via `InternetAddress.lookup`.
-- **Router guards**: `OnboardingStatus`, `AiAvailability`, `DraftGuard` enum providers; bootstrap guard (initializing/failure -> startup), onboarding guard (incomplete -> onboarding), AI guard (missingKey -> aiUnavailable, unsupported -> aiUnsupported), draft guard (blockedByUnsavedDraft on 8 guarded routes -> draftBlocked). Strict guard ordering enforced.
-- **Placeholder guard routes**: `/ai-unavailable`, `/ai-unsupported`, `/draft-blocked` each with descriptive Scaffold + Text
-- **Constants**: `AppRoutes.aiUnavailable`, `AppRoutes.aiUnsupported`, `AppRoutes.draftBlocked`; `AppStrings.aiUnavailable`, `AppStrings.aiUnavailableMessage`, `AppStrings.aiUnsupported`, `AppStrings.aiUnsupportedMessage`, `AppStrings.draftBlocked`, `AppStrings.draftBlockedMessage`
-- 12 new tests (9 router redirect unit + 3 app widget guard)
-- Total: 144 tests
-- `flutter analyze` — 0 issues
-- `flutter test` — 144/144 passed
-- `dart run build_runner build` — not needed (no code-gen changes)
+- **Feature flags wired into runtime**: `featureFlagsProvider` now drives `CrashlyticsService.enabled`, route fail-closed behavior for AI/imports/sharing/progress media, and developer diagnostics availability.
+- **Diagnostics support**: added `DeveloperDiagnosticsScreen` with redacted foundation metadata (startup phase, offline state, drift schema version, non-sensitive feature-flag summary) and `AppRoutes.diagnostics()` route.
+- **Additional feature-disabled routes**: `aiDisabled`, `importDisabled`, `shareDisabled`, `progressDisabled` plus matching strings.
+- **Privacy hardening**: expanded diagnostic allowlist (`non_sensitive_feature_flag`, schema/version fields, `operation_name_without_payload`, `redacted_stack_trace`) and forbidden-field coverage (candidate lists, injuries, screenshot/source-file/database-dump style fields, progress media paths).
+- **Logging hardening**: `AppLogger` now supports injectable sinks for test capture, redacts non-allowlisted metadata, and sanitizes error payloads before emission.
+- **Crashlytics hardening**: `CrashlyticsService` now uses a `CrashlyticsClient` boundary, gates on feature flags, forwards only allowlisted keys, redacts metadata, and sanitizes error/reason payloads.
+- **Networking proof strengthened**: `DioClient` + `RedactedLoggingInterceptor` verified with secret redaction assertions through injectable logger sinks.
+- **Preferences allowlist tightened**: `PreferenceKey` reduced to non-critical recoverable keys only (`onboardingCompleted`, `hasSeenOnboardingIntro`, `lastSelectedTab`, `themeMode`, `lastOpenedLibraryFilter`, `featureFlagOverrides`).
+- **Secure storage failure handling**: `SecureStorageFailure` added; BYOK operations now sanitize unavailable-storage failures.
+- **Schema metadata seeding expanded**: `schema_meta` now seeds all currently tracked M1 foundation keys from `DbConstants`.
+- **File-store contract tightened**: directory constants aligned to the storage plan (`images_original`, `images_enhanced`, `aedifyplan`, `exercise_steps`), import/export paths now use `temp/`, progress media now lives under `media/progress/...`, and core startup directory creation includes temp roots.
+- **CI added**: `.github/workflows/foundation.yml` runs `flutter pub get`, `dart run build_runner build`, format check, `flutter analyze`, and `flutter test`.
+- **Test suite strengthened**: privacy/logging/network tests now assert real redaction behavior instead of only `returnsNormally`; migration, rollback, file-store cleanup, secure-storage failure, feature-flag, diagnostics, and route fail-closed coverage expanded.
+- **Verification**: `dart run build_runner build` succeeded, `flutter analyze` passed with 0 issues, `flutter test` passed with 162/162 tests.
 
 ## Planned Work
 
@@ -84,5 +86,16 @@ Router guards are complete. Privacy and networking baseline infrastructure is im
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 144/144 passed
-- `dart run build_runner build` — not needed since last run (no code-gen changes)
+- `flutter test` — 162/162 passed
+- `dart run build_runner build` — completed successfully
+
+## Manual QA Evidence
+
+- Fresh install on iOS — **Skipped**, no iOS simulator/device workflow executed in this environment
+- Fresh install on Android — **Skipped**, no Android emulator/device workflow executed in this environment
+- Launch offline — **Covered by automated bootstrap/offline tests**, manual device execution skipped
+- Force close and relaunch — **Skipped**, no running app session/device attached
+- Simulate migration failure — **Partially covered by migration/rollback tests**, manual app-level simulation skipped
+- Simulate secure-storage failure — **Covered by automated secure-storage failure tests**, manual app-level simulation skipped
+- Trigger fake redacted crash event — **Covered by Crashlytics service tests**, manual Firebase-backed verification skipped
+- Clear app data and relaunch — **Skipped**, no device/emulator app lifecycle session available
