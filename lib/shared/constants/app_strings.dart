@@ -18,19 +18,36 @@ class AppStrings {
   static const String importImage = 'Import Image';
   static const String imageImport = 'Image Import';
   static const String draftBlocked = 'Unsaved Draft';
+  static const String diagnostics = 'Diagnostics';
   static const String pageNotFound = 'Page Not Found';
   static const String progressMedia = 'Progress Media';
+  static const String aiDisabled = 'AI Disabled';
   static const String aiUnavailable = 'AI Unavailable';
   static const String aiUnsupported = 'AI Not Supported';
+  static const String importDisabled = 'Import Disabled';
+  static const String shareDisabled = 'Sharing Disabled';
   static const String startingApp = 'Starting Aedify...';
   static const String externalImport = 'External Import';
+  static const String progressDisabled = 'Progress Disabled';
   static const String exerciseLibrary = 'Exercise Library';
   static const String startupComplete = 'Startup complete.';
   static const String onboardingTitle = 'Welcome to Aedify';
   static const String workoutExecution = 'Workout Execution';
   static const String startupFailed = 'Something went wrong during startup.';
+  static const String diagnosticsSummaryTitle =
+      'Redacted foundation diagnostics';
   static const String pageNotFoundMessage =
       'The requested page does not exist.';
+  static const String shareDisabledMessage =
+      'Sharing is disabled for this build.';
+  static const String aiDisabledMessage =
+      'AI features are disabled for this build.';
+  static const String progressDisabledMessage =
+      'Progress media is disabled for this build.';
+  static const String importDisabledMessage =
+      'Import features are disabled for this build.';
+  static const String diagnosticsDisabledMessage =
+      'Developer diagnostics are disabled for this build.';
   static const String aiUnsupportedMessage =
       'This AI capability is not available on your device.';
   static const String offlineModeInfo =

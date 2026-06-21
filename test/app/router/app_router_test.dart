@@ -1,5 +1,6 @@
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
+import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/router/app_router.dart';
@@ -13,12 +14,13 @@ void main() {
   group('AppRouter redirects', () {
     /// Builds the app inside a ProviderScope with overrides and returns
     /// the GoRouter instance so tests can call [router.go] and assert.
-    Future<GoRouter> pumpApp({
-      required WidgetTester tester,
-      required OnboardingStatus onboarding,
-      required AiAvailability ai,
-      required DraftGuard draft,
-    }) async {
+      Future<GoRouter> pumpApp({
+        required WidgetTester tester,
+        required OnboardingStatus onboarding,
+        required AiAvailability ai,
+        required DraftGuard draft,
+        FeatureFlags flags = FeatureFlags.defaultFlags,
+      }) async {
       GoRouter? router;
       await tester.pumpWidget(
         ProviderScope(
@@ -26,6 +28,7 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _CompleteBootstrapController(),
             ),
+            featureFlagsProvider.overrideWithValue(flags),
             onboardingStatusProvider.overrideWith((ref) => onboarding),
             aiAvailabilityProvider.overrideWith((ref) => ai),
             draftGuardProvider.overrideWith((ref) => draft),
@@ -221,6 +224,102 @@ void main() {
         router.routeInformationProvider.value.uri.path,
         equals(AppRoutes.onboarding().path),
       );
+    });
+
+    testWidgets('AI disabled redirects chat to ai disabled screen', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(aiEnabled: false),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.chat().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.aiDisabled().path));
+    });
+
+    testWidgets('imports disabled redirects import routes', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(importsEnabled: false),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.import().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.importDisabled().path));
+    });
+
+    testWidgets('sharing disabled redirects share route', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(sharingEnabled: false),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.share().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.shareDisabled().path));
+    });
+
+    testWidgets('progress disabled redirects progress route', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(progressMediaEnabled: false),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.progress().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.progressDisabled().path));
+    });
+
+    testWidgets('diagnostics disabled redirects diagnostics route home', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(diagnosticsEnabled: false),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.diagnostics().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.home().path));
+    });
+
+    testWidgets('diagnostics enabled allows diagnostics route', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+        flags: const FeatureFlags(diagnosticsEnabled: true),
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+      router.go(AppRoutes.diagnostics().path);
+      await tester.pump();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.diagnostics().path));
     });
   });
 }

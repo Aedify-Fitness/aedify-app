@@ -28,8 +28,18 @@ class AppRoutes {
       AppRoutes._(path: '/programmes', name: 'programmes');
   factory AppRoutes.importImage() =>
       AppRoutes._(path: '/import-image', name: 'importImage');
+  factory AppRoutes.diagnostics() =>
+      AppRoutes._(path: '/diagnostics', name: 'diagnostics');
   factory AppRoutes.aiUnavailable() =>
       AppRoutes._(path: '/ai-unavailable', name: 'aiUnavailable');
+  factory AppRoutes.aiDisabled() =>
+      AppRoutes._(path: '/ai-disabled', name: 'aiDisabled');
+  factory AppRoutes.importDisabled() =>
+      AppRoutes._(path: '/import-disabled', name: 'importDisabled');
+  factory AppRoutes.shareDisabled() =>
+      AppRoutes._(path: '/share-disabled', name: 'shareDisabled');
+  factory AppRoutes.progressDisabled() =>
+      AppRoutes._(path: '/progress-disabled', name: 'progressDisabled');
   factory AppRoutes.aiUnsupported() =>
       AppRoutes._(path: '/ai-unsupported', name: 'aiUnsupported');
   factory AppRoutes.draftBlocked() =>

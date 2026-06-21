@@ -57,7 +57,12 @@ final networkStatusProvider = Provider<NetworkStatus>((ref) {
 });
 
 final crashlyticsServiceProvider = Provider<CrashlyticsService>((ref) {
-  return CrashlyticsService();
+  final featureFlags = ref.read(featureFlagsProvider);
+  return CrashlyticsService(
+    client: const FirebaseCrashlyticsClient(),
+    classifier: ref.read(privacyClassifierProvider),
+    enabled: featureFlags.crashlyticsEnabled,
+  );
 });
 
 final appLoggerProvider = Provider<AppLogger>((ref) {

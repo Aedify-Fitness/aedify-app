@@ -5,6 +5,7 @@ class FeatureFlags {
   final bool progressMediaEnabled;
   final bool physiqueAnalysisEnabled;
   final bool crashlyticsEnabled;
+  final bool diagnosticsEnabled;
 
   const FeatureFlags({
     this.aiEnabled = true,
@@ -13,6 +14,7 @@ class FeatureFlags {
     this.progressMediaEnabled = true,
     this.physiqueAnalysisEnabled = true,
     this.crashlyticsEnabled = true,
+    this.diagnosticsEnabled = false,
   });
 
   static const FeatureFlags defaultFlags = FeatureFlags();
@@ -23,5 +25,6 @@ class FeatureFlags {
     progressMediaEnabled: false,
     physiqueAnalysisEnabled: false,
     crashlyticsEnabled: false,
+    diagnosticsEnabled: false,
   );
 }

@@ -1,5 +1,7 @@
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/guard/guard_state.dart';
+import 'package:aedify/app/diagnostics/developer_diagnostics_screen.dart';
+import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,11 +34,30 @@ final _draftGuardedRoutes = <String>{
   AppRoutes.share().path,
 };
 
+bool _isFlagDisabledRoute(String location, FeatureFlags flags) {
+  if (!flags.aiEnabled && location == AppRoutes.chat().path) {
+    return true;
+  }
+  if (!flags.importsEnabled &&
+      (location == AppRoutes.import().path ||
+          location == AppRoutes.importImage().path)) {
+    return true;
+  }
+  if (!flags.sharingEnabled && location == AppRoutes.share().path) {
+    return true;
+  }
+  if (!flags.progressMediaEnabled && location == AppRoutes.progress().path) {
+    return true;
+  }
+  return false;
+}
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
   final onboardingStatus = ref.watch(onboardingStatusProvider);
   final aiAvailability = ref.watch(aiAvailabilityProvider);
   final draftGuard = ref.watch(draftGuardProvider);
+  final featureFlags = ref.watch(featureFlagsProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.initialRoute,
@@ -59,6 +80,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         if (!isOnOnboarding) return AppRoutes.onboarding().path;
       }
 
+      // 2.5 Feature-flag guard
+      if (_isFlagDisabledRoute(location, featureFlags)) {
+        if (!featureFlags.aiEnabled && location == AppRoutes.chat().path) {
+          return AppRoutes.aiDisabled().path;
+        }
+        if (!featureFlags.importsEnabled &&
+            (location == AppRoutes.import().path ||
+                location == AppRoutes.importImage().path)) {
+          return AppRoutes.importDisabled().path;
+        }
+        if (!featureFlags.sharingEnabled && location == AppRoutes.share().path) {
+          return AppRoutes.shareDisabled().path;
+        }
+        if (!featureFlags.progressMediaEnabled &&
+            location == AppRoutes.progress().path) {
+          return AppRoutes.progressDisabled().path;
+        }
+      }
+
       // 3. AI availability guard (chat only)
       if (aiAvailability == AiAvailability.missingKey &&
           location == AppRoutes.chat().path) {
@@ -73,6 +113,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       if (draftGuard == DraftGuard.blockedByUnsavedDraft &&
           _draftGuardedRoutes.contains(location)) {
         return AppRoutes.draftBlocked().path;
+      }
+
+      if (!featureFlags.diagnosticsEnabled &&
+          location == AppRoutes.diagnostics().path) {
+        return AppRoutes.home().path;
       }
 
       return null;
@@ -124,6 +169,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AiChatScreen(),
       ),
       GoRoute(
+        path: AppRoutes.diagnostics().path,
+        name: AppRoutes.diagnostics().name,
+        builder: (context, state) => const DeveloperDiagnosticsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.aiDisabled().path,
+        name: AppRoutes.aiDisabled().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.aiDisabled)),
+          body: const Center(child: Text(AppStrings.aiDisabledMessage)),
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.aiUnavailable().path,
         name: AppRoutes.aiUnavailable().name,
         builder: (context, state) => Scaffold(
@@ -145,6 +203,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => Scaffold(
           appBar: AppBar(title: const Text(AppStrings.draftBlocked)),
           body: const Center(child: Text(AppStrings.draftBlockedMessage)),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.importDisabled().path,
+        name: AppRoutes.importDisabled().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.importDisabled)),
+          body: const Center(child: Text(AppStrings.importDisabledMessage)),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.shareDisabled().path,
+        name: AppRoutes.shareDisabled().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.shareDisabled)),
+          body: const Center(child: Text(AppStrings.shareDisabledMessage)),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.progressDisabled().path,
+        name: AppRoutes.progressDisabled().name,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.progressDisabled)),
+          body: const Center(child: Text(AppStrings.progressDisabledMessage)),
         ),
       ),
       GoRoute(
