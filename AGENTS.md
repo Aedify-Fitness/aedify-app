@@ -468,7 +468,7 @@ For every code task:
 7. Keep product behavior within the locked v1 scope.
 8. Preserve local-first behavior and privacy boundaries.
 9. Add or update tests when behavior changes.
-10. Run formatting, analysis, code generation, and tests where applicable.
+10. Run `dart format .` after every implementation change set before any verification. If code generation is involved, run code generation first, then run `dart format .` again, then run `flutter analyze` and `flutter test`.
 11. Update `docs/changelog.md` and `docs/implementation.md` whenever the change is
     meaningful or affects project status.
 12. Summarize what changed and call out any files or checks that could not be
@@ -496,28 +496,34 @@ Prefer simple, readable code over clever code.
 ## Aedify-Specific Conventions
 
 ### Colors
+
 - **DO** define all colors in `app_colors.dart` (`AedifyLightColors` / `AedifyDarkColors`) and reference them from there.
 - **DON'T** use hardcoded `Color(0x...)` values anywhere outside `app_colors.dart`.
 - **DO** populate every `ColorScheme` slot explicitly via `const ColorScheme(...)` — don't rely on `ColorScheme.fromSeed()`.
 
 ### Text Styles
+
 - **DO** use `AppTextStyles.*` constants for text styles.
 - **DO** use `.copyWith()` when you need to override specific properties of a text style.
 - **DON'T** use inline `TextStyle(...)` in widget or theme code.
 
 ### Navigation
+
 - **DO** put route paths and names in `AppRoutes` class (in `app_routes.dart`) using factory constructors with `.path` / `.name` accessors.
 - **DON'T** scatter route strings in feature files or `AppStrings`.
 
 ### Constants Organization
+
 - **DO** keep constants in dedicated files by concern (e.g. `db_constants.dart`, `directory_constants.dart`, `app_routes.dart`, `app_strings.dart`).
 - **DON'T** put unrelated constant categories in a single monolithic file.
 
 ### Imports
+
 - **DO** use package imports (`package:aedify/...`).
 - **DON'T** use relative imports (`../../`).
 
 ### Architecture
+
 - **DO** use the context extension `ThemeX` on `BuildContext` for `context.theme`, `context.colorScheme`, `context.textTheme`.
 - **DO** encapsulate top-level utility functions in classes with private constructors and static methods.
 - **DO** use token constants (`AppSpacing.*`, `AppWhiteSpace.*`, `AppRadius.*`) for layout values — no raw numbers.
@@ -598,10 +604,15 @@ Rules:
 
 ## Testing and Quality Gates
 
+Formatting is a required quality gate. Agents must run `dart format .` before
+analysis and tests, and must run `dart format .` again after code generation
+when code generation is involved. If formatting is skipped, the task is not
+complete.
+
 When relevant, run:
 
 ```bash
-flutter format .
+dart format .
 flutter analyze
 flutter test
 ```
@@ -611,6 +622,9 @@ then re-run format/analyze/tests:
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs
+dart format .
+flutter analyze
+flutter test
 ```
 
 Add tests at the correct level:
