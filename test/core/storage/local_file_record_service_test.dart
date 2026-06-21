@@ -113,10 +113,7 @@ void main() {
     });
 
     test('verifyManagedFile sets lastVerifiedAt', () async {
-      final file = await fileStore.fileAt(
-        FileCategory.temp,
-        'verify-test.txt',
-      );
+      final file = await fileStore.fileAt(FileCategory.temp, 'verify-test.txt');
       await file.create();
       final path = await fileStore.toRelativePath(file.path);
       await service.registerManagedFile(

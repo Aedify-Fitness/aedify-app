@@ -14,9 +14,7 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       final rows = await db.select(db.schemaMeta).get();
       expect(rows, isNotEmpty);
-      final versionRow = rows.where(
-        (r) => r.key == 'drift_schema_version',
-      );
+      final versionRow = rows.where((r) => r.key == 'drift_schema_version');
       expect(versionRow, isNotEmpty);
       db.close();
     });
