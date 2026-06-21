@@ -31,23 +31,23 @@
 - `app/bootstrap/controllers/bootstrap_controller.dart` — `BootstrapController` as `Notifier<BootstrapState>` with explicit phases, failure model, startup sequence, retry
 - `app/bootstrap/bootstrap_screen.dart` — startup loading/failure/retry/offline UI
 - `app/feature_flags/feature_flags.dart` — feature flag registry
-- `core/db/app_database.dart` — Drift foundation + migration harness + `readiness()` method
-- `core/db/tables/` — `schema_meta`, `exercises` tables
-- `core/db/daos/exercise_dao.dart` — DriftAccessor
-- `core/storage/` — `secure_storage_service`, `preferences_service`, `local_file_store` (incl. `ensureCoreDirectories()`)
+- `core/db/app_database.dart` — Drift foundation + migration harness + `readiness()` + `inTransaction()` methods, schema v2
+- `core/db/tables/` — `schema_meta`, `exercises`, `local_file_records`, `schema_migrations_log` tables
+- `core/db/daos/` — `exercise_dao.dart`, `local_file_record_dao.dart` (CRUD for file metadata, ownership queries, verification)
+- `core/storage/` — `local_file_store.dart` (nestable dirs, relative/absolute path conversion, cleanup), `local_file_record_service.dart` (bridge between filesystem and Drift metadata), `secure_storage_service.dart` (BYOK alias-based API: `saveProviderApiKey`/`readProviderApiKey`/`deleteProviderApiKey`/`rotateProviderApiKey`/`hasProviderApiKey`), `preference_key.dart` (typed allowlist enum), `preferences_service.dart` (enforces `PreferenceKey` allowlist)
 - `core/network/` — `dio_client`, `network_status`
 - `core/firebase/` — `firebase_bootstrap`, `crashlytics_service`
 - `core/privacy/` — `privacy_classifier`, `redaction` (refactored to `Redaction` class)
 - `core/logging/app_logger.dart` — structured logging
 - `core/errors/app_error.dart` — error model
 - `shared/` — `app_text_styles`, `app_text_styles` (dark variants), `app_spacing` (incl. `AppWhiteSpace`), `placeholder_screen`, `context_extensions`
-- `shared/constants/` — `app_strings`, `app_routes` (incl. `startup`), `db_constants`, `directory_constants`
+- `shared/constants/` — `app_strings`, `app_routes` (incl. `startup`), `db_constants` (schema_meta keys expanded), `directory_constants` (nested subdirectory constants)
 - `features/onboarding/presentation/onboarding_screen.dart` — shows offline informational state after bootstrap redirect
 - Placeholder screens for all other 11 feature areas (no hardcoded strings)
 - `AGENTS.md` updated with Aedify-specific conventions
-- 33 unit tests (privacy classifier, redaction, error model, database, bootstrap controller, provider overrides, app shell)
+- 75 unit tests (privacy, redaction, error model, database/schema/migration, DAO, file store, file record service, secure storage BYOK, preferences allowlist, bootstrap controller, provider overrides, app shell)
 - `flutter analyze` — 0 issues
-- `flutter test` — 33/33 passed
+- `flutter test` — 75/75 passed
 - `dart run build_runner build` — successful
 
 ## Planned Work
@@ -69,5 +69,5 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 33/33 passed
+- `flutter test` — 75/75 passed
 - `dart run build_runner build` — completed successfully

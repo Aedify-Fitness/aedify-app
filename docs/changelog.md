@@ -6,6 +6,48 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (Group 2 — Storage/Data Foundation)
+
+#### Batch A — DB Tables & DAO
+
+- **`lib/core/db/tables/local_file_records.dart`** (new): Drift table for managed file metadata (category, ownerType, ownerId, localRelativePath, fileSizeBytes, contentHash, mimeType, width, height, durationSeconds, createdAt, lastVerifiedAt).
+- **`lib/core/db/tables/schema_migrations_log.dart`** (new): Drift table for migration auditability (fromVersion, toVersion, appliedAt, notes).
+- **`lib/core/db/app_database.dart`**: Schema bumped to v2. New tables registered. `onUpgrade` handles 1→2. `onCreate` seeds `drift_schema_version` in `schema_meta`. Added `inTransaction()` helper. Migration log auto-inserted on create/upgrade.
+- **`lib/core/db/daos/local_file_record_dao.dart`** (new): Drift DAO with `insertFileRecord`, `upsertFileRecord`, `getByRelativePath`, `getByOwner`, `deleteByRelativePath`, `deleteByOwner`, `markVerified`.
+- **`lib/shared/constants/db_constants.dart`**: Expanded with all `schema_meta` key constants.
+- **Tests**: `app_database_test.dart` expanded (schema version 2, table access, readiness, inTransaction). `local_file_record_dao_test.dart` (6 tests: insert, query by owner, delete, markVerified). `migration_test.dart` (2 tests: seed, table access).
+
+#### Batch B — File Store Expansion
+
+- **`lib/shared/constants/directory_constants.dart`**: Added nested subdirectory constants (progress, sessions, originals, thumbnails, frames, extracted, imagesOriginal, imagesEnhanced, aedifyPlan, pdf, audioCache, exerciseSteps, db, temp).
+- **`lib/core/storage/local_file_store.dart`**: `FileCategory` enum with 17 paths. Added `subDir()`, `clearCategory()`, `deleteFile()`, `cleanupTemporaryImports()`, `cleanupTemporaryExports()`, `cleanupStartupTemporaryArtifacts()`, `toRelativePath()`, `toAbsolutePath()`, session/import/export path helpers.
+- **Tests**: `local_file_store_test.dart` (9 tests: dir creation, file ops, cleanup, path conversion).
+
+#### Batch C — File Record Service
+
+- **`lib/core/storage/local_file_record_service.dart`** (new): `LocalFileRecordService` bridging Drift metadata and filesystem. Methods: `registerManagedFile`, `getByRelativePath`, `getByOwner`, `deleteManagedFile`, `deleteManagedFilesForOwner`, `verifyManagedFile`.
+- **Tests**: `local_file_record_service_test.dart` (5 tests: register, query, delete single, delete bulk, verify).
+
+#### Batch D — Secure Storage BYOK Refactor
+
+- **`lib/core/storage/secure_storage_service.dart`**: Replaced raw `write`/`read`/`delete`/`containsKey` with `saveProviderApiKey(alias, value)`, `readProviderApiKey(alias)`, `deleteProviderApiKey(alias)`, `rotateProviderApiKey(alias, newValue)`, `hasProviderApiKey(alias)`. Keys prefixed with `ai_provider_api_key:`.
+- **Tests**: `secure_storage_service_test.dart` (8 tests: round-trip, missing, has, delete, rotate, deleteAll, isolation).
+
+#### Batch E — Preferences Allowlist
+
+- **`lib/core/storage/preference_key.dart`** (new): `PreferenceKey` enum with typed allowlist (onboardingCompleted, lastSeenVersion, themeMode, selectedLocale, aiDefaultProvider, aiDefaultModel, etc.).
+- **`lib/core/storage/preferences_service.dart`**: All methods now accept `PreferenceKey` instead of raw `String`. Keys validated at compile time.
+- **Tests**: `preferences_service_test.dart` (6 tests: get/set string, bool, int, remove, key mapping).
+
+#### Providers
+
+- **`lib/app/providers/providers.dart`**: Added `localFileRecordDaoProvider` and `localFileRecordServiceProvider`.
+
+### Changed
+
+- Updated `docs/implementation.md` with Group 2 completed work. Test count: 33→75.
+- DB tests now use `NativeDatabase.memory()` for platform-channel independence.
+
 ### Fixed
 
 - Corrected M1 status in `docs/implementation.md` from `Complete` to `In Progress (partial)`. Foundation scaffold and Group A (startup/DI/state machine) are now complete.
