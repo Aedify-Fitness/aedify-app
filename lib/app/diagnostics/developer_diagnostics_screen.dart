@@ -13,8 +13,8 @@ class DeveloperDiagnosticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
-    final featureFlags = ref.watch(featureFlagsProvider);
-    final database = ref.watch(appDatabaseProvider);
+    final featureFlags = ref.watch(AppProviders.featureFlagsProvider);
+    final database = ref.watch(AppProviders.appDatabaseProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text(AppStrings.diagnostics)),

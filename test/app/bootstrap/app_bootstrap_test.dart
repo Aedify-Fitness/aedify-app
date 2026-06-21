@@ -18,12 +18,12 @@ void main() {
     test('succeeds when Firebase/DB/file-store succeed', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
-          appDatabaseProvider.overrideWith(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
+          AppProviders.appDatabaseProvider.overrideWith(
             (ref) => AppDatabase(NativeDatabase.memory()),
           ),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(
+          AppProviders.localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
+          AppProviders.networkStatusProvider.overrideWithValue(
             _FakeNetworkStatus(isOnline: true),
           ),
         ],
@@ -48,14 +48,14 @@ void main() {
     test('fails when Firebase throws', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(
             _FakeFirebaseBootstrap(shouldThrow: true),
           ),
-          appDatabaseProvider.overrideWith(
+          AppProviders.appDatabaseProvider.overrideWith(
             (ref) => AppDatabase(NativeDatabase.memory()),
           ),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+          AppProviders.localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
+          AppProviders.networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
         ],
       );
       addTearDown(container.dispose);
@@ -74,12 +74,12 @@ void main() {
     test('fails when DB readiness throws', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
-          appDatabaseProvider.overrideWithValue(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
+          AppProviders.appDatabaseProvider.overrideWithValue(
             _FakeAppDatabase(shouldThrow: true),
           ),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+          AppProviders.localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
+          AppProviders.networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
         ],
       );
       addTearDown(container.dispose);
@@ -97,14 +97,14 @@ void main() {
     test('fails when file-store init throws', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
-          appDatabaseProvider.overrideWith(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
+          AppProviders.appDatabaseProvider.overrideWith(
             (ref) => AppDatabase(NativeDatabase.memory()),
           ),
-          localFileStoreProvider.overrideWithValue(
+          AppProviders.localFileStoreProvider.overrideWithValue(
             _FakeLocalFileStore(shouldThrow: true),
           ),
-          networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+          AppProviders.networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
         ],
       );
       addTearDown(container.dispose);
@@ -122,12 +122,12 @@ void main() {
     test('treats offline/network failure as non-blocking', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
-          appDatabaseProvider.overrideWith(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
+          AppProviders.appDatabaseProvider.overrideWith(
             (ref) => AppDatabase(NativeDatabase.memory()),
           ),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(
+          AppProviders.localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
+          AppProviders.networkStatusProvider.overrideWithValue(
             _FakeNetworkStatus(isOnline: false),
           ),
         ],
@@ -148,12 +148,12 @@ void main() {
       final fakeFirebase = _FakeFirebaseBootstrap(shouldThrow: true);
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(fakeFirebase),
-          appDatabaseProvider.overrideWith(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(fakeFirebase),
+          AppProviders.appDatabaseProvider.overrideWith(
             (ref) => AppDatabase(NativeDatabase.memory()),
           ),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+          AppProviders.localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
+          AppProviders.networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
         ],
       );
       addTearDown(container.dispose);

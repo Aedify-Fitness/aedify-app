@@ -54,10 +54,10 @@ bool _isFlagDisabledRoute(String location, FeatureFlags flags) {
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
-  final onboardingStatus = ref.watch(onboardingStatusProvider);
-  final aiAvailability = ref.watch(aiAvailabilityProvider);
-  final draftGuard = ref.watch(draftGuardProvider);
-  final featureFlags = ref.watch(featureFlagsProvider);
+  final onboardingStatus = ref.watch(AppProviders.onboardingStatusProvider);
+  final aiAvailability = ref.watch(AppProviders.aiAvailabilityProvider);
+  final draftGuard = ref.watch(AppProviders.draftGuardProvider);
+  final featureFlags = ref.watch(AppProviders.featureFlagsProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.initialRoute,

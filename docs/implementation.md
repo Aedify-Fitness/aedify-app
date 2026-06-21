@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                          |
-| --------------------- | ---------------------------------------------- |
-| **Current Milestone** | M1 — App Foundation + Local Data Spine |
+| Field                 | Value                                                          |
+| --------------------- | -------------------------------------------------------------- |
+| **Current Milestone** | M1 — App Foundation + Local Data Spine                         |
 | **Status**            | M1 closure pass implemented; manual device QA evidence pending |
-| **Blockers**          | iOS/Android manual QA not executed in this environment |
+| **Blockers**          | iOS/Android manual QA not executed in this environment         |
 
 ## Completed Work
 
@@ -26,7 +26,7 @@
 - `app/theme/app_theme.dart` — DESIGN.md color tokens, explicit `ColorScheme` slots, `textTheme` set
 - `app/theme/app_colors.dart` — all light/dark color tokens
 - `app/router/app_router.dart` — go_router routes using `AppRoutes` factory constructors, startup route + bootstrap-driven redirect
-- `app/providers/providers.dart` — Riverpod DI graph for all core services including firebaseBootstrapProvider
+- `app/providers/providers.dart` — Riverpod DI graph as `AppProviders` class (static members: `firebaseBootstrapProvider`, `appDatabaseProvider`, `crashlyticsServiceProvider`, etc.)
 - `app/bootstrap/app_bootstrap.dart` — provider entry point (`AppBootstrap.controllerProvider`)
 - `app/bootstrap/controllers/bootstrap_controller.dart` — `BootstrapController` as `Notifier<BootstrapState>` with explicit phases, failure model, startup sequence, retry
 - `app/bootstrap/bootstrap_screen.dart` — startup loading/failure/retry/offline UI

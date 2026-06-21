@@ -44,13 +44,15 @@ class BootstrapController extends Notifier<BootstrapState> {
   Future<void> start() async {
     state = const BootstrapState.initializing();
     try {
-      await ref.read(firebaseBootstrapProvider).initialize();
-      await ref.read(appDatabaseProvider).readiness();
-      await ref.read(localFileStoreProvider).ensureCoreDirectories();
+      await ref.read(AppProviders.firebaseBootstrapProvider).initialize();
+      await ref.read(AppProviders.appDatabaseProvider).readiness();
+      await ref
+          .read(AppProviders.localFileStoreProvider)
+          .ensureCoreDirectories();
 
       bool offline = false;
       try {
-        offline = !(await ref.read(networkStatusProvider).check());
+        offline = !(await ref.read(AppProviders.networkStatusProvider).check());
       } catch (_) {
         offline = true;
       }

@@ -6,6 +6,10 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Changed
+
+- **`lib/app/providers/providers.dart`**: Converted from top-level providers to `AppProviders` class with `static final` members. All references updated across source and test files to use `AppProviders.providerName` syntax.
+
 ### Added (Strict M1 closure pass)
 
 - Wired `FirebaseBootstrap` to `DefaultFirebaseOptions.currentPlatform` from `lib/firebase_options.dart`

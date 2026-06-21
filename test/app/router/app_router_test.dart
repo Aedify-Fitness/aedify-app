@@ -28,10 +28,10 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _CompleteBootstrapController(),
             ),
-            featureFlagsProvider.overrideWithValue(flags),
-            onboardingStatusProvider.overrideWith((ref) => onboarding),
-            aiAvailabilityProvider.overrideWith((ref) => ai),
-            draftGuardProvider.overrideWith((ref) => draft),
+            AppProviders.featureFlagsProvider.overrideWithValue(flags),
+            AppProviders.onboardingStatusProvider.overrideWith((ref) => onboarding),
+            AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
+            AppProviders.draftGuardProvider.overrideWith((ref) => draft),
           ],
           child: Consumer(
             builder: (context, ref, _) {

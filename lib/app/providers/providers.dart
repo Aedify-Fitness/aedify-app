@@ -16,86 +16,97 @@ import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final firebaseBootstrapProvider = Provider<FirebaseBootstrap>((ref) {
-  return FirebaseBootstrap();
-});
+/// App-wide Riverpod provider definitions.
+///
+/// All providers are static members of [AppProviders] so they can be
+/// referenced as `AppProviders.providerName` throughout the codebase.
+/// This keeps the DI graph in a single, discoverable location while
+/// avoiding top-level provider declarations.
+class AppProviders {
+  AppProviders._();
 
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  return AppDatabase();
-});
+  static final firebaseBootstrapProvider = Provider<FirebaseBootstrap>((ref) {
+    return FirebaseBootstrap();
+  });
 
-final secureStorageProvider = Provider<SecureStorageService>((ref) {
-  return SecureStorageService();
-});
+  static final appDatabaseProvider = Provider<AppDatabase>((ref) {
+    return AppDatabase();
+  });
 
-final preferencesServiceProvider = Provider<PreferencesService>((ref) {
-  return PreferencesService();
-});
+  static final secureStorageProvider = Provider<SecureStorageService>((ref) {
+    return SecureStorageService();
+  });
 
-final localFileStoreProvider = Provider<LocalFileStore>((ref) {
-  return LocalFileStore();
-});
+  static final preferencesServiceProvider = Provider<PreferencesService>((ref) {
+    return PreferencesService();
+  });
 
-final errorMapperProvider = Provider<ErrorMapper>((ref) {
-  return const ErrorMapper();
-});
+  static final localFileStoreProvider = Provider<LocalFileStore>((ref) {
+    return LocalFileStore();
+  });
 
-final retryPolicyProvider = Provider<RetryPolicy>((ref) {
-  return const RetryPolicy();
-});
+  static final errorMapperProvider = Provider<ErrorMapper>((ref) {
+    return const ErrorMapper();
+  });
 
-final dioClientProvider = Provider<DioClient>((ref) {
-  return DioClient(
-    logger: ref.read(appLoggerProvider),
-    errorMapper: ref.read(errorMapperProvider),
-    retryPolicy: ref.read(retryPolicyProvider),
-  );
-});
+  static final retryPolicyProvider = Provider<RetryPolicy>((ref) {
+    return const RetryPolicy();
+  });
 
-final networkStatusProvider = Provider<NetworkStatus>((ref) {
-  return NetworkStatus();
-});
+  static final dioClientProvider = Provider<DioClient>((ref) {
+    return DioClient(
+      logger: ref.read(appLoggerProvider),
+      errorMapper: ref.read(errorMapperProvider),
+      retryPolicy: ref.read(retryPolicyProvider),
+    );
+  });
 
-final crashlyticsServiceProvider = Provider<CrashlyticsService>((ref) {
-  final featureFlags = ref.read(featureFlagsProvider);
-  return CrashlyticsService(
-    client: const FirebaseCrashlyticsClient(),
-    classifier: ref.read(privacyClassifierProvider),
-    enabled: featureFlags.crashlyticsEnabled,
-  );
-});
+  static final networkStatusProvider = Provider<NetworkStatus>((ref) {
+    return NetworkStatus();
+  });
 
-final appLoggerProvider = Provider<AppLogger>((ref) {
-  return AppLogger();
-});
+  static final crashlyticsServiceProvider = Provider<CrashlyticsService>((ref) {
+    final featureFlags = ref.read(featureFlagsProvider);
+    return CrashlyticsService(
+      client: const FirebaseCrashlyticsClient(),
+      classifier: ref.read(privacyClassifierProvider),
+      enabled: featureFlags.crashlyticsEnabled,
+    );
+  });
 
-final privacyClassifierProvider = Provider<PrivacyClassifier>((ref) {
-  return const PrivacyClassifier();
-});
+  static final appLoggerProvider = Provider<AppLogger>((ref) {
+    return AppLogger();
+  });
 
-final featureFlagsProvider = Provider<FeatureFlags>((ref) {
-  return FeatureFlags.defaultFlags;
-});
+  static final privacyClassifierProvider = Provider<PrivacyClassifier>((ref) {
+    return const PrivacyClassifier();
+  });
 
-final onboardingStatusProvider = Provider<OnboardingStatus>((ref) {
-  return OnboardingStatus.incomplete;
-});
+  static final featureFlagsProvider = Provider<FeatureFlags>((ref) {
+    return FeatureFlags.defaultFlags;
+  });
 
-final aiAvailabilityProvider = Provider<AiAvailability>((ref) {
-  return AiAvailability.missingKey;
-});
+  static final onboardingStatusProvider = Provider<OnboardingStatus>((ref) {
+    return OnboardingStatus.incomplete;
+  });
 
-final draftGuardProvider = Provider<DraftGuard>((ref) {
-  return DraftGuard.clear;
-});
+  static final aiAvailabilityProvider = Provider<AiAvailability>((ref) {
+    return AiAvailability.missingKey;
+  });
 
-final localFileRecordDaoProvider = Provider<LocalFileRecordDao>((ref) {
-  return LocalFileRecordDao(ref.read(appDatabaseProvider));
-});
+  static final draftGuardProvider = Provider<DraftGuard>((ref) {
+    return DraftGuard.clear;
+  });
 
-final localFileRecordServiceProvider = Provider<LocalFileRecordService>((ref) {
-  return LocalFileRecordService(
-    dao: ref.read(localFileRecordDaoProvider),
-    fileStore: ref.read(localFileStoreProvider),
-  );
-});
+  static final localFileRecordDaoProvider = Provider<LocalFileRecordDao>((ref) {
+    return LocalFileRecordDao(ref.read(appDatabaseProvider));
+  });
+
+  static final localFileRecordServiceProvider =
+      Provider<LocalFileRecordService>((ref) {
+        return LocalFileRecordService(
+          dao: ref.read(localFileRecordDaoProvider),
+          fileStore: ref.read(localFileStoreProvider),
+        );
+      });
+}
