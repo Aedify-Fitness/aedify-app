@@ -1069,16 +1069,1163 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
   }
 }
 
+class $LocalFileRecordsTable extends LocalFileRecords
+    with TableInfo<$LocalFileRecordsTable, LocalFileRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalFileRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerTypeMeta = const VerificationMeta(
+    'ownerType',
+  );
+  @override
+  late final GeneratedColumn<String> ownerType = GeneratedColumn<String>(
+    'owner_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerIdMeta = const VerificationMeta(
+    'ownerId',
+  );
+  @override
+  late final GeneratedColumn<String> ownerId = GeneratedColumn<String>(
+    'owner_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _localRelativePathMeta = const VerificationMeta(
+    'localRelativePath',
+  );
+  @override
+  late final GeneratedColumn<String> localRelativePath =
+      GeneratedColumn<String>(
+        'local_relative_path',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _fileSizeBytesMeta = const VerificationMeta(
+    'fileSizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> fileSizeBytes = GeneratedColumn<int>(
+    'file_size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHashMeta = const VerificationMeta(
+    'contentHash',
+  );
+  @override
+  late final GeneratedColumn<String> contentHash = GeneratedColumn<String>(
+    'content_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastVerifiedAtMeta = const VerificationMeta(
+    'lastVerifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastVerifiedAt =
+      GeneratedColumn<DateTime>(
+        'last_verified_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    category,
+    ownerType,
+    ownerId,
+    localRelativePath,
+    fileSizeBytes,
+    contentHash,
+    mimeType,
+    width,
+    height,
+    durationSeconds,
+    createdAt,
+    lastVerifiedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_file_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalFileRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('owner_type')) {
+      context.handle(
+        _ownerTypeMeta,
+        ownerType.isAcceptableOrUnknown(data['owner_type']!, _ownerTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ownerTypeMeta);
+    }
+    if (data.containsKey('owner_id')) {
+      context.handle(
+        _ownerIdMeta,
+        ownerId.isAcceptableOrUnknown(data['owner_id']!, _ownerIdMeta),
+      );
+    }
+    if (data.containsKey('local_relative_path')) {
+      context.handle(
+        _localRelativePathMeta,
+        localRelativePath.isAcceptableOrUnknown(
+          data['local_relative_path']!,
+          _localRelativePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_localRelativePathMeta);
+    }
+    if (data.containsKey('file_size_bytes')) {
+      context.handle(
+        _fileSizeBytesMeta,
+        fileSizeBytes.isAcceptableOrUnknown(
+          data['file_size_bytes']!,
+          _fileSizeBytesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fileSizeBytesMeta);
+    }
+    if (data.containsKey('content_hash')) {
+      context.handle(
+        _contentHashMeta,
+        contentHash.isAcceptableOrUnknown(
+          data['content_hash']!,
+          _contentHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('last_verified_at')) {
+      context.handle(
+        _lastVerifiedAtMeta,
+        lastVerifiedAt.isAcceptableOrUnknown(
+          data['last_verified_at']!,
+          _lastVerifiedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalFileRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalFileRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      ownerType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner_type'],
+      )!,
+      ownerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner_id'],
+      ),
+      localRelativePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_relative_path'],
+      )!,
+      fileSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size_bytes'],
+      )!,
+      contentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_hash'],
+      ),
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      lastVerifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_verified_at'],
+      ),
+    );
+  }
+
+  @override
+  $LocalFileRecordsTable createAlias(String alias) {
+    return $LocalFileRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalFileRecord extends DataClass implements Insertable<LocalFileRecord> {
+  final int id;
+  final String category;
+  final String ownerType;
+  final String? ownerId;
+  final String localRelativePath;
+  final int fileSizeBytes;
+  final String? contentHash;
+  final String? mimeType;
+  final int? width;
+  final int? height;
+  final int? durationSeconds;
+  final DateTime createdAt;
+  final DateTime? lastVerifiedAt;
+  const LocalFileRecord({
+    required this.id,
+    required this.category,
+    required this.ownerType,
+    this.ownerId,
+    required this.localRelativePath,
+    required this.fileSizeBytes,
+    this.contentHash,
+    this.mimeType,
+    this.width,
+    this.height,
+    this.durationSeconds,
+    required this.createdAt,
+    this.lastVerifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['category'] = Variable<String>(category);
+    map['owner_type'] = Variable<String>(ownerType);
+    if (!nullToAbsent || ownerId != null) {
+      map['owner_id'] = Variable<String>(ownerId);
+    }
+    map['local_relative_path'] = Variable<String>(localRelativePath);
+    map['file_size_bytes'] = Variable<int>(fileSizeBytes);
+    if (!nullToAbsent || contentHash != null) {
+      map['content_hash'] = Variable<String>(contentHash);
+    }
+    if (!nullToAbsent || mimeType != null) {
+      map['mime_type'] = Variable<String>(mimeType);
+    }
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || lastVerifiedAt != null) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt);
+    }
+    return map;
+  }
+
+  LocalFileRecordsCompanion toCompanion(bool nullToAbsent) {
+    return LocalFileRecordsCompanion(
+      id: Value(id),
+      category: Value(category),
+      ownerType: Value(ownerType),
+      ownerId: ownerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ownerId),
+      localRelativePath: Value(localRelativePath),
+      fileSizeBytes: Value(fileSizeBytes),
+      contentHash: contentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHash),
+      mimeType: mimeType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mimeType),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      createdAt: Value(createdAt),
+      lastVerifiedAt: lastVerifiedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastVerifiedAt),
+    );
+  }
+
+  factory LocalFileRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalFileRecord(
+      id: serializer.fromJson<int>(json['id']),
+      category: serializer.fromJson<String>(json['category']),
+      ownerType: serializer.fromJson<String>(json['ownerType']),
+      ownerId: serializer.fromJson<String?>(json['ownerId']),
+      localRelativePath: serializer.fromJson<String>(json['localRelativePath']),
+      fileSizeBytes: serializer.fromJson<int>(json['fileSizeBytes']),
+      contentHash: serializer.fromJson<String?>(json['contentHash']),
+      mimeType: serializer.fromJson<String?>(json['mimeType']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      lastVerifiedAt: serializer.fromJson<DateTime?>(json['lastVerifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'category': serializer.toJson<String>(category),
+      'ownerType': serializer.toJson<String>(ownerType),
+      'ownerId': serializer.toJson<String?>(ownerId),
+      'localRelativePath': serializer.toJson<String>(localRelativePath),
+      'fileSizeBytes': serializer.toJson<int>(fileSizeBytes),
+      'contentHash': serializer.toJson<String?>(contentHash),
+      'mimeType': serializer.toJson<String?>(mimeType),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'lastVerifiedAt': serializer.toJson<DateTime?>(lastVerifiedAt),
+    };
+  }
+
+  LocalFileRecord copyWith({
+    int? id,
+    String? category,
+    String? ownerType,
+    Value<String?> ownerId = const Value.absent(),
+    String? localRelativePath,
+    int? fileSizeBytes,
+    Value<String?> contentHash = const Value.absent(),
+    Value<String?> mimeType = const Value.absent(),
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> lastVerifiedAt = const Value.absent(),
+  }) => LocalFileRecord(
+    id: id ?? this.id,
+    category: category ?? this.category,
+    ownerType: ownerType ?? this.ownerType,
+    ownerId: ownerId.present ? ownerId.value : this.ownerId,
+    localRelativePath: localRelativePath ?? this.localRelativePath,
+    fileSizeBytes: fileSizeBytes ?? this.fileSizeBytes,
+    contentHash: contentHash.present ? contentHash.value : this.contentHash,
+    mimeType: mimeType.present ? mimeType.value : this.mimeType,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    createdAt: createdAt ?? this.createdAt,
+    lastVerifiedAt: lastVerifiedAt.present
+        ? lastVerifiedAt.value
+        : this.lastVerifiedAt,
+  );
+  LocalFileRecord copyWithCompanion(LocalFileRecordsCompanion data) {
+    return LocalFileRecord(
+      id: data.id.present ? data.id.value : this.id,
+      category: data.category.present ? data.category.value : this.category,
+      ownerType: data.ownerType.present ? data.ownerType.value : this.ownerType,
+      ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
+      localRelativePath: data.localRelativePath.present
+          ? data.localRelativePath.value
+          : this.localRelativePath,
+      fileSizeBytes: data.fileSizeBytes.present
+          ? data.fileSizeBytes.value
+          : this.fileSizeBytes,
+      contentHash: data.contentHash.present
+          ? data.contentHash.value
+          : this.contentHash,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      lastVerifiedAt: data.lastVerifiedAt.present
+          ? data.lastVerifiedAt.value
+          : this.lastVerifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFileRecord(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('localRelativePath: $localRelativePath, ')
+          ..write('fileSizeBytes: $fileSizeBytes, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    category,
+    ownerType,
+    ownerId,
+    localRelativePath,
+    fileSizeBytes,
+    contentHash,
+    mimeType,
+    width,
+    height,
+    durationSeconds,
+    createdAt,
+    lastVerifiedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalFileRecord &&
+          other.id == this.id &&
+          other.category == this.category &&
+          other.ownerType == this.ownerType &&
+          other.ownerId == this.ownerId &&
+          other.localRelativePath == this.localRelativePath &&
+          other.fileSizeBytes == this.fileSizeBytes &&
+          other.contentHash == this.contentHash &&
+          other.mimeType == this.mimeType &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.durationSeconds == this.durationSeconds &&
+          other.createdAt == this.createdAt &&
+          other.lastVerifiedAt == this.lastVerifiedAt);
+}
+
+class LocalFileRecordsCompanion extends UpdateCompanion<LocalFileRecord> {
+  final Value<int> id;
+  final Value<String> category;
+  final Value<String> ownerType;
+  final Value<String?> ownerId;
+  final Value<String> localRelativePath;
+  final Value<int> fileSizeBytes;
+  final Value<String?> contentHash;
+  final Value<String?> mimeType;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<int?> durationSeconds;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> lastVerifiedAt;
+  const LocalFileRecordsCompanion({
+    this.id = const Value.absent(),
+    this.category = const Value.absent(),
+    this.ownerType = const Value.absent(),
+    this.ownerId = const Value.absent(),
+    this.localRelativePath = const Value.absent(),
+    this.fileSizeBytes = const Value.absent(),
+    this.contentHash = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.lastVerifiedAt = const Value.absent(),
+  });
+  LocalFileRecordsCompanion.insert({
+    this.id = const Value.absent(),
+    required String category,
+    required String ownerType,
+    this.ownerId = const Value.absent(),
+    required String localRelativePath,
+    required int fileSizeBytes,
+    this.contentHash = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    required DateTime createdAt,
+    this.lastVerifiedAt = const Value.absent(),
+  }) : category = Value(category),
+       ownerType = Value(ownerType),
+       localRelativePath = Value(localRelativePath),
+       fileSizeBytes = Value(fileSizeBytes),
+       createdAt = Value(createdAt);
+  static Insertable<LocalFileRecord> custom({
+    Expression<int>? id,
+    Expression<String>? category,
+    Expression<String>? ownerType,
+    Expression<String>? ownerId,
+    Expression<String>? localRelativePath,
+    Expression<int>? fileSizeBytes,
+    Expression<String>? contentHash,
+    Expression<String>? mimeType,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<int>? durationSeconds,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? lastVerifiedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (category != null) 'category': category,
+      if (ownerType != null) 'owner_type': ownerType,
+      if (ownerId != null) 'owner_id': ownerId,
+      if (localRelativePath != null) 'local_relative_path': localRelativePath,
+      if (fileSizeBytes != null) 'file_size_bytes': fileSizeBytes,
+      if (contentHash != null) 'content_hash': contentHash,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (createdAt != null) 'created_at': createdAt,
+      if (lastVerifiedAt != null) 'last_verified_at': lastVerifiedAt,
+    });
+  }
+
+  LocalFileRecordsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? category,
+    Value<String>? ownerType,
+    Value<String?>? ownerId,
+    Value<String>? localRelativePath,
+    Value<int>? fileSizeBytes,
+    Value<String?>? contentHash,
+    Value<String?>? mimeType,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<int?>? durationSeconds,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? lastVerifiedAt,
+  }) {
+    return LocalFileRecordsCompanion(
+      id: id ?? this.id,
+      category: category ?? this.category,
+      ownerType: ownerType ?? this.ownerType,
+      ownerId: ownerId ?? this.ownerId,
+      localRelativePath: localRelativePath ?? this.localRelativePath,
+      fileSizeBytes: fileSizeBytes ?? this.fileSizeBytes,
+      contentHash: contentHash ?? this.contentHash,
+      mimeType: mimeType ?? this.mimeType,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      createdAt: createdAt ?? this.createdAt,
+      lastVerifiedAt: lastVerifiedAt ?? this.lastVerifiedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (ownerType.present) {
+      map['owner_type'] = Variable<String>(ownerType.value);
+    }
+    if (ownerId.present) {
+      map['owner_id'] = Variable<String>(ownerId.value);
+    }
+    if (localRelativePath.present) {
+      map['local_relative_path'] = Variable<String>(localRelativePath.value);
+    }
+    if (fileSizeBytes.present) {
+      map['file_size_bytes'] = Variable<int>(fileSizeBytes.value);
+    }
+    if (contentHash.present) {
+      map['content_hash'] = Variable<String>(contentHash.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (lastVerifiedAt.present) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFileRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('ownerType: $ownerType, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('localRelativePath: $localRelativePath, ')
+          ..write('fileSizeBytes: $fileSizeBytes, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SchemaMigrationsLogTable extends SchemaMigrationsLog
+    with TableInfo<$SchemaMigrationsLogTable, SchemaMigrationsLogData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SchemaMigrationsLogTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _fromVersionMeta = const VerificationMeta(
+    'fromVersion',
+  );
+  @override
+  late final GeneratedColumn<int> fromVersion = GeneratedColumn<int>(
+    'from_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toVersionMeta = const VerificationMeta(
+    'toVersion',
+  );
+  @override
+  late final GeneratedColumn<int> toVersion = GeneratedColumn<int>(
+    'to_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _appliedAtMeta = const VerificationMeta(
+    'appliedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> appliedAt = GeneratedColumn<DateTime>(
+    'applied_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    fromVersion,
+    toVersion,
+    appliedAt,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'schema_migrations_log';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SchemaMigrationsLogData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('from_version')) {
+      context.handle(
+        _fromVersionMeta,
+        fromVersion.isAcceptableOrUnknown(
+          data['from_version']!,
+          _fromVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fromVersionMeta);
+    }
+    if (data.containsKey('to_version')) {
+      context.handle(
+        _toVersionMeta,
+        toVersion.isAcceptableOrUnknown(data['to_version']!, _toVersionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_toVersionMeta);
+    }
+    if (data.containsKey('applied_at')) {
+      context.handle(
+        _appliedAtMeta,
+        appliedAt.isAcceptableOrUnknown(data['applied_at']!, _appliedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_appliedAtMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SchemaMigrationsLogData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SchemaMigrationsLogData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      fromVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}from_version'],
+      )!,
+      toVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}to_version'],
+      )!,
+      appliedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}applied_at'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $SchemaMigrationsLogTable createAlias(String alias) {
+    return $SchemaMigrationsLogTable(attachedDatabase, alias);
+  }
+}
+
+class SchemaMigrationsLogData extends DataClass
+    implements Insertable<SchemaMigrationsLogData> {
+  final int id;
+  final int fromVersion;
+  final int toVersion;
+  final DateTime appliedAt;
+  final String? notes;
+  const SchemaMigrationsLogData({
+    required this.id,
+    required this.fromVersion,
+    required this.toVersion,
+    required this.appliedAt,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['from_version'] = Variable<int>(fromVersion);
+    map['to_version'] = Variable<int>(toVersion);
+    map['applied_at'] = Variable<DateTime>(appliedAt);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  SchemaMigrationsLogCompanion toCompanion(bool nullToAbsent) {
+    return SchemaMigrationsLogCompanion(
+      id: Value(id),
+      fromVersion: Value(fromVersion),
+      toVersion: Value(toVersion),
+      appliedAt: Value(appliedAt),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory SchemaMigrationsLogData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SchemaMigrationsLogData(
+      id: serializer.fromJson<int>(json['id']),
+      fromVersion: serializer.fromJson<int>(json['fromVersion']),
+      toVersion: serializer.fromJson<int>(json['toVersion']),
+      appliedAt: serializer.fromJson<DateTime>(json['appliedAt']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'fromVersion': serializer.toJson<int>(fromVersion),
+      'toVersion': serializer.toJson<int>(toVersion),
+      'appliedAt': serializer.toJson<DateTime>(appliedAt),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  SchemaMigrationsLogData copyWith({
+    int? id,
+    int? fromVersion,
+    int? toVersion,
+    DateTime? appliedAt,
+    Value<String?> notes = const Value.absent(),
+  }) => SchemaMigrationsLogData(
+    id: id ?? this.id,
+    fromVersion: fromVersion ?? this.fromVersion,
+    toVersion: toVersion ?? this.toVersion,
+    appliedAt: appliedAt ?? this.appliedAt,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  SchemaMigrationsLogData copyWithCompanion(SchemaMigrationsLogCompanion data) {
+    return SchemaMigrationsLogData(
+      id: data.id.present ? data.id.value : this.id,
+      fromVersion: data.fromVersion.present
+          ? data.fromVersion.value
+          : this.fromVersion,
+      toVersion: data.toVersion.present ? data.toVersion.value : this.toVersion,
+      appliedAt: data.appliedAt.present ? data.appliedAt.value : this.appliedAt,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SchemaMigrationsLogData(')
+          ..write('id: $id, ')
+          ..write('fromVersion: $fromVersion, ')
+          ..write('toVersion: $toVersion, ')
+          ..write('appliedAt: $appliedAt, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, fromVersion, toVersion, appliedAt, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SchemaMigrationsLogData &&
+          other.id == this.id &&
+          other.fromVersion == this.fromVersion &&
+          other.toVersion == this.toVersion &&
+          other.appliedAt == this.appliedAt &&
+          other.notes == this.notes);
+}
+
+class SchemaMigrationsLogCompanion
+    extends UpdateCompanion<SchemaMigrationsLogData> {
+  final Value<int> id;
+  final Value<int> fromVersion;
+  final Value<int> toVersion;
+  final Value<DateTime> appliedAt;
+  final Value<String?> notes;
+  const SchemaMigrationsLogCompanion({
+    this.id = const Value.absent(),
+    this.fromVersion = const Value.absent(),
+    this.toVersion = const Value.absent(),
+    this.appliedAt = const Value.absent(),
+    this.notes = const Value.absent(),
+  });
+  SchemaMigrationsLogCompanion.insert({
+    this.id = const Value.absent(),
+    required int fromVersion,
+    required int toVersion,
+    required DateTime appliedAt,
+    this.notes = const Value.absent(),
+  }) : fromVersion = Value(fromVersion),
+       toVersion = Value(toVersion),
+       appliedAt = Value(appliedAt);
+  static Insertable<SchemaMigrationsLogData> custom({
+    Expression<int>? id,
+    Expression<int>? fromVersion,
+    Expression<int>? toVersion,
+    Expression<DateTime>? appliedAt,
+    Expression<String>? notes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (fromVersion != null) 'from_version': fromVersion,
+      if (toVersion != null) 'to_version': toVersion,
+      if (appliedAt != null) 'applied_at': appliedAt,
+      if (notes != null) 'notes': notes,
+    });
+  }
+
+  SchemaMigrationsLogCompanion copyWith({
+    Value<int>? id,
+    Value<int>? fromVersion,
+    Value<int>? toVersion,
+    Value<DateTime>? appliedAt,
+    Value<String?>? notes,
+  }) {
+    return SchemaMigrationsLogCompanion(
+      id: id ?? this.id,
+      fromVersion: fromVersion ?? this.fromVersion,
+      toVersion: toVersion ?? this.toVersion,
+      appliedAt: appliedAt ?? this.appliedAt,
+      notes: notes ?? this.notes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (fromVersion.present) {
+      map['from_version'] = Variable<int>(fromVersion.value);
+    }
+    if (toVersion.present) {
+      map['to_version'] = Variable<int>(toVersion.value);
+    }
+    if (appliedAt.present) {
+      map['applied_at'] = Variable<DateTime>(appliedAt.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SchemaMigrationsLogCompanion(')
+          ..write('id: $id, ')
+          ..write('fromVersion: $fromVersion, ')
+          ..write('toVersion: $toVersion, ')
+          ..write('appliedAt: $appliedAt, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $SchemaMetaTable schemaMeta = $SchemaMetaTable(this);
   late final $ExercisesTable exercises = $ExercisesTable(this);
+  late final $LocalFileRecordsTable localFileRecords = $LocalFileRecordsTable(
+    this,
+  );
+  late final $SchemaMigrationsLogTable schemaMigrationsLog =
+      $SchemaMigrationsLogTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [schemaMeta, exercises];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    schemaMeta,
+    exercises,
+    localFileRecords,
+    schemaMigrationsLog,
+  ];
 }
 
 typedef $$SchemaMetaTableCreateCompanionBuilder =
@@ -1608,6 +2755,580 @@ typedef $$ExercisesTableProcessedTableManager =
       Exercise,
       PrefetchHooks Function()
     >;
+typedef $$LocalFileRecordsTableCreateCompanionBuilder =
+    LocalFileRecordsCompanion Function({
+      Value<int> id,
+      required String category,
+      required String ownerType,
+      Value<String?> ownerId,
+      required String localRelativePath,
+      required int fileSizeBytes,
+      Value<String?> contentHash,
+      Value<String?> mimeType,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int?> durationSeconds,
+      required DateTime createdAt,
+      Value<DateTime?> lastVerifiedAt,
+    });
+typedef $$LocalFileRecordsTableUpdateCompanionBuilder =
+    LocalFileRecordsCompanion Function({
+      Value<int> id,
+      Value<String> category,
+      Value<String> ownerType,
+      Value<String?> ownerId,
+      Value<String> localRelativePath,
+      Value<int> fileSizeBytes,
+      Value<String?> contentHash,
+      Value<String?> mimeType,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int?> durationSeconds,
+      Value<DateTime> createdAt,
+      Value<DateTime?> lastVerifiedAt,
+    });
+
+class $$LocalFileRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalFileRecordsTable> {
+  $$LocalFileRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ownerType => $composableBuilder(
+    column: $table.ownerType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalFileRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalFileRecordsTable> {
+  $$LocalFileRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ownerType => $composableBuilder(
+    column: $table.ownerType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalFileRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalFileRecordsTable> {
+  $$LocalFileRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerType =>
+      $composableBuilder(column: $table.ownerType, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerId =>
+      $composableBuilder(column: $table.ownerId, builder: (column) => column);
+
+  GeneratedColumn<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$LocalFileRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalFileRecordsTable,
+          LocalFileRecord,
+          $$LocalFileRecordsTableFilterComposer,
+          $$LocalFileRecordsTableOrderingComposer,
+          $$LocalFileRecordsTableAnnotationComposer,
+          $$LocalFileRecordsTableCreateCompanionBuilder,
+          $$LocalFileRecordsTableUpdateCompanionBuilder,
+          (
+            LocalFileRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $LocalFileRecordsTable,
+              LocalFileRecord
+            >,
+          ),
+          LocalFileRecord,
+          PrefetchHooks Function()
+        > {
+  $$LocalFileRecordsTableTableManager(
+    _$AppDatabase db,
+    $LocalFileRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalFileRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalFileRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalFileRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> ownerType = const Value.absent(),
+                Value<String?> ownerId = const Value.absent(),
+                Value<String> localRelativePath = const Value.absent(),
+                Value<int> fileSizeBytes = const Value.absent(),
+                Value<String?> contentHash = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+              }) => LocalFileRecordsCompanion(
+                id: id,
+                category: category,
+                ownerType: ownerType,
+                ownerId: ownerId,
+                localRelativePath: localRelativePath,
+                fileSizeBytes: fileSizeBytes,
+                contentHash: contentHash,
+                mimeType: mimeType,
+                width: width,
+                height: height,
+                durationSeconds: durationSeconds,
+                createdAt: createdAt,
+                lastVerifiedAt: lastVerifiedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String category,
+                required String ownerType,
+                Value<String?> ownerId = const Value.absent(),
+                required String localRelativePath,
+                required int fileSizeBytes,
+                Value<String?> contentHash = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+              }) => LocalFileRecordsCompanion.insert(
+                id: id,
+                category: category,
+                ownerType: ownerType,
+                ownerId: ownerId,
+                localRelativePath: localRelativePath,
+                fileSizeBytes: fileSizeBytes,
+                contentHash: contentHash,
+                mimeType: mimeType,
+                width: width,
+                height: height,
+                durationSeconds: durationSeconds,
+                createdAt: createdAt,
+                lastVerifiedAt: lastVerifiedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalFileRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalFileRecordsTable,
+      LocalFileRecord,
+      $$LocalFileRecordsTableFilterComposer,
+      $$LocalFileRecordsTableOrderingComposer,
+      $$LocalFileRecordsTableAnnotationComposer,
+      $$LocalFileRecordsTableCreateCompanionBuilder,
+      $$LocalFileRecordsTableUpdateCompanionBuilder,
+      (
+        LocalFileRecord,
+        BaseReferences<_$AppDatabase, $LocalFileRecordsTable, LocalFileRecord>,
+      ),
+      LocalFileRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$SchemaMigrationsLogTableCreateCompanionBuilder =
+    SchemaMigrationsLogCompanion Function({
+      Value<int> id,
+      required int fromVersion,
+      required int toVersion,
+      required DateTime appliedAt,
+      Value<String?> notes,
+    });
+typedef $$SchemaMigrationsLogTableUpdateCompanionBuilder =
+    SchemaMigrationsLogCompanion Function({
+      Value<int> id,
+      Value<int> fromVersion,
+      Value<int> toVersion,
+      Value<DateTime> appliedAt,
+      Value<String?> notes,
+    });
+
+class $$SchemaMigrationsLogTableFilterComposer
+    extends Composer<_$AppDatabase, $SchemaMigrationsLogTable> {
+  $$SchemaMigrationsLogTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get toVersion => $composableBuilder(
+    column: $table.toVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get appliedAt => $composableBuilder(
+    column: $table.appliedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SchemaMigrationsLogTableOrderingComposer
+    extends Composer<_$AppDatabase, $SchemaMigrationsLogTable> {
+  $$SchemaMigrationsLogTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get toVersion => $composableBuilder(
+    column: $table.toVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get appliedAt => $composableBuilder(
+    column: $table.appliedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SchemaMigrationsLogTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SchemaMigrationsLogTable> {
+  $$SchemaMigrationsLogTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get toVersion =>
+      $composableBuilder(column: $table.toVersion, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get appliedAt =>
+      $composableBuilder(column: $table.appliedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$SchemaMigrationsLogTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SchemaMigrationsLogTable,
+          SchemaMigrationsLogData,
+          $$SchemaMigrationsLogTableFilterComposer,
+          $$SchemaMigrationsLogTableOrderingComposer,
+          $$SchemaMigrationsLogTableAnnotationComposer,
+          $$SchemaMigrationsLogTableCreateCompanionBuilder,
+          $$SchemaMigrationsLogTableUpdateCompanionBuilder,
+          (
+            SchemaMigrationsLogData,
+            BaseReferences<
+              _$AppDatabase,
+              $SchemaMigrationsLogTable,
+              SchemaMigrationsLogData
+            >,
+          ),
+          SchemaMigrationsLogData,
+          PrefetchHooks Function()
+        > {
+  $$SchemaMigrationsLogTableTableManager(
+    _$AppDatabase db,
+    $SchemaMigrationsLogTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SchemaMigrationsLogTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SchemaMigrationsLogTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SchemaMigrationsLogTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> fromVersion = const Value.absent(),
+                Value<int> toVersion = const Value.absent(),
+                Value<DateTime> appliedAt = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => SchemaMigrationsLogCompanion(
+                id: id,
+                fromVersion: fromVersion,
+                toVersion: toVersion,
+                appliedAt: appliedAt,
+                notes: notes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int fromVersion,
+                required int toVersion,
+                required DateTime appliedAt,
+                Value<String?> notes = const Value.absent(),
+              }) => SchemaMigrationsLogCompanion.insert(
+                id: id,
+                fromVersion: fromVersion,
+                toVersion: toVersion,
+                appliedAt: appliedAt,
+                notes: notes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SchemaMigrationsLogTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SchemaMigrationsLogTable,
+      SchemaMigrationsLogData,
+      $$SchemaMigrationsLogTableFilterComposer,
+      $$SchemaMigrationsLogTableOrderingComposer,
+      $$SchemaMigrationsLogTableAnnotationComposer,
+      $$SchemaMigrationsLogTableCreateCompanionBuilder,
+      $$SchemaMigrationsLogTableUpdateCompanionBuilder,
+      (
+        SchemaMigrationsLogData,
+        BaseReferences<
+          _$AppDatabase,
+          $SchemaMigrationsLogTable,
+          SchemaMigrationsLogData
+        >,
+      ),
+      SchemaMigrationsLogData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1616,4 +3337,8 @@ class $AppDatabaseManager {
       $$SchemaMetaTableTableManager(_db, _db.schemaMeta);
   $$ExercisesTableTableManager get exercises =>
       $$ExercisesTableTableManager(_db, _db.exercises);
+  $$LocalFileRecordsTableTableManager get localFileRecords =>
+      $$LocalFileRecordsTableTableManager(_db, _db.localFileRecords);
+  $$SchemaMigrationsLogTableTableManager get schemaMigrationsLog =>
+      $$SchemaMigrationsLogTableTableManager(_db, _db.schemaMigrationsLog);
 }
