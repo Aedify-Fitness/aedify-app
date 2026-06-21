@@ -61,31 +61,46 @@ void main() {
     });
 
     test('maps 401 unauthorized', () {
-      final error = buildError(type: DioExceptionType.badResponse, statusCode: 401);
+      final error = buildError(
+        type: DioExceptionType.badResponse,
+        statusCode: 401,
+      );
       final result = mapper.mapDioError(error);
       expect(result.code, equals('unauthorized'));
     });
 
     test('maps 403 forbidden', () {
-      final error = buildError(type: DioExceptionType.badResponse, statusCode: 403);
+      final error = buildError(
+        type: DioExceptionType.badResponse,
+        statusCode: 403,
+      );
       final result = mapper.mapDioError(error);
       expect(result.code, equals('forbidden'));
     });
 
     test('maps 404 not found', () {
-      final error = buildError(type: DioExceptionType.badResponse, statusCode: 404);
+      final error = buildError(
+        type: DioExceptionType.badResponse,
+        statusCode: 404,
+      );
       final result = mapper.mapDioError(error);
       expect(result.code, equals('not_found'));
     });
 
     test('maps 429 rate limited', () {
-      final error = buildError(type: DioExceptionType.badResponse, statusCode: 429);
+      final error = buildError(
+        type: DioExceptionType.badResponse,
+        statusCode: 429,
+      );
       final result = mapper.mapDioError(error);
       expect(result.code, equals('rate_limited'));
     });
 
     test('maps 500 server error', () {
-      final error = buildError(type: DioExceptionType.badResponse, statusCode: 500);
+      final error = buildError(
+        type: DioExceptionType.badResponse,
+        statusCode: 500,
+      );
       final result = mapper.mapDioError(error);
       expect(result.code, equals('server_error'));
     });

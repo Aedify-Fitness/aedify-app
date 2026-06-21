@@ -40,15 +40,16 @@ void main() {
       late String capturedMessage;
       final client = DioClient(
         logger: AppLogger(
-          sink: (
-            message, {
-            required String name,
-            required int level,
-            Object? error,
-            StackTrace? stackTrace,
-          }) {
-            capturedMessage = message;
-          },
+          sink:
+              (
+                message, {
+                required String name,
+                required int level,
+                Object? error,
+                StackTrace? stackTrace,
+              }) {
+                capturedMessage = message;
+              },
         ),
         errorMapper: const ErrorMapper(),
       );

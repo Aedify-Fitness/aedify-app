@@ -120,39 +120,28 @@ class LocalFileStore {
 
   Future<Directory> importImagesOriginalDir(String draftId) => subDir(
     FileCategory.imports,
-    p.join(
-      DirectoryConstants.temp,
-      draftId,
-      DirectoryConstants.imagesOriginal,
-    ),
+    p.join(DirectoryConstants.temp, draftId, DirectoryConstants.imagesOriginal),
   );
 
   Future<Directory> importImagesEnhancedDir(String draftId) => subDir(
     FileCategory.imports,
-    p.join(
-      DirectoryConstants.temp,
-      draftId,
-      DirectoryConstants.imagesEnhanced,
-    ),
+    p.join(DirectoryConstants.temp, draftId, DirectoryConstants.imagesEnhanced),
   );
 
-  Future<Directory> aedifyPlanExportDir() =>
-      subDir(
-        FileCategory.exports,
-        p.join(DirectoryConstants.temp, DirectoryConstants.aedifyPlan),
-      );
+  Future<Directory> aedifyPlanExportDir() => subDir(
+    FileCategory.exports,
+    p.join(DirectoryConstants.temp, DirectoryConstants.aedifyPlan),
+  );
 
-  Future<Directory> pdfExportDir() =>
-      subDir(
-        FileCategory.exports,
-        p.join(DirectoryConstants.temp, DirectoryConstants.pdf),
-      );
+  Future<Directory> pdfExportDir() => subDir(
+    FileCategory.exports,
+    p.join(DirectoryConstants.temp, DirectoryConstants.pdf),
+  );
 
-  Future<Directory> exerciseAudioCacheDir(String exerciseId) =>
-      subDir(
-        FileCategory.audioCache,
-        p.join(DirectoryConstants.exerciseSteps, exerciseId),
-      );
+  Future<Directory> exerciseAudioCacheDir(String exerciseId) => subDir(
+    FileCategory.audioCache,
+    p.join(DirectoryConstants.exerciseSteps, exerciseId),
+  );
 
   Future<void> cleanupTemporaryImports() async {
     await clearCategory(FileCategory.imports);

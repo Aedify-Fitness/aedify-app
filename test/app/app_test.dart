@@ -128,13 +128,15 @@ void main() {
             aiAvailabilityProvider.overrideWith((ref) => ai),
             draftGuardProvider.overrideWith((ref) => draft),
           ],
-          child: Consumer(builder: (context, ref, _) {
-            final router = ref.watch(appRouterProvider);
-            result
-              ..clear()
-              ..add(router);
-            return MaterialApp.router(routerConfig: router);
-          }),
+          child: Consumer(
+            builder: (context, ref, _) {
+              final router = ref.watch(appRouterProvider);
+              result
+                ..clear()
+                ..add(router);
+              return MaterialApp.router(routerConfig: router);
+            },
+          ),
         ),
       );
       return result;
@@ -222,7 +224,6 @@ void main() {
       );
       expect(find.text(AppStrings.draftBlockedMessage), findsOneWidget);
     });
-
   });
 }
 

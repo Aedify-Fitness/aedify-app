@@ -2,13 +2,14 @@ import 'dart:developer' as dev;
 import 'package:aedify/core/privacy/privacy_classifier.dart';
 import 'package:aedify/core/privacy/redaction.dart';
 
-typedef AppLogSink = void Function(
-  String message, {
-  required String name,
-  required int level,
-  Object? error,
-  StackTrace? stackTrace,
-});
+typedef AppLogSink =
+    void Function(
+      String message, {
+      required String name,
+      required int level,
+      Object? error,
+      StackTrace? stackTrace,
+    });
 
 class AppLogger {
   static const loggerName = 'aedify';

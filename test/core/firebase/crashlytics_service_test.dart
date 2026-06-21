@@ -99,10 +99,7 @@ void main() {
         Exception('api key secret'),
         StackTrace.empty,
         reason: 'prompt contains secret',
-        metadata: {
-          'app_version': '1.0.0',
-          'api_key': 'sk-secret',
-        },
+        metadata: {'app_version': '1.0.0', 'api_key': 'sk-secret'},
       );
 
       expect(client.keys['app_version'], equals('1.0.0'));

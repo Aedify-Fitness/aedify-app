@@ -28,7 +28,10 @@ class DeveloperDiagnosticsScreen extends ConsumerWidget {
               style: context.textTheme.headlineSmall,
             ),
             AppWhiteSpace.hMd,
-            _DiagnosticRow(label: 'startup_phase', value: bootstrapState.phase.name),
+            _DiagnosticRow(
+              label: 'startup_phase',
+              value: bootstrapState.phase.name,
+            ),
             _DiagnosticRow(
               label: 'offline_mode',
               value: bootstrapState.isOffline.toString(),

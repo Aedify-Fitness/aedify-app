@@ -14,13 +14,13 @@ void main() {
   group('AppRouter redirects', () {
     /// Builds the app inside a ProviderScope with overrides and returns
     /// the GoRouter instance so tests can call [router.go] and assert.
-      Future<GoRouter> pumpApp({
-        required WidgetTester tester,
-        required OnboardingStatus onboarding,
-        required AiAvailability ai,
-        required DraftGuard draft,
-        FeatureFlags flags = FeatureFlags.defaultFlags,
-      }) async {
+    Future<GoRouter> pumpApp({
+      required WidgetTester tester,
+      required OnboardingStatus onboarding,
+      required AiAvailability ai,
+      required DraftGuard draft,
+      FeatureFlags flags = FeatureFlags.defaultFlags,
+    }) async {
       GoRouter? router;
       await tester.pumpWidget(
         ProviderScope(
@@ -33,10 +33,12 @@ void main() {
             aiAvailabilityProvider.overrideWith((ref) => ai),
             draftGuardProvider.overrideWith((ref) => draft),
           ],
-          child: Consumer(builder: (context, ref, _) {
-            router = ref.watch(appRouterProvider);
-            return MaterialApp.router(routerConfig: router!);
-          }),
+          child: Consumer(
+            builder: (context, ref, _) {
+              router = ref.watch(appRouterProvider);
+              return MaterialApp.router(routerConfig: router!);
+            },
+          ),
         ),
       );
       await tester.pump();
@@ -226,7 +228,9 @@ void main() {
       );
     });
 
-    testWidgets('AI disabled redirects chat to ai disabled screen', (tester) async {
+    testWidgets('AI disabled redirects chat to ai disabled screen', (
+      tester,
+    ) async {
       final router = await pumpApp(
         tester: tester,
         onboarding: OnboardingStatus.complete,
@@ -239,7 +243,10 @@ void main() {
       router.go(AppRoutes.chat().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.aiDisabled().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.aiDisabled().path),
+      );
     });
 
     testWidgets('imports disabled redirects import routes', (tester) async {
@@ -255,7 +262,10 @@ void main() {
       router.go(AppRoutes.import().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.importDisabled().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.importDisabled().path),
+      );
     });
 
     testWidgets('sharing disabled redirects share route', (tester) async {
@@ -271,7 +281,10 @@ void main() {
       router.go(AppRoutes.share().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.shareDisabled().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.shareDisabled().path),
+      );
     });
 
     testWidgets('progress disabled redirects progress route', (tester) async {
@@ -287,10 +300,15 @@ void main() {
       router.go(AppRoutes.progress().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.progressDisabled().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.progressDisabled().path),
+      );
     });
 
-    testWidgets('diagnostics disabled redirects diagnostics route home', (tester) async {
+    testWidgets('diagnostics disabled redirects diagnostics route home', (
+      tester,
+    ) async {
       final router = await pumpApp(
         tester: tester,
         onboarding: OnboardingStatus.complete,
@@ -303,7 +321,10 @@ void main() {
       router.go(AppRoutes.diagnostics().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.home().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.home().path),
+      );
     });
 
     testWidgets('diagnostics enabled allows diagnostics route', (tester) async {
@@ -319,7 +340,10 @@ void main() {
       router.go(AppRoutes.diagnostics().path);
       await tester.pump();
 
-      expect(router.routeInformationProvider.value.uri.path, equals(AppRoutes.diagnostics().path));
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.diagnostics().path),
+      );
     });
   });
 }

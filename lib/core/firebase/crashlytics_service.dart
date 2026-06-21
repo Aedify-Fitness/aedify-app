@@ -5,7 +5,11 @@ import 'package:aedify/core/privacy/redaction.dart';
 abstract interface class CrashlyticsClient {
   void setCustomKey(String key, String value);
 
-  Future<void> recordError(Object exception, StackTrace? stack, {String? reason});
+  Future<void> recordError(
+    Object exception,
+    StackTrace? stack, {
+    String? reason,
+  });
 
   void log(String message);
 }

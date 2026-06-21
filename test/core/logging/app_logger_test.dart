@@ -6,15 +6,16 @@ void main() {
     test('debug redacts forbidden metadata values', () {
       late String capturedMessage;
       final logger = AppLogger(
-        sink: (
-          message, {
-          required String name,
-          required int level,
-          Object? error,
-          StackTrace? stackTrace,
-        }) {
-          capturedMessage = message;
-        },
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedMessage = message;
+            },
       );
 
       logger.debug('test event', metadata: {'api_key': 'secret-key'});
@@ -26,15 +27,16 @@ void main() {
     test('info preserves allowlisted metadata values', () {
       late String capturedMessage;
       final logger = AppLogger(
-        sink: (
-          message, {
-          required String name,
-          required int level,
-          Object? error,
-          StackTrace? stackTrace,
-        }) {
-          capturedMessage = message;
-        },
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedMessage = message;
+            },
       );
 
       logger.info('test event', metadata: {'app_version': '1.0.0'});
@@ -45,15 +47,16 @@ void main() {
     test('warn redacts error object', () {
       Object? capturedError;
       final logger = AppLogger(
-        sink: (
-          message, {
-          required String name,
-          required int level,
-          Object? error,
-          StackTrace? stackTrace,
-        }) {
-          capturedError = error;
-        },
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedError = error;
+            },
       );
 
       logger.warn('warning', error: Exception('test'));
@@ -65,15 +68,16 @@ void main() {
     test('error accepts stack trace and uses custom sink', () {
       var captured = false;
       final logger = AppLogger(
-        sink: (
-          message, {
-          required String name,
-          required int level,
-          Object? error,
-          StackTrace? stackTrace,
-        }) {
-          captured = stackTrace != null;
-        },
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              captured = stackTrace != null;
+            },
       );
 
       logger.error(

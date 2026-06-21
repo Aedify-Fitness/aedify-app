@@ -54,13 +54,11 @@ class SecureStorageService {
     });
   }
 
-  Future<bool> hasProviderApiKey(String alias) async => _run(
-    'secure_storage_contains_failed',
-    () async {
-      final value = await _storage.read(key: _aliasKey(alias));
-      return value != null;
-    },
-  );
+  Future<bool> hasProviderApiKey(String alias) async =>
+      _run('secure_storage_contains_failed', () async {
+        final value = await _storage.read(key: _aliasKey(alias));
+        return value != null;
+      });
 
   Future<void> deleteAll() =>
       _run('secure_storage_delete_all_failed', _storage.deleteAll);

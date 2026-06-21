@@ -11,15 +11,16 @@ void main() {
       late String capturedMessage;
       final interceptor = RedactedLoggingInterceptor(
         logger: AppLogger(
-          sink: (
-            message, {
-            required String name,
-            required int level,
-            Object? error,
-            StackTrace? stackTrace,
-          }) {
-            capturedMessage = message;
-          },
+          sink:
+              (
+                message, {
+                required String name,
+                required int level,
+                Object? error,
+                StackTrace? stackTrace,
+              }) {
+                capturedMessage = message;
+              },
         ),
       );
       final options = RequestOptions(
@@ -51,17 +52,14 @@ void main() {
       //
       // The real behavior we're testing: onError runs without throwing
       // and the logger processes the error info (method, path, type).
-      runZonedGuarded(
-        () {
-          final interceptor = RedactedLoggingInterceptor(logger: AppLogger());
-          final error = DioException(
-            type: DioExceptionType.connectionTimeout,
-            requestOptions: RequestOptions(path: '/test'),
-          );
-          interceptor.onError(error, ErrorInterceptorHandler());
-        },
-        (Object error, StackTrace stackTrace) {},
-      );
+      runZonedGuarded(() {
+        final interceptor = RedactedLoggingInterceptor(logger: AppLogger());
+        final error = DioException(
+          type: DioExceptionType.connectionTimeout,
+          requestOptions: RequestOptions(path: '/test'),
+        );
+        interceptor.onError(error, ErrorInterceptorHandler());
+      }, (Object error, StackTrace stackTrace) {});
     });
   });
 }

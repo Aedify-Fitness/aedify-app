@@ -192,8 +192,11 @@ void main() {
       await expectLater(
         () => service.readProviderApiKey('openai'),
         throwsA(
-          isA<SecureStorageFailure>()
-              .having((e) => e.code, 'code', 'secure_storage_read_failed'),
+          isA<SecureStorageFailure>().having(
+            (e) => e.code,
+            'code',
+            'secure_storage_read_failed',
+          ),
         ),
       );
     });
