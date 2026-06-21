@@ -43,8 +43,8 @@ refactoring, testing, or changing documentation.
 - `AGENTS.md` — agent operating rules and project workflow.
 - `rules.md` — general Flutter and Dart engineering rules.
 - `skills/skill.md` — Flutter agent skills reference.
-- `changelog.md` — living project change log maintained during implementation.
-- `implementation.md` — living implementation-status tracker maintained during
+- `docs/changelog.md` — living project change log maintained during implementation.
+- `docs/implementation.md` — living implementation-status tracker maintained during
   implementation.
 
 ### Locked product and architecture references
@@ -388,9 +388,9 @@ schema validation, import/export, privacy, or AI structured-output decisions.
 Agents must keep track of project changes and implementation progress by
 maintaining two root-level tracking files during development:
 
-- `changelog.md` — records meaningful project changes in reverse chronological
+- `docs/changelog.md` — records meaningful project changes in reverse chronological
   order.
-- `implementation.md` — records implementation progress, current status,
+- `docs/implementation.md` — records implementation progress, current status,
   completed work, active work, blockers, and verification notes.
 
 This is a rule for agents to follow during development. Do not create or update
@@ -408,8 +408,8 @@ Agents must update these files whenever they make or materially affect:
 - tests, quality gates, or release-readiness status;
 - documentation that changes how the project should be built or maintained.
 
-Use `changelog.md` for what changed and why it matters. Use
-`implementation.md` for how the project currently stands and what was actually
+Use `docs/changelog.md` for what changed and why it matters. Use
+`docs/implementation.md` for how the project currently stands and what was actually
 implemented.
 
 Do not treat either file as permission to change product scope. If a change
@@ -457,9 +457,9 @@ well in Flutter.
 For every code task:
 
 1. Read the relevant product, architecture, and implementation context.
-2. Review `implementation.md` for current status and recent progress when it
+2. Review `docs/implementation.md` for current status and recent progress when it
    exists.
-3. Review `changelog.md` for recent project changes when it exists and the task
+3. Review `docs/changelog.md` for recent project changes when it exists and the task
    may build on prior work.
 4. For user-facing UI work, read `DESIGN.md` and apply the Flutter mobile
    design skill pack before changing widgets, screens, or shared components.
@@ -469,7 +469,7 @@ For every code task:
 8. Preserve local-first behavior and privacy boundaries.
 9. Add or update tests when behavior changes.
 10. Run formatting, analysis, code generation, and tests where applicable.
-11. Update `changelog.md` and `implementation.md` whenever the change is
+11. Update `docs/changelog.md` and `docs/implementation.md` whenever the change is
     meaningful or affects project status.
 12. Summarize what changed and call out any files or checks that could not be
     completed.
@@ -492,6 +492,35 @@ Follow `rules.md` for Flutter and Dart coding style, including:
 - `logging` or the project logging abstraction instead of `print`.
 
 Prefer simple, readable code over clever code.
+
+## Aedify-Specific Conventions
+
+### Colors
+- **DO** define all colors in `app_colors.dart` (`AedifyLightColors` / `AedifyDarkColors`) and reference them from there.
+- **DON'T** use hardcoded `Color(0x...)` values anywhere outside `app_colors.dart`.
+- **DO** populate every `ColorScheme` slot explicitly via `const ColorScheme(...)` — don't rely on `ColorScheme.fromSeed()`.
+
+### Text Styles
+- **DO** use `AppTextStyles.*` constants for text styles.
+- **DO** use `.copyWith()` when you need to override specific properties of a text style.
+- **DON'T** use inline `TextStyle(...)` in widget or theme code.
+
+### Navigation
+- **DO** put route paths and names in `AppRoutes` class (in `app_routes.dart`) using factory constructors with `.path` / `.name` accessors.
+- **DON'T** scatter route strings in feature files or `AppStrings`.
+
+### Constants Organization
+- **DO** keep constants in dedicated files by concern (e.g. `db_constants.dart`, `directory_constants.dart`, `app_routes.dart`, `app_strings.dart`).
+- **DON'T** put unrelated constant categories in a single monolithic file.
+
+### Imports
+- **DO** use package imports (`package:aedify/...`).
+- **DON'T** use relative imports (`../../`).
+
+### Architecture
+- **DO** use the context extension `ThemeX` on `BuildContext` for `context.theme`, `context.colorScheme`, `context.textTheme`.
+- **DO** encapsulate top-level utility functions in classes with private constructors and static methods.
+- **DO** use token constants (`AppSpacing.*`, `AppWhiteSpace.*`, `AppRadius.*`) for layout values — no raw numbers.
 
 ## State Management Rules
 
@@ -597,7 +626,7 @@ If a check cannot be run, state that clearly and explain why.
 Update documentation when implementation decisions, commands, or project
 structure change.
 
-During implementation, keep `changelog.md` and `implementation.md` in sync with
+During implementation, keep `docs/changelog.md` and `docs/implementation.md` in sync with
 meaningful implementation or project-status changes. These files are operational
 tracking records; they do not replace the PRD, roadmap, architecture plan,
 instruction set, implementation-plan folders, or formal change-request process.
