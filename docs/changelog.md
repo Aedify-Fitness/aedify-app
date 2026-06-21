@@ -8,6 +8,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ### Added (Strict M1 closure pass)
 
+- Wired `FirebaseBootstrap` to `DefaultFirebaseOptions.currentPlatform` from `lib/firebase_options.dart`
 - Wired `featureFlagsProvider` into runtime behavior, including `crashlyticsEnabled` gating and fail-closed router behavior for AI/imports/sharing/progress routes
 - Added `DeveloperDiagnosticsScreen` plus diagnostics route guarded by `diagnosticsEnabled`
 - Added disabled-feature routes and strings: `aiDisabled`, `importDisabled`, `shareDisabled`, `progressDisabled`
