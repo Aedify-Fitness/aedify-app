@@ -6,29 +6,41 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
-### Refactored (global declarations → class members)
+### Refactored (code style & conventions — full sweep)
 
-- **`app_colors.dart`**: Moved `aedifySeedColor` into `AedifyLightColors.seedColor`.
-- **`app_theme.dart`**: Wrapped `lightTheme`/`darkTheme` into `AppTheme` class.
-- **`app_router.dart`**: Wrapped `appRouterProvider`, `_draftGuardedRoutes`, `_isFlagDisabledRoute` into `AppRouter` class. Updated all lib/test references.
-- **`app_database.dart`**: Moved `_openConnection()` into `AppDatabase` as private static method.
-- **Deleted** unused `exercise_detail_controller.dart` (top-level `exerciseDetailProvider` duplicate of `AppProviders.exerciseDetailControllerProvider`).
+- **Moved all top-level declarations into classes**: `AedifyLightColors.seedColor`, `AppTheme` (lightTheme/darkTheme), `AppRouter` (appRouterProvider, guards), `AppDatabase._openConnection()`. Deleted unused `exercise_detail_controller.dart`.
+- **Replaced all `Theme.of(context).*`** with `context.colorScheme`/`context.textTheme` via `ThemeX` across 3 exercise library files.
+- **Replaced `Navigator.pop(context)`** with `context.pop()` (go_router) in `exercise_filter_sheet.dart`.
+- **Replaced `context.push()`/`context.go()`** with `context.pushNamed()`/`context.goNamed()` using `AppRoutes.{route}().name` across exercise library and onboarding screens.
+- **Replaced all Material `Icons.*`** with `SvgPicture.asset` using SVG constants in exercise library screens + bootstrap failure screen.
+- **Replaced `EdgeInsets.fromLTRB`** with `EdgeInsets.symmetric`.
+- **Renamed all SVGs** under `assets/svgs/` from kebab-case to snake_case.
+- **Created `svg_assets_outlined.dart`** — `OulinedSvgAssets` with 326 camelCase constants.
+- **Created `svg_assets_solid.dart`** — `SolidSvgAssets` with 326 camelCase constants.
 
-### Fixed (code style & conventions)
+### Moved (hardcoded strings → constants classes)
 
-- Replaced all `Theme.of(context).colorScheme`/`textTheme` with `context.colorScheme`/`context.textTheme` via `ThemeX` extension across 3 exercise library presentation files.
-- Replaced `EdgeInsets.fromLTRB` with `EdgeInsets.symmetric` in `exercise_library_screen.dart`.
-- Replaced `Navigator.pop(context)` with `context.pop()` (from go_router) in `exercise_filter_sheet.dart`. Added go_router import.
-- Replaced `context.push()` with `context.pushNamed()` in `exercise_library_screen.dart`.
-- Replaced `context.go()` with `context.goNamed()` in `onboarding_screen.dart`.
-- Named route strings now use `AppRoutes.{route}().name` instead of hardcoded strings.
-- Added 5 filter UI strings to `AppStrings` (`filterMuscleGroup`, `filterDifficulty`, `filterModality`, `filterEquipment`, `filterAny`); removed hardcoded strings from `exercise_filter_sheet.dart`.
+- **Added 22 strings to `AppStrings`**: filter labels, tooltips, error messages, section titles. Removed hardcoded strings from `exercise_detail_screen.dart`, `exercise_library_screen.dart`, `error_mapper.dart`, `secure_storage_service.dart`, `firebase_auth_service.dart`, `firebase_storage_client.dart`.
+- **Created `app_error_strings.dart`** (`AppErrorStrings` class) for network, storage, firebase failure messages. 14 constants moved out of `AppStrings`.
 
-### Added (SVG asset constants)
+### Moved (hardcoded numbers → sizing tokens)
 
-- Renamed all SVGs under `assets/svgs/` from kebab-case to snake_case.
-- Created `lib/shared/constants/svg_assets_outlined.dart` — `OulinedSvgAssets` class with `_pathPrefix` and 326 camelCase constants.
-- Created `lib/shared/constants/svg_assets_solid.dart` — `SolidSvgAssets` class with `_pathPrefix` and 326 camelCase constants.
+- **Extended `lib/shared/theme/app_spacing.dart`**: `AppSpacing.xxs`(2), `buttonVertical`(12), `inputVertical`(14). `AppRadius.xxs`(2). New classes: `AppSizing` (iconXs=18, iconSm=20, handleWidth=40, divider=1), `AppFontSizes` (xs=12).
+- **Replaced ~24 hardcoded numbers** with named constants across 7 files: icon sizes, font sizes, divider heights, drag handle dimensions, button/input padding, border radii.
+
+### Updated (AGENTS.md)
+
+- Added new subsections: SVG Assets, Strings and Error Messages, Spacing and Sizing.
+- Expanded Navigation with `context.pop()` and `pushNamed`/`goNamed` rules.
+- Expanded Architecture with top-level declaration ban, `ThemeX` DON'T, `EdgeInsets` rule.
+- Expanded Constants Organization with SVG + layout token locations.
+- Updated Text Styles with hardcoded string prohibition.
+
+### Verification
+
+- `dart format` — passed.
+- `flutter analyze` — 0 issues.
+- `flutter test` — 253/253 passed.
 
 ## 2026-06-21
 

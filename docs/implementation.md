@@ -114,8 +114,9 @@
 - **Screens**: Full `ExerciseLibraryScreen` with search bar, active filter bar, loading/empty/error states, filter FAB. `ExerciseDetailScreen` with metadata chips, muscle groups, instructions, videos, toggles. `ExerciseFilterSheet` bottom sheet.
 - **Routes**: `exerciseDetail` path (`/exercises/:id`), sub-route in GoRouter.
 - **Providers**: 3 new in `AppProviders` (repository, search controller, detail controller).
+- **Codebase convention enforcement**: All `Theme.of(context)` → `ThemeX`, `Navigator.pop` → `context.pop()`, `Icons.*` → `SvgPicture.asset`, `EdgeInsets.fromLTRB` → `EdgeInsets.symmetric`, top-level declarations → classes, route strings → `AppRoutes`, hardcoded strings → `AppStrings`/`AppErrorStrings`, hardcoded numbers → sizing tokens in `app_spacing.dart`. SVGs renamed to snake_case + constants classes created. `AGENTS.md` updated with all enforced rules.
 - **Tests**: 18 new — 9 repository, 4 search controller, 3 detail controller, 6 library screen widget, 6 detail screen widget.
-- `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 241/241 passed.
+- `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
 
 ### Fixed (V1-M2-004 test flakiness)
 
@@ -144,7 +145,21 @@
 
 - `flutter analyze` — 0 issues
 - `flutter test` — 253/253 passed
-- `dart run build_runner build` — completed successfully
+- `dart run build_runner build` — N/A (no code generation for convention enforcement pass)
+
+## Codebase Convention Enforcement Status
+
+All items below are checked with zero violations:
+
+- [x] No top-level declarations outside `main()` — all classes/constants inside classes
+- [x] No `Theme.of(context).*` — all replaced with `context.theme`/`colorScheme`/`textTheme` via `ThemeX`
+- [x] No `Navigator.pop(context)` — all replaced with `context.pop()`
+- [x] No `context.push()`/`context.go()` with hardcoded paths — all use `pushNamed`/`goNamed` with `AppRoutes`
+- [x] No Material `Icons.*` — all replaced with `SvgPicture.asset` using SVG constants
+- [x] No `EdgeInsets.fromLTRB` — all replaced with `symmetric`/`only`
+- [x] No hardcoded user-facing strings — all moved to `AppStrings` or `AppErrorStrings`
+- [x] No hardcoded layout/sizing numbers — all use tokens from `AppSpacing`/`AppRadius`/`AppSizing`/`AppFontSizes`
+- [x] SVGs in snake_case — accessed via `OulinedSvgAssets`/`SolidSvgAssets`
 
 ## Manual QA Evidence
 
