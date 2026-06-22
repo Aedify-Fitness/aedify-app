@@ -1,4 +1,5 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
@@ -229,24 +230,17 @@ class ExerciseDetailScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                if (loaded.videos.isNotEmpty) ...[
-                  SizedBox(height: AppSpacing.lg),
-                  Text(AppStrings.videos, style: context.textTheme.titleSmall),
-                  SizedBox(height: AppSpacing.sm),
-                  ...loaded.videos.map(
-                    (video) => Card(
-                      child: ListTile(
-                        leading: SvgPicture.asset(
-                          OulinedSvgAssets.videoCamera,
-                          width: AppSpacing.lg,
-                          height: AppSpacing.lg,
-                        ),
-                        title: Text(video.angle ?? AppStrings.videoUnavailable),
-                        subtitle: Text(video.gender ?? ''),
-                      ),
-                    ),
+                ExerciseVideoSection(
+                  videos: loaded.videos,
+                  onRetry: () {
+                    ref.invalidate(
+                      AppProviders.exerciseDetailControllerProvider(exerciseId),
+                    );
+                  },
+                  failureStates: ref.watch(
+                    AppProviders.exerciseVideoStateControllerProvider,
                   ),
-                ],
+                ),
               ],
             ),
           );

@@ -43,13 +43,13 @@ class AppWhiteSpace {
 class AppRadius {
   AppRadius._();
 
-  static const double xxs = 2;
   static const double sm = 4;
-  static const double defaultRadius = 8;
+  static const double xxs = 2;
   static const double md = 12;
   static const double lg = 16;
   static const double xl = 24;
   static const double full = 9999;
+  static const double defaultRadius = 8;
 }
 
 class AppSizing {
@@ -57,8 +57,9 @@ class AppSizing {
 
   static const double iconXs = 18;
   static const double iconSm = 20;
-  static const double handleWidth = 40;
   static const double divider = 1;
+  static const double iconXxs = 16;
+  static const double handleWidth = 40;
 }
 
 class AppFontSizes {

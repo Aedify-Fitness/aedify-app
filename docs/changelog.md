@@ -6,6 +6,20 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-005 — Exercise Video & Thumbnail Handling)
+
+- **`ExerciseVideoPlaybackState` enum**: `idle`, `loading`, `ready`, `failed` — per-video playback tracking.
+- **`ExerciseVideoStateController`** (lib/features/exercise_library/application): `Notifier<Map<String, ExerciseVideoPlaybackState>>` with `markLoading`, `markReady`, `markFailed`, `reset`, `resetAll`. Wired via `AppProviders.exerciseVideoStateControllerProvider`.
+- **`ExerciseVideoCard`** (lib/features/exercise_library/presentation/widgets): ListTile-based card with SVG icon + angle/gender metadata. Failed state shows `exclamationTriangle` icon + retry `FilledButton.tonalIcon`.
+- **`ExerciseVideoSection`** (lib/features/exercise_library/presentation/widgets): Empty state → `videoCameraSlash` icon + `noExerciseVideos` string. Non-empty → section header + list of `ExerciseVideoCard`s.
+- **`ExerciseDetailVideoViewData.hasThumbnail`** getter: Returns true when `ogImageUrl` is non-null.
+- **`AppStrings`**: Added `exerciseVideos`, `noExerciseVideos`, `exerciseVideoLoadFailed`, `retryVideo`. Removed unused `videos`.
+- **`AppSizing`**: Added `iconXxs = 16` for small button icon sizes.
+- **Detail screen updated**: Uses `ExerciseVideoSection` instead of inline video cards. Retry triggers `ref.invalidate` on the detail controller.
+- **Tests**: 19 new — 6 controller, 5 card, 5 section, 3 detail screen (no-video fallback, video header, instructions remain visible).
+- Removed unused `AppStrings.videos`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 272/272 passed.
+
 ### Refactored (code style & conventions — full sweep)
 
 - **Moved all top-level declarations into classes**: `AedifyLightColors.seedColor`, `AppTheme` (lightTheme/darkTheme), `AppRouter` (appRouterProvider, guards), `AppDatabase._openConnection()`. Deleted unused `exercise_detail_controller.dart`.

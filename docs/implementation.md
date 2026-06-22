@@ -141,11 +141,25 @@
 - M13 — Optional AI Physique Analysis
 - M14 — Privacy, Resilience, Release Hardening
 
+### V1-M2-005 — Exercise Video & Thumbnail Handling (complete)
+
+- **`ExerciseVideoPlaybackState`**: enum (`idle`, `loading`, `ready`, `failed`) for per-video playback tracking.
+- **`ExerciseVideoStateController`**: `Notifier<Map<String, ExerciseVideoPlaybackState>>` with 5 methods. Provider in `AppProviders.exerciseVideoStateControllerProvider`.
+- **`ExerciseVideoCard`**: ListTile widget showing SVG icon + angle/gender metadata. Failed state renders error message + retry button.
+- **`ExerciseVideoSection`**: Section wrapper — empty fallback with `noExerciseVideos` string, populated list of `ExerciseVideoCard`s.
+- **`ExerciseDetailVideoViewData.hasThumbnail`** getter returns `true` when `ogImageUrl` is non-null.
+- **AppStrings**: 4 new video strings. Removed unused `videos`.
+- **AppSizing**: Added `iconXxs (16)` for retry button icon.
+- **Detail screen**: Uses `ExerciseVideoSection`; retry invalidates detail controller. Instructions remain visible regardless of video state.
+- **AGENTS.md compliance audit**: All new files checked against all 10 convention sections — one violation found (`width: 16`) and fixed.
+- **Tests**: 19 new — 6 controller, 5 card, 5 section, 3 detail screen. 272 total passing.
+- `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 272/272 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 253/253 passed
-- `dart run build_runner build` — N/A (no code generation for convention enforcement pass)
+- `flutter test` — 272/272 passed
+- `dart run build_runner build` — N/A (no code generation for V1-M2-005)
 
 ## Codebase Convention Enforcement Status
 

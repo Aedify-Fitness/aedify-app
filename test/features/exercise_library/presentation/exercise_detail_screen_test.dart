@@ -182,5 +182,49 @@ void main() {
 
       expect(find.byTooltip(AppStrings.toggleSubstitution), findsOneWidget);
     });
+
+    testWidgets('renders video section with header', (tester) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+    });
+
+    testWidgets('shows no-video fallback when videos are empty', (
+      tester,
+    ) async {
+      mockRepository.detail = ExerciseDetailViewData(
+        id: 1,
+        name: 'Bench Press',
+        difficulty: 'intermediate',
+        primaryMuscles: ['Chest'],
+        muscleGroups: ['Chest'],
+        category: 'compound',
+        modality: 'strength',
+        equipment: 'barbell',
+        force: 'push',
+        mechanic: 'compound',
+        grips: ['barbell'],
+        steps: ['Step 1'],
+        videos: [],
+        isFavorite: false,
+        isSubstitutedOut: false,
+      );
+
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppStrings.noExerciseVideos), findsOneWidget);
+    });
+
+    testWidgets('instructions remain visible with videos', (tester) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      // Steps should be visible alongside video section
+      expect(find.text('Step 1'), findsOneWidget);
+      expect(find.text('Step 2'), findsOneWidget);
+      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+    });
   });
 }

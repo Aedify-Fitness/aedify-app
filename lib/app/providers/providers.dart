@@ -17,9 +17,11 @@ import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
+import 'package:aedify/features/exercise_library/application/exercise_video_state_controller.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// App-wide Riverpod provider definitions.
@@ -152,4 +154,10 @@ class AppProviders {
         final repository = ref.read(exerciseRepositoryProvider);
         return repository.getExerciseDetail(id);
       });
+
+  static final exerciseVideoStateControllerProvider =
+      NotifierProvider<
+        ExerciseVideoStateController,
+        Map<String, ExerciseVideoPlaybackState>
+      >(ExerciseVideoStateController.new);
 }

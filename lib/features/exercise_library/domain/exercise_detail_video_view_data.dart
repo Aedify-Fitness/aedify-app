@@ -10,4 +10,6 @@ class ExerciseDetailVideoViewData {
   final String? angle;
   final String? gender;
   final String? ogImageUrl;
+
+  bool get hasThumbnail => ogImageUrl != null && ogImageUrl!.isNotEmpty;
 }

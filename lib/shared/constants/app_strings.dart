@@ -7,7 +7,6 @@ class AppStrings {
   static const String retry = 'Retry';
   static const String import = 'Import';
   static const String filterAny = 'Any';
-  static const String videos = 'Videos';
   static const String aiChat = 'AI Chat';
   static const String workout = 'Workout';
   static const String sharing = 'Sharing';
@@ -19,7 +18,9 @@ class AppStrings {
   static const String analytics = 'Analytics';
   static const String aiTrainer = 'AI Trainer';
   static const String programmes = 'Programmes';
+  static const String exerciseVideos = 'Videos';
   static const String getStarted = 'Get Started';
+  static const String retryVideo = 'Retry video';
   static const String aiDisabled = 'AI Disabled';
   static const String diagnostics = 'Diagnostics';
   static const String filterModality = 'Modality';
@@ -53,8 +54,10 @@ class AppStrings {
   static const String searchExercises = 'Search exercises...';
   static const String exerciseNotFound = 'Exercise not found.';
   static const String noExercisesFound = 'No exercises found.';
+  static const String noExerciseVideos = 'No videos available.';
   static const String toggleSubstitution = 'Toggle substitution';
   static const String excludeSubstituted = 'Exclude substituted';
+  static const String exerciseVideoLoadFailed = 'Could not load video.';
   static const String exerciseDetailLoadFailed = 'Could not load exercise.';
   static const String startupFailed = 'Something went wrong during startup.';
   static const String diagnosticsSummaryTitle =
