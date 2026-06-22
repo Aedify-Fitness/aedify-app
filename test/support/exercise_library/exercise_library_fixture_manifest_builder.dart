@@ -1,12 +1,12 @@
 class ExerciseLibraryFixtureManifestBuilder {
-  int _schemaVersion = 1;
-  int _manifestVersion = 3;
+  final _schemaVersion = 1;
+  final _manifestVersion = 3;
   String _datasetVersion = '2026-06-22-v1';
-  String _generatedAt = '2026-06-22T00:00:00Z';
-  String _source = 'musclewiki';
+  final _generatedAt = '2026-06-22T00:00:00Z';
+  final _source = 'musclewiki';
   int _exerciseCount = 350;
   String _activePath = 'datasets/exercises/2026-06-22-v1.json';
-  String _contentType = 'application/json';
+  final _contentType = 'application/json';
   int _sizeBytes = 285000;
   String _sha256 =
       'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1';

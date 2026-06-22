@@ -66,7 +66,6 @@ class AppRouter {
 
     return GoRouter(
       initialLocation: AppRoutes.initialRoute,
-      debugLogDiagnostics: true,
       redirect: (context, state) {
         final location = state.matchedLocation;
         final isOnStartup = location == AppRoutes.startup().path;

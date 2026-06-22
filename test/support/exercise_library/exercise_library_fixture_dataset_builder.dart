@@ -1,7 +1,7 @@
 class ExerciseLibraryFixtureDatasetBuilder {
   int _schemaVersion = 1;
   String _generatedAt = '2026-06-22T00:00:00Z';
-  String _source = 'musclewiki';
+  final _source = 'musclewiki';
   int _exerciseCount = 0;
   final List<Map<String, Object?>> _exercises = [];
 
