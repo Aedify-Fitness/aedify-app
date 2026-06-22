@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 12,
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Barbell Bench Press",
+      "difficulty": "intermediate",
+      "primary_muscles": ["pectoralis major sternal", "triceps brachii"],
+      "muscle_groups": ["Chest", "Triceps"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": [
+        "Lie flat on a bench with feet on the floor.",
+        "Grip the barbell at shoulder width.",
+        "Lower the bar to your chest.",
+        "Press the bar back up to full arm extension."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/bench-press-front.mp4",
+          "angle": "front",
+          "gender": "male",
+          "og_image": "https://images.example.com/bench-press-thumb.jpg"
+        },
+        {
+          "url": "https://videos.example.com/bench-press-side.mp4",
+          "angle": "side",
+          "gender": "male",
+          "og_image": "https://images.example.com/bench-press-side-thumb.jpg"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Dumbbell Shoulder Press",
+      "difficulty": "intermediate",
+      "primary_muscles": ["deltoid anterior", "triceps brachii"],
+      "muscle_groups": ["Shoulders", "Triceps"],
+      "modality": "strength",
+      "equipment": "dumbbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": [
+        "Sit on a bench with back support holding dumbbells at shoulder height.",
+        "Press the dumbbells overhead until arms are straight.",
+        "Lower the dumbbells back to shoulder height."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/shoulder-press.mp4",
+          "angle": "front",
+          "gender": "male"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Pull Up",
+      "difficulty": "intermediate",
+      "primary_muscles": ["latissimus dorsi", "brachialis"],
+      "muscle_groups": ["Back", "Biceps"],
+      "modality": "strength",
+      "equipment": "bodyweight",
+      "mechanic": "compound",
+      "force": "pull",
+      "grips": ["pronated"],
+      "steps": [
+        "Hang from a pull-up bar with palms facing away.",
+        "Pull yourself up until your chin clears the bar.",
+        "Lower yourself back down with control."
+      ],
+      "videos": []
+    },
+    {
+      "id": 4,
+      "name": "Running",
+      "difficulty": "beginner",
+      "primary_muscles": ["quadriceps", "hamstrings", "gluteus maximus"],
+      "muscle_groups": ["Quads", "Hamstrings", "Glutes"],
+      "modality": "cardio",
+      "equipment": null,
+      "mechanic": "compound",
+      "force": "pull",
+      "grips": [],
+      "steps": [
+        "Stand upright with a slight forward lean.",
+        "Drive your knees forward and pump your arms.",
+        "Land mid-foot and push off from the ground."
+      ],
+      "videos": []
+    },
+    {
+      "id": 5,
+      "name": "Squat",
+      "difficulty": "intermediate",
+      "primary_muscles": ["quadriceps", "gluteus maximus"],
+      "muscle_groups": ["Quads", "Glutes"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": [
+        "Stand with feet shoulder-width apart, bar on upper back.",
+        "Bend knees and hips to lower into a squat.",
+        "Descend until thighs are parallel to the ground.",
+        "Drive through your heels to return to standing."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/squat-front.mp4",
+          "angle": "front",
+          "gender": "male",
+          "og_image": "https://images.example.com/squat-thumb.jpg"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Deadlift",
+      "difficulty": "advanced",
+      "primary_muscles": ["erector spinae", "gluteus maximus", "hamstrings"],
+      "muscle_groups": ["Back", "Glutes", "Hamstrings"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "pull",
+      "grips": ["pronated"],
+      "steps": [
+        "Stand with feet hip-width apart, bar over mid-foot.",
+        "Hinge at hips and bend knees to grip the bar.",
+        "Keep back straight and drive through heels to stand.",
+        "Lower the bar back down with control."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/deadlift-front.mp4",
+          "angle": "front",
+          "gender": "male",
+          "og_image": "https://images.example.com/deadlift-thumb.jpg"
+        },
+        {
+          "url": "https://videos.example.com/deadlift-side.mp4",
+          "angle": "side",
+          "gender": "male",
+          "og_image": "https://images.example.com/deadlift-side-thumb.jpg"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Hamstring Curl",
+      "difficulty": "beginner",
+      "primary_muscles": ["hamstrings"],
+      "muscle_groups": ["Hamstrings"],
+      "modality": "strength",
+      "equipment": "machine",
+      "mechanic": "isolation",
+      "force": "pull",
+      "grips": [],
+      "steps": [
+        "Lie face down on the hamstring curl machine.",
+        "Hook your heels under the padded lever.",
+        "Curl your legs toward your glutes.",
+        "Lower the weight back down with control."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/hamstring-curl.mp4",
+          "angle": "front",
+          "gender": "female"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Lat Pulldown",
+      "difficulty": "beginner",
+      "primary_muscles": ["latissimus dorsi"],
+      "muscle_groups": ["Back"],
+      "modality": "strength",
+      "equipment": "cable",
+      "mechanic": "compound",
+      "force": "pull",
+      "grips": ["pronated"],
+      "steps": [
+        "Sit at the lat pulldown station and grip the bar wide.",
+        "Pull the bar down to your upper chest.",
+        "Slowly return the bar to the starting position."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/lat-pulldown.mp4",
+          "angle": "front",
+          "gender": "male"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Plank",
+      "difficulty": "beginner",
+      "primary_muscles": ["rectus abdominis", "transversus abdominis"],
+      "muscle_groups": ["Core"],
+      "modality": "strength",
+      "equipment": "bodyweight",
+      "mechanic": "isolation",
+      "force": "static",
+      "grips": [],
+      "steps": [
+        "Start in a forearm plank position.",
+        "Keep your body in a straight line from head to heels.",
+        "Hold the position engaging your core."
+      ],
+      "videos": []
+    },
+    {
+      "id": 10,
+      "name": "Bent Over Row",
+      "difficulty": "intermediate",
+      "primary_muscles": ["latissimus dorsi", "trapezius"],
+      "muscle_groups": ["Back"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "pull",
+      "grips": ["pronated"],
+      "steps": [
+        "Hinge forward with a flat back holding a barbell.",
+        "Pull the bar to your lower ribcage.",
+        "Lower the bar with control."
+      ],
+      "videos": [
+        {
+          "url": "https://videos.example.com/bent-over-row.mp4",
+          "angle": "front",
+          "gender": "male"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Triceps Pushdown",
+      "difficulty": "beginner",
+      "primary_muscles": ["triceps brachii"],
+      "muscle_groups": ["Triceps"],
+      "modality": "strength",
+      "equipment": "cable",
+      "mechanic": "isolation",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": [
+        "Stand at a cable station with a straight bar attached.",
+        "Push the bar down until arms are straight.",
+        "Return the bar slowly to the starting position."
+      ],
+      "videos": []
+    },
+    {
+      "id": 12,
+      "name": "Hammer Curl",
+      "difficulty": "beginner",
+      "primary_muscles": ["brachialis", "brachioradialis"],
+      "muscle_groups": ["Biceps"],
+      "modality": "strength",
+      "equipment": "dumbbell",
+      "mechanic": "isolation",
+      "force": "pull",
+      "grips": ["neutral"],
+      "steps": [
+        "Stand holding dumbbells at your sides with palms facing each other.",
+        "Curl the dumbbells toward your shoulders.",
+        "Lower them back down with control."
+      ],
+      "videos": []
+    }
+  ]
+}

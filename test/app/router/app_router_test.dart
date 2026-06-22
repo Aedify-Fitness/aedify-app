@@ -4,7 +4,9 @@ import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/router/app_router.dart';
+import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,16 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   group('AppRouter redirects', () {
+    late AppDatabase testDatabase;
+
+    setUp(() {
+      testDatabase = AppDatabase(NativeDatabase.memory());
+    });
+
+    tearDown(() {
+      testDatabase.close();
+    });
+
     /// Builds the app inside a ProviderScope with overrides and returns
     /// the GoRouter instance so tests can call [router.go] and assert.
     Future<GoRouter> pumpApp({
@@ -28,14 +40,17 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _CompleteBootstrapController(),
             ),
-            featureFlagsProvider.overrideWithValue(flags),
-            onboardingStatusProvider.overrideWith((ref) => onboarding),
-            aiAvailabilityProvider.overrideWith((ref) => ai),
-            draftGuardProvider.overrideWith((ref) => draft),
+            AppProviders.appDatabaseProvider.overrideWithValue(testDatabase),
+            AppProviders.featureFlagsProvider.overrideWithValue(flags),
+            AppProviders.onboardingStatusProvider.overrideWith(
+              (ref) => onboarding,
+            ),
+            AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
+            AppProviders.draftGuardProvider.overrideWith((ref) => draft),
           ],
           child: Consumer(
             builder: (context, ref, _) {
-              router = ref.watch(appRouterProvider);
+              router = ref.watch(AppRouter.appRouterProvider);
               return MaterialApp.router(routerConfig: router!);
             },
           ),
@@ -343,6 +358,25 @@ void main() {
       expect(
         router.routeInformationProvider.value.uri.path,
         equals(AppRoutes.diagnostics().path),
+      );
+    });
+
+    testWidgets('bodymap route is reachable when enabled', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+
+      router.go(AppRoutes.bodymap().path);
+      await tester.pump();
+
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.bodymap().path),
       );
     });
   });

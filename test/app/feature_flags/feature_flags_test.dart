@@ -18,14 +18,14 @@ void main() {
     test('crashlyticsServiceProvider obeys crashlyticsEnabled flag', () {
       final container = ProviderContainer(
         overrides: [
-          featureFlagsProvider.overrideWithValue(
+          AppProviders.featureFlagsProvider.overrideWithValue(
             const FeatureFlags(crashlyticsEnabled: false),
           ),
         ],
       );
       addTearDown(container.dispose);
 
-      final service = container.read(crashlyticsServiceProvider);
+      final service = container.read(AppProviders.crashlyticsServiceProvider);
       expect(service.enabled, isFalse);
     });
   });

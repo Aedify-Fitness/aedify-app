@@ -33,7 +33,7 @@ class OnboardingScreen extends ConsumerWidget {
             ],
             AppWhiteSpace.hMd,
             ElevatedButton(
-              onPressed: () => context.go(AppRoutes.home().path),
+              onPressed: () => context.goNamed(AppRoutes.home().name),
               child: const Text(AppStrings.getStarted),
             ),
           ],

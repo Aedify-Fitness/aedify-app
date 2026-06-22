@@ -143,6 +143,14 @@ class LocalFileStore {
     p.join(DirectoryConstants.exerciseSteps, exerciseId),
   );
 
+  Future<Directory> exerciseDatasetTempDir() =>
+      subDir(FileCategory.temp, DirectoryConstants.exerciseDataset);
+
+  Future<File> exerciseDatasetTempFile(String datasetVersion) async {
+    final dir = await exerciseDatasetTempDir();
+    return File(p.join(dir.path, '$datasetVersion.json'));
+  }
+
   Future<void> cleanupTemporaryImports() async {
     await clearCategory(FileCategory.imports);
   }

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 99,
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Bench Press",
+      "difficulty": "intermediate",
+      "primary_muscles": ["pectoralis major sternal"],
+      "muscle_groups": ["Chest"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": [],
+      "steps": ["Press the bar."],
+      "videos": []
+    }
+  ]
+}

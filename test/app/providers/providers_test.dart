@@ -17,10 +17,18 @@ void main() {
         final fakeFirebase = _FakeFirebaseBootstrap();
         final container = ProviderContainer(
           overrides: [
-            firebaseBootstrapProvider.overrideWithValue(fakeFirebase),
-            appDatabaseProvider.overrideWithValue(_FakeAppDatabase()),
-            localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-            networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+            AppProviders.firebaseBootstrapProvider.overrideWithValue(
+              fakeFirebase,
+            ),
+            AppProviders.appDatabaseProvider.overrideWithValue(
+              _FakeAppDatabase(),
+            ),
+            AppProviders.localFileStoreProvider.overrideWithValue(
+              _FakeLocalFileStore(),
+            ),
+            AppProviders.networkStatusProvider.overrideWithValue(
+              _FakeNetworkStatus(),
+            ),
           ],
         );
         addTearDown(container.dispose);
@@ -41,12 +49,18 @@ void main() {
     test('no dependency is hardcoded - firebase override works', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(
             _FakeFirebaseBootstrap(shouldThrow: true),
           ),
-          appDatabaseProvider.overrideWithValue(_FakeAppDatabase()),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(_FakeNetworkStatus()),
+          AppProviders.appDatabaseProvider.overrideWithValue(
+            _FakeAppDatabase(),
+          ),
+          AppProviders.localFileStoreProvider.overrideWithValue(
+            _FakeLocalFileStore(),
+          ),
+          AppProviders.networkStatusProvider.overrideWithValue(
+            _FakeNetworkStatus(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -65,10 +79,16 @@ void main() {
     test('overrides can inject all fakes', () async {
       final container = ProviderContainer(
         overrides: [
-          firebaseBootstrapProvider.overrideWithValue(_FakeFirebaseBootstrap()),
-          appDatabaseProvider.overrideWithValue(_FakeAppDatabase()),
-          localFileStoreProvider.overrideWithValue(_FakeLocalFileStore()),
-          networkStatusProvider.overrideWithValue(
+          AppProviders.firebaseBootstrapProvider.overrideWithValue(
+            _FakeFirebaseBootstrap(),
+          ),
+          AppProviders.appDatabaseProvider.overrideWithValue(
+            _FakeAppDatabase(),
+          ),
+          AppProviders.localFileStoreProvider.overrideWithValue(
+            _FakeLocalFileStore(),
+          ),
+          AppProviders.networkStatusProvider.overrideWithValue(
             _FakeNetworkStatus(isOnline: false),
           ),
         ],

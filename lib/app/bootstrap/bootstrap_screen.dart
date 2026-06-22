@@ -1,11 +1,13 @@
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
-import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 
 class BootstrapScreen extends ConsumerStatefulWidget {
   const BootstrapScreen({super.key});
@@ -98,7 +100,15 @@ class _FailureContent extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.error_outline, size: 48, color: context.colorScheme.error),
+        SvgPicture.asset(
+          OutlinedSvgAssets.exclamationCircle,
+          width: AppSpacing.xxl,
+          height: AppSpacing.xxl,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.error,
+            BlendMode.srcIn,
+          ),
+        ),
         AppWhiteSpace.hMd,
         Text(
           AppStrings.startupFailed,

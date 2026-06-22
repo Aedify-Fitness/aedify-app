@@ -8,34 +8,87 @@ import 'tables/schema_meta.dart';
 import 'tables/exercises.dart';
 import 'tables/local_file_records.dart';
 import 'tables/schema_migrations_log.dart';
+import 'tables/library_meta.dart';
+import 'tables/exercise_videos.dart';
+import 'tables/exercise_audio_cache.dart';
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [SchemaMeta, Exercises, LocalFileRecords, SchemaMigrationsLog],
+  tables: [
+    SchemaMeta,
+    Exercises,
+    LocalFileRecords,
+    SchemaMigrationsLog,
+    LibraryMeta,
+    ExerciseVideos,
+    ExerciseAudioCache,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  AppDatabase([QueryExecutor? executor])
+    : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 2);
+      await _logMigration(m, fromVersion: 0, toVersion: 3);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.createTable(localFileRecords);
         await m.createTable(schemaMigrationsLog);
         await _seedSchemaMeta(m);
+      }
+      if (from < 3) {
+        await m.createTable(libraryMeta);
+        await m.createTable(exerciseVideos);
+        await m.createTable(exerciseAudioCache);
+        await _addExerciseColumns(m);
+      }
+      if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);
       }
     },
   );
+
+  Future<void> _addExerciseColumns(Migrator m) async {
+    await m.addColumn(exercises, exercises.isCustom);
+    await m.addColumn(exercises, exercises.customExerciseUuid);
+    await m.addColumn(exercises, exercises.sourceDatasetVersion);
+    await m.addColumn(exercises, exercises.sourceSchemaVersion);
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN name_normalized TEXT NOT NULL DEFAULT \'\'',
+    );
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN primary_muscles_json TEXT NOT NULL DEFAULT \'[]\'',
+    );
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN muscle_groups_json TEXT NOT NULL DEFAULT \'[]\'',
+    );
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN grips_json TEXT NOT NULL DEFAULT \'[]\'',
+    );
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN steps_json TEXT NOT NULL DEFAULT \'[]\'',
+    );
+    await m.addColumn(exercises, exercises.isSubstitutedOut);
+    await m.addColumn(exercises, exercises.userNotes);
+    await m.addColumn(exercises, exercises.importedFromShare);
+    await m.addColumn(exercises, exercises.originalShareKey);
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN created_at TEXT NOT NULL DEFAULT \'2024-01-01T00:00:00.000\'',
+    );
+    await customStatement(
+      'ALTER TABLE exercises ADD COLUMN updated_at TEXT NOT NULL DEFAULT \'2024-01-01T00:00:00.000\'',
+    );
+    await m.addColumn(exercises, exercises.deletedAt);
+  }
 
   Future<void> _seedSchemaMeta(Migrator m) async {
     final seedRows = <String, String>{
@@ -85,12 +138,12 @@ class AppDatabase extends _$AppDatabase {
   Future<void> readiness() async {
     await customSelect('SELECT 1').get();
   }
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, DbConstants.databaseFileName));
-    return NativeDatabase(file);
-  });
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, DbConstants.databaseFileName));
+      return NativeDatabase(file);
+    });
+  }
 }

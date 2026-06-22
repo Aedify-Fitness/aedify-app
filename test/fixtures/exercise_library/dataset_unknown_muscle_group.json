@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 1,
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Mystery Exercise",
+      "difficulty": "beginner",
+      "primary_muscles": ["unknown muscle"],
+      "muscle_groups": ["UnknownGroup"],
+      "modality": "strength",
+      "equipment": "bodyweight",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": [],
+      "steps": ["Do the thing."],
+      "videos": []
+    }
+  ]
+}

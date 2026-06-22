@@ -1,0 +1,1 @@
+enum BodymapViewSide { front, back }

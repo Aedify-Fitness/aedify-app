@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 1,
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Bad Video Exercise",
+      "difficulty": "beginner",
+      "primary_muscles": ["pectoralis major sternal"],
+      "muscle_groups": ["Chest"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": [],
+      "steps": ["Do the thing."],
+      "videos": [
+        {
+          "url": "not-a-url",
+          "angle": "front",
+          "gender": "male"
+        }
+      ]
+    }
+  ]
+}

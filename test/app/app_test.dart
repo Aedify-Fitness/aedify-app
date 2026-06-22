@@ -89,13 +89,15 @@ void main() {
           AppBootstrap.controllerProvider.overrideWith(
             () => _SucceedingBootstrapController(),
           ),
-          onboardingStatusProvider.overrideWith(
+          AppProviders.onboardingStatusProvider.overrideWith(
             (ref) => OnboardingStatus.complete,
           ),
-          aiAvailabilityProvider.overrideWith(
+          AppProviders.aiAvailabilityProvider.overrideWith(
             (ref) => AiAvailability.available,
           ),
-          draftGuardProvider.overrideWith((ref) => DraftGuard.clear),
+          AppProviders.draftGuardProvider.overrideWith(
+            (ref) => DraftGuard.clear,
+          ),
         ],
         child: const AedifyApp(),
       ),
@@ -124,13 +126,15 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _SucceedingBootstrapController(),
             ),
-            onboardingStatusProvider.overrideWith((ref) => onboarding),
-            aiAvailabilityProvider.overrideWith((ref) => ai),
-            draftGuardProvider.overrideWith((ref) => draft),
+            AppProviders.onboardingStatusProvider.overrideWith(
+              (ref) => onboarding,
+            ),
+            AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
+            AppProviders.draftGuardProvider.overrideWith((ref) => draft),
           ],
           child: Consumer(
             builder: (context, ref, _) {
-              final router = ref.watch(appRouterProvider);
+              final router = ref.watch(AppRouter.appRouterProvider);
               result
                 ..clear()
                 ..add(router);
