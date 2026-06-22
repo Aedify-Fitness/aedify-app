@@ -6,6 +6,23 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-009 — Dataset Sync Status and Recovery UI)
+
+- **`ExerciseDatasetSyncPhase` enum**: 8 phases covering the full sync lifecycle.
+- **`ExerciseDatasetSyncState`**: Immutable state with computed getters (`isLoading`, `needsInitialSync`, `hasFailure`, `isSynced`), `copyWith()` with clear flags, `neverSynced()` constructor.
+- **`ExerciseDatasetSyncFailure`**: Code, message, retryable flag.
+- **`ExerciseDatasetSyncController`**: `AsyncNotifier<ExerciseDatasetSyncState>` — `build()` reads LibraryMeta + NetworkStatus; `initialize()`, `retry()`, `refresh()`, `clearFailure()`; `_runSync()` orchestrates manifest → download → parse → import with full error typing.
+- **DAO expansion**: `LibraryMetaDao.clearSyncFailure()`, `updateManifestMetadata()`.
+- **Widgets**:
+  - `ExerciseDatasetSyncStatusCard` — reusable card with title, message, optional action, loading spinner.
+  - `ExerciseDatasetSyncBanner` — watches sync controller, renders above library list; hidden when synced.
+  - `ExerciseDatasetStatusTile` — read-only tile for settings (version, count, sync status).
+- **Screen integration**: LibraryScreen shows banner; SettingsScreen shows status tile with sync state.
+- **AppStrings**: 12 new sync-related strings.
+- **Provider**: `exerciseDatasetSyncControllerProvider` (AsyncNotifierProvider), plus `libraryMetaDaoProvider`, `exerciseDaoProvider`, `exerciseVideoDaoProvider`.
+- **Tests**: 19 new — 12 controller (initial state never synced/synced/failed, offline unavailable, offline synced, unsupported app schema, download failure, non-retryable failure, clearFailure, missing file catch-all) + 6 banner widget (hidden when synced, first sync, offline, syncing, failed, update-required) + 3 settings (version/status, never synced label, failed label). Library screen test updated with sync controller override. Settings screen test created.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 355/355 passed.
+
 ### Added (V1-M2-008 — Custom Exercise Model Hooks)
 
 - **Domain models**: `CustomExerciseSeed` (name, muscleGroups, modality, equipment, difficulty, steps).

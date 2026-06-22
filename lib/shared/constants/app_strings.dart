@@ -15,6 +15,7 @@ class AppStrings {
   static const String bodymapBack = 'Back';
   static const String liftLog = 'Lift Log';
   static const String settings = 'Settings';
+  static const String download = 'Download';
   static const String bodymapFront = 'Front';
   static const String tryAgain = 'Try again';
   static const String favorites = 'Favorites';
@@ -32,16 +33,19 @@ class AppStrings {
   static const String instructions = 'Instructions';
   static const String filterEquipment = 'Equipment';
   static const String draftBlocked = 'Unsaved Draft';
+  static const String exerciseLibraryRetry = 'Retry';
   static const String muscleGroups = 'Muscle groups';
   static const String clearFilters = 'Clear filters';
   static const String filterDifficulty = 'Difficulty';
   static const String pageNotFound = 'Page Not Found';
   static const String progressMedia = 'Progress Media';
+  static const String exerciseLibrarySynced = 'Synced';
   static const String favoritesOnly = 'Favorites only';
   static const String noSubstituted = 'No Substituted';
   static const String aiUnavailable = 'AI Unavailable';
   static const String filterMuscleGroup = 'Muscle Group';
   static const String aiUnsupported = 'AI Not Supported';
+  static const String exerciseLibrarySyncing = 'Syncing';
   static const String importDisabled = 'Import Disabled';
   static const String shareDisabled = 'Sharing Disabled';
   static const String startingApp = 'Starting Aedify...';
@@ -60,9 +64,16 @@ class AppStrings {
   static const String exerciseNotFound = 'Exercise not found.';
   static const String noExercisesFound = 'No exercises found.';
   static const String noExerciseVideos = 'No videos available.';
+  static const String exerciseLibrarySyncStatus = 'Sync status';
   static const String toggleSubstitution = 'Toggle substitution';
   static const String excludeSubstituted = 'Exclude substituted';
+  static const String exerciseLibraryVersion = 'Library version';
+  static const String exerciseLibraryNeverSynced = 'Never synced';
   static const String bodymapLoadFailed = 'Could not load bodymap.';
+  static const String exerciseLibrarySyncFailedLabel = 'Sync failed';
+  static const String exerciseLibrarySchemaVersion = 'Schema version';
+  static const String exerciseLibraryExerciseCount = 'Exercise count';
+  static const String exerciseLibraryStatus = 'Exercise library status';
   static const String exerciseVideoLoadFailed = 'Could not load video.';
   static const String exerciseDetailLoadFailed = 'Could not load exercise.';
   static const String startupFailed = 'Something went wrong during startup.';
@@ -92,4 +103,18 @@ class AppStrings {
       'AI features require an API key. Please add one in Settings.';
   static const String draftBlockedMessage =
       'Please save or discard your current draft before continuing.';
+
+  // Exercise Dataset Sync
+  static const String exerciseLibrarySyncRequired =
+      'Exercise library download required';
+  static const String exerciseLibrarySyncUnavailableOffline =
+      'Exercise library is unavailable offline until the first sync completes.';
+  static const String exerciseLibrarySyncFailed =
+      'Could not update the exercise library.';
+  static const String exerciseLibrarySyncInProgress =
+      'Loading exercise library\u2026';
+  static const String exerciseLibraryUpdateRequired =
+      'Please update the app to use the latest exercise library.';
+  static const String exerciseLibraryTapToDownload =
+      'Tap to download the exercise library.';
 }

@@ -40,4 +40,63 @@ class LibraryMetaDao extends DatabaseAccessor<AppDatabase>
       ),
     );
   }
+
+  Future<void> clearSyncFailure() async {
+    final existing = await getLibraryMeta();
+    if (existing == null) return;
+    await upsertLibraryMeta(
+      LibraryMetaCompanion(
+        id: Value(existing.id),
+        source: Value(existing.source),
+        schemaVersion: Value(existing.schemaVersion),
+        libraryVersion: Value(existing.libraryVersion),
+        generatedAt: Value(existing.generatedAt),
+        downloadedAt: Value(existing.downloadedAt),
+        exerciseCount: Value(existing.exerciseCount),
+        manifestLastUpdatedAt: Value(existing.manifestLastUpdatedAt),
+        manifestFilePath: Value(existing.manifestFilePath),
+        minAppSchemaVersion: Value(existing.minAppSchemaVersion),
+        syncStatus: Value(LibrarySyncStatus.synced.value),
+        lastSyncErrorCode: const Value(null),
+        lastSyncErrorMessage: const Value(null),
+        createdAt: Value(existing.createdAt),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> updateManifestMetadata({
+    required String libraryVersion,
+    required int schemaVersion,
+    required int exerciseCount,
+    required DateTime downloadedAt,
+    DateTime? generatedAt,
+    DateTime? manifestLastUpdatedAt,
+    String? manifestFilePath,
+    int? minAppSchemaVersion,
+  }) async {
+    final now = DateTime.now();
+    final existing = await getLibraryMeta();
+    await upsertLibraryMeta(
+      LibraryMetaCompanion(
+        id: Value(existing?.id ?? 'exercise_library'),
+        source: Value(existing?.source ?? ''),
+        schemaVersion: Value(schemaVersion),
+        libraryVersion: Value(libraryVersion),
+        generatedAt: Value(generatedAt),
+        downloadedAt: Value(downloadedAt),
+        exerciseCount: Value(exerciseCount),
+        manifestLastUpdatedAt: Value(manifestLastUpdatedAt),
+        manifestFilePath: Value(manifestFilePath),
+        minAppSchemaVersion: Value(minAppSchemaVersion),
+        syncStatus: Value(
+          existing?.syncStatus ?? LibrarySyncStatus.neverSynced.value,
+        ),
+        lastSyncErrorCode: const Value(null),
+        lastSyncErrorMessage: const Value(null),
+        createdAt: Value(existing?.createdAt ?? now),
+        updatedAt: Value(now),
+      ),
+    );
+  }
 }

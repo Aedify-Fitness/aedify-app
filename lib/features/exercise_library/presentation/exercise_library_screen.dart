@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_dataset_sync_banner.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_filter_sheet.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -81,6 +82,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
             )
           : Column(
               children: [
+                const ExerciseDatasetSyncBanner(),
                 _SearchBar(
                   initialQuery: searchState.filters.searchQuery,
                   onChanged: (query) {

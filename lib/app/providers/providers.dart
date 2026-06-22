@@ -1,6 +1,9 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/exercise_dao.dart';
+import 'package:aedify/core/db/daos/exercise_video_dao.dart';
+import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/daos/local_file_record_dao.dart';
 import 'package:aedify/core/firebase/crashlytics_service.dart';
 import 'package:aedify/core/firebase/firebase_auth_service.dart';
@@ -16,6 +19,8 @@ import 'package:aedify/core/storage/local_file_record_service.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_video_state_controller.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
@@ -184,4 +189,22 @@ class AppProviders {
           database: ref.read(appDatabaseProvider),
         );
       });
+
+  static final exerciseDaoProvider = Provider<ExerciseDao>((ref) {
+    return ExerciseDao(ref.read(appDatabaseProvider));
+  });
+
+  static final exerciseVideoDaoProvider = Provider<ExerciseVideoDao>((ref) {
+    return ExerciseVideoDao(ref.read(appDatabaseProvider));
+  });
+
+  static final libraryMetaDaoProvider = Provider<LibraryMetaDao>((ref) {
+    return LibraryMetaDao(ref.read(appDatabaseProvider));
+  });
+
+  static final exerciseDatasetSyncControllerProvider =
+      AsyncNotifierProvider<
+        ExerciseDatasetSyncController,
+        ExerciseDatasetSyncState
+      >(ExerciseDatasetSyncController.new);
 }

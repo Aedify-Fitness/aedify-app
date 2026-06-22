@@ -1,4 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
@@ -58,10 +60,20 @@ class _MockSearchRepository implements ExerciseRepository {
   Future<void> deleteCustomExercise(int exerciseId) async {}
 }
 
+class _FixedSyncNotifier extends ExerciseDatasetSyncController {
+  @override
+  Future<ExerciseDatasetSyncState> build() async {
+    return const ExerciseDatasetSyncState(phase: ExerciseDatasetSyncPhase.synced);
+  }
+}
+
 Widget createTestApp(ExerciseRepository repository) {
   return ProviderScope(
     overrides: [
       AppProviders.exerciseRepositoryProvider.overrideWithValue(repository),
+      AppProviders.exerciseDatasetSyncControllerProvider.overrideWith(
+        () => _FixedSyncNotifier(),
+      ),
     ],
     child: const MaterialApp(home: ExerciseLibraryScreen()),
   );
