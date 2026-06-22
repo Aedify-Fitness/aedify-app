@@ -4,6 +4,32 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-22
+
+### Refactored (global declarations → class members)
+
+- **`app_colors.dart`**: Moved `aedifySeedColor` into `AedifyLightColors.seedColor`.
+- **`app_theme.dart`**: Wrapped `lightTheme`/`darkTheme` into `AppTheme` class.
+- **`app_router.dart`**: Wrapped `appRouterProvider`, `_draftGuardedRoutes`, `_isFlagDisabledRoute` into `AppRouter` class. Updated all lib/test references.
+- **`app_database.dart`**: Moved `_openConnection()` into `AppDatabase` as private static method.
+- **Deleted** unused `exercise_detail_controller.dart` (top-level `exerciseDetailProvider` duplicate of `AppProviders.exerciseDetailControllerProvider`).
+
+### Fixed (code style & conventions)
+
+- Replaced all `Theme.of(context).colorScheme`/`textTheme` with `context.colorScheme`/`context.textTheme` via `ThemeX` extension across 3 exercise library presentation files.
+- Replaced `EdgeInsets.fromLTRB` with `EdgeInsets.symmetric` in `exercise_library_screen.dart`.
+- Replaced `Navigator.pop(context)` with `context.pop()` (from go_router) in `exercise_filter_sheet.dart`. Added go_router import.
+- Replaced `context.push()` with `context.pushNamed()` in `exercise_library_screen.dart`.
+- Replaced `context.go()` with `context.goNamed()` in `onboarding_screen.dart`.
+- Named route strings now use `AppRoutes.{route}().name` instead of hardcoded strings.
+- Added 5 filter UI strings to `AppStrings` (`filterMuscleGroup`, `filterDifficulty`, `filterModality`, `filterEquipment`, `filterAny`); removed hardcoded strings from `exercise_filter_sheet.dart`.
+
+### Added (SVG asset constants)
+
+- Renamed all SVGs under `assets/svgs/` from kebab-case to snake_case.
+- Created `lib/shared/constants/svg_assets_outlined.dart` — `OulinedSvgAssets` class with `_pathPrefix` and 326 camelCase constants.
+- Created `lib/shared/constants/svg_assets_solid.dart` — `SolidSvgAssets` class with `_pathPrefix` and 326 camelCase constants.
+
 ## 2026-06-21
 
 ### Added (V1-M2-004 — Exercise Library List + Detail Screens)
