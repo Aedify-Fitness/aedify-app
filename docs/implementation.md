@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                        |
-| **Status**            | 7 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service) |
-| **Blockers**          | None                                                                                                                 |
+| Field                 | Value                                                                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                               |
+| **Status**            | 8 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks) |
+| **Blockers**          | None                                                                                                                                        |
 
 ## Completed Work
 
@@ -182,10 +182,22 @@
 - **Tests**: 15 new — 12 candidate service + 3 DAO. 314 total passing.
 - `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 314/314 passed.
 
+### V1-M2-008 — Custom Exercise Model Hooks (complete)
+
+- **Domain models**: `CustomExerciseSeed` (name, muscleGroups, modality, equipment, difficulty, steps).
+- **Identity service**: `CustomExerciseIdentityService` — deterministic decreasing negative IDs via `nextCustomExerciseId()`, v4 UUIDs via `newCustomExerciseUuid()`.
+- **DAO expansion**: `insertCustomExercise()`, `getCustomExerciseByUuid()`, `getLowestExerciseId()`, `updateCustomExercise()`, `deleteCustomExerciseById()`.
+- **Repository**: 5 new methods fully implemented (`getCustomExercises`, `getCustomExerciseDetail`, `createCustomExercise`, `updateCustomExercise`, `deleteCustomExercise`). `DriftExerciseRepository` injects `CustomExerciseIdentityService`.
+- **Conventions enforced**: negative int ID, `isCustom = true`, `customExerciseUuid != null`, `source = 'custom'`.
+- **Provider**: `customExerciseIdentityServiceProvider` wired; repository updated to inject it.
+- **4 mock repositories updated** in test files.
+- **Tests**: 22 new — 7 identity service, 7 DAO CRUD, 8 repository coexistence. 336 total passing.
+- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 314/314 passed
+- `flutter test` — 336/336 passed
 - `dart run build_runner build` — N/A (no code generation for V1-M2-005/006/007)
 
 ## Codebase Convention Enforcement Status

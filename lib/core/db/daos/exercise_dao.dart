@@ -71,6 +71,35 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
     return (select(exercises)..where((t) => t.isCustom.equals(true))).get();
   }
 
+  Future<Exercise?> getCustomExerciseByUuid(String customExerciseUuid) {
+    return (select(exercises)
+          ..where((t) => t.customExerciseUuid.equals(customExerciseUuid)))
+        .getSingleOrNull();
+  }
+
+  Future<int> getLowestExerciseId() async {
+    final rows =
+        await (select(exercises)..orderBy([
+              (t) => OrderingTerm(expression: t.id, mode: OrderingMode.asc),
+            ]))
+            .get();
+    if (rows.isEmpty) return 0;
+    return rows.first.id;
+  }
+
+  Future<void> insertCustomExercise(ExercisesCompanion entry) async {
+    await into(exercises).insert(entry);
+  }
+
+  Future<void> updateCustomExercise(ExercisesCompanion entry) async {
+    final id = entry.id.value;
+    await (update(exercises)..where((t) => t.id.equals(id))).write(entry);
+  }
+
+  Future<void> deleteCustomExerciseById(int id) async {
+    await (delete(exercises)..where((t) => t.id.equals(id))).go();
+  }
+
   Future<void> setFavorite({
     required int exerciseId,
     required bool isFavorite,

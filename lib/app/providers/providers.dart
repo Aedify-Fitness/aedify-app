@@ -23,6 +23,7 @@ import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/features/exercise_library/data/candidate_exercise_query_service.dart';
+import 'package:aedify/features/exercise_library/data/custom_exercise_identity_service.dart';
 import 'package:aedify/features/exercise_library/data/drift_candidate_exercise_query_service.dart';
 import 'package:aedify/features/bodymap/application/bodymap_selection_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,8 +145,16 @@ class AppProviders {
       });
 
   static final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
-    return DriftExerciseRepository(database: ref.read(appDatabaseProvider));
+    return DriftExerciseRepository(
+      database: ref.read(appDatabaseProvider),
+      identityService: ref.read(customExerciseIdentityServiceProvider),
+    );
   });
+
+  static final customExerciseIdentityServiceProvider =
+      Provider<CustomExerciseIdentityService>((ref) {
+        return const CustomExerciseIdentityService();
+      });
 
   static final exerciseSearchControllerProvider =
       NotifierProvider<ExerciseSearchController, ExerciseSearchState>(

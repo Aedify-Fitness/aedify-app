@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
+import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
@@ -35,6 +36,26 @@ class _MockSearchRepository implements ExerciseRepository {
     required int exerciseId,
     required bool isSubstitutedOut,
   }) async {}
+
+  @override
+  Future<List<ExerciseListItem>> getCustomExercises() async => [];
+
+  @override
+  Future<ExerciseDetailViewData?> getCustomExerciseDetail(
+    int exerciseId,
+  ) async => null;
+
+  @override
+  Future<int> createCustomExercise(CustomExerciseSeed seed) async => -1;
+
+  @override
+  Future<void> updateCustomExercise({
+    required int exerciseId,
+    required CustomExerciseSeed seed,
+  }) async {}
+
+  @override
+  Future<void> deleteCustomExercise(int exerciseId) async {}
 }
 
 Widget createTestApp(ExerciseRepository repository) {

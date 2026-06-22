@@ -6,6 +6,18 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-008 — Custom Exercise Model Hooks)
+
+- **Domain models**: `CustomExerciseSeed` (name, muscleGroups, modality, equipment, difficulty, steps).
+- **Identity service**: `CustomExerciseIdentityService.nextCustomExerciseId()` returns deterministically decreasing negative IDs; `newCustomExerciseUuid()` generates v4 UUIDs. Uses `uuid` package.
+- **DAO expansion**: `insertCustomExercise()`, `getCustomExerciseByUuid()`, `getLowestExerciseId()`, `updateCustomExercise()`, `deleteCustomExerciseById()`.
+- **Repository expansion**: `getCustomExercises()`, `getCustomExerciseDetail()`, `createCustomExercise()`, `updateCustomExercise()`, `deleteCustomExercise()` — fully implemented.
+- **Custom exercise conventions enforced**: negative int ID, `isCustom = true`, `customExerciseUuid != null`, `source = 'custom'`.
+- **Provider**: `customExerciseIdentityServiceProvider` wired; repository provider injects identity service.
+- **4 mock repositories updated** in test files with stub implementations of 5 new methods.
+- **Tests**: 22 new — 7 identity service (next ID, UUID gen, determinism, edge cases) + 7 DAO CRUD (insert, getCustom, getByUuid, lowestId, lowestId negative, update, delete) + 8 repository coexistence (create, uuid/source, list surface, detail no videos, update, delete, coexistence, existing unaffected).
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
+
 ### Added (V1-M2-007 — Deterministic Candidate Exercise Query Service)
 
 - **Domain models**: `CandidateExerciseDto` (id, name, difficulty, muscleGroups, modality, equipment, mechanic, force, isCustom — no user notes, file paths, or flags), `CandidateExerciseQuery` (hard filter sets + excluded IDs/groups + soft ranking signals + limit), `CandidateExerciseRankedResult` (exercise + score).
