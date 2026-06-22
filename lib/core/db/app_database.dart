@@ -26,7 +26,8 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  AppDatabase([QueryExecutor? executor])
+    : super(executor ?? AppDatabase._openConnection());
 
   @override
   int get schemaVersion => 3;
@@ -137,12 +138,12 @@ class AppDatabase extends _$AppDatabase {
   Future<void> readiness() async {
     await customSelect('SELECT 1').get();
   }
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, DbConstants.databaseFileName));
-    return NativeDatabase(file);
-  });
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, DbConstants.databaseFileName));
+      return NativeDatabase(file);
+    });
+  }
 }

@@ -134,7 +134,7 @@ void main() {
           ],
           child: Consumer(
             builder: (context, ref, _) {
-              final router = ref.watch(appRouterProvider);
+              final router = ref.watch(AppRouter.appRouterProvider);
               result
                 ..clear()
                 ..add(router);

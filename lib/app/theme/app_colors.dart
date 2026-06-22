@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-const aedifySeedColor = Color(0xFF0b1c30);
-
 abstract final class AedifyLightColors {
+  static const seedColor = Color(0xFF0b1c30);
   static const surface = Color(0xFFf8f9ff);
   static const surfaceDim = Color(0xFFcbdbf5);
   static const surfaceBright = Color(0xFFf8f9ff);

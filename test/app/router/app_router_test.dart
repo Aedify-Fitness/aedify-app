@@ -37,7 +37,7 @@ void main() {
           ],
           child: Consumer(
             builder: (context, ref, _) {
-              router = ref.watch(appRouterProvider);
+              router = ref.watch(AppRouter.appRouterProvider);
               return MaterialApp.router(routerConfig: router!);
             },
           ),
