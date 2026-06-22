@@ -32,7 +32,7 @@ class ExerciseVideoSection extends StatelessWidget {
           Row(
             children: [
               SvgPicture.asset(
-                OulinedSvgAssets.videoCameraSlash,
+                OutlinedSvgAssets.videoCameraSlash,
                 width: AppSizing.iconSm,
                 height: AppSizing.iconSm,
                 colorFilter: ColorFilter.mode(

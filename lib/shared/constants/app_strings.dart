@@ -117,4 +117,10 @@ class AppStrings {
       'Please update the app to use the latest exercise library.';
   static const String exerciseLibraryTapToDownload =
       'Tap to download the exercise library.';
+
+  // Step Audio / TTS
+  static const String stopStepAudio = 'Stop audio';
+  static const String playStepAudio = 'Play step audio';
+  static const String audioGenerating = 'Preparing audio\u2026';
+  static const String audioUnavailable = 'Audio playback unavailable.';
 }

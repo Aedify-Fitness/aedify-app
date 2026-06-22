@@ -24,7 +24,7 @@ class BodymapScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: SvgPicture.asset(
-              OulinedSvgAssets.arrowsRightLeft,
+              OutlinedSvgAssets.arrowsRightLeft,
               width: AppSpacing.lg,
               height: AppSpacing.lg,
               colorFilter: ColorFilter.mode(
@@ -111,7 +111,7 @@ class BodymapScreen extends ConsumerWidget {
                       context.pop();
                     },
                     icon: SvgPicture.asset(
-                      OulinedSvgAssets.magnifyingGlass,
+                      OutlinedSvgAssets.magnifyingGlass,
                       width: AppSizing.iconXs,
                       height: AppSizing.iconXs,
                       colorFilter: ColorFilter.mode(

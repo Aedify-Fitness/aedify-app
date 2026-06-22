@@ -101,7 +101,7 @@ class _FailureContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SvgPicture.asset(
-          OulinedSvgAssets.exclamationCircle,
+          OutlinedSvgAssets.exclamationCircle,
           width: AppSpacing.xxl,
           height: AppSpacing.xxl,
           colorFilter: ColorFilter.mode(

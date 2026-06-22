@@ -6,6 +6,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2 TTS/audio-cache slice — TTS service, audio cache DAO, step audio controller, per-step playback UI)
+
+- **`ExerciseTtsService`** (`lib/core/tts/exercise_tts_service.dart`): Abstract interface with `isAvailable()`, `speak()`, `stop()`, `synthesizeToFile()`.
+- **`FlutterExerciseTtsService`** (`lib/core/tts/flutter_exercise_tts_service.dart`): Implements `ExerciseTtsService` via `FlutterTts`. Wraps platform TTS with graceful fallback — synthesis failure falls back to runtime `speak()`, cache persisted only when file generation succeeds.
+- **`ExerciseAudioCacheDao`** (`lib/core/db/daos/exercise_audio_cache_dao.dart`): Drift DAO with upsert, query by exercise+step+hash, delete by exercise/path, last-accessed update, and `watchByExerciseId()` stream.
+- **`ExerciseStepAudioState`** (`lib/features/exercise_library/domain/exercise_step_audio_state.dart`): Immutable state model with 6 phases (`idle`, `checkingCache`, `generating`, `speaking`, `unavailable`, `failed`), optional error code/message, and `isBusy` getter.
+- **`ExerciseStepAudioController`** (`lib/features/exercise_library/application/exercise_step_audio_controller.dart`): `Notifier<Map<String, ExerciseStepAudioState>>` — keyed by `'$exerciseId:$stepIndex'`. `playStep()` orchestrates cache check → TTS availability → cache hit/miss → synthesis → speak. `stop()` tears down playback.
+- **`ExerciseStepAudioButton`** (`lib/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart`): `ConsumerWidget` — renders appropriate SVG icon (play/stop/spinner/speakerXMark) per phase, with tooltips from `AppStrings`.
+- **Detail screen integration**: Each step row in `ExerciseDetailScreen` now shows an `ExerciseStepAudioButton` alongside the step text. Text remains visible regardless of audio state.
+- **Provider wiring**: 3 new providers in `AppProviders` — `exerciseTtsServiceProvider`, `exerciseAudioCacheDaoProvider`, `exerciseStepAudioControllerProvider`.
+- **Strings**: 3 TTS strings in `AppStrings` (`playStepAudio`, `stopStepAudio`, `audioGenerating`, `audioUnavailable`), 3 safe error strings in `AppErrorStrings` (`ttsUnavailableMessage`, `audioPlaybackFailedMessage`, `audioGenerationFailedMessage`).
+- **Tests**: 20 new — 5 DAO (upsert, read, update last accessed, delete by exercise, delete by path) + 6 controller (initial state, unavailable TTS, cache hit, cache miss with generation, stop, generation failure) + 7 widget (idle, speaking, checking, generating, unavailable, failed, button present) + 2 detail screen (audio buttons alongside steps, text visible).
+- Security: Safe error codes only — no step text, file paths, or internal identifiers in error messages.
+- SVG icons: Uses existing `OulinedSvgAssets.play`, `.stop`, `.speakerXMark`.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 379/379 passed.
+
 ### Added (V1-M2 closure — 5 items: version short-circuit, empty-filter semantics, dataset status, thumbnails, tracking docs)
 
 - **Manifest version short-circuit**: `ExerciseDatasetSyncController._runSync()` now fetches the manifest first, compares `LibraryMetaData.libraryVersion` against `manifest.datasetVersion`, and skips download+import when versions match. Status set to `LibrarySyncStatus.synced` explicitly (overrides the `syncing` status set at method entry).

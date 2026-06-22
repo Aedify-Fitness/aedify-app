@@ -1,4 +1,5 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -31,7 +32,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
               icon: SvgPicture.asset(
                 detail.isFavorite
                     ? SolidSvgAssets.heart
-                    : OulinedSvgAssets.heart,
+                    : OutlinedSvgAssets.heart,
                 width: AppSpacing.lg,
                 height: AppSpacing.lg,
                 colorFilter: detail.isFavorite
@@ -57,8 +58,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
             IconButton(
               icon: SvgPicture.asset(
                 detail.isSubstitutedOut
-                    ? OulinedSvgAssets.noSymbol
-                    : OulinedSvgAssets.checkCircle,
+                    ? OutlinedSvgAssets.noSymbol
+                    : OutlinedSvgAssets.checkCircle,
                 width: AppSpacing.lg,
                 height: AppSpacing.lg,
               ),
@@ -90,7 +91,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SvgPicture.asset(
-                  OulinedSvgAssets.exclamationCircle,
+                  OutlinedSvgAssets.exclamationCircle,
                   width: AppSpacing.xxl,
                   height: AppSpacing.xxl,
                   colorFilter: ColorFilter.mode(
@@ -225,6 +226,11 @@ class ExerciseDetailScreen extends ConsumerWidget {
                           ),
                           SizedBox(width: AppSpacing.sm),
                           Expanded(child: Text(entry.value)),
+                          ExerciseStepAudioButton(
+                            exerciseId: loaded.id,
+                            stepIndex: entry.key,
+                            text: entry.value,
+                          ),
                         ],
                       ),
                     ),

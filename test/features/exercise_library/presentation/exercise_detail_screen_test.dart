@@ -6,6 +6,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_video_vi
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -246,6 +247,25 @@ void main() {
       expect(find.text('Step 1'), findsOneWidget);
       expect(find.text('Step 2'), findsOneWidget);
       expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+    });
+
+    testWidgets('renders audio buttons alongside steps', (tester) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      // One audio button per step
+      expect(find.byType(ExerciseStepAudioButton), findsNWidgets(2));
+    });
+
+    testWidgets('step text remains visible when audio unavailable', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      // Steps still visible even though audio is in idle state
+      expect(find.text('Step 1'), findsOneWidget);
+      expect(find.text('Step 2'), findsOneWidget);
     });
   });
 }

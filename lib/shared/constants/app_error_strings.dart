@@ -25,4 +25,11 @@ class AppErrorStrings {
       'Could not connect. Please check your internet connection.';
   static const String networkTimeoutMessage =
       'Connection timed out. Please check your connection and try again.';
+
+  // TTS / Audio Cache
+  static const String audioGenerationFailedMessage =
+      'Could not generate step audio.';
+  static const String ttsUnavailableMessage =
+      'Text-to-speech is not available on this device.';
+  static const String audioPlaybackFailedMessage = 'Could not play step audio.';
 }

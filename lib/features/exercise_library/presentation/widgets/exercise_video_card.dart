@@ -50,7 +50,7 @@ class ExerciseVideoCard extends StatelessWidget {
                       ),
                     ),
                     errorWidget: (_, _, _) => SvgPicture.asset(
-                      OulinedSvgAssets.videoCamera,
+                      OutlinedSvgAssets.videoCamera,
                       width: AppSpacing.lg,
                       height: AppSpacing.lg,
                       colorFilter: ColorFilter.mode(
@@ -61,7 +61,7 @@ class ExerciseVideoCard extends StatelessWidget {
                   ),
                 )
               : SvgPicture.asset(
-                  OulinedSvgAssets.videoCamera,
+                  OutlinedSvgAssets.videoCamera,
                   width: AppSpacing.lg,
                   height: AppSpacing.lg,
                   colorFilter: ColorFilter.mode(
@@ -99,7 +99,7 @@ class _FailedVideo extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: SvgPicture.asset(
-        OulinedSvgAssets.exclamationTriangle,
+        OutlinedSvgAssets.exclamationTriangle,
         width: AppSpacing.lg,
         height: AppSpacing.lg,
         colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
@@ -109,7 +109,7 @@ class _FailedVideo extends StatelessWidget {
       trailing: FilledButton.tonalIcon(
         onPressed: onRetry,
         icon: SvgPicture.asset(
-          OulinedSvgAssets.arrowPath,
+          OutlinedSvgAssets.arrowPath,
           width: AppSizing.iconXxs,
           height: AppSizing.iconXxs,
         ),

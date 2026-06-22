@@ -50,7 +50,7 @@ class BodymapBucketChipBar extends StatelessWidget {
             child: TextButton.icon(
               onPressed: onClear,
               icon: SvgPicture.asset(
-                OulinedSvgAssets.xMark,
+                OutlinedSvgAssets.xMark,
                 width: AppSizing.iconXs,
                 height: AppSizing.iconXs,
               ),

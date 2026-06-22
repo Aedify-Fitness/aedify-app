@@ -1,6 +1,7 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/exercise_audio_cache_dao.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
@@ -19,11 +20,15 @@ import 'package:aedify/core/storage/local_file_record_service.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
+import 'package:aedify/core/tts/exercise_tts_service.dart';
+import 'package:aedify/core/tts/flutter_exercise_tts_service.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
+import 'package:aedify/features/exercise_library/application/exercise_step_audio_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_video_state_controller.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
@@ -32,6 +37,7 @@ import 'package:aedify/features/exercise_library/data/custom_exercise_identity_s
 import 'package:aedify/features/exercise_library/data/drift_candidate_exercise_query_service.dart';
 import 'package:aedify/features/bodymap/application/bodymap_selection_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 /// App-wide Riverpod provider definitions.
 ///
@@ -207,4 +213,23 @@ class AppProviders {
         ExerciseDatasetSyncController,
         ExerciseDatasetSyncState
       >(ExerciseDatasetSyncController.new);
+
+  static final exerciseTtsServiceProvider = Provider<ExerciseTtsService>((ref) {
+    return FlutterExerciseTtsService(
+      flutterTts: FlutterTts(),
+      fileStore: ref.read(localFileStoreProvider),
+    );
+  });
+
+  static final exerciseAudioCacheDaoProvider = Provider<ExerciseAudioCacheDao>((
+    ref,
+  ) {
+    return ExerciseAudioCacheDao(ref.read(appDatabaseProvider));
+  });
+
+  static final exerciseStepAudioControllerProvider =
+      NotifierProvider<
+        ExerciseStepAudioController,
+        Map<String, ExerciseStepAudioState>
+      >(ExerciseStepAudioController.new);
 }

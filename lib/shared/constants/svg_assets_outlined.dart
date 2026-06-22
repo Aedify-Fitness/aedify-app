@@ -1,5 +1,5 @@
-class OulinedSvgAssets {
-  OulinedSvgAssets._();
+class OutlinedSvgAssets {
+  OutlinedSvgAssets._();
 
   static const _pathPrefix = 'assets/svgs/outline';
 

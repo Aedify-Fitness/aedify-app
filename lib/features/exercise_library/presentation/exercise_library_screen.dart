@@ -30,7 +30,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
           IconButton(
             onPressed: () => context.pushNamed(AppRoutes.bodymap().name),
             icon: SvgPicture.asset(
-              OulinedSvgAssets.user,
+              OutlinedSvgAssets.user,
               width: AppSpacing.lg,
               height: AppSpacing.lg,
             ),
@@ -48,7 +48,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      OulinedSvgAssets.exclamationCircle,
+                      OutlinedSvgAssets.exclamationCircle,
                       width: AppSpacing.xxl,
                       height: AppSpacing.xxl,
                       colorFilter: ColorFilter.mode(
@@ -115,7 +115,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
-                                OulinedSvgAssets.magnifyingGlassMinus,
+                                OutlinedSvgAssets.magnifyingGlassMinus,
                                 width: AppSpacing.xxl,
                                 height: AppSpacing.xxl,
                                 colorFilter: ColorFilter.mode(
@@ -185,7 +185,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
           );
         },
         child: SvgPicture.asset(
-          OulinedSvgAssets.funnel,
+          OutlinedSvgAssets.funnel,
           width: AppSpacing.lg,
           height: AppSpacing.lg,
         ),
@@ -212,7 +212,7 @@ class _SearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: AppStrings.searchExercises,
           prefixIcon: SvgPicture.asset(
-            OulinedSvgAssets.magnifyingGlass,
+            OutlinedSvgAssets.magnifyingGlass,
             width: AppSpacing.lg,
             height: AppSpacing.lg,
             fit: BoxFit.scaleDown,
@@ -272,7 +272,7 @@ class _ActiveFilterBar extends StatelessWidget {
           ),
           IconButton(
             icon: SvgPicture.asset(
-              OulinedSvgAssets.xMark,
+              OutlinedSvgAssets.xMark,
               width: AppSizing.iconXs,
               height: AppSizing.iconXs,
             ),

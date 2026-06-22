@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                                                                                                                     |
-| **Status**            | 10 of 10 tickets + 5 closure items complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite, version short-circuit, empty-filter semantics, dataset status, thumbnails). |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                              |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                                                                                                                                                                                                                        |
+| **Status**            | 10 of 10 tickets + 5 closure items + TTS/audio-cache slice complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite, version short-circuit, empty-filter semantics, dataset status, thumbnails, TTS service, audio cache DAO, step audio controller, per-step playback UI). |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## Completed Work
 
@@ -216,6 +216,20 @@
 - **Tests updated**: manifest test, parser test, download service test, bodymap contract test — all load fixture files instead of inline JSON.
 - `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 357/357 passed.
 
+### V1-M2 TTS/Audio Cache Slice (complete)
+
+- **`ExerciseTtsService`** (`lib/core/tts/exercise_tts_service.dart`): Abstract interface — `isAvailable()`, `speak()`, `stop()`, `synthesizeToFile()`.
+- **`FlutterExerciseTtsService`** (`lib/core/tts/flutter_exercise_tts_service.dart`): Implementation wrapping `FlutterTts`. Graceful fallback — file synthesis failure falls back to runtime `speak()`, cache persisted only on success.
+- **`ExerciseAudioCacheDao`** (`lib/core/db/daos/exercise_audio_cache_dao.dart`): Drift DAO — `upsertCacheEntry()`, `getByExerciseAndStep()`, `deleteByExerciseId()`, `deleteByRelativePath()`, `updateLastAccessed()`, `watchByExerciseId()`.
+- **`ExerciseStepAudioState`** (`lib/features/exercise_library/domain/exercise_step_audio_state.dart`): 6-phase immutable state (`idle`, `checkingCache`, `generating`, `speaking`, `unavailable`, `failed`) with `isBusy` getter and safe error code/message.
+- **`ExerciseStepAudioController`** (`lib/features/exercise_library/application/exercise_step_audio_controller.dart`): `Notifier<Map<String, ExerciseStepAudioState>>` keyed by `'$exerciseId:$stepIndex'`. `playStep()` orchestrates cache check → TTS availability → cache hit/miss → synthesis → speak. `stop()` tears down.
+- **`ExerciseStepAudioButton`** (`lib/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart`): `ConsumerWidget` rendering SVG play/stop/spinner/speakerXMark per phase.
+- **Detail screen**: Each step row has an `ExerciseStepAudioButton`. Text remains visible regardless of audio state.
+- **Providers**: 3 new in `AppProviders` — `exerciseTtsServiceProvider`, `exerciseAudioCacheDaoProvider`, `exerciseStepAudioControllerProvider`.
+- **Strings**: 4 in `AppStrings`, 3 safe error strings in `AppErrorStrings`.
+- **Tests**: 20 new — 5 DAO + 6 controller + 7 widget + 2 detail screen. 379 total passing.
+- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 379/379 passed.
+
 ### M2 Closure — 5 Items (complete)
 
 1. **Manifest version short-circuit** (`lib/features/exercise_library/application/exercise_dataset_sync_controller.dart`): `_runSync()` fetches manifest first, compares `LibraryMetaData.libraryVersion` vs `manifest.datasetVersion`, skips download + parse + import when unchanged. Status set to `LibrarySyncStatus.synced` explicitly.
@@ -229,8 +243,8 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 359/359 passed (357 existing + 2 new thumbnail tests)
-- `dart run build_runner build` — passed (6s, 115 outputs)
+- `flutter test` — 379/379 passed (359 existing + 20 new TTS/audio-cache tests)
+- `dart run build_runner build` — passed (7s, 142 outputs)
 
 ## Codebase Convention Enforcement Status
 
