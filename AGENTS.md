@@ -506,16 +506,27 @@ Prefer simple, readable code over clever code.
 - **DO** use `AppTextStyles.*` constants for text styles.
 - **DO** use `.copyWith()` when you need to override specific properties of a text style.
 - **DON'T** use inline `TextStyle(...)` in widget or theme code.
+- **DON'T** hardcode user-facing strings in widgets or feature code; all user-facing
+  strings must live in `AppStrings` or a dedicated constants class.
 
 ### Navigation
 
 - **DO** put route paths and names in `AppRoutes` class (in `app_routes.dart`) using factory constructors with `.path` / `.name` accessors.
 - **DON'T** scatter route strings in feature files or `AppStrings`.
+- **DO** use `context.pushNamed(AppRoutes.{route}().name)` / `context.goNamed(AppRoutes.{route}().name)`
+  for navigation — never `Navigator.pop(context)`, `context.push('/path')`, or
+  `context.go('/path')`.
+- **DO** use `context.pop()` (from go_router) instead of `Navigator.pop(context)`.
 
 ### Constants Organization
 
 - **DO** keep constants in dedicated files by concern (e.g. `db_constants.dart`, `directory_constants.dart`, `app_routes.dart`, `app_strings.dart`).
 - **DON'T** put unrelated constant categories in a single monolithic file.
+- **DO** put SVG asset paths in `svg_assets_outlined.dart` (`OulinedSvgAssets`) or
+  `svg_assets_solid.dart` (`SolidSvgAssets`). Never reference SVG files by raw path.
+- **DO** put all layout and sizing tokens (spacing, radius, icon size, divider,
+  font size) in `lib/shared/theme/app_spacing.dart` using `AppSpacing`, `AppRadius`,
+  `AppSizing`, `AppFontSizes`, and `AppWhiteSpace`.
 
 ### Imports
 
@@ -525,8 +536,36 @@ Prefer simple, readable code over clever code.
 ### Architecture
 
 - **DO** use the context extension `ThemeX` on `BuildContext` for `context.theme`, `context.colorScheme`, `context.textTheme`.
-- **DO** encapsulate top-level utility functions in classes with private constructors and static methods.
+  **DON'T** use `Theme.of(context).colorScheme` or `Theme.of(context).textTheme`.
+- **DO** encapsulate all top-level functions, variables, and constants inside classes
+  with private constructors and static members. No top-level declarations outside
+  `main()` in `main.dart`.
 - **DO** use token constants (`AppSpacing.*`, `AppWhiteSpace.*`, `AppRadius.*`) for layout values — no raw numbers.
+- **DO** use `EdgeInsets.symmetric(...)` or `EdgeInsets.only(...)`.
+  **DON'T** use `EdgeInsets.fromLTRB(...)`.
+
+### SVG Assets
+
+- **DO** use `SvgPicture.asset` from `flutter_svg` instead of Material `Icons.*`.
+- **DO** reference SVGs via `OulinedSvgAssets.{camelCaseName}` / `SolidSvgAssets.{camelCaseName}`.
+- **DO** store SVGs in `assets/svgs/outline/` (outlined style) and `assets/svgs/solid/` (filled style).
+- **DO** use snake_case for SVG filenames. Constants are camelCase.
+- **DON'T** reference SVG files by raw asset path strings.
+
+### Strings and Error Messages
+
+- **DO** put all user-facing strings in `AppStrings` (`app_strings.dart`).
+- **DO** put error, network, storage, and firebase failure messages in
+  `AppErrorStrings` (`app_error_strings.dart`).
+- **DON'T** hardcode strings in widgets, features, or core services.
+
+### Spacing and Sizing
+
+- **DO** use `AppSpacing.*`, `AppWhiteSpace.*`, `AppRadius.*`, `AppSizing.*`, and
+  `AppFontSizes.*` for all layout values — no raw numbers.
+- **DO** define new sizing tokens in `lib/shared/theme/app_spacing.dart` as needed.
+- **DON'T** use raw doubles for padding, margin, width, height, icon size, border
+  radius, divider height, or inline font sizes.
 
 ## State Management Rules
 
