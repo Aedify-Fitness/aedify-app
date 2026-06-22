@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                        |
-| **Status**            | 10 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite). |
-| **Blockers**          | None                                                                                                                                                                                                 |
+| Field                 | Value                                                                                                                                                                                                                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                                                                                                                     |
+| **Status**            | 10 of 10 tickets + 5 closure items complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite, version short-circuit, empty-filter semantics, dataset status, thumbnails). |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                              |
 
 ## Completed Work
 
@@ -189,23 +189,9 @@
 - **`ExerciseDatasetSyncFailure`**: Code, message, retryable flag.
 - **`ExerciseDatasetSyncController`**: `AsyncNotifier<ExerciseDatasetSyncState>` — `build()` reads LibraryMeta + NetworkStatus; `initialize()`, `retry()`, `refresh()`, `clearFailure()`; `_runSync()` orchestrates manifest → download → parse → import with full error typing.
 - **DAO expansion**: `LibraryMetaDao.clearSyncFailure()`, `updateManifestMetadata()`.
-- **Widgets**:
-  - `ExerciseDatasetSyncStatusCard` — reusable card with title, message, optional action, loading spinner.
-  - `ExerciseDatasetSyncBanner` — watches sync controller, renders above library list; hidden when synced.
-  - `ExerciseDatasetStatusTile` — read-only tile for settings (version, count, sync status).
+- **Widgets**: `ExerciseDatasetSyncStatusCard`, `ExerciseDatasetSyncBanner`, `ExerciseDatasetStatusTile`.
 - **Screen integration**: LibraryScreen shows banner; SettingsScreen shows status tile with sync state.
 - **AppStrings**: 12 new sync-related strings.
-- **Provider**: `exerciseDatasetSyncControllerProvider` (AsyncNotifierProvider), plus `libraryMetaDaoProvider`, `exerciseDaoProvider`, `exerciseVideoDaoProvider`.
-- **Tests**: 336 total (V1-M2-009 adds no new tests yet — controller + banner + DAO tests pending).
-- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
-- **`ExerciseDatasetSyncPhase` enum**: 8 phases covering the full sync lifecycle.
-- **`ExerciseDatasetSyncState`**: Immutable state with computed getters, `copyWith()`, `neverSynced()`.
-- **`ExerciseDatasetSyncFailure`**: Code, message, retryable flag.
-- **`ExerciseDatasetSyncController`**: `AsyncNotifier<ExerciseDatasetSyncState>` — reads LibraryMeta + NetworkStatus; `initialize()`, `retry()`, `refresh()`, `clearFailure()`; `_runSync()` orchestrates manifest → download → parse → import with full error typing.
-- **DAO expansion**: `LibraryMetaDao.clearSyncFailure()`, `updateManifestMetadata()`.
-- **Widgets**: `ExerciseDatasetSyncStatusCard`, `ExerciseDatasetSyncBanner`, `ExerciseDatasetStatusTile`.
-- **Screen integration**: LibraryScreen (banner), SettingsScreen (status tile).
-- **AppStrings**: 12 sync-related strings.
 - **Providers**: `exerciseDatasetSyncControllerProvider`, `libraryMetaDaoProvider`, `exerciseDaoProvider`, `exerciseVideoDaoProvider`.
 - **Tests**: 19 new — 12 controller, 6 banner, 3 settings. Library screen test updated with controller override.
 - `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 355/355 passed.
@@ -230,10 +216,20 @@
 - **Tests updated**: manifest test, parser test, download service test, bodymap contract test — all load fixture files instead of inline JSON.
 - `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 357/357 passed.
 
+### M2 Closure — 5 Items (complete)
+
+1. **Manifest version short-circuit** (`lib/features/exercise_library/application/exercise_dataset_sync_controller.dart`): `_runSync()` fetches manifest first, compares `LibraryMetaData.libraryVersion` vs `manifest.datasetVersion`, skips download + parse + import when unchanged. Status set to `LibrarySyncStatus.synced` explicitly.
+2. **Candidate service empty-filter semantics** (`lib/features/exercise_library/data/drift_candidate_exercise_query_service.dart`): `_matchesHardFilters()` checks `.isNotEmpty` on `allowedEquipment`, `allowedDifficulties`, `allowedModalities` before applying — empty set = no restriction, not empty result.
+3. **Settings/About dataset status** (`lib/features/exercise_library/application/exercise_dataset_sync_state.dart`, `lib/features/settings/presentation/settings_screen.dart`): `ExerciseDatasetSyncState` now carries `schemaVersion` and `exerciseCount` populated from `LibraryMetaData`. Settings screen shows real values instead of null.
+4. **Real thumbnail handling** (`lib/features/exercise_library/presentation/widgets/exercise_video_card.dart`): Uses `CachedNetworkImage` when `video.hasThumbnail` is true (with `CircularProgressIndicator` placeholder and SVG fallback on error), existing `videoCamera` SVG when false. Added `cached_network_image: ^3.4.1` to pubspec. Video card tests use `pump()` instead of `pumpAndSettle()` to avoid infinite animation.
+5. **Tracking docs updated**: `docs/changelog.md` and `docs/implementation.md` updated with closure details.
+
+- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 359/359 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 357/357 passed (336 existing + 19 V1-M2-009 + 2 updated suite)
+- `flutter test` — 359/359 passed (357 existing + 2 new thumbnail tests)
 - `dart run build_runner build` — passed (6s, 115 outputs)
 
 ## Codebase Convention Enforcement Status

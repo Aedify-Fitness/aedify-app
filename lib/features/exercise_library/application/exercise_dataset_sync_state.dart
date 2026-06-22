@@ -28,6 +28,8 @@ class ExerciseDatasetSyncState {
     required this.phase,
     this.manifest,
     this.libraryVersion,
+    this.schemaVersion,
+    this.exerciseCount,
     this.downloadProgress,
     this.failure,
     this.isOffline = false,
@@ -36,6 +38,8 @@ class ExerciseDatasetSyncState {
   final ExerciseDatasetSyncPhase phase;
   final ExerciseDatasetManifest? manifest;
   final String? libraryVersion;
+  final int? schemaVersion;
+  final int? exerciseCount;
   final double? downloadProgress;
   final ExerciseDatasetSyncFailure? failure;
   final bool isOffline;
@@ -55,6 +59,8 @@ class ExerciseDatasetSyncState {
     ExerciseDatasetSyncPhase? phase,
     ExerciseDatasetManifest? manifest,
     String? libraryVersion,
+    int? schemaVersion,
+    int? exerciseCount,
     double? downloadProgress,
     ExerciseDatasetSyncFailure? failure,
     bool? isOffline,
@@ -69,6 +75,8 @@ class ExerciseDatasetSyncState {
       libraryVersion: clearLibraryVersion
           ? null
           : (libraryVersion ?? this.libraryVersion),
+      schemaVersion: schemaVersion ?? this.schemaVersion,
+      exerciseCount: exerciseCount ?? this.exerciseCount,
       downloadProgress: clearDownloadProgress
           ? null
           : (downloadProgress ?? this.downloadProgress),
@@ -81,6 +89,8 @@ class ExerciseDatasetSyncState {
     : phase = ExerciseDatasetSyncPhase.neverSynced,
       manifest = null,
       libraryVersion = null,
+      schemaVersion = null,
+      exerciseCount = null,
       downloadProgress = null,
       failure = null,
       isOffline = false;

@@ -22,6 +22,8 @@ class ExerciseDatasetSyncController
     return ExerciseDatasetSyncState(
       phase: _phaseForStatus(status),
       libraryVersion: meta.libraryVersion,
+      schemaVersion: meta.schemaVersion,
+      exerciseCount: meta.exerciseCount,
       isOffline: !ref.read(AppProviders.networkStatusProvider).isOnline,
     );
   }
@@ -98,6 +100,8 @@ class ExerciseDatasetSyncController
         ExerciseDatasetSyncState(
           phase: ExerciseDatasetSyncPhase.synced,
           libraryVersion: meta.libraryVersion,
+          schemaVersion: meta.schemaVersion,
+          exerciseCount: meta.exerciseCount,
           isOffline: true,
         ),
       );
@@ -111,6 +115,32 @@ class ExerciseDatasetSyncController
         ),
       );
       await dao.setSyncStatus(syncStatus: LibrarySyncStatus.syncing);
+
+      final manifest = await downloadService.fetchManifest();
+      final meta = await dao.getLibraryMeta();
+
+      // Short-circuit if the local dataset version matches the manifest version
+      if (meta != null && meta.libraryVersion == manifest.datasetVersion) {
+        final version = meta.libraryVersion ?? '';
+        await dao.updateManifestMetadata(
+          libraryVersion: version,
+          schemaVersion: meta.schemaVersion,
+          exerciseCount: meta.exerciseCount,
+          downloadedAt: meta.downloadedAt ?? DateTime.now(),
+          manifestLastUpdatedAt: DateTime.now(),
+        );
+        await dao.setSyncStatus(syncStatus: LibrarySyncStatus.synced);
+        state = AsyncData(
+          ExerciseDatasetSyncState(
+            phase: ExerciseDatasetSyncPhase.synced,
+            manifest: manifest,
+            libraryVersion: meta.libraryVersion,
+            schemaVersion: meta.schemaVersion,
+            exerciseCount: meta.exerciseCount,
+          ),
+        );
+        return;
+      }
 
       final downloadResult = await downloadService.downloadActiveDataset();
 
@@ -137,11 +167,15 @@ class ExerciseDatasetSyncController
         downloadedAt: downloadResult.downloadedAt,
       );
 
+      final finalMeta = await dao.getLibraryMeta();
+
       state = AsyncData(
         ExerciseDatasetSyncState(
           phase: ExerciseDatasetSyncPhase.synced,
           manifest: downloadResult.manifest,
           libraryVersion: importResult.libraryVersion,
+          schemaVersion: finalMeta?.schemaVersion,
+          exerciseCount: finalMeta?.exerciseCount,
           downloadProgress: 1.0,
         ),
       );

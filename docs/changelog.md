@@ -6,6 +6,15 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2 closure — 5 items: version short-circuit, empty-filter semantics, dataset status, thumbnails, tracking docs)
+
+- **Manifest version short-circuit**: `ExerciseDatasetSyncController._runSync()` now fetches the manifest first, compares `LibraryMetaData.libraryVersion` against `manifest.datasetVersion`, and skips download+import when versions match. Status set to `LibrarySyncStatus.synced` explicitly (overrides the `syncing` status set at method entry).
+- **Candidate service empty-filter semantics**: `DriftCandidateExerciseQueryService._matchesHardFilters()` now checks `.isNotEmpty` before applying `allowedEquipment`, `allowedDifficulties`, and `allowedModalities` filters. Empty sets mean "no restriction" instead of producing empty results.
+- **Settings/About dataset status**: `ExerciseDatasetSyncState` gained `schemaVersion` and `exerciseCount` fields populated from `LibraryMetaData` in `build()` and after import. `ExerciseDatasetStatusTile` on the settings screen now shows real schema version and exercise count instead of null.
+- **Real thumbnail handling**: Added `cached_network_image: ^3.4.1` to `pubspec.yaml`. `ExerciseVideoCard` now renders `CachedNetworkImage` (with `CircularProgressIndicator` placeholder and SVG fallback on error) when `video.hasThumbnail` is true, or the existing `videoCamera` SVG when false. Video card tests migrated from `pumpAndSettle` to `pump` to avoid infinite animation from placeholder spinners.
+- **M2 tracking docs updated**: `docs/changelog.md` and `docs/implementation.md` updated with M2 closure details.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 359/359 passed.
+
 ### Added (V1-M2-010 — Exercise Library QA Fixture Suite)
 
 - **Manifest fixtures** (5 files in `test/fixtures/exercise_library/`):

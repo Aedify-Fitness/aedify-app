@@ -47,17 +47,20 @@ class DriftCandidateExerciseQueryService
     CandidateExerciseDto exercise,
     CandidateExerciseQuery query,
   ) {
-    if (!query.allowedEquipment.contains(exercise.equipment) &&
+    if (query.allowedEquipment.isNotEmpty &&
+        !query.allowedEquipment.contains(exercise.equipment) &&
         exercise.equipment != null) {
       return false;
     }
 
-    if (exercise.difficulty != null &&
+    if (query.allowedDifficulties.isNotEmpty &&
+        exercise.difficulty != null &&
         !query.allowedDifficulties.contains(exercise.difficulty)) {
       return false;
     }
 
-    if (!query.allowedModalities.contains(exercise.modality)) {
+    if (query.allowedModalities.isNotEmpty &&
+        !query.allowedModalities.contains(exercise.modality)) {
       return false;
     }
 

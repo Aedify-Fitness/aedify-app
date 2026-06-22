@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_video_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -31,19 +32,47 @@ class ExerciseVideoCard extends StatelessWidget {
           onRetry: onRetry,
         ),
         _ => ListTile(
-          leading: SvgPicture.asset(
-            OulinedSvgAssets.videoCamera,
-            width: AppSpacing.lg,
-            height: AppSpacing.lg,
-            colorFilter: ColorFilter.mode(
-              colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
-            ),
-          ),
+          leading: video.hasThumbnail
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  child: CachedNetworkImage(
+                    imageUrl: video.ogImageUrl!,
+                    width: AppSpacing.lg,
+                    height: AppSpacing.lg,
+                    fit: BoxFit.cover,
+                    placeholder: (_, _) => SizedBox(
+                      width: AppSpacing.lg,
+                      height: AppSpacing.lg,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: AppSpacing.xxs,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (_, _, _) => SvgPicture.asset(
+                      OulinedSvgAssets.videoCamera,
+                      width: AppSpacing.lg,
+                      height: AppSpacing.lg,
+                      colorFilter: ColorFilter.mode(
+                        colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                )
+              : SvgPicture.asset(
+                  OulinedSvgAssets.videoCamera,
+                  width: AppSpacing.lg,
+                  height: AppSpacing.lg,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.onSurfaceVariant,
+                    BlendMode.srcIn,
+                  ),
+                ),
           title: Text(video.angle ?? AppStrings.videoUnavailable),
           subtitle: Text(video.gender ?? ''),
           trailing: playbackState == ExerciseVideoPlaybackState.loading
-              ? const SizedBox(
+              ? SizedBox(
                   width: AppSpacing.lg,
                   height: AppSpacing.lg,
                   child: CircularProgressIndicator(strokeWidth: AppSpacing.xxs),

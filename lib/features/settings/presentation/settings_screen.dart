@@ -16,8 +16,12 @@ class SettingsScreen extends ConsumerWidget {
     final libraryVersion = syncState.whenOrNull(
       data: (state) => state.libraryVersion,
     );
-    final schemaVersion = syncState.whenOrNull(data: (_) => null);
-    final exerciseCount = syncState.whenOrNull(data: (_) => null);
+    final schemaVersion = syncState.whenOrNull(
+      data: (state) => state.schemaVersion,
+    );
+    final exerciseCount = syncState.whenOrNull(
+      data: (state) => state.exerciseCount,
+    );
     final syncStatusLabel = syncState.when(
       loading: () => AppStrings.exerciseLibrarySyncing,
       error: (_, _) => AppStrings.exerciseLibrarySyncFailedLabel,
