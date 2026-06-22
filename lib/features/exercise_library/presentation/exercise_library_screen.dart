@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_filter_sheet.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -132,7 +133,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                                 isFavorite: item.isFavorite,
                                 onTap: () {
                                   context.pushNamed(
-                                    'exerciseDetail',
+                                    AppRoutes.exerciseDetail().name,
                                     pathParameters: {'id': '${item.id}'},
                                   );
                                 },
