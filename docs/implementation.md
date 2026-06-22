@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                               |
-| **Status**            | 6 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap) |
-| **Blockers**          | None                                                                                        |
+| Field                 | Value                                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                        |
+| **Status**            | 7 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service) |
+| **Blockers**          | None                                                                                                                 |
 
 ## Completed Work
 
@@ -171,11 +171,22 @@
 - **Tests**: 25 new — 6 controller, 8 asset contract, 4 chip bar, 4 screen, 1 filter sheet, 1 router, 1 browse-button scroll fix. 297 total passing.
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 297/297 passed.
 
+### V1-M2-007 — Deterministic Candidate Exercise Query Service (complete)
+
+- **Domain models**: `CandidateExerciseDto` (id, name, difficulty, muscleGroups, modality, equipment, mechanic, force, isCustom — no user notes, file paths, or flags), `CandidateExerciseQuery` (hard filter sets + excluded IDs/groups + soft ranking signals + limit), `CandidateExerciseRankedResult` (exercise + score).
+- **Abstract interface**: `CandidateExerciseQueryService` with `queryCandidates()` method.
+- **DAO expansion**: `ExerciseDao.getExercisesForCandidateEngine()` — non-deleted rows, optional custom exercise exclusion.
+- **Implementation**: `DriftCandidateExerciseQueryService` — hard filters (equipment, difficulty, modality, excluded IDs, excluded muscle groups), soft ranking (+3 per preferred muscle group, +2 per goal tag match on modality/mechanic/force), deterministic sort (desc score → asc name → asc id), limit.
+- **Provider**: `AppProviders.candidateExerciseQueryServiceProvider`.
+- **No controller yet** — service-layer only for M2; later AI/import flows will consume it.
+- **Tests**: 15 new — 12 candidate service + 3 DAO. 314 total passing.
+- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 314/314 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 297/297 passed
-- `dart run build_runner build` — N/A (no code generation for V1-M2-005/006)
+- `flutter test` — 314/314 passed
+- `dart run build_runner build` — N/A (no code generation for V1-M2-005/006/007)
 
 ## Codebase Convention Enforcement Status
 

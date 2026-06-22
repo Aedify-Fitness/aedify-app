@@ -112,6 +112,16 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
     return map;
   }
 
+  Future<List<Exercise>> getExercisesForCandidateEngine({
+    bool includeCustomExercises = true,
+  }) {
+    var q = select(exercises)..where((t) => t.deletedAt.isNull());
+    if (!includeCustomExercises) {
+      q.where((t) => t.isCustom.equals(false));
+    }
+    return q.get();
+  }
+
   Future<void> deleteSourceExercises() async {
     await (delete(exercises)..where((t) => t.isCustom.equals(false))).go();
   }

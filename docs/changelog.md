@@ -6,6 +6,16 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-007 — Deterministic Candidate Exercise Query Service)
+
+- **Domain models**: `CandidateExerciseDto` (id, name, difficulty, muscleGroups, modality, equipment, mechanic, force, isCustom — no user notes, file paths, or flags), `CandidateExerciseQuery` (hard filter sets + excluded IDs/groups + soft ranking signals + limit), `CandidateExerciseRankedResult` (exercise + score).
+- **Abstract interface**: `CandidateExerciseQueryService` with `queryCandidates(CandidateExerciseQuery)`.
+- **DAO expansion**: `ExerciseDao.getExercisesForCandidateEngine()` — returns non-deleted rows, optionally excludes custom exercises.
+- **Implementation**: `DriftCandidateExerciseQueryService` — applies hard filters (equipment, difficulty, modality, excluded IDs, excluded muscle groups), then soft ranking (+3 per preferred muscle group match, +2 per goal tag match on modality/mechanic/force), then deterministic sort (desc score → asc name → asc id), then limit.
+- **Provider**: `AppProviders.candidateExerciseQueryServiceProvider` wired in `providers.dart`.
+- **Tests**: 15 new — 12 candidate service (equipment filter, null-equipment pass, difficulty filter, modality filter, excluded IDs, substituted excluded IDs, excluded muscle groups, include custom, exclude custom, preferred muscle group ranking, deterministic ordering, limit, no-forbidden-fields, deleted-row exclusion) + 3 DAO (returns source+custom, excludes deleted, excludes custom when disabled).
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 314/314 passed.
+
 ### Added (V1-M2-006 — 14-Bucket SVG Bodymap with Tap-to-Select)
 
 - **Domain models**: `BodymapBucket` enum (14 approved buckets with labels), `BodymapViewSide` enum (front, back).
