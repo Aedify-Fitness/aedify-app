@@ -131,7 +131,10 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                                 equipment: item.equipment,
                                 isFavorite: item.isFavorite,
                                 onTap: () {
-                                  context.push('/exercises/${item.id}');
+                                  context.pushNamed(
+                                    'exerciseDetail',
+                                    pathParameters: {'id': '${item.id}'},
+                                  );
                                 },
                               );
                             },

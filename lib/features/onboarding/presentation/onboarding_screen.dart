@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
-import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -33,7 +32,7 @@ class OnboardingScreen extends ConsumerWidget {
             ],
             AppWhiteSpace.hMd,
             ElevatedButton(
-              onPressed: () => context.go(AppRoutes.home().path),
+              onPressed: () => context.goNamed('home'),
               child: const Text(AppStrings.getStarted),
             ),
           ],

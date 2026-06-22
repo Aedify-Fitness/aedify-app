@@ -5,6 +5,7 @@ import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ExerciseFilterSheet extends ConsumerWidget {
   const ExerciseFilterSheet({super.key, required this.initialFilters});
@@ -102,7 +103,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             SizedBox(height: AppSpacing.md),
@@ -120,7 +121,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             SizedBox(height: AppSpacing.md),
@@ -138,7 +139,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             SizedBox(height: AppSpacing.md),
@@ -156,7 +157,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             SizedBox(height: AppSpacing.md),
@@ -170,7 +171,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
               contentPadding: EdgeInsets.zero,
             ),
@@ -186,7 +187,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                       AppProviders.exerciseSearchControllerProvider.notifier,
                     )
                     .updateFilters(updated);
-                Navigator.pop(context);
+                context.pop();
               },
               contentPadding: EdgeInsets.zero,
             ),
@@ -203,7 +204,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                               .notifier,
                         )
                         .clearFilters();
-                    Navigator.pop(context);
+                    context.pop();
                   },
                   child: Text(AppStrings.clearFilters),
                 ),
