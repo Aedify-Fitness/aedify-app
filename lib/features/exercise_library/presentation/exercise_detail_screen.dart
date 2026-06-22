@@ -31,8 +31,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 detail.isFavorite
                     ? SolidSvgAssets.heart
                     : OulinedSvgAssets.heart,
-                width: 24,
-                height: 24,
+                width: AppSpacing.lg,
+                height: AppSpacing.lg,
                 colorFilter: detail.isFavorite
                     ? ColorFilter.mode(colorScheme.error, BlendMode.srcIn)
                     : null,
@@ -58,8 +58,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 detail.isSubstitutedOut
                     ? OulinedSvgAssets.noSymbol
                     : OulinedSvgAssets.checkCircle,
-                width: 24,
-                height: 24,
+                width: AppSpacing.lg,
+                height: AppSpacing.lg,
               ),
               onPressed: () async {
                 try {
@@ -90,8 +90,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
               children: [
                 SvgPicture.asset(
                   OulinedSvgAssets.exclamationCircle,
-                  width: 48,
-                  height: 48,
+                  width: AppSpacing.xxl,
+                  height: AppSpacing.xxl,
                   colorFilter: ColorFilter.mode(
                     colorScheme.error,
                     BlendMode.srcIn,
@@ -158,7 +158,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                           (g) => Chip(
                             label: Text(
                               g,
-                              style: const TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: AppFontSizes.xs),
                             ),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
@@ -183,7 +183,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                           (m) => Chip(
                             label: Text(
                               m,
-                              style: const TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: AppFontSizes.xs),
                             ),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
@@ -207,8 +207,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 24,
-                            height: 24,
+                            width: AppSpacing.lg,
+                            height: AppSpacing.lg,
                             decoration: BoxDecoration(
                               color: colorScheme.secondaryContainer,
                               shape: BoxShape.circle,
@@ -216,7 +216,9 @@ class ExerciseDetailScreen extends ConsumerWidget {
                             child: Center(
                               child: Text(
                                 '${entry.key + 1}',
-                                style: const TextStyle(fontSize: 12),
+                                style: const TextStyle(
+                                  fontSize: AppFontSizes.xs,
+                                ),
                               ),
                             ),
                           ),
@@ -236,8 +238,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
                       child: ListTile(
                         leading: SvgPicture.asset(
                           OulinedSvgAssets.videoCamera,
-                          width: 24,
-                          height: 24,
+                          width: AppSpacing.lg,
+                          height: AppSpacing.lg,
                         ),
                         title: Text(video.angle ?? AppStrings.videoUnavailable),
                         subtitle: Text(video.gender ?? ''),
@@ -272,7 +274,7 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Chip(
-      label: Text(label, style: const TextStyle(fontSize: 12)),
+      label: Text(label, style: const TextStyle(fontSize: AppFontSizes.xs)),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );

@@ -78,11 +78,11 @@ class ExerciseFilterSheet extends ConsumerWidget {
           children: [
             Center(
               child: Container(
-                width: 40,
-                height: 4,
+                width: AppSizing.handleWidth,
+                height: AppSpacing.xs,
                 decoration: BoxDecoration(
                   color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppRadius.xxs),
                 ),
               ),
             ),

@@ -78,7 +78,7 @@ class AppTheme {
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
-          vertical: 12,
+          vertical: AppSpacing.buttonVertical,
         ),
         textStyle: AppTextStyles.labelMd,
       ),
@@ -96,7 +96,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: 14,
+        vertical: AppSpacing.inputVertical,
       ),
     ),
     chipTheme: ChipThemeData(
@@ -189,7 +189,7 @@ class AppTheme {
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
-          vertical: 12,
+          vertical: AppSpacing.buttonVertical,
         ),
         textStyle: AppTextStyles.labelMd,
       ),
@@ -207,7 +207,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: 14,
+        vertical: AppSpacing.inputVertical,
       ),
     ),
     chipTheme: ChipThemeData(

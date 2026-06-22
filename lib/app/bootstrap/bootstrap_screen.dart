@@ -98,7 +98,11 @@ class _FailureContent extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.error_outline, size: 48, color: context.colorScheme.error),
+        Icon(
+          Icons.error_outline,
+          size: AppSpacing.xxl,
+          color: context.colorScheme.error,
+        ),
         AppWhiteSpace.hMd,
         Text(
           AppStrings.startupFailed,

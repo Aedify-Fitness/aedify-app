@@ -35,8 +35,8 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                   children: [
                     SvgPicture.asset(
                       OulinedSvgAssets.exclamationCircle,
-                      width: 48,
-                      height: 48,
+                      width: AppSpacing.xxl,
+                      height: AppSpacing.xxl,
                       colorFilter: ColorFilter.mode(
                         colorScheme.error,
                         BlendMode.srcIn,
@@ -101,8 +101,8 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                             children: [
                               SvgPicture.asset(
                                 OulinedSvgAssets.magnifyingGlassMinus,
-                                width: 48,
-                                height: 48,
+                                width: AppSpacing.xxl,
+                                height: AppSpacing.xxl,
                                 colorFilter: ColorFilter.mode(
                                   colorScheme.onSurfaceVariant,
                                   BlendMode.srcIn,
@@ -133,7 +133,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                             ),
                             itemCount: searchState.items.length,
                             separatorBuilder: (_, _) =>
-                                const Divider(height: 1),
+                                Divider(height: AppSizing.divider),
                             itemBuilder: (context, index) {
                               final item = searchState.items[index];
                               return _ExerciseListTile(
@@ -169,7 +169,11 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                 ExerciseFilterSheet(initialFilters: searchState.filters),
           );
         },
-        child: SvgPicture.asset(OulinedSvgAssets.funnel, width: 24, height: 24),
+        child: SvgPicture.asset(
+          OulinedSvgAssets.funnel,
+          width: AppSpacing.lg,
+          height: AppSpacing.lg,
+        ),
       ),
     );
   }
@@ -194,8 +198,8 @@ class _SearchBar extends StatelessWidget {
           hintText: AppStrings.searchExercises,
           prefixIcon: SvgPicture.asset(
             OulinedSvgAssets.magnifyingGlass,
-            width: 24,
-            height: 24,
+            width: AppSpacing.lg,
+            height: AppSpacing.lg,
             fit: BoxFit.scaleDown,
           ),
           border: OutlineInputBorder(
@@ -254,8 +258,8 @@ class _ActiveFilterBar extends StatelessWidget {
           IconButton(
             icon: SvgPicture.asset(
               OulinedSvgAssets.xMark,
-              width: 18,
-              height: 18,
+              width: AppSizing.iconXs,
+              height: AppSizing.iconXs,
             ),
             onPressed: onClear,
             tooltip: AppStrings.clearFilters,
@@ -267,9 +271,9 @@ class _ActiveFilterBar extends StatelessWidget {
 
   Widget _filterChip(String label) {
     return Padding(
-      padding: const EdgeInsets.only(right: 4),
+      padding: const EdgeInsets.only(right: AppSpacing.xs),
       child: Chip(
-        label: Text(label, style: const TextStyle(fontSize: 12)),
+        label: Text(label, style: const TextStyle(fontSize: AppFontSizes.xs)),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
       ),
@@ -303,21 +307,24 @@ class _ExerciseListTile extends StatelessWidget {
       subtitle: Row(
         children: [
           if (difficulty != null) ...[
-            Text(difficulty!, style: const TextStyle(fontSize: 12)),
-            const SizedBox(width: 8),
+            Text(
+              difficulty!,
+              style: const TextStyle(fontSize: AppFontSizes.xs),
+            ),
+            AppWhiteSpace.wSm,
           ],
-          Text(modality, style: const TextStyle(fontSize: 12)),
+          Text(modality, style: const TextStyle(fontSize: AppFontSizes.xs)),
           if (equipment != null) ...[
-            const SizedBox(width: 8),
-            Text(equipment!, style: const TextStyle(fontSize: 12)),
+            AppWhiteSpace.wSm,
+            Text(equipment!, style: const TextStyle(fontSize: AppFontSizes.xs)),
           ],
         ],
       ),
       trailing: isFavorite
           ? SvgPicture.asset(
               SolidSvgAssets.heart,
-              width: 20,
-              height: 20,
+              width: AppSizing.iconSm,
+              height: AppSizing.iconSm,
               colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
             )
           : null,
