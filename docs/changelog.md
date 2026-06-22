@@ -18,6 +18,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Detail screen updated**: Uses `ExerciseVideoSection` instead of inline video cards. Retry triggers `ref.invalidate` on the detail controller.
 - **Tests**: 19 new — 6 controller, 5 card, 5 section, 3 detail screen (no-video fallback, video header, instructions remain visible).
 - Removed unused `AppStrings.videos`.
+- **AGENTS.md**: Added empty-string null-coalescing rule (`?? ''` allowed for data-display fields, not a required `AppStrings` constant) to Text Styles and Strings sections.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 272/272 passed.
 
 ### Refactored (code style & conventions — full sweep)

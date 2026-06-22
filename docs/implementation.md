@@ -151,7 +151,7 @@
 - **AppStrings**: 4 new video strings. Removed unused `videos`.
 - **AppSizing**: Added `iconXxs (16)` for retry button icon.
 - **Detail screen**: Uses `ExerciseVideoSection`; retry invalidates detail controller. Instructions remain visible regardless of video state.
-- **AGENTS.md compliance audit**: All new files checked against all 10 convention sections — one violation found (`width: 16`) and fixed.
+- **AGENTS.md compliance audit**: All new files checked against all 10 convention sections — one violation found (`strokeWidth: 2` → `AppSpacing.xxs`) and fixed. DESIGN.md read per §162 for UI work. AGENTS.md updated with empty-string null-coalescing rule (§509-510, §557-560).
 - **Tests**: 19 new — 6 controller, 5 card, 5 section, 3 detail screen. 272 total passing.
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 272/272 passed.
 

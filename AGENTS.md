@@ -508,6 +508,11 @@ Prefer simple, readable code over clever code.
 - **DON'T** use inline `TextStyle(...)` in widget or theme code.
 - **DON'T** hardcode user-facing strings in widgets or feature code; all user-facing
   strings must live in `AppStrings` or a dedicated constants class.
+- **DO** allow null-coalescing to an empty string (`?? ''`) for optional data-display
+  fields when the intent is to render nothing. Do not treat `''` null-fallbacks as a
+  required `AppStrings` constant.
+- **DO** move any non-empty user-facing fallback, label, message, or placeholder string
+  into `AppStrings` or the appropriate constants file.
 
 ### Navigation
 
@@ -558,6 +563,9 @@ Prefer simple, readable code over clever code.
 - **DO** put error, network, storage, and firebase failure messages in
   `AppErrorStrings` (`app_error_strings.dart`).
 - **DON'T** hardcode strings in widgets, features, or core services.
+- **DO** allow null-coalescing to an empty string (`?? ''`) for optional data-display
+  fields when the intent is to render nothing. See Text Styles section for the full
+  rule.
 
 ### Spacing and Sizing
 
