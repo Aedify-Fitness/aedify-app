@@ -3,10 +3,13 @@ import 'package:aedify/features/exercise_library/domain/exercise_filter_state.da
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_filter_sheet.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class ExerciseLibraryScreen extends ConsumerWidget {
@@ -30,10 +33,14 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: colorScheme.error,
+                    SvgPicture.asset(
+                      OulinedSvgAssets.exclamationCircle,
+                      width: 48,
+                      height: 48,
+                      colorFilter: ColorFilter.mode(
+                        colorScheme.error,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     SizedBox(height: AppSpacing.md),
                     Text(
@@ -92,10 +99,14 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.search_off,
-                                size: 48,
-                                color: colorScheme.onSurfaceVariant,
+                              SvgPicture.asset(
+                                OulinedSvgAssets.magnifyingGlassMinus,
+                                width: 48,
+                                height: 48,
+                                colorFilter: ColorFilter.mode(
+                                  colorScheme.onSurfaceVariant,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                               SizedBox(height: AppSpacing.md),
                               Text(
@@ -158,7 +169,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                 ExerciseFilterSheet(initialFilters: searchState.filters),
           );
         },
-        child: const Icon(Icons.filter_list),
+        child: SvgPicture.asset(OulinedSvgAssets.funnel, width: 24, height: 24),
       ),
     );
   }
@@ -181,7 +192,12 @@ class _SearchBar extends StatelessWidget {
         controller: TextEditingController(text: initialQuery),
         decoration: InputDecoration(
           hintText: AppStrings.searchExercises,
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: SvgPicture.asset(
+            OulinedSvgAssets.magnifyingGlass,
+            width: 24,
+            height: 24,
+            fit: BoxFit.scaleDown,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.full),
           ),
@@ -236,7 +252,11 @@ class _ActiveFilterBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, size: 18),
+            icon: SvgPicture.asset(
+              OulinedSvgAssets.xMark,
+              width: 18,
+              height: 18,
+            ),
             onPressed: onClear,
             tooltip: AppStrings.clearFilters,
           ),
@@ -294,7 +314,12 @@ class _ExerciseListTile extends StatelessWidget {
         ],
       ),
       trailing: isFavorite
-          ? Icon(Icons.favorite, color: colorScheme.error, size: 20)
+          ? SvgPicture.asset(
+              SolidSvgAssets.heart,
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
+            )
           : null,
       onTap: onTap,
     );

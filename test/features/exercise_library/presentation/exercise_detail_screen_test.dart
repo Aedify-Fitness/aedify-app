@@ -172,14 +172,14 @@ void main() {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.favorite_border), findsOneWidget);
+      expect(find.byTooltip('Toggle favorite'), findsOneWidget);
     });
 
     testWidgets('substituted toggle is shown', (tester) async {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+      expect(find.byTooltip('Toggle substitution'), findsOneWidget);
     });
   });
 }

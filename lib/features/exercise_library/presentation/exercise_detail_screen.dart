@@ -1,9 +1,12 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ExerciseDetailScreen extends ConsumerWidget {
   const ExerciseDetailScreen({super.key, required this.exerciseId});
@@ -24,9 +27,15 @@ class ExerciseDetailScreen extends ConsumerWidget {
         actions: [
           if (detail != null) ...[
             IconButton(
-              icon: Icon(
-                detail.isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: detail.isFavorite ? colorScheme.error : null,
+              icon: SvgPicture.asset(
+                detail.isFavorite
+                    ? SolidSvgAssets.heart
+                    : OulinedSvgAssets.heart,
+                width: 24,
+                height: 24,
+                colorFilter: detail.isFavorite
+                    ? ColorFilter.mode(colorScheme.error, BlendMode.srcIn)
+                    : null,
               ),
               onPressed: () async {
                 try {
@@ -45,10 +54,12 @@ class ExerciseDetailScreen extends ConsumerWidget {
               tooltip: 'Toggle favorite',
             ),
             IconButton(
-              icon: Icon(
+              icon: SvgPicture.asset(
                 detail.isSubstitutedOut
-                    ? Icons.block
-                    : Icons.check_circle_outline,
+                    ? OulinedSvgAssets.noSymbol
+                    : OulinedSvgAssets.checkCircle,
+                width: 24,
+                height: 24,
               ),
               onPressed: () async {
                 try {
@@ -77,7 +88,15 @@ class ExerciseDetailScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                SvgPicture.asset(
+                  OulinedSvgAssets.exclamationCircle,
+                  width: 48,
+                  height: 48,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.error,
+                    BlendMode.srcIn,
+                  ),
+                ),
                 SizedBox(height: AppSpacing.md),
                 Text(
                   'Could not load exercise.',
@@ -215,7 +234,11 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   ...loaded.videos.map(
                     (video) => Card(
                       child: ListTile(
-                        leading: const Icon(Icons.videocam),
+                        leading: SvgPicture.asset(
+                          OulinedSvgAssets.videoCamera,
+                          width: 24,
+                          height: 24,
+                        ),
                         title: Text(video.angle ?? AppStrings.videoUnavailable),
                         subtitle: Text(video.gender ?? ''),
                       ),
