@@ -235,10 +235,10 @@ class _ActiveFilterBar extends StatelessWidget {
       chips.add(_filterChip(filters.equipment!));
     }
     if (filters.favoritesOnly) {
-      chips.add(_filterChip('Favorites'));
+      chips.add(_filterChip(AppStrings.favorites));
     }
     if (filters.excludeSubstituted) {
-      chips.add(_filterChip('No Substituted'));
+      chips.add(_filterChip(AppStrings.noSubstituted));
     }
 
     return Padding(

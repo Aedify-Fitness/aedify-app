@@ -5,6 +5,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_video_vi
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -172,14 +173,14 @@ void main() {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.byTooltip('Toggle favorite'), findsOneWidget);
+      expect(find.byTooltip(AppStrings.toggleFavorite), findsOneWidget);
     });
 
     testWidgets('substituted toggle is shown', (tester) async {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.byTooltip('Toggle substitution'), findsOneWidget);
+      expect(find.byTooltip(AppStrings.toggleSubstitution), findsOneWidget);
     });
   });
 }

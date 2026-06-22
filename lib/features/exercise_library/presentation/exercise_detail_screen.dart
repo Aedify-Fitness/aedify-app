@@ -51,7 +51,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   );
                 } catch (_) {}
               },
-              tooltip: 'Toggle favorite',
+              tooltip: AppStrings.toggleFavorite,
             ),
             IconButton(
               icon: SvgPicture.asset(
@@ -75,7 +75,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   );
                 } catch (_) {}
               },
-              tooltip: 'Toggle substitution',
+              tooltip: AppStrings.toggleSubstitution,
             ),
           ],
         ],
@@ -99,7 +99,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: AppSpacing.md),
                 Text(
-                  'Could not load exercise.',
+                  AppStrings.exerciseDetailLoadFailed,
                   style: context.textTheme.bodyLarge,
                 ),
                 SizedBox(height: AppSpacing.md),
@@ -117,7 +117,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
         ),
         data: (loaded) {
           if (loaded == null) {
-            return const Center(child: Text('Exercise not found.'));
+            return Center(child: Text(AppStrings.exerciseNotFound));
           }
 
           return SingleChildScrollView(
@@ -229,7 +229,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 ],
                 if (loaded.videos.isNotEmpty) ...[
                   SizedBox(height: AppSpacing.lg),
-                  Text('Videos', style: context.textTheme.titleSmall),
+                  Text(AppStrings.videos, style: context.textTheme.titleSmall),
                   SizedBox(height: AppSpacing.sm),
                   ...loaded.videos.map(
                     (video) => Card(

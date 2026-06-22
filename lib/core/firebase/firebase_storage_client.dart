@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseStorageFailure implements Exception {
@@ -32,7 +33,7 @@ class FirebaseStorageClient {
     } on FirebaseException catch (e) {
       throw FirebaseStorageFailure(
         code: e.code,
-        message: e.message ?? 'Storage error',
+        message: e.message ?? AppErrorStrings.storageErrorMessage,
       );
     }
   }
@@ -48,7 +49,7 @@ class FirebaseStorageClient {
     } on FirebaseException catch (e) {
       throw FirebaseStorageFailure(
         code: e.code,
-        message: e.message ?? 'Download failed',
+        message: e.message ?? AppErrorStrings.downloadFailedMessage,
       );
     }
   }

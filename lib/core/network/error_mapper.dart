@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:aedify/core/errors/app_error.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 
 class ErrorMapper {
   const ErrorMapper();
@@ -12,8 +13,7 @@ class ErrorMapper {
         return AppError(
           code: 'network_timeout',
           message: 'Request timed out',
-          userMessage:
-              'Connection timed out. Please check your connection and try again.',
+          userMessage: AppErrorStrings.networkTimeoutMessage,
           details: error.message,
         );
       case DioExceptionType.cancel:
@@ -27,8 +27,7 @@ class ErrorMapper {
         return AppError(
           code: 'network_unreachable',
           message: 'Unable to reach server',
-          userMessage:
-              'Could not connect. Please check your internet connection.',
+          userMessage: AppErrorStrings.networkUnreachableMessage,
           details: error.message,
         );
       case DioExceptionType.badResponse:
@@ -37,14 +36,14 @@ class ErrorMapper {
         return AppError(
           code: 'bad_certificate',
           message: 'Invalid server certificate',
-          userMessage: 'A security error occurred. Please try again later.',
+          userMessage: AppErrorStrings.badCertificateMessage,
           details: error.message,
         );
       case DioExceptionType.unknown:
         return AppError(
           code: 'unknown_network_error',
           message: error.message ?? 'An unknown network error occurred',
-          userMessage: 'Something went wrong. Please try again.',
+          userMessage: AppErrorStrings.unknownNetworkErrorMessage,
           details: error.message,
         );
     }
@@ -56,42 +55,42 @@ class ErrorMapper {
         return AppError(
           code: 'unauthorized',
           message: 'Authentication failed',
-          userMessage: 'Please check your credentials and try again.',
+          userMessage: AppErrorStrings.unauthorizedMessage,
           details: details,
         );
       case 403:
         return AppError(
           code: 'forbidden',
           message: 'Access denied',
-          userMessage: 'You do not have permission to perform this action.',
+          userMessage: AppErrorStrings.forbiddenMessage,
           details: details,
         );
       case 404:
         return AppError(
           code: 'not_found',
           message: 'Resource not found',
-          userMessage: 'The requested resource was not found.',
+          userMessage: AppErrorStrings.notFoundMessage,
           details: details,
         );
       case 429:
         return AppError(
           code: 'rate_limited',
           message: 'Too many requests',
-          userMessage: 'Please wait a moment and try again.',
+          userMessage: AppErrorStrings.rateLimitedMessage,
           details: details,
         );
       case final s when s != null && s >= 500:
         return AppError(
           code: 'server_error',
           message: 'Server error',
-          userMessage: 'A server error occurred. Please try again later.',
+          userMessage: AppErrorStrings.serverErrorMessage,
           details: details,
         );
       default:
         return AppError(
           code: 'unexpected_status',
           message: 'Unexpected response status: $statusCode',
-          userMessage: 'Something went wrong. Please try again.',
+          userMessage: AppErrorStrings.unexpectedStatusMessage,
           details: details,
         );
     }

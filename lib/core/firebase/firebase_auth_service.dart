@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthFailure implements Exception {
@@ -23,7 +24,7 @@ class FirebaseAuthService {
     } on FirebaseAuthException catch (e) {
       throw FirebaseAuthFailure(
         code: e.code,
-        message: e.message ?? 'Anonymous sign-in failed',
+        message: e.message ?? AppErrorStrings.anonymousSignInFailedMessage,
       );
     }
   }

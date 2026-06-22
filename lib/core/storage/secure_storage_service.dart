@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageFailure implements Exception {
@@ -26,7 +27,7 @@ class SecureStorageService {
     } catch (_) {
       throw SecureStorageFailure(
         code: code,
-        message: 'Secure storage is unavailable.',
+        message: AppErrorStrings.secureStorageUnavailableMessage,
       );
     }
   }

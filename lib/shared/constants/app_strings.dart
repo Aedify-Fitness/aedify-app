@@ -7,6 +7,7 @@ class AppStrings {
   static const String retry = 'Retry';
   static const String import = 'Import';
   static const String filterAny = 'Any';
+  static const String videos = 'Videos';
   static const String aiChat = 'AI Chat';
   static const String workout = 'Workout';
   static const String sharing = 'Sharing';
@@ -14,6 +15,7 @@ class AppStrings {
   static const String liftLog = 'Lift Log';
   static const String settings = 'Settings';
   static const String tryAgain = 'Try again';
+  static const String favorites = 'Favorites';
   static const String analytics = 'Analytics';
   static const String aiTrainer = 'AI Trainer';
   static const String programmes = 'Programmes';
@@ -32,12 +34,14 @@ class AppStrings {
   static const String pageNotFound = 'Page Not Found';
   static const String progressMedia = 'Progress Media';
   static const String favoritesOnly = 'Favorites only';
+  static const String noSubstituted = 'No Substituted';
   static const String aiUnavailable = 'AI Unavailable';
   static const String filterMuscleGroup = 'Muscle Group';
   static const String aiUnsupported = 'AI Not Supported';
   static const String importDisabled = 'Import Disabled';
   static const String shareDisabled = 'Sharing Disabled';
   static const String startingApp = 'Starting Aedify...';
+  static const String toggleFavorite = 'Toggle favorite';
   static const String primaryMuscles = 'Primary muscles';
   static const String externalImport = 'External Import';
   static const String exerciseLibrary = 'Exercise Library';
@@ -47,8 +51,11 @@ class AppStrings {
   static const String workoutExecution = 'Workout Execution';
   static const String videoUnavailable = 'Video unavailable';
   static const String searchExercises = 'Search exercises...';
+  static const String exerciseNotFound = 'Exercise not found.';
   static const String noExercisesFound = 'No exercises found.';
+  static const String toggleSubstitution = 'Toggle substitution';
   static const String excludeSubstituted = 'Exclude substituted';
+  static const String exerciseDetailLoadFailed = 'Could not load exercise.';
   static const String startupFailed = 'Something went wrong during startup.';
   static const String diagnosticsSummaryTitle =
       'Redacted foundation diagnostics';
