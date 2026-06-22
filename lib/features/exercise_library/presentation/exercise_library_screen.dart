@@ -23,7 +23,20 @@ class ExerciseLibraryScreen extends ConsumerWidget {
     final colorScheme = context.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.exerciseLibrary)),
+      appBar: AppBar(
+        title: const Text(AppStrings.exerciseLibrary),
+        actions: [
+          IconButton(
+            onPressed: () => context.pushNamed(AppRoutes.bodymap().name),
+            icon: SvgPicture.asset(
+              OulinedSvgAssets.user,
+              width: AppSpacing.lg,
+              height: AppSpacing.lg,
+            ),
+            tooltip: AppStrings.bodymap,
+          ),
+        ],
+      ),
       body: searchState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : searchState.errorCode != null

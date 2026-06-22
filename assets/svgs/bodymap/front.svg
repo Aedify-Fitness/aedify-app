@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" fill="none">
+  <g id="bodymap-front">
+    <path id="neck" d="M130 10 C130 10 120 25 120 40 C120 50 130 55 140 55 C150 55 160 50 160 40 C160 25 150 10 150 10 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="shoulders_l" d="M60 55 C40 60 30 80 35 95 C40 105 60 110 75 105 C85 100 90 85 90 70 C90 60 80 55 70 55 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="shoulders_r" d="M220 55 C210 55 200 60 200 70 C200 85 205 100 215 105 C230 110 250 105 255 95 C260 80 250 60 230 55 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="chest" d="M90 70 C85 90 85 120 90 140 C95 155 110 160 120 160 C130 160 140 155 145 140 C150 120 150 90 145 70 C140 60 100 60 90 70 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="biceps_l" d="M40 105 C30 115 25 135 30 150 C35 160 50 165 60 160 C70 150 75 135 70 120 C65 110 55 100 45 105 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="biceps_r" d="M240 105 C230 100 220 110 215 120 C210 135 215 150 225 160 C235 165 250 160 255 150 C260 135 255 115 245 105 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="forearms_l" d="M30 155 C20 170 15 195 20 215 C25 230 40 235 50 230 C60 220 65 200 60 185 C55 170 45 155 35 155 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="forearms_r" d="M250 155 C240 155 230 170 225 185 C220 200 225 220 235 230 C245 235 260 230 265 215 C270 195 265 170 255 155 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="core" d="M85 165 C80 190 80 220 85 250 C90 270 110 275 120 275 C130 275 150 270 155 250 C160 220 160 190 155 165 C150 155 90 155 85 165 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="quads_l" d="M75 280 C65 300 60 330 65 355 C70 370 85 375 95 370 C105 360 110 340 105 320 C100 300 90 280 80 280 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="quads_r" d="M185 280 C175 280 165 300 160 320 C155 340 160 360 170 370 C180 375 195 370 200 355 C205 330 200 300 190 280 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="adductors_l" d="M80 360 C70 380 65 400 70 415 C75 425 90 425 95 415 C100 400 100 380 95 365 C90 355 85 350 80 360 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="adductors_r" d="M165 360 C160 355 155 365 150 380 C145 400 150 420 155 430 C160 435 170 430 170 420 C175 400 175 380 170 365 C168 358 167 355 165 360 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="calves_l" d="M65 420 C55 440 50 460 55 480 C60 490 75 490 80 480 C85 460 85 440 80 425 C75 415 70 410 65 420 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="calves_r" d="M175 425 C170 415 165 420 160 440 C155 460 160 480 165 490 C170 495 185 490 185 480 C190 460 190 440 185 420 C182 413 180 410 175 425 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="feet_l" d="M45 495 C40 510 40 530 50 545 C55 555 70 555 75 545 C80 530 80 510 75 495 C70 485 55 485 45 495 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="feet_r" d="M165 495 C155 485 145 490 145 505 C145 525 150 545 155 555 C160 560 175 555 180 545 C185 525 185 505 180 495 C178 488 170 485 165 495 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  </g>
+</svg>

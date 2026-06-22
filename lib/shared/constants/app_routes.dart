@@ -12,6 +12,7 @@ class AppRoutes {
   factory AppRoutes.import() => AppRoutes._(path: '/import', name: 'import');
   factory AppRoutes.startup() => AppRoutes._(path: '/startup', name: 'startup');
   factory AppRoutes.workout() => AppRoutes._(path: '/workout', name: 'workout');
+  factory AppRoutes.bodymap() => AppRoutes._(path: '/bodymap', name: 'bodymap');
   factory AppRoutes.liftLog() =>
       AppRoutes._(path: '/lift-log', name: 'liftLog');
   factory AppRoutes.settings() =>

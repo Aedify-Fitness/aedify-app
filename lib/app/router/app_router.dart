@@ -13,6 +13,7 @@ import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
+import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
@@ -158,6 +159,11 @@ class AppRouter {
               },
             ),
           ],
+        ),
+        GoRoute(
+          path: AppRoutes.bodymap().path,
+          name: AppRoutes.bodymap().name,
+          builder: (context, state) => const BodymapScreen(),
         ),
         GoRoute(
           path: AppRoutes.workout().path,

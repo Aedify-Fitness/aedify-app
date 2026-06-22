@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" fill="none">
+  <g id="bodymap-back">
+    <path id="neck" d="M130 10 C130 10 120 25 120 40 C120 50 130 55 140 55 C150 55 160 50 160 40 C160 25 150 10 150 10 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="traps" d="M60 55 C40 60 30 80 35 95 C40 105 60 110 75 105 C85 100 90 85 90 70 C90 60 80 55 70 55 Z M220 55 C210 55 200 60 200 70 C200 85 205 100 215 105 C230 110 250 105 255 95 C260 80 250 60 230 55 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="shoulders_l" d="M75 70 C65 90 60 115 65 135 C70 150 85 155 95 150 C105 140 110 120 105 100 C100 85 90 70 80 70 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="shoulders_r" d="M215 70 C205 70 195 85 190 100 C185 120 190 140 200 150 C210 155 225 150 230 135 C235 115 230 90 220 70 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="lats_l" d="M55 135 C40 160 30 200 40 235 C45 250 65 250 75 240 C85 225 90 195 85 170 C80 150 70 135 60 135 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="lats_r" d="M225 135 C215 135 205 150 200 170 C195 195 200 225 210 240 C220 250 240 250 245 235 C255 200 245 160 230 135 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="spine" d="M120 60 C120 100 125 140 125 180 C125 220 130 250 135 275 C140 280 150 280 155 275 C160 250 165 220 165 180 C165 140 170 100 170 60 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="triceps_l" d="M35 150 C25 170 20 195 25 215 C30 230 45 235 55 225 C65 210 70 190 65 170 C60 155 50 145 40 150 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="triceps_r" d="M250 150 C240 145 230 155 225 170 C220 190 225 210 235 225 C245 235 260 230 265 215 C270 195 265 170 255 150 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="forearms_l" d="M25 220 C15 240 12 265 18 285 C25 300 40 305 50 295 C60 280 65 260 60 240 C55 225 35 215 25 220 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="forearms_r" d="M265 220 C255 215 235 225 230 240 C225 260 230 280 240 295 C250 305 265 300 272 285 C278 265 275 240 265 220 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="glutes_l" d="M60 280 C50 300 45 325 50 345 C55 360 70 365 80 355 C90 340 95 320 90 300 C85 285 70 275 60 280 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="glutes_r" d="M200 280 C190 275 180 285 175 300 C170 320 175 340 185 355 C195 365 210 360 215 345 C220 325 215 300 205 280 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="hamstrings_l" d="M55 350 C45 375 40 400 45 425 C50 440 65 445 75 435 C85 420 90 400 85 380 C80 365 70 350 60 350 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="hamstrings_r" d="M215 350 C205 350 195 365 190 380 C185 400 190 420 200 435 C210 445 225 440 230 425 C235 400 230 375 220 350 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="calves_l" d="M50 430 C40 450 35 470 40 490 C45 500 60 500 65 490 C70 470 70 450 65 435 C60 425 55 420 50 430 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="calves_r" d="M225 430 C220 420 210 425 205 440 C200 460 205 480 210 490 C215 500 230 500 235 490 C240 470 240 450 235 435 C232 428 230 425 225 430 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="feet_l" d="M40 495 C35 510 35 530 45 545 C50 555 65 555 70 545 C75 530 75 510 70 495 C65 485 50 485 40 495 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+    <path id="feet_r" d="M230 495 C225 485 215 490 215 505 C215 525 220 545 225 555 C230 560 245 555 250 545 C255 525 255 505 250 495 C248 488 240 485 230 495 Z" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  </g>
+</svg>

@@ -6,6 +6,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-006 — 14-Bucket SVG Bodymap with Tap-to-Select)
+
+- **Domain models**: `BodymapBucket` enum (14 approved buckets with labels), `BodymapViewSide` enum (front, back).
+- **Asset contract**: `BodymapAssetContract` with explicit `frontPathToBucket` (17 path IDs → 11 buckets), `backPathToBucket` (19 path IDs → 10 buckets). `assetPathForSide()`, `mappingForSide()`, `allBucketsForSide()` helpers.
+- **Controller**: `BodymapSelectionState` (side + selectedBucket) + `BodymapSelectionController` (Notifier with `selectBucket`, `clearSelection`, `toggleSide`, `setSide`). Provider wired in `AppProviders.bodymapSelectionControllerProvider`.
+- **SVG assets**: `assets/svgs/bodymap/front.svg` and `back.svg` with path `id` attributes matching contract keys.
+- **Widgets**: `BodymapSvgView` renders SVG via `flutter_svg` with side label + `GestureDetector` wrapper (placeholder hit-test). `BodymapBucketChipBar` shows all 14 buckets as `ChoiceChip` + clear button via `OulinedSvgAssets.xMark`.
+- **Screen**: `BodymapScreen` (ConsumerWidget) with side-toggle button (`arrowsRightLeft` SVG), `BodymapSvgView`, chip bar, filter handoff button (`magnifyingGlass` SVG + `browseByMuscle` label).
+- **Route**: `AppRoutes.bodymap()` in `app_routes.dart`. `GoRoute` entry in `app_router.dart` before workout route.
+- **Entry point**: `IconButton` (OulinedSvgAssets.user) in `ExerciseLibraryScreen` app bar navigates via `context.pushNamed(AppRoutes.bodymap().name)`.
+- **Filter sheet corrected**: `ExerciseFilterSheet.muscleGroupOptions` replaced from 15 non-compliant values to 14 approved bucket labels (matches bodymap bucket labels exactly).
+- **Filter handoff**: Selected bucket pushes `ExerciseFilterState.muscleGroup` = `state.selectedBucket!.label`, clears bodymap selection, pops back to exercise library.
+- **Strings added to AppStrings**: `bodymap`, `bodymapFront`, `bodymapBack`, `browseByMuscle`, `clearSelection`, `noExercisesForBodymap`, `bodymapLoadFailed`.
+- **Tests**: 25 new — 6 controller, 8 asset contract, 4 chip bar, 4 screen, 1 filter sheet bucket assertion, 1 router test, 1 browse-button scroll fix.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 297/297 passed.
+
 ### Added (V1-M2-005 — Exercise Video & Thumbnail Handling)
 
 - **`ExerciseVideoPlaybackState` enum**: `idle`, `loading`, `ready`, `failed` — per-video playback tracking.

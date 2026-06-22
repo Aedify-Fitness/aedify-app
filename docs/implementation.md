@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                          |
-| --------------------- | -------------------------------------------------------------- |
-| **Current Milestone** | M1 — App Foundation + Local Data Spine                         |
-| **Status**            | M1 closure pass implemented; manual device QA evidence pending |
-| **Blockers**          | iOS/Android manual QA not executed in this environment         |
+| Field                 | Value                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                               |
+| **Status**            | 6 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap) |
+| **Blockers**          | None                                                                                        |
 
 ## Completed Work
 
@@ -155,11 +155,27 @@
 - **Tests**: 19 new — 6 controller, 5 card, 5 section, 3 detail screen. 272 total passing.
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 272/272 passed.
 
+### V1-M2-006 — 14-Bucket SVG Bodymap with Tap-to-Select (complete)
+
+- **Domain models**: `BodymapBucket` enum (14 approved buckets), `BodymapViewSide` enum (front/back).
+- **Asset contract**: `BodymapAssetContract` with explicit `frontPathToBucket` (17 path IDs → 11 buckets), `backPathToBucket` (19 path IDs → 10 buckets). `assetPathForSide()`, `mappingForSide()`, `allBucketsForSide()` helpers.
+- **Controller**: `BodymapSelectionState` (side + selectedBucket) + `BodymapSelectionController` (Notifier with `selectBucket`, `clearSelection`, `toggleSide`, `setSide`). Provider in `AppProviders.bodymapSelectionControllerProvider`.
+- **SVG assets**: `assets/svgs/bodymap/front.svg` and `back.svg` — path `id` attributes matching contract keys.
+- **Widgets**: `BodymapSvgView` (SVG + side label + `GestureDetector` wrapper), `BodymapBucketChipBar` (14 `ChoiceChip`s + clear button via `xMark` SVG).
+- **Screen**: `BodymapScreen` — app bar with side toggle (`arrowsRightLeft` SVG), SVG view, chip bar, filter handoff (`magnifyingGlass` SVG).
+- **Route**: `AppRoutes.bodymap()` + `GoRoute` in app router.
+- **Entry point**: `IconButton` (OulinedSvgAssets.user) in `ExerciseLibraryScreen` app bar → `context.pushNamed(AppRoutes.bodymap().name)`.
+- **Filter sheet corrected**: 15 non‑compliant options → 14 approved bucket labels.
+- **Filter handoff**: Selected bucket label → `ExerciseFilterState.muscleGroup`, clears bodymap selection, pops back.
+- **AppStrings**: 7 new bodymap strings.
+- **Tests**: 25 new — 6 controller, 8 asset contract, 4 chip bar, 4 screen, 1 filter sheet, 1 router, 1 browse-button scroll fix. 297 total passing.
+- `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 297/297 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 272/272 passed
-- `dart run build_runner build` — N/A (no code generation for V1-M2-005)
+- `flutter test` — 297/297 passed
+- `dart run build_runner build` — N/A (no code generation for V1-M2-005/006)
 
 ## Codebase Convention Enforcement Status
 

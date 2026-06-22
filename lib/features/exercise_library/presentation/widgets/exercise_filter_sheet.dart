@@ -44,20 +44,19 @@ class ExerciseFilterSheet extends ConsumerWidget {
 
   static const List<String> muscleGroupOptions = [
     'Chest',
-    'Back',
     'Shoulders',
+    'Back',
     'Biceps',
     'Triceps',
     'Forearms',
-    'Quadriceps',
-    'Hamstrings',
+    'Core',
     'Glutes',
+    'Quads',
+    'Hamstrings',
     'Calves',
-    'Abdominals',
-    'Obliques',
-    'Lower Back',
-    'Traps',
+    'Adductors',
     'Neck',
+    'Feet',
   ];
 
   @override

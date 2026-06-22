@@ -347,6 +347,25 @@ void main() {
         equals(AppRoutes.diagnostics().path),
       );
     });
+
+    testWidgets('bodymap route is reachable when enabled', (tester) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+
+      router.go(AppRoutes.bodymap().path);
+      await tester.pump();
+
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.bodymap().path),
+      );
+    });
   });
 }
 

@@ -22,6 +22,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
+import 'package:aedify/features/bodymap/application/bodymap_selection_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// App-wide Riverpod provider definitions.
@@ -160,4 +161,9 @@ class AppProviders {
         ExerciseVideoStateController,
         Map<String, ExerciseVideoPlaybackState>
       >(ExerciseVideoStateController.new);
+
+  static final bodymapSelectionControllerProvider =
+      NotifierProvider<BodymapSelectionController, BodymapSelectionState>(
+        BodymapSelectionController.new,
+      );
 }

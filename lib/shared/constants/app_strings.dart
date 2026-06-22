@@ -11,8 +11,11 @@ class AppStrings {
   static const String workout = 'Workout';
   static const String sharing = 'Sharing';
   static const String filters = 'Filters';
+  static const String bodymap = 'Bodymap';
+  static const String bodymapBack = 'Back';
   static const String liftLog = 'Lift Log';
   static const String settings = 'Settings';
+  static const String bodymapFront = 'Front';
   static const String tryAgain = 'Try again';
   static const String favorites = 'Favorites';
   static const String analytics = 'Analytics';
@@ -43,8 +46,10 @@ class AppStrings {
   static const String shareDisabled = 'Sharing Disabled';
   static const String startingApp = 'Starting Aedify...';
   static const String toggleFavorite = 'Toggle favorite';
+  static const String clearSelection = 'Clear selection';
   static const String primaryMuscles = 'Primary muscles';
   static const String externalImport = 'External Import';
+  static const String browseByMuscle = 'Browse by muscle';
   static const String exerciseLibrary = 'Exercise Library';
   static const String startupComplete = 'Startup complete.';
   static const String onboardingTitle = 'Welcome to Aedify';
@@ -57,6 +62,7 @@ class AppStrings {
   static const String noExerciseVideos = 'No videos available.';
   static const String toggleSubstitution = 'Toggle substitution';
   static const String excludeSubstituted = 'Exclude substituted';
+  static const String bodymapLoadFailed = 'Could not load bodymap.';
   static const String exerciseVideoLoadFailed = 'Could not load video.';
   static const String exerciseDetailLoadFailed = 'Could not load exercise.';
   static const String startupFailed = 'Something went wrong during startup.';
@@ -70,6 +76,8 @@ class AppStrings {
       'Sharing is disabled for this build.';
   static const String aiDisabledMessage =
       'AI features are disabled for this build.';
+  static const String noExercisesForBodymap =
+      'No exercises found for this muscle group.';
   static const String progressDisabledMessage =
       'Progress media is disabled for this build.';
   static const String importDisabledMessage =
