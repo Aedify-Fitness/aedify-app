@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/tables/exercises.dart';
@@ -14,11 +15,52 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
   Future<Exercise?> getExerciseById(int id) =>
       (select(exercises)..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  Future<List<Exercise>> searchExercisesByName(String query) {
-    return (select(exercises)
-          ..where((t) => t.name.like('%$query%'))
-          ..limit(50))
-        .get();
+  Future<List<Exercise>> searchExercises({
+    String? query,
+    String? muscleGroup,
+    String? equipment,
+    String? difficulty,
+    String? modality,
+    bool favoritesOnly = false,
+    bool excludeSubstituted = false,
+  }) async {
+    var q = select(exercises);
+
+    if (query != null && query.isNotEmpty) {
+      q.where((t) => t.name.like('%$query%'));
+    }
+
+    if (difficulty != null) {
+      q.where((t) => t.difficulty.equals(difficulty));
+    }
+
+    if (equipment != null) {
+      q.where((t) => t.equipment.equals(equipment));
+    }
+
+    if (modality != null) {
+      q.where((t) => t.modality.equals(modality));
+    }
+
+    if (favoritesOnly) {
+      q.where((t) => t.isFavorite.equals(true));
+    }
+
+    if (excludeSubstituted) {
+      q.where((t) => t.isSubstitutedOut.equals(false));
+    }
+
+    final results = await q.get();
+
+    if (muscleGroup != null) {
+      final filtered = results.where((e) {
+        final groups = _decodeJsonList(e.muscleGroupsJson);
+        return groups.any((g) => g.toLowerCase() == muscleGroup.toLowerCase());
+      }).toList();
+      return filtered;
+    }
+
+    return results;
   }
 
   Future<List<Exercise>> getSourceExercises() {
@@ -27,6 +69,30 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Exercise>> getCustomExercises() {
     return (select(exercises)..where((t) => t.isCustom.equals(true))).get();
+  }
+
+  Future<void> setFavorite({
+    required int exerciseId,
+    required bool isFavorite,
+  }) async {
+    await (update(exercises)..where((t) => t.id.equals(exerciseId))).write(
+      ExercisesCompanion(
+        isFavorite: Value(isFavorite),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> setSubstitutedOut({
+    required int exerciseId,
+    required bool isSubstitutedOut,
+  }) async {
+    await (update(exercises)..where((t) => t.id.equals(exerciseId))).write(
+      ExercisesCompanion(
+        isSubstitutedOut: Value(isSubstitutedOut),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   Future<
@@ -71,6 +137,14 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
           updatedAt: Value(now),
         ),
       );
+    }
+  }
+
+  List<String> _decodeJsonList(String json) {
+    try {
+      return (jsonDecode(json) as List).cast<String>();
+    } catch (_) {
+      return [];
     }
   }
 }

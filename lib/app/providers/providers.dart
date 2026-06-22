@@ -16,6 +16,9 @@ import 'package:aedify/core/storage/local_file_record_service.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
+import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
+import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -133,5 +136,20 @@ class AppProviders {
           fileStore: ref.read(localFileStoreProvider),
           logger: ref.read(appLoggerProvider),
         );
+      });
+
+  static final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
+    return DriftExerciseRepository(database: ref.read(appDatabaseProvider));
+  });
+
+  static final exerciseSearchControllerProvider =
+      NotifierProvider<ExerciseSearchController, ExerciseSearchState>(
+        ExerciseSearchController.new,
+      );
+
+  static final exerciseDetailControllerProvider =
+      FutureProvider.family<ExerciseDetailViewData?, int>((ref, id) {
+        final repository = ref.read(exerciseRepositoryProvider);
+        return repository.getExerciseDetail(id);
       });
 }

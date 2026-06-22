@@ -105,9 +105,28 @@
 - **Tests**: 12 new (DAO + importer), migration/DB tests updated for v3.
 - `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 223/223 passed.
 
+### V1-M2-004 — Exercise Library List + Detail Screens (complete)
+
+- **Domain models**: `ExerciseFilterState`, `ExerciseListItem`, `ExerciseDetailVideoViewData`, `ExerciseDetailViewData`.
+- **Repository layer**: `ExerciseRepository` + `DriftExerciseRepository` with search/exercise detail/favorite/substituted operations.
+- **DAO expansion**: `ExerciseDao.searchExercises()` (SQL-level filters for query, difficulty, equipment, modality, favorites, excludeSubstituted; Dart-level muscle-group filter). `ExerciseDao.setFavorite()`, `ExerciseDao.setSubstitutedOut()`. `ExerciseVideoDao.getVideosByExerciseId()` with sort ordering.
+- **Controllers**: `ExerciseSearchController` (Notifier) with `updateSearchQuery`, `updateFilters`, `clearFilters`, `reload`. `exerciseDetailProvider` (FutureProvider.family).
+- **Screens**: Full `ExerciseLibraryScreen` with search bar, active filter bar, loading/empty/error states, filter FAB. `ExerciseDetailScreen` with metadata chips, muscle groups, instructions, videos, toggles. `ExerciseFilterSheet` bottom sheet.
+- **Routes**: `exerciseDetail` path (`/exercises/:id`), sub-route in GoRouter.
+- **Providers**: 3 new in `AppProviders` (repository, search controller, detail controller).
+- **Tests**: 18 new — 9 repository, 4 search controller, 3 detail controller, 6 library screen widget, 6 detail screen widget.
+- `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 241/241 passed.
+
+### Fixed (V1-M2-004 test flakiness)
+
+- Fixed async timing in search controller tests (await `reload()` instead of `Future.delayed`).
+- Fixed DetailScreen test matching `'Strength'` (capitalized by `_formatModality`) instead of `'strength'`.
+- Fixed detail controller tests with polling helper `resolveDetail()` retrying until `AsyncData`.
+- `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
+
 ## Planned Work
 
-- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 7 tickets)
+- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 6 tickets)
 - M3 — Onboarding, Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
@@ -124,7 +143,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 162/162 passed
+- `flutter test` — 253/253 passed
 - `dart run build_runner build` — completed successfully
 
 ## Manual QA Evidence

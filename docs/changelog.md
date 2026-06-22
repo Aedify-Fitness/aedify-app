@@ -6,6 +6,24 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-21
 
+### Added (V1-M2-004 — Exercise Library List + Detail Screens)
+
+- **Domain models**: `ExerciseFilterState` (search query, muscle group, equipment, difficulty, modality, favoritesOnly, excludeSubstituted with `copyWith`), `ExerciseListItem`, `ExerciseDetailVideoViewData`, `ExerciseDetailViewData`.
+- **Repository layer**: `ExerciseRepository` abstract interface + `DriftExerciseRepository` implementation with `searchExercises()`, `getExerciseDetail()`, `setFavorite()`, `setSubstitutedOut()`.
+- **DAO expansion**: `ExerciseDao.searchExercises()` with SQL-level filtering (query, difficulty, equipment, modality, favorites, excludeSubstituted) and Dart-level muscle-group filter. `setFavorite()`, `setSubstitutedOut()`. `ExerciseVideoDao.getVideosByExerciseId()` with sort ordering.
+- **Controllers**: `ExerciseSearchController` (Notifier) with `updateSearchQuery`, `updateFilters`, `clearFilters`, `reload`. `exerciseDetailProvider` (FutureProvider.family).
+- **Screens**: Full `ExerciseLibraryScreen` (search bar, active filter bar, loading/empty/error states, result list, filter FAB). `ExerciseDetailScreen` (metadata chips, muscle groups, instructions, videos, favorite/substituted toggles). `ExerciseFilterSheet` bottom sheet.
+- **Routes**: `exerciseDetail` path (`/exercises/:id`), sub-route in GoRouter.
+- **Tests**: 18 new — 9 repository, 4 search controller, 3 detail controller, 6 library screen widget, 6 detail screen widget.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 241/241 passed.
+
+### Fixed (V1-M2-004 test flakiness)
+
+- Fixed async timing in `exercise_search_controller_test.dart` — controller tests now await `reload()` instead of relying on `Future.delayed`.
+- Fixed DetailScreen test matching `'Strength'` (capitalized by `_formatModality`) instead of `'strength'`.
+- Fixed `exercise_detail_controller_test.dart` with polling helper `resolveDetail()` to retry until `AsyncData`.
+- `flutter analyze` — 0 issues. `flutter test` — 253/253 passed.
+
 ### Refactored (syncStatus string constants → LibrarySyncStatus enum)
 
 - Created `LibrarySyncStatus` enum (`lib/core/db/enums/library_sync_status.dart`) with `neverSynced`, `syncing`, `synced`, `failed` values and a `.value` getter.

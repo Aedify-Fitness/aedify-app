@@ -9,6 +9,13 @@ class ExerciseVideoDao extends DatabaseAccessor<AppDatabase>
     with _$ExerciseVideoDaoMixin {
   ExerciseVideoDao(super.db);
 
+  Future<List<ExerciseVideo>> getVideosByExerciseId(int exerciseId) {
+    return (select(exerciseVideos)
+          ..where((t) => t.exerciseId.equals(exerciseId))
+          ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
+        .get();
+  }
+
   Future<void> insertVideosBulk(List<ExerciseVideosCompanion> entries) {
     return batch(
       (batch) => batch.insertAllOnConflictUpdate(exerciseVideos, entries),

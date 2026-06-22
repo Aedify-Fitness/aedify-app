@@ -12,6 +12,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
+import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
@@ -144,6 +145,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.exercises().path,
         name: AppRoutes.exercises().name,
         builder: (context, state) => const ExerciseLibraryScreen(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            name: AppRoutes.exerciseDetail().name,
+            builder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              return ExerciseDetailScreen(exerciseId: id);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.workout().path,
