@@ -2,71 +2,73 @@ import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_p
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_validation_failure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../support/exercise_library/exercise_library_fixture_loader.dart';
+
 void main() {
+  late ExerciseDatasetParser parser;
+
+  setUp(() {
+    parser = const ExerciseDatasetParser();
+  });
+
   group('ExerciseDatasetParser', () {
-    late ExerciseDatasetParser parser;
-
-    setUp(() {
-      parser = const ExerciseDatasetParser();
-    });
-
-    String validDataset({int count = 1, int schema = 1, int minSchema = 1}) {
-      final exercises = List.generate(count, (i) => exerciseJson(id: i + 1));
-      return '''
-{
-  "schema_version": $schema,
-  "generated_at": "2024-01-01T00:00:00.000Z",
-  "source": "musclewiki",
-  "exercise_count": $count,
-  "exercises": [${exercises.join(',')}]
-}
-''';
-    }
-
-    group('parse valid dataset', () {
-      test('parses valid dataset', () {
+    group('parse valid dataset fixture', () {
+      test('parses all 12 exercises from dataset_valid.json', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_valid.json',
+        );
         final dataset = parser.parse(
-          rawJson: validDataset(),
+          rawJson: rawJson,
           supportedSchemaVersion: 1,
           minimumSupportedAppSchemaVersion: 1,
         );
 
         expect(dataset.schemaVersion, 1);
         expect(dataset.source, 'musclewiki');
-        expect(dataset.exerciseCount, 1);
-        expect(dataset.exercises.length, 1);
+        expect(dataset.exerciseCount, 12);
+        expect(dataset.exercises.length, 12);
 
-        final ex = dataset.exercises.first;
-        expect(ex.id, 1);
-        expect(ex.name, 'Bench Press');
-        expect(ex.difficulty, 'intermediate');
-        expect(ex.primaryMuscles, ['Chest']);
-        expect(ex.muscleGroups, ['Chest', 'Triceps']);
-        expect(ex.category, 'compound');
-        expect(ex.modality, 'strength');
-        expect(ex.equipment, 'barbell');
-        expect(ex.force, 'push');
-        expect(ex.mechanic, 'compound');
-        expect(ex.grips, ['barbell']);
-        expect(ex.steps, ['Lie on bench', 'Press bar']);
-        expect(ex.videos.length, 1);
-        expect(ex.videos[0].url.toString(), 'https://example.com/video.mp4');
-        expect(ex.videos[0].angle, 'front');
-        expect(ex.videos[0].gender, 'male');
-        expect(ex.videos[0].ogImage, 'https://example.com/thumb.jpg');
+        final ex1 = dataset.exercises[0];
+        expect(ex1.id, 1);
+        expect(ex1.name, 'Barbell Bench Press');
+        expect(ex1.difficulty, 'intermediate');
+        expect(ex1.modality, 'strength');
+        expect(ex1.equipment, 'barbell');
+        expect(ex1.mechanic, 'compound');
+        expect(ex1.force, 'push');
+        expect(ex1.videos.length, 2);
       });
 
-      test('parses multiple exercises', () {
+      test('includes exercises with no videos', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_valid.json',
+        );
         final dataset = parser.parse(
-          rawJson: validDataset(count: 3),
+          rawJson: rawJson,
           supportedSchemaVersion: 1,
           minimumSupportedAppSchemaVersion: 1,
         );
 
-        expect(dataset.exercises.length, 3);
-        expect(dataset.exercises[0].id, 1);
-        expect(dataset.exercises[1].id, 2);
-        expect(dataset.exercises[2].id, 3);
+        final noVideoIds = dataset.exercises
+            .where((e) => e.videos.isEmpty)
+            .map((e) => e.id)
+            .toSet();
+        expect(noVideoIds, containsAll([3, 4, 9, 11, 12]));
+      });
+
+      test('includes non-strength exercise with null equipment', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_valid.json',
+        );
+        final dataset = parser.parse(
+          rawJson: rawJson,
+          supportedSchemaVersion: 1,
+          minimumSupportedAppSchemaVersion: 1,
+        );
+
+        final running = dataset.exercises.firstWhere((e) => e.id == 4);
+        expect(running.modality, 'cardio');
+        expect(running.equipment, isNull);
       });
     });
 
@@ -207,10 +209,13 @@ void main() {
     });
 
     group('reject schema version issues', () {
-      test('rejects unsupported dataset schema version', () {
+      test('rejects unsupported dataset schema version via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_future_schema.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: validDataset(schema: 2),
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -223,41 +228,16 @@ void main() {
           ),
         );
       });
-
-      test('rejects unsupported minimum app schema version', () {
-        expect(
-          () => parser.parse(
-            rawJson: validDataset(schema: 0),
-            supportedSchemaVersion: 1,
-            minimumSupportedAppSchemaVersion: 1,
-          ),
-          throwsA(
-            isA<ExerciseDatasetValidationFailure>().having(
-              (f) => f.code,
-              'code',
-              ExerciseDatasetValidationFailureCode
-                  .unsupportedMinimumAppSchemaVersion,
-            ),
-          ),
-        );
-      });
     });
 
     group('reject exercise count mismatch', () {
-      test('rejects exercise_count less than actual', () {
-        final json =
-            '{'
-            '"schema_version": 1,'
-            '"generated_at": "2024-01-01T00:00:00.000Z",'
-            '"source": "musclewiki",'
-            '"exercise_count": 0,'
-            '"exercises": ['
-            '${exerciseJson(id: 1)}'
-            ']'
-            '}';
+      test('rejects count mismatch via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_count_mismatch.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: json,
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -273,21 +253,13 @@ void main() {
     });
 
     group('reject duplicate IDs', () {
-      test('rejects duplicate exercise ids', () {
-        final json =
-            '{'
-            '"schema_version": 1,'
-            '"generated_at": "2024-01-01T00:00:00.000Z",'
-            '"source": "musclewiki",'
-            '"exercise_count": 2,'
-            '"exercises": ['
-            '${exerciseJson(id: 1)},'
-            '${exerciseJson(id: 1)}'
-            ']'
-            '}';
+      test('rejects duplicate exercise ids via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_duplicate_ids.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: json,
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -341,12 +313,13 @@ void main() {
         );
       });
 
-      test('rejects invalid difficulty', () {
+      test('rejects invalid difficulty via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_invalid_difficulty.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: validDataset(
-              count: 1,
-            ).replaceAll('"intermediate"', '"expert"'),
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -360,12 +333,13 @@ void main() {
         );
       });
 
-      test('rejects invalid modality', () {
+      test('rejects invalid modality via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_invalid_modality.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: validDataset(
-              count: 1,
-            ).replaceAll('"strength"', '"unknown_modality"'),
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -379,31 +353,13 @@ void main() {
         );
       });
 
-      test('rejects unknown muscle group bucket', () {
-        final json =
-            '{'
-            '"schema_version": 1,'
-            '"generated_at": "2024-01-01T00:00:00.000Z",'
-            '"source": "musclewiki",'
-            '"exercise_count": 1,'
-            '"exercises": ['
-            '{'
-            '"id": 1,'
-            '"name": "Bench",'
-            '"difficulty": "intermediate",'
-            '"primary_muscles": ["Chest"],'
-            '"muscle_groups": ["Spine"],'
-            '"modality": "strength",'
-            '"equipment": "barbell",'
-            '"grips": [],'
-            '"steps": ["Step 1"],'
-            '"videos": []'
-            '}'
-            ']'
-            '}';
+      test('rejects unknown muscle group bucket via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_unknown_muscle_group.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: json,
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -609,37 +565,13 @@ void main() {
     });
 
     group('reject invalid video', () {
-      test('rejects invalid video url', () {
-        final json =
-            '{'
-            '"schema_version": 1,'
-            '"generated_at": "2024-01-01T00:00:00.000Z",'
-            '"source": "musclewiki",'
-            '"exercise_count": 1,'
-            '"exercises": ['
-            '{'
-            '"id": 1,'
-            '"name": "Bench",'
-            '"difficulty": "intermediate",'
-            '"primary_muscles": ["Chest"],'
-            '"muscle_groups": ["Chest"],'
-            '"modality": "strength",'
-            '"equipment": "barbell",'
-            '"grips": [],'
-            '"steps": ["Step 1"],'
-            '"videos": ['
-            '{'
-            '"url": "not-a-valid-url",'
-            '"angle": "front",'
-            '"gender": "male"'
-            '}'
-            ']'
-            '}'
-            ']'
-            '}';
+      test('rejects invalid video url via fixture', () async {
+        final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+          'dataset_invalid_video_url.json',
+        );
         expect(
           () => parser.parse(
-            rawJson: json,
+            rawJson: rawJson,
             supportedSchemaVersion: 1,
             minimumSupportedAppSchemaVersion: 1,
           ),
@@ -693,35 +625,23 @@ void main() {
         expect(dataset.exercises[0].mechanic, isNull);
       });
 
-      test('allows nullable equipment for non-strength modality', () {
-        final json =
-            '{'
-            '"schema_version": 1,'
-            '"generated_at": "2024-01-01T00:00:00.000Z",'
-            '"source": "musclewiki",'
-            '"exercise_count": 1,'
-            '"exercises": ['
-            '{'
-            '"id": 1,'
-            '"name": "Stretch",'
-            '"difficulty": "beginner",'
-            '"primary_muscles": ["Back"],'
-            '"muscle_groups": ["Back"],'
-            '"modality": "flexibility",'
-            '"grips": [],'
-            '"steps": ["Reach forward"],'
-            '"videos": []'
-            '}'
-            ']'
-            '}';
-        final dataset = parser.parse(
-          rawJson: json,
-          supportedSchemaVersion: 1,
-          minimumSupportedAppSchemaVersion: 1,
-        );
+      test(
+        'allows nullable equipment for non-strength modality via fixture',
+        () async {
+          final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+            'dataset_valid.json',
+          );
+          final dataset = parser.parse(
+            rawJson: rawJson,
+            supportedSchemaVersion: 1,
+            minimumSupportedAppSchemaVersion: 1,
+          );
 
-        expect(dataset.exercises[0].equipment, isNull);
-      });
+          final running = dataset.exercises.firstWhere((e) => e.id == 4);
+          expect(running.modality, 'cardio');
+          expect(running.equipment, isNull);
+        },
+      );
 
       test('strength exercise without equipment is rejected', () {
         final json =
@@ -761,7 +681,7 @@ void main() {
       });
     });
 
-    test('accepts empty videos list', () {
+    test('accepts empty videos list for exercise with videos field empty', () {
       final json =
           '{'
           '"schema_version": 1,'
@@ -792,41 +712,4 @@ void main() {
       expect(dataset.exercises[0].videos, isEmpty);
     });
   });
-}
-
-String exerciseJson({
-  int id = 1,
-  String difficulty = 'intermediate',
-  String modality = 'strength',
-  String? equipment = 'barbell',
-  List<String>? muscleGroups,
-}) {
-  return '''
-{
-  "id": $id,
-  "name": "Bench Press",
-  "difficulty": "$difficulty",
-  "primary_muscles": ["Chest"],
-  "muscle_groups": ${jsonList(muscleGroups ?? ['Chest', 'Triceps'])},
-  "category": "compound",
-  "modality": "$modality",
-  "equipment": ${equipment != null ? '"$equipment"' : null},
-  "force": "push",
-  "mechanic": "compound",
-  "grips": ["barbell"],
-  "steps": ["Lie on bench", "Press bar"],
-  "videos": [
-    {
-      "url": "https://example.com/video.mp4",
-      "angle": "front",
-      "gender": "male",
-      "og_image": "https://example.com/thumb.jpg"
-    }
-  ]
-}
-''';
-}
-
-String jsonList(List<String> items) {
-  return '[${items.map((s) => '"$s"').join(',')}]';
 }

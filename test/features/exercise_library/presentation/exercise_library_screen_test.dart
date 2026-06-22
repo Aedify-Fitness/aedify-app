@@ -63,7 +63,9 @@ class _MockSearchRepository implements ExerciseRepository {
 class _FixedSyncNotifier extends ExerciseDatasetSyncController {
   @override
   Future<ExerciseDatasetSyncState> build() async {
-    return const ExerciseDatasetSyncState(phase: ExerciseDatasetSyncPhase.synced);
+    return const ExerciseDatasetSyncState(
+      phase: ExerciseDatasetSyncPhase.synced,
+    );
   }
 }
 

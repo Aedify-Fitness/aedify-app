@@ -3,6 +3,8 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_view_side.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../support/exercise_library/exercise_library_expectations.dart';
+
 void main() {
   group('BodymapAssetContract', () {
     test('front asset path is defined', () {
@@ -20,15 +22,19 @@ void main() {
     });
 
     test('front mapping only uses approved buckets', () {
-      for (final bucket in BodymapAssetContract.frontPathToBucket.values) {
-        expect(BodymapBucket.values, contains(bucket));
-      }
+      final validLabels = BodymapBucket.values.map((b) => b.label).toList();
+      ExerciseLibraryExpectations.expectBodymapBucketsAreValid(
+        BodymapAssetContract.frontPathToBucket.values.map((b) => b.label),
+        validBuckets: validLabels,
+      );
     });
 
     test('back mapping only uses approved buckets', () {
-      for (final bucket in BodymapAssetContract.backPathToBucket.values) {
-        expect(BodymapBucket.values, contains(bucket));
-      }
+      final validLabels = BodymapBucket.values.map((b) => b.label).toList();
+      ExerciseLibraryExpectations.expectBodymapBucketsAreValid(
+        BodymapAssetContract.backPathToBucket.values.map((b) => b.label),
+        validBuckets: validLabels,
+      );
     });
 
     test('all mapped buckets are valid 14-bucket values', () {

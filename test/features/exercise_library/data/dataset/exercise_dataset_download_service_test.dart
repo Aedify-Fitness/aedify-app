@@ -10,6 +10,9 @@ import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_d
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_manifest.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../support/exercise_library/exercise_library_fixture_loader.dart';
+import '../../../../support/exercise_library/exercise_library_fixture_manifest_builder.dart';
+
 void main() {
   late FakeAuthService fakeAuth;
   late FakeStorageClient fakeStorage;
@@ -32,17 +35,20 @@ void main() {
   });
 
   group('fetchManifest', () {
-    test('succeeds with valid manifest', () async {
+    test('succeeds with valid manifest fixture', () async {
+      final manifestJson = await ExerciseLibraryFixtureLoader.loadRawString(
+        'manifest_valid.json',
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        _validManifestJson(),
+        manifestJson,
       );
 
       final manifest = await service.fetchManifest();
 
       expect(manifest.schemaVersion, 1);
-      expect(manifest.datasetVersion, '2024-01-01');
-      expect(manifest.exerciseCount, 100);
+      expect(manifest.datasetVersion, '2026-06-22-v1');
+      expect(manifest.exerciseCount, 350);
     });
 
     test('throws authFailed when auth fails', () async {
@@ -112,9 +118,12 @@ void main() {
     });
 
     test('throws invalidManifest when schema_version missing', () async {
+      final manifestJson = await ExerciseLibraryFixtureLoader.loadRawString(
+        'manifest_invalid_shape.json',
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        '{"active": {"path": "x","content_type": "x","size_bytes": 1,"sha256": "x","schema_version": 1,"minimum_supported_app_schema_version": 1}}',
+        manifestJson,
       );
 
       expect(
@@ -133,12 +142,13 @@ void main() {
   group('downloadActiveDataset', () {
     test('succeeds and returns download result', () async {
       final activeContent = '{"exercises":[]}';
+      final manifestJson = _buildManifestFromBuilder(
+        activeSha256: _sha256Of(activeContent),
+        activeSizeBytes: activeContent.length,
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        _validManifestJson(
-          activeSha256: _sha256Of(activeContent),
-          activeSizeBytes: activeContent.length,
-        ),
+        manifestJson,
       );
       fakeStorage.downloadToFileCallback = (remotePath, localPath) async {
         await File(localPath).writeAsString(activeContent);
@@ -146,7 +156,7 @@ void main() {
 
       final result = await service.downloadActiveDataset();
 
-      expect(result.manifest.datasetVersion, '2024-01-01');
+      expect(result.manifest.datasetVersion, '2026-06-22-v1');
       expect(result.sizeBytes, activeContent.length);
       expect(result.localRelativePath, contains('exercise_dataset'));
       expect(result.localAbsolutePath, isNotEmpty);
@@ -154,9 +164,12 @@ void main() {
     });
 
     test('throws unsupportedAppSchema when app schema too low', () async {
+      final manifestJson = await ExerciseLibraryFixtureLoader.loadRawString(
+        'manifest_future_schema_required.json',
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        _validManifestJson(minSchema: 999),
+        manifestJson,
       );
 
       expect(
@@ -173,9 +186,12 @@ void main() {
 
     test('throws sizeMismatch when file size differs', () async {
       final activeContent = '{"exercises":[]}';
+      final manifestJson = _buildManifestFromBuilder(
+        activeSha256: _sha256Of(activeContent),
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        _validManifestJson(activeSha256: _sha256Of(activeContent)),
+        manifestJson,
       );
       fakeStorage.downloadToFileCallback = (remotePath, localPath) async {
         await File(localPath).writeAsString(activeContent);
@@ -195,12 +211,13 @@ void main() {
 
     test('throws checksumMismatch when sha256 differs', () async {
       final activeContent = '{"exercises":[]}';
+      final manifestJson = _buildManifestFromBuilder(
+        activeSha256: 'wrong_checksum',
+        activeSizeBytes: activeContent.length,
+      );
       fakeStorage.setTextResponse(
         'datasets/exercises/manifest.json',
-        _validManifestJson(
-          activeSha256: 'wrong_checksum',
-          activeSizeBytes: activeContent.length,
-        ),
+        manifestJson,
       );
       fakeStorage.downloadToFileCallback = (remotePath, localPath) async {
         await File(localPath).writeAsString(activeContent);
@@ -220,57 +237,43 @@ void main() {
   });
 
   group('hasCompatibleMinimumAppSchema', () {
-    test(
-      'returns true when app schema meets minimum (schema 1 >= min 1)',
-      () async {
-        fakeStorage.setTextResponse(
-          'datasets/exercises/manifest.json',
-          _validManifestJson(minSchema: 1),
-        );
+    test('returns true when app schema meets minimum', () async {
+      final manifestJson = await ExerciseLibraryFixtureLoader.loadRawString(
+        'manifest_valid.json',
+      );
+      fakeStorage.setTextResponse(
+        'datasets/exercises/manifest.json',
+        manifestJson,
+      );
 
-        final manifest = await service.fetchManifest();
-        expect(service.hasCompatibleMinimumAppSchema(manifest), isTrue);
-      },
-    );
+      final manifest = await service.fetchManifest();
+      expect(service.hasCompatibleMinimumAppSchema(manifest), isTrue);
+    });
 
-    test(
-      'returns false when app schema below minimum (schema 1 < min 2)',
-      () async {
-        final rawJson = _validManifestJson(minSchema: 2);
-        final json = _decodeJson(rawJson);
-        final manifest = ExerciseDatasetManifest.fromJson(json);
-        expect(service.hasCompatibleMinimumAppSchema(manifest), isFalse);
-      },
-    );
+    test('returns false when app schema below minimum', () async {
+      final rawJson = await ExerciseLibraryFixtureLoader.loadRawString(
+        'manifest_future_schema_required.json',
+      );
+      final json = _decodeJson(rawJson);
+      final manifest = ExerciseDatasetManifest.fromJson(json);
+      expect(service.hasCompatibleMinimumAppSchema(manifest), isFalse);
+    });
   });
 }
 
 // --- Helpers ---
 
-String _validManifestJson({
+String _buildManifestFromBuilder({
   int minSchema = 1,
   String activeSha256 = 'abc123',
   int activeSizeBytes = 50000,
 }) {
-  return '''
-{
-  "schema_version": 1,
-  "manifest_version": 1,
-  "dataset_version": "2024-01-01",
-  "generated_at": "2024-01-01T00:00:00.000Z",
-  "source": "musclewiki",
-  "exercise_count": 100,
-  "active": {
-    "path": "datasets/exercises/v1/exercises.json",
-    "content_type": "application/json",
-    "size_bytes": $activeSizeBytes,
-    "sha256": "$activeSha256",
-    "schema_version": 1,
-    "minimum_supported_app_schema_version": $minSchema
-  },
-  "history": []
-}
-''';
+  final builder = ExerciseLibraryFixtureManifestBuilder()
+      .withMinimumSupportedAppSchemaVersion(minSchema)
+      .withSha256(activeSha256)
+      .withSizeBytes(activeSizeBytes);
+  final jsonMap = builder.build();
+  return json.encode(jsonMap);
 }
 
 Map<String, Object?> _decodeJson(String rawJson) {

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 2,
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Bench Press",
+      "difficulty": "intermediate",
+      "primary_muscles": ["pectoralis major sternal"],
+      "muscle_groups": ["Chest"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": ["Press the bar."],
+      "videos": []
+    },
+    {
+      "id": 1,
+      "name": "Incline Bench Press",
+      "difficulty": "intermediate",
+      "primary_muscles": ["pectoralis major clavicular"],
+      "muscle_groups": ["Chest"],
+      "modality": "strength",
+      "equipment": "barbell",
+      "mechanic": "compound",
+      "force": "push",
+      "grips": ["neutral"],
+      "steps": ["Press the bar on an incline."],
+      "videos": []
+    }
+  ]
+}

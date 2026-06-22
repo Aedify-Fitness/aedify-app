@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                             |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                     |
-| **Status**            | 9 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI). |
-| **Blockers**          | None                                                                                                                                                                              |
+| Field                 | Value                                                                                                                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                        |
+| **Status**            | 10 of 10 tickets complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite). |
+| **Blockers**          | None                                                                                                                                                                                                 |
 
 ## Completed Work
 
@@ -127,7 +127,7 @@
 
 ## Planned Work
 
-- **M2 — Exercise Dataset Sync + Exercise Library** (remaining 1 ticket — V1-M2-010: exercise library import & export)
+- **M2 — Exercise Dataset Sync + Exercise Library** (complete — all 10 tickets done)
 - M3 — Onboarding, Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
@@ -222,10 +222,18 @@
 - **Tests**: 22 new — 7 identity service, 7 DAO CRUD, 8 repository coexistence. 336 total passing.
 - `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
 
+### V1-M2-010 — Exercise Library QA Fixture Suite (complete)
+
+- **Manifest fixtures** (5 files in `test/fixtures/exercise_library/`): valid, same version, future schema required, missing active, invalid shape.
+- **Dataset fixtures** (9 files in `test/fixtures/exercise_library/`): valid (12 exercises with full coverage), duplicate IDs, unknown muscle group, invalid video URL, future schema, count mismatch, invalid difficulty, invalid modality, interrupted download stub.
+- **Support helpers** (4 files in `test/support/exercise_library/`): `ExerciseLibraryFixtureLoader` (raw/JSON loading), `ExerciseLibraryFixtureManifestBuilder` (fluent manifest builder), `ExerciseLibraryFixtureDatasetBuilder` (fluent dataset builder), `ExerciseLibraryExpectations` (reusable assertion helpers).
+- **Tests updated**: manifest test, parser test, download service test, bodymap contract test — all load fixture files instead of inline JSON.
+- `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 357/357 passed.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 355/355 passed (336 existing + 19 new V1-M2-009)
+- `flutter test` — 357/357 passed (336 existing + 19 V1-M2-009 + 2 updated suite)
 - `dart run build_runner build` — passed (6s, 115 outputs)
 
 ## Codebase Convention Enforcement Status

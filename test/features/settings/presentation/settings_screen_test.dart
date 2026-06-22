@@ -44,19 +44,10 @@ void main() {
       await tester.pump();
 
       expect(find.byType(ExerciseDatasetStatusTile), findsOneWidget);
-      expect(
-        find.text(AppStrings.exerciseLibraryStatus),
-        findsOneWidget,
-      );
-      expect(
-        find.text(AppStrings.exerciseLibraryVersion),
-        findsOneWidget,
-      );
+      expect(find.text(AppStrings.exerciseLibraryStatus), findsOneWidget);
+      expect(find.text(AppStrings.exerciseLibraryVersion), findsOneWidget);
       expect(find.text('v1'), findsOneWidget);
-      expect(
-        find.text(AppStrings.exerciseLibrarySynced),
-        findsOneWidget,
-      );
+      expect(find.text(AppStrings.exerciseLibrarySynced), findsOneWidget);
     });
 
     testWidgets('shows never synced status label', (tester) async {
@@ -69,10 +60,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(
-        find.text(AppStrings.exerciseLibraryNeverSynced),
-        findsWidgets,
-      );
+      expect(find.text(AppStrings.exerciseLibraryNeverSynced), findsWidgets);
     });
 
     testWidgets('shows failed sync label', (tester) async {

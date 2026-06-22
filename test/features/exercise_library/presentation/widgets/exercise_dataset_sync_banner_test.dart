@@ -119,10 +119,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(ExerciseDatasetSyncStatusCard), findsOneWidget);
-      expect(
-        find.text(AppStrings.exerciseLibrarySyncFailed),
-        findsOneWidget,
-      );
+      expect(find.text(AppStrings.exerciseLibrarySyncFailed), findsOneWidget);
       expect(find.text(AppStrings.exerciseLibraryRetry), findsOneWidget);
     });
 

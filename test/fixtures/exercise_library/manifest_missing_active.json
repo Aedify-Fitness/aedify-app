@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "manifest_version": 3,
+  "dataset_version": "2026-06-22-v1",
+  "generated_at": "2026-06-22T00:00:00Z",
+  "source": "musclewiki",
+  "exercise_count": 350,
+  "history": []
+}

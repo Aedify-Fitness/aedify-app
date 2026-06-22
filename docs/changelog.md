@@ -6,6 +6,36 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-22
 
+### Added (V1-M2-010 — Exercise Library QA Fixture Suite)
+
+- **Manifest fixtures** (5 files in `test/fixtures/exercise_library/`):
+  - `manifest_valid.json` — valid manifest with 2 history entries, schema v1, 350 exercises.
+  - `manifest_same_version.json` — identical dataset for no-download path.
+  - `manifest_future_schema_required.json` — `minimum_supported_app_schema_version: 2`.
+  - `manifest_missing_active.json` — malformed, no `active` field.
+  - `manifest_invalid_shape.json` — missing `exercise_count`.
+- **Dataset fixtures** (9 files in `test/fixtures/exercise_library/`):
+  - `dataset_valid.json` — 12 exercises covering strength/cardio/bodyweight, multiple modalities/difficulties/muscle groups, mixed video coverage, barbell/dumbbell/cable/machine/null equipment, candidate ranking overlap.
+  - `dataset_duplicate_ids.json` — duplicate exercise ID 1.
+  - `dataset_unknown_muscle_group.json` — invalid `muscle_groups` value.
+  - `dataset_invalid_video_url.json` — invalid video URL format.
+  - `dataset_future_schema.json` — future schema version 99.
+  - `dataset_count_mismatch.json` — `exercise_count: 99` vs 1 actual exercise.
+  - `dataset_invalid_difficulty.json` — difficulty `legendary`.
+  - `dataset_invalid_modality.json` — modality `quantum`.
+  - `dataset_interrupted_download_stub.json` — truncated JSON for interrupted-download test.
+- **Support helpers** (4 files in `test/support/exercise_library/`):
+  - `ExerciseLibraryFixtureLoader` — `loadRawString()`, `loadJsonObject()`, `loadJsonArray()` for reading fixtures.
+  - `ExerciseLibraryFixtureManifestBuilder` — fluent builder for manifest JSON with overridable fields.
+  - `ExerciseLibraryFixtureDatasetBuilder` — fluent builder for dataset JSON with `addExercise()`/`replaceExercises()`.
+  - `ExerciseLibraryExpectations` — reusable assertion helpers: `expectContainsExerciseIds`, `expectExactExerciseIdsInOrder`, `expectCandidateDtosContainNoForbiddenFields`, `expectBodymapBucketsAreValid`.
+- **Updated tests to use fixtures**:
+  - `exercise_dataset_manifest_test.dart` — loads `manifest_valid.json` for valid parsing, `manifest_missing_active.json` for missing-active failure, `manifest_future_schema_required.json` for future-schema test.
+  - `exercise_dataset_parser_test.dart` — loads `dataset_valid.json` for valid parsing (12 exercises, no-video check, null-equipment check), loads fixture variants for validation failures (future schema, count mismatch, duplicate IDs, invalid difficulty, invalid modality, unknown muscle group, invalid video URL).
+  - `exercise_dataset_download_service_test.dart` — loads `manifest_valid.json` for valid fetch, `manifest_future_schema_required.json` for unsupported schema, uses `ExerciseLibraryFixtureManifestBuilder` for checksum/size tests.
+  - `bodymap_asset_contract_test.dart` — uses `ExerciseLibraryExpectations.expectBodymapBucketsAreValid`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 357/357 passed.
+
 ### Added (V1-M2-009 — Dataset Sync Status and Recovery UI)
 
 - **`ExerciseDatasetSyncPhase` enum**: 8 phases covering the full sync lifecycle.
