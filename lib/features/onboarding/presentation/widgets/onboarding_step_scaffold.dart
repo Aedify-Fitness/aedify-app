@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 
 class OnboardingStepScaffold extends StatelessWidget {
   const OnboardingStepScaffold({
@@ -64,9 +65,9 @@ class OnboardingStepScaffold extends StatelessWidget {
                           ? SizedBox(
                               width: AppSizing.iconSm,
                               height: AppSizing.iconSm,
-                              child: const CircularProgressIndicator(
+                              child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: context.colorScheme.onPrimary,
                               ),
                             )
                           : Text(primaryLabel ?? AppStrings.continueLabel),

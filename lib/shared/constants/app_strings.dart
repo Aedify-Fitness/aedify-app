@@ -191,6 +191,9 @@ class AppStrings {
   static const String onboardingReviewNotConfigured = 'Not configured';
   static const String onboardingReviewDaysPerWeek = 'days/week';
   static const String onboardingReviewMinutes = 'min';
+  static const String onboardingHintSessionMin = '45';
+  static const String onboardingHintHeightCm = '170';
+  static const String onboardingHintWeightKg = '70';
   static const String onboardingReviewCm = 'cm';
   static const String onboardingReviewKg = 'kg';
   static const String onboardingCompleteSuccess = 'Onboarding complete!';

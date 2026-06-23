@@ -6,6 +6,29 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-23
 
+### Refactored (AGENTS.md compliance — onboarding widget code conventions)
+
+- **`Colors.white` → theme token** (`onboarding_step_scaffold.dart`): Replaced hardcoded `Colors.white` with `context.colorScheme.onPrimary` via `ThemeX` extension. Added missing `context_extensions.dart` import.
+- **`Theme.of(context)` → `context.colorScheme`** (`onboarding_progress_header.dart`): Replaced `Theme.of(context).colorScheme.*` with `context.colorScheme.*` via `ThemeX` extension. Added missing `context_extensions.dart` import.
+- **Hardcoded input hint/suffix strings → `AppStrings`** (`onboarding_screen.dart`): 3 hint texts and 3 suffix texts moved to `AppStrings` constants.
+- **Raw `width: 120` → `AppSizing.fieldWidth`** (`onboarding_screen.dart`): 3 usages replaced with new sizing token.
+- **Function widget builders → proper widget classes** (`onboarding_screen.dart`): Extracted `_buildStep` → `_OnboardingStepView`, `_stepContent` → `_StepContent`, `_buildValidationOrError` → `_ValidationMessage`, `_reviewRow` → `_ReviewRow` as proper `StatelessWidget`/`ConsumerWidget` classes per `rules.md` §118-121.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Chip theme — missing DESIGN.md color tokens in `app_theme.dart`)
+
+- **Light `chipTheme`** (`app_theme.dart`): Added `backgroundColor: AedifyLightColors.surfaceContainerLow`, `selectedColor: AedifyLightColors.secondaryContainer`. Removed `labelStyle` — chips now fall back to `textTheme.labelSmall` (already `AppTextStyles.labelSm`) and auto-resolve text color from `ColorScheme` (`onSurfaceVariant` unselected, `onSecondaryContainer` selected).
+- **Dark `chipTheme`** (`app_theme.dart`): Added `backgroundColor: AedifyDarkColors.surfaceContainerHigh`, `selectedColor: AedifyDarkColors.primaryContainer.withValues(alpha: 0.3)`, removed `labelStyle`, fixed `labelSmall` in textTheme to use `AppTextStylesDark.labelSm`.
+- Fixes `withOpacity` deprecation → `withValues(alpha: ...)`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Onboarding text fields — focus loss on keystroke)
+
+- **Root cause**: Inline `TextEditingController(...)` in `StatelessWidget.build()` created a new controller instance on every rebuild, causing Flutter to lose focus on every keystroke.
+- **Fix**: Extracted `_FormField` `StatefulWidget` (`onboarding_screen.dart`) that creates its `TextEditingController` once in `initState`, disposes it in `dispose`, and only syncs text in `didUpdateWidget` when the external value differs from the current controller text.
+- Applied to all 4 text fields: `_ScheduleStep` (session minutes), `_UnitsMetricsStep` (height, weight), `_LimitationsStep` (notes).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
 ### Fixed (V1-M3-001 — Onboarding completion gate, debounced autosave, resume-to-step)
 
 - **Router gate fix** (`lib/app/router/app_router.dart`): Replaced unconditional `startup -> onboarding` redirect. New behavior:

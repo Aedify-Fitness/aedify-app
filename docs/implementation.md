@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                       |
-| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip).                                                                                                                                                                                                                                                                                                    |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Field                 | Value                                                                                                                                                                                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                             |
+| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Refactoring pass: AGENTS.md code-convention violations fixed (theme access, color tokens, string constants, sizing tokens, widget classes, chip theme DESIGN.md colors). |
+| **Blockers**          | None                                                                                                                                                                                                                                                                       |
 
 ## Completed Work
 
@@ -117,8 +117,8 @@
 - **Codebase convention enforcement**: All `Theme.of(context)` → `ThemeX`, `Navigator.pop` → `context.pop()`, `Icons.*` → `SvgPicture.asset`, `EdgeInsets.fromLTRB` → `EdgeInsets.symmetric`, top-level declarations → classes, route strings → `AppRoutes`, hardcoded strings → `AppStrings`/`AppErrorStrings`, hardcoded numbers → sizing tokens in `app_spacing.dart`. SVGs renamed to snake_case + constants classes created. `AGENTS.md` updated with all enforced rules.
 - **Tests**: 18 new — 9 repository, 4 search controller, 3 detail controller, 6 library screen widget, 6 detail screen widget.
 - `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
-
   - (Flakiness fix: async timing in search controller tests — await `reload()` instead of `Future.delayed`; detail controller tests use polling helper `resolveDetail()` retrying until `AsyncData`.)
+
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
 
 ### V1-M2-005 — Exercise Video & Thumbnail Handling (complete)

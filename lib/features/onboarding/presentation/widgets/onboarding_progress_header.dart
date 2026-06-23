@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 
 class OnboardingProgressHeader extends StatelessWidget {
   const OnboardingProgressHeader({super.key, required this.currentStep});
@@ -36,8 +37,8 @@ class OnboardingProgressHeader extends StatelessWidget {
                 height: AppSpacing.xxs,
                 decoration: BoxDecoration(
                   color: i <= currentIndex
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
+                      ? context.colorScheme.primary
+                      : context.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
               ),

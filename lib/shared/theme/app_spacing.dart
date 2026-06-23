@@ -60,6 +60,7 @@ class AppSizing {
   static const double divider = 1;
   static const double iconXxs = 16;
   static const double handleWidth = 40;
+  static const double fieldWidth = 120;
 }
 
 class AppFontSizes {

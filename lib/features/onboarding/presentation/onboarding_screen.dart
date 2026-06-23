@@ -41,15 +41,18 @@ class OnboardingScreen extends ConsumerWidget {
           ),
         ),
       ),
-      data: (state) => _buildStep(context, ref, state),
+      data: (state) => _OnboardingStepView(state: state),
     );
   }
+}
 
-  Widget _buildStep(
-    BuildContext context,
-    WidgetRef ref,
-    OnboardingState state,
-  ) {
+class _OnboardingStepView extends ConsumerWidget {
+  const _OnboardingStepView({required this.state});
+
+  final OnboardingState state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(
       AppProviders.onboardingControllerProvider.notifier,
     );
@@ -73,19 +76,23 @@ class OnboardingScreen extends ConsumerWidget {
       );
     }
 
-    return Column(
-      children: [
-        OnboardingProgressHeader(currentStep: state.currentStep),
-        Expanded(
-          child: _StepBody(
-            state: state,
-            onUpdateDraft: (draft) => controller.updateDraft(draft),
-            onNext: () => controller.nextStep(),
-            onBack: () => controller.previousStep(),
-            onComplete: () => controller.completeOnboarding(),
-          ),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            OnboardingProgressHeader(currentStep: state.currentStep),
+            Expanded(
+              child: _StepBody(
+                state: state,
+                onUpdateDraft: (draft) => controller.updateDraft(draft),
+                onNext: () => controller.nextStep(),
+                onBack: () => controller.previousStep(),
+                onComplete: () => controller.completeOnboarding(),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -129,7 +136,9 @@ class _StepBody extends StatelessWidget {
       isPrimaryLoading: state.isSaving,
       primaryLabel: isReview ? AppStrings.finishSetup : null,
       secondaryLabel: secondaryLabel,
-      child: SingleChildScrollView(child: _stepContent(context)),
+      child: SingleChildScrollView(
+        child: _StepContent(state: state, onUpdateDraft: onUpdateDraft),
+      ),
     );
   }
 
@@ -153,12 +162,20 @@ class _StepBody extends StatelessWidget {
         return '';
     }
   }
+}
 
-  Widget _stepContent(BuildContext context) {
+class _StepContent extends StatelessWidget {
+  const _StepContent({required this.state, required this.onUpdateDraft});
+
+  final OnboardingState state;
+  final void Function(OnboardingDraft) onUpdateDraft;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildValidationOrError(context),
+        _ValidationMessage(state: state),
         switch (state.currentStep) {
           OnboardingStep.experienceGoals => _ExperienceGoalsStep(
             draft: state.draft,
@@ -190,8 +207,15 @@ class _StepBody extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildValidationOrError(BuildContext context) {
+class _ValidationMessage extends StatelessWidget {
+  const _ValidationMessage({required this.state});
+
+  final OnboardingState state;
+
+  @override
+  Widget build(BuildContext context) {
     if (state.hasValidationMessage) {
       return Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -215,6 +239,64 @@ class _StepBody extends StatelessWidget {
       );
     }
     return const SizedBox.shrink();
+  }
+}
+
+class _FormField extends StatefulWidget {
+  const _FormField({
+    required this.initialValue,
+    required this.onChanged,
+    this.keyboardType,
+    this.hintText,
+    this.suffixText,
+    this.width,
+    this.maxLines,
+  });
+
+  final String initialValue;
+  final void Function(String) onChanged;
+  final TextInputType? keyboardType;
+  final String? hintText;
+  final String? suffixText;
+  final double? width;
+  final int? maxLines;
+
+  @override
+  State<_FormField> createState() => _FormFieldState();
+}
+
+class _FormFieldState extends State<_FormField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textField = TextField(
+      controller: _controller,
+      keyboardType: widget.keyboardType,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        suffixText: widget.suffixText,
+      ),
+      maxLines: widget.maxLines,
+      onChanged: widget.onChanged,
+    );
+
+    if (widget.width != null) {
+      return SizedBox(width: widget.width, child: textField);
+    }
+    return textField;
   }
 }
 
@@ -324,22 +406,16 @@ class _ScheduleStep extends StatelessWidget {
           style: AppTextStyles.labelMd,
         ),
         AppWhiteSpace.hSm,
-        SizedBox(
-          width: 120,
-          child: TextField(
-            controller: TextEditingController(
-              text: draft.targetSessionLengthMinutes?.toString() ?? '',
-            ),
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              hintText: '45',
-              suffixText: 'min',
-            ),
-            onChanged: (value) {
-              final parsed = int.tryParse(value);
-              onUpdateDraft(draft.copyWith(targetSessionLengthMinutes: parsed));
-            },
-          ),
+        _FormField(
+          width: AppSizing.fieldWidth,
+          initialValue: draft.targetSessionLengthMinutes?.toString() ?? '',
+          keyboardType: TextInputType.number,
+          hintText: AppStrings.onboardingHintSessionMin,
+          suffixText: AppStrings.onboardingReviewMinutes,
+          onChanged: (value) {
+            final parsed = int.tryParse(value);
+            onUpdateDraft(draft.copyWith(targetSessionLengthMinutes: parsed));
+          },
         ),
       ],
     );
@@ -432,39 +508,30 @@ class _UnitsMetricsStep extends StatelessWidget {
         AppWhiteSpace.hLg,
         Text(AppStrings.onboardingHeightHint, style: AppTextStyles.labelMd),
         AppWhiteSpace.hSm,
-        SizedBox(
-          width: 120,
-          child: TextField(
-            controller: TextEditingController(
-              text: draft.heightCm?.toString() ?? '',
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              hintText: '170',
-              suffixText: 'cm',
-            ),
-            onChanged: (value) {
-              final parsed = double.tryParse(value);
-              onUpdateDraft(draft.copyWith(heightCm: parsed));
-            },
-          ),
+        _FormField(
+          width: AppSizing.fieldWidth,
+          initialValue: draft.heightCm?.toString() ?? '',
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          hintText: AppStrings.onboardingHintHeightCm,
+          suffixText: AppStrings.onboardingReviewCm,
+          onChanged: (value) {
+            final parsed = double.tryParse(value);
+            onUpdateDraft(draft.copyWith(heightCm: parsed));
+          },
         ),
         AppWhiteSpace.hLg,
         Text(AppStrings.onboardingWeightHint, style: AppTextStyles.labelMd),
         AppWhiteSpace.hSm,
-        SizedBox(
-          width: 120,
-          child: TextField(
-            controller: TextEditingController(
-              text: draft.bodyweightKg?.toString() ?? '',
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(hintText: '70', suffixText: 'kg'),
-            onChanged: (value) {
-              final parsed = double.tryParse(value);
-              onUpdateDraft(draft.copyWith(bodyweightKg: parsed));
-            },
-          ),
+        _FormField(
+          width: AppSizing.fieldWidth,
+          initialValue: draft.bodyweightKg?.toString() ?? '',
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          hintText: AppStrings.onboardingHintWeightKg,
+          suffixText: AppStrings.onboardingReviewKg,
+          onChanged: (value) {
+            final parsed = double.tryParse(value);
+            onUpdateDraft(draft.copyWith(bodyweightKg: parsed));
+          },
         ),
       ],
     );
@@ -519,12 +586,10 @@ class _LimitationsStep extends StatelessWidget {
         AppWhiteSpace.hLg,
         Text(AppStrings.onboardingNotesHint, style: AppTextStyles.labelMd),
         AppWhiteSpace.hSm,
-        TextField(
-          controller: TextEditingController(text: draft.notes ?? ''),
+        _FormField(
+          initialValue: draft.notes ?? '',
           maxLines: 3,
-          decoration: const InputDecoration(
-            hintText: AppStrings.onboardingNotesHint,
-          ),
+          hintText: AppStrings.onboardingNotesHint,
           onChanged: (value) {
             onUpdateDraft(draft.copyWith(notes: value.isEmpty ? null : value));
           },
@@ -573,66 +638,68 @@ class _ReviewStep extends StatelessWidget {
           ),
         ),
         AppWhiteSpace.hLg,
-        _reviewRow(
-          context,
-          AppStrings.onboardingExperienceHint,
-          draft.experienceLevel ?? '—',
+        _ReviewRow(
+          label: AppStrings.onboardingExperienceHint,
+          value: draft.experienceLevel ?? '—',
         ),
-        _reviewRow(
-          context,
-          AppStrings.onboardingGoalsHint,
-          draft.goals.isEmpty ? '—' : draft.goals.join(', '),
+        _ReviewRow(
+          label: AppStrings.onboardingGoalsHint,
+          value: draft.goals.isEmpty ? '—' : draft.goals.join(', '),
         ),
-        _reviewRow(
-          context,
-          AppStrings.onboardingScheduleHint,
-          draft.trainingDaysPerWeek != null
+        _ReviewRow(
+          label: AppStrings.onboardingScheduleHint,
+          value: draft.trainingDaysPerWeek != null
               ? '${draft.trainingDaysPerWeek} ${AppStrings.onboardingReviewDaysPerWeek}'
               : '—',
         ),
-        _reviewRow(
-          context,
-          AppStrings.onboardingEquipmentHint,
-          draft.equipmentAccess.isEmpty
+        _ReviewRow(
+          label: AppStrings.onboardingEquipmentHint,
+          value: draft.equipmentAccess.isEmpty
               ? '—'
               : draft.equipmentAccess.join(', '),
         ),
-        _reviewRow(
-          context,
-          AppStrings.onboardingUnitsHint,
-          draft.preferredUnits ?? 'metric',
+        _ReviewRow(
+          label: AppStrings.onboardingUnitsHint,
+          value: draft.preferredUnits ?? 'metric',
         ),
         if (draft.heightCm != null)
-          _reviewRow(
-            context,
-            AppStrings.onboardingHeightHint,
-            '${draft.heightCm} ${AppStrings.onboardingReviewCm}',
+          _ReviewRow(
+            label: AppStrings.onboardingHeightHint,
+            value: '${draft.heightCm} ${AppStrings.onboardingReviewCm}',
           ),
         if (draft.bodyweightKg != null)
-          _reviewRow(
-            context,
-            AppStrings.onboardingWeightHint,
-            '${draft.bodyweightKg} ${AppStrings.onboardingReviewKg}',
+          _ReviewRow(
+            label: AppStrings.onboardingWeightHint,
+            value: '${draft.bodyweightKg} ${AppStrings.onboardingReviewKg}',
           ),
-        _reviewRow(
-          context,
-          AppStrings.onboardingLimitationsHint,
-          draft.limitations.isEmpty ? '—' : draft.limitations.join(', '),
+        _ReviewRow(
+          label: AppStrings.onboardingLimitationsHint,
+          value: draft.limitations.isEmpty ? '—' : draft.limitations.join(', '),
         ),
         if (draft.notes != null && draft.notes!.isNotEmpty)
-          _reviewRow(context, AppStrings.onboardingNotesHint, draft.notes!),
-        _reviewRow(
-          context,
-          AppStrings.onboardingByokOptionalTitle,
-          draft.byokSkipped
+          _ReviewRow(
+            label: AppStrings.onboardingNotesHint,
+            value: draft.notes!,
+          ),
+        _ReviewRow(
+          label: AppStrings.onboardingByokOptionalTitle,
+          value: draft.byokSkipped
               ? AppStrings.skipForNow
               : AppStrings.onboardingReviewConfigured,
         ),
       ],
     );
   }
+}
 
-  Widget _reviewRow(BuildContext context, String label, String value) {
+class _ReviewRow extends StatelessWidget {
+  const _ReviewRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Column(

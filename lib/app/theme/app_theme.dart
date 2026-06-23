@@ -103,7 +103,8 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
-      labelStyle: AppTextStyles.labelSm,
+      backgroundColor: AedifyLightColors.surfaceContainerLow,
+      selectedColor: AedifyLightColors.secondaryContainer,
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStyles.headlineXl,
@@ -214,7 +215,8 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
-      labelStyle: AppTextStyles.labelSm,
+      backgroundColor: AedifyDarkColors.surfaceContainerHigh,
+      selectedColor: AedifyDarkColors.primaryContainer.withValues(alpha: 0.3),
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStylesDark.headlineXl,
