@@ -11,6 +11,7 @@ import 'tables/schema_migrations_log.dart';
 import 'tables/library_meta.dart';
 import 'tables/exercise_videos.dart';
 import 'tables/exercise_audio_cache.dart';
+import 'tables/user_profile.dart';
 
 part 'app_database.g.dart';
 
@@ -23,6 +24,7 @@ part 'app_database.g.dart';
     LibraryMeta,
     ExerciseVideos,
     ExerciseAudioCache,
+    UserProfile,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -30,14 +32,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 3);
+      await _logMigration(m, fromVersion: 0, toVersion: 4);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -50,6 +52,9 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(exerciseVideos);
         await m.createTable(exerciseAudioCache);
         await _addExerciseColumns(m);
+      }
+      if (from < 4) {
+        await m.createTable(userProfile);
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

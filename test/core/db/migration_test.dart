@@ -29,7 +29,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(3));
+      expect(logRows.first.toVersion, equals(4));
 
       db.close();
     });
@@ -71,7 +71,7 @@ void main() {
       await tempDir.delete(recursive: true);
     });
 
-    test('schema v3 tables accessible via in-memory DB', () async {
+    test('schema v4 tables accessible via in-memory DB', () async {
       final db = AppDatabase(NativeDatabase.memory());
 
       await expectLater(db.select(db.libraryMeta).get(), completion(isEmpty));
@@ -83,6 +83,7 @@ void main() {
         db.select(db.exerciseAudioCache).get(),
         completion(isEmpty),
       );
+      await expectLater(db.select(db.userProfile).get(), completion(isEmpty));
 
       db.close();
     });

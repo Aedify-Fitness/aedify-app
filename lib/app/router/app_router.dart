@@ -59,7 +59,9 @@ class AppRouter {
 
   static final appRouterProvider = Provider<GoRouter>((ref) {
     final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
-    final onboardingStatus = ref.watch(AppProviders.onboardingStatusProvider);
+    final onboardingStatusAsync = ref.watch(
+      AppProviders.onboardingStatusProvider,
+    );
     final aiAvailability = ref.watch(AppProviders.aiAvailabilityProvider);
     final draftGuard = ref.watch(AppProviders.draftGuardProvider);
     final featureFlags = ref.watch(AppProviders.featureFlagsProvider);
@@ -77,10 +79,21 @@ class AppRouter {
           return null;
         }
 
-        if (isOnStartup) return AppRoutes.onboarding().path;
+        // 1.5 Unresolved onboarding status — keep on startup
+        if (onboardingStatusAsync.isLoading || onboardingStatusAsync.hasError) {
+          if (!isOnStartup) return AppRoutes.startup().path;
+          return null;
+        }
+
+        final onboardingStatus = onboardingStatusAsync.asData?.value;
 
         // 2. Onboarding guard
-        if (onboardingStatus == OnboardingStatus.incomplete) {
+        if (onboardingStatus == OnboardingStatus.complete) {
+          if (isOnStartup || location == AppRoutes.onboarding().path) {
+            return AppRoutes.home().path;
+          }
+        } else if (onboardingStatus == OnboardingStatus.incomplete) {
+          if (isOnStartup) return AppRoutes.onboarding().path;
           final isOnOnboarding = location == AppRoutes.onboarding().path;
           if (!isOnOnboarding) return AppRoutes.onboarding().path;
         }

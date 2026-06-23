@@ -4,8 +4,8 @@
 
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M2 — Exercise Dataset Sync + Exercise Library                                                                                                                                                                                                                                                                                                                                                        |
-| **Status**            | 10 of 10 tickets + 5 closure items + TTS/audio-cache slice complete (download, parse, persist, list/detail, video/thumbnails, bodymap, candidate query service, custom exercise hooks, dataset sync status and recovery UI, QA fixture suite, version short-circuit, empty-filter semantics, dataset status, thumbnails, TTS service, audio cache DAO, step audio controller, per-step playback UI). |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                       |
+| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip).                                                                                                                                                                                                                                                                                                    |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## Completed Work
@@ -220,9 +220,19 @@
 
 - `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 359/359 passed.
 
+### V1-M3-001 — Onboarding Flow, Completion Gate, Debounced Autosave, Resume (complete)
+
+- **Router gate fix** (`lib/app/router/app_router.dart`): Bootstrap guard unchanged. Unresolved `onboardingStatusProvider` keeps user on startup. `complete` status redirects startup/onboarding → home. `incomplete` status redirects non-onboarding routes → onboarding.
+- **Debounced draft autosave** (`lib/features/onboarding/application/onboarding_controller.dart`): 400ms debounce on `updateDraft()`. Flush on `nextStep()` and `completeOnboarding()`. Timer cancelled via `ref.onDispose`. Previously the draft was never persisted until final completion.
+- **Resume-to-next-incomplete-step** (`OnboardingController._resumeStepForDraft`): `build()` and `loadExistingDraft()` derive step from saved draft. Deterministic progression: experienceGoals → schedule → equipment → unitsMetrics → limitations → byokOptional → review.
+- **BYOK skip action** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Explicit `Skip for now` button on BYOK step sets `byokSkipped: true` and advances to review.
+- **String cleanup**: Goal/equipment/limitation/unit/review labels moved to `AppStrings` constants in `lib/shared/constants/app_strings.dart`.
+- **Tests**: 31 onboarding tests (8 repository, 13 controller, 10 screen), router/app tests updated for new gate behavior.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
 ## Planned Work
 
-- M3 — Onboarding, Profile, Settings, BYOK Setup
+- M3-002 — Profile, Settings, BYOK Setup
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
@@ -238,7 +248,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 379/379 passed (359 existing + 20 new TTS/audio-cache tests)
+- `flutter test` — 420/420 passed (379 existing + 31 new onboarding tests + 10 adjusted router/app tests)
 - `dart run build_runner build` — passed (7s, 142 outputs)
 
 ## Codebase Convention Enforcement Status

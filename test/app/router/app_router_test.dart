@@ -42,8 +42,8 @@ void main() {
             ),
             AppProviders.appDatabaseProvider.overrideWithValue(testDatabase),
             AppProviders.featureFlagsProvider.overrideWithValue(flags),
-            AppProviders.onboardingStatusProvider.overrideWith(
-              (ref) => onboarding,
+            AppProviders.onboardingStatusProvider.overrideWithValue(
+              AsyncData(onboarding),
             ),
             AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
             AppProviders.draftGuardProvider.overrideWith((ref) => draft),
@@ -57,10 +57,14 @@ void main() {
         ),
       );
       await tester.pump();
+      await tester.pump();
+      await tester.pump();
       return router!;
     }
 
-    testWidgets('redirects startup to onboarding on success', (tester) async {
+    testWidgets('redirects completed onboarding from startup to home', (
+      tester,
+    ) async {
       final router = await pumpApp(
         tester: tester,
         onboarding: OnboardingStatus.complete,
@@ -70,7 +74,49 @@ void main() {
 
       expect(
         router.routeInformationProvider.value.uri.path,
-        equals(AppRoutes.onboarding().path),
+        equals(AppRoutes.home().path),
+      );
+    });
+
+    testWidgets('redirects unresolved onboarding status to startup', (
+      tester,
+    ) async {
+      GoRouter? router;
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            AppBootstrap.controllerProvider.overrideWith(
+              () => _CompleteBootstrapController(),
+            ),
+            AppProviders.appDatabaseProvider.overrideWithValue(testDatabase),
+            AppProviders.featureFlagsProvider.overrideWithValue(
+              FeatureFlags.defaultFlags,
+            ),
+            AppProviders.onboardingStatusProvider.overrideWithValue(
+              const AsyncLoading<OnboardingStatus>(),
+            ),
+            AppProviders.aiAvailabilityProvider.overrideWith(
+              (ref) => AiAvailability.available,
+            ),
+            AppProviders.draftGuardProvider.overrideWith(
+              (ref) => DraftGuard.clear,
+            ),
+          ],
+          child: Consumer(
+            builder: (context, ref, _) {
+              router = ref.watch(AppRouter.appRouterProvider);
+              return MaterialApp.router(routerConfig: router!);
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        router!.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.startup().path),
       );
     });
 

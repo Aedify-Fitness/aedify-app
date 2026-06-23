@@ -36,6 +36,10 @@ import 'package:aedify/features/exercise_library/data/candidate_exercise_query_s
 import 'package:aedify/features/exercise_library/data/custom_exercise_identity_service.dart';
 import 'package:aedify/features/exercise_library/data/drift_candidate_exercise_query_service.dart';
 import 'package:aedify/features/bodymap/application/bodymap_selection_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_state.dart';
+import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
+import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -109,8 +113,25 @@ class AppProviders {
     return FeatureFlags.defaultFlags;
   });
 
-  static final onboardingStatusProvider = Provider<OnboardingStatus>((ref) {
-    return OnboardingStatus.incomplete;
+  static final onboardingRepositoryProvider = Provider<OnboardingRepository>((
+    ref,
+  ) {
+    return DriftOnboardingRepository(
+      database: ref.read(AppProviders.appDatabaseProvider),
+    );
+  });
+
+  static final onboardingControllerProvider =
+      AsyncNotifierProvider<OnboardingController, OnboardingState>(
+        OnboardingController.new,
+      );
+
+  static final onboardingStatusProvider = FutureProvider<OnboardingStatus>((
+    ref,
+  ) async {
+    final repository = ref.read(onboardingRepositoryProvider);
+    final complete = await repository.isOnboardingCompleted();
+    return complete ? OnboardingStatus.complete : OnboardingStatus.incomplete;
   });
 
   static final aiAvailabilityProvider = Provider<AiAvailability>((ref) {

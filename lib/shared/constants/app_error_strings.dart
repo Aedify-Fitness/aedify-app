@@ -26,6 +26,12 @@ class AppErrorStrings {
   static const String networkTimeoutMessage =
       'Connection timed out. Please check your connection and try again.';
 
+  // Onboarding / Profile
+  static const String onboardingSaveFailedMessage =
+      'Could not save onboarding data.';
+  static const String onboardingLoadFailedMessage =
+      'Could not load onboarding progress.';
+
   // TTS / Audio Cache
   static const String audioGenerationFailedMessage =
       'Could not generate step audio.';

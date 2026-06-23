@@ -4,6 +4,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-23
+
+### Fixed (V1-M3-001 — Onboarding completion gate, debounced autosave, resume-to-step)
+
+- **Router gate fix** (`lib/app/router/app_router.dart`): Replaced unconditional `startup -> onboarding` redirect. New behavior:
+  - Bootstrap guard unchanged.
+  - Unresolved onboarding status stays on startup.
+  - `OnboardingStatus.complete` redirects from startup/onboarding to home.
+  - `OnboardingStatus.incomplete` redirects non-onboarding routes to onboarding.
+- **Debounced draft autosave** (`lib/features/onboarding/application/onboarding_controller.dart`): `updateDraft()` now schedules a 400ms debounced Drift save. `nextStep()` and `completeOnboarding()` flush pending saves immediately. Timer cancelled via `ref.onDispose`.
+- **Resume-to-next-incomplete-step** (`OnboardingController._resumeStepForDraft`): `build()` and `loadExistingDraft()` now derive the correct step from saved draft contents instead of always starting at welcome. Order: experienceGoals → schedule → equipment → unitsMetrics → limitations → byokOptional → review.
+- **BYOK explicit skip action** (`lib/features/onboarding/presentation/onboarding_screen.dart`): BYOK step shows `Skip for now` which sets `byokSkipped: true` and advances to review.
+- **Hardcoded strings → AppStrings constants**: Goal labels, equipment labels, limitation labels, unit labels, review labels moved to `AppStrings` in `lib/shared/constants/app_strings.dart`.
+- **Tests updated**: Controller tests cover debounce, flush-on-next, resume-step, and collapse behavior. Router tests cover complete→home, incomplete→onboarding, and unresolved→startup. Widget tests cover BYOK skip and partial-draft resume.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
 ## 2026-06-22
 
 ### Added (V1-M2 TTS/audio-cache slice — TTS service, audio cache DAO, step audio controller, per-step playback UI)

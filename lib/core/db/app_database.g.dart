@@ -4837,6 +4837,1209 @@ class ExerciseAudioCacheCompanion
   }
 }
 
+class $UserProfileTable extends UserProfile
+    with TableInfo<$UserProfileTable, UserProfileData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserProfileTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sexMeta = const VerificationMeta('sex');
+  @override
+  late final GeneratedColumn<String> sex = GeneratedColumn<String>(
+    'sex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateOfBirthMeta = const VerificationMeta(
+    'dateOfBirth',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dateOfBirth = GeneratedColumn<DateTime>(
+    'date_of_birth',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyweightLoggedAtMeta =
+      const VerificationMeta('bodyweightLoggedAt');
+  @override
+  late final GeneratedColumn<DateTime> bodyweightLoggedAt =
+      GeneratedColumn<DateTime>(
+        'bodyweight_logged_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _preferredUnitsMeta = const VerificationMeta(
+    'preferredUnits',
+  );
+  @override
+  late final GeneratedColumn<String> preferredUnits = GeneratedColumn<String>(
+    'preferred_units',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('metric'),
+  );
+  static const VerificationMeta _experienceLevelMeta = const VerificationMeta(
+    'experienceLevel',
+  );
+  @override
+  late final GeneratedColumn<String> experienceLevel = GeneratedColumn<String>(
+    'experience_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _targetSessionLengthMinutesMeta =
+      const VerificationMeta('targetSessionLengthMinutes');
+  @override
+  late final GeneratedColumn<int> targetSessionLengthMinutes =
+      GeneratedColumn<int>(
+        'target_session_length_minutes',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _trainingDaysPerWeekMeta =
+      const VerificationMeta('trainingDaysPerWeek');
+  @override
+  late final GeneratedColumn<int> trainingDaysPerWeek = GeneratedColumn<int>(
+    'training_days_per_week',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _trainingDayNamesJsonMeta =
+      const VerificationMeta('trainingDayNamesJson');
+  @override
+  late final GeneratedColumn<String> trainingDayNamesJson =
+      GeneratedColumn<String>(
+        'training_day_names_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _onboardingCompletedMeta =
+      const VerificationMeta('onboardingCompleted');
+  @override
+  late final GeneratedColumn<bool> onboardingCompleted = GeneratedColumn<bool>(
+    'onboarding_completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("onboarding_completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _onboardingCompletedAtMeta =
+      const VerificationMeta('onboardingCompletedAt');
+  @override
+  late final GeneratedColumn<DateTime> onboardingCompletedAt =
+      GeneratedColumn<DateTime>(
+        'onboarding_completed_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _goalsJsonMeta = const VerificationMeta(
+    'goalsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalsJson = GeneratedColumn<String>(
+    'goals_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _equipmentAccessJsonMeta =
+      const VerificationMeta('equipmentAccessJson');
+  @override
+  late final GeneratedColumn<String> equipmentAccessJson =
+      GeneratedColumn<String>(
+        'equipment_access_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _injuriesLimitationsJsonMeta =
+      const VerificationMeta('injuriesLimitationsJson');
+  @override
+  late final GeneratedColumn<String> injuriesLimitationsJson =
+      GeneratedColumn<String>(
+        'injuries_limitations_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _otherNotesMeta = const VerificationMeta(
+    'otherNotes',
+  );
+  @override
+  late final GeneratedColumn<String> otherNotes = GeneratedColumn<String>(
+    'other_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    sex,
+    dateOfBirth,
+    heightCm,
+    bodyweightKg,
+    bodyweightLoggedAt,
+    preferredUnits,
+    experienceLevel,
+    targetSessionLengthMinutes,
+    trainingDaysPerWeek,
+    trainingDayNamesJson,
+    onboardingCompleted,
+    onboardingCompletedAt,
+    goalsJson,
+    equipmentAccessJson,
+    injuriesLimitationsJson,
+    otherNotes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_profile';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserProfileData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('sex')) {
+      context.handle(
+        _sexMeta,
+        sex.isAcceptableOrUnknown(data['sex']!, _sexMeta),
+      );
+    }
+    if (data.containsKey('date_of_birth')) {
+      context.handle(
+        _dateOfBirthMeta,
+        dateOfBirth.isAcceptableOrUnknown(
+          data['date_of_birth']!,
+          _dateOfBirthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_logged_at')) {
+      context.handle(
+        _bodyweightLoggedAtMeta,
+        bodyweightLoggedAt.isAcceptableOrUnknown(
+          data['bodyweight_logged_at']!,
+          _bodyweightLoggedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('preferred_units')) {
+      context.handle(
+        _preferredUnitsMeta,
+        preferredUnits.isAcceptableOrUnknown(
+          data['preferred_units']!,
+          _preferredUnitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('experience_level')) {
+      context.handle(
+        _experienceLevelMeta,
+        experienceLevel.isAcceptableOrUnknown(
+          data['experience_level']!,
+          _experienceLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_session_length_minutes')) {
+      context.handle(
+        _targetSessionLengthMinutesMeta,
+        targetSessionLengthMinutes.isAcceptableOrUnknown(
+          data['target_session_length_minutes']!,
+          _targetSessionLengthMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('training_days_per_week')) {
+      context.handle(
+        _trainingDaysPerWeekMeta,
+        trainingDaysPerWeek.isAcceptableOrUnknown(
+          data['training_days_per_week']!,
+          _trainingDaysPerWeekMeta,
+        ),
+      );
+    }
+    if (data.containsKey('training_day_names_json')) {
+      context.handle(
+        _trainingDayNamesJsonMeta,
+        trainingDayNamesJson.isAcceptableOrUnknown(
+          data['training_day_names_json']!,
+          _trainingDayNamesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('onboarding_completed')) {
+      context.handle(
+        _onboardingCompletedMeta,
+        onboardingCompleted.isAcceptableOrUnknown(
+          data['onboarding_completed']!,
+          _onboardingCompletedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('onboarding_completed_at')) {
+      context.handle(
+        _onboardingCompletedAtMeta,
+        onboardingCompletedAt.isAcceptableOrUnknown(
+          data['onboarding_completed_at']!,
+          _onboardingCompletedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goals_json')) {
+      context.handle(
+        _goalsJsonMeta,
+        goalsJson.isAcceptableOrUnknown(data['goals_json']!, _goalsJsonMeta),
+      );
+    }
+    if (data.containsKey('equipment_access_json')) {
+      context.handle(
+        _equipmentAccessJsonMeta,
+        equipmentAccessJson.isAcceptableOrUnknown(
+          data['equipment_access_json']!,
+          _equipmentAccessJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('injuries_limitations_json')) {
+      context.handle(
+        _injuriesLimitationsJsonMeta,
+        injuriesLimitationsJson.isAcceptableOrUnknown(
+          data['injuries_limitations_json']!,
+          _injuriesLimitationsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('other_notes')) {
+      context.handle(
+        _otherNotesMeta,
+        otherNotes.isAcceptableOrUnknown(data['other_notes']!, _otherNotesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserProfileData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      sex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sex'],
+      ),
+      dateOfBirth: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date_of_birth'],
+      ),
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      bodyweightLoggedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}bodyweight_logged_at'],
+      ),
+      preferredUnits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_units'],
+      )!,
+      experienceLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_level'],
+      ),
+      targetSessionLengthMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_session_length_minutes'],
+      ),
+      trainingDaysPerWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}training_days_per_week'],
+      ),
+      trainingDayNamesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}training_day_names_json'],
+      )!,
+      onboardingCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}onboarding_completed'],
+      )!,
+      onboardingCompletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}onboarding_completed_at'],
+      ),
+      goalsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goals_json'],
+      )!,
+      equipmentAccessJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipment_access_json'],
+      )!,
+      injuriesLimitationsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}injuries_limitations_json'],
+      )!,
+      otherNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}other_notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserProfileTable createAlias(String alias) {
+    return $UserProfileTable(attachedDatabase, alias);
+  }
+}
+
+class UserProfileData extends DataClass implements Insertable<UserProfileData> {
+  final String id;
+  final String? name;
+  final String? sex;
+  final DateTime? dateOfBirth;
+  final double? heightCm;
+  final double? bodyweightKg;
+  final DateTime? bodyweightLoggedAt;
+  final String preferredUnits;
+  final String? experienceLevel;
+  final int? targetSessionLengthMinutes;
+  final int? trainingDaysPerWeek;
+  final String trainingDayNamesJson;
+  final bool onboardingCompleted;
+  final DateTime? onboardingCompletedAt;
+  final String goalsJson;
+  final String equipmentAccessJson;
+  final String injuriesLimitationsJson;
+  final String? otherNotes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const UserProfileData({
+    required this.id,
+    this.name,
+    this.sex,
+    this.dateOfBirth,
+    this.heightCm,
+    this.bodyweightKg,
+    this.bodyweightLoggedAt,
+    required this.preferredUnits,
+    this.experienceLevel,
+    this.targetSessionLengthMinutes,
+    this.trainingDaysPerWeek,
+    required this.trainingDayNamesJson,
+    required this.onboardingCompleted,
+    this.onboardingCompletedAt,
+    required this.goalsJson,
+    required this.equipmentAccessJson,
+    required this.injuriesLimitationsJson,
+    this.otherNotes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || sex != null) {
+      map['sex'] = Variable<String>(sex);
+    }
+    if (!nullToAbsent || dateOfBirth != null) {
+      map['date_of_birth'] = Variable<DateTime>(dateOfBirth);
+    }
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || bodyweightLoggedAt != null) {
+      map['bodyweight_logged_at'] = Variable<DateTime>(bodyweightLoggedAt);
+    }
+    map['preferred_units'] = Variable<String>(preferredUnits);
+    if (!nullToAbsent || experienceLevel != null) {
+      map['experience_level'] = Variable<String>(experienceLevel);
+    }
+    if (!nullToAbsent || targetSessionLengthMinutes != null) {
+      map['target_session_length_minutes'] = Variable<int>(
+        targetSessionLengthMinutes,
+      );
+    }
+    if (!nullToAbsent || trainingDaysPerWeek != null) {
+      map['training_days_per_week'] = Variable<int>(trainingDaysPerWeek);
+    }
+    map['training_day_names_json'] = Variable<String>(trainingDayNamesJson);
+    map['onboarding_completed'] = Variable<bool>(onboardingCompleted);
+    if (!nullToAbsent || onboardingCompletedAt != null) {
+      map['onboarding_completed_at'] = Variable<DateTime>(
+        onboardingCompletedAt,
+      );
+    }
+    map['goals_json'] = Variable<String>(goalsJson);
+    map['equipment_access_json'] = Variable<String>(equipmentAccessJson);
+    map['injuries_limitations_json'] = Variable<String>(
+      injuriesLimitationsJson,
+    );
+    if (!nullToAbsent || otherNotes != null) {
+      map['other_notes'] = Variable<String>(otherNotes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserProfileCompanion toCompanion(bool nullToAbsent) {
+    return UserProfileCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      sex: sex == null && nullToAbsent ? const Value.absent() : Value(sex),
+      dateOfBirth: dateOfBirth == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dateOfBirth),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      bodyweightLoggedAt: bodyweightLoggedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightLoggedAt),
+      preferredUnits: Value(preferredUnits),
+      experienceLevel: experienceLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(experienceLevel),
+      targetSessionLengthMinutes:
+          targetSessionLengthMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetSessionLengthMinutes),
+      trainingDaysPerWeek: trainingDaysPerWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trainingDaysPerWeek),
+      trainingDayNamesJson: Value(trainingDayNamesJson),
+      onboardingCompleted: Value(onboardingCompleted),
+      onboardingCompletedAt: onboardingCompletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(onboardingCompletedAt),
+      goalsJson: Value(goalsJson),
+      equipmentAccessJson: Value(equipmentAccessJson),
+      injuriesLimitationsJson: Value(injuriesLimitationsJson),
+      otherNotes: otherNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(otherNotes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserProfileData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserProfileData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      sex: serializer.fromJson<String?>(json['sex']),
+      dateOfBirth: serializer.fromJson<DateTime?>(json['dateOfBirth']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      bodyweightLoggedAt: serializer.fromJson<DateTime?>(
+        json['bodyweightLoggedAt'],
+      ),
+      preferredUnits: serializer.fromJson<String>(json['preferredUnits']),
+      experienceLevel: serializer.fromJson<String?>(json['experienceLevel']),
+      targetSessionLengthMinutes: serializer.fromJson<int?>(
+        json['targetSessionLengthMinutes'],
+      ),
+      trainingDaysPerWeek: serializer.fromJson<int?>(
+        json['trainingDaysPerWeek'],
+      ),
+      trainingDayNamesJson: serializer.fromJson<String>(
+        json['trainingDayNamesJson'],
+      ),
+      onboardingCompleted: serializer.fromJson<bool>(
+        json['onboardingCompleted'],
+      ),
+      onboardingCompletedAt: serializer.fromJson<DateTime?>(
+        json['onboardingCompletedAt'],
+      ),
+      goalsJson: serializer.fromJson<String>(json['goalsJson']),
+      equipmentAccessJson: serializer.fromJson<String>(
+        json['equipmentAccessJson'],
+      ),
+      injuriesLimitationsJson: serializer.fromJson<String>(
+        json['injuriesLimitationsJson'],
+      ),
+      otherNotes: serializer.fromJson<String?>(json['otherNotes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String?>(name),
+      'sex': serializer.toJson<String?>(sex),
+      'dateOfBirth': serializer.toJson<DateTime?>(dateOfBirth),
+      'heightCm': serializer.toJson<double?>(heightCm),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'bodyweightLoggedAt': serializer.toJson<DateTime?>(bodyweightLoggedAt),
+      'preferredUnits': serializer.toJson<String>(preferredUnits),
+      'experienceLevel': serializer.toJson<String?>(experienceLevel),
+      'targetSessionLengthMinutes': serializer.toJson<int?>(
+        targetSessionLengthMinutes,
+      ),
+      'trainingDaysPerWeek': serializer.toJson<int?>(trainingDaysPerWeek),
+      'trainingDayNamesJson': serializer.toJson<String>(trainingDayNamesJson),
+      'onboardingCompleted': serializer.toJson<bool>(onboardingCompleted),
+      'onboardingCompletedAt': serializer.toJson<DateTime?>(
+        onboardingCompletedAt,
+      ),
+      'goalsJson': serializer.toJson<String>(goalsJson),
+      'equipmentAccessJson': serializer.toJson<String>(equipmentAccessJson),
+      'injuriesLimitationsJson': serializer.toJson<String>(
+        injuriesLimitationsJson,
+      ),
+      'otherNotes': serializer.toJson<String?>(otherNotes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserProfileData copyWith({
+    String? id,
+    Value<String?> name = const Value.absent(),
+    Value<String?> sex = const Value.absent(),
+    Value<DateTime?> dateOfBirth = const Value.absent(),
+    Value<double?> heightCm = const Value.absent(),
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+    String? preferredUnits,
+    Value<String?> experienceLevel = const Value.absent(),
+    Value<int?> targetSessionLengthMinutes = const Value.absent(),
+    Value<int?> trainingDaysPerWeek = const Value.absent(),
+    String? trainingDayNamesJson,
+    bool? onboardingCompleted,
+    Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+    String? goalsJson,
+    String? equipmentAccessJson,
+    String? injuriesLimitationsJson,
+    Value<String?> otherNotes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => UserProfileData(
+    id: id ?? this.id,
+    name: name.present ? name.value : this.name,
+    sex: sex.present ? sex.value : this.sex,
+    dateOfBirth: dateOfBirth.present ? dateOfBirth.value : this.dateOfBirth,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    bodyweightLoggedAt: bodyweightLoggedAt.present
+        ? bodyweightLoggedAt.value
+        : this.bodyweightLoggedAt,
+    preferredUnits: preferredUnits ?? this.preferredUnits,
+    experienceLevel: experienceLevel.present
+        ? experienceLevel.value
+        : this.experienceLevel,
+    targetSessionLengthMinutes: targetSessionLengthMinutes.present
+        ? targetSessionLengthMinutes.value
+        : this.targetSessionLengthMinutes,
+    trainingDaysPerWeek: trainingDaysPerWeek.present
+        ? trainingDaysPerWeek.value
+        : this.trainingDaysPerWeek,
+    trainingDayNamesJson: trainingDayNamesJson ?? this.trainingDayNamesJson,
+    onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+    onboardingCompletedAt: onboardingCompletedAt.present
+        ? onboardingCompletedAt.value
+        : this.onboardingCompletedAt,
+    goalsJson: goalsJson ?? this.goalsJson,
+    equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+    injuriesLimitationsJson:
+        injuriesLimitationsJson ?? this.injuriesLimitationsJson,
+    otherNotes: otherNotes.present ? otherNotes.value : this.otherNotes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserProfileData copyWithCompanion(UserProfileCompanion data) {
+    return UserProfileData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      sex: data.sex.present ? data.sex.value : this.sex,
+      dateOfBirth: data.dateOfBirth.present
+          ? data.dateOfBirth.value
+          : this.dateOfBirth,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      bodyweightLoggedAt: data.bodyweightLoggedAt.present
+          ? data.bodyweightLoggedAt.value
+          : this.bodyweightLoggedAt,
+      preferredUnits: data.preferredUnits.present
+          ? data.preferredUnits.value
+          : this.preferredUnits,
+      experienceLevel: data.experienceLevel.present
+          ? data.experienceLevel.value
+          : this.experienceLevel,
+      targetSessionLengthMinutes: data.targetSessionLengthMinutes.present
+          ? data.targetSessionLengthMinutes.value
+          : this.targetSessionLengthMinutes,
+      trainingDaysPerWeek: data.trainingDaysPerWeek.present
+          ? data.trainingDaysPerWeek.value
+          : this.trainingDaysPerWeek,
+      trainingDayNamesJson: data.trainingDayNamesJson.present
+          ? data.trainingDayNamesJson.value
+          : this.trainingDayNamesJson,
+      onboardingCompleted: data.onboardingCompleted.present
+          ? data.onboardingCompleted.value
+          : this.onboardingCompleted,
+      onboardingCompletedAt: data.onboardingCompletedAt.present
+          ? data.onboardingCompletedAt.value
+          : this.onboardingCompletedAt,
+      goalsJson: data.goalsJson.present ? data.goalsJson.value : this.goalsJson,
+      equipmentAccessJson: data.equipmentAccessJson.present
+          ? data.equipmentAccessJson.value
+          : this.equipmentAccessJson,
+      injuriesLimitationsJson: data.injuriesLimitationsJson.present
+          ? data.injuriesLimitationsJson.value
+          : this.injuriesLimitationsJson,
+      otherNotes: data.otherNotes.present
+          ? data.otherNotes.value
+          : this.otherNotes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfileData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('sex: $sex, ')
+          ..write('dateOfBirth: $dateOfBirth, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyweightLoggedAt: $bodyweightLoggedAt, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('experienceLevel: $experienceLevel, ')
+          ..write('targetSessionLengthMinutes: $targetSessionLengthMinutes, ')
+          ..write('trainingDaysPerWeek: $trainingDaysPerWeek, ')
+          ..write('trainingDayNamesJson: $trainingDayNamesJson, ')
+          ..write('onboardingCompleted: $onboardingCompleted, ')
+          ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
+          ..write('goalsJson: $goalsJson, ')
+          ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
+          ..write('otherNotes: $otherNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    sex,
+    dateOfBirth,
+    heightCm,
+    bodyweightKg,
+    bodyweightLoggedAt,
+    preferredUnits,
+    experienceLevel,
+    targetSessionLengthMinutes,
+    trainingDaysPerWeek,
+    trainingDayNamesJson,
+    onboardingCompleted,
+    onboardingCompletedAt,
+    goalsJson,
+    equipmentAccessJson,
+    injuriesLimitationsJson,
+    otherNotes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserProfileData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.sex == this.sex &&
+          other.dateOfBirth == this.dateOfBirth &&
+          other.heightCm == this.heightCm &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.bodyweightLoggedAt == this.bodyweightLoggedAt &&
+          other.preferredUnits == this.preferredUnits &&
+          other.experienceLevel == this.experienceLevel &&
+          other.targetSessionLengthMinutes == this.targetSessionLengthMinutes &&
+          other.trainingDaysPerWeek == this.trainingDaysPerWeek &&
+          other.trainingDayNamesJson == this.trainingDayNamesJson &&
+          other.onboardingCompleted == this.onboardingCompleted &&
+          other.onboardingCompletedAt == this.onboardingCompletedAt &&
+          other.goalsJson == this.goalsJson &&
+          other.equipmentAccessJson == this.equipmentAccessJson &&
+          other.injuriesLimitationsJson == this.injuriesLimitationsJson &&
+          other.otherNotes == this.otherNotes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
+  final Value<String> id;
+  final Value<String?> name;
+  final Value<String?> sex;
+  final Value<DateTime?> dateOfBirth;
+  final Value<double?> heightCm;
+  final Value<double?> bodyweightKg;
+  final Value<DateTime?> bodyweightLoggedAt;
+  final Value<String> preferredUnits;
+  final Value<String?> experienceLevel;
+  final Value<int?> targetSessionLengthMinutes;
+  final Value<int?> trainingDaysPerWeek;
+  final Value<String> trainingDayNamesJson;
+  final Value<bool> onboardingCompleted;
+  final Value<DateTime?> onboardingCompletedAt;
+  final Value<String> goalsJson;
+  final Value<String> equipmentAccessJson;
+  final Value<String> injuriesLimitationsJson;
+  final Value<String?> otherNotes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const UserProfileCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.dateOfBirth = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyweightLoggedAt = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.experienceLevel = const Value.absent(),
+    this.targetSessionLengthMinutes = const Value.absent(),
+    this.trainingDaysPerWeek = const Value.absent(),
+    this.trainingDayNamesJson = const Value.absent(),
+    this.onboardingCompleted = const Value.absent(),
+    this.onboardingCompletedAt = const Value.absent(),
+    this.goalsJson = const Value.absent(),
+    this.equipmentAccessJson = const Value.absent(),
+    this.injuriesLimitationsJson = const Value.absent(),
+    this.otherNotes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UserProfileCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.dateOfBirth = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyweightLoggedAt = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.experienceLevel = const Value.absent(),
+    this.targetSessionLengthMinutes = const Value.absent(),
+    this.trainingDaysPerWeek = const Value.absent(),
+    this.trainingDayNamesJson = const Value.absent(),
+    this.onboardingCompleted = const Value.absent(),
+    this.onboardingCompletedAt = const Value.absent(),
+    this.goalsJson = const Value.absent(),
+    this.equipmentAccessJson = const Value.absent(),
+    this.injuriesLimitationsJson = const Value.absent(),
+    this.otherNotes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<UserProfileData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? sex,
+    Expression<DateTime>? dateOfBirth,
+    Expression<double>? heightCm,
+    Expression<double>? bodyweightKg,
+    Expression<DateTime>? bodyweightLoggedAt,
+    Expression<String>? preferredUnits,
+    Expression<String>? experienceLevel,
+    Expression<int>? targetSessionLengthMinutes,
+    Expression<int>? trainingDaysPerWeek,
+    Expression<String>? trainingDayNamesJson,
+    Expression<bool>? onboardingCompleted,
+    Expression<DateTime>? onboardingCompletedAt,
+    Expression<String>? goalsJson,
+    Expression<String>? equipmentAccessJson,
+    Expression<String>? injuriesLimitationsJson,
+    Expression<String>? otherNotes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (sex != null) 'sex': sex,
+      if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (bodyweightLoggedAt != null)
+        'bodyweight_logged_at': bodyweightLoggedAt,
+      if (preferredUnits != null) 'preferred_units': preferredUnits,
+      if (experienceLevel != null) 'experience_level': experienceLevel,
+      if (targetSessionLengthMinutes != null)
+        'target_session_length_minutes': targetSessionLengthMinutes,
+      if (trainingDaysPerWeek != null)
+        'training_days_per_week': trainingDaysPerWeek,
+      if (trainingDayNamesJson != null)
+        'training_day_names_json': trainingDayNamesJson,
+      if (onboardingCompleted != null)
+        'onboarding_completed': onboardingCompleted,
+      if (onboardingCompletedAt != null)
+        'onboarding_completed_at': onboardingCompletedAt,
+      if (goalsJson != null) 'goals_json': goalsJson,
+      if (equipmentAccessJson != null)
+        'equipment_access_json': equipmentAccessJson,
+      if (injuriesLimitationsJson != null)
+        'injuries_limitations_json': injuriesLimitationsJson,
+      if (otherNotes != null) 'other_notes': otherNotes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UserProfileCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? name,
+    Value<String?>? sex,
+    Value<DateTime?>? dateOfBirth,
+    Value<double?>? heightCm,
+    Value<double?>? bodyweightKg,
+    Value<DateTime?>? bodyweightLoggedAt,
+    Value<String>? preferredUnits,
+    Value<String?>? experienceLevel,
+    Value<int?>? targetSessionLengthMinutes,
+    Value<int?>? trainingDaysPerWeek,
+    Value<String>? trainingDayNamesJson,
+    Value<bool>? onboardingCompleted,
+    Value<DateTime?>? onboardingCompletedAt,
+    Value<String>? goalsJson,
+    Value<String>? equipmentAccessJson,
+    Value<String>? injuriesLimitationsJson,
+    Value<String?>? otherNotes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return UserProfileCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      sex: sex ?? this.sex,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      heightCm: heightCm ?? this.heightCm,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      bodyweightLoggedAt: bodyweightLoggedAt ?? this.bodyweightLoggedAt,
+      preferredUnits: preferredUnits ?? this.preferredUnits,
+      experienceLevel: experienceLevel ?? this.experienceLevel,
+      targetSessionLengthMinutes:
+          targetSessionLengthMinutes ?? this.targetSessionLengthMinutes,
+      trainingDaysPerWeek: trainingDaysPerWeek ?? this.trainingDaysPerWeek,
+      trainingDayNamesJson: trainingDayNamesJson ?? this.trainingDayNamesJson,
+      onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+      onboardingCompletedAt:
+          onboardingCompletedAt ?? this.onboardingCompletedAt,
+      goalsJson: goalsJson ?? this.goalsJson,
+      equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+      injuriesLimitationsJson:
+          injuriesLimitationsJson ?? this.injuriesLimitationsJson,
+      otherNotes: otherNotes ?? this.otherNotes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (sex.present) {
+      map['sex'] = Variable<String>(sex.value);
+    }
+    if (dateOfBirth.present) {
+      map['date_of_birth'] = Variable<DateTime>(dateOfBirth.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (bodyweightLoggedAt.present) {
+      map['bodyweight_logged_at'] = Variable<DateTime>(
+        bodyweightLoggedAt.value,
+      );
+    }
+    if (preferredUnits.present) {
+      map['preferred_units'] = Variable<String>(preferredUnits.value);
+    }
+    if (experienceLevel.present) {
+      map['experience_level'] = Variable<String>(experienceLevel.value);
+    }
+    if (targetSessionLengthMinutes.present) {
+      map['target_session_length_minutes'] = Variable<int>(
+        targetSessionLengthMinutes.value,
+      );
+    }
+    if (trainingDaysPerWeek.present) {
+      map['training_days_per_week'] = Variable<int>(trainingDaysPerWeek.value);
+    }
+    if (trainingDayNamesJson.present) {
+      map['training_day_names_json'] = Variable<String>(
+        trainingDayNamesJson.value,
+      );
+    }
+    if (onboardingCompleted.present) {
+      map['onboarding_completed'] = Variable<bool>(onboardingCompleted.value);
+    }
+    if (onboardingCompletedAt.present) {
+      map['onboarding_completed_at'] = Variable<DateTime>(
+        onboardingCompletedAt.value,
+      );
+    }
+    if (goalsJson.present) {
+      map['goals_json'] = Variable<String>(goalsJson.value);
+    }
+    if (equipmentAccessJson.present) {
+      map['equipment_access_json'] = Variable<String>(
+        equipmentAccessJson.value,
+      );
+    }
+    if (injuriesLimitationsJson.present) {
+      map['injuries_limitations_json'] = Variable<String>(
+        injuriesLimitationsJson.value,
+      );
+    }
+    if (otherNotes.present) {
+      map['other_notes'] = Variable<String>(otherNotes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfileCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('sex: $sex, ')
+          ..write('dateOfBirth: $dateOfBirth, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyweightLoggedAt: $bodyweightLoggedAt, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('experienceLevel: $experienceLevel, ')
+          ..write('targetSessionLengthMinutes: $targetSessionLengthMinutes, ')
+          ..write('trainingDaysPerWeek: $trainingDaysPerWeek, ')
+          ..write('trainingDayNamesJson: $trainingDayNamesJson, ')
+          ..write('onboardingCompleted: $onboardingCompleted, ')
+          ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
+          ..write('goalsJson: $goalsJson, ')
+          ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
+          ..write('otherNotes: $otherNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4851,6 +6054,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExerciseVideosTable exerciseVideos = $ExerciseVideosTable(this);
   late final $ExerciseAudioCacheTable exerciseAudioCache =
       $ExerciseAudioCacheTable(this);
+  late final $UserProfileTable userProfile = $UserProfileTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4863,6 +6067,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     libraryMeta,
     exerciseVideos,
     exerciseAudioCache,
+    userProfile,
   ];
 }
 
@@ -7615,6 +8820,517 @@ typedef $$ExerciseAudioCacheTableProcessedTableManager =
       ExerciseAudioCacheData,
       PrefetchHooks Function({bool exerciseId})
     >;
+typedef $$UserProfileTableCreateCompanionBuilder =
+    UserProfileCompanion Function({
+      Value<String> id,
+      Value<String?> name,
+      Value<String?> sex,
+      Value<DateTime?> dateOfBirth,
+      Value<double?> heightCm,
+      Value<double?> bodyweightKg,
+      Value<DateTime?> bodyweightLoggedAt,
+      Value<String> preferredUnits,
+      Value<String?> experienceLevel,
+      Value<int?> targetSessionLengthMinutes,
+      Value<int?> trainingDaysPerWeek,
+      Value<String> trainingDayNamesJson,
+      Value<bool> onboardingCompleted,
+      Value<DateTime?> onboardingCompletedAt,
+      Value<String> goalsJson,
+      Value<String> equipmentAccessJson,
+      Value<String> injuriesLimitationsJson,
+      Value<String?> otherNotes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$UserProfileTableUpdateCompanionBuilder =
+    UserProfileCompanion Function({
+      Value<String> id,
+      Value<String?> name,
+      Value<String?> sex,
+      Value<DateTime?> dateOfBirth,
+      Value<double?> heightCm,
+      Value<double?> bodyweightKg,
+      Value<DateTime?> bodyweightLoggedAt,
+      Value<String> preferredUnits,
+      Value<String?> experienceLevel,
+      Value<int?> targetSessionLengthMinutes,
+      Value<int?> trainingDaysPerWeek,
+      Value<String> trainingDayNamesJson,
+      Value<bool> onboardingCompleted,
+      Value<DateTime?> onboardingCompletedAt,
+      Value<String> goalsJson,
+      Value<String> equipmentAccessJson,
+      Value<String> injuriesLimitationsJson,
+      Value<String?> otherNotes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$UserProfileTableFilterComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserProfileTableOrderingComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserProfileTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get sex =>
+      $composableBuilder(column: $table.sex, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get goalsJson =>
+      $composableBuilder(column: $table.goalsJson, builder: (column) => column);
+
+  GeneratedColumn<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$UserProfileTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserProfileTable,
+          UserProfileData,
+          $$UserProfileTableFilterComposer,
+          $$UserProfileTableOrderingComposer,
+          $$UserProfileTableAnnotationComposer,
+          $$UserProfileTableCreateCompanionBuilder,
+          $$UserProfileTableUpdateCompanionBuilder,
+          (
+            UserProfileData,
+            BaseReferences<_$AppDatabase, $UserProfileTable, UserProfileData>,
+          ),
+          UserProfileData,
+          PrefetchHooks Function()
+        > {
+  $$UserProfileTableTableManager(_$AppDatabase db, $UserProfileTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserProfileTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserProfileTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserProfileTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<DateTime?> dateOfBirth = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> experienceLevel = const Value.absent(),
+                Value<int?> targetSessionLengthMinutes = const Value.absent(),
+                Value<int?> trainingDaysPerWeek = const Value.absent(),
+                Value<String> trainingDayNamesJson = const Value.absent(),
+                Value<bool> onboardingCompleted = const Value.absent(),
+                Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+                Value<String> goalsJson = const Value.absent(),
+                Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> injuriesLimitationsJson = const Value.absent(),
+                Value<String?> otherNotes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileCompanion(
+                id: id,
+                name: name,
+                sex: sex,
+                dateOfBirth: dateOfBirth,
+                heightCm: heightCm,
+                bodyweightKg: bodyweightKg,
+                bodyweightLoggedAt: bodyweightLoggedAt,
+                preferredUnits: preferredUnits,
+                experienceLevel: experienceLevel,
+                targetSessionLengthMinutes: targetSessionLengthMinutes,
+                trainingDaysPerWeek: trainingDaysPerWeek,
+                trainingDayNamesJson: trainingDayNamesJson,
+                onboardingCompleted: onboardingCompleted,
+                onboardingCompletedAt: onboardingCompletedAt,
+                goalsJson: goalsJson,
+                equipmentAccessJson: equipmentAccessJson,
+                injuriesLimitationsJson: injuriesLimitationsJson,
+                otherNotes: otherNotes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<DateTime?> dateOfBirth = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> experienceLevel = const Value.absent(),
+                Value<int?> targetSessionLengthMinutes = const Value.absent(),
+                Value<int?> trainingDaysPerWeek = const Value.absent(),
+                Value<String> trainingDayNamesJson = const Value.absent(),
+                Value<bool> onboardingCompleted = const Value.absent(),
+                Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+                Value<String> goalsJson = const Value.absent(),
+                Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> injuriesLimitationsJson = const Value.absent(),
+                Value<String?> otherNotes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileCompanion.insert(
+                id: id,
+                name: name,
+                sex: sex,
+                dateOfBirth: dateOfBirth,
+                heightCm: heightCm,
+                bodyweightKg: bodyweightKg,
+                bodyweightLoggedAt: bodyweightLoggedAt,
+                preferredUnits: preferredUnits,
+                experienceLevel: experienceLevel,
+                targetSessionLengthMinutes: targetSessionLengthMinutes,
+                trainingDaysPerWeek: trainingDaysPerWeek,
+                trainingDayNamesJson: trainingDayNamesJson,
+                onboardingCompleted: onboardingCompleted,
+                onboardingCompletedAt: onboardingCompletedAt,
+                goalsJson: goalsJson,
+                equipmentAccessJson: equipmentAccessJson,
+                injuriesLimitationsJson: injuriesLimitationsJson,
+                otherNotes: otherNotes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserProfileTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserProfileTable,
+      UserProfileData,
+      $$UserProfileTableFilterComposer,
+      $$UserProfileTableOrderingComposer,
+      $$UserProfileTableAnnotationComposer,
+      $$UserProfileTableCreateCompanionBuilder,
+      $$UserProfileTableUpdateCompanionBuilder,
+      (
+        UserProfileData,
+        BaseReferences<_$AppDatabase, $UserProfileTable, UserProfileData>,
+      ),
+      UserProfileData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7633,4 +9349,6 @@ class $AppDatabaseManager {
       $$ExerciseVideosTableTableManager(_db, _db.exerciseVideos);
   $$ExerciseAudioCacheTableTableManager get exerciseAudioCache =>
       $$ExerciseAudioCacheTableTableManager(_db, _db.exerciseAudioCache);
+  $$UserProfileTableTableManager get userProfile =>
+      $$UserProfileTableTableManager(_db, _db.userProfile);
 }

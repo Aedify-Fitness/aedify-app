@@ -118,6 +118,85 @@ class AppStrings {
   static const String exerciseLibraryTapToDownload =
       'Tap to download the exercise library.';
 
+  // Onboarding
+  static const String onboardingWelcomeTitle = 'Welcome to Aedify';
+  static const String onboardingExperienceTitle = 'Your training experience';
+  static const String onboardingGoalsTitle = 'Your goals';
+  static const String onboardingScheduleTitle = 'Your schedule';
+  static const String onboardingEquipmentTitle = 'Available equipment';
+  static const String onboardingUnitsTitle = 'Units and body metrics';
+  static const String onboardingLimitationsTitle =
+      'Limitations and preferences';
+  static const String onboardingByokOptionalTitle = 'AI setup (optional)';
+  static const String onboardingReviewTitle = 'Review your setup';
+  static const String continueLabel = 'Continue';
+  static const String backLabel = 'Back';
+  static const String finishSetup = 'Finish setup';
+  static const String skipForNow = 'Skip for now';
+  static const String onboardingValidationRequired =
+      'Please complete the required fields.';
+  static const String onboardingWelcomeDescription =
+      'Set up your profile to get personalized workout recommendations.';
+  static const String onboardingExperienceHint =
+      'How long have you been training?';
+  static const String onboardingExperienceBeginner = 'Beginner';
+  static const String onboardingExperienceIntermediate = 'Intermediate';
+  static const String onboardingExperienceAdvanced = 'Advanced';
+  static const String onboardingGoalsHint = 'What are your main fitness goals?';
+  static const String onboardingGoalBuildMuscle = 'Build muscle';
+  static const String onboardingGoalLoseWeight = 'Lose weight';
+  static const String onboardingGoalIncreaseStrength = 'Increase strength';
+  static const String onboardingGoalImproveEndurance = 'Improve endurance';
+  static const String onboardingGoalGeneralFitness = 'General fitness';
+  static const String onboardingGoalFlexibility = 'Flexibility';
+  static const String onboardingScheduleHint =
+      'How many days per week do you plan to train?';
+  static const String onboardingSessionLengthHint =
+      'Target session length (minutes)';
+  static const String onboardingEquipmentHint =
+      'What equipment do you have access to?';
+  static const String onboardingEquipmentNone = 'None / bodyweight';
+  static const String onboardingEquipmentDumbbells = 'Dumbbells';
+  static const String onboardingEquipmentBarbell = 'Barbell';
+  static const String onboardingEquipmentKettlebell = 'Kettlebell';
+  static const String onboardingEquipmentResistanceBands = 'Resistance bands';
+  static const String onboardingEquipmentCableMachine = 'Cable machine';
+  static const String onboardingEquipmentSmithMachine = 'Smith machine';
+  static const String onboardingEquipmentPullUpBar = 'Pull-up bar';
+  static const String onboardingEquipmentBench = 'Bench';
+  static const String onboardingEquipmentSquatRack = 'Squat rack';
+  static const String onboardingEquipmentCardioMachine = 'Cardio machine';
+  static const String onboardingUnitsHint = 'Preferred measurement system';
+  static const String onboardingUnitMetric = 'Metric';
+  static const String onboardingUnitImperial = 'Imperial';
+  static const String onboardingHeightHint = 'Height (cm)';
+  static const String onboardingWeightHint = 'Weight (kg)';
+  static const String onboardingLimitationsHint =
+      'Any injuries or limitations?';
+  static const String onboardingLimitationNone = 'None';
+  static const String onboardingLimitationLowerBack = 'Lower back';
+  static const String onboardingLimitationKnee = 'Knee';
+  static const String onboardingLimitationShoulder = 'Shoulder';
+  static const String onboardingLimitationWrist = 'Wrist';
+  static const String onboardingLimitationHip = 'Hip';
+  static const String onboardingLimitationNeck = 'Neck';
+  static const String onboardingLimitationElbow = 'Elbow';
+  static const String onboardingLimitationAnkle = 'Ankle';
+  static const String onboardingNotesHint = 'Other notes (optional)';
+  static const String onboardingByokDescription =
+      'You can add an AI provider API key later in Settings.';
+  static const String onboardingReviewPreparing =
+      'Review your selections before finishing.';
+  static const String onboardingReviewConfigured = 'Configured';
+  static const String onboardingReviewNotConfigured = 'Not configured';
+  static const String onboardingReviewDaysPerWeek = 'days/week';
+  static const String onboardingReviewMinutes = 'min';
+  static const String onboardingReviewCm = 'cm';
+  static const String onboardingReviewKg = 'kg';
+  static const String onboardingCompleteSuccess = 'Onboarding complete!';
+  static const String onboardingLoadFailed =
+      'Could not load the onboarding flow.';
+
   // Step Audio / TTS
   static const String stopStepAudio = 'Stop audio';
   static const String playStepAudio = 'Play step audio';
