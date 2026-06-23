@@ -118,28 +118,8 @@
 - **Tests**: 18 new — 9 repository, 4 search controller, 3 detail controller, 6 library screen widget, 6 detail screen widget.
 - `dart run build_runner build` — completed; `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
 
-### Fixed (V1-M2-004 test flakiness)
-
-- Fixed async timing in search controller tests (await `reload()` instead of `Future.delayed`).
-- Fixed DetailScreen test matching `'Strength'` (capitalized by `_formatModality`) instead of `'strength'`.
-- Fixed detail controller tests with polling helper `resolveDetail()` retrying until `AsyncData`.
+  - (Flakiness fix: async timing in search controller tests — await `reload()` instead of `Future.delayed`; detail controller tests use polling helper `resolveDetail()` retrying until `AsyncData`.)
 - `dart format` — passed; `flutter analyze` — 0 issues; `flutter test` — 253/253 passed.
-
-## Planned Work
-
-- **M2 — Exercise Dataset Sync + Exercise Library** (complete — all 10 tickets done)
-- M3 — Onboarding, Profile, Settings, BYOK Setup
-- M4 — Manual Programmes, Workouts, Logging
-- M5 — Analytics, PRs, Plateau Base Logic
-- M6 — Progress Media Tracking
-- M7 — AI Infrastructure
-- M8 — AI Workout + Programme Generation
-- M9 — AI Trainer Chat + AI Update Flows
-- M10 — Local Sharing + PDF Export
-- M11 — External Text File Import
-- M12 — Image/Screenshot External Import
-- M13 — Optional AI Physique Analysis
-- M14 — Privacy, Resilience, Release Hardening
 
 ### V1-M2-005 — Exercise Video & Thumbnail Handling (complete)
 
@@ -182,6 +162,18 @@
 - **Tests**: 15 new — 12 candidate service + 3 DAO. 314 total passing.
 - `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 314/314 passed.
 
+### V1-M2-008 — Custom Exercise Model Hooks (complete)
+
+- **Domain models**: `CustomExerciseSeed` (name, muscleGroups, modality, equipment, difficulty, steps).
+- **Identity service**: `CustomExerciseIdentityService` — deterministic decreasing negative IDs via `nextCustomExerciseId()`, v4 UUIDs via `newCustomExerciseUuid()`.
+- **DAO expansion**: `insertCustomExercise()`, `getCustomExerciseByUuid()`, `getLowestExerciseId()`, `updateCustomExercise()`, `deleteCustomExerciseById()`.
+- **Repository**: 5 new methods fully implemented (`getCustomExercises`, `getCustomExerciseDetail`, `createCustomExercise`, `updateCustomExercise`, `deleteCustomExercise`). `DriftExerciseRepository` injects `CustomExerciseIdentityService`.
+- **Conventions enforced**: negative int ID, `isCustom = true`, `customExerciseUuid != null`, `source = 'custom'`.
+- **Provider**: `customExerciseIdentityServiceProvider` wired; repository updated to inject it.
+- **4 mock repositories updated** in test files.
+- **Tests**: 22 new — 7 identity service, 7 DAO CRUD, 8 repository coexistence. 336 total passing.
+- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
+
 ### V1-M2-009 — Dataset Sync Status and Recovery UI (complete)
 
 - **`ExerciseDatasetSyncPhase` enum**: 8 phases covering the full sync lifecycle.
@@ -195,18 +187,6 @@
 - **Providers**: `exerciseDatasetSyncControllerProvider`, `libraryMetaDaoProvider`, `exerciseDaoProvider`, `exerciseVideoDaoProvider`.
 - **Tests**: 19 new — 12 controller, 6 banner, 3 settings. Library screen test updated with controller override.
 - `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 355/355 passed.
-
-### V1-M2-008 — Custom Exercise Model Hooks (complete)
-
-- **Domain models**: `CustomExerciseSeed` (name, muscleGroups, modality, equipment, difficulty, steps).
-- **Identity service**: `CustomExerciseIdentityService` — deterministic decreasing negative IDs via `nextCustomExerciseId()`, v4 UUIDs via `newCustomExerciseUuid()`.
-- **DAO expansion**: `insertCustomExercise()`, `getCustomExerciseByUuid()`, `getLowestExerciseId()`, `updateCustomExercise()`, `deleteCustomExerciseById()`.
-- **Repository**: 5 new methods fully implemented (`getCustomExercises`, `getCustomExerciseDetail`, `createCustomExercise`, `updateCustomExercise`, `deleteCustomExercise`). `DriftExerciseRepository` injects `CustomExerciseIdentityService`.
-- **Conventions enforced**: negative int ID, `isCustom = true`, `customExerciseUuid != null`, `source = 'custom'`.
-- **Provider**: `customExerciseIdentityServiceProvider` wired; repository updated to inject it.
-- **4 mock repositories updated** in test files.
-- **Tests**: 22 new — 7 identity service, 7 DAO CRUD, 8 repository coexistence. 336 total passing.
-- `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 336/336 passed.
 
 ### V1-M2-010 — Exercise Library QA Fixture Suite (complete)
 
@@ -239,6 +219,21 @@
 5. **Tracking docs updated**: `docs/changelog.md` and `docs/implementation.md` updated with closure details.
 
 - `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 359/359 passed.
+
+## Planned Work
+
+- M3 — Onboarding, Profile, Settings, BYOK Setup
+- M4 — Manual Programmes, Workouts, Logging
+- M5 — Analytics, PRs, Plateau Base Logic
+- M6 — Progress Media Tracking
+- M7 — AI Infrastructure
+- M8 — AI Workout + Programme Generation
+- M9 — AI Trainer Chat + AI Update Flows
+- M10 — Local Sharing + PDF Export
+- M11 — External Text File Import
+- M12 — Image/Screenshot External Import
+- M13 — Optional AI Physique Analysis
+- M14 — Privacy, Resilience, Release Hardening
 
 ## Verification Notes
 
