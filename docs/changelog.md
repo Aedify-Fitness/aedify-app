@@ -8,7 +8,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ### Redesigned (Onboarding UI refresh across all steps)
 
-- **Scaffold + progress refresh** (`onboarding_step_scaffold.dart`, `onboarding_progress_header.dart`): Reworked onboarding chrome with branded step header, `Step x of y` label, slim progress bar, cleaner content spacing, and elevated bottom CTA area.
+- **Scaffold + progress refresh** (`onboarding_step_scaffold.dart`, `onboarding_progress_header.dart`): Reworked onboarding chrome with branded step header, `Step x of y` label, slim progress bar, cleaner content spacing, and elevated bottom CTA area. Added branded light/dark logo assets (`assets/images/logo_light.png`, `logo_dark.png`) wired through `ImageAssets.appLogo()`.
 - **Welcome screen refresh** (`onboarding_screen.dart`): Added hero copy, privacy-focused onboarding panels, and an AI-optional informational card inspired by the reference designs.
 - **Experience / schedule / equipment / units / limitations refresh** (`onboarding_screen.dart`): Converted plain form layout into surfaced sections with premium selection cards, metric tiles, grouped equipment chip panels, and structured body-metric / notes cards.
 - **BYOK + review refresh** (`onboarding_screen.dart`): Redesigned BYOK as a benefits/info surface and grouped review into editable summary cards while preserving jump-to-step behavior.
@@ -27,7 +27,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ### Fixed (Bootstrap screen — `mounted` guard for post-frame callback)
 
-- **`mounted` guard added** (`bootstrap_screen.dart:24`): Wrapped `ref.read(AppBootstrap.controllerProvider.notifier).start()` call in `if (mounted)` to prevent `StateError: `ref` used after widget was disposed` when the post-frame callback fires after the widget has been unmounted.
+- **`mounted` guard added** (`bootstrap_screen.dart:24`): Wrapped `ref.read(AppBootstrap.controllerProvider.notifier).start()` call in `if (mounted)` to prevent `StateError:`ref`used after widget was disposed` when the post-frame callback fires after the widget has been unmounted.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
 ### Fixed (Chip theme — missing DESIGN.md color tokens in `app_theme.dart`)
