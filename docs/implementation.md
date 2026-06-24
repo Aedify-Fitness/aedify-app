@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                      |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                             |
-| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Refactoring pass: AGENTS.md code-convention violations fixed (theme access, color tokens, string constants, sizing tokens, widget classes, chip theme DESIGN.md colors). |
-| **Blockers**          | None                                                                                                                                                                                                                                                                       |
+| Field                 | Value                                                                                                                                                                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                               |
+| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Code-convention enforcement pass 2 complete. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                         |
 
 ## Completed Work
 
@@ -226,6 +226,11 @@
 - **Debounced draft autosave** (`lib/features/onboarding/application/onboarding_controller.dart`): 400ms debounce on `updateDraft()`. Flush on `nextStep()` and `completeOnboarding()`. Timer cancelled via `ref.onDispose`. Previously the draft was never persisted until final completion.
 - **Resume-to-next-incomplete-step** (`OnboardingController._resumeStepForDraft`): `build()` and `loadExistingDraft()` derive step from saved draft. Deterministic progression: experienceGoals → schedule → equipment → unitsMetrics → limitations → byokOptional → review.
 - **BYOK skip action** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Explicit `Skip for now` button on BYOK step sets `byokSkipped: true` and advances to review.
+- **Post-launch — Chip theme DESIGN.md fix** (`lib/app/theme/app_theme.dart`): Added explicit `backgroundColor`, `selectedColor` to light/dark `chipTheme`. Removed `labelStyle` to let M3 auto-resolve text color from `ColorScheme`.
+- **Post-launch — Text field focus loss fix** (`onboarding_screen.dart`): Extracted `_FormField` `StatefulWidget` that creates `TextEditingController` once in `initState` instead of inline in `build()`.
+- **Post-launch — Back navigation from all steps** (`onboarding_screen.dart`): Removed guard blocking back from `experienceGoals`. BYOK step simplified — no more special skip button, just Back + Continue.
+- **Post-launch — Tappable review rows** (`onboarding_screen.dart`): Added `OnboardingController.jumpToStep()`. Each `_ReviewRow` has `onTap` → `InkWell`, mapped to the source step for inline editing.
+- **Post-launch — Experience level chip durations** (`app_strings.dart`): Updated `Beginner`/`Intermediate`/`Advanced` strings to include time ranges (0–6 mo, 6 mo–2 yr, 2+ yr).
 - **String cleanup**: Goal/equipment/limitation/unit/review labels moved to `AppStrings` constants in `lib/shared/constants/app_strings.dart`.
 - **Tests**: 31 onboarding tests (8 repository, 13 controller, 10 screen), router/app tests updated for new gate behavior.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
@@ -248,7 +253,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 420/420 passed (379 existing + 31 new onboarding tests + 10 adjusted router/app tests)
+- `flutter test` — 420/420 passed (379 existing + 31 new onboarding tests + 10 adjusted router/app tests; 1 onboarding screen test updated for BYOK change)
 - `dart run build_runner build` — passed (7s, 142 outputs)
 
 ## Codebase Convention Enforcement Status

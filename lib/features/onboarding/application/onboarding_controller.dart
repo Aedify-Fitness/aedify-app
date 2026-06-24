@@ -72,6 +72,16 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     );
   }
 
+  void jumpToStep(OnboardingStep step) {
+    state = AsyncData(
+      state.requireValue.copyWith(
+        currentStep: step,
+        clearValidationMessage: true,
+        clearError: true,
+      ),
+    );
+  }
+
   Future<void> completeOnboarding() async {
     final current = state.requireValue;
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));

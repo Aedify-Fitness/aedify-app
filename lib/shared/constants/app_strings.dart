@@ -139,9 +139,10 @@ class AppStrings {
       'Set up your profile to get personalized workout recommendations.';
   static const String onboardingExperienceHint =
       'How long have you been training?';
-  static const String onboardingExperienceBeginner = 'Beginner';
-  static const String onboardingExperienceIntermediate = 'Intermediate';
-  static const String onboardingExperienceAdvanced = 'Advanced';
+  static const String onboardingExperienceBeginner = 'Beginner (0–6 mo)';
+  static const String onboardingExperienceIntermediate =
+      'Intermediate (6 mo–2 yr)';
+  static const String onboardingExperienceAdvanced = 'Advanced (2+ yr)';
   static const String onboardingGoalsHint = 'What are your main fitness goals?';
   static const String onboardingGoalBuildMuscle = 'Build muscle';
   static const String onboardingGoalLoseWeight = 'Lose weight';

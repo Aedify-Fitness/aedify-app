@@ -25,8 +25,17 @@ All meaningful project changes are recorded here in reverse chronological order.
 ### Fixed (Onboarding text fields — focus loss on keystroke)
 
 - **Root cause**: Inline `TextEditingController(...)` in `StatelessWidget.build()` created a new controller instance on every rebuild, causing Flutter to lose focus on every keystroke.
-- **Fix**: Extracted `_FormField` `StatefulWidget` (`onboarding_screen.dart`) that creates its `TextEditingController` once in `initState`, disposes it in `dispose`, and only syncs text in `didUpdateWidget` when the external value differs from the current controller text.
+- **Fix**: Extracted `_FormField` `StatefulWidget` (`onboarding_screen.dart`) that creates its `TextEditingController` once in `initState`, disposes it in `dispose`, and never overwrites controller text from external rebuilds.
 - Applied to all 4 text fields: `_ScheduleStep` (session minutes), `_UnitsMetricsStep` (height, weight), `_LimitationsStep` (notes).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Added (Onboarding back navigation and editable review rows)
+
+- **`OnboardingController.jumpToStep()`** (`onboarding_controller.dart`): New method that sets `currentStep` to any step — enables tappable review rows and direct step navigation.
+- **Back from `experienceGoals`** (`onboarding_screen.dart`): Removed guard blocking back button on first non-welcome step. Back now works on every step (including review going back to BYOK).
+- **BYOK step simplified** (`onboarding_screen.dart`): Removed special "Skip for now" back-button override. Since `byokSkipped` defaults to `true`, the user clicks **Continue** to proceed to review. Left button shows "Back" → `previousStep()`.
+- **Review rows now tappable** (`onboarding_screen.dart`): Each `_ReviewRow` maps to its source step — tap any field to jump back and edit, then Continue returns to review.
+- **Test updated**: "Continue from BYOK advances to review" replaces "BYOK skip advances to review".
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
 ### Fixed (V1-M3-001 — Onboarding completion gate, debounced autosave, resume-to-step)

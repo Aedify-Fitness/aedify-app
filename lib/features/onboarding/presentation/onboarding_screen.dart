@@ -88,6 +88,7 @@ class _OnboardingStepView extends ConsumerWidget {
                 onNext: () => controller.nextStep(),
                 onBack: () => controller.previousStep(),
                 onComplete: () => controller.completeOnboarding(),
+                onJumpToStep: (step) => controller.jumpToStep(step),
               ),
             ),
           ],
@@ -104,6 +105,7 @@ class _StepBody extends StatelessWidget {
     required this.onNext,
     required this.onBack,
     required this.onComplete,
+    required this.onJumpToStep,
   });
 
   final OnboardingState state;
@@ -111,23 +113,13 @@ class _StepBody extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final VoidCallback onComplete;
+  final void Function(OnboardingStep) onJumpToStep;
 
   @override
   Widget build(BuildContext context) {
-    final isByok = state.currentStep == OnboardingStep.byokOptional;
     final isReview = state.currentStep == OnboardingStep.review;
 
-    String? secondaryLabel;
-    VoidCallback? backAction;
-    if (isByok) {
-      secondaryLabel = AppStrings.skipForNow;
-      backAction = () {
-        onUpdateDraft(state.draft.copyWith(byokSkipped: true));
-        onNext();
-      };
-    } else if (state.currentStep != OnboardingStep.experienceGoals) {
-      backAction = onBack;
-    }
+    final backAction = onBack;
 
     return OnboardingStepScaffold(
       title: _titleForStep(state.currentStep),
@@ -135,9 +127,13 @@ class _StepBody extends StatelessWidget {
       onNext: isReview ? onComplete : onNext,
       isPrimaryLoading: state.isSaving,
       primaryLabel: isReview ? AppStrings.finishSetup : null,
-      secondaryLabel: secondaryLabel,
+      secondaryLabel: null,
       child: SingleChildScrollView(
-        child: _StepContent(state: state, onUpdateDraft: onUpdateDraft),
+        child: _StepContent(
+          state: state,
+          onUpdateDraft: onUpdateDraft,
+          onJumpToStep: onJumpToStep,
+        ),
       ),
     );
   }
@@ -165,10 +161,15 @@ class _StepBody extends StatelessWidget {
 }
 
 class _StepContent extends StatelessWidget {
-  const _StepContent({required this.state, required this.onUpdateDraft});
+  const _StepContent({
+    required this.state,
+    required this.onUpdateDraft,
+    required this.onJumpToStep,
+  });
 
   final OnboardingState state;
   final void Function(OnboardingDraft) onUpdateDraft;
+  final void Function(OnboardingStep) onJumpToStep;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +202,10 @@ class _StepContent extends StatelessWidget {
             draft: state.draft,
             onUpdateDraft: onUpdateDraft,
           ),
-          OnboardingStep.review => _ReviewStep(draft: state.draft),
+          OnboardingStep.review => _ReviewStep(
+            draft: state.draft,
+            onJumpToStep: onJumpToStep,
+          ),
           _ => const SizedBox.shrink(),
         },
       ],
@@ -622,9 +626,10 @@ class _ByokOptionalStep extends StatelessWidget {
 }
 
 class _ReviewStep extends StatelessWidget {
-  const _ReviewStep({required this.draft});
+  const _ReviewStep({required this.draft, required this.onJumpToStep});
 
   final OnboardingDraft draft;
+  final void Function(OnboardingStep) onJumpToStep;
 
   @override
   Widget build(BuildContext context) {
@@ -641,51 +646,61 @@ class _ReviewStep extends StatelessWidget {
         _ReviewRow(
           label: AppStrings.onboardingExperienceHint,
           value: draft.experienceLevel ?? '—',
+          onTap: () => onJumpToStep(OnboardingStep.experienceGoals),
         ),
         _ReviewRow(
           label: AppStrings.onboardingGoalsHint,
           value: draft.goals.isEmpty ? '—' : draft.goals.join(', '),
+          onTap: () => onJumpToStep(OnboardingStep.experienceGoals),
         ),
         _ReviewRow(
           label: AppStrings.onboardingScheduleHint,
           value: draft.trainingDaysPerWeek != null
               ? '${draft.trainingDaysPerWeek} ${AppStrings.onboardingReviewDaysPerWeek}'
               : '—',
+          onTap: () => onJumpToStep(OnboardingStep.schedule),
         ),
         _ReviewRow(
           label: AppStrings.onboardingEquipmentHint,
           value: draft.equipmentAccess.isEmpty
               ? '—'
               : draft.equipmentAccess.join(', '),
+          onTap: () => onJumpToStep(OnboardingStep.equipment),
         ),
         _ReviewRow(
           label: AppStrings.onboardingUnitsHint,
           value: draft.preferredUnits ?? 'metric',
+          onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
         ),
         if (draft.heightCm != null)
           _ReviewRow(
             label: AppStrings.onboardingHeightHint,
             value: '${draft.heightCm} ${AppStrings.onboardingReviewCm}',
+            onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
           ),
         if (draft.bodyweightKg != null)
           _ReviewRow(
             label: AppStrings.onboardingWeightHint,
             value: '${draft.bodyweightKg} ${AppStrings.onboardingReviewKg}',
+            onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
           ),
         _ReviewRow(
           label: AppStrings.onboardingLimitationsHint,
           value: draft.limitations.isEmpty ? '—' : draft.limitations.join(', '),
+          onTap: () => onJumpToStep(OnboardingStep.limitations),
         ),
         if (draft.notes != null && draft.notes!.isNotEmpty)
           _ReviewRow(
             label: AppStrings.onboardingNotesHint,
             value: draft.notes!,
+            onTap: () => onJumpToStep(OnboardingStep.limitations),
           ),
         _ReviewRow(
           label: AppStrings.onboardingByokOptionalTitle,
           value: draft.byokSkipped
               ? AppStrings.skipForNow
               : AppStrings.onboardingReviewConfigured,
+          onTap: () => onJumpToStep(OnboardingStep.byokOptional),
         ),
       ],
     );
@@ -693,14 +708,15 @@ class _ReviewStep extends StatelessWidget {
 }
 
 class _ReviewRow extends StatelessWidget {
-  const _ReviewRow({required this.label, required this.value});
+  const _ReviewRow({required this.label, required this.value, this.onTap});
 
   final String label;
   final String value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final row = Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,5 +732,10 @@ class _ReviewRow extends StatelessWidget {
         ],
       ),
     );
+
+    if (onTap != null) {
+      return InkWell(onTap: onTap, child: row);
+    }
+    return row;
   }
 }

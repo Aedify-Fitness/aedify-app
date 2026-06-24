@@ -114,7 +114,7 @@ void main() {
       expect(find.text(AppStrings.onboardingReviewTitle), findsOneWidget);
     });
 
-    testWidgets('BYOK skip advances to review', (tester) async {
+    testWidgets('Continue from BYOK advances to review', (tester) async {
       await pumpUntilLoaded(tester);
 
       await tester.tap(find.text(AppStrings.continueLabel));
@@ -133,10 +133,7 @@ void main() {
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
-
-      expect(find.text(AppStrings.skipForNow), findsOneWidget);
-      await tester.tap(find.text(AppStrings.skipForNow));
-      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
 
       expect(find.text(AppStrings.onboardingReviewTitle), findsOneWidget);
