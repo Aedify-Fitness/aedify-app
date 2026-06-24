@@ -14,6 +14,9 @@ class OnboardingStepScaffold extends StatelessWidget {
     this.isPrimaryLoading = false,
     this.primaryLabel,
     this.secondaryLabel,
+    this.description,
+    this.header,
+    this.hero,
   });
 
   final String title;
@@ -23,11 +26,15 @@ class OnboardingStepScaffold extends StatelessWidget {
   final bool isPrimaryLoading;
   final String? primaryLabel;
   final String? secondaryLabel;
+  final String? description;
+  final Widget? header;
+  final Widget? hero;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             Expanded(
@@ -39,15 +46,49 @@ class OnboardingStepScaffold extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: AppTextStyles.headlineMd),
-                    AppWhiteSpace.hLg,
+                    if (header != null) ...[header!, AppWhiteSpace.hXl],
+                    if (hero != null) ...[
+                      hero!,
+                      AppWhiteSpace.hXl,
+                    ] else ...[
+                      Text(
+                        title,
+                        style: AppTextStyles.headlineLgMobile.copyWith(
+                          color: context.colorScheme.onSurface,
+                        ),
+                      ),
+                      if (description != null) ...[
+                        AppWhiteSpace.hSm,
+                        Text(
+                          description!,
+                          style: AppTextStyles.bodyMd.copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                      AppWhiteSpace.hLg,
+                    ],
                     child,
                   ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+            Container(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                top: AppSpacing.md,
+                right: AppSpacing.md,
+                bottom: AppSpacing.lg,
+              ),
+              decoration: BoxDecoration(
+                color: context.colorScheme.surfaceContainerLowest,
+                border: Border(
+                  top: BorderSide(
+                    color: context.colorScheme.outlineVariant,
+                    width: AppSizing.divider,
+                  ),
+                ),
+              ),
               child: Row(
                 children: [
                   if (onBack != null)
@@ -66,7 +107,7 @@ class OnboardingStepScaffold extends StatelessWidget {
                               width: AppSizing.iconSm,
                               height: AppSizing.iconSm,
                               child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                                strokeWidth: AppSizing.divider * 2,
                                 color: context.colorScheme.onPrimary,
                               ),
                             )

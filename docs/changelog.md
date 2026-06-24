@@ -6,6 +6,16 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-23
 
+### Redesigned (Onboarding UI refresh across all steps)
+
+- **Scaffold + progress refresh** (`onboarding_step_scaffold.dart`, `onboarding_progress_header.dart`): Reworked onboarding chrome with branded step header, `Step x of y` label, slim progress bar, cleaner content spacing, and elevated bottom CTA area.
+- **Welcome screen refresh** (`onboarding_screen.dart`): Added hero copy, privacy-focused onboarding panels, and an AI-optional informational card inspired by the reference designs.
+- **Experience / schedule / equipment / units / limitations refresh** (`onboarding_screen.dart`): Converted plain form layout into surfaced sections with premium selection cards, metric tiles, grouped equipment chip panels, and structured body-metric / notes cards.
+- **BYOK + review refresh** (`onboarding_screen.dart`): Redesigned BYOK as a benefits/info surface and grouped review into editable summary cards while preserving jump-to-step behavior.
+- **Supporting content + tokens** (`app_strings.dart`, `app_spacing.dart`): Added onboarding-specific helper copy, labels, review affordances, and sizing tokens for cards, badges, and progress UI.
+- **Tests updated** (`test/features/onboarding/presentation/onboarding_screen_test.dart`): Adjusted onboarding widget tests to match the refreshed interaction model while keeping existing flow assertions.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
 ### Refactored (AGENTS.md compliance — onboarding widget code conventions)
 
 - **`Colors.white` → theme token** (`onboarding_step_scaffold.dart`): Replaced hardcoded `Colors.white` with `context.colorScheme.onPrimary` via `ThemeX` extension. Added missing `context_extensions.dart` import.
@@ -13,6 +23,11 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Hardcoded input hint/suffix strings → `AppStrings`** (`onboarding_screen.dart`): 3 hint texts and 3 suffix texts moved to `AppStrings` constants.
 - **Raw `width: 120` → `AppSizing.fieldWidth`** (`onboarding_screen.dart`): 3 usages replaced with new sizing token.
 - **Function widget builders → proper widget classes** (`onboarding_screen.dart`): Extracted `_buildStep` → `_OnboardingStepView`, `_stepContent` → `_StepContent`, `_buildValidationOrError` → `_ValidationMessage`, `_reviewRow` → `_ReviewRow` as proper `StatelessWidget`/`ConsumerWidget` classes per `rules.md` §118-121.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Bootstrap screen — `mounted` guard for post-frame callback)
+
+- **`mounted` guard added** (`bootstrap_screen.dart:24`): Wrapped `ref.read(AppBootstrap.controllerProvider.notifier).start()` call in `if (mounted)` to prevent `StateError: `ref` used after widget was disposed` when the post-frame callback fires after the widget has been unmounted.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
 ### Fixed (Chip theme — missing DESIGN.md color tokens in `app_theme.dart`)

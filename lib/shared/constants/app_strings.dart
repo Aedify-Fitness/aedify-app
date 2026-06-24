@@ -1,6 +1,9 @@
 class AppStrings {
   AppStrings._();
 
+  static String onboardingStepLabel(int currentStep, int totalSteps) =>
+      'Step $currentStep of $totalSteps';
+
   static const String appTitle = 'Aedify';
 
   static const String share = 'Share';
@@ -137,13 +140,39 @@ class AppStrings {
       'Please complete the required fields.';
   static const String onboardingWelcomeDescription =
       'Set up your profile to get personalized workout recommendations.';
+  static const String onboardingWelcomeHeroLineOne = 'Build yourself.';
+  static const String onboardingWelcomeHeroLineTwo = 'Privately.';
+  static const String onboardingWelcomeHeroDescription =
+      'Your training profile stays local while Aedify shapes plans around your schedule, constraints, and goals.';
+  static const String onboardingWelcomePrivacyTitle = 'Local-first protocol';
+  static const String onboardingWelcomePrivacyBulletOne =
+      'Training profile and edits stay on-device.';
+  static const String onboardingWelcomePrivacyBulletTwo =
+      'AI remains optional and bring-your-own-key.';
+  static const String onboardingWelcomePrivacyBulletThree =
+      'Every choice stays editable after setup.';
+  static const String onboardingWelcomeAiCardTitle = 'Intelligence layer';
+  static const String onboardingWelcomeAiCardDescription =
+      'Optionally connect your own provider later for AI-assisted planning while keeping privacy, zero telemetry, and full local control.';
+  static const String onboardingWelcomeAiCardButton =
+      'Configure AI later in Settings';
   static const String onboardingExperienceHint =
       'How long have you been training?';
+  static const String onboardingExperienceDescription =
+      'Use your training age and priorities to tune progression, exercise complexity, and recovery.';
   static const String onboardingExperienceBeginner = 'Beginner (0–6 mo)';
   static const String onboardingExperienceIntermediate =
       'Intermediate (6 mo–2 yr)';
   static const String onboardingExperienceAdvanced = 'Advanced (2+ yr)';
+  static const String onboardingExperienceBeginnerDescription =
+      'Learning movement patterns and building consistency.';
+  static const String onboardingExperienceIntermediateDescription =
+      'Comfortable with structured progression and weekly training rhythm.';
+  static const String onboardingExperienceAdvancedDescription =
+      'Experienced with higher workloads, technique work, and periodized plans.';
   static const String onboardingGoalsHint = 'What are your main fitness goals?';
+  static const String onboardingGoalsDescription =
+      'Select every pillar you want Aedify to emphasize when generating sessions.';
   static const String onboardingGoalBuildMuscle = 'Build muscle';
   static const String onboardingGoalLoseWeight = 'Lose weight';
   static const String onboardingGoalIncreaseStrength = 'Increase strength';
@@ -152,10 +181,16 @@ class AppStrings {
   static const String onboardingGoalFlexibility = 'Flexibility';
   static const String onboardingScheduleHint =
       'How many days per week do you plan to train?';
+  static const String onboardingScheduleDescription =
+      'Set a weekly rhythm that feels realistic so the plan fits your actual life.';
   static const String onboardingSessionLengthHint =
       'Target session length (minutes)';
+  static const String onboardingSessionLengthDescription =
+      'Use a quick pick or enter a custom duration if your sessions vary.';
   static const String onboardingEquipmentHint =
       'What equipment do you have access to?';
+  static const String onboardingEquipmentDescription =
+      'Choose the tools and spaces you can count on most weeks.';
   static const String onboardingEquipmentNone = 'None / bodyweight';
   static const String onboardingEquipmentDumbbells = 'Dumbbells';
   static const String onboardingEquipmentBarbell = 'Barbell';
@@ -167,13 +202,31 @@ class AppStrings {
   static const String onboardingEquipmentBench = 'Bench';
   static const String onboardingEquipmentSquatRack = 'Squat rack';
   static const String onboardingEquipmentCardioMachine = 'Cardio machine';
+  static const String onboardingEquipmentGroupFoundation = 'Foundation setup';
+  static const String onboardingEquipmentGroupFoundationDescription =
+      'The essentials that shape most strength and hypertrophy templates.';
+  static const String onboardingEquipmentGroupAccessories =
+      'Accessories and small tools';
+  static const String onboardingEquipmentGroupAccessoriesDescription =
+      'Flexible add-ons that broaden exercise variety without requiring a full gym.';
+  static const String onboardingEquipmentGroupMachines =
+      'Machines and conditioning';
+  static const String onboardingEquipmentGroupMachinesDescription =
+      'Select larger equipment you can access consistently.';
   static const String onboardingUnitsHint = 'Preferred measurement system';
+  static const String onboardingUnitsDescription =
+      'Pick your default system and add body metrics if you want more precise load suggestions.';
   static const String onboardingUnitMetric = 'Metric';
   static const String onboardingUnitImperial = 'Imperial';
   static const String onboardingHeightHint = 'Height (cm)';
   static const String onboardingWeightHint = 'Weight (kg)';
+  static const String onboardingBodyMetricsTitle = 'Body metrics';
+  static const String onboardingBodyMetricsDescription =
+      'Optional, but helpful if you want better exercise load and progression suggestions.';
   static const String onboardingLimitationsHint =
       'Any injuries or limitations?';
+  static const String onboardingLimitationsDescription =
+      'Flag anything we should protect, avoid, or work around when building your sessions.';
   static const String onboardingLimitationNone = 'None';
   static const String onboardingLimitationLowerBack = 'Lower back';
   static const String onboardingLimitationKnee = 'Knee';
@@ -186,11 +239,33 @@ class AppStrings {
   static const String onboardingNotesHint = 'Other notes (optional)';
   static const String onboardingByokDescription =
       'You can add an AI provider API key later in Settings.';
+  static const String onboardingByokDetail =
+      'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
+  static const String onboardingByokBenefitPrivate = 'Private by default';
+  static const String onboardingByokBenefitPrivateDescription =
+      'No hosted profile, no mandatory cloud sync, and no app-managed billing.';
+  static const String onboardingByokBenefitOptional = 'AI is optional';
+  static const String onboardingByokBenefitOptionalDescription =
+      'Your plan setup, workouts, and logs stay useful even if you never enable AI.';
+  static const String onboardingByokBenefitBringYourOwnKey =
+      'Bring your own provider key';
+  static const String onboardingByokBenefitBringYourOwnKeyDescription =
+      'Add your preferred model later and keep full control over when it is used.';
   static const String onboardingReviewPreparing =
       'Review your selections before finishing.';
+  static const String onboardingReviewDescription =
+      'Everything below is editable. Tap any section to jump back and refine it before finishing.';
+  static const String onboardingReviewProfileTitle = 'Training profile';
+  static const String onboardingReviewPlanTitle = 'Plan parameters';
+  static const String onboardingReviewRecoveryTitle = 'Constraints and notes';
+  static const String onboardingReviewAiTitle = 'Intelligence layer';
+  static const String onboardingReviewTapToEdit = 'Tap to edit';
   static const String onboardingReviewConfigured = 'Configured';
   static const String onboardingReviewNotConfigured = 'Not configured';
+  static const String onboardingReviewEmptyValue = '—';
   static const String onboardingReviewDaysPerWeek = 'days/week';
+  static const String onboardingDaySingle = 'Day';
+  static const String onboardingDayPlural = 'Days';
   static const String onboardingReviewMinutes = 'min';
   static const String onboardingHintSessionMin = '45';
   static const String onboardingHintHeightCm = '170';

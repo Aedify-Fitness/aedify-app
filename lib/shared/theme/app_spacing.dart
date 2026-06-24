@@ -57,10 +57,18 @@ class AppSizing {
 
   static const double iconXs = 18;
   static const double iconSm = 20;
+  static const double iconMd = 24;
+  static const double iconLg = 28;
   static const double divider = 1;
   static const double iconXxs = 16;
   static const double handleWidth = 40;
   static const double fieldWidth = 120;
+  static const double progressBarHeight = 6;
+  static const double cardBadge = 44;
+  static const double optionCardMinHeight = 104;
+  static const double metricTileMinWidth = 88;
+  static const double metricTileHeight = 72;
+  static const double reviewCardIcon = 36;
 }
 
 class AppFontSizes {
