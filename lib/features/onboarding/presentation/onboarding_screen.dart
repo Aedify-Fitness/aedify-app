@@ -113,7 +113,7 @@ class _StepBody extends StatelessWidget {
   String _titleForStep(OnboardingStep step) {
     switch (step) {
       case OnboardingStep.welcome:
-        return AppStrings.onboardingWelcomeTitle;
+        return '';
       case OnboardingStep.experienceGoals:
         return AppStrings.onboardingExperienceTitle;
       case OnboardingStep.schedule:

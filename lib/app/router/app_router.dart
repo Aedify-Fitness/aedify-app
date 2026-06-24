@@ -10,6 +10,7 @@ import 'package:aedify/app/bootstrap/bootstrap_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:aedify/features/profile/presentation/profile_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
@@ -272,6 +273,11 @@ class AppRouter {
           path: AppRoutes.settings().path,
           name: AppRoutes.settings().name,
           builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.profile().path,
+          name: AppRoutes.profile().name,
+          builder: (context, state) => const ProfileScreen(),
         ),
         GoRoute(
           path: AppRoutes.share().path,

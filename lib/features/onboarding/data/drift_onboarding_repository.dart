@@ -32,7 +32,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
       UserProfileCompanion(
         id: const Value('default'),
         name: Value(draft.displayName),
-        experienceLevel: Value(draft.experienceLevel),
+        experienceLevel: Value(draft.experienceLevel ?? ''),
         goalsJson: Value(jsonEncode(draft.goals)),
         trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
         targetSessionLengthMinutes: Value(draft.targetSessionLengthMinutes),
@@ -73,7 +73,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
         bodyweightKg: const Value(null),
         bodyweightLoggedAt: Value(existing?.bodyweightLoggedAt),
         preferredUnits: const Value('metric'),
-        experienceLevel: const Value(null),
+        experienceLevel: const Value(''),
         targetSessionLengthMinutes: const Value(null),
         trainingDaysPerWeek: const Value(null),
         trainingDayNamesJson: Value(existing?.trainingDayNamesJson ?? '[]'),

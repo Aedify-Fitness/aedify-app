@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                       |
-| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes complete: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Full onboarding presentation refresh shipped across every step using reference-inspired card-led mobile UI. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                 |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes complete: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Full onboarding presentation refresh shipped across every step using reference-inspired card-led mobile UI. V1-M3-002 complete: 4 Drift tables + DAOs, profile repository, controller, full editable profile screen with save/validation/impact, routing, DI wiring. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 ## Completed Work
 
@@ -239,10 +239,30 @@
 - **Tests**: 31 onboarding tests (8 repository, 13 controller, 10 screen), router/app tests updated for new gate behavior.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
+### V1-M3-002 — Profile Repository and Edit Screens (complete)
+
+- **4 Drift tables** (`lib/core/db/tables/`): `user_profile.dart` (json columns for list fields, primary key on id), `strength_anchors.dart`, `body_measurements.dart`, `app_settings.dart` (primary key on id).
+- **4 DAOs** (`lib/core/db/daos/`): `UserProfileDao` (getProfile, upsertProfile, markOnboardingCompleted), `StrengthAnchorDao`, `BodyMeasurementDao`, `AppSettingsDao` (getSettings, upsertSettings).
+- **Domain models** (`lib/features/profile/domain/`): `ProfileViewData` (immutable display model), `ProfileEditDraft` (edit model with copyWith + clear flags), `ProfileSaveImpact` (enum: none / mayAffectActiveProgrammes).
+- **ProfileRepository** (`lib/features/profile/data/`): Abstract interface + `DriftProfileRepository` impl with JSON encode/decode for array fields, transactional save, placeholder `evaluateSaveImpact` returning `none` (seam for future active-programme detection).
+- **ProfileController** (`lib/features/profile/application/`): `AsyncNotifier<ProfileState>` with auto-evaluate impact on build and every `updateDraft()` call; validates `experienceLevel` required before save; loads profile on init; supports reload.
+- **ProfileScreen** (`lib/features/profile/presentation/`): Full editable form — experience/goal/equipment chips, days-per-week selector, session length field, unit toggle, bodyweight/height fields, injuries chips, notes field, save button. Composed of `_ErrorView`, `_ProfileContentView`, `_ValidationBanner`, `_ImpactWarning`, `_SectionCard`, `_ChipSelector`, `_DaysPerWeekSelector`, `_UnitSelector`, `_FormField` StatefulWidget.
+- **App wiring**: `AppDatabase` registered 4 new tables, schema version bumped to 5, migration v4→v5. Providers registered (4 DAOs, repository, controller). Route `/profile` added via `AppRoutes.profile()` + `app_router.dart` GoRoute.
+- **AppStrings/AppErrorStrings**: ~15 profile labels + validation/save error strings.
+- **5 test files** (`test/`): DAO tests (user_profile: get/upsert/markOnboardingCompleted; app_settings: get/upsert), repository tests (get/save/evaluateImpact), controller tests (build/updateDraft/save/validation/reload), widget tests (loading/save/edit/impact warning).
+- **Fixes applied**:
+  - Added `primaryKey` to `UserProfile` and `AppSettings` tables for `insertOnConflictUpdate` support.
+  - Controller auto-evaluates impact on build and every draft update.
+  - Onboarding welcome step now shows title above hero (not replaced by hero).
+  - `drift_onboarding_repository.dart` fixed for non-null `experienceLevel` column.
+  - Test assertions updated for schema v5, cleared `experienceLevel` (now `''`), and async `updateDraft`.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
+
 ## Planned Work
 
-- M3-002 — Profile, Settings, BYOK Setup
+- M3-003 — Profile Settings + BYOK Setup page
 - M4 — Manual Programmes, Workouts, Logging
+- M5 — Analytics, PRs, Plateau Base Logic
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
 - M7 — AI Infrastructure

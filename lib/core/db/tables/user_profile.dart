@@ -10,7 +10,7 @@ class UserProfile extends Table {
   DateTimeColumn get bodyweightLoggedAt => dateTime().nullable()();
   TextColumn get preferredUnits =>
       text().withDefault(const Constant('metric'))();
-  TextColumn get experienceLevel => text().nullable()();
+  TextColumn get experienceLevel => text()();
   IntColumn get targetSessionLengthMinutes => integer().nullable()();
   IntColumn get trainingDaysPerWeek => integer().nullable()();
   TextColumn get trainingDayNamesJson =>
@@ -20,6 +20,10 @@ class UserProfile extends Table {
   DateTimeColumn get onboardingCompletedAt => dateTime().nullable()();
   TextColumn get goalsJson => text().withDefault(const Constant('[]'))();
   TextColumn get equipmentAccessJson =>
+      text().withDefault(const Constant('[]'))();
+  TextColumn get favoriteExerciseIdsJson =>
+      text().withDefault(const Constant('[]'))();
+  TextColumn get substitutedExerciseIdsJson =>
       text().withDefault(const Constant('[]'))();
   TextColumn get injuriesLimitationsJson =>
       text().withDefault(const Constant('[]'))();

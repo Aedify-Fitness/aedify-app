@@ -121,8 +121,42 @@ class AppStrings {
   static const String exerciseLibraryTapToDownload =
       'Tap to download the exercise library.';
 
+  // Profile
+  static const String profile = 'Profile';
+  static const String experienceLevel = 'Experience level';
+  static const String goals = 'Goals';
+  static const String equipment = 'Equipment';
+  static const String trainingDays = 'Training days';
+  static const String sessionLength = 'Session length';
+  static const String preferredUnits = 'Preferred units';
+  static const String bodyweight = 'Bodyweight';
+  static const String height = 'Height';
+  static const String injuriesAndLimitations = 'Injuries and limitations';
+  static const String notes = 'Notes';
+  static const String saveProfile = 'Save profile';
+  static const String profileUpdateMayAffectPrograms =
+      'These changes may affect active programmes.';
+  static const String profileEdit = 'Edit profile';
+  static const String loading = 'Loading...';
+  static const String profileEmpty = 'No profile data yet.';
+  static const String displayName = 'Display name';
+  static const String sex = 'Sex';
+  static const String sexMale = 'Male';
+  static const String sexFemale = 'Female';
+  static const String sexNotSpecified = 'Not specified';
+  static const String dateOfBirth = 'Date of birth';
+  static const String maxLifts = 'Max lifts';
+  static const String bench1Rm = 'Bench press 1RM';
+  static const String squat1Rm = 'Squat 1RM';
+  static const String deadlift1Rm = 'Deadlift 1RM';
+  static const String selectFavorites = 'Select favorite exercises';
+  static const String selectSubstitutions = 'Select substitute exercises';
+  static const String substitutions = 'Substitutions';
+  static const String exercisesSelected = 'exercises selected';
+  static const String done = 'Done';
+  static const String selectDate = 'Select date';
+
   // Onboarding
-  static const String onboardingWelcomeTitle = 'Welcome to Aedify';
   static const String onboardingExperienceTitle = 'Your training experience';
   static const String onboardingGoalsTitle = 'Your goals';
   static const String onboardingScheduleTitle = 'Your schedule';

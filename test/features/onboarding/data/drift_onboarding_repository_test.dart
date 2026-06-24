@@ -119,7 +119,7 @@ void main() {
 
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded, isNotNull);
-      expect(loaded!.experienceLevel, isNull);
+      expect(loaded!.experienceLevel, '');
       expect(loaded.goals, isEmpty);
       expect(loaded.trainingDaysPerWeek, isNull);
       expect(loaded.notes, isNull);

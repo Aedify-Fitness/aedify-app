@@ -1,11 +1,15 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/app_settings_dao.dart';
+import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/exercise_audio_cache_dao.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/daos/local_file_record_dao.dart';
+import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
+import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/core/firebase/crashlytics_service.dart';
 import 'package:aedify/core/firebase/firebase_auth_service.dart';
 import 'package:aedify/core/firebase/firebase_bootstrap.dart';
@@ -40,6 +44,9 @@ import 'package:aedify/features/onboarding/application/onboarding_controller.dar
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
+import 'package:aedify/features/profile/application/profile_controller.dart';
+import 'package:aedify/features/profile/data/drift_profile_repository.dart';
+import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -253,4 +260,37 @@ class AppProviders {
         ExerciseStepAudioController,
         Map<String, ExerciseStepAudioState>
       >(ExerciseStepAudioController.new);
+
+  // Profile DAOs
+  static final userProfileDaoProvider = Provider<UserProfileDao>((ref) {
+    return UserProfileDao(ref.read(appDatabaseProvider));
+  });
+
+  static final strengthAnchorDaoProvider = Provider<StrengthAnchorDao>((ref) {
+    return StrengthAnchorDao(ref.read(appDatabaseProvider));
+  });
+
+  static final bodyMeasurementDaoProvider = Provider<BodyMeasurementDao>((ref) {
+    return BodyMeasurementDao(ref.read(appDatabaseProvider));
+  });
+
+  static final appSettingsDaoProvider = Provider<AppSettingsDao>((ref) {
+    return AppSettingsDao(ref.read(appDatabaseProvider));
+  });
+
+  // Profile repository and controller
+  static final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+    return DriftProfileRepository(
+      database: ref.read(appDatabaseProvider),
+      userProfileDao: ref.read(userProfileDaoProvider),
+      appSettingsDao: ref.read(appSettingsDaoProvider),
+      strengthAnchorDao: ref.read(strengthAnchorDaoProvider),
+      bodyMeasurementDao: ref.read(bodyMeasurementDaoProvider),
+    );
+  });
+
+  static final profileControllerProvider =
+      AsyncNotifierProvider<ProfileController, ProfileState>(
+        ProfileController.new,
+      );
 }

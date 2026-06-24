@@ -54,9 +54,12 @@ void main() {
     testWidgets('fresh install shows onboarding welcome', (tester) async {
       await pumpUntilLoaded(tester);
 
-      expect(find.text(AppStrings.onboardingWelcomeTitle), findsOneWidget);
       expect(
         find.text(AppStrings.onboardingWelcomeDescription),
+        findsOneWidget,
+      );
+      expect(
+        find.text(AppStrings.onboardingWelcomeHeroDescription),
         findsOneWidget,
       );
       expect(find.text(AppStrings.continueLabel), findsOneWidget);

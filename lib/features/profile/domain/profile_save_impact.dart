@@ -1,0 +1,1 @@
+enum ProfileSaveImpact { none, mayAffectActiveProgrammes }

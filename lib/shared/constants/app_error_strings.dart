@@ -26,7 +26,14 @@ class AppErrorStrings {
   static const String networkTimeoutMessage =
       'Connection timed out. Please check your connection and try again.';
 
-  // Onboarding / Profile
+  // Profile
+  static const String profileLoadFailedMessage = 'Could not load profile.';
+  static const String profileSaveFailedMessage =
+      'Could not save profile changes.';
+  static const String profileValidationFailedMessage =
+      'Please correct the highlighted profile fields.';
+
+  // Onboarding
   static const String onboardingSaveFailedMessage =
       'Could not save onboarding data.';
   static const String onboardingLoadFailedMessage =

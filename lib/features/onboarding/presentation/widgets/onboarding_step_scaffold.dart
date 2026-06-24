@@ -47,27 +47,24 @@ class OnboardingStepScaffold extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (header != null) ...[header!, AppWhiteSpace.hXl],
-                    if (hero != null) ...[
-                      hero!,
-                      AppWhiteSpace.hXl,
-                    ] else ...[
+                    if (title.isNotEmpty)
                       Text(
                         title,
                         style: AppTextStyles.headlineLgMobile.copyWith(
                           color: context.colorScheme.onSurface,
                         ),
                       ),
-                      if (description != null) ...[
-                        AppWhiteSpace.hSm,
-                        Text(
-                          description!,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
+                    if (description != null) ...[
+                      AppWhiteSpace.hSm,
+                      Text(
+                        description!,
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
                         ),
-                      ],
-                      AppWhiteSpace.hLg,
+                      ),
                     ],
+                    if (title.isNotEmpty) AppWhiteSpace.hLg,
+                    if (hero != null) ...[hero!, AppWhiteSpace.hXl],
                     child,
                   ],
                 ),

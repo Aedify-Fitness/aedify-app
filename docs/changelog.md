@@ -4,7 +4,44 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
-## 2026-06-23
+## 2026-06-24
+
+### Added (V1-M3-002 — Profile Repository and Edit Screens)
+
+- **4 Drift tables**: `user_profile`, `strength_anchors`, `body_measurements`, `app_settings` — JSON columns for array fields (goals, equipment, injuries), all with primary keys.
+- **4 DAOs**: `UserProfileDao` (get/upsert/markOnboardingCompleted), `StrengthAnchorDao`, `BodyMeasurementDao`, `AppSettingsDao` (read/upsert).
+- **Domain layer**: `ProfileViewData` (display model), `ProfileEditDraft` (edit model with `copyWith` + clear flags), `ProfileSaveImpact` (none / mayAffectActiveProgrammes).
+- **Repository layer**: `ProfileRepository` (abstract) + `DriftProfileRepository` (impl with JSON encode/decode, transactional save, placeholder `evaluateSaveImpact`).
+- **ProfileController**: `AsyncNotifier<ProfileState>` — auto-evaluates impact on build and every draft update; validates `experienceLevel` required; loads profile on init.
+- **ProfileScreen**: Full editable form — experience/goal chips, equipment chips, days-per-week selector, session length field, unit toggle, bodyweight/height fields, injuries chips, notes field, save button; `_ErrorView`, `_ProfileContentView`, `_ValidationBanner`, `_ImpactWarning`, `_SectionCard`, `_ChipSelector`, `_DaysPerWeekSelector`, `_UnitSelector`, `_FormField` widgets.
+- **App wiring**: `AppDatabase` schema v5 (migration v4→v5), providers registered, `/profile` route added.
+- **AppStrings/AppErrorStrings**: ~15 profile labels + validation/save error strings.
+- **5 test files**: DAO tests (user_profile, app_settings), repository tests, controller tests, widget tests (loading, save, edit, impact warning).
+- **Fixes**: Added `primaryKey` to `UserProfile` and `AppSettings` tables for `insertOnConflictUpdate`; automatic impact evaluation on build and draft update; onboarding welcome step now shows title above hero; onboarding repository fixed for non-null `experienceLevel` column.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
+
+### Changed (Onboarding scaffold — title visibility)
+
+- `onboarding_step_scaffold.dart`: Always render the step title, even when a hero widget is present. Previously the hero replaced the title; now it appears below the title + description.
+
+### Changed (Profile controller — auto-evaluate impact)
+
+- `profile_controller.dart`: `build()` now calls `evaluateSaveImpact()` and sets initial impact. `updateDraft()` auto-evaluates impact on every draft change (was a no-op).
+
+### Fixed (Drift schema errors)
+
+- `user_profile.dart`: Added `@override Set<Column> get primaryKey => {id};` — required for `insertOnConflictUpdate` to work.
+- `app_settings.dart`: Added `@override Set<Column> get primaryKey => {id};` — same fix.
+- `drift_onboarding_repository.dart`: `experienceLevel` column is non-nullable `Text` — uses `Value(draft.experienceLevel ?? '')` in save and `const Value('')` in clear instead of `Value(null)`.
+
+### Fixed (Test assertions)
+
+- `onboarding_screen_test.dart`: Uses hero description text (`onboardingWelcomeDescription`) instead of title text (`onboardingWelcomeTitle`) which is not rendered when hero is present.
+- `drift_onboarding_repository_test.dart`: Expects `''` instead of `null` for cleared `experienceLevel`.
+- `app_database_test.dart`: Schema version 4→5.
+- `migration_test.dart`: Migration `toVersion` 4→5.
+- `profile_controller_test.dart`: `updateDraft` calls are now `await` (was `void`, now `Future<void>`). Initial build test checks `hasError` and `requireValue.isLoading` instead of `isLoading` on raw `AsyncValue`.
+- `profile_screen_test.dart`: `_FakeProfileRepositoryWithImpact` returns non-null profile + matches `ProfileViewData` required params.
 
 ### Redesigned (Onboarding UI refresh across all steps)
 

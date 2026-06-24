@@ -9,18 +9,16 @@ class UserProfileDao extends DatabaseAccessor<AppDatabase>
     with _$UserProfileDaoMixin {
   UserProfileDao(super.db);
 
-  Future<UserProfileData?> getProfile() async {
-    return (select(
-      userProfile,
-    )..where((t) => t.id.equals('default'))).getSingleOrNull();
+  Future<UserProfileData?> getProfile() {
+    return select(userProfile).getSingleOrNull();
   }
 
-  Future<void> upsertProfile(UserProfileCompanion profile) async {
-    await into(userProfile).insertOnConflictUpdate(profile);
+  Future<void> upsertProfile(UserProfileCompanion profile) {
+    return into(userProfile).insertOnConflictUpdate(profile);
   }
 
   Future<void> markOnboardingCompleted({required DateTime completedAt}) async {
-    await (update(userProfile)..where((t) => t.id.equals('default'))).write(
+    await update(userProfile).write(
       UserProfileCompanion(
         onboardingCompleted: const Value(true),
         onboardingCompletedAt: Value(completedAt),

@@ -12,6 +12,9 @@ import 'tables/library_meta.dart';
 import 'tables/exercise_videos.dart';
 import 'tables/exercise_audio_cache.dart';
 import 'tables/user_profile.dart';
+import 'tables/strength_anchors.dart';
+import 'tables/body_measurements.dart';
+import 'tables/app_settings.dart';
 
 part 'app_database.g.dart';
 
@@ -25,6 +28,9 @@ part 'app_database.g.dart';
     ExerciseVideos,
     ExerciseAudioCache,
     UserProfile,
+    StrengthAnchors,
+    BodyMeasurements,
+    AppSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -32,14 +38,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 4);
+      await _logMigration(m, fromVersion: 0, toVersion: 5);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -55,6 +61,11 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await m.createTable(userProfile);
+      }
+      if (from < 5) {
+        await m.createTable(strengthAnchors);
+        await m.createTable(bodyMeasurements);
+        await m.createTable(appSettings);
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

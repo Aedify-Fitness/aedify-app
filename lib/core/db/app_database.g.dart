@@ -4934,9 +4934,9 @@ class $UserProfileTable extends UserProfile
   late final GeneratedColumn<String> experienceLevel = GeneratedColumn<String>(
     'experience_level',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _targetSessionLengthMinutesMeta =
       const VerificationMeta('targetSessionLengthMinutes');
@@ -5020,6 +5020,30 @@ class $UserProfileTable extends UserProfile
         requiredDuringInsert: false,
         defaultValue: const Constant('[]'),
       );
+  static const VerificationMeta _favoriteExerciseIdsJsonMeta =
+      const VerificationMeta('favoriteExerciseIdsJson');
+  @override
+  late final GeneratedColumn<String> favoriteExerciseIdsJson =
+      GeneratedColumn<String>(
+        'favorite_exercise_ids_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _substitutedExerciseIdsJsonMeta =
+      const VerificationMeta('substitutedExerciseIdsJson');
+  @override
+  late final GeneratedColumn<String> substitutedExerciseIdsJson =
+      GeneratedColumn<String>(
+        'substituted_exercise_ids_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
   static const VerificationMeta _injuriesLimitationsJsonMeta =
       const VerificationMeta('injuriesLimitationsJson');
   @override
@@ -5083,6 +5107,8 @@ class $UserProfileTable extends UserProfile
     onboardingCompletedAt,
     goalsJson,
     equipmentAccessJson,
+    favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson,
     injuriesLimitationsJson,
     otherNotes,
     createdAt,
@@ -5165,6 +5191,8 @@ class $UserProfileTable extends UserProfile
           _experienceLevelMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_experienceLevelMeta);
     }
     if (data.containsKey('target_session_length_minutes')) {
       context.handle(
@@ -5223,6 +5251,24 @@ class $UserProfileTable extends UserProfile
         equipmentAccessJson.isAcceptableOrUnknown(
           data['equipment_access_json']!,
           _equipmentAccessJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('favorite_exercise_ids_json')) {
+      context.handle(
+        _favoriteExerciseIdsJsonMeta,
+        favoriteExerciseIdsJson.isAcceptableOrUnknown(
+          data['favorite_exercise_ids_json']!,
+          _favoriteExerciseIdsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('substituted_exercise_ids_json')) {
+      context.handle(
+        _substitutedExerciseIdsJsonMeta,
+        substitutedExerciseIdsJson.isAcceptableOrUnknown(
+          data['substituted_exercise_ids_json']!,
+          _substitutedExerciseIdsJsonMeta,
         ),
       );
     }
@@ -5301,7 +5347,7 @@ class $UserProfileTable extends UserProfile
       experienceLevel: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}experience_level'],
-      ),
+      )!,
       targetSessionLengthMinutes: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}target_session_length_minutes'],
@@ -5329,6 +5375,14 @@ class $UserProfileTable extends UserProfile
       equipmentAccessJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}equipment_access_json'],
+      )!,
+      favoriteExerciseIdsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}favorite_exercise_ids_json'],
+      )!,
+      substitutedExerciseIdsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}substituted_exercise_ids_json'],
       )!,
       injuriesLimitationsJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -5364,7 +5418,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
   final double? bodyweightKg;
   final DateTime? bodyweightLoggedAt;
   final String preferredUnits;
-  final String? experienceLevel;
+  final String experienceLevel;
   final int? targetSessionLengthMinutes;
   final int? trainingDaysPerWeek;
   final String trainingDayNamesJson;
@@ -5372,6 +5426,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
   final DateTime? onboardingCompletedAt;
   final String goalsJson;
   final String equipmentAccessJson;
+  final String favoriteExerciseIdsJson;
+  final String substitutedExerciseIdsJson;
   final String injuriesLimitationsJson;
   final String? otherNotes;
   final DateTime createdAt;
@@ -5385,7 +5441,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     this.bodyweightKg,
     this.bodyweightLoggedAt,
     required this.preferredUnits,
-    this.experienceLevel,
+    required this.experienceLevel,
     this.targetSessionLengthMinutes,
     this.trainingDaysPerWeek,
     required this.trainingDayNamesJson,
@@ -5393,6 +5449,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     this.onboardingCompletedAt,
     required this.goalsJson,
     required this.equipmentAccessJson,
+    required this.favoriteExerciseIdsJson,
+    required this.substitutedExerciseIdsJson,
     required this.injuriesLimitationsJson,
     this.otherNotes,
     required this.createdAt,
@@ -5421,9 +5479,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
       map['bodyweight_logged_at'] = Variable<DateTime>(bodyweightLoggedAt);
     }
     map['preferred_units'] = Variable<String>(preferredUnits);
-    if (!nullToAbsent || experienceLevel != null) {
-      map['experience_level'] = Variable<String>(experienceLevel);
-    }
+    map['experience_level'] = Variable<String>(experienceLevel);
     if (!nullToAbsent || targetSessionLengthMinutes != null) {
       map['target_session_length_minutes'] = Variable<int>(
         targetSessionLengthMinutes,
@@ -5441,6 +5497,12 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     }
     map['goals_json'] = Variable<String>(goalsJson);
     map['equipment_access_json'] = Variable<String>(equipmentAccessJson);
+    map['favorite_exercise_ids_json'] = Variable<String>(
+      favoriteExerciseIdsJson,
+    );
+    map['substituted_exercise_ids_json'] = Variable<String>(
+      substitutedExerciseIdsJson,
+    );
     map['injuries_limitations_json'] = Variable<String>(
       injuriesLimitationsJson,
     );
@@ -5470,9 +5532,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
           ? const Value.absent()
           : Value(bodyweightLoggedAt),
       preferredUnits: Value(preferredUnits),
-      experienceLevel: experienceLevel == null && nullToAbsent
-          ? const Value.absent()
-          : Value(experienceLevel),
+      experienceLevel: Value(experienceLevel),
       targetSessionLengthMinutes:
           targetSessionLengthMinutes == null && nullToAbsent
           ? const Value.absent()
@@ -5487,6 +5547,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
           : Value(onboardingCompletedAt),
       goalsJson: Value(goalsJson),
       equipmentAccessJson: Value(equipmentAccessJson),
+      favoriteExerciseIdsJson: Value(favoriteExerciseIdsJson),
+      substitutedExerciseIdsJson: Value(substitutedExerciseIdsJson),
       injuriesLimitationsJson: Value(injuriesLimitationsJson),
       otherNotes: otherNotes == null && nullToAbsent
           ? const Value.absent()
@@ -5512,7 +5574,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
         json['bodyweightLoggedAt'],
       ),
       preferredUnits: serializer.fromJson<String>(json['preferredUnits']),
-      experienceLevel: serializer.fromJson<String?>(json['experienceLevel']),
+      experienceLevel: serializer.fromJson<String>(json['experienceLevel']),
       targetSessionLengthMinutes: serializer.fromJson<int?>(
         json['targetSessionLengthMinutes'],
       ),
@@ -5531,6 +5593,12 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
       goalsJson: serializer.fromJson<String>(json['goalsJson']),
       equipmentAccessJson: serializer.fromJson<String>(
         json['equipmentAccessJson'],
+      ),
+      favoriteExerciseIdsJson: serializer.fromJson<String>(
+        json['favoriteExerciseIdsJson'],
+      ),
+      substitutedExerciseIdsJson: serializer.fromJson<String>(
+        json['substitutedExerciseIdsJson'],
       ),
       injuriesLimitationsJson: serializer.fromJson<String>(
         json['injuriesLimitationsJson'],
@@ -5552,7 +5620,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
       'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
       'bodyweightLoggedAt': serializer.toJson<DateTime?>(bodyweightLoggedAt),
       'preferredUnits': serializer.toJson<String>(preferredUnits),
-      'experienceLevel': serializer.toJson<String?>(experienceLevel),
+      'experienceLevel': serializer.toJson<String>(experienceLevel),
       'targetSessionLengthMinutes': serializer.toJson<int?>(
         targetSessionLengthMinutes,
       ),
@@ -5564,6 +5632,12 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
       ),
       'goalsJson': serializer.toJson<String>(goalsJson),
       'equipmentAccessJson': serializer.toJson<String>(equipmentAccessJson),
+      'favoriteExerciseIdsJson': serializer.toJson<String>(
+        favoriteExerciseIdsJson,
+      ),
+      'substitutedExerciseIdsJson': serializer.toJson<String>(
+        substitutedExerciseIdsJson,
+      ),
       'injuriesLimitationsJson': serializer.toJson<String>(
         injuriesLimitationsJson,
       ),
@@ -5582,7 +5656,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     Value<double?> bodyweightKg = const Value.absent(),
     Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
     String? preferredUnits,
-    Value<String?> experienceLevel = const Value.absent(),
+    String? experienceLevel,
     Value<int?> targetSessionLengthMinutes = const Value.absent(),
     Value<int?> trainingDaysPerWeek = const Value.absent(),
     String? trainingDayNamesJson,
@@ -5590,6 +5664,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     Value<DateTime?> onboardingCompletedAt = const Value.absent(),
     String? goalsJson,
     String? equipmentAccessJson,
+    String? favoriteExerciseIdsJson,
+    String? substitutedExerciseIdsJson,
     String? injuriesLimitationsJson,
     Value<String?> otherNotes = const Value.absent(),
     DateTime? createdAt,
@@ -5605,9 +5681,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
         ? bodyweightLoggedAt.value
         : this.bodyweightLoggedAt,
     preferredUnits: preferredUnits ?? this.preferredUnits,
-    experienceLevel: experienceLevel.present
-        ? experienceLevel.value
-        : this.experienceLevel,
+    experienceLevel: experienceLevel ?? this.experienceLevel,
     targetSessionLengthMinutes: targetSessionLengthMinutes.present
         ? targetSessionLengthMinutes.value
         : this.targetSessionLengthMinutes,
@@ -5621,6 +5695,10 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
         : this.onboardingCompletedAt,
     goalsJson: goalsJson ?? this.goalsJson,
     equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+    favoriteExerciseIdsJson:
+        favoriteExerciseIdsJson ?? this.favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson:
+        substitutedExerciseIdsJson ?? this.substitutedExerciseIdsJson,
     injuriesLimitationsJson:
         injuriesLimitationsJson ?? this.injuriesLimitationsJson,
     otherNotes: otherNotes.present ? otherNotes.value : this.otherNotes,
@@ -5667,6 +5745,12 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
       equipmentAccessJson: data.equipmentAccessJson.present
           ? data.equipmentAccessJson.value
           : this.equipmentAccessJson,
+      favoriteExerciseIdsJson: data.favoriteExerciseIdsJson.present
+          ? data.favoriteExerciseIdsJson.value
+          : this.favoriteExerciseIdsJson,
+      substitutedExerciseIdsJson: data.substitutedExerciseIdsJson.present
+          ? data.substitutedExerciseIdsJson.value
+          : this.substitutedExerciseIdsJson,
       injuriesLimitationsJson: data.injuriesLimitationsJson.present
           ? data.injuriesLimitationsJson.value
           : this.injuriesLimitationsJson,
@@ -5697,6 +5781,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
           ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
           ..write('goalsJson: $goalsJson, ')
           ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('favoriteExerciseIdsJson: $favoriteExerciseIdsJson, ')
+          ..write('substitutedExerciseIdsJson: $substitutedExerciseIdsJson, ')
           ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
           ..write('otherNotes: $otherNotes, ')
           ..write('createdAt: $createdAt, ')
@@ -5706,7 +5792,7 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     name,
     sex,
@@ -5723,11 +5809,13 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
     onboardingCompletedAt,
     goalsJson,
     equipmentAccessJson,
+    favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson,
     injuriesLimitationsJson,
     otherNotes,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5748,6 +5836,8 @@ class UserProfileData extends DataClass implements Insertable<UserProfileData> {
           other.onboardingCompletedAt == this.onboardingCompletedAt &&
           other.goalsJson == this.goalsJson &&
           other.equipmentAccessJson == this.equipmentAccessJson &&
+          other.favoriteExerciseIdsJson == this.favoriteExerciseIdsJson &&
+          other.substitutedExerciseIdsJson == this.substitutedExerciseIdsJson &&
           other.injuriesLimitationsJson == this.injuriesLimitationsJson &&
           other.otherNotes == this.otherNotes &&
           other.createdAt == this.createdAt &&
@@ -5763,7 +5853,7 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
   final Value<double?> bodyweightKg;
   final Value<DateTime?> bodyweightLoggedAt;
   final Value<String> preferredUnits;
-  final Value<String?> experienceLevel;
+  final Value<String> experienceLevel;
   final Value<int?> targetSessionLengthMinutes;
   final Value<int?> trainingDaysPerWeek;
   final Value<String> trainingDayNamesJson;
@@ -5771,6 +5861,8 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
   final Value<DateTime?> onboardingCompletedAt;
   final Value<String> goalsJson;
   final Value<String> equipmentAccessJson;
+  final Value<String> favoriteExerciseIdsJson;
+  final Value<String> substitutedExerciseIdsJson;
   final Value<String> injuriesLimitationsJson;
   final Value<String?> otherNotes;
   final Value<DateTime> createdAt;
@@ -5793,6 +5885,8 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     this.onboardingCompletedAt = const Value.absent(),
     this.goalsJson = const Value.absent(),
     this.equipmentAccessJson = const Value.absent(),
+    this.favoriteExerciseIdsJson = const Value.absent(),
+    this.substitutedExerciseIdsJson = const Value.absent(),
     this.injuriesLimitationsJson = const Value.absent(),
     this.otherNotes = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -5808,7 +5902,7 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     this.bodyweightKg = const Value.absent(),
     this.bodyweightLoggedAt = const Value.absent(),
     this.preferredUnits = const Value.absent(),
-    this.experienceLevel = const Value.absent(),
+    required String experienceLevel,
     this.targetSessionLengthMinutes = const Value.absent(),
     this.trainingDaysPerWeek = const Value.absent(),
     this.trainingDayNamesJson = const Value.absent(),
@@ -5816,12 +5910,15 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     this.onboardingCompletedAt = const Value.absent(),
     this.goalsJson = const Value.absent(),
     this.equipmentAccessJson = const Value.absent(),
+    this.favoriteExerciseIdsJson = const Value.absent(),
+    this.substitutedExerciseIdsJson = const Value.absent(),
     this.injuriesLimitationsJson = const Value.absent(),
     this.otherNotes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
-  }) : createdAt = Value(createdAt),
+  }) : experienceLevel = Value(experienceLevel),
+       createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<UserProfileData> custom({
     Expression<String>? id,
@@ -5840,6 +5937,8 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     Expression<DateTime>? onboardingCompletedAt,
     Expression<String>? goalsJson,
     Expression<String>? equipmentAccessJson,
+    Expression<String>? favoriteExerciseIdsJson,
+    Expression<String>? substitutedExerciseIdsJson,
     Expression<String>? injuriesLimitationsJson,
     Expression<String>? otherNotes,
     Expression<DateTime>? createdAt,
@@ -5870,6 +5969,10 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
       if (goalsJson != null) 'goals_json': goalsJson,
       if (equipmentAccessJson != null)
         'equipment_access_json': equipmentAccessJson,
+      if (favoriteExerciseIdsJson != null)
+        'favorite_exercise_ids_json': favoriteExerciseIdsJson,
+      if (substitutedExerciseIdsJson != null)
+        'substituted_exercise_ids_json': substitutedExerciseIdsJson,
       if (injuriesLimitationsJson != null)
         'injuries_limitations_json': injuriesLimitationsJson,
       if (otherNotes != null) 'other_notes': otherNotes,
@@ -5888,7 +5991,7 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     Value<double?>? bodyweightKg,
     Value<DateTime?>? bodyweightLoggedAt,
     Value<String>? preferredUnits,
-    Value<String?>? experienceLevel,
+    Value<String>? experienceLevel,
     Value<int?>? targetSessionLengthMinutes,
     Value<int?>? trainingDaysPerWeek,
     Value<String>? trainingDayNamesJson,
@@ -5896,6 +5999,8 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
     Value<DateTime?>? onboardingCompletedAt,
     Value<String>? goalsJson,
     Value<String>? equipmentAccessJson,
+    Value<String>? favoriteExerciseIdsJson,
+    Value<String>? substitutedExerciseIdsJson,
     Value<String>? injuriesLimitationsJson,
     Value<String?>? otherNotes,
     Value<DateTime>? createdAt,
@@ -5921,6 +6026,10 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
           onboardingCompletedAt ?? this.onboardingCompletedAt,
       goalsJson: goalsJson ?? this.goalsJson,
       equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+      favoriteExerciseIdsJson:
+          favoriteExerciseIdsJson ?? this.favoriteExerciseIdsJson,
+      substitutedExerciseIdsJson:
+          substitutedExerciseIdsJson ?? this.substitutedExerciseIdsJson,
       injuriesLimitationsJson:
           injuriesLimitationsJson ?? this.injuriesLimitationsJson,
       otherNotes: otherNotes ?? this.otherNotes,
@@ -5991,6 +6100,16 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
         equipmentAccessJson.value,
       );
     }
+    if (favoriteExerciseIdsJson.present) {
+      map['favorite_exercise_ids_json'] = Variable<String>(
+        favoriteExerciseIdsJson.value,
+      );
+    }
+    if (substitutedExerciseIdsJson.present) {
+      map['substituted_exercise_ids_json'] = Variable<String>(
+        substitutedExerciseIdsJson.value,
+      );
+    }
     if (injuriesLimitationsJson.present) {
       map['injuries_limitations_json'] = Variable<String>(
         injuriesLimitationsJson.value,
@@ -6030,8 +6149,2205 @@ class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
           ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
           ..write('goalsJson: $goalsJson, ')
           ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('favoriteExerciseIdsJson: $favoriteExerciseIdsJson, ')
+          ..write('substitutedExerciseIdsJson: $substitutedExerciseIdsJson, ')
           ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
           ..write('otherNotes: $otherNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StrengthAnchorsTable extends StrengthAnchors
+    with TableInfo<$StrengthAnchorsTable, StrengthAnchor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthAnchorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _anchorTypeMeta = const VerificationMeta(
+    'anchorType',
+  );
+  @override
+  late final GeneratedColumn<String> anchorType = GeneratedColumn<String>(
+    'anchor_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _repsMeta = const VerificationMeta('reps');
+  @override
+  late final GeneratedColumn<int> reps = GeneratedColumn<int>(
+    'reps',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMeta = const VerificationMeta('rpe');
+  @override
+  late final GeneratedColumn<double> rpe = GeneratedColumn<double>(
+    'rpe',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rirMeta = const VerificationMeta('rir');
+  @override
+  late final GeneratedColumn<int> rir = GeneratedColumn<int>(
+    'rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceSetLogIdMeta = const VerificationMeta(
+    'sourceSetLogId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceSetLogId = GeneratedColumn<String>(
+    'source_set_log_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _confidenceMeta = const VerificationMeta(
+    'confidence',
+  );
+  @override
+  late final GeneratedColumn<String> confidence = GeneratedColumn<String>(
+    'confidence',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loggedAtMeta = const VerificationMeta(
+    'loggedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> loggedAt = GeneratedColumn<DateTime>(
+    'logged_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    exerciseId,
+    anchorType,
+    weightKg,
+    reps,
+    rpe,
+    rir,
+    source,
+    sourceSetLogId,
+    confidence,
+    loggedAt,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_anchors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StrengthAnchor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('anchor_type')) {
+      context.handle(
+        _anchorTypeMeta,
+        anchorType.isAcceptableOrUnknown(data['anchor_type']!, _anchorTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_anchorTypeMeta);
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('reps')) {
+      context.handle(
+        _repsMeta,
+        reps.isAcceptableOrUnknown(data['reps']!, _repsMeta),
+      );
+    }
+    if (data.containsKey('rpe')) {
+      context.handle(
+        _rpeMeta,
+        rpe.isAcceptableOrUnknown(data['rpe']!, _rpeMeta),
+      );
+    }
+    if (data.containsKey('rir')) {
+      context.handle(
+        _rirMeta,
+        rir.isAcceptableOrUnknown(data['rir']!, _rirMeta),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('source_set_log_id')) {
+      context.handle(
+        _sourceSetLogIdMeta,
+        sourceSetLogId.isAcceptableOrUnknown(
+          data['source_set_log_id']!,
+          _sourceSetLogIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('confidence')) {
+      context.handle(
+        _confidenceMeta,
+        confidence.isAcceptableOrUnknown(data['confidence']!, _confidenceMeta),
+      );
+    }
+    if (data.containsKey('logged_at')) {
+      context.handle(
+        _loggedAtMeta,
+        loggedAt.isAcceptableOrUnknown(data['logged_at']!, _loggedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthAnchor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthAnchor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      anchorType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anchor_type'],
+      )!,
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      reps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reps'],
+      ),
+      rpe: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe'],
+      ),
+      rir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rir'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      sourceSetLogId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_set_log_id'],
+      ),
+      confidence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}confidence'],
+      ),
+      loggedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}logged_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StrengthAnchorsTable createAlias(String alias) {
+    return $StrengthAnchorsTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthAnchor extends DataClass implements Insertable<StrengthAnchor> {
+  final String id;
+  final int exerciseId;
+  final String anchorType;
+  final double? weightKg;
+  final int? reps;
+  final double? rpe;
+  final int? rir;
+  final String source;
+  final String? sourceSetLogId;
+  final String? confidence;
+  final DateTime? loggedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const StrengthAnchor({
+    required this.id,
+    required this.exerciseId,
+    required this.anchorType,
+    this.weightKg,
+    this.reps,
+    this.rpe,
+    this.rir,
+    required this.source,
+    this.sourceSetLogId,
+    this.confidence,
+    this.loggedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['anchor_type'] = Variable<String>(anchorType);
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    if (!nullToAbsent || reps != null) {
+      map['reps'] = Variable<int>(reps);
+    }
+    if (!nullToAbsent || rpe != null) {
+      map['rpe'] = Variable<double>(rpe);
+    }
+    if (!nullToAbsent || rir != null) {
+      map['rir'] = Variable<int>(rir);
+    }
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || sourceSetLogId != null) {
+      map['source_set_log_id'] = Variable<String>(sourceSetLogId);
+    }
+    if (!nullToAbsent || confidence != null) {
+      map['confidence'] = Variable<String>(confidence);
+    }
+    if (!nullToAbsent || loggedAt != null) {
+      map['logged_at'] = Variable<DateTime>(loggedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  StrengthAnchorsCompanion toCompanion(bool nullToAbsent) {
+    return StrengthAnchorsCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      anchorType: Value(anchorType),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      reps: reps == null && nullToAbsent ? const Value.absent() : Value(reps),
+      rpe: rpe == null && nullToAbsent ? const Value.absent() : Value(rpe),
+      rir: rir == null && nullToAbsent ? const Value.absent() : Value(rir),
+      source: Value(source),
+      sourceSetLogId: sourceSetLogId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceSetLogId),
+      confidence: confidence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(confidence),
+      loggedAt: loggedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loggedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory StrengthAnchor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthAnchor(
+      id: serializer.fromJson<String>(json['id']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      anchorType: serializer.fromJson<String>(json['anchorType']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      reps: serializer.fromJson<int?>(json['reps']),
+      rpe: serializer.fromJson<double?>(json['rpe']),
+      rir: serializer.fromJson<int?>(json['rir']),
+      source: serializer.fromJson<String>(json['source']),
+      sourceSetLogId: serializer.fromJson<String?>(json['sourceSetLogId']),
+      confidence: serializer.fromJson<String?>(json['confidence']),
+      loggedAt: serializer.fromJson<DateTime?>(json['loggedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'anchorType': serializer.toJson<String>(anchorType),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'reps': serializer.toJson<int?>(reps),
+      'rpe': serializer.toJson<double?>(rpe),
+      'rir': serializer.toJson<int?>(rir),
+      'source': serializer.toJson<String>(source),
+      'sourceSetLogId': serializer.toJson<String?>(sourceSetLogId),
+      'confidence': serializer.toJson<String?>(confidence),
+      'loggedAt': serializer.toJson<DateTime?>(loggedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  StrengthAnchor copyWith({
+    String? id,
+    int? exerciseId,
+    String? anchorType,
+    Value<double?> weightKg = const Value.absent(),
+    Value<int?> reps = const Value.absent(),
+    Value<double?> rpe = const Value.absent(),
+    Value<int?> rir = const Value.absent(),
+    String? source,
+    Value<String?> sourceSetLogId = const Value.absent(),
+    Value<String?> confidence = const Value.absent(),
+    Value<DateTime?> loggedAt = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => StrengthAnchor(
+    id: id ?? this.id,
+    exerciseId: exerciseId ?? this.exerciseId,
+    anchorType: anchorType ?? this.anchorType,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    reps: reps.present ? reps.value : this.reps,
+    rpe: rpe.present ? rpe.value : this.rpe,
+    rir: rir.present ? rir.value : this.rir,
+    source: source ?? this.source,
+    sourceSetLogId: sourceSetLogId.present
+        ? sourceSetLogId.value
+        : this.sourceSetLogId,
+    confidence: confidence.present ? confidence.value : this.confidence,
+    loggedAt: loggedAt.present ? loggedAt.value : this.loggedAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  StrengthAnchor copyWithCompanion(StrengthAnchorsCompanion data) {
+    return StrengthAnchor(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      anchorType: data.anchorType.present
+          ? data.anchorType.value
+          : this.anchorType,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      reps: data.reps.present ? data.reps.value : this.reps,
+      rpe: data.rpe.present ? data.rpe.value : this.rpe,
+      rir: data.rir.present ? data.rir.value : this.rir,
+      source: data.source.present ? data.source.value : this.source,
+      sourceSetLogId: data.sourceSetLogId.present
+          ? data.sourceSetLogId.value
+          : this.sourceSetLogId,
+      confidence: data.confidence.present
+          ? data.confidence.value
+          : this.confidence,
+      loggedAt: data.loggedAt.present ? data.loggedAt.value : this.loggedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthAnchor(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('anchorType: $anchorType, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('rpe: $rpe, ')
+          ..write('rir: $rir, ')
+          ..write('source: $source, ')
+          ..write('sourceSetLogId: $sourceSetLogId, ')
+          ..write('confidence: $confidence, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    exerciseId,
+    anchorType,
+    weightKg,
+    reps,
+    rpe,
+    rir,
+    source,
+    sourceSetLogId,
+    confidence,
+    loggedAt,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthAnchor &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.anchorType == this.anchorType &&
+          other.weightKg == this.weightKg &&
+          other.reps == this.reps &&
+          other.rpe == this.rpe &&
+          other.rir == this.rir &&
+          other.source == this.source &&
+          other.sourceSetLogId == this.sourceSetLogId &&
+          other.confidence == this.confidence &&
+          other.loggedAt == this.loggedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class StrengthAnchorsCompanion extends UpdateCompanion<StrengthAnchor> {
+  final Value<String> id;
+  final Value<int> exerciseId;
+  final Value<String> anchorType;
+  final Value<double?> weightKg;
+  final Value<int?> reps;
+  final Value<double?> rpe;
+  final Value<int?> rir;
+  final Value<String> source;
+  final Value<String?> sourceSetLogId;
+  final Value<String?> confidence;
+  final Value<DateTime?> loggedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const StrengthAnchorsCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.anchorType = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.rpe = const Value.absent(),
+    this.rir = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceSetLogId = const Value.absent(),
+    this.confidence = const Value.absent(),
+    this.loggedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StrengthAnchorsCompanion.insert({
+    required String id,
+    required int exerciseId,
+    required String anchorType,
+    this.weightKg = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.rpe = const Value.absent(),
+    this.rir = const Value.absent(),
+    required String source,
+    this.sourceSetLogId = const Value.absent(),
+    this.confidence = const Value.absent(),
+    this.loggedAt = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       exerciseId = Value(exerciseId),
+       anchorType = Value(anchorType),
+       source = Value(source),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<StrengthAnchor> custom({
+    Expression<String>? id,
+    Expression<int>? exerciseId,
+    Expression<String>? anchorType,
+    Expression<double>? weightKg,
+    Expression<int>? reps,
+    Expression<double>? rpe,
+    Expression<int>? rir,
+    Expression<String>? source,
+    Expression<String>? sourceSetLogId,
+    Expression<String>? confidence,
+    Expression<DateTime>? loggedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (anchorType != null) 'anchor_type': anchorType,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (reps != null) 'reps': reps,
+      if (rpe != null) 'rpe': rpe,
+      if (rir != null) 'rir': rir,
+      if (source != null) 'source': source,
+      if (sourceSetLogId != null) 'source_set_log_id': sourceSetLogId,
+      if (confidence != null) 'confidence': confidence,
+      if (loggedAt != null) 'logged_at': loggedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StrengthAnchorsCompanion copyWith({
+    Value<String>? id,
+    Value<int>? exerciseId,
+    Value<String>? anchorType,
+    Value<double?>? weightKg,
+    Value<int?>? reps,
+    Value<double?>? rpe,
+    Value<int?>? rir,
+    Value<String>? source,
+    Value<String?>? sourceSetLogId,
+    Value<String?>? confidence,
+    Value<DateTime?>? loggedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return StrengthAnchorsCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      anchorType: anchorType ?? this.anchorType,
+      weightKg: weightKg ?? this.weightKg,
+      reps: reps ?? this.reps,
+      rpe: rpe ?? this.rpe,
+      rir: rir ?? this.rir,
+      source: source ?? this.source,
+      sourceSetLogId: sourceSetLogId ?? this.sourceSetLogId,
+      confidence: confidence ?? this.confidence,
+      loggedAt: loggedAt ?? this.loggedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (anchorType.present) {
+      map['anchor_type'] = Variable<String>(anchorType.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (reps.present) {
+      map['reps'] = Variable<int>(reps.value);
+    }
+    if (rpe.present) {
+      map['rpe'] = Variable<double>(rpe.value);
+    }
+    if (rir.present) {
+      map['rir'] = Variable<int>(rir.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (sourceSetLogId.present) {
+      map['source_set_log_id'] = Variable<String>(sourceSetLogId.value);
+    }
+    if (confidence.present) {
+      map['confidence'] = Variable<String>(confidence.value);
+    }
+    if (loggedAt.present) {
+      map['logged_at'] = Variable<DateTime>(loggedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthAnchorsCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('anchorType: $anchorType, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('rpe: $rpe, ')
+          ..write('rir: $rir, ')
+          ..write('source: $source, ')
+          ..write('sourceSetLogId: $sourceSetLogId, ')
+          ..write('confidence: $confidence, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BodyMeasurementsTable extends BodyMeasurements
+    with TableInfo<$BodyMeasurementsTable, BodyMeasurement> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BodyMeasurementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> measuredAt = GeneratedColumn<DateTime>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _waistCmMeta = const VerificationMeta(
+    'waistCm',
+  );
+  @override
+  late final GeneratedColumn<double> waistCm = GeneratedColumn<double>(
+    'waist_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chestCmMeta = const VerificationMeta(
+    'chestCm',
+  );
+  @override
+  late final GeneratedColumn<double> chestCm = GeneratedColumn<double>(
+    'chest_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hipsCmMeta = const VerificationMeta('hipsCm');
+  @override
+  late final GeneratedColumn<double> hipsCm = GeneratedColumn<double>(
+    'hips_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftArmCmMeta = const VerificationMeta(
+    'leftArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftArmCm = GeneratedColumn<double>(
+    'left_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightArmCmMeta = const VerificationMeta(
+    'rightArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightArmCm = GeneratedColumn<double>(
+    'right_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftThighCmMeta = const VerificationMeta(
+    'leftThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftThighCm = GeneratedColumn<double>(
+    'left_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightThighCmMeta = const VerificationMeta(
+    'rightThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightThighCm = GeneratedColumn<double>(
+    'right_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'body_measurements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BodyMeasurement> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('waist_cm')) {
+      context.handle(
+        _waistCmMeta,
+        waistCm.isAcceptableOrUnknown(data['waist_cm']!, _waistCmMeta),
+      );
+    }
+    if (data.containsKey('chest_cm')) {
+      context.handle(
+        _chestCmMeta,
+        chestCm.isAcceptableOrUnknown(data['chest_cm']!, _chestCmMeta),
+      );
+    }
+    if (data.containsKey('hips_cm')) {
+      context.handle(
+        _hipsCmMeta,
+        hipsCm.isAcceptableOrUnknown(data['hips_cm']!, _hipsCmMeta),
+      );
+    }
+    if (data.containsKey('left_arm_cm')) {
+      context.handle(
+        _leftArmCmMeta,
+        leftArmCm.isAcceptableOrUnknown(data['left_arm_cm']!, _leftArmCmMeta),
+      );
+    }
+    if (data.containsKey('right_arm_cm')) {
+      context.handle(
+        _rightArmCmMeta,
+        rightArmCm.isAcceptableOrUnknown(
+          data['right_arm_cm']!,
+          _rightArmCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('left_thigh_cm')) {
+      context.handle(
+        _leftThighCmMeta,
+        leftThighCm.isAcceptableOrUnknown(
+          data['left_thigh_cm']!,
+          _leftThighCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('right_thigh_cm')) {
+      context.handle(
+        _rightThighCmMeta,
+        rightThighCm.isAcceptableOrUnknown(
+          data['right_thigh_cm']!,
+          _rightThighCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BodyMeasurement map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BodyMeasurement(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      waistCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}waist_cm'],
+      ),
+      chestCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}chest_cm'],
+      ),
+      hipsCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}hips_cm'],
+      ),
+      leftArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_arm_cm'],
+      ),
+      rightArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_arm_cm'],
+      ),
+      leftThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_thigh_cm'],
+      ),
+      rightThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_thigh_cm'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BodyMeasurementsTable createAlias(String alias) {
+    return $BodyMeasurementsTable(attachedDatabase, alias);
+  }
+}
+
+class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
+  final String id;
+  final DateTime measuredAt;
+  final double? bodyweightKg;
+  final double? waistCm;
+  final double? chestCm;
+  final double? hipsCm;
+  final double? leftArmCm;
+  final double? rightArmCm;
+  final double? leftThighCm;
+  final double? rightThighCm;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const BodyMeasurement({
+    required this.id,
+    required this.measuredAt,
+    this.bodyweightKg,
+    this.waistCm,
+    this.chestCm,
+    this.hipsCm,
+    this.leftArmCm,
+    this.rightArmCm,
+    this.leftThighCm,
+    this.rightThighCm,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['measured_at'] = Variable<DateTime>(measuredAt);
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || waistCm != null) {
+      map['waist_cm'] = Variable<double>(waistCm);
+    }
+    if (!nullToAbsent || chestCm != null) {
+      map['chest_cm'] = Variable<double>(chestCm);
+    }
+    if (!nullToAbsent || hipsCm != null) {
+      map['hips_cm'] = Variable<double>(hipsCm);
+    }
+    if (!nullToAbsent || leftArmCm != null) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm);
+    }
+    if (!nullToAbsent || rightArmCm != null) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm);
+    }
+    if (!nullToAbsent || leftThighCm != null) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm);
+    }
+    if (!nullToAbsent || rightThighCm != null) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  BodyMeasurementsCompanion toCompanion(bool nullToAbsent) {
+    return BodyMeasurementsCompanion(
+      id: Value(id),
+      measuredAt: Value(measuredAt),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      waistCm: waistCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waistCm),
+      chestCm: chestCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chestCm),
+      hipsCm: hipsCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hipsCm),
+      leftArmCm: leftArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftArmCm),
+      rightArmCm: rightArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightArmCm),
+      leftThighCm: leftThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftThighCm),
+      rightThighCm: rightThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightThighCm),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BodyMeasurement.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BodyMeasurement(
+      id: serializer.fromJson<String>(json['id']),
+      measuredAt: serializer.fromJson<DateTime>(json['measuredAt']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      waistCm: serializer.fromJson<double?>(json['waistCm']),
+      chestCm: serializer.fromJson<double?>(json['chestCm']),
+      hipsCm: serializer.fromJson<double?>(json['hipsCm']),
+      leftArmCm: serializer.fromJson<double?>(json['leftArmCm']),
+      rightArmCm: serializer.fromJson<double?>(json['rightArmCm']),
+      leftThighCm: serializer.fromJson<double?>(json['leftThighCm']),
+      rightThighCm: serializer.fromJson<double?>(json['rightThighCm']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'measuredAt': serializer.toJson<DateTime>(measuredAt),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'waistCm': serializer.toJson<double?>(waistCm),
+      'chestCm': serializer.toJson<double?>(chestCm),
+      'hipsCm': serializer.toJson<double?>(hipsCm),
+      'leftArmCm': serializer.toJson<double?>(leftArmCm),
+      'rightArmCm': serializer.toJson<double?>(rightArmCm),
+      'leftThighCm': serializer.toJson<double?>(leftThighCm),
+      'rightThighCm': serializer.toJson<double?>(rightThighCm),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  BodyMeasurement copyWith({
+    String? id,
+    DateTime? measuredAt,
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<double?> waistCm = const Value.absent(),
+    Value<double?> chestCm = const Value.absent(),
+    Value<double?> hipsCm = const Value.absent(),
+    Value<double?> leftArmCm = const Value.absent(),
+    Value<double?> rightArmCm = const Value.absent(),
+    Value<double?> leftThighCm = const Value.absent(),
+    Value<double?> rightThighCm = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => BodyMeasurement(
+    id: id ?? this.id,
+    measuredAt: measuredAt ?? this.measuredAt,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    waistCm: waistCm.present ? waistCm.value : this.waistCm,
+    chestCm: chestCm.present ? chestCm.value : this.chestCm,
+    hipsCm: hipsCm.present ? hipsCm.value : this.hipsCm,
+    leftArmCm: leftArmCm.present ? leftArmCm.value : this.leftArmCm,
+    rightArmCm: rightArmCm.present ? rightArmCm.value : this.rightArmCm,
+    leftThighCm: leftThighCm.present ? leftThighCm.value : this.leftThighCm,
+    rightThighCm: rightThighCm.present ? rightThighCm.value : this.rightThighCm,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BodyMeasurement copyWithCompanion(BodyMeasurementsCompanion data) {
+    return BodyMeasurement(
+      id: data.id.present ? data.id.value : this.id,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      waistCm: data.waistCm.present ? data.waistCm.value : this.waistCm,
+      chestCm: data.chestCm.present ? data.chestCm.value : this.chestCm,
+      hipsCm: data.hipsCm.present ? data.hipsCm.value : this.hipsCm,
+      leftArmCm: data.leftArmCm.present ? data.leftArmCm.value : this.leftArmCm,
+      rightArmCm: data.rightArmCm.present
+          ? data.rightArmCm.value
+          : this.rightArmCm,
+      leftThighCm: data.leftThighCm.present
+          ? data.leftThighCm.value
+          : this.leftThighCm,
+      rightThighCm: data.rightThighCm.present
+          ? data.rightThighCm.value
+          : this.rightThighCm,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BodyMeasurement(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BodyMeasurement &&
+          other.id == this.id &&
+          other.measuredAt == this.measuredAt &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.waistCm == this.waistCm &&
+          other.chestCm == this.chestCm &&
+          other.hipsCm == this.hipsCm &&
+          other.leftArmCm == this.leftArmCm &&
+          other.rightArmCm == this.rightArmCm &&
+          other.leftThighCm == this.leftThighCm &&
+          other.rightThighCm == this.rightThighCm &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
+  final Value<String> id;
+  final Value<DateTime> measuredAt;
+  final Value<double?> bodyweightKg;
+  final Value<double?> waistCm;
+  final Value<double?> chestCm;
+  final Value<double?> hipsCm;
+  final Value<double?> leftArmCm;
+  final Value<double?> rightArmCm;
+  final Value<double?> leftThighCm;
+  final Value<double?> rightThighCm;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const BodyMeasurementsCompanion({
+    this.id = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BodyMeasurementsCompanion.insert({
+    required String id,
+    required DateTime measuredAt,
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       measuredAt = Value(measuredAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<BodyMeasurement> custom({
+    Expression<String>? id,
+    Expression<DateTime>? measuredAt,
+    Expression<double>? bodyweightKg,
+    Expression<double>? waistCm,
+    Expression<double>? chestCm,
+    Expression<double>? hipsCm,
+    Expression<double>? leftArmCm,
+    Expression<double>? rightArmCm,
+    Expression<double>? leftThighCm,
+    Expression<double>? rightThighCm,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (waistCm != null) 'waist_cm': waistCm,
+      if (chestCm != null) 'chest_cm': chestCm,
+      if (hipsCm != null) 'hips_cm': hipsCm,
+      if (leftArmCm != null) 'left_arm_cm': leftArmCm,
+      if (rightArmCm != null) 'right_arm_cm': rightArmCm,
+      if (leftThighCm != null) 'left_thigh_cm': leftThighCm,
+      if (rightThighCm != null) 'right_thigh_cm': rightThighCm,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BodyMeasurementsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? measuredAt,
+    Value<double?>? bodyweightKg,
+    Value<double?>? waistCm,
+    Value<double?>? chestCm,
+    Value<double?>? hipsCm,
+    Value<double?>? leftArmCm,
+    Value<double?>? rightArmCm,
+    Value<double?>? leftThighCm,
+    Value<double?>? rightThighCm,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return BodyMeasurementsCompanion(
+      id: id ?? this.id,
+      measuredAt: measuredAt ?? this.measuredAt,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      waistCm: waistCm ?? this.waistCm,
+      chestCm: chestCm ?? this.chestCm,
+      hipsCm: hipsCm ?? this.hipsCm,
+      leftArmCm: leftArmCm ?? this.leftArmCm,
+      rightArmCm: rightArmCm ?? this.rightArmCm,
+      leftThighCm: leftThighCm ?? this.leftThighCm,
+      rightThighCm: rightThighCm ?? this.rightThighCm,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<DateTime>(measuredAt.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (waistCm.present) {
+      map['waist_cm'] = Variable<double>(waistCm.value);
+    }
+    if (chestCm.present) {
+      map['chest_cm'] = Variable<double>(chestCm.value);
+    }
+    if (hipsCm.present) {
+      map['hips_cm'] = Variable<double>(hipsCm.value);
+    }
+    if (leftArmCm.present) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm.value);
+    }
+    if (rightArmCm.present) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm.value);
+    }
+    if (leftThighCm.present) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm.value);
+    }
+    if (rightThighCm.present) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BodyMeasurementsCompanion(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AppSettingsTable extends AppSettings
+    with TableInfo<$AppSettingsTable, AppSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _preferredUnitsMeta = const VerificationMeta(
+    'preferredUnits',
+  );
+  @override
+  late final GeneratedColumn<String> preferredUnits = GeneratedColumn<String>(
+    'preferred_units',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('metric'),
+  );
+  static const VerificationMeta _themeModeMeta = const VerificationMeta(
+    'themeMode',
+  );
+  @override
+  late final GeneratedColumn<String> themeMode = GeneratedColumn<String>(
+    'theme_mode',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notificationsEnabledMeta =
+      const VerificationMeta('notificationsEnabled');
+  @override
+  late final GeneratedColumn<bool> notificationsEnabled = GeneratedColumn<bool>(
+    'notifications_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("notifications_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _workoutTimerSoundEnabledMeta =
+      const VerificationMeta('workoutTimerSoundEnabled');
+  @override
+  late final GeneratedColumn<bool> workoutTimerSoundEnabled =
+      GeneratedColumn<bool>(
+        'workout_timer_sound_enabled',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("workout_timer_sound_enabled" IN (0, 1))',
+        ),
+        defaultValue: const Constant(true),
+      );
+  static const VerificationMeta _exerciseAudioEnabledMeta =
+      const VerificationMeta('exerciseAudioEnabled');
+  @override
+  late final GeneratedColumn<bool> exerciseAudioEnabled = GeneratedColumn<bool>(
+    'exercise_audio_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("exercise_audio_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _crashlyticsEnabledMeta =
+      const VerificationMeta('crashlyticsEnabled');
+  @override
+  late final GeneratedColumn<bool> crashlyticsEnabled = GeneratedColumn<bool>(
+    'crashlytics_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("crashlytics_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _redactionStrictModeMeta =
+      const VerificationMeta('redactionStrictMode');
+  @override
+  late final GeneratedColumn<bool> redactionStrictMode = GeneratedColumn<bool>(
+    'redaction_strict_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("redaction_strict_mode" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    preferredUnits,
+    themeMode,
+    notificationsEnabled,
+    workoutTimerSoundEnabled,
+    exerciseAudioEnabled,
+    crashlyticsEnabled,
+    redactionStrictMode,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AppSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('preferred_units')) {
+      context.handle(
+        _preferredUnitsMeta,
+        preferredUnits.isAcceptableOrUnknown(
+          data['preferred_units']!,
+          _preferredUnitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('theme_mode')) {
+      context.handle(
+        _themeModeMeta,
+        themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta),
+      );
+    }
+    if (data.containsKey('notifications_enabled')) {
+      context.handle(
+        _notificationsEnabledMeta,
+        notificationsEnabled.isAcceptableOrUnknown(
+          data['notifications_enabled']!,
+          _notificationsEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('workout_timer_sound_enabled')) {
+      context.handle(
+        _workoutTimerSoundEnabledMeta,
+        workoutTimerSoundEnabled.isAcceptableOrUnknown(
+          data['workout_timer_sound_enabled']!,
+          _workoutTimerSoundEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_audio_enabled')) {
+      context.handle(
+        _exerciseAudioEnabledMeta,
+        exerciseAudioEnabled.isAcceptableOrUnknown(
+          data['exercise_audio_enabled']!,
+          _exerciseAudioEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('crashlytics_enabled')) {
+      context.handle(
+        _crashlyticsEnabledMeta,
+        crashlyticsEnabled.isAcceptableOrUnknown(
+          data['crashlytics_enabled']!,
+          _crashlyticsEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('redaction_strict_mode')) {
+      context.handle(
+        _redactionStrictModeMeta,
+        redactionStrictMode.isAcceptableOrUnknown(
+          data['redaction_strict_mode']!,
+          _redactionStrictModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      preferredUnits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_units'],
+      )!,
+      themeMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}theme_mode'],
+      ),
+      notificationsEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}notifications_enabled'],
+      )!,
+      workoutTimerSoundEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}workout_timer_sound_enabled'],
+      )!,
+      exerciseAudioEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}exercise_audio_enabled'],
+      )!,
+      crashlyticsEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}crashlytics_enabled'],
+      )!,
+      redactionStrictMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}redaction_strict_mode'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AppSettingsTable createAlias(String alias) {
+    return $AppSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class AppSetting extends DataClass implements Insertable<AppSetting> {
+  final String id;
+  final String preferredUnits;
+  final String? themeMode;
+  final bool notificationsEnabled;
+  final bool workoutTimerSoundEnabled;
+  final bool exerciseAudioEnabled;
+  final bool crashlyticsEnabled;
+  final bool redactionStrictMode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AppSetting({
+    required this.id,
+    required this.preferredUnits,
+    this.themeMode,
+    required this.notificationsEnabled,
+    required this.workoutTimerSoundEnabled,
+    required this.exerciseAudioEnabled,
+    required this.crashlyticsEnabled,
+    required this.redactionStrictMode,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['preferred_units'] = Variable<String>(preferredUnits);
+    if (!nullToAbsent || themeMode != null) {
+      map['theme_mode'] = Variable<String>(themeMode);
+    }
+    map['notifications_enabled'] = Variable<bool>(notificationsEnabled);
+    map['workout_timer_sound_enabled'] = Variable<bool>(
+      workoutTimerSoundEnabled,
+    );
+    map['exercise_audio_enabled'] = Variable<bool>(exerciseAudioEnabled);
+    map['crashlytics_enabled'] = Variable<bool>(crashlyticsEnabled);
+    map['redaction_strict_mode'] = Variable<bool>(redactionStrictMode);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AppSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AppSettingsCompanion(
+      id: Value(id),
+      preferredUnits: Value(preferredUnits),
+      themeMode: themeMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(themeMode),
+      notificationsEnabled: Value(notificationsEnabled),
+      workoutTimerSoundEnabled: Value(workoutTimerSoundEnabled),
+      exerciseAudioEnabled: Value(exerciseAudioEnabled),
+      crashlyticsEnabled: Value(crashlyticsEnabled),
+      redactionStrictMode: Value(redactionStrictMode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AppSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppSetting(
+      id: serializer.fromJson<String>(json['id']),
+      preferredUnits: serializer.fromJson<String>(json['preferredUnits']),
+      themeMode: serializer.fromJson<String?>(json['themeMode']),
+      notificationsEnabled: serializer.fromJson<bool>(
+        json['notificationsEnabled'],
+      ),
+      workoutTimerSoundEnabled: serializer.fromJson<bool>(
+        json['workoutTimerSoundEnabled'],
+      ),
+      exerciseAudioEnabled: serializer.fromJson<bool>(
+        json['exerciseAudioEnabled'],
+      ),
+      crashlyticsEnabled: serializer.fromJson<bool>(json['crashlyticsEnabled']),
+      redactionStrictMode: serializer.fromJson<bool>(
+        json['redactionStrictMode'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'preferredUnits': serializer.toJson<String>(preferredUnits),
+      'themeMode': serializer.toJson<String?>(themeMode),
+      'notificationsEnabled': serializer.toJson<bool>(notificationsEnabled),
+      'workoutTimerSoundEnabled': serializer.toJson<bool>(
+        workoutTimerSoundEnabled,
+      ),
+      'exerciseAudioEnabled': serializer.toJson<bool>(exerciseAudioEnabled),
+      'crashlyticsEnabled': serializer.toJson<bool>(crashlyticsEnabled),
+      'redactionStrictMode': serializer.toJson<bool>(redactionStrictMode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AppSetting copyWith({
+    String? id,
+    String? preferredUnits,
+    Value<String?> themeMode = const Value.absent(),
+    bool? notificationsEnabled,
+    bool? workoutTimerSoundEnabled,
+    bool? exerciseAudioEnabled,
+    bool? crashlyticsEnabled,
+    bool? redactionStrictMode,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AppSetting(
+    id: id ?? this.id,
+    preferredUnits: preferredUnits ?? this.preferredUnits,
+    themeMode: themeMode.present ? themeMode.value : this.themeMode,
+    notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    workoutTimerSoundEnabled:
+        workoutTimerSoundEnabled ?? this.workoutTimerSoundEnabled,
+    exerciseAudioEnabled: exerciseAudioEnabled ?? this.exerciseAudioEnabled,
+    crashlyticsEnabled: crashlyticsEnabled ?? this.crashlyticsEnabled,
+    redactionStrictMode: redactionStrictMode ?? this.redactionStrictMode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AppSetting copyWithCompanion(AppSettingsCompanion data) {
+    return AppSetting(
+      id: data.id.present ? data.id.value : this.id,
+      preferredUnits: data.preferredUnits.present
+          ? data.preferredUnits.value
+          : this.preferredUnits,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      notificationsEnabled: data.notificationsEnabled.present
+          ? data.notificationsEnabled.value
+          : this.notificationsEnabled,
+      workoutTimerSoundEnabled: data.workoutTimerSoundEnabled.present
+          ? data.workoutTimerSoundEnabled.value
+          : this.workoutTimerSoundEnabled,
+      exerciseAudioEnabled: data.exerciseAudioEnabled.present
+          ? data.exerciseAudioEnabled.value
+          : this.exerciseAudioEnabled,
+      crashlyticsEnabled: data.crashlyticsEnabled.present
+          ? data.crashlyticsEnabled.value
+          : this.crashlyticsEnabled,
+      redactionStrictMode: data.redactionStrictMode.present
+          ? data.redactionStrictMode.value
+          : this.redactionStrictMode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSetting(')
+          ..write('id: $id, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('notificationsEnabled: $notificationsEnabled, ')
+          ..write('workoutTimerSoundEnabled: $workoutTimerSoundEnabled, ')
+          ..write('exerciseAudioEnabled: $exerciseAudioEnabled, ')
+          ..write('crashlyticsEnabled: $crashlyticsEnabled, ')
+          ..write('redactionStrictMode: $redactionStrictMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    preferredUnits,
+    themeMode,
+    notificationsEnabled,
+    workoutTimerSoundEnabled,
+    exerciseAudioEnabled,
+    crashlyticsEnabled,
+    redactionStrictMode,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSetting &&
+          other.id == this.id &&
+          other.preferredUnits == this.preferredUnits &&
+          other.themeMode == this.themeMode &&
+          other.notificationsEnabled == this.notificationsEnabled &&
+          other.workoutTimerSoundEnabled == this.workoutTimerSoundEnabled &&
+          other.exerciseAudioEnabled == this.exerciseAudioEnabled &&
+          other.crashlyticsEnabled == this.crashlyticsEnabled &&
+          other.redactionStrictMode == this.redactionStrictMode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
+  final Value<String> id;
+  final Value<String> preferredUnits;
+  final Value<String?> themeMode;
+  final Value<bool> notificationsEnabled;
+  final Value<bool> workoutTimerSoundEnabled;
+  final Value<bool> exerciseAudioEnabled;
+  final Value<bool> crashlyticsEnabled;
+  final Value<bool> redactionStrictMode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const AppSettingsCompanion({
+    this.id = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.notificationsEnabled = const Value.absent(),
+    this.workoutTimerSoundEnabled = const Value.absent(),
+    this.exerciseAudioEnabled = const Value.absent(),
+    this.crashlyticsEnabled = const Value.absent(),
+    this.redactionStrictMode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.notificationsEnabled = const Value.absent(),
+    this.workoutTimerSoundEnabled = const Value.absent(),
+    this.exerciseAudioEnabled = const Value.absent(),
+    this.crashlyticsEnabled = const Value.absent(),
+    this.redactionStrictMode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AppSetting> custom({
+    Expression<String>? id,
+    Expression<String>? preferredUnits,
+    Expression<String>? themeMode,
+    Expression<bool>? notificationsEnabled,
+    Expression<bool>? workoutTimerSoundEnabled,
+    Expression<bool>? exerciseAudioEnabled,
+    Expression<bool>? crashlyticsEnabled,
+    Expression<bool>? redactionStrictMode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (preferredUnits != null) 'preferred_units': preferredUnits,
+      if (themeMode != null) 'theme_mode': themeMode,
+      if (notificationsEnabled != null)
+        'notifications_enabled': notificationsEnabled,
+      if (workoutTimerSoundEnabled != null)
+        'workout_timer_sound_enabled': workoutTimerSoundEnabled,
+      if (exerciseAudioEnabled != null)
+        'exercise_audio_enabled': exerciseAudioEnabled,
+      if (crashlyticsEnabled != null) 'crashlytics_enabled': crashlyticsEnabled,
+      if (redactionStrictMode != null)
+        'redaction_strict_mode': redactionStrictMode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppSettingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? preferredUnits,
+    Value<String?>? themeMode,
+    Value<bool>? notificationsEnabled,
+    Value<bool>? workoutTimerSoundEnabled,
+    Value<bool>? exerciseAudioEnabled,
+    Value<bool>? crashlyticsEnabled,
+    Value<bool>? redactionStrictMode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return AppSettingsCompanion(
+      id: id ?? this.id,
+      preferredUnits: preferredUnits ?? this.preferredUnits,
+      themeMode: themeMode ?? this.themeMode,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      workoutTimerSoundEnabled:
+          workoutTimerSoundEnabled ?? this.workoutTimerSoundEnabled,
+      exerciseAudioEnabled: exerciseAudioEnabled ?? this.exerciseAudioEnabled,
+      crashlyticsEnabled: crashlyticsEnabled ?? this.crashlyticsEnabled,
+      redactionStrictMode: redactionStrictMode ?? this.redactionStrictMode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (preferredUnits.present) {
+      map['preferred_units'] = Variable<String>(preferredUnits.value);
+    }
+    if (themeMode.present) {
+      map['theme_mode'] = Variable<String>(themeMode.value);
+    }
+    if (notificationsEnabled.present) {
+      map['notifications_enabled'] = Variable<bool>(notificationsEnabled.value);
+    }
+    if (workoutTimerSoundEnabled.present) {
+      map['workout_timer_sound_enabled'] = Variable<bool>(
+        workoutTimerSoundEnabled.value,
+      );
+    }
+    if (exerciseAudioEnabled.present) {
+      map['exercise_audio_enabled'] = Variable<bool>(
+        exerciseAudioEnabled.value,
+      );
+    }
+    if (crashlyticsEnabled.present) {
+      map['crashlytics_enabled'] = Variable<bool>(crashlyticsEnabled.value);
+    }
+    if (redactionStrictMode.present) {
+      map['redaction_strict_mode'] = Variable<bool>(redactionStrictMode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('notificationsEnabled: $notificationsEnabled, ')
+          ..write('workoutTimerSoundEnabled: $workoutTimerSoundEnabled, ')
+          ..write('exerciseAudioEnabled: $exerciseAudioEnabled, ')
+          ..write('crashlyticsEnabled: $crashlyticsEnabled, ')
+          ..write('redactionStrictMode: $redactionStrictMode, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -6055,6 +8371,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExerciseAudioCacheTable exerciseAudioCache =
       $ExerciseAudioCacheTable(this);
   late final $UserProfileTable userProfile = $UserProfileTable(this);
+  late final $StrengthAnchorsTable strengthAnchors = $StrengthAnchorsTable(
+    this,
+  );
+  late final $BodyMeasurementsTable bodyMeasurements = $BodyMeasurementsTable(
+    this,
+  );
+  late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6068,6 +8391,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     exerciseVideos,
     exerciseAudioCache,
     userProfile,
+    strengthAnchors,
+    bodyMeasurements,
+    appSettings,
   ];
 }
 
@@ -8830,7 +11156,7 @@ typedef $$UserProfileTableCreateCompanionBuilder =
       Value<double?> bodyweightKg,
       Value<DateTime?> bodyweightLoggedAt,
       Value<String> preferredUnits,
-      Value<String?> experienceLevel,
+      required String experienceLevel,
       Value<int?> targetSessionLengthMinutes,
       Value<int?> trainingDaysPerWeek,
       Value<String> trainingDayNamesJson,
@@ -8838,6 +11164,8 @@ typedef $$UserProfileTableCreateCompanionBuilder =
       Value<DateTime?> onboardingCompletedAt,
       Value<String> goalsJson,
       Value<String> equipmentAccessJson,
+      Value<String> favoriteExerciseIdsJson,
+      Value<String> substitutedExerciseIdsJson,
       Value<String> injuriesLimitationsJson,
       Value<String?> otherNotes,
       required DateTime createdAt,
@@ -8854,7 +11182,7 @@ typedef $$UserProfileTableUpdateCompanionBuilder =
       Value<double?> bodyweightKg,
       Value<DateTime?> bodyweightLoggedAt,
       Value<String> preferredUnits,
-      Value<String?> experienceLevel,
+      Value<String> experienceLevel,
       Value<int?> targetSessionLengthMinutes,
       Value<int?> trainingDaysPerWeek,
       Value<String> trainingDayNamesJson,
@@ -8862,6 +11190,8 @@ typedef $$UserProfileTableUpdateCompanionBuilder =
       Value<DateTime?> onboardingCompletedAt,
       Value<String> goalsJson,
       Value<String> equipmentAccessJson,
+      Value<String> favoriteExerciseIdsJson,
+      Value<String> substitutedExerciseIdsJson,
       Value<String> injuriesLimitationsJson,
       Value<String?> otherNotes,
       Value<DateTime> createdAt,
@@ -8955,6 +11285,16 @@ class $$UserProfileTableFilterComposer
 
   ColumnFilters<String> get equipmentAccessJson => $composableBuilder(
     column: $table.equipmentAccessJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9068,6 +11408,16 @@ class $$UserProfileTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get injuriesLimitationsJson => $composableBuilder(
     column: $table.injuriesLimitationsJson,
     builder: (column) => ColumnOrderings(column),
@@ -9168,6 +11518,16 @@ class $$UserProfileTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get injuriesLimitationsJson => $composableBuilder(
     column: $table.injuriesLimitationsJson,
     builder: (column) => column,
@@ -9224,7 +11584,7 @@ class $$UserProfileTableTableManager
                 Value<double?> bodyweightKg = const Value.absent(),
                 Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
                 Value<String> preferredUnits = const Value.absent(),
-                Value<String?> experienceLevel = const Value.absent(),
+                Value<String> experienceLevel = const Value.absent(),
                 Value<int?> targetSessionLengthMinutes = const Value.absent(),
                 Value<int?> trainingDaysPerWeek = const Value.absent(),
                 Value<String> trainingDayNamesJson = const Value.absent(),
@@ -9232,6 +11592,8 @@ class $$UserProfileTableTableManager
                 Value<DateTime?> onboardingCompletedAt = const Value.absent(),
                 Value<String> goalsJson = const Value.absent(),
                 Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> favoriteExerciseIdsJson = const Value.absent(),
+                Value<String> substitutedExerciseIdsJson = const Value.absent(),
                 Value<String> injuriesLimitationsJson = const Value.absent(),
                 Value<String?> otherNotes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -9254,6 +11616,8 @@ class $$UserProfileTableTableManager
                 onboardingCompletedAt: onboardingCompletedAt,
                 goalsJson: goalsJson,
                 equipmentAccessJson: equipmentAccessJson,
+                favoriteExerciseIdsJson: favoriteExerciseIdsJson,
+                substitutedExerciseIdsJson: substitutedExerciseIdsJson,
                 injuriesLimitationsJson: injuriesLimitationsJson,
                 otherNotes: otherNotes,
                 createdAt: createdAt,
@@ -9270,7 +11634,7 @@ class $$UserProfileTableTableManager
                 Value<double?> bodyweightKg = const Value.absent(),
                 Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
                 Value<String> preferredUnits = const Value.absent(),
-                Value<String?> experienceLevel = const Value.absent(),
+                required String experienceLevel,
                 Value<int?> targetSessionLengthMinutes = const Value.absent(),
                 Value<int?> trainingDaysPerWeek = const Value.absent(),
                 Value<String> trainingDayNamesJson = const Value.absent(),
@@ -9278,6 +11642,8 @@ class $$UserProfileTableTableManager
                 Value<DateTime?> onboardingCompletedAt = const Value.absent(),
                 Value<String> goalsJson = const Value.absent(),
                 Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> favoriteExerciseIdsJson = const Value.absent(),
+                Value<String> substitutedExerciseIdsJson = const Value.absent(),
                 Value<String> injuriesLimitationsJson = const Value.absent(),
                 Value<String?> otherNotes = const Value.absent(),
                 required DateTime createdAt,
@@ -9300,6 +11666,8 @@ class $$UserProfileTableTableManager
                 onboardingCompletedAt: onboardingCompletedAt,
                 goalsJson: goalsJson,
                 equipmentAccessJson: equipmentAccessJson,
+                favoriteExerciseIdsJson: favoriteExerciseIdsJson,
+                substitutedExerciseIdsJson: substitutedExerciseIdsJson,
                 injuriesLimitationsJson: injuriesLimitationsJson,
                 otherNotes: otherNotes,
                 createdAt: createdAt,
@@ -9331,6 +11699,1047 @@ typedef $$UserProfileTableProcessedTableManager =
       UserProfileData,
       PrefetchHooks Function()
     >;
+typedef $$StrengthAnchorsTableCreateCompanionBuilder =
+    StrengthAnchorsCompanion Function({
+      required String id,
+      required int exerciseId,
+      required String anchorType,
+      Value<double?> weightKg,
+      Value<int?> reps,
+      Value<double?> rpe,
+      Value<int?> rir,
+      required String source,
+      Value<String?> sourceSetLogId,
+      Value<String?> confidence,
+      Value<DateTime?> loggedAt,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$StrengthAnchorsTableUpdateCompanionBuilder =
+    StrengthAnchorsCompanion Function({
+      Value<String> id,
+      Value<int> exerciseId,
+      Value<String> anchorType,
+      Value<double?> weightKg,
+      Value<int?> reps,
+      Value<double?> rpe,
+      Value<int?> rir,
+      Value<String> source,
+      Value<String?> sourceSetLogId,
+      Value<String?> confidence,
+      Value<DateTime?> loggedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$StrengthAnchorsTableFilterComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reps => $composableBuilder(
+    column: $table.reps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpe => $composableBuilder(
+    column: $table.rpe,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StrengthAnchorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reps => $composableBuilder(
+    column: $table.reps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpe => $composableBuilder(
+    column: $table.rpe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StrengthAnchorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<int> get reps =>
+      $composableBuilder(column: $table.reps, builder: (column) => column);
+
+  GeneratedColumn<double> get rpe =>
+      $composableBuilder(column: $table.rpe, builder: (column) => column);
+
+  GeneratedColumn<int> get rir =>
+      $composableBuilder(column: $table.rir, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get loggedAt =>
+      $composableBuilder(column: $table.loggedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$StrengthAnchorsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StrengthAnchorsTable,
+          StrengthAnchor,
+          $$StrengthAnchorsTableFilterComposer,
+          $$StrengthAnchorsTableOrderingComposer,
+          $$StrengthAnchorsTableAnnotationComposer,
+          $$StrengthAnchorsTableCreateCompanionBuilder,
+          $$StrengthAnchorsTableUpdateCompanionBuilder,
+          (
+            StrengthAnchor,
+            BaseReferences<
+              _$AppDatabase,
+              $StrengthAnchorsTable,
+              StrengthAnchor
+            >,
+          ),
+          StrengthAnchor,
+          PrefetchHooks Function()
+        > {
+  $$StrengthAnchorsTableTableManager(
+    _$AppDatabase db,
+    $StrengthAnchorsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StrengthAnchorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StrengthAnchorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StrengthAnchorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String> anchorType = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> reps = const Value.absent(),
+                Value<double?> rpe = const Value.absent(),
+                Value<int?> rir = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> sourceSetLogId = const Value.absent(),
+                Value<String?> confidence = const Value.absent(),
+                Value<DateTime?> loggedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StrengthAnchorsCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                anchorType: anchorType,
+                weightKg: weightKg,
+                reps: reps,
+                rpe: rpe,
+                rir: rir,
+                source: source,
+                sourceSetLogId: sourceSetLogId,
+                confidence: confidence,
+                loggedAt: loggedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int exerciseId,
+                required String anchorType,
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> reps = const Value.absent(),
+                Value<double?> rpe = const Value.absent(),
+                Value<int?> rir = const Value.absent(),
+                required String source,
+                Value<String?> sourceSetLogId = const Value.absent(),
+                Value<String?> confidence = const Value.absent(),
+                Value<DateTime?> loggedAt = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => StrengthAnchorsCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                anchorType: anchorType,
+                weightKg: weightKg,
+                reps: reps,
+                rpe: rpe,
+                rir: rir,
+                source: source,
+                sourceSetLogId: sourceSetLogId,
+                confidence: confidence,
+                loggedAt: loggedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StrengthAnchorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StrengthAnchorsTable,
+      StrengthAnchor,
+      $$StrengthAnchorsTableFilterComposer,
+      $$StrengthAnchorsTableOrderingComposer,
+      $$StrengthAnchorsTableAnnotationComposer,
+      $$StrengthAnchorsTableCreateCompanionBuilder,
+      $$StrengthAnchorsTableUpdateCompanionBuilder,
+      (
+        StrengthAnchor,
+        BaseReferences<_$AppDatabase, $StrengthAnchorsTable, StrengthAnchor>,
+      ),
+      StrengthAnchor,
+      PrefetchHooks Function()
+    >;
+typedef $$BodyMeasurementsTableCreateCompanionBuilder =
+    BodyMeasurementsCompanion Function({
+      required String id,
+      required DateTime measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$BodyMeasurementsTableUpdateCompanionBuilder =
+    BodyMeasurementsCompanion Function({
+      Value<String> id,
+      Value<DateTime> measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$BodyMeasurementsTableFilterComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BodyMeasurementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BodyMeasurementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get waistCm =>
+      $composableBuilder(column: $table.waistCm, builder: (column) => column);
+
+  GeneratedColumn<double> get chestCm =>
+      $composableBuilder(column: $table.chestCm, builder: (column) => column);
+
+  GeneratedColumn<double> get hipsCm =>
+      $composableBuilder(column: $table.hipsCm, builder: (column) => column);
+
+  GeneratedColumn<double> get leftArmCm =>
+      $composableBuilder(column: $table.leftArmCm, builder: (column) => column);
+
+  GeneratedColumn<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$BodyMeasurementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BodyMeasurementsTable,
+          BodyMeasurement,
+          $$BodyMeasurementsTableFilterComposer,
+          $$BodyMeasurementsTableOrderingComposer,
+          $$BodyMeasurementsTableAnnotationComposer,
+          $$BodyMeasurementsTableCreateCompanionBuilder,
+          $$BodyMeasurementsTableUpdateCompanionBuilder,
+          (
+            BodyMeasurement,
+            BaseReferences<
+              _$AppDatabase,
+              $BodyMeasurementsTable,
+              BodyMeasurement
+            >,
+          ),
+          BodyMeasurement,
+          PrefetchHooks Function()
+        > {
+  $$BodyMeasurementsTableTableManager(
+    _$AppDatabase db,
+    $BodyMeasurementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BodyMeasurementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BodyMeasurementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BodyMeasurementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> measuredAt = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BodyMeasurementsCompanion(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime measuredAt,
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BodyMeasurementsCompanion.insert(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BodyMeasurementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BodyMeasurementsTable,
+      BodyMeasurement,
+      $$BodyMeasurementsTableFilterComposer,
+      $$BodyMeasurementsTableOrderingComposer,
+      $$BodyMeasurementsTableAnnotationComposer,
+      $$BodyMeasurementsTableCreateCompanionBuilder,
+      $$BodyMeasurementsTableUpdateCompanionBuilder,
+      (
+        BodyMeasurement,
+        BaseReferences<_$AppDatabase, $BodyMeasurementsTable, BodyMeasurement>,
+      ),
+      BodyMeasurement,
+      PrefetchHooks Function()
+    >;
+typedef $$AppSettingsTableCreateCompanionBuilder =
+    AppSettingsCompanion Function({
+      Value<String> id,
+      Value<String> preferredUnits,
+      Value<String?> themeMode,
+      Value<bool> notificationsEnabled,
+      Value<bool> workoutTimerSoundEnabled,
+      Value<bool> exerciseAudioEnabled,
+      Value<bool> crashlyticsEnabled,
+      Value<bool> redactionStrictMode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$AppSettingsTableUpdateCompanionBuilder =
+    AppSettingsCompanion Function({
+      Value<String> id,
+      Value<String> preferredUnits,
+      Value<String?> themeMode,
+      Value<bool> notificationsEnabled,
+      Value<bool> workoutTimerSoundEnabled,
+      Value<bool> exerciseAudioEnabled,
+      Value<bool> crashlyticsEnabled,
+      Value<bool> redactionStrictMode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$AppSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get themeMode => $composableBuilder(
+    column: $table.themeMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AppSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get themeMode => $composableBuilder(
+    column: $table.themeMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AppSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumn<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AppSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AppSettingsTable,
+          AppSetting,
+          $$AppSettingsTableFilterComposer,
+          $$AppSettingsTableOrderingComposer,
+          $$AppSettingsTableAnnotationComposer,
+          $$AppSettingsTableCreateCompanionBuilder,
+          $$AppSettingsTableUpdateCompanionBuilder,
+          (
+            AppSetting,
+            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>,
+          ),
+          AppSetting,
+          PrefetchHooks Function()
+        > {
+  $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> themeMode = const Value.absent(),
+                Value<bool> notificationsEnabled = const Value.absent(),
+                Value<bool> workoutTimerSoundEnabled = const Value.absent(),
+                Value<bool> exerciseAudioEnabled = const Value.absent(),
+                Value<bool> crashlyticsEnabled = const Value.absent(),
+                Value<bool> redactionStrictMode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion(
+                id: id,
+                preferredUnits: preferredUnits,
+                themeMode: themeMode,
+                notificationsEnabled: notificationsEnabled,
+                workoutTimerSoundEnabled: workoutTimerSoundEnabled,
+                exerciseAudioEnabled: exerciseAudioEnabled,
+                crashlyticsEnabled: crashlyticsEnabled,
+                redactionStrictMode: redactionStrictMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> themeMode = const Value.absent(),
+                Value<bool> notificationsEnabled = const Value.absent(),
+                Value<bool> workoutTimerSoundEnabled = const Value.absent(),
+                Value<bool> exerciseAudioEnabled = const Value.absent(),
+                Value<bool> crashlyticsEnabled = const Value.absent(),
+                Value<bool> redactionStrictMode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion.insert(
+                id: id,
+                preferredUnits: preferredUnits,
+                themeMode: themeMode,
+                notificationsEnabled: notificationsEnabled,
+                workoutTimerSoundEnabled: workoutTimerSoundEnabled,
+                exerciseAudioEnabled: exerciseAudioEnabled,
+                crashlyticsEnabled: crashlyticsEnabled,
+                redactionStrictMode: redactionStrictMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AppSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AppSettingsTable,
+      AppSetting,
+      $$AppSettingsTableFilterComposer,
+      $$AppSettingsTableOrderingComposer,
+      $$AppSettingsTableAnnotationComposer,
+      $$AppSettingsTableCreateCompanionBuilder,
+      $$AppSettingsTableUpdateCompanionBuilder,
+      (
+        AppSetting,
+        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>,
+      ),
+      AppSetting,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9351,4 +12760,10 @@ class $AppDatabaseManager {
       $$ExerciseAudioCacheTableTableManager(_db, _db.exerciseAudioCache);
   $$UserProfileTableTableManager get userProfile =>
       $$UserProfileTableTableManager(_db, _db.userProfile);
+  $$StrengthAnchorsTableTableManager get strengthAnchors =>
+      $$StrengthAnchorsTableTableManager(_db, _db.strengthAnchors);
+  $$BodyMeasurementsTableTableManager get bodyMeasurements =>
+      $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
+  $$AppSettingsTableTableManager get appSettings =>
+      $$AppSettingsTableTableManager(_db, _db.appSettings);
 }
