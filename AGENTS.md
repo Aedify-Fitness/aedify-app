@@ -566,6 +566,11 @@ Prefer simple, readable code over clever code.
 - **DO** allow null-coalescing to an empty string (`?? ''`) for optional data-display
   fields when the intent is to render nothing. See Text Styles section for the full
   rule.
+- **DO** search `AppStrings` and `AppErrorStrings` for an existing constant
+  before adding a new one — reuse any semantically equivalent string instead
+  of duplicating.
+- **DON'T** add a new string constant when a matching or equivalent one
+  already exists in `AppStrings` or `AppErrorStrings`.
 
 ### Spacing and Sizing
 
