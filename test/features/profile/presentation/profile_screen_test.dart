@@ -5,6 +5,7 @@ import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
 import 'package:aedify/features/profile/presentation/profile_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,7 +64,7 @@ class _FakeProfileRepositoryWithImpact implements ProfileRepository {
         equipmentAccess: [],
         trainingDaysPerWeek: null,
         targetSessionLengthMinutes: null,
-        preferredUnits: 'metric',
+        preferredUnits: PreferredUnit.metric,
         heightCm: null,
         bodyweightKg: null,
         favoriteExerciseIds: [],

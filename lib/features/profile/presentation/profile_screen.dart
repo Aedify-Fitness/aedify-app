@@ -5,6 +5,7 @@ import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -741,25 +742,24 @@ class _DaysPerWeekSelector extends StatelessWidget {
 class _UnitSelector extends StatelessWidget {
   const _UnitSelector({required this.selected, required this.onSelected});
 
-  final String selected;
-  final void Function(String) onSelected;
+  final PreferredUnit selected;
+  final void Function(PreferredUnit) onSelected;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        ChoiceChip(
-          label: const Text('Metric'),
-          selected: selected == 'metric',
-          onSelected: (_) => onSelected('metric'),
-        ),
-        AppWhiteSpace.wSm,
-        ChoiceChip(
-          label: const Text('Imperial'),
-          selected: selected == 'imperial',
-          onSelected: (_) => onSelected('imperial'),
-        ),
-      ],
+      children: PreferredUnit.values
+          .map(
+            (e) => Padding(
+              padding: EdgeInsetsGeometry.only(right: AppSpacing.sm),
+              child: ChoiceChip(
+                selected: selected == e,
+                label: Text(e.displayLabel),
+                onSelected: (_) => onSelected(e),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

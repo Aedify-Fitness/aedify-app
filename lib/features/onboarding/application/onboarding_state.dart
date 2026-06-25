@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/preferred_unit.dart';
+
 enum OnboardingStep {
   welcome,
   experienceGoals,
@@ -31,7 +33,7 @@ class OnboardingDraft {
   final int? trainingDaysPerWeek;
   final int? targetSessionLengthMinutes;
   final List<String> equipmentAccess;
-  final String? preferredUnits;
+  final PreferredUnit? preferredUnits;
   final double? heightCm;
   final double? bodyweightKg;
   final List<String> limitations;
@@ -45,7 +47,7 @@ class OnboardingDraft {
     int? trainingDaysPerWeek,
     int? targetSessionLengthMinutes,
     List<String>? equipmentAccess,
-    String? preferredUnits,
+    PreferredUnit? preferredUnits,
     double? heightCm,
     double? bodyweightKg,
     List<String>? limitations,

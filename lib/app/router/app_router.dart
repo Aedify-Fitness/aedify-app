@@ -280,6 +280,16 @@ class AppRouter {
           builder: (context, state) => const ProfileScreen(),
         ),
         GoRoute(
+          path: AppRoutes.aiProviderSettings().path,
+          name: AppRoutes.aiProviderSettings().name,
+          builder: (context, state) => Scaffold(
+            appBar: AppBar(title: const Text(AppStrings.aiSettings)),
+            body: const Center(
+              child: Text(AppStrings.aiSettingsPlaceholderMessage),
+            ),
+          ),
+        ),
+        GoRoute(
           path: AppRoutes.share().path,
           name: AppRoutes.share().name,
           builder: (context, state) => const SharingScreen(),

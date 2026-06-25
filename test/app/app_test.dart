@@ -5,6 +5,8 @@ import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/router/app_router.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/features/onboarding/application/onboarding_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:drift/native.dart';
@@ -53,13 +55,15 @@ void main() {
           AppProviders.onboardingStatusProvider.overrideWithValue(
             AsyncData(OnboardingStatus.incomplete),
           ),
+          AppProviders.onboardingControllerProvider.overrideWith(
+            () => _FixedOnboardingNotifier(),
+          ),
         ],
         child: const AedifyApp(),
       ),
     );
     await tester.pump();
-    await tester.pump();
-    expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
+    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
   });
 
   testWidgets(
@@ -79,14 +83,19 @@ void main() {
             AppProviders.onboardingStatusProvider.overrideWithValue(
               AsyncData(OnboardingStatus.incomplete),
             ),
+            AppProviders.onboardingControllerProvider.overrideWith(
+              () => _FixedOnboardingNotifier(),
+            ),
           ],
           child: const AedifyApp(),
         ),
       );
       await tester.pump();
       await tester.pump();
-      await tester.pump();
-      expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
+      expect(
+        find.text(AppStrings.onboardingWelcomeDescription),
+        findsOneWidget,
+      );
       expect(find.text(AppStrings.offlineModeInfo), findsNothing);
     },
   );
@@ -108,14 +117,15 @@ void main() {
           AppProviders.onboardingStatusProvider.overrideWithValue(
             AsyncData(OnboardingStatus.incomplete),
           ),
+          AppProviders.onboardingControllerProvider.overrideWith(
+            () => _FixedOnboardingNotifier(),
+          ),
         ],
         child: const AedifyApp(),
       ),
     );
     await tester.pump();
-    await tester.pump();
-
-    expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
+    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
   });
 
   testWidgets('allows navigation when onboarding complete', (tester) async {
@@ -273,6 +283,13 @@ void main() {
   });
 }
 
+class _FixedOnboardingNotifier extends OnboardingController {
+  @override
+  Future<OnboardingState> build() async {
+    return const OnboardingState.initial();
+  }
+}
+
 class _FailingBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
@@ -294,23 +311,13 @@ class _FailingBootstrapController extends BootstrapController {
 class _SucceedingBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
-    return const BootstrapState.initializing();
-  }
-
-  @override
-  Future<void> start() async {
-    state = const BootstrapState.success();
+    return const BootstrapState.success();
   }
 }
 
 class _SucceedingOfflineBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
-    return const BootstrapState.initializing();
-  }
-
-  @override
-  Future<void> start() async {
-    state = const BootstrapState.success(isOffline: true);
+    return const BootstrapState.success(isOffline: true);
   }
 }

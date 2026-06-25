@@ -9,6 +9,7 @@ import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 
 void main() {
   late AppDatabase db;
@@ -43,7 +44,7 @@ void main() {
           equipmentAccess: ['Dumbbells', 'Bench'],
           trainingDaysPerWeek: 4,
           targetSessionLengthMinutes: 45,
-          preferredUnits: 'metric',
+          preferredUnits: PreferredUnit.metric,
           heightCm: 180,
           bodyweightKg: 80,
           injuriesLimitations: ['Knee'],
@@ -58,7 +59,7 @@ void main() {
       expect(profile.equipmentAccess, contains('Dumbbells'));
       expect(profile.trainingDaysPerWeek, equals(4));
       expect(profile.targetSessionLengthMinutes, equals(45));
-      expect(profile.preferredUnits, equals('metric'));
+      expect(profile.preferredUnits, equals(PreferredUnit.metric));
       expect(profile.heightCm, equals(180));
       expect(profile.bodyweightKg, equals(80));
       expect(profile.injuriesLimitations, contains('Knee'));
@@ -101,7 +102,7 @@ void main() {
 
       final profile = await repository.getProfile();
       expect(profile, isNotNull);
-      expect(profile!.preferredUnits, equals('metric'));
+      expect(profile!.preferredUnits, equals(PreferredUnit.metric));
     });
 
     test('evaluateSaveImpact returns none when no active plan', () async {

@@ -3,6 +3,7 @@ import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -95,7 +96,7 @@ void main() {
       await controller.updateDraft(
         const ProfileEditDraft(
           experienceLevel: 'Intermediate',
-          preferredUnits: 'imperial',
+          preferredUnits: PreferredUnit.imperial,
         ),
       );
 

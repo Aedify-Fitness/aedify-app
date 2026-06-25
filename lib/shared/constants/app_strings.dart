@@ -4,315 +4,321 @@ class AppStrings {
   static String onboardingStepLabel(int currentStep, int totalSteps) =>
       'Step $currentStep of $totalSteps';
 
-  static const String appTitle = 'Aedify';
-
-  static const String share = 'Share';
-  static const String retry = 'Retry';
-  static const String import = 'Import';
-  static const String filterAny = 'Any';
-  static const String aiChat = 'AI Chat';
-  static const String workout = 'Workout';
-  static const String sharing = 'Sharing';
-  static const String filters = 'Filters';
-  static const String bodymap = 'Bodymap';
-  static const String bodymapBack = 'Back';
-  static const String liftLog = 'Lift Log';
-  static const String settings = 'Settings';
-  static const String download = 'Download';
-  static const String bodymapFront = 'Front';
-  static const String tryAgain = 'Try again';
-  static const String favorites = 'Favorites';
-  static const String analytics = 'Analytics';
-  static const String aiTrainer = 'AI Trainer';
-  static const String programmes = 'Programmes';
-  static const String exerciseVideos = 'Videos';
-  static const String getStarted = 'Get Started';
-  static const String retryVideo = 'Retry video';
-  static const String aiDisabled = 'AI Disabled';
-  static const String diagnostics = 'Diagnostics';
-  static const String filterModality = 'Modality';
-  static const String importImage = 'Import Image';
-  static const String imageImport = 'Image Import';
-  static const String instructions = 'Instructions';
-  static const String filterEquipment = 'Equipment';
-  static const String draftBlocked = 'Unsaved Draft';
-  static const String exerciseLibraryRetry = 'Retry';
-  static const String muscleGroups = 'Muscle groups';
-  static const String clearFilters = 'Clear filters';
-  static const String filterDifficulty = 'Difficulty';
-  static const String pageNotFound = 'Page Not Found';
-  static const String progressMedia = 'Progress Media';
-  static const String exerciseLibrarySynced = 'Synced';
-  static const String favoritesOnly = 'Favorites only';
-  static const String noSubstituted = 'No Substituted';
-  static const String aiUnavailable = 'AI Unavailable';
-  static const String filterMuscleGroup = 'Muscle Group';
-  static const String aiUnsupported = 'AI Not Supported';
-  static const String exerciseLibrarySyncing = 'Syncing';
-  static const String importDisabled = 'Import Disabled';
-  static const String shareDisabled = 'Sharing Disabled';
-  static const String startingApp = 'Starting Aedify...';
-  static const String toggleFavorite = 'Toggle favorite';
-  static const String clearSelection = 'Clear selection';
-  static const String primaryMuscles = 'Primary muscles';
-  static const String externalImport = 'External Import';
-  static const String browseByMuscle = 'Browse by muscle';
-  static const String exerciseLibrary = 'Exercise Library';
-  static const String startupComplete = 'Startup complete.';
-  static const String onboardingTitle = 'Welcome to Aedify';
-  static const String progressDisabled = 'Progress Disabled';
-  static const String workoutExecution = 'Workout Execution';
-  static const String videoUnavailable = 'Video unavailable';
-  static const String searchExercises = 'Search exercises...';
-  static const String exerciseNotFound = 'Exercise not found.';
-  static const String noExercisesFound = 'No exercises found.';
-  static const String noExerciseVideos = 'No videos available.';
-  static const String exerciseLibrarySyncStatus = 'Sync status';
-  static const String toggleSubstitution = 'Toggle substitution';
-  static const String excludeSubstituted = 'Exclude substituted';
-  static const String exerciseLibraryVersion = 'Library version';
-  static const String exerciseLibraryNeverSynced = 'Never synced';
-  static const String bodymapLoadFailed = 'Could not load bodymap.';
-  static const String exerciseLibrarySyncFailedLabel = 'Sync failed';
-  static const String exerciseLibrarySchemaVersion = 'Schema version';
-  static const String exerciseLibraryExerciseCount = 'Exercise count';
-  static const String exerciseLibraryStatus = 'Exercise library status';
-  static const String exerciseVideoLoadFailed = 'Could not load video.';
-  static const String exerciseDetailLoadFailed = 'Could not load exercise.';
-  static const String startupFailed = 'Something went wrong during startup.';
-  static const String diagnosticsSummaryTitle =
-      'Redacted foundation diagnostics';
-  static const String exerciseLibraryLoadFailed =
-      'Could not load exercise library.';
-  static const String pageNotFoundMessage =
-      'The requested page does not exist.';
-  static const String shareDisabledMessage =
-      'Sharing is disabled for this build.';
-  static const String aiDisabledMessage =
-      'AI features are disabled for this build.';
-  static const String noExercisesForBodymap =
-      'No exercises found for this muscle group.';
-  static const String progressDisabledMessage =
-      'Progress media is disabled for this build.';
-  static const String importDisabledMessage =
-      'Import features are disabled for this build.';
-  static const String diagnosticsDisabledMessage =
-      'Developer diagnostics are disabled for this build.';
-  static const String aiUnsupportedMessage =
-      'This AI capability is not available on your device.';
-  static const String offlineModeInfo =
-      'Running in offline mode. Some features may be unavailable.';
-  static const String aiUnavailableMessage =
-      'AI features require an API key. Please add one in Settings.';
-  static const String draftBlockedMessage =
-      'Please save or discard your current draft before continuing.';
-
-  // Exercise Dataset Sync
-  static const String exerciseLibrarySyncRequired =
-      'Exercise library download required';
-  static const String exerciseLibrarySyncUnavailableOffline =
-      'Exercise library is unavailable offline until the first sync completes.';
-  static const String exerciseLibrarySyncFailed =
-      'Could not update the exercise library.';
-  static const String exerciseLibrarySyncInProgress =
-      'Loading exercise library\u2026';
-  static const String exerciseLibraryUpdateRequired =
-      'Please update the app to use the latest exercise library.';
-  static const String exerciseLibraryTapToDownload =
-      'Tap to download the exercise library.';
-
-  // Profile
-  static const String profile = 'Profile';
-  static const String experienceLevel = 'Experience level';
-  static const String goals = 'Goals';
-  static const String equipment = 'Equipment';
-  static const String trainingDays = 'Training days';
-  static const String sessionLength = 'Session length';
-  static const String preferredUnits = 'Preferred units';
-  static const String bodyweight = 'Bodyweight';
-  static const String height = 'Height';
-  static const String injuriesAndLimitations = 'Injuries and limitations';
-  static const String notes = 'Notes';
-  static const String saveProfile = 'Save profile';
-  static const String profileUpdateMayAffectPrograms =
-      'These changes may affect active programmes.';
-  static const String profileEdit = 'Edit profile';
-  static const String loading = 'Loading...';
-  static const String profileEmpty = 'No profile data yet.';
-  static const String displayName = 'Display name';
-  static const String sex = 'Sex';
-  static const String sexMale = 'Male';
-  static const String sexFemale = 'Female';
-  static const String sexNotSpecified = 'Not specified';
-  static const String dateOfBirth = 'Date of birth';
-  static const String maxLifts = 'Max lifts';
-  static const String bench1Rm = 'Bench press 1RM';
-  static const String squat1Rm = 'Squat 1RM';
-  static const String deadlift1Rm = 'Deadlift 1RM';
-  static const String selectFavorites = 'Select favorite exercises';
-  static const String selectSubstitutions = 'Select substitute exercises';
-  static const String substitutions = 'Substitutions';
-  static const String exercisesSelected = 'exercises selected';
-  static const String done = 'Done';
-  static const String selectDate = 'Select date';
-
-  // Onboarding
-  static const String onboardingExperienceTitle = 'Your training experience';
-  static const String onboardingGoalsTitle = 'Your goals';
-  static const String onboardingScheduleTitle = 'Your schedule';
-  static const String onboardingEquipmentTitle = 'Available equipment';
-  static const String onboardingUnitsTitle = 'Units and body metrics';
-  static const String onboardingLimitationsTitle =
-      'Limitations and preferences';
-  static const String onboardingByokOptionalTitle = 'AI setup (optional)';
-  static const String onboardingReviewTitle = 'Review your setup';
-  static const String continueLabel = 'Continue';
-  static const String backLabel = 'Back';
-  static const String finishSetup = 'Finish setup';
-  static const String skipForNow = 'Skip for now';
-  static const String onboardingValidationRequired =
-      'Please complete the required fields.';
-  static const String onboardingWelcomeDescription =
-      'Set up your profile to get personalized workout recommendations.';
-  static const String onboardingWelcomeHeroLineOne = 'Build yourself.';
-  static const String onboardingWelcomeHeroLineTwo = 'Privately.';
-  static const String onboardingWelcomeHeroDescription =
-      'Your training profile stays local while Aedify shapes plans around your schedule, constraints, and goals.';
-  static const String onboardingWelcomePrivacyTitle = 'Local-first protocol';
-  static const String onboardingWelcomePrivacyBulletOne =
-      'Training profile and edits stay on-device.';
-  static const String onboardingWelcomePrivacyBulletTwo =
-      'AI remains optional and bring-your-own-key.';
-  static const String onboardingWelcomePrivacyBulletThree =
-      'Every choice stays editable after setup.';
-  static const String onboardingWelcomeAiCardTitle = 'Intelligence layer';
-  static const String onboardingWelcomeAiCardDescription =
-      'Optionally connect your own provider later for AI-assisted planning while keeping privacy, zero telemetry, and full local control.';
-  static const String onboardingWelcomeAiCardButton =
-      'Configure AI later in Settings';
-  static const String onboardingExperienceHint =
-      'How long have you been training?';
-  static const String onboardingExperienceDescription =
-      'Use your training age and priorities to tune progression, exercise complexity, and recovery.';
-  static const String onboardingExperienceBeginner = 'Beginner (0–6 mo)';
-  static const String onboardingExperienceIntermediate =
-      'Intermediate (6 mo–2 yr)';
-  static const String onboardingExperienceAdvanced = 'Advanced (2+ yr)';
-  static const String onboardingExperienceBeginnerDescription =
-      'Learning movement patterns and building consistency.';
-  static const String onboardingExperienceIntermediateDescription =
-      'Comfortable with structured progression and weekly training rhythm.';
-  static const String onboardingExperienceAdvancedDescription =
-      'Experienced with higher workloads, technique work, and periodized plans.';
-  static const String onboardingGoalsHint = 'What are your main fitness goals?';
-  static const String onboardingGoalsDescription =
-      'Select every pillar you want Aedify to emphasize when generating sessions.';
-  static const String onboardingGoalBuildMuscle = 'Build muscle';
-  static const String onboardingGoalLoseWeight = 'Lose weight';
-  static const String onboardingGoalIncreaseStrength = 'Increase strength';
-  static const String onboardingGoalImproveEndurance = 'Improve endurance';
-  static const String onboardingGoalGeneralFitness = 'General fitness';
-  static const String onboardingGoalFlexibility = 'Flexibility';
-  static const String onboardingScheduleHint =
-      'How many days per week do you plan to train?';
-  static const String onboardingScheduleDescription =
-      'Set a weekly rhythm that feels realistic so the plan fits your actual life.';
-  static const String onboardingSessionLengthHint =
-      'Target session length (minutes)';
-  static const String onboardingSessionLengthDescription =
-      'Use a quick pick or enter a custom duration if your sessions vary.';
-  static const String onboardingEquipmentHint =
-      'What equipment do you have access to?';
-  static const String onboardingEquipmentDescription =
-      'Choose the tools and spaces you can count on most weeks.';
-  static const String onboardingEquipmentNone = 'None / bodyweight';
-  static const String onboardingEquipmentDumbbells = 'Dumbbells';
-  static const String onboardingEquipmentBarbell = 'Barbell';
-  static const String onboardingEquipmentKettlebell = 'Kettlebell';
-  static const String onboardingEquipmentResistanceBands = 'Resistance bands';
-  static const String onboardingEquipmentCableMachine = 'Cable machine';
-  static const String onboardingEquipmentSmithMachine = 'Smith machine';
-  static const String onboardingEquipmentPullUpBar = 'Pull-up bar';
-  static const String onboardingEquipmentBench = 'Bench';
-  static const String onboardingEquipmentSquatRack = 'Squat rack';
-  static const String onboardingEquipmentCardioMachine = 'Cardio machine';
-  static const String onboardingEquipmentGroupFoundation = 'Foundation setup';
-  static const String onboardingEquipmentGroupFoundationDescription =
-      'The essentials that shape most strength and hypertrophy templates.';
-  static const String onboardingEquipmentGroupAccessories =
+  static const appTitle = 'Aedify';
+  static const sex = 'Sex';
+  static const done = 'Done';
+  static const dark = 'Dark';
+  static const share = 'Share';
+  static const goals = 'Goals';
+  static const light = 'Light';
+  static const notes = 'Notes';
+  static const retry = 'Retry';
+  static const sexMale = 'Male';
+  static const system = 'System';
+  static const import = 'Import';
+  static const height = 'Height';
+  static const filterAny = 'Any';
+  static const aiChat = 'AI Chat';
+  static const backLabel = 'Back';
+  static const workout = 'Workout';
+  static const profile = 'Profile';
+  static const sharing = 'Sharing';
+  static const filters = 'Filters';
+  static const bodymap = 'Bodymap';
+  static const enabled = 'Enabled';
+  static const bodymapBack = 'Back';
+  static const sexFemale = 'Female';
+  static const liftLog = 'Lift Log';
+  static const settings = 'Settings';
+  static const download = 'Download';
+  static const disabled = 'Disabled';
+  static const bodymapFront = 'Front';
+  static const metricUnits = 'Metric';
+  static const squat1Rm = 'Squat 1RM';
+  static const loading = 'Loading...';
+  static const maxLifts = 'Max lifts';
+  static const tryAgain = 'Try again';
+  static const favorites = 'Favorites';
+  static const metricWeightHint = '70';
+  static const metricHeightUnit = 'cm';
+  static const metricWeightUnit = 'kg';
+  static const equipment = 'Equipment';
+  static const analytics = 'Analytics';
+  static const aiTrainer = 'AI Trainer';
+  static const themeMode = 'Theme mode';
+  static const metricHeightHint = '170';
+  static const programmes = 'Programmes';
+  static const bodyweight = 'Bodyweight';
+  static const imperialHeightHint = '67';
+  static const imperialHeightUnit = 'in';
+  static const exerciseVideos = 'Videos';
+  static const getStarted = 'Get Started';
+  static const imperialWeightHint = '154';
+  static const aiSettings = 'AI settings';
+  static const imperialUnits = 'Imperial';
+  static const imperialWeightUnit = 'lbs';
+  static const continueLabel = 'Continue';
+  static const selectDate = 'Select date';
+  static const retryVideo = 'Retry video';
+  static const aiDisabled = 'AI Disabled';
+  static const diagnostics = 'Diagnostics';
+  static const onboardingDaySingle = 'Day';
+  static const skipForNow = 'Skip for now';
+  static const filterModality = 'Modality';
+  static const importImage = 'Import Image';
+  static const appSettings = 'App settings';
+  static const stopStepAudio = 'Stop audio';
+  static const onboardingDayPlural = 'Days';
+  static const bench1Rm = 'Bench press 1RM';
+  static const saveProfile = 'Save profile';
+  static const saveSettings = 'Save settings';
+  static const deadlift1Rm = 'Deadlift 1RM';
+  static const profileEdit = 'Edit profile';
+  static const finishSetup = 'Finish setup';
+  static const displayName = 'Display name';
+  static const imageImport = 'Image Import';
+  static const instructions = 'Instructions';
+  static const filterEquipment = 'Equipment';
+  static const dateOfBirth = 'Date of birth';
+  static const draftBlocked = 'Unsaved Draft';
+  static const exerciseLibraryRetry = 'Retry';
+  static const trainingDays = 'Training days';
+  static const muscleGroups = 'Muscle groups';
+  static const clearFilters = 'Clear filters';
+  static const filterDifficulty = 'Difficulty';
+  static const onboardingReviewMinutes = 'min';
+  static const notifications = 'Notifications';
+  static const onboardingHintSessionMin = '45';
+  static const onboardingLimitationHip = 'Hip';
+  static const substitutions = 'Substitutions';
+  static const pageNotFound = 'Page Not Found';
+  static const progressMedia = 'Progress Media';
+  static const featureStatus = 'Feature status';
+  static const exerciseAudio = 'Exercise audio';
+  static const onboardingReviewEmptyValue = '—';
+  static const sessionLength = 'Session length';
+  static const exerciseLibrarySynced = 'Synced';
+  static const favoritesOnly = 'Favorites only';
+  static const noSubstituted = 'No Substituted';
+  static const aiUnavailable = 'AI Unavailable';
+  static const sexNotSpecified = 'Not specified';
+  static const onboardingLimitationNone = 'None';
+  static const playStepAudio = 'Play step audio';
+  static const metricHeightLabel = 'Height (cm)';
+  static const metricWeightLabel = 'Weight (kg)';
+  static const onboardingLimitationKnee = 'Knee';
+  static const onboardingLimitationNeck = 'Neck';
+  static const filterMuscleGroup = 'Muscle Group';
+  static const onboardingEquipmentBench = 'Bench';
+  static const preferredUnits = 'Preferred units';
+  static const aiUnsupported = 'AI Not Supported';
+  static const exerciseLibrarySyncing = 'Syncing';
+  static const importDisabled = 'Import Disabled';
+  static const shareDisabled = 'Sharing Disabled';
+  static const startingApp = 'Starting Aedify...';
+  static const toggleFavorite = 'Toggle favorite';
+  static const clearSelection = 'Clear selection';
+  static const primaryMuscles = 'Primary muscles';
+  static const externalImport = 'External Import';
+  static const browseByMuscle = 'Browse by muscle';
+  static const onboardingGoalsTitle = 'Your goals';
+  static const onboardingLimitationWrist = 'Wrist';
+  static const onboardingLimitationElbow = 'Elbow';
+  static const onboardingLimitationAnkle = 'Ankle';
+  static const byokSetup = 'Bring your own AI key';
+  static const imperialHeightLabel = 'Height (in)';
+  static const exerciseLibrary = 'Exercise Library';
+  static const experienceLevel = 'Experience level';
+  static const strictRedaction = 'Strict redaction';
+  static const imperialWeightLabel = 'Weight (lbs)';
+  static const startupComplete = 'Startup complete.';
+  static const profileEmpty = 'No profile data yet.';
+  static const onboardingTitle = 'Welcome to Aedify';
+  static const progressDisabled = 'Progress Disabled';
+  static const onboardingEquipmentBarbell = 'Barbell';
+  static const crashDiagnostics = 'Crash diagnostics';
+  static const workoutExecution = 'Workout Execution';
+  static const videoUnavailable = 'Video unavailable';
+  static const searchExercises = 'Search exercises...';
+  static const exerciseNotFound = 'Exercise not found.';
+  static const onboardingGoalLoseWeight = 'Lose weight';
+  static const exercisesSelected = 'exercises selected';
+  static const noExercisesFound = 'No exercises found.';
+  static const noExerciseVideos = 'No videos available.';
+  static const onboardingGoalFlexibility = 'Flexibility';
+  static const onboardingScheduleTitle = 'Your schedule';
+  static const privacyAndStorage = 'Privacy and storage';
+  static const audioGenerating = 'Preparing audio\u2026';
+  static const workoutTimerSound = 'Workout timer sound';
+  static const onboardingReviewDaysPerWeek = 'days/week';
+  static const onboardingReviewTapToEdit = 'Tap to edit';
+  static const onboardingReviewConfigured = 'Configured';
+  static const onboardingLimitationShoulder = 'Shoulder';
+  static const exerciseLibrarySyncStatus = 'Sync status';
+  static const toggleSubstitution = 'Toggle substitution';
+  static const onboardingEquipmentDumbbells = 'Dumbbells';
+  static const onboardingGoalBuildMuscle = 'Build muscle';
+  static const excludeSubstituted = 'Exclude substituted';
+  static const exerciseLibraryVersion = 'Library version';
+  static const exerciseLibraryNeverSynced = 'Never synced';
+  static const onboardingWelcomeHeroLineTwo = 'Privately.';
+  static const onboardingBodyMetricsTitle = 'Body metrics';
+  static const onboardingReviewTitle = 'Review your setup';
+  static const onboardingEquipmentSquatRack = 'Squat rack';
+  static const onboardingEquipmentPullUpBar = 'Pull-up bar';
+  static const onboardingLimitationLowerBack = 'Lower back';
+  static const onboardingEquipmentKettlebell = 'Kettlebell';
+  static const bodymapLoadFailed = 'Could not load bodymap.';
+  static const onboardingReviewPlanTitle = 'Plan parameters';
+  static const onboardingEquipmentNone = 'None / bodyweight';
+  static const selectFavorites = 'Select favorite exercises';
+  static const exerciseLibrarySyncFailedLabel = 'Sync failed';
+  static const onboardingReviewAiTitle = 'Intelligence layer';
+  static const onboardingNotesHint = 'Other notes (optional)';
+  static const exerciseLibrarySchemaVersion = 'Schema version';
+  static const onboardingUnitsTitle = 'Units and body metrics';
+  static const exerciseLibraryExerciseCount = 'Exercise count';
+  static const onboardingGoalGeneralFitness = 'General fitness';
+  static const audioUnavailable = 'Audio playback unavailable.';
+  static const onboardingReviewNotConfigured = 'Not configured';
+  static const onboardingByokBenefitOptional = 'AI is optional';
+  static const onboardingEquipmentTitle = 'Available equipment';
+  static const onboardingWelcomeHeroLineOne = 'Build yourself.';
+  static const exerciseLibraryStatus = 'Exercise library status';
+  static const onboardingReviewProfileTitle = 'Training profile';
+  static const onboardingEquipmentCableMachine = 'Cable machine';
+  static const onboardingEquipmentSmithMachine = 'Smith machine';
+  static const onboardingExperienceAdvanced = 'Advanced (2+ yr)';
+  static const exerciseVideoLoadFailed = 'Could not load video.';
+  static const onboardingExperienceBeginner = 'Beginner (0–6 mo)';
+  static const onboardingCompleteSuccess = 'Onboarding complete!';
+  static const injuriesAndLimitations = 'Injuries and limitations';
+  static const selectSubstitutions = 'Select substitute exercises';
+  static const onboardingByokBenefitPrivate = 'Private by default';
+  static const onboardingEquipmentCardioMachine = 'Cardio machine';
+  static const onboardingByokOptionalTitle = 'AI setup (optional)';
+  static const onboardingWelcomeAiCardTitle = 'Intelligence layer';
+  static const onboardingGoalIncreaseStrength = 'Increase strength';
+  static const onboardingGoalImproveEndurance = 'Improve endurance';
+  static const onboardingUnitsHint = 'Preferred measurement system';
+  static const exerciseDetailLoadFailed = 'Could not load exercise.';
+  static const startupFailed = 'Something went wrong during startup.';
+  static const onboardingWelcomePrivacyTitle = 'Local-first protocol';
+  static const onboardingExperienceTitle = 'Your training experience';
+  static const onboardingEquipmentResistanceBands = 'Resistance bands';
+  static const onboardingEquipmentGroupFoundation = 'Foundation setup';
+  static const onboardingReviewRecoveryTitle = 'Constraints and notes';
+  static const onboardingGoalsHint = 'What are your main fitness goals?';
+  static const onboardingLimitationsTitle = 'Limitations and preferences';
+  static const onboardingLimitationsHint = 'Any injuries or limitations?';
+  static const pageNotFoundMessage = 'The requested page does not exist.';
+  static const diagnosticsSummaryTitle = 'Redacted foundation diagnostics';
+  static const shareDisabledMessage = 'Sharing is disabled for this build.';
+  static const onboardingLoadFailed = 'Could not load the onboarding flow.';
+  static const onboardingExperienceIntermediate = 'Intermediate (6 mo–2 yr)';
+  static const onboardingExperienceHint = 'How long have you been training?';
+  static const aiDisabledMessage = 'AI features are disabled for this build.';
+  static const exerciseLibraryLoadFailed = 'Could not load exercise library.';
+  static const onboardingEquipmentGroupMachines = 'Machines and conditioning';
+  static const onboardingSessionLengthHint = 'Target session length (minutes)';
+  static const onboardingWelcomeAiCardButton = 'Configure AI later in Settings';
+  static const exerciseLibrarySyncInProgress = 'Loading exercise library\u2026';
+  static const onboardingEquipmentGroupAccessories =
       'Accessories and small tools';
-  static const String onboardingEquipmentGroupAccessoriesDescription =
-      'Flexible add-ons that broaden exercise variety without requiring a full gym.';
-  static const String onboardingEquipmentGroupMachines =
-      'Machines and conditioning';
-  static const String onboardingEquipmentGroupMachinesDescription =
-      'Select larger equipment you can access consistently.';
-  static const String onboardingUnitsHint = 'Preferred measurement system';
-  static const String onboardingUnitsDescription =
-      'Pick your default system and add body metrics if you want more precise load suggestions.';
-  static const String onboardingUnitMetric = 'Metric';
-  static const String onboardingUnitImperial = 'Imperial';
-  static const String onboardingHeightHint = 'Height (cm)';
-  static const String onboardingWeightHint = 'Weight (kg)';
-  static const String onboardingBodyMetricsTitle = 'Body metrics';
-  static const String onboardingBodyMetricsDescription =
-      'Optional, but helpful if you want better exercise load and progression suggestions.';
-  static const String onboardingLimitationsHint =
-      'Any injuries or limitations?';
-  static const String onboardingLimitationsDescription =
-      'Flag anything we should protect, avoid, or work around when building your sessions.';
-  static const String onboardingLimitationNone = 'None';
-  static const String onboardingLimitationLowerBack = 'Lower back';
-  static const String onboardingLimitationKnee = 'Knee';
-  static const String onboardingLimitationShoulder = 'Shoulder';
-  static const String onboardingLimitationWrist = 'Wrist';
-  static const String onboardingLimitationHip = 'Hip';
-  static const String onboardingLimitationNeck = 'Neck';
-  static const String onboardingLimitationElbow = 'Elbow';
-  static const String onboardingLimitationAnkle = 'Ankle';
-  static const String onboardingNotesHint = 'Other notes (optional)';
-  static const String onboardingByokDescription =
-      'You can add an AI provider API key later in Settings.';
-  static const String onboardingByokDetail =
-      'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
-  static const String onboardingByokBenefitPrivate = 'Private by default';
-  static const String onboardingByokBenefitPrivateDescription =
-      'No hosted profile, no mandatory cloud sync, and no app-managed billing.';
-  static const String onboardingByokBenefitOptional = 'AI is optional';
-  static const String onboardingByokBenefitOptionalDescription =
-      'Your plan setup, workouts, and logs stay useful even if you never enable AI.';
-  static const String onboardingByokBenefitBringYourOwnKey =
+  static const onboardingByokBenefitBringYourOwnKey =
       'Bring your own provider key';
-  static const String onboardingByokBenefitBringYourOwnKeyDescription =
-      'Add your preferred model later and keep full control over when it is used.';
-  static const String onboardingReviewPreparing =
+  static const exerciseLibrarySyncRequired =
+      'Exercise library download required';
+  static const onboardingValidationRequired =
+      'Please complete the required fields.';
+  static const onboardingEquipmentHint =
+      'What equipment do you have access to?';
+  static const exerciseLibraryTapToDownload =
+      'Tap to download the exercise library.';
+  static const exerciseLibrarySyncFailed =
+      'Could not update the exercise library.';
+  static const onboardingReviewPreparing =
       'Review your selections before finishing.';
-  static const String onboardingReviewDescription =
+  static const onboardingWelcomePrivacyBulletThree =
+      'Every choice stays editable after setup.';
+  static const noExercisesForBodymap =
+      'No exercises found for this muscle group.';
+  static const onboardingWelcomePrivacyBulletOne =
+      'Training profile and edits stay on-device.';
+  static const progressDisabledMessage =
+      'Progress media is disabled for this build.';
+  static const secureStorageNotice =
+      'API keys are stored only in secure storage.';
+  static const profileUpdateMayAffectPrograms =
+      'These changes may affect active programmes.';
+  static const onboardingWelcomePrivacyBulletTwo =
+      'AI remains optional and bring-your-own-key.';
+  static const onboardingScheduleHint =
+      'How many days per week do you plan to train?';
+  static const importDisabledMessage =
+      'Import features are disabled for this build.';
+  static const localOnlyNotice =
+      'Your profile and settings stay on this device.';
+  static const diagnosticsDisabledMessage =
+      'Developer diagnostics are disabled for this build.';
+  static const aiUnsupportedMessage =
+      'This AI capability is not available on your device.';
+  static const onboardingEquipmentGroupMachinesDescription =
+      'Select larger equipment you can access consistently.';
+  static const onboardingExperienceBeginnerDescription =
+      'Learning movement patterns and building consistency.';
+  static const onboardingByokDescription =
+      'You can add an AI provider API key later in Settings.';
+  static const aiSettingsPlaceholderMessage =
+      'AI provider setup will be available in a later update.';
+  static const onboardingEquipmentDescription =
+      'Choose the tools and spaces you can count on most weeks.';
+  static const exerciseLibraryUpdateRequired =
+      'Please update the app to use the latest exercise library.';
+  static const offlineModeInfo =
+      'Running in offline mode. Some features may be unavailable.';
+  static const aiUnavailableMessage =
+      'AI features require an API key. Please add one in Settings.';
+  static const draftBlockedMessage =
+      'Please save or discard your current draft before continuing.';
+  static const onboardingWelcomeDescription =
+      'Set up your profile to get personalized workout recommendations.';
+  static const onboardingEquipmentGroupFoundationDescription =
+      'The essentials that shape most strength and hypertrophy templates.';
+  static const onboardingSessionLengthDescription =
+      'Use a quick pick or enter a custom duration if your sessions vary.';
+  static const onboardingExperienceIntermediateDescription =
+      'Comfortable with structured progression and weekly training rhythm.';
+  static const onboardingByokBenefitPrivateDescription =
+      'No hosted profile, no mandatory cloud sync, and no app-managed billing.';
+  static const exerciseLibrarySyncUnavailableOffline =
+      'Exercise library is unavailable offline until the first sync completes.';
+  static const onboardingExperienceAdvancedDescription =
+      'Experienced with higher workloads, technique work, and periodized plans.';
+  static const onboardingGoalsDescription =
+      'Select every pillar you want Aedify to emphasize when generating sessions.';
+  static const onboardingByokBenefitBringYourOwnKeyDescription =
+      'Add your preferred model later and keep full control over when it is used.';
+  static const onboardingScheduleDescription =
+      'Set a weekly rhythm that feels realistic so the plan fits your actual life.';
+  static const onboardingByokBenefitOptionalDescription =
+      'Your plan setup, workouts, and logs stay useful even if you never enable AI.';
+  static const onboardingEquipmentGroupAccessoriesDescription =
+      'Flexible add-ons that broaden exercise variety without requiring a full gym.';
+  static const onboardingBodyMetricsDescription =
+      'Optional, but helpful if you want better exercise load and progression suggestions.';
+  static const onboardingLimitationsDescription =
+      'Flag anything we should protect, avoid, or work around when building your sessions.';
+  static const onboardingUnitsDescription =
+      'Pick your default system and add body metrics if you want more precise load suggestions.';
+  static const onboardingReviewDescription =
       'Everything below is editable. Tap any section to jump back and refine it before finishing.';
-  static const String onboardingReviewProfileTitle = 'Training profile';
-  static const String onboardingReviewPlanTitle = 'Plan parameters';
-  static const String onboardingReviewRecoveryTitle = 'Constraints and notes';
-  static const String onboardingReviewAiTitle = 'Intelligence layer';
-  static const String onboardingReviewTapToEdit = 'Tap to edit';
-  static const String onboardingReviewConfigured = 'Configured';
-  static const String onboardingReviewNotConfigured = 'Not configured';
-  static const String onboardingReviewEmptyValue = '—';
-  static const String onboardingReviewDaysPerWeek = 'days/week';
-  static const String onboardingDaySingle = 'Day';
-  static const String onboardingDayPlural = 'Days';
-  static const String onboardingReviewMinutes = 'min';
-  static const String onboardingHintSessionMin = '45';
-  static const String onboardingHintHeightCm = '170';
-  static const String onboardingHintWeightKg = '70';
-  static const String onboardingReviewCm = 'cm';
-  static const String onboardingReviewKg = 'kg';
-  static const String onboardingCompleteSuccess = 'Onboarding complete!';
-  static const String onboardingLoadFailed =
-      'Could not load the onboarding flow.';
-
-  // Step Audio / TTS
-  static const String stopStepAudio = 'Stop audio';
-  static const String playStepAudio = 'Play step audio';
-  static const String audioGenerating = 'Preparing audio\u2026';
-  static const String audioUnavailable = 'Audio playback unavailable.';
+  static const onboardingExperienceDescription =
+      'Use your training age and priorities to tune progression, exercise complexity, and recovery.';
+  static const onboardingWelcomeHeroDescription =
+      'Your training profile stays local while Aedify shapes plans around your schedule, constraints, and goals.';
+  static const onboardingWelcomeAiCardDescription =
+      'Optionally connect your own provider later for AI-assisted planning while keeping privacy, zero telemetry, and full local control.';
+  static const onboardingByokDetail =
+      'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
 }

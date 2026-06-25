@@ -3,6 +3,7 @@ import 'package:aedify/features/onboarding/application/onboarding_controller.dar
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -81,7 +82,7 @@ void main() {
           goals: ['Build muscle'],
           trainingDaysPerWeek: 4,
           equipmentAccess: ['Dumbbells'],
-          preferredUnits: 'metric',
+          preferredUnits: PreferredUnit.metric,
           limitations: ['None'],
           byokSkipped: false,
         ),

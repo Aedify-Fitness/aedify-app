@@ -4,6 +4,28 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-26
+
+### Added (V1-M3-003 — Settings Shell, BYOK Entry, Feature Status Display)
+
+- **`PreferredUnit` enum expanded** (`lib/shared/domain/preferred_unit.dart`): Now owns all unit concerns — `isImperial`, `isMetric` getters, `heightLabel`/`weightLabel`/`heightHint`/`weightHint`/`heightUnit`/`weightUnit` display properties, `toMetricHeight`/`toMetricWeight`/`toImperialHeight`/`toImperialWeight` conversion methods. Replaced raw conversion constants and static helper methods in widgets. Converted to enhanced enum with field constructors matching `ThemeModeSetting`'s pattern.
+- **DRY dropdown refactor**: Both settings dropdowns (`PreferredUnit`, `ThemeModeSetting`) now derive options and labels via `.values.map((e) => e.name / .displayLabel)` instead of hardcoded arrays — consistent, type-safe, and DRY.
+- **`ThemeModeSetting` enum** (`lib/shared/domain/theme_mode_setting.dart`): `system`/`light`/`dark` with `dbValue`/`fromDb`/`toMaterialThemeMode`/`displayLabel`.
+- **Domain models using enums**: `OnboardingDraft.preferredUnits` (`String?` → `PreferredUnit?`), `ProfileViewData.preferredUnits` (`String` → `PreferredUnit`), `ProfileEditDraft.preferredUnits` (`String` → `PreferredUnit`), `SettingsViewData.preferredUnits`/`themeMode` typed enums.
+- **Repository boundary conversion**: `DriftOnboardingRepository`, `DriftProfileRepository`, `DriftSettingsRepository` now convert enum ↔ DB string via `.dbValue`/`.fromDb()` at the boundary.
+- **Settings domain**: `SettingsViewData` (13 fields), `SettingsEditDraft` (7 mutable fields with `copyWith()`), `SettingsRepository` (abstract), `DriftSettingsRepository` (reads/writes `AppSettings` table, merges `FeatureFlags`).
+- **SettingsController**: `AsyncNotifier<SettingsState>` with `updateDraft()`/`save()`/`reload()`.
+- **SettingsScreen**: Full shell — profile nav tile, exercise dataset status, app settings card (units dropdown, theme dropdown, 5 switches + save), AI setup nav tile, feature status section (5 tiles from FeatureFlags), privacy/storage card, diagnostics nav tile.
+- **3 widget files**: `settings_section_card.dart`, `settings_feature_status_tile.dart`, `settings_storage_boundary_card.dart`.
+- **Theme mode wiring**: `AedifyApp` watches `settingsControllerProvider` and applies `themeMode.toMaterialThemeMode()` instead of hardcoded `ThemeMode.system`.
+- **Routing**: `AppRoutes.aiProviderSettings()` + placeholder GoRoute.
+- **Providers**: `settingsRepositoryProvider`, `settingsControllerProvider` registered.
+- **AppStrings**: 18 new strings (settings labels, imperial units, unit labels/hints).
+- **AppErrorStrings**: 2 new strings (`settingsLoadFailedMessage`, `settingsSaveFailedMessage`).
+- **Onboarding screen form behavior**: Switching units now converts displayed values (cm↔in, kg↔lbs); `_FormField` uses `ValueKey` to force recreation on unit change; review step shows correct unit labels and converted imperial values.
+- **Tests**: 18 new — 3 drift_settings_repository, 5 settings_controller, 8 settings_screen, 2 storage_boundary_card. Profile/onboarding tests updated for `PreferredUnit` enum type. App test bootstrap controllers simplified (start in `success` state directly); `_FixedOnboardingNotifier` overrides `onboardingControllerProvider` to bypass Drift in widget tests.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 460/460 passed.
+
 ## 2026-06-24
 
 ### Added (V1-M3-002 — Profile Repository and Edit Screens)

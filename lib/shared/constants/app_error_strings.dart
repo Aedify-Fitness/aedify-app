@@ -26,6 +26,10 @@ class AppErrorStrings {
   static const String networkTimeoutMessage =
       'Connection timed out. Please check your connection and try again.';
 
+  // Settings
+  static const String settingsLoadFailedMessage = 'Could not load settings.';
+  static const String settingsSaveFailedMessage = 'Could not save settings.';
+
   // Profile
   static const String profileLoadFailedMessage = 'Could not load profile.';
   static const String profileSaveFailedMessage =

@@ -7,6 +7,7 @@ import 'package:aedify/features/onboarding/presentation/widgets/onboarding_progr
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding_step_scaffold.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -254,6 +255,7 @@ class _ValidationMessage extends StatelessWidget {
 
 class _FormField extends StatefulWidget {
   const _FormField({
+    super.key,
     required this.initialValue,
     required this.onChanged,
     this.keyboardType,
@@ -682,6 +684,8 @@ class _UnitsMetricsStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final preferredUnit = draft.preferredUnits ?? PreferredUnit.metric;
+
     return Column(
       children: [
         _SurfacePanel(
@@ -693,22 +697,37 @@ class _UnitsMetricsStep extends StatelessWidget {
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
-                children: [
-                  ChoiceChip(
-                    label: const Text(AppStrings.onboardingUnitMetric),
-                    selected: draft.preferredUnits != 'imperial',
-                    onSelected: (_) {
-                      onUpdateDraft(draft.copyWith(preferredUnits: 'metric'));
-                    },
-                  ),
-                  ChoiceChip(
-                    label: const Text(AppStrings.onboardingUnitImperial),
-                    selected: draft.preferredUnits == 'imperial',
-                    onSelected: (_) {
-                      onUpdateDraft(draft.copyWith(preferredUnits: 'imperial'));
-                    },
-                  ),
-                ],
+                children: PreferredUnit.values
+                    .map(
+                      (e) => ChoiceChip(
+                        label: Text(e.displayLabel),
+                        selected: preferredUnit == e,
+                        onSelected: (_) {
+                          final convertedHeight = draft.heightCm != null
+                              ? double.parse(
+                                  e
+                                      .toImperialHeight(draft.heightCm!)
+                                      .toStringAsFixed(1),
+                                )
+                              : null;
+                          final convertedWeight = draft.bodyweightKg != null
+                              ? double.parse(
+                                  e
+                                      .toImperialWeight(draft.bodyweightKg!)
+                                      .toStringAsFixed(1),
+                                )
+                              : null;
+                          onUpdateDraft(
+                            draft.copyWith(
+                              preferredUnits: e,
+                              heightCm: convertedHeight,
+                              bodyweightKg: convertedWeight,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
               ),
             ],
           ),
@@ -720,35 +739,51 @@ class _UnitsMetricsStep extends StatelessWidget {
             children: [
               const _SectionTitle(title: AppStrings.onboardingBodyMetricsTitle),
               AppWhiteSpace.hMd,
-              const _InputLabel(title: AppStrings.onboardingHeightHint),
+              _InputLabel(title: preferredUnit.heightLabel),
               AppWhiteSpace.hSm,
               _FormField(
+                key: ValueKey('height_${draft.preferredUnits}'),
                 width: AppSizing.fieldWidth,
-                initialValue: draft.heightCm?.toString() ?? '',
+                initialValue: draft.heightCm != null
+                    ? preferredUnit
+                          .toImperialHeight(draft.heightCm!)
+                          .toStringAsFixed(1)
+                    : draft.heightCm?.toStringAsFixed(1) ?? '',
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                hintText: AppStrings.onboardingHintHeightCm,
-                suffixText: AppStrings.onboardingReviewCm,
+                hintText: preferredUnit.heightHint,
+                suffixText: preferredUnit.heightUnit,
                 onChanged: (value) {
                   final parsed = double.tryParse(value);
-                  onUpdateDraft(draft.copyWith(heightCm: parsed));
+                  final heightCm = parsed != null
+                      ? preferredUnit.toMetricHeight(parsed)
+                      : parsed;
+                  onUpdateDraft(draft.copyWith(heightCm: heightCm));
                 },
               ),
               AppWhiteSpace.hLg,
-              const _InputLabel(title: AppStrings.onboardingWeightHint),
+              _InputLabel(title: preferredUnit.weightLabel),
               AppWhiteSpace.hSm,
               _FormField(
+                key: ValueKey('weight_${draft.preferredUnits}'),
                 width: AppSizing.fieldWidth,
-                initialValue: draft.bodyweightKg?.toString() ?? '',
+                initialValue: draft.bodyweightKg != null
+                    ? preferredUnit
+                          .toImperialWeight(draft.bodyweightKg!)
+                          .toStringAsFixed(1)
+                    : draft.bodyweightKg?.toStringAsFixed(1) ?? '',
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                hintText: AppStrings.onboardingHintWeightKg,
-                suffixText: AppStrings.onboardingReviewKg,
+                hintText: preferredUnit.weightHint,
+                suffixText: preferredUnit.weightUnit,
                 onChanged: (value) {
                   final parsed = double.tryParse(value);
-                  onUpdateDraft(draft.copyWith(bodyweightKg: parsed));
+                  final bodyweightKg = parsed != null
+                      ? preferredUnit.toMetricWeight(parsed)
+                      : parsed;
+                  onUpdateDraft(draft.copyWith(bodyweightKg: bodyweightKg));
                 },
               ),
             ],
@@ -895,6 +930,7 @@ class _ReviewStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final preferredUnit = draft.preferredUnits ?? PreferredUnit.metric;
     return Column(
       children: [
         _ReviewSectionCard(
@@ -938,19 +974,24 @@ class _ReviewStep extends StatelessWidget {
             ),
             _ReviewRow(
               label: AppStrings.onboardingUnitsHint,
-              value: draft.preferredUnits ?? AppStrings.onboardingUnitMetric,
+              value:
+                  draft.preferredUnits?.displayLabel ?? AppStrings.metricUnits,
               onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
             ),
             if (draft.heightCm != null)
               _ReviewRow(
-                label: AppStrings.onboardingHeightHint,
-                value: '${draft.heightCm} ${AppStrings.onboardingReviewCm}',
+                label: preferredUnit.heightLabel,
+                value: preferredUnit.isImperial
+                    ? '${preferredUnit.toImperialHeight(draft.heightCm!).toStringAsFixed(1)} ${AppStrings.imperialHeightUnit}'
+                    : '${draft.heightCm!.toStringAsFixed(1)} ${AppStrings.metricHeightUnit}',
                 onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
               ),
             if (draft.bodyweightKg != null)
               _ReviewRow(
-                label: AppStrings.onboardingWeightHint,
-                value: '${draft.bodyweightKg} ${AppStrings.onboardingReviewKg}',
+                label: preferredUnit.weightLabel,
+                value: preferredUnit.isImperial
+                    ? '${preferredUnit.toImperialWeight(draft.bodyweightKg!).toStringAsFixed(1)} ${AppStrings.imperialWeightUnit}'
+                    : '${draft.bodyweightKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
                 onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
               ),
           ],

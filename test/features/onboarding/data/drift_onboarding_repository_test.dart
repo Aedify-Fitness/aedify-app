@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
       List<String> goals = const ['Build muscle'],
       int? trainingDaysPerWeek = 4,
       List<String> equipment = const ['Dumbbells'],
-      String? preferredUnits = 'metric',
+      PreferredUnit? preferredUnits = PreferredUnit.metric,
       double? heightCm = 175,
       double? bodyweightKg = 70,
       List<String> limitations = const [],
@@ -59,7 +60,7 @@ void main() {
       expect(loaded.goals, ['Build muscle']);
       expect(loaded.trainingDaysPerWeek, 4);
       expect(loaded.equipmentAccess, ['Dumbbells']);
-      expect(loaded.preferredUnits, 'metric');
+      expect(loaded.preferredUnits, PreferredUnit.metric);
       expect(loaded.heightCm, 175);
       expect(loaded.bodyweightKg, 70);
     });
@@ -75,7 +76,7 @@ void main() {
         goals: ['Lose weight', 'General fitness'],
         trainingDaysPerWeek: 3,
         equipment: ['Resistance bands'],
-        preferredUnits: 'imperial',
+        preferredUnits: PreferredUnit.imperial,
         heightCm: null,
         bodyweightKg: null,
       );
@@ -88,7 +89,7 @@ void main() {
       expect(loaded.goals, ['Lose weight', 'General fitness']);
       expect(loaded.trainingDaysPerWeek, 3);
       expect(loaded.equipmentAccess, ['Resistance bands']);
-      expect(loaded.preferredUnits, 'imperial');
+      expect(loaded.preferredUnits, PreferredUnit.imperial);
       expect(loaded.heightCm, isNull);
       expect(loaded.bodyweightKg, isNull);
     });

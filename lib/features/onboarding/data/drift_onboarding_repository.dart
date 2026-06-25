@@ -4,6 +4,7 @@ import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 
 class DriftOnboardingRepository implements OnboardingRepository {
   DriftOnboardingRepository({required AppDatabase database})
@@ -37,7 +38,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
         trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
         targetSessionLengthMinutes: Value(draft.targetSessionLengthMinutes),
         equipmentAccessJson: Value(jsonEncode(draft.equipmentAccess)),
-        preferredUnits: Value(draft.preferredUnits ?? 'metric'),
+        preferredUnits: Value(draft.preferredUnits?.dbValue ?? 'metric'),
         heightCm: Value(draft.heightCm),
         bodyweightKg: Value(draft.bodyweightKg),
         injuriesLimitationsJson: Value(jsonEncode(draft.limitations)),
@@ -97,7 +98,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
       targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
       equipmentAccess: _decodeJsonList(profile.equipmentAccessJson),
-      preferredUnits: profile.preferredUnits,
+      preferredUnits: PreferredUnit.fromDb(profile.preferredUnits),
       heightCm: profile.heightCm,
       bodyweightKg: profile.bodyweightKg,
       limitations: _decodeJsonList(profile.injuriesLimitationsJson),

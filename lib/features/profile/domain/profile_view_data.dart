@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/preferred_unit.dart';
+
 class ProfileViewData {
   const ProfileViewData({
     required this.displayName,
@@ -26,7 +28,7 @@ class ProfileViewData {
   final List<String> equipmentAccess;
   final int? trainingDaysPerWeek;
   final int? targetSessionLengthMinutes;
-  final String preferredUnits;
+  final PreferredUnit preferredUnits;
   final double? heightCm;
   final double? bodyweightKg;
   final List<int> favoriteExerciseIds;

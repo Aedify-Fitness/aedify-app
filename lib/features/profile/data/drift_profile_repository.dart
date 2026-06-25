@@ -8,6 +8,7 @@ import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:drift/drift.dart';
 
 class DriftProfileRepository implements ProfileRepository {
@@ -48,7 +49,7 @@ class DriftProfileRepository implements ProfileRepository {
       equipmentAccess: _decodeJsonList(profile.equipmentAccessJson),
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
       targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
-      preferredUnits: profile.preferredUnits,
+      preferredUnits: PreferredUnit.fromDb(profile.preferredUnits),
       heightCm: profile.heightCm,
       bodyweightKg: profile.bodyweightKg,
       favoriteExerciseIds: _decodeIntList(profile.favoriteExerciseIdsJson),
@@ -85,7 +86,7 @@ class DriftProfileRepository implements ProfileRepository {
           equipmentAccessJson: Value(_encodeJsonList(draft.equipmentAccess)),
           trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
           targetSessionLengthMinutes: Value(draft.targetSessionLengthMinutes),
-          preferredUnits: Value(draft.preferredUnits),
+          preferredUnits: Value(draft.preferredUnits.dbValue),
           heightCm: Value(draft.heightCm),
           bodyweightKg: Value(draft.bodyweightKg),
           favoriteExerciseIdsJson: Value(

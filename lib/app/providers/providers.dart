@@ -47,6 +47,9 @@ import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart
 import 'package:aedify/features/profile/application/profile_controller.dart';
 import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
+import 'package:aedify/features/settings/application/settings_controller.dart';
+import 'package:aedify/features/settings/data/drift_settings_repository.dart';
+import 'package:aedify/features/settings/data/settings_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -292,5 +295,18 @@ class AppProviders {
   static final profileControllerProvider =
       AsyncNotifierProvider<ProfileController, ProfileState>(
         ProfileController.new,
+      );
+
+  // Settings
+  static final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
+    return DriftSettingsRepository(
+      appSettingsDao: ref.read(appSettingsDaoProvider),
+      featureFlags: ref.read(featureFlagsProvider),
+    );
+  });
+
+  static final settingsControllerProvider =
+      AsyncNotifierProvider<SettingsController, SettingsState>(
+        SettingsController.new,
       );
 }

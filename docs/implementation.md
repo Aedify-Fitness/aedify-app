@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes complete: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Full onboarding presentation refresh shipped across every step using reference-inspired card-led mobile UI. V1-M3-002 complete: 4 Drift tables + DAOs, profile repository, controller, full editable profile screen with save/validation/impact, routing, DI wiring. |
+| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes complete: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Full onboarding presentation refresh shipped across every step using reference-inspired card-led mobile UI. V1-M3-002 complete: 4 Drift tables + DAOs, profile repository, controller, full editable profile screen with save/validation/impact, routing, DI wiring. V1-M3-003 complete: settings shell, PreferredUnit/ThemeModeSetting enums, BYOK entry point, feature status display, privacy/storage boundary card, theme mode wiring. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 ## Completed Work
@@ -258,9 +258,28 @@
   - Test assertions updated for schema v5, cleared `experienceLevel` (now `''`), and async `updateDraft`.
 - Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
 
+### V1-M3-003 — Settings Shell, BYOK Entry, Feature Status Display (complete)
+
+- **`PreferredUnit` enum** (`lib/shared/domain/preferred_unit.dart`): Expanded to own all unit concerns — `isImperial`/`isMetric` getters, `heightLabel`/`weightLabel`/`heightHint`/`weightHint`/`heightUnit`/`weightUnit` display properties, `toMetricHeight`/`toMetricWeight`/`toImperialHeight`/`toImperialWeight` conversion methods. Replaced raw conversion constants and private static helpers in widgets.
+- **`ThemeModeSetting` enum** (`lib/shared/domain/theme_mode_setting.dart`): `system`/`light`/`dark` with `dbValue`/`fromDb`/`toMaterialThemeMode`/`displayLabel`.
+- **Domain models switched from `String` to typed enums**: `OnboardingDraft.preferredUnits`, `ProfileViewData.preferredUnits`, `ProfileEditDraft.preferredUnits`, `SettingsViewData.preferredUnits`/`themeMode` — all use `PreferredUnit`/`ThemeModeSetting` enums instead of raw strings.
+- **Repository boundary conversion**: `DriftOnboardingRepository`, `DriftProfileRepository`, `DriftSettingsRepository` convert enum ↔ DB string at the boundary via `.dbValue`/`.fromDb()`.
+- **Settings domain** (`lib/features/settings/`): `SettingsViewData` (13 fields), `SettingsEditDraft` (7 mutable fields with `copyWith()`), `SettingsRepository` (abstract), `DriftSettingsRepository` (reads/writes `AppSettings` table through `AppSettingsDao`, merges `FeatureFlags` for status-only display).
+- **SettingsController** (`lib/features/settings/application/settings_controller.dart`): `AsyncNotifier<SettingsState>` with `updateDraft()`/`save()`/`reload()`. State model: `isLoading`, `viewData`, `editDraft`, `errorCode`/`errorMessage`, `isSaving`, `hasError`.
+- **SettingsScreen** (`lib/features/settings/presentation/settings_screen.dart`): Full shell — profile nav tile, exercise dataset status, app settings card (units dropdown, theme dropdown, 5 switches + save), AI setup nav tile, feature status section (5 tiles from FeatureFlags), privacy/storage card, diagnostics nav tile.
+- **3 reusable widgets**: `settings_section_card.dart`, `settings_feature_status_tile.dart`, `settings_storage_boundary_card.dart`.
+- **Theme mode wiring** (`lib/app/app.dart`): `AedifyApp` watches `settingsControllerProvider` and applies `themeMode.toMaterialThemeMode()`.
+- **Routing**: `AppRoutes.aiProviderSettings()` path `/settings/ai-provider` + placeholder GoRoute in `app_router.dart`.
+- **Providers**: `settingsRepositoryProvider` and `settingsControllerProvider` registered in `AppProviders`.
+- **AppStrings**: 18 new strings (settings section titles, imperial unit labels/hints/units, feature status labels).
+- **AppErrorStrings**: 2 new strings (`settingsLoadFailedMessage`, `settingsSaveFailedMessage`).
+- **Onboarding form improvements**: Switching units now converts displayed values (cm↔in, kg↔lbs) instead of just relabeling; `_FormField` uses `ValueKey('height_${draft.preferredUnits}')`/`ValueKey('weight_${draft.preferredUnits}')` to force recreation; review step shows correct labels and converted imperial values.
+- **Tests**: 18 new — 3 drift_settings_repository, 5 settings_controller, 8 settings_screen, 2 storage_boundary_card. Profile/onboarding/presentation tests updated for `PreferredUnit` enum type. App test bootstrap controllers simplified (start in `success` state directly); `_FixedOnboardingNotifier` added to override `onboardingControllerProvider` and bypass Drift in widget tests.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 460/460 passed.
+
 ## Planned Work
 
-- M3-003 — Profile Settings + BYOK Setup page
+- M3-004 — Full BYOK provider setup flow
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
 - M5 — Analytics, PRs, Plateau Base Logic
@@ -276,8 +295,8 @@
 
 ## Verification Notes
 
-- `flutter analyze` — 0 issues
-- `flutter test` — 420/420 passed (379 existing + 31 new onboarding tests + 10 adjusted router/app tests; 1 onboarding screen test updated for BYOK change)
+- `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:24`)
+- `flutter test` — 460/460 passed
 - `dart run build_runner build` — passed (7s, 142 outputs)
 
 ## Codebase Convention Enforcement Status

@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/preferred_unit.dart';
+
 class ProfileEditDraft {
   const ProfileEditDraft({
     this.displayName,
@@ -6,7 +8,7 @@ class ProfileEditDraft {
     this.equipmentAccess = const <String>[],
     this.trainingDaysPerWeek,
     this.targetSessionLengthMinutes,
-    this.preferredUnits = 'metric',
+    this.preferredUnits = PreferredUnit.metric,
     this.heightCm,
     this.bodyweightKg,
     this.favoriteExerciseIds = const <int>[],
@@ -26,7 +28,7 @@ class ProfileEditDraft {
   final List<String> equipmentAccess;
   final int? trainingDaysPerWeek;
   final int? targetSessionLengthMinutes;
-  final String preferredUnits;
+  final PreferredUnit preferredUnits;
   final double? heightCm;
   final double? bodyweightKg;
   final List<int> favoriteExerciseIds;
@@ -46,7 +48,7 @@ class ProfileEditDraft {
     List<String>? equipmentAccess,
     int? trainingDaysPerWeek,
     int? targetSessionLengthMinutes,
-    String? preferredUnits,
+    PreferredUnit? preferredUnits,
     double? heightCm,
     double? bodyweightKg,
     List<int>? favoriteExerciseIds,
