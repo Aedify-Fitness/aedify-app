@@ -321,4 +321,33 @@ class AppStrings {
       'Optionally connect your own provider later for AI-assisted planning while keeping privacy, zero telemetry, and full local control.';
   static const onboardingByokDetail =
       'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
+
+  // BYOK
+  static const byokSettings = 'AI provider setup';
+  static const provider = 'Provider';
+  static const model = 'Model';
+  static const apiKey = 'API key';
+  static const apiKeyHint = 'sk-...';
+  static const saveKey = 'Save key';
+  static const deleteKey = 'Delete key';
+  static const deleteKeyConfirmation =
+      'This will remove the provider configuration and stored key.';
+  static const makeActive = 'Make active';
+  static const active = 'Active';
+  static const savedProviders = 'Saved providers';
+  static const cancel = 'Cancel';
+  static const keySaved = 'Key saved.';
+  static const byokOnboardingSaved =
+      'AI key saved. You can change this anytime in Settings.';
+  static const skipAiForNow = 'Skip AI for now';
+  static const estimatedCostPerWorkout = 'Est. cost: ';
+  static const byokMoreCapableModelsHint = 'More capable models available';
+  static const byokTestingKey = 'Testing key...';
+  static const lessThan = '<';
+  static const byokProviderOpenAiDescription =
+      'Widely used, strong general-purpose models with broad tooling support.';
+  static const byokProviderAnthropicDescription =
+      'Best-in-class reasoning and safety, excellent for complex workout analysis.';
+  static const byokProviderGoogleDescription =
+      'Fast, capable models with very large context windows and competitive pricing.';
 }

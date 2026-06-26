@@ -4,7 +4,49 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-25
+
+### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
+
+- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
+- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
+- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
+- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
+- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
+- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
+- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
+- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
+- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
+- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
+- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
+- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
+- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
+- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
+
 ## 2026-06-26
+
+### Changed (setState elimination — API key visibility toggles use ValueNotifier)
+
+- `_ByokOptionalStepState` (`onboarding_screen.dart`): Replaced `bool _obscured` + `setState` with `ValueNotifier<bool>` + `ValueListenableBuilder` for the API key obscurity toggle.
+- `_ApiKeyFieldState` (`byok_settings_screen.dart`): Same refactor — `ValueNotifier<bool>` + `ValueListenableBuilder` instead of `setState`.
+- Result: **Zero `setState` calls remain anywhere in `lib/`**.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 485/485 passed.
+
+### Added (V1-M3-004 — Full BYOK Provider Setup Flow)
+
+- `AiProviderConfigs` Drift table with metadata, capability flags, validation tracking, timestamps; schema 5→6 migration.
+- `AiProviderConfigDao` with 8 methods (getAll, getById, getActive, upsert, setActive, clearActive, delete, updateValidation).
+- Domain models: `ByokProviderOption`, `ByokConfigViewData`, `ByokEditDraft` (with `copyWith`/clear flags).
+- `ByokRepository` (abstract) + `DriftByokRepository`: built-in OpenAI/Anthropic provider options, save/rotate/delete/setActive, API key stored only in `SecureStorageService` (never in Drift), `hasKey` boolean only.
+- `ByokSetupController` (AsyncNotifier): build/updateDraft/save (with empty-key validation)/rotateKey/deleteConfig/setActiveConfig/reload.
+- `ByokSettingsScreen`: provider selector (ChoiceChip), model selector (DropdownButtonFormField), obscured API key input with toggle, config cards with active badge/setActive/delete, error/validation banners.
+- Routing: `AppRoutes.byokSettings()` (`/settings/byok`), `aiProviderSettings` redirect → `byokSettings`.
+- 13 `AppStrings` + 6 `AppErrorStrings` for BYOK flow.
+- 21 tests (6 DAO, 6 repository, 7 controller, 2 widget) — 481 total passing.
+- Shared `FakeConfigDao`/`FakeSecureStorage` test dependencies.
+- Fixed `_ModelSelector` type cast for `DropdownButtonFormField<String>`.
+- Fixed `_ApiKeyField` Riverpod build-time state modification (moved `onChanged` to `TextFormField.onChanged`).
 
 ### Added (V1-M3-003 — Settings Shell, BYOK Entry, Feature Status Display)
 

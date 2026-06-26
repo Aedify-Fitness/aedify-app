@@ -276,7 +276,7 @@ class _SettingsContentView extends ConsumerWidget {
             icon: OutlinedSvgAssets.sparkles,
             title: AppStrings.byokSetup,
             subtitle: AppStrings.aiSettings,
-            onTap: () => context.pushNamed(AppRoutes.aiProviderSettings().name),
+            onTap: () => context.pushNamed(AppRoutes.byokSettings().name),
           ),
           AppWhiteSpace.hMd,
 

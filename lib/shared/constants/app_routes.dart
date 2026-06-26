@@ -50,4 +50,6 @@ class AppRoutes {
   factory AppRoutes.profile() => AppRoutes._(path: '/profile', name: 'profile');
   factory AppRoutes.aiProviderSettings() =>
       AppRoutes._(path: '/settings/ai-provider', name: 'aiProviderSettings');
+  factory AppRoutes.byokSettings() =>
+      AppRoutes._(path: '/settings/byok', name: 'byokSettings');
 }

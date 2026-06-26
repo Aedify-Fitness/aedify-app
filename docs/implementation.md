@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Status**            | V1-M3-001 complete (onboarding flow, debounced autosave, resume-to-step, router gate, BYOK skip). Post-launch fixes complete: chip theme DESIGN.md colors, text field focus loss, back navigation from all steps, tappable review rows, experience level chip durations. Full onboarding presentation refresh shipped across every step using reference-inspired card-led mobile UI. V1-M3-002 complete: 4 Drift tables + DAOs, profile repository, controller, full editable profile screen with save/validation/impact, routing, DI wiring. V1-M3-003 complete: settings shell, PreferredUnit/ThemeModeSetting enums, BYOK entry point, feature status display, privacy/storage boundary card, theme mode wiring. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete: BYOK provider/model/key configuration UI with secure storage integration, provider/model selectors, API key input with obscured toggle, save/delete/set-active operations, built-in OpenAI/Anthropic/Google options with pricing, key validation via separate Dio endpoints (5s, no retry) before persist, cost-per-workout indicator, "more capable models" hint, "Skip AI for now" button, onboarding BYOK step with key entry form, 4 new repository tests (485 total passing), 0 analyze errors. All `setState` eliminated from `lib/` — both `_obscured` toggles use `ValueNotifier` + `ValueListenableBuilder`. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## Completed Work
 
@@ -258,6 +258,29 @@
   - Test assertions updated for schema v5, cleared `experienceLevel` (now `''`), and async `updateDraft`.
 - Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
 
+### V1-M3-004 — Full BYOK Provider Setup Flow (complete)
+
+- **`AiProviderConfigs` Drift table** (`lib/core/db/tables/ai_provider_configs.dart`): Metadata, capability flags (`supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `supportsToolCalling`), model limits (`maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `maxImageSizeBytes`), validation tracking (`lastValidatedAt`, `lastValidationStatus`, `lastErrorCode`), timestamps. Primary key `id`.
+- **Database migration**: Schema 5→6, `m.createTable(aiProviderConfigs)` in v6 step.
+- **`AiProviderConfigDao`** (`lib/core/db/daos/ai_provider_config_dao.dart`): 8 methods — `getAllConfigs`, `getById`, `getActiveConfig`, `upsertConfig`, `setActiveConfig`, `clearActiveConfig`, `deleteConfig`, `updateValidationState`.
+- **Domain models**:
+  - `ByokProviderOption` — `{ id, providerName, displayName, description, models (List<ByokModelOption>) }`
+  - `ByokModelOption` — `{ id, displayName, inputCostPer1kTokens, outputCostPer1kTokens, estimatedCostPerWorkout, isCheapest }`
+  - `ByokConfigViewData` — `{ id, providerName, displayName, selectedModel, hasKey, isActive, lastValidationStatus, lastErrorCode }`
+  - `ByokEditDraft` — `{ configId, providerName, selectedModel, apiKey, makeActive }` with `copyWith()`/clear flags
+- **`ByokRepository`** (abstract) + **`DriftByokRepository`** (`lib/features/settings/data/`): 3 built-in providers — OpenAI (GPT-4o, GPT-4o-mini, o1, o1-mini with pricing), Anthropic (Claude Sonnet 4.6 / Haiku 4.5 / Opus 4.7 with pricing), Google (Gemini 2.5 Pro / Gemini 2.5 Flash with pricing). Save/rotateKey/deleteConfig/setActiveConfig/validateKey. API key stored only in `SecureStorageService` (never in Drift), `hasKey` boolean only in view data.
+- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Per-provider Dio endpoints (5s timeout, no retry) — OpenAI `/v1/models` (Authorization header), Anthropic `/v1/messages` (x-api-key header), Google `/v1/models` (x-goog-api-key header). Returns `KeyValidationResult{isValid, errorCode}`. Privacy-redacted errors.
+- **`ByokSetupController`** (`lib/features/settings/application/`): `AsyncNotifier<ByokSetupState>` with `updateDraft()`/`save()` (validates key via `ProviderKeyValidator` before persist, shows `isTesting` spinner)/`rotateKey()`/`deleteConfig()`/`setActiveConfig()`/`reload()`. Validation rejects empty keys/missing provider.
+- **`ByokSettingsScreen`** (`lib/features/settings/presentation/`): Full configuration screen — existing configs as cards (active badge, model, hasKey indicator, setActive/delete with confirmation dialog), provider selector via `ChoiceChip`, model selector via `DropdownButtonFormField` (shows PRD display names), obscured API key input with toggle, `_CostIndicator` ("Est. cost: $0.xx"), `_MoreCapableHint` ("More capable models available"), error/validation banners, save button with spinner, "Skip AI for now" `OutlinedButton`.
+- **Onboarding BYOK step** (`_ByokOptionalStep` in `lib/features/onboarding/presentation/onboarding_screen.dart`): Rewritten as `ConsumerStatefulWidget` — loads provider options on init, shows provider selection (ChoiceChip), model selection (Dropdown), API key input (obscured toggle), "Save key" `FilledButton` that persists to `ByokRepository` and sets `byokSkipped: false`, success banner with key icon. Scaffold Continue button always skips forward.
+- **setState elimination**: Both `_obscured` toggles (`_ByokOptionalStepState`, `_ApiKeyFieldState`) migrated from `bool` + `setState` to `ValueNotifier<bool>` + `ValueListenableBuilder`. **Zero `setState` calls remain in `lib/`**.
+- **Routing**: `AppRoutes.byokSettings()` (`/settings/byok`) — existing `aiProviderSettings` route redirects to `byokSettings`.
+- **Strings**: 20 total BYOK strings in `AppStrings` (13 original + `skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions). 8 total in `AppErrorStrings` (6 original + `byokKeyValidationFailed`, `byokValidationNetworkError`).
+- **Tests**: 25 new — 6 DAO, 10 repository (7 original + 3 new provider/model/pricing/correctness), 7 controller, 2 widget. Shared `FakeConfigDao`/`FakeSecureStorage` in `fake_dependencies.dart`. Controller/screen tests use `_ValidatingFakeRepository` subclass that bypasses real HTTP validation.
+- **Fixes**: `_ModelSelector` type cast for `DropdownButtonFormField<String>`; `_ApiKeyField` Riverpod build-time state modification (moved `onChanged` to `TextFormField.onChanged`); pre-existing test schema version 5→6; `isNotNull`/`isNull` ambiguity with drift exports; unused import cleanup; `FakeConfigDao.upsertConfig()` companion absent-field handling.
+- **setState elimination**: Both `_obscured` toggles (`_ByokOptionalStepState`, `_ApiKeyFieldState`) migrated from `bool` + `setState` to `ValueNotifier<bool>` + `ValueListenableBuilder`. **Zero `setState` calls remain in `lib/`**.
+- **Verification**: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
+
 ### V1-M3-003 — Settings Shell, BYOK Entry, Feature Status Display (complete)
 
 - **`PreferredUnit` enum** (`lib/shared/domain/preferred_unit.dart`): Expanded to own all unit concerns — `isImperial`/`isMetric` getters, `heightLabel`/`weightLabel`/`heightHint`/`weightHint`/`heightUnit`/`weightUnit` display properties, `toMetricHeight`/`toMetricWeight`/`toImperialHeight`/`toImperialWeight` conversion methods. Replaced raw conversion constants and private static helpers in widgets.
@@ -279,9 +302,7 @@
 
 ## Planned Work
 
-- M3-004 — Full BYOK provider setup flow
 - M4 — Manual Programmes, Workouts, Logging
-- M5 — Analytics, PRs, Plateau Base Logic
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
 - M7 — AI Infrastructure
@@ -295,9 +316,10 @@
 
 ## Verification Notes
 
-- `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:24`)
-- `flutter test` — 460/460 passed
-- `dart run build_runner build` — passed (7s, 142 outputs)
+- `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:30`)
+- `flutter test` — 485/485 passed (25 new: 6 DAO, 10 repository, 7 controller, 2 widget)
+- `dart run build_runner build` — passed (280 outputs)
+- `dart format` — all files formatted
 
 ## Codebase Convention Enforcement Status
 

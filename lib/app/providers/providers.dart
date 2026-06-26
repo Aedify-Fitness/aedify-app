@@ -1,6 +1,7 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/ai_provider_config_dao.dart';
 import 'package:aedify/core/db/daos/app_settings_dao.dart';
 import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/exercise_audio_cache_dao.dart';
@@ -47,7 +48,10 @@ import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart
 import 'package:aedify/features/profile/application/profile_controller.dart';
 import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
+import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/application/settings_controller.dart';
+import 'package:aedify/features/settings/data/byok_repository.dart';
+import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/drift_settings_repository.dart';
 import 'package:aedify/features/settings/data/settings_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -308,5 +312,24 @@ class AppProviders {
   static final settingsControllerProvider =
       AsyncNotifierProvider<SettingsController, SettingsState>(
         SettingsController.new,
+      );
+
+  // BYOK
+  static final aiProviderConfigDaoProvider = Provider<AiProviderConfigDao>((
+    ref,
+  ) {
+    return AiProviderConfigDao(ref.read(appDatabaseProvider));
+  });
+
+  static final byokRepositoryProvider = Provider<ByokRepository>((ref) {
+    return DriftByokRepository(
+      configDao: ref.read(aiProviderConfigDaoProvider),
+      secureStorageService: ref.read(secureStorageProvider),
+    );
+  });
+
+  static final byokSetupControllerProvider =
+      AsyncNotifierProvider<ByokSetupController, ByokSetupState>(
+        ByokSetupController.new,
       );
 }

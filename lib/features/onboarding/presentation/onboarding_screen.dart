@@ -5,6 +5,9 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding_progress_header.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding_step_scaffold.dart';
+import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
+import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
@@ -193,7 +196,10 @@ class _StepContent extends StatelessWidget {
             draft: state.draft,
             onUpdateDraft: onUpdateDraft,
           ),
-          OnboardingStep.byokOptional => _ByokOptionalStep(draft: state.draft),
+          OnboardingStep.byokOptional => _ByokOptionalStep(
+            draft: state.draft,
+            onUpdateDraft: onUpdateDraft,
+          ),
           OnboardingStep.review => _ReviewStep(
             draft: state.draft,
             onJumpToStep: onJumpToStep,
@@ -869,55 +875,377 @@ class _LimitationsStep extends StatelessWidget {
   }
 }
 
-class _ByokOptionalStep extends StatelessWidget {
-  const _ByokOptionalStep({required this.draft});
+// ---- BYOK Form State (file-private, auto-dispose) ----
+
+class _ByokFormState {
+  const _ByokFormState({
+    this.selectedProvider,
+    this.selectedModel,
+    this.isSaving = false,
+    this.hasSaved = false,
+  });
+
+  final String? selectedProvider;
+  final String? selectedModel;
+  final bool isSaving;
+  final bool hasSaved;
+
+  _ByokFormState copyWith({
+    String? selectedProvider,
+    String? selectedModel,
+    bool? isSaving,
+    bool? hasSaved,
+    bool clearProvider = false,
+    bool clearModel = false,
+  }) {
+    return _ByokFormState(
+      selectedProvider: clearProvider
+          ? null
+          : (selectedProvider ?? this.selectedProvider),
+      selectedModel: clearModel ? null : (selectedModel ?? this.selectedModel),
+      isSaving: isSaving ?? this.isSaving,
+      hasSaved: hasSaved ?? this.hasSaved,
+    );
+  }
+}
+
+class _ByokFormNotifier extends Notifier<_ByokFormState> {
+  @override
+  _ByokFormState build() => const _ByokFormState();
+
+  void selectProvider(String providerName, List<ByokProviderOption> options) {
+    final option = options.firstWhere((o) => o.providerName == providerName);
+    state = state.copyWith(
+      selectedProvider: providerName,
+      selectedModel: option.models.isNotEmpty ? option.models.first.id : null,
+    );
+  }
+
+  void selectModel(String? modelId) {
+    state = state.copyWith(selectedModel: modelId);
+  }
+
+  void setSaving(bool saving) {
+    state = state.copyWith(isSaving: saving);
+  }
+
+  void markSaved() {
+    state = state.copyWith(hasSaved: true, isSaving: false);
+  }
+}
+
+final _byokOptionsProvider =
+    FutureProvider.autoDispose<List<ByokProviderOption>>((ref) {
+      return ref.read(AppProviders.byokRepositoryProvider).getProviderOptions();
+    });
+
+final _byokFormProvider =
+    NotifierProvider.autoDispose<_ByokFormNotifier, _ByokFormState>(
+      _ByokFormNotifier.new,
+    );
+
+// ---- BYOK Optional Step ----
+
+class _ByokOptionalStep extends ConsumerStatefulWidget {
+  const _ByokOptionalStep({required this.draft, required this.onUpdateDraft});
 
   final OnboardingDraft draft;
+  final void Function(OnboardingDraft) onUpdateDraft;
+
+  @override
+  _ByokOptionalStepState createState() => _ByokOptionalStepState();
+}
+
+class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
+  final _keyController = TextEditingController();
+  final _obscured = ValueNotifier<bool>(true);
+
+  @override
+  void dispose() {
+    _keyController.dispose();
+    _obscured.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveKey() async {
+    final formState = ref.read(_byokFormProvider);
+    final provider = formState.selectedProvider;
+    if (provider == null || _keyController.text.isEmpty) return;
+
+    ref.read(_byokFormProvider.notifier).setSaving(true);
+
+    try {
+      final repository = ref.read(AppProviders.byokRepositoryProvider);
+      await repository.saveConfig(
+        ByokEditDraft(
+          providerName: provider,
+          selectedModel: formState.selectedModel,
+          apiKey: _keyController.text,
+          makeActive: true,
+        ),
+      );
+      widget.onUpdateDraft(widget.draft.copyWith(byokSkipped: false));
+      ref.read(_byokFormProvider.notifier).markSaved();
+    } catch (_) {
+      ref.read(_byokFormProvider.notifier).setSaving(false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _SurfacePanel(
-          backgroundColor: context.colorScheme.surfaceContainerLow,
-          borderColor: context.colorScheme.secondary.withValues(alpha: 0.25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _PanelHeader(
-                iconAsset: OutlinedSvgAssets.cpuChip,
-                title: AppStrings.onboardingByokOptionalTitle,
-              ),
-              AppWhiteSpace.hMd,
-              Text(
-                AppStrings.onboardingByokDescription,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+    final optionsAsync = ref.watch(_byokOptionsProvider);
+    final formState = ref.watch(_byokFormProvider);
+
+    return optionsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, _) => Column(
+        children: [
+          _infoPanel(context),
+          AppWhiteSpace.hLg,
+          Text(
+            AppErrorStrings.byokLoadFailedMessage,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
           ),
-        ),
+        ],
+      ),
+      data: (options) => _buildForm(context, options, formState),
+    );
+  }
+
+  Widget _buildForm(
+    BuildContext context,
+    List<ByokProviderOption> options,
+    _ByokFormState formState,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _infoPanel(context),
         AppWhiteSpace.hLg,
-        _BenefitCard(
-          iconAsset: OutlinedSvgAssets.lockClosed,
-          title: AppStrings.onboardingByokBenefitPrivate,
-          description: AppStrings.onboardingByokBenefitPrivateDescription,
-        ),
-        AppWhiteSpace.hMd,
-        _BenefitCard(
-          iconAsset: OutlinedSvgAssets.sparkles,
-          title: AppStrings.onboardingByokBenefitOptional,
-          description: AppStrings.onboardingByokBenefitOptionalDescription,
-        ),
-        AppWhiteSpace.hMd,
-        _BenefitCard(
-          iconAsset: OutlinedSvgAssets.key,
-          title: AppStrings.onboardingByokBenefitBringYourOwnKey,
-          description:
-              AppStrings.onboardingByokBenefitBringYourOwnKeyDescription,
-        ),
+
+        // Provider selector
+        if (!formState.hasSaved) ...[
+          Text(
+            AppStrings.provider,
+            style: AppTextStyles.labelMd.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+          AppWhiteSpace.hSm,
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: options.map((option) {
+              final isSelected =
+                  formState.selectedProvider == option.providerName;
+              return ChoiceChip(
+                label: Text(option.displayName),
+                selected: isSelected,
+                onSelected: (_) {
+                  ref
+                      .read(_byokFormProvider.notifier)
+                      .selectProvider(option.providerName, options);
+                },
+              );
+            }).toList(),
+          ),
+          AppWhiteSpace.hMd,
+
+          // Model selector
+          if (formState.selectedProvider != null) ...[
+            Text(
+              AppStrings.model,
+              style: AppTextStyles.labelMd.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
+            ),
+            AppWhiteSpace.hSm,
+            _OnboardingModelSelector(
+              options: options,
+              providerName: formState.selectedProvider!,
+              selectedModelId: formState.selectedModel,
+              onChanged: (value) {
+                ref.read(_byokFormProvider.notifier).selectModel(value);
+              },
+            ),
+            AppWhiteSpace.hMd,
+          ],
+
+          // API key input
+          Text(
+            AppStrings.apiKey,
+            style: AppTextStyles.labelMd.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+          AppWhiteSpace.hSm,
+          ValueListenableBuilder<bool>(
+            valueListenable: _obscured,
+            builder: (context, obscured, child) {
+              return TextFormField(
+                controller: _keyController,
+                obscureText: obscured,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  hintText: AppStrings.apiKeyHint,
+                  suffixIcon: IconButton(
+                    icon: SvgPicture.asset(
+                      obscured
+                          ? OutlinedSvgAssets.eye
+                          : OutlinedSvgAssets.eyeSlash,
+                      width: AppSizing.iconSm,
+                      height: AppSizing.iconSm,
+                    ),
+                    onPressed: () => _obscured.value = !obscured,
+                  ),
+                ),
+              );
+            },
+          ),
+          AppWhiteSpace.hMd,
+
+          // Save key button
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed:
+                  formState.selectedProvider != null &&
+                      _keyController.text.isNotEmpty
+                  ? _saveKey
+                  : null,
+              child: formState.isSaving
+                  ? const SizedBox(
+                      width: AppSizing.iconSm,
+                      height: AppSizing.iconSm,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text(AppStrings.saveKey),
+            ),
+          ),
+          AppWhiteSpace.hLg,
+        ],
+
+        // Saved confirmation
+        if (formState.hasSaved)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: context.colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  OutlinedSvgAssets.checkCircle,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.onPrimaryContainer,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                AppWhiteSpace.wSm,
+                Expanded(
+                  child: Text(
+                    AppStrings.byokOnboardingSaved,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: context.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // Benefit cards
+        if (!formState.hasSaved) ...[
+          AppWhiteSpace.hLg,
+          _BenefitCard(
+            iconAsset: OutlinedSvgAssets.lockClosed,
+            title: AppStrings.onboardingByokBenefitPrivate,
+            description: AppStrings.onboardingByokBenefitPrivateDescription,
+          ),
+          AppWhiteSpace.hMd,
+          _BenefitCard(
+            iconAsset: OutlinedSvgAssets.sparkles,
+            title: AppStrings.onboardingByokBenefitOptional,
+            description: AppStrings.onboardingByokBenefitOptionalDescription,
+          ),
+          AppWhiteSpace.hMd,
+          _BenefitCard(
+            iconAsset: OutlinedSvgAssets.key,
+            title: AppStrings.onboardingByokBenefitBringYourOwnKey,
+            description:
+                AppStrings.onboardingByokBenefitBringYourOwnKeyDescription,
+          ),
+        ],
       ],
+    );
+  }
+
+  Widget _infoPanel(BuildContext context) {
+    return _SurfacePanel(
+      backgroundColor: context.colorScheme.surfaceContainerLow,
+      borderColor: context.colorScheme.secondary.withValues(alpha: 0.25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PanelHeader(
+            iconAsset: OutlinedSvgAssets.cpuChip,
+            title: AppStrings.onboardingByokOptionalTitle,
+          ),
+          AppWhiteSpace.hMd,
+          Text(
+            AppStrings.onboardingByokDescription,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingModelSelector extends StatelessWidget {
+  const _OnboardingModelSelector({
+    required this.options,
+    required this.providerName,
+    required this.selectedModelId,
+    required this.onChanged,
+  });
+
+  final List<ByokProviderOption> options;
+  final String providerName;
+  final String? selectedModelId;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final option = options.firstWhere((o) => o.providerName == providerName);
+    return DropdownButtonFormField<String>(
+      initialValue: selectedModelId,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+      ),
+      items: option.models.map<DropdownMenuItem<String>>((model) {
+        return DropdownMenuItem(
+          value: model.id,
+          child: Text(model.displayName),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 }

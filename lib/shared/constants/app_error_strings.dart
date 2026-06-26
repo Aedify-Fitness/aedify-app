@@ -49,4 +49,19 @@ class AppErrorStrings {
   static const String ttsUnavailableMessage =
       'Text-to-speech is not available on this device.';
   static const String audioPlaybackFailedMessage = 'Could not play step audio.';
+
+  // BYOK
+  static const String byokLoadFailedMessage =
+      'Could not load AI provider settings.';
+  static const String byokSaveFailedMessage =
+      'Could not save provider configuration.';
+  static const String byokDeleteFailedMessage =
+      'Could not delete provider configuration.';
+  static const String byokKeyRotationFailed = 'Could not rotate API key.';
+  static const String byokEmptyKeyValidation = 'Please enter a valid API key.';
+  static const String byokNoProviderValidation = 'Please select a provider.';
+  static const String byokKeyValidationFailed =
+      'Key rejected by provider. Check the key and try again.';
+  static const String byokValidationNetworkError =
+      'Could not reach provider to validate key. Check your connection and try again.';
 }

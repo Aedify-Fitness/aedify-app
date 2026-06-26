@@ -8356,6 +8356,1228 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   }
 }
 
+class $AiProviderConfigsTable extends AiProviderConfigs
+    with TableInfo<$AiProviderConfigsTable, AiProviderConfig> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiProviderConfigsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _selectedModelMeta = const VerificationMeta(
+    'selectedModel',
+  );
+  @override
+  late final GeneratedColumn<String> selectedModel = GeneratedColumn<String>(
+    'selected_model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _secureKeyAliasMeta = const VerificationMeta(
+    'secureKeyAlias',
+  );
+  @override
+  late final GeneratedColumn<String> secureKeyAlias = GeneratedColumn<String>(
+    'secure_key_alias',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsTextInputMeta = const VerificationMeta(
+    'supportsTextInput',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsTextInput = GeneratedColumn<bool>(
+    'supports_text_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_text_input" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _supportsImageInputMeta =
+      const VerificationMeta('supportsImageInput');
+  @override
+  late final GeneratedColumn<bool> supportsImageInput = GeneratedColumn<bool>(
+    'supports_image_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_image_input" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsJsonSchemaModeMeta =
+      const VerificationMeta('supportsJsonSchemaMode');
+  @override
+  late final GeneratedColumn<bool> supportsJsonSchemaMode =
+      GeneratedColumn<bool>(
+        'supports_json_schema_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("supports_json_schema_mode" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _supportsStreamingMeta = const VerificationMeta(
+    'supportsStreaming',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsStreaming = GeneratedColumn<bool>(
+    'supports_streaming',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_streaming" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsToolCallingMeta =
+      const VerificationMeta('supportsToolCalling');
+  @override
+  late final GeneratedColumn<bool> supportsToolCalling = GeneratedColumn<bool>(
+    'supports_tool_calling',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_tool_calling" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _maxContextTokensMeta = const VerificationMeta(
+    'maxContextTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxContextTokens = GeneratedColumn<int>(
+    'max_context_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxOutputTokensMeta = const VerificationMeta(
+    'maxOutputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxOutputTokens = GeneratedColumn<int>(
+    'max_output_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImagesPerRequestMeta =
+      const VerificationMeta('maxImagesPerRequest');
+  @override
+  late final GeneratedColumn<int> maxImagesPerRequest = GeneratedColumn<int>(
+    'max_images_per_request',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImageSizeBytesMeta = const VerificationMeta(
+    'maxImageSizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> maxImageSizeBytes = GeneratedColumn<int>(
+    'max_image_size_bytes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastValidatedAtMeta = const VerificationMeta(
+    'lastValidatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastValidatedAt =
+      GeneratedColumn<DateTime>(
+        'last_validated_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastValidationStatusMeta =
+      const VerificationMeta('lastValidationStatus');
+  @override
+  late final GeneratedColumn<String> lastValidationStatus =
+      GeneratedColumn<String>(
+        'last_validation_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastErrorCodeMeta = const VerificationMeta(
+    'lastErrorCode',
+  );
+  @override
+  late final GeneratedColumn<String> lastErrorCode = GeneratedColumn<String>(
+    'last_error_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    providerName,
+    displayName,
+    selectedModel,
+    secureKeyAlias,
+    isActive,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    maxImageSizeBytes,
+    lastValidatedAt,
+    lastValidationStatus,
+    lastErrorCode,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_provider_configs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiProviderConfig> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_providerNameMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('selected_model')) {
+      context.handle(
+        _selectedModelMeta,
+        selectedModel.isAcceptableOrUnknown(
+          data['selected_model']!,
+          _selectedModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secure_key_alias')) {
+      context.handle(
+        _secureKeyAliasMeta,
+        secureKeyAlias.isAcceptableOrUnknown(
+          data['secure_key_alias']!,
+          _secureKeyAliasMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_secureKeyAliasMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('supports_text_input')) {
+      context.handle(
+        _supportsTextInputMeta,
+        supportsTextInput.isAcceptableOrUnknown(
+          data['supports_text_input']!,
+          _supportsTextInputMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_image_input')) {
+      context.handle(
+        _supportsImageInputMeta,
+        supportsImageInput.isAcceptableOrUnknown(
+          data['supports_image_input']!,
+          _supportsImageInputMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_json_schema_mode')) {
+      context.handle(
+        _supportsJsonSchemaModeMeta,
+        supportsJsonSchemaMode.isAcceptableOrUnknown(
+          data['supports_json_schema_mode']!,
+          _supportsJsonSchemaModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_streaming')) {
+      context.handle(
+        _supportsStreamingMeta,
+        supportsStreaming.isAcceptableOrUnknown(
+          data['supports_streaming']!,
+          _supportsStreamingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_tool_calling')) {
+      context.handle(
+        _supportsToolCallingMeta,
+        supportsToolCalling.isAcceptableOrUnknown(
+          data['supports_tool_calling']!,
+          _supportsToolCallingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_context_tokens')) {
+      context.handle(
+        _maxContextTokensMeta,
+        maxContextTokens.isAcceptableOrUnknown(
+          data['max_context_tokens']!,
+          _maxContextTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_output_tokens')) {
+      context.handle(
+        _maxOutputTokensMeta,
+        maxOutputTokens.isAcceptableOrUnknown(
+          data['max_output_tokens']!,
+          _maxOutputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_images_per_request')) {
+      context.handle(
+        _maxImagesPerRequestMeta,
+        maxImagesPerRequest.isAcceptableOrUnknown(
+          data['max_images_per_request']!,
+          _maxImagesPerRequestMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_image_size_bytes')) {
+      context.handle(
+        _maxImageSizeBytesMeta,
+        maxImageSizeBytes.isAcceptableOrUnknown(
+          data['max_image_size_bytes']!,
+          _maxImageSizeBytesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_validated_at')) {
+      context.handle(
+        _lastValidatedAtMeta,
+        lastValidatedAt.isAcceptableOrUnknown(
+          data['last_validated_at']!,
+          _lastValidatedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_validation_status')) {
+      context.handle(
+        _lastValidationStatusMeta,
+        lastValidationStatus.isAcceptableOrUnknown(
+          data['last_validation_status']!,
+          _lastValidationStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error_code')) {
+      context.handle(
+        _lastErrorCodeMeta,
+        lastErrorCode.isAcceptableOrUnknown(
+          data['last_error_code']!,
+          _lastErrorCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiProviderConfig map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiProviderConfig(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      ),
+      selectedModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}selected_model'],
+      ),
+      secureKeyAlias: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}secure_key_alias'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      supportsTextInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_text_input'],
+      )!,
+      supportsImageInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_image_input'],
+      )!,
+      supportsJsonSchemaMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_json_schema_mode'],
+      )!,
+      supportsStreaming: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_streaming'],
+      )!,
+      supportsToolCalling: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_tool_calling'],
+      ),
+      maxContextTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_context_tokens'],
+      ),
+      maxOutputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_output_tokens'],
+      ),
+      maxImagesPerRequest: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_images_per_request'],
+      ),
+      maxImageSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_image_size_bytes'],
+      ),
+      lastValidatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_validated_at'],
+      ),
+      lastValidationStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_validation_status'],
+      ),
+      lastErrorCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error_code'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiProviderConfigsTable createAlias(String alias) {
+    return $AiProviderConfigsTable(attachedDatabase, alias);
+  }
+}
+
+class AiProviderConfig extends DataClass
+    implements Insertable<AiProviderConfig> {
+  final String id;
+  final String providerName;
+  final String? displayName;
+  final String? selectedModel;
+  final String secureKeyAlias;
+  final bool isActive;
+  final bool supportsTextInput;
+  final bool supportsImageInput;
+  final bool supportsJsonSchemaMode;
+  final bool supportsStreaming;
+  final bool? supportsToolCalling;
+  final int? maxContextTokens;
+  final int? maxOutputTokens;
+  final int? maxImagesPerRequest;
+  final int? maxImageSizeBytes;
+  final DateTime? lastValidatedAt;
+  final String? lastValidationStatus;
+  final String? lastErrorCode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AiProviderConfig({
+    required this.id,
+    required this.providerName,
+    this.displayName,
+    this.selectedModel,
+    required this.secureKeyAlias,
+    required this.isActive,
+    required this.supportsTextInput,
+    required this.supportsImageInput,
+    required this.supportsJsonSchemaMode,
+    required this.supportsStreaming,
+    this.supportsToolCalling,
+    this.maxContextTokens,
+    this.maxOutputTokens,
+    this.maxImagesPerRequest,
+    this.maxImageSizeBytes,
+    this.lastValidatedAt,
+    this.lastValidationStatus,
+    this.lastErrorCode,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['provider_name'] = Variable<String>(providerName);
+    if (!nullToAbsent || displayName != null) {
+      map['display_name'] = Variable<String>(displayName);
+    }
+    if (!nullToAbsent || selectedModel != null) {
+      map['selected_model'] = Variable<String>(selectedModel);
+    }
+    map['secure_key_alias'] = Variable<String>(secureKeyAlias);
+    map['is_active'] = Variable<bool>(isActive);
+    map['supports_text_input'] = Variable<bool>(supportsTextInput);
+    map['supports_image_input'] = Variable<bool>(supportsImageInput);
+    map['supports_json_schema_mode'] = Variable<bool>(supportsJsonSchemaMode);
+    map['supports_streaming'] = Variable<bool>(supportsStreaming);
+    if (!nullToAbsent || supportsToolCalling != null) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling);
+    }
+    if (!nullToAbsent || maxContextTokens != null) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens);
+    }
+    if (!nullToAbsent || maxOutputTokens != null) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens);
+    }
+    if (!nullToAbsent || maxImagesPerRequest != null) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest);
+    }
+    if (!nullToAbsent || maxImageSizeBytes != null) {
+      map['max_image_size_bytes'] = Variable<int>(maxImageSizeBytes);
+    }
+    if (!nullToAbsent || lastValidatedAt != null) {
+      map['last_validated_at'] = Variable<DateTime>(lastValidatedAt);
+    }
+    if (!nullToAbsent || lastValidationStatus != null) {
+      map['last_validation_status'] = Variable<String>(lastValidationStatus);
+    }
+    if (!nullToAbsent || lastErrorCode != null) {
+      map['last_error_code'] = Variable<String>(lastErrorCode);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AiProviderConfigsCompanion toCompanion(bool nullToAbsent) {
+    return AiProviderConfigsCompanion(
+      id: Value(id),
+      providerName: Value(providerName),
+      displayName: displayName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(displayName),
+      selectedModel: selectedModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selectedModel),
+      secureKeyAlias: Value(secureKeyAlias),
+      isActive: Value(isActive),
+      supportsTextInput: Value(supportsTextInput),
+      supportsImageInput: Value(supportsImageInput),
+      supportsJsonSchemaMode: Value(supportsJsonSchemaMode),
+      supportsStreaming: Value(supportsStreaming),
+      supportsToolCalling: supportsToolCalling == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supportsToolCalling),
+      maxContextTokens: maxContextTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxContextTokens),
+      maxOutputTokens: maxOutputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxOutputTokens),
+      maxImagesPerRequest: maxImagesPerRequest == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImagesPerRequest),
+      maxImageSizeBytes: maxImageSizeBytes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImageSizeBytes),
+      lastValidatedAt: lastValidatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastValidatedAt),
+      lastValidationStatus: lastValidationStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastValidationStatus),
+      lastErrorCode: lastErrorCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastErrorCode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AiProviderConfig.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiProviderConfig(
+      id: serializer.fromJson<String>(json['id']),
+      providerName: serializer.fromJson<String>(json['providerName']),
+      displayName: serializer.fromJson<String?>(json['displayName']),
+      selectedModel: serializer.fromJson<String?>(json['selectedModel']),
+      secureKeyAlias: serializer.fromJson<String>(json['secureKeyAlias']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      supportsTextInput: serializer.fromJson<bool>(json['supportsTextInput']),
+      supportsImageInput: serializer.fromJson<bool>(json['supportsImageInput']),
+      supportsJsonSchemaMode: serializer.fromJson<bool>(
+        json['supportsJsonSchemaMode'],
+      ),
+      supportsStreaming: serializer.fromJson<bool>(json['supportsStreaming']),
+      supportsToolCalling: serializer.fromJson<bool?>(
+        json['supportsToolCalling'],
+      ),
+      maxContextTokens: serializer.fromJson<int?>(json['maxContextTokens']),
+      maxOutputTokens: serializer.fromJson<int?>(json['maxOutputTokens']),
+      maxImagesPerRequest: serializer.fromJson<int?>(
+        json['maxImagesPerRequest'],
+      ),
+      maxImageSizeBytes: serializer.fromJson<int?>(json['maxImageSizeBytes']),
+      lastValidatedAt: serializer.fromJson<DateTime?>(json['lastValidatedAt']),
+      lastValidationStatus: serializer.fromJson<String?>(
+        json['lastValidationStatus'],
+      ),
+      lastErrorCode: serializer.fromJson<String?>(json['lastErrorCode']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'providerName': serializer.toJson<String>(providerName),
+      'displayName': serializer.toJson<String?>(displayName),
+      'selectedModel': serializer.toJson<String?>(selectedModel),
+      'secureKeyAlias': serializer.toJson<String>(secureKeyAlias),
+      'isActive': serializer.toJson<bool>(isActive),
+      'supportsTextInput': serializer.toJson<bool>(supportsTextInput),
+      'supportsImageInput': serializer.toJson<bool>(supportsImageInput),
+      'supportsJsonSchemaMode': serializer.toJson<bool>(supportsJsonSchemaMode),
+      'supportsStreaming': serializer.toJson<bool>(supportsStreaming),
+      'supportsToolCalling': serializer.toJson<bool?>(supportsToolCalling),
+      'maxContextTokens': serializer.toJson<int?>(maxContextTokens),
+      'maxOutputTokens': serializer.toJson<int?>(maxOutputTokens),
+      'maxImagesPerRequest': serializer.toJson<int?>(maxImagesPerRequest),
+      'maxImageSizeBytes': serializer.toJson<int?>(maxImageSizeBytes),
+      'lastValidatedAt': serializer.toJson<DateTime?>(lastValidatedAt),
+      'lastValidationStatus': serializer.toJson<String?>(lastValidationStatus),
+      'lastErrorCode': serializer.toJson<String?>(lastErrorCode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AiProviderConfig copyWith({
+    String? id,
+    String? providerName,
+    Value<String?> displayName = const Value.absent(),
+    Value<String?> selectedModel = const Value.absent(),
+    String? secureKeyAlias,
+    bool? isActive,
+    bool? supportsTextInput,
+    bool? supportsImageInput,
+    bool? supportsJsonSchemaMode,
+    bool? supportsStreaming,
+    Value<bool?> supportsToolCalling = const Value.absent(),
+    Value<int?> maxContextTokens = const Value.absent(),
+    Value<int?> maxOutputTokens = const Value.absent(),
+    Value<int?> maxImagesPerRequest = const Value.absent(),
+    Value<int?> maxImageSizeBytes = const Value.absent(),
+    Value<DateTime?> lastValidatedAt = const Value.absent(),
+    Value<String?> lastValidationStatus = const Value.absent(),
+    Value<String?> lastErrorCode = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AiProviderConfig(
+    id: id ?? this.id,
+    providerName: providerName ?? this.providerName,
+    displayName: displayName.present ? displayName.value : this.displayName,
+    selectedModel: selectedModel.present
+        ? selectedModel.value
+        : this.selectedModel,
+    secureKeyAlias: secureKeyAlias ?? this.secureKeyAlias,
+    isActive: isActive ?? this.isActive,
+    supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+    supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+    supportsJsonSchemaMode:
+        supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+    supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+    supportsToolCalling: supportsToolCalling.present
+        ? supportsToolCalling.value
+        : this.supportsToolCalling,
+    maxContextTokens: maxContextTokens.present
+        ? maxContextTokens.value
+        : this.maxContextTokens,
+    maxOutputTokens: maxOutputTokens.present
+        ? maxOutputTokens.value
+        : this.maxOutputTokens,
+    maxImagesPerRequest: maxImagesPerRequest.present
+        ? maxImagesPerRequest.value
+        : this.maxImagesPerRequest,
+    maxImageSizeBytes: maxImageSizeBytes.present
+        ? maxImageSizeBytes.value
+        : this.maxImageSizeBytes,
+    lastValidatedAt: lastValidatedAt.present
+        ? lastValidatedAt.value
+        : this.lastValidatedAt,
+    lastValidationStatus: lastValidationStatus.present
+        ? lastValidationStatus.value
+        : this.lastValidationStatus,
+    lastErrorCode: lastErrorCode.present
+        ? lastErrorCode.value
+        : this.lastErrorCode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AiProviderConfig copyWithCompanion(AiProviderConfigsCompanion data) {
+    return AiProviderConfig(
+      id: data.id.present ? data.id.value : this.id,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      selectedModel: data.selectedModel.present
+          ? data.selectedModel.value
+          : this.selectedModel,
+      secureKeyAlias: data.secureKeyAlias.present
+          ? data.secureKeyAlias.value
+          : this.secureKeyAlias,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      supportsTextInput: data.supportsTextInput.present
+          ? data.supportsTextInput.value
+          : this.supportsTextInput,
+      supportsImageInput: data.supportsImageInput.present
+          ? data.supportsImageInput.value
+          : this.supportsImageInput,
+      supportsJsonSchemaMode: data.supportsJsonSchemaMode.present
+          ? data.supportsJsonSchemaMode.value
+          : this.supportsJsonSchemaMode,
+      supportsStreaming: data.supportsStreaming.present
+          ? data.supportsStreaming.value
+          : this.supportsStreaming,
+      supportsToolCalling: data.supportsToolCalling.present
+          ? data.supportsToolCalling.value
+          : this.supportsToolCalling,
+      maxContextTokens: data.maxContextTokens.present
+          ? data.maxContextTokens.value
+          : this.maxContextTokens,
+      maxOutputTokens: data.maxOutputTokens.present
+          ? data.maxOutputTokens.value
+          : this.maxOutputTokens,
+      maxImagesPerRequest: data.maxImagesPerRequest.present
+          ? data.maxImagesPerRequest.value
+          : this.maxImagesPerRequest,
+      maxImageSizeBytes: data.maxImageSizeBytes.present
+          ? data.maxImageSizeBytes.value
+          : this.maxImageSizeBytes,
+      lastValidatedAt: data.lastValidatedAt.present
+          ? data.lastValidatedAt.value
+          : this.lastValidatedAt,
+      lastValidationStatus: data.lastValidationStatus.present
+          ? data.lastValidationStatus.value
+          : this.lastValidationStatus,
+      lastErrorCode: data.lastErrorCode.present
+          ? data.lastErrorCode.value
+          : this.lastErrorCode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiProviderConfig(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('displayName: $displayName, ')
+          ..write('selectedModel: $selectedModel, ')
+          ..write('secureKeyAlias: $secureKeyAlias, ')
+          ..write('isActive: $isActive, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('maxImageSizeBytes: $maxImageSizeBytes, ')
+          ..write('lastValidatedAt: $lastValidatedAt, ')
+          ..write('lastValidationStatus: $lastValidationStatus, ')
+          ..write('lastErrorCode: $lastErrorCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    providerName,
+    displayName,
+    selectedModel,
+    secureKeyAlias,
+    isActive,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    maxImageSizeBytes,
+    lastValidatedAt,
+    lastValidationStatus,
+    lastErrorCode,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiProviderConfig &&
+          other.id == this.id &&
+          other.providerName == this.providerName &&
+          other.displayName == this.displayName &&
+          other.selectedModel == this.selectedModel &&
+          other.secureKeyAlias == this.secureKeyAlias &&
+          other.isActive == this.isActive &&
+          other.supportsTextInput == this.supportsTextInput &&
+          other.supportsImageInput == this.supportsImageInput &&
+          other.supportsJsonSchemaMode == this.supportsJsonSchemaMode &&
+          other.supportsStreaming == this.supportsStreaming &&
+          other.supportsToolCalling == this.supportsToolCalling &&
+          other.maxContextTokens == this.maxContextTokens &&
+          other.maxOutputTokens == this.maxOutputTokens &&
+          other.maxImagesPerRequest == this.maxImagesPerRequest &&
+          other.maxImageSizeBytes == this.maxImageSizeBytes &&
+          other.lastValidatedAt == this.lastValidatedAt &&
+          other.lastValidationStatus == this.lastValidationStatus &&
+          other.lastErrorCode == this.lastErrorCode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AiProviderConfigsCompanion extends UpdateCompanion<AiProviderConfig> {
+  final Value<String> id;
+  final Value<String> providerName;
+  final Value<String?> displayName;
+  final Value<String?> selectedModel;
+  final Value<String> secureKeyAlias;
+  final Value<bool> isActive;
+  final Value<bool> supportsTextInput;
+  final Value<bool> supportsImageInput;
+  final Value<bool> supportsJsonSchemaMode;
+  final Value<bool> supportsStreaming;
+  final Value<bool?> supportsToolCalling;
+  final Value<int?> maxContextTokens;
+  final Value<int?> maxOutputTokens;
+  final Value<int?> maxImagesPerRequest;
+  final Value<int?> maxImageSizeBytes;
+  final Value<DateTime?> lastValidatedAt;
+  final Value<String?> lastValidationStatus;
+  final Value<String?> lastErrorCode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const AiProviderConfigsCompanion({
+    this.id = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.selectedModel = const Value.absent(),
+    this.secureKeyAlias = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.maxImageSizeBytes = const Value.absent(),
+    this.lastValidatedAt = const Value.absent(),
+    this.lastValidationStatus = const Value.absent(),
+    this.lastErrorCode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiProviderConfigsCompanion.insert({
+    required String id,
+    required String providerName,
+    this.displayName = const Value.absent(),
+    this.selectedModel = const Value.absent(),
+    required String secureKeyAlias,
+    this.isActive = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.maxImageSizeBytes = const Value.absent(),
+    this.lastValidatedAt = const Value.absent(),
+    this.lastValidationStatus = const Value.absent(),
+    this.lastErrorCode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       providerName = Value(providerName),
+       secureKeyAlias = Value(secureKeyAlias),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AiProviderConfig> custom({
+    Expression<String>? id,
+    Expression<String>? providerName,
+    Expression<String>? displayName,
+    Expression<String>? selectedModel,
+    Expression<String>? secureKeyAlias,
+    Expression<bool>? isActive,
+    Expression<bool>? supportsTextInput,
+    Expression<bool>? supportsImageInput,
+    Expression<bool>? supportsJsonSchemaMode,
+    Expression<bool>? supportsStreaming,
+    Expression<bool>? supportsToolCalling,
+    Expression<int>? maxContextTokens,
+    Expression<int>? maxOutputTokens,
+    Expression<int>? maxImagesPerRequest,
+    Expression<int>? maxImageSizeBytes,
+    Expression<DateTime>? lastValidatedAt,
+    Expression<String>? lastValidationStatus,
+    Expression<String>? lastErrorCode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (providerName != null) 'provider_name': providerName,
+      if (displayName != null) 'display_name': displayName,
+      if (selectedModel != null) 'selected_model': selectedModel,
+      if (secureKeyAlias != null) 'secure_key_alias': secureKeyAlias,
+      if (isActive != null) 'is_active': isActive,
+      if (supportsTextInput != null) 'supports_text_input': supportsTextInput,
+      if (supportsImageInput != null)
+        'supports_image_input': supportsImageInput,
+      if (supportsJsonSchemaMode != null)
+        'supports_json_schema_mode': supportsJsonSchemaMode,
+      if (supportsStreaming != null) 'supports_streaming': supportsStreaming,
+      if (supportsToolCalling != null)
+        'supports_tool_calling': supportsToolCalling,
+      if (maxContextTokens != null) 'max_context_tokens': maxContextTokens,
+      if (maxOutputTokens != null) 'max_output_tokens': maxOutputTokens,
+      if (maxImagesPerRequest != null)
+        'max_images_per_request': maxImagesPerRequest,
+      if (maxImageSizeBytes != null) 'max_image_size_bytes': maxImageSizeBytes,
+      if (lastValidatedAt != null) 'last_validated_at': lastValidatedAt,
+      if (lastValidationStatus != null)
+        'last_validation_status': lastValidationStatus,
+      if (lastErrorCode != null) 'last_error_code': lastErrorCode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiProviderConfigsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? providerName,
+    Value<String?>? displayName,
+    Value<String?>? selectedModel,
+    Value<String>? secureKeyAlias,
+    Value<bool>? isActive,
+    Value<bool>? supportsTextInput,
+    Value<bool>? supportsImageInput,
+    Value<bool>? supportsJsonSchemaMode,
+    Value<bool>? supportsStreaming,
+    Value<bool?>? supportsToolCalling,
+    Value<int?>? maxContextTokens,
+    Value<int?>? maxOutputTokens,
+    Value<int?>? maxImagesPerRequest,
+    Value<int?>? maxImageSizeBytes,
+    Value<DateTime?>? lastValidatedAt,
+    Value<String?>? lastValidationStatus,
+    Value<String?>? lastErrorCode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return AiProviderConfigsCompanion(
+      id: id ?? this.id,
+      providerName: providerName ?? this.providerName,
+      displayName: displayName ?? this.displayName,
+      selectedModel: selectedModel ?? this.selectedModel,
+      secureKeyAlias: secureKeyAlias ?? this.secureKeyAlias,
+      isActive: isActive ?? this.isActive,
+      supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+      supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+      supportsJsonSchemaMode:
+          supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+      supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+      supportsToolCalling: supportsToolCalling ?? this.supportsToolCalling,
+      maxContextTokens: maxContextTokens ?? this.maxContextTokens,
+      maxOutputTokens: maxOutputTokens ?? this.maxOutputTokens,
+      maxImagesPerRequest: maxImagesPerRequest ?? this.maxImagesPerRequest,
+      maxImageSizeBytes: maxImageSizeBytes ?? this.maxImageSizeBytes,
+      lastValidatedAt: lastValidatedAt ?? this.lastValidatedAt,
+      lastValidationStatus: lastValidationStatus ?? this.lastValidationStatus,
+      lastErrorCode: lastErrorCode ?? this.lastErrorCode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (selectedModel.present) {
+      map['selected_model'] = Variable<String>(selectedModel.value);
+    }
+    if (secureKeyAlias.present) {
+      map['secure_key_alias'] = Variable<String>(secureKeyAlias.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (supportsTextInput.present) {
+      map['supports_text_input'] = Variable<bool>(supportsTextInput.value);
+    }
+    if (supportsImageInput.present) {
+      map['supports_image_input'] = Variable<bool>(supportsImageInput.value);
+    }
+    if (supportsJsonSchemaMode.present) {
+      map['supports_json_schema_mode'] = Variable<bool>(
+        supportsJsonSchemaMode.value,
+      );
+    }
+    if (supportsStreaming.present) {
+      map['supports_streaming'] = Variable<bool>(supportsStreaming.value);
+    }
+    if (supportsToolCalling.present) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling.value);
+    }
+    if (maxContextTokens.present) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens.value);
+    }
+    if (maxOutputTokens.present) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens.value);
+    }
+    if (maxImagesPerRequest.present) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest.value);
+    }
+    if (maxImageSizeBytes.present) {
+      map['max_image_size_bytes'] = Variable<int>(maxImageSizeBytes.value);
+    }
+    if (lastValidatedAt.present) {
+      map['last_validated_at'] = Variable<DateTime>(lastValidatedAt.value);
+    }
+    if (lastValidationStatus.present) {
+      map['last_validation_status'] = Variable<String>(
+        lastValidationStatus.value,
+      );
+    }
+    if (lastErrorCode.present) {
+      map['last_error_code'] = Variable<String>(lastErrorCode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiProviderConfigsCompanion(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('displayName: $displayName, ')
+          ..write('selectedModel: $selectedModel, ')
+          ..write('secureKeyAlias: $secureKeyAlias, ')
+          ..write('isActive: $isActive, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('maxImageSizeBytes: $maxImageSizeBytes, ')
+          ..write('lastValidatedAt: $lastValidatedAt, ')
+          ..write('lastValidationStatus: $lastValidationStatus, ')
+          ..write('lastErrorCode: $lastErrorCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -8378,6 +9600,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
+  late final $AiProviderConfigsTable aiProviderConfigs =
+      $AiProviderConfigsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -8394,6 +9618,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     strengthAnchors,
     bodyMeasurements,
     appSettings,
+    aiProviderConfigs,
   ];
 }
 
@@ -12740,6 +13965,536 @@ typedef $$AppSettingsTableProcessedTableManager =
       AppSetting,
       PrefetchHooks Function()
     >;
+typedef $$AiProviderConfigsTableCreateCompanionBuilder =
+    AiProviderConfigsCompanion Function({
+      required String id,
+      required String providerName,
+      Value<String?> displayName,
+      Value<String?> selectedModel,
+      required String secureKeyAlias,
+      Value<bool> isActive,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<int?> maxImageSizeBytes,
+      Value<DateTime?> lastValidatedAt,
+      Value<String?> lastValidationStatus,
+      Value<String?> lastErrorCode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$AiProviderConfigsTableUpdateCompanionBuilder =
+    AiProviderConfigsCompanion Function({
+      Value<String> id,
+      Value<String> providerName,
+      Value<String?> displayName,
+      Value<String?> selectedModel,
+      Value<String> secureKeyAlias,
+      Value<bool> isActive,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<int?> maxImageSizeBytes,
+      Value<DateTime?> lastValidatedAt,
+      Value<String?> lastValidationStatus,
+      Value<String?> lastErrorCode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$AiProviderConfigsTableFilterComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiProviderConfigsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiProviderConfigsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AiProviderConfigsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AiProviderConfigsTable,
+          AiProviderConfig,
+          $$AiProviderConfigsTableFilterComposer,
+          $$AiProviderConfigsTableOrderingComposer,
+          $$AiProviderConfigsTableAnnotationComposer,
+          $$AiProviderConfigsTableCreateCompanionBuilder,
+          $$AiProviderConfigsTableUpdateCompanionBuilder,
+          (
+            AiProviderConfig,
+            BaseReferences<
+              _$AppDatabase,
+              $AiProviderConfigsTable,
+              AiProviderConfig
+            >,
+          ),
+          AiProviderConfig,
+          PrefetchHooks Function()
+        > {
+  $$AiProviderConfigsTableTableManager(
+    _$AppDatabase db,
+    $AiProviderConfigsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiProviderConfigsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiProviderConfigsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiProviderConfigsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> providerName = const Value.absent(),
+                Value<String?> displayName = const Value.absent(),
+                Value<String?> selectedModel = const Value.absent(),
+                Value<String> secureKeyAlias = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<int?> maxImageSizeBytes = const Value.absent(),
+                Value<DateTime?> lastValidatedAt = const Value.absent(),
+                Value<String?> lastValidationStatus = const Value.absent(),
+                Value<String?> lastErrorCode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiProviderConfigsCompanion(
+                id: id,
+                providerName: providerName,
+                displayName: displayName,
+                selectedModel: selectedModel,
+                secureKeyAlias: secureKeyAlias,
+                isActive: isActive,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                maxImageSizeBytes: maxImageSizeBytes,
+                lastValidatedAt: lastValidatedAt,
+                lastValidationStatus: lastValidationStatus,
+                lastErrorCode: lastErrorCode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String providerName,
+                Value<String?> displayName = const Value.absent(),
+                Value<String?> selectedModel = const Value.absent(),
+                required String secureKeyAlias,
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<int?> maxImageSizeBytes = const Value.absent(),
+                Value<DateTime?> lastValidatedAt = const Value.absent(),
+                Value<String?> lastValidationStatus = const Value.absent(),
+                Value<String?> lastErrorCode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiProviderConfigsCompanion.insert(
+                id: id,
+                providerName: providerName,
+                displayName: displayName,
+                selectedModel: selectedModel,
+                secureKeyAlias: secureKeyAlias,
+                isActive: isActive,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                maxImageSizeBytes: maxImageSizeBytes,
+                lastValidatedAt: lastValidatedAt,
+                lastValidationStatus: lastValidationStatus,
+                lastErrorCode: lastErrorCode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiProviderConfigsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AiProviderConfigsTable,
+      AiProviderConfig,
+      $$AiProviderConfigsTableFilterComposer,
+      $$AiProviderConfigsTableOrderingComposer,
+      $$AiProviderConfigsTableAnnotationComposer,
+      $$AiProviderConfigsTableCreateCompanionBuilder,
+      $$AiProviderConfigsTableUpdateCompanionBuilder,
+      (
+        AiProviderConfig,
+        BaseReferences<
+          _$AppDatabase,
+          $AiProviderConfigsTable,
+          AiProviderConfig
+        >,
+      ),
+      AiProviderConfig,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12766,4 +14521,6 @@ class $AppDatabaseManager {
       $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
+  $$AiProviderConfigsTableTableManager get aiProviderConfigs =>
+      $$AiProviderConfigsTableTableManager(_db, _db.aiProviderConfigs);
 }

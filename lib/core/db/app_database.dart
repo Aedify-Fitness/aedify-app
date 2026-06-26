@@ -15,6 +15,7 @@ import 'tables/user_profile.dart';
 import 'tables/strength_anchors.dart';
 import 'tables/body_measurements.dart';
 import 'tables/app_settings.dart';
+import 'tables/ai_provider_configs.dart';
 
 part 'app_database.g.dart';
 
@@ -31,6 +32,7 @@ part 'app_database.g.dart';
     StrengthAnchors,
     BodyMeasurements,
     AppSettings,
+    AiProviderConfigs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -38,14 +40,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 5);
+      await _logMigration(m, fromVersion: 0, toVersion: 6);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -66,6 +68,9 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(strengthAnchors);
         await m.createTable(bodyMeasurements);
         await m.createTable(appSettings);
+      }
+      if (from < 6) {
+        await m.createTable(aiProviderConfigs);
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

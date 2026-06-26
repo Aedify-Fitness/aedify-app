@@ -11,6 +11,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/features/profile/presentation/profile_screen.dart';
+import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
@@ -282,12 +283,13 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.aiProviderSettings().path,
           name: AppRoutes.aiProviderSettings().name,
-          builder: (context, state) => Scaffold(
-            appBar: AppBar(title: const Text(AppStrings.aiSettings)),
-            body: const Center(
-              child: Text(AppStrings.aiSettingsPlaceholderMessage),
-            ),
-          ),
+          redirect: (context, state) =>
+              state.namedLocation(AppRoutes.byokSettings().name),
+        ),
+        GoRoute(
+          path: AppRoutes.byokSettings().path,
+          name: AppRoutes.byokSettings().name,
+          builder: (context, state) => const ByokSettingsScreen(),
         ),
         GoRoute(
           path: AppRoutes.share().path,
