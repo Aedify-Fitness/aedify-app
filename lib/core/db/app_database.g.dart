@@ -8356,6 +8356,794 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   }
 }
 
+class $AiModelCapabilitiesTable extends AiModelCapabilities
+    with TableInfo<$AiModelCapabilitiesTable, AiModelCapability> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiModelCapabilitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelNameMeta = const VerificationMeta(
+    'modelName',
+  );
+  @override
+  late final GeneratedColumn<String> modelName = GeneratedColumn<String>(
+    'model_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supportsTextInputMeta = const VerificationMeta(
+    'supportsTextInput',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsTextInput = GeneratedColumn<bool>(
+    'supports_text_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_text_input" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsImageInputMeta =
+      const VerificationMeta('supportsImageInput');
+  @override
+  late final GeneratedColumn<bool> supportsImageInput = GeneratedColumn<bool>(
+    'supports_image_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_image_input" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsJsonSchemaModeMeta =
+      const VerificationMeta('supportsJsonSchemaMode');
+  @override
+  late final GeneratedColumn<bool> supportsJsonSchemaMode =
+      GeneratedColumn<bool>(
+        'supports_json_schema_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("supports_json_schema_mode" IN (0, 1))',
+        ),
+      );
+  static const VerificationMeta _supportsStreamingMeta = const VerificationMeta(
+    'supportsStreaming',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsStreaming = GeneratedColumn<bool>(
+    'supports_streaming',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_streaming" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsToolCallingMeta =
+      const VerificationMeta('supportsToolCalling');
+  @override
+  late final GeneratedColumn<bool> supportsToolCalling = GeneratedColumn<bool>(
+    'supports_tool_calling',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_tool_calling" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _maxContextTokensMeta = const VerificationMeta(
+    'maxContextTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxContextTokens = GeneratedColumn<int>(
+    'max_context_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxOutputTokensMeta = const VerificationMeta(
+    'maxOutputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxOutputTokens = GeneratedColumn<int>(
+    'max_output_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImagesPerRequestMeta =
+      const VerificationMeta('maxImagesPerRequest');
+  @override
+  late final GeneratedColumn<int> maxImagesPerRequest = GeneratedColumn<int>(
+    'max_images_per_request',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    providerName,
+    modelName,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    checkedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_model_capabilities';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiModelCapability> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_providerNameMeta);
+    }
+    if (data.containsKey('model_name')) {
+      context.handle(
+        _modelNameMeta,
+        modelName.isAcceptableOrUnknown(data['model_name']!, _modelNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modelNameMeta);
+    }
+    if (data.containsKey('supports_text_input')) {
+      context.handle(
+        _supportsTextInputMeta,
+        supportsTextInput.isAcceptableOrUnknown(
+          data['supports_text_input']!,
+          _supportsTextInputMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsTextInputMeta);
+    }
+    if (data.containsKey('supports_image_input')) {
+      context.handle(
+        _supportsImageInputMeta,
+        supportsImageInput.isAcceptableOrUnknown(
+          data['supports_image_input']!,
+          _supportsImageInputMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsImageInputMeta);
+    }
+    if (data.containsKey('supports_json_schema_mode')) {
+      context.handle(
+        _supportsJsonSchemaModeMeta,
+        supportsJsonSchemaMode.isAcceptableOrUnknown(
+          data['supports_json_schema_mode']!,
+          _supportsJsonSchemaModeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsJsonSchemaModeMeta);
+    }
+    if (data.containsKey('supports_streaming')) {
+      context.handle(
+        _supportsStreamingMeta,
+        supportsStreaming.isAcceptableOrUnknown(
+          data['supports_streaming']!,
+          _supportsStreamingMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsStreamingMeta);
+    }
+    if (data.containsKey('supports_tool_calling')) {
+      context.handle(
+        _supportsToolCallingMeta,
+        supportsToolCalling.isAcceptableOrUnknown(
+          data['supports_tool_calling']!,
+          _supportsToolCallingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_context_tokens')) {
+      context.handle(
+        _maxContextTokensMeta,
+        maxContextTokens.isAcceptableOrUnknown(
+          data['max_context_tokens']!,
+          _maxContextTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_output_tokens')) {
+      context.handle(
+        _maxOutputTokensMeta,
+        maxOutputTokens.isAcceptableOrUnknown(
+          data['max_output_tokens']!,
+          _maxOutputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_images_per_request')) {
+      context.handle(
+        _maxImagesPerRequestMeta,
+        maxImagesPerRequest.isAcceptableOrUnknown(
+          data['max_images_per_request']!,
+          _maxImagesPerRequestMeta,
+        ),
+      );
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiModelCapability map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiModelCapability(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      )!,
+      modelName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model_name'],
+      )!,
+      supportsTextInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_text_input'],
+      )!,
+      supportsImageInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_image_input'],
+      )!,
+      supportsJsonSchemaMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_json_schema_mode'],
+      )!,
+      supportsStreaming: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_streaming'],
+      )!,
+      supportsToolCalling: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_tool_calling'],
+      ),
+      maxContextTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_context_tokens'],
+      ),
+      maxOutputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_output_tokens'],
+      ),
+      maxImagesPerRequest: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_images_per_request'],
+      ),
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiModelCapabilitiesTable createAlias(String alias) {
+    return $AiModelCapabilitiesTable(attachedDatabase, alias);
+  }
+}
+
+class AiModelCapability extends DataClass
+    implements Insertable<AiModelCapability> {
+  final String id;
+  final String providerName;
+  final String modelName;
+  final bool supportsTextInput;
+  final bool supportsImageInput;
+  final bool supportsJsonSchemaMode;
+  final bool supportsStreaming;
+  final bool? supportsToolCalling;
+  final int? maxContextTokens;
+  final int? maxOutputTokens;
+  final int? maxImagesPerRequest;
+  final DateTime checkedAt;
+  const AiModelCapability({
+    required this.id,
+    required this.providerName,
+    required this.modelName,
+    required this.supportsTextInput,
+    required this.supportsImageInput,
+    required this.supportsJsonSchemaMode,
+    required this.supportsStreaming,
+    this.supportsToolCalling,
+    this.maxContextTokens,
+    this.maxOutputTokens,
+    this.maxImagesPerRequest,
+    required this.checkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['provider_name'] = Variable<String>(providerName);
+    map['model_name'] = Variable<String>(modelName);
+    map['supports_text_input'] = Variable<bool>(supportsTextInput);
+    map['supports_image_input'] = Variable<bool>(supportsImageInput);
+    map['supports_json_schema_mode'] = Variable<bool>(supportsJsonSchemaMode);
+    map['supports_streaming'] = Variable<bool>(supportsStreaming);
+    if (!nullToAbsent || supportsToolCalling != null) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling);
+    }
+    if (!nullToAbsent || maxContextTokens != null) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens);
+    }
+    if (!nullToAbsent || maxOutputTokens != null) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens);
+    }
+    if (!nullToAbsent || maxImagesPerRequest != null) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest);
+    }
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  AiModelCapabilitiesCompanion toCompanion(bool nullToAbsent) {
+    return AiModelCapabilitiesCompanion(
+      id: Value(id),
+      providerName: Value(providerName),
+      modelName: Value(modelName),
+      supportsTextInput: Value(supportsTextInput),
+      supportsImageInput: Value(supportsImageInput),
+      supportsJsonSchemaMode: Value(supportsJsonSchemaMode),
+      supportsStreaming: Value(supportsStreaming),
+      supportsToolCalling: supportsToolCalling == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supportsToolCalling),
+      maxContextTokens: maxContextTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxContextTokens),
+      maxOutputTokens: maxOutputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxOutputTokens),
+      maxImagesPerRequest: maxImagesPerRequest == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImagesPerRequest),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory AiModelCapability.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiModelCapability(
+      id: serializer.fromJson<String>(json['id']),
+      providerName: serializer.fromJson<String>(json['providerName']),
+      modelName: serializer.fromJson<String>(json['modelName']),
+      supportsTextInput: serializer.fromJson<bool>(json['supportsTextInput']),
+      supportsImageInput: serializer.fromJson<bool>(json['supportsImageInput']),
+      supportsJsonSchemaMode: serializer.fromJson<bool>(
+        json['supportsJsonSchemaMode'],
+      ),
+      supportsStreaming: serializer.fromJson<bool>(json['supportsStreaming']),
+      supportsToolCalling: serializer.fromJson<bool?>(
+        json['supportsToolCalling'],
+      ),
+      maxContextTokens: serializer.fromJson<int?>(json['maxContextTokens']),
+      maxOutputTokens: serializer.fromJson<int?>(json['maxOutputTokens']),
+      maxImagesPerRequest: serializer.fromJson<int?>(
+        json['maxImagesPerRequest'],
+      ),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'providerName': serializer.toJson<String>(providerName),
+      'modelName': serializer.toJson<String>(modelName),
+      'supportsTextInput': serializer.toJson<bool>(supportsTextInput),
+      'supportsImageInput': serializer.toJson<bool>(supportsImageInput),
+      'supportsJsonSchemaMode': serializer.toJson<bool>(supportsJsonSchemaMode),
+      'supportsStreaming': serializer.toJson<bool>(supportsStreaming),
+      'supportsToolCalling': serializer.toJson<bool?>(supportsToolCalling),
+      'maxContextTokens': serializer.toJson<int?>(maxContextTokens),
+      'maxOutputTokens': serializer.toJson<int?>(maxOutputTokens),
+      'maxImagesPerRequest': serializer.toJson<int?>(maxImagesPerRequest),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  AiModelCapability copyWith({
+    String? id,
+    String? providerName,
+    String? modelName,
+    bool? supportsTextInput,
+    bool? supportsImageInput,
+    bool? supportsJsonSchemaMode,
+    bool? supportsStreaming,
+    Value<bool?> supportsToolCalling = const Value.absent(),
+    Value<int?> maxContextTokens = const Value.absent(),
+    Value<int?> maxOutputTokens = const Value.absent(),
+    Value<int?> maxImagesPerRequest = const Value.absent(),
+    DateTime? checkedAt,
+  }) => AiModelCapability(
+    id: id ?? this.id,
+    providerName: providerName ?? this.providerName,
+    modelName: modelName ?? this.modelName,
+    supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+    supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+    supportsJsonSchemaMode:
+        supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+    supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+    supportsToolCalling: supportsToolCalling.present
+        ? supportsToolCalling.value
+        : this.supportsToolCalling,
+    maxContextTokens: maxContextTokens.present
+        ? maxContextTokens.value
+        : this.maxContextTokens,
+    maxOutputTokens: maxOutputTokens.present
+        ? maxOutputTokens.value
+        : this.maxOutputTokens,
+    maxImagesPerRequest: maxImagesPerRequest.present
+        ? maxImagesPerRequest.value
+        : this.maxImagesPerRequest,
+    checkedAt: checkedAt ?? this.checkedAt,
+  );
+  AiModelCapability copyWithCompanion(AiModelCapabilitiesCompanion data) {
+    return AiModelCapability(
+      id: data.id.present ? data.id.value : this.id,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      modelName: data.modelName.present ? data.modelName.value : this.modelName,
+      supportsTextInput: data.supportsTextInput.present
+          ? data.supportsTextInput.value
+          : this.supportsTextInput,
+      supportsImageInput: data.supportsImageInput.present
+          ? data.supportsImageInput.value
+          : this.supportsImageInput,
+      supportsJsonSchemaMode: data.supportsJsonSchemaMode.present
+          ? data.supportsJsonSchemaMode.value
+          : this.supportsJsonSchemaMode,
+      supportsStreaming: data.supportsStreaming.present
+          ? data.supportsStreaming.value
+          : this.supportsStreaming,
+      supportsToolCalling: data.supportsToolCalling.present
+          ? data.supportsToolCalling.value
+          : this.supportsToolCalling,
+      maxContextTokens: data.maxContextTokens.present
+          ? data.maxContextTokens.value
+          : this.maxContextTokens,
+      maxOutputTokens: data.maxOutputTokens.present
+          ? data.maxOutputTokens.value
+          : this.maxOutputTokens,
+      maxImagesPerRequest: data.maxImagesPerRequest.present
+          ? data.maxImagesPerRequest.value
+          : this.maxImagesPerRequest,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCapability(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('modelName: $modelName, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    providerName,
+    modelName,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    checkedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiModelCapability &&
+          other.id == this.id &&
+          other.providerName == this.providerName &&
+          other.modelName == this.modelName &&
+          other.supportsTextInput == this.supportsTextInput &&
+          other.supportsImageInput == this.supportsImageInput &&
+          other.supportsJsonSchemaMode == this.supportsJsonSchemaMode &&
+          other.supportsStreaming == this.supportsStreaming &&
+          other.supportsToolCalling == this.supportsToolCalling &&
+          other.maxContextTokens == this.maxContextTokens &&
+          other.maxOutputTokens == this.maxOutputTokens &&
+          other.maxImagesPerRequest == this.maxImagesPerRequest &&
+          other.checkedAt == this.checkedAt);
+}
+
+class AiModelCapabilitiesCompanion extends UpdateCompanion<AiModelCapability> {
+  final Value<String> id;
+  final Value<String> providerName;
+  final Value<String> modelName;
+  final Value<bool> supportsTextInput;
+  final Value<bool> supportsImageInput;
+  final Value<bool> supportsJsonSchemaMode;
+  final Value<bool> supportsStreaming;
+  final Value<bool?> supportsToolCalling;
+  final Value<int?> maxContextTokens;
+  final Value<int?> maxOutputTokens;
+  final Value<int?> maxImagesPerRequest;
+  final Value<DateTime> checkedAt;
+  final Value<int> rowid;
+  const AiModelCapabilitiesCompanion({
+    this.id = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.modelName = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiModelCapabilitiesCompanion.insert({
+    required String id,
+    required String providerName,
+    required String modelName,
+    required bool supportsTextInput,
+    required bool supportsImageInput,
+    required bool supportsJsonSchemaMode,
+    required bool supportsStreaming,
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    required DateTime checkedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       providerName = Value(providerName),
+       modelName = Value(modelName),
+       supportsTextInput = Value(supportsTextInput),
+       supportsImageInput = Value(supportsImageInput),
+       supportsJsonSchemaMode = Value(supportsJsonSchemaMode),
+       supportsStreaming = Value(supportsStreaming),
+       checkedAt = Value(checkedAt);
+  static Insertable<AiModelCapability> custom({
+    Expression<String>? id,
+    Expression<String>? providerName,
+    Expression<String>? modelName,
+    Expression<bool>? supportsTextInput,
+    Expression<bool>? supportsImageInput,
+    Expression<bool>? supportsJsonSchemaMode,
+    Expression<bool>? supportsStreaming,
+    Expression<bool>? supportsToolCalling,
+    Expression<int>? maxContextTokens,
+    Expression<int>? maxOutputTokens,
+    Expression<int>? maxImagesPerRequest,
+    Expression<DateTime>? checkedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (providerName != null) 'provider_name': providerName,
+      if (modelName != null) 'model_name': modelName,
+      if (supportsTextInput != null) 'supports_text_input': supportsTextInput,
+      if (supportsImageInput != null)
+        'supports_image_input': supportsImageInput,
+      if (supportsJsonSchemaMode != null)
+        'supports_json_schema_mode': supportsJsonSchemaMode,
+      if (supportsStreaming != null) 'supports_streaming': supportsStreaming,
+      if (supportsToolCalling != null)
+        'supports_tool_calling': supportsToolCalling,
+      if (maxContextTokens != null) 'max_context_tokens': maxContextTokens,
+      if (maxOutputTokens != null) 'max_output_tokens': maxOutputTokens,
+      if (maxImagesPerRequest != null)
+        'max_images_per_request': maxImagesPerRequest,
+      if (checkedAt != null) 'checked_at': checkedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiModelCapabilitiesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? providerName,
+    Value<String>? modelName,
+    Value<bool>? supportsTextInput,
+    Value<bool>? supportsImageInput,
+    Value<bool>? supportsJsonSchemaMode,
+    Value<bool>? supportsStreaming,
+    Value<bool?>? supportsToolCalling,
+    Value<int?>? maxContextTokens,
+    Value<int?>? maxOutputTokens,
+    Value<int?>? maxImagesPerRequest,
+    Value<DateTime>? checkedAt,
+    Value<int>? rowid,
+  }) {
+    return AiModelCapabilitiesCompanion(
+      id: id ?? this.id,
+      providerName: providerName ?? this.providerName,
+      modelName: modelName ?? this.modelName,
+      supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+      supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+      supportsJsonSchemaMode:
+          supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+      supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+      supportsToolCalling: supportsToolCalling ?? this.supportsToolCalling,
+      maxContextTokens: maxContextTokens ?? this.maxContextTokens,
+      maxOutputTokens: maxOutputTokens ?? this.maxOutputTokens,
+      maxImagesPerRequest: maxImagesPerRequest ?? this.maxImagesPerRequest,
+      checkedAt: checkedAt ?? this.checkedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (modelName.present) {
+      map['model_name'] = Variable<String>(modelName.value);
+    }
+    if (supportsTextInput.present) {
+      map['supports_text_input'] = Variable<bool>(supportsTextInput.value);
+    }
+    if (supportsImageInput.present) {
+      map['supports_image_input'] = Variable<bool>(supportsImageInput.value);
+    }
+    if (supportsJsonSchemaMode.present) {
+      map['supports_json_schema_mode'] = Variable<bool>(
+        supportsJsonSchemaMode.value,
+      );
+    }
+    if (supportsStreaming.present) {
+      map['supports_streaming'] = Variable<bool>(supportsStreaming.value);
+    }
+    if (supportsToolCalling.present) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling.value);
+    }
+    if (maxContextTokens.present) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens.value);
+    }
+    if (maxOutputTokens.present) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens.value);
+    }
+    if (maxImagesPerRequest.present) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCapabilitiesCompanion(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('modelName: $modelName, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('checkedAt: $checkedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AiProviderConfigsTable extends AiProviderConfigs
     with TableInfo<$AiProviderConfigsTable, AiProviderConfig> {
   @override
@@ -9600,6 +10388,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
+  late final $AiModelCapabilitiesTable aiModelCapabilities =
+      $AiModelCapabilitiesTable(this);
   late final $AiProviderConfigsTable aiProviderConfigs =
       $AiProviderConfigsTable(this);
   @override
@@ -9618,6 +10408,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     strengthAnchors,
     bodyMeasurements,
     appSettings,
+    aiModelCapabilities,
     aiProviderConfigs,
   ];
 }
@@ -13965,6 +14756,373 @@ typedef $$AppSettingsTableProcessedTableManager =
       AppSetting,
       PrefetchHooks Function()
     >;
+typedef $$AiModelCapabilitiesTableCreateCompanionBuilder =
+    AiModelCapabilitiesCompanion Function({
+      required String id,
+      required String providerName,
+      required String modelName,
+      required bool supportsTextInput,
+      required bool supportsImageInput,
+      required bool supportsJsonSchemaMode,
+      required bool supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      required DateTime checkedAt,
+      Value<int> rowid,
+    });
+typedef $$AiModelCapabilitiesTableUpdateCompanionBuilder =
+    AiModelCapabilitiesCompanion Function({
+      Value<String> id,
+      Value<String> providerName,
+      Value<String> modelName,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<DateTime> checkedAt,
+      Value<int> rowid,
+    });
+
+class $$AiModelCapabilitiesTableFilterComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modelName => $composableBuilder(
+    column: $table.modelName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiModelCapabilitiesTableOrderingComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modelName => $composableBuilder(
+    column: $table.modelName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiModelCapabilitiesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modelName =>
+      $composableBuilder(column: $table.modelName, builder: (column) => column);
+
+  GeneratedColumn<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+}
+
+class $$AiModelCapabilitiesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AiModelCapabilitiesTable,
+          AiModelCapability,
+          $$AiModelCapabilitiesTableFilterComposer,
+          $$AiModelCapabilitiesTableOrderingComposer,
+          $$AiModelCapabilitiesTableAnnotationComposer,
+          $$AiModelCapabilitiesTableCreateCompanionBuilder,
+          $$AiModelCapabilitiesTableUpdateCompanionBuilder,
+          (
+            AiModelCapability,
+            BaseReferences<
+              _$AppDatabase,
+              $AiModelCapabilitiesTable,
+              AiModelCapability
+            >,
+          ),
+          AiModelCapability,
+          PrefetchHooks Function()
+        > {
+  $$AiModelCapabilitiesTableTableManager(
+    _$AppDatabase db,
+    $AiModelCapabilitiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiModelCapabilitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiModelCapabilitiesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AiModelCapabilitiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> providerName = const Value.absent(),
+                Value<String> modelName = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCapabilitiesCompanion(
+                id: id,
+                providerName: providerName,
+                modelName: modelName,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String providerName,
+                required String modelName,
+                required bool supportsTextInput,
+                required bool supportsImageInput,
+                required bool supportsJsonSchemaMode,
+                required bool supportsStreaming,
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                required DateTime checkedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCapabilitiesCompanion.insert(
+                id: id,
+                providerName: providerName,
+                modelName: modelName,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiModelCapabilitiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AiModelCapabilitiesTable,
+      AiModelCapability,
+      $$AiModelCapabilitiesTableFilterComposer,
+      $$AiModelCapabilitiesTableOrderingComposer,
+      $$AiModelCapabilitiesTableAnnotationComposer,
+      $$AiModelCapabilitiesTableCreateCompanionBuilder,
+      $$AiModelCapabilitiesTableUpdateCompanionBuilder,
+      (
+        AiModelCapability,
+        BaseReferences<
+          _$AppDatabase,
+          $AiModelCapabilitiesTable,
+          AiModelCapability
+        >,
+      ),
+      AiModelCapability,
+      PrefetchHooks Function()
+    >;
 typedef $$AiProviderConfigsTableCreateCompanionBuilder =
     AiProviderConfigsCompanion Function({
       required String id,
@@ -14521,6 +15679,8 @@ class $AppDatabaseManager {
       $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
+  $$AiModelCapabilitiesTableTableManager get aiModelCapabilities =>
+      $$AiModelCapabilitiesTableTableManager(_db, _db.aiModelCapabilities);
   $$AiProviderConfigsTableTableManager get aiProviderConfigs =>
       $$AiProviderConfigsTableTableManager(_db, _db.aiProviderConfigs);
 }

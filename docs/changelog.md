@@ -26,12 +26,51 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-26
 
+### Fixed (M3 status correction — 5 of 9 tickets complete, 4 remaining)
+
+- V1-M3-001 through V1-M3-005 are complete (onboarding, profile, settings, BYOK, capability gate). V1-M3-006 (P1), V1-M3-007 (P1), V1-M3-008 (P0), V1-M3-009 (P0) remain open.
+- `docs/implementation.md` updated: status line, completed work section, planned work all reflect accurate M3 progress.
+- No code changes.
+
 ### Changed (setState elimination — API key visibility toggles use ValueNotifier)
 
 - `_ByokOptionalStepState` (`onboarding_screen.dart`): Replaced `bool _obscured` + `setState` with `ValueNotifier<bool>` + `ValueListenableBuilder` for the API key obscurity toggle.
 - `_ApiKeyFieldState` (`byok_settings_screen.dart`): Same refactor — `ValueNotifier<bool>` + `ValueListenableBuilder` instead of `setState`.
 - Result: **Zero `setState` calls remain anywhere in `lib/`**.
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 485/485 passed.
+
+### Added (V1-M3-005 — Provider Capability Matrix & Gate Service)
+
+- **`AiModelCapabilities` Drift table** (`lib/core/db/tables/ai_model_capabilities.dart`): Model-level capability cache — `id`, `providerName`, `modelName`, `supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `checkedAt`. Composite ID key.
+- **Database migration**: Schema 6→7, `m.createTable(aiModelCapabilities)` in v7 step.
+- **`AiModelCapabilityDao`** (`lib/core/db/daos/ai_model_capability_dao.dart`): 3 methods — `getCapability(providerName, modelName)`, `upsertCapability(AiModelCapabilitiesCompanion)`, `deleteCapability(providerName, modelName)`.
+- **Domain models** (`lib/features/settings/domain/`):
+  - `ProviderCapabilityType` — enum: `textInput`, `imageInput`, `jsonSchemaMode`, `streaming`, `toolCalling`.
+  - `ProviderOperationType` — enum: `aiChat`, `aiWorkoutGeneration`, `aiProgrammeGeneration`, `structuredSaveFlow`, `externalTextImportParse`, `imageImport`, `physiqueAnalysis`.
+  - `ProviderCapabilityViewData` — data class with all capability flags + `checkedAt`.
+  - `ProviderGateDecision` — `allowed`/`blocked` constructors with `isAllowed`, `reason`, `message`.
+  - `ProviderGateFailureReason` — enum: 8 failure reasons (`missingProviderConfig`, `missingKey`, `unsupportedModel`, `missingTextCapability`, `missingImageCapability`, `missingJsonSchemaCapability`, `offline`, `capabilityUnknown`).
+- **`ProviderCapabilityRepository`** (abstract) + **`DriftProviderCapabilityRepository`** (`lib/features/settings/data/`): Maps DB row ↔ `ProviderCapabilityViewData`. Methods: `getCapability`, `saveCapability`, `clearCapability`.
+- **`ProviderGateService`** (abstract) + **`DefaultProviderGateService`** (`lib/features/settings/data/`): Fail-closed gate — checks: active config exists → hasKey → model selected → network online → capability cache exists → operation-specific capability present → allowed. All failure paths return safe `AppStrings` guidance.
+- Capability requirements per operation: `aiChat`/`externalTextImportParse` → textInput; `aiWorkoutGeneration`/`aiProgrammeGeneration` → textInput + jsonSchemaMode; `structuredSaveFlow` → jsonSchemaMode; `imageImport`/`physiqueAnalysis` → imageInput.
+- **`ProviderCapabilityState`** + **`ProviderCapabilityController`** (`lib/features/settings/application/`): `AsyncNotifier` using Riverpod 3.x family pattern (`AsyncNotifierProvider.family` with constructor args). `build()` reads cached capability; `reload()` refreshes.
+- **Optional `ProviderCapabilityScreen`** (`lib/features/settings/presentation/provider_capability_screen.dart`): `ConsumerWidget` for displaying cached capability (loading/error/capability views).
+- **Provider wiring** (`lib/app/providers/providers.dart`): 4 new providers — `aiModelCapabilityDaoProvider`, `providerCapabilityRepositoryProvider`, `providerGateServiceProvider`, `providerCapabilityControllerProvider` (family).
+- **Strings**: 7 new `AppStrings` (capability and gate guidance messages), 2 new `AppErrorStrings` (capability load errors).
+- **Tests**: 18 new — 4 DAO, 3 repository, 8 gate service (all fail-closed scenarios), 3 controller. Shared `FakeConfigDao`/`FakeSecureStorage`/`FakeNetworkStatus` extended. Schema version tests updated 6→7.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `dart run build_runner build` — passed (314 outputs). `flutter test` — 503/503 passed.
+
+### Fixed (V1-M3-005 gap closure — tool calling, SVGs, retry, redaction test, AppStrings compliance)
+
+- **`AiModelCapabilities` table**: Added `supportsToolCalling` nullable bool column — matches data model plan §9. Companion updated by codegen.
+- **`ProviderCapabilityViewData`**: Added `supportsToolCalling` nullable field with conditional display in capability screen.
+- **`DriftProviderCapabilityRepository`**: Added `supportsToolCalling` to DB↔view data mapping in both read and save paths.
+- **`ProviderCapabilityScreen`**: Added Tool Calling capability tile (shown only when non-null). Replaced `Icons.check_circle`/`Icons.cancel` with `OutlinedSvgAssets.checkCircle`/`OutlinedSvgAssets.xCircle`. Added retry button (`OutlinedButton.icon` with `arrowPath` SVG) to `_UnavailableView` that invalidates the controller provider.
+- **Hardcoded strings → AppStrings**: Moved all 10 user-facing labels (`providerCapabilityTitle`, `capabilityTextInput`, `capabilityImageInput`, `capabilityJsonSchemaMode`, `capabilityStreaming`, `capabilityToolCalling`, `capabilityMaxContextTokens`, `capabilityMaxOutputTokens`, `capabilityMaxImagesPerRequest`, `capabilityLastChecked`) and reused existing `AppStrings.retry`. Zero hardcoded strings remain in the screen.
+- **Design compliance**: Read `DESIGN.md` per AGENTS.md §162. Applied Flutter mobile design skill pack per §163-164. Confirmed colors use `context.colorScheme`, text uses `AppTextStyles`, spacing uses `AppSpacing`/`AppWhiteSpace`/`AppSizing`, no raw tokens.
+- **Redaction test**: Added `all block messages are safe AppStrings — no internal details leaked` test — verifies all 6 failure-path messages are known safe `AppStrings` constants with no forbidden patterns (provider/model names, API keys, file paths, error terminology).
+- **1 new test** — 504 total passing. No schema change (nullable column addition, no migration needed).
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 504/504 passed.
 
 ### Added (V1-M3-004 — Full BYOK Provider Setup Flow)
 

@@ -344,6 +344,31 @@ class AppStrings {
   static const byokMoreCapableModelsHint = 'More capable models available';
   static const byokTestingKey = 'Testing key...';
   static const lessThan = '<';
+  // Provider capability
+  static const String providerCapabilityUnavailable =
+      'Capability information is unavailable.';
+  static const String providerTextOnly =
+      'This provider supports text-only AI features.';
+  static const String providerImageUnsupported =
+      'This provider/model does not support image input.';
+  static const String providerJsonUnsupported =
+      'This provider/model does not support structured JSON/schema mode.';
+  static const String providerOfflineBlocked =
+      'This action requires network access.';
+  static const String providerSetupRequired =
+      'Set up an AI provider to use this feature.';
+  static const String providerKeyRequired = 'Add an API key to continue.';
+  static const String providerCapabilityTitle = 'Provider Capability';
+  static const String capabilityTextInput = 'Text Input';
+  static const String capabilityImageInput = 'Image Input';
+  static const String capabilityJsonSchemaMode = 'JSON Schema Mode';
+  static const String capabilityStreaming = 'Streaming';
+  static const String capabilityToolCalling = 'Tool Calling';
+  static const String capabilityMaxContextTokens = 'Max Context Tokens';
+  static const String capabilityMaxOutputTokens = 'Max Output Tokens';
+  static const String capabilityMaxImagesPerRequest = 'Max Images Per Request';
+  static const String capabilityLastChecked = 'Last Checked';
+
   static const byokProviderOpenAiDescription =
       'Widely used, strong general-purpose models with broad tooling support.';
   static const byokProviderAnthropicDescription =

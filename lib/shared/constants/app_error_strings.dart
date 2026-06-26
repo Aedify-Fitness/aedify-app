@@ -64,4 +64,10 @@ class AppErrorStrings {
       'Key rejected by provider. Check the key and try again.';
   static const String byokValidationNetworkError =
       'Could not reach provider to validate key. Check your connection and try again.';
+
+  // Provider capability
+  static const String providerCapabilityUnknownMessage =
+      'Could not determine provider capabilities.';
+  static const String providerCapabilityLoadFailedMessage =
+      'Could not load provider capability information.';
 }

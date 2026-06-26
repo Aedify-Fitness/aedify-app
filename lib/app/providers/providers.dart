@@ -1,6 +1,7 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/ai_model_capability_dao.dart';
 import 'package:aedify/core/db/daos/ai_provider_config_dao.dart';
 import 'package:aedify/core/db/daos/app_settings_dao.dart';
 import 'package:aedify/core/db/daos/body_measurement_dao.dart';
@@ -51,9 +52,15 @@ import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/application/settings_controller.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
+import 'package:aedify/features/settings/data/default_provider_gate_service.dart';
 import 'package:aedify/features/settings/data/drift_byok_repository.dart';
+import 'package:aedify/features/settings/data/drift_provider_capability_repository.dart';
 import 'package:aedify/features/settings/data/drift_settings_repository.dart';
+import 'package:aedify/features/settings/data/provider_capability_repository.dart';
+import 'package:aedify/features/settings/data/provider_gate_service.dart';
 import 'package:aedify/features/settings/data/settings_repository.dart';
+import 'package:aedify/features/settings/application/provider_capability_controller.dart';
+import 'package:aedify/features/settings/application/provider_capability_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -332,4 +339,35 @@ class AppProviders {
       AsyncNotifierProvider<ByokSetupController, ByokSetupState>(
         ByokSetupController.new,
       );
+
+  // Provider capability
+  static final aiModelCapabilityDaoProvider = Provider<AiModelCapabilityDao>((
+    ref,
+  ) {
+    return AiModelCapabilityDao(ref.read(appDatabaseProvider));
+  });
+
+  static final providerCapabilityRepositoryProvider =
+      Provider<ProviderCapabilityRepository>((ref) {
+        return DriftProviderCapabilityRepository(
+          capabilityDao: ref.read(aiModelCapabilityDaoProvider),
+        );
+      });
+
+  static final providerGateServiceProvider = Provider<ProviderGateService>((
+    ref,
+  ) {
+    return DefaultProviderGateService(
+      byokRepository: ref.read(byokRepositoryProvider),
+      capabilityRepository: ref.read(providerCapabilityRepositoryProvider),
+      networkStatus: ref.read(networkStatusProvider),
+    );
+  });
+
+  static final providerCapabilityControllerProvider =
+      AsyncNotifierProvider.family<
+        ProviderCapabilityController,
+        ProviderCapabilityState,
+        ({String providerName, String modelName})
+      >((arg) => ProviderCapabilityController(arg.providerName, arg.modelName));
 }

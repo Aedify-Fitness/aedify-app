@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete: BYOK provider/model/key configuration UI with secure storage integration, provider/model selectors, API key input with obscured toggle, save/delete/set-active operations, built-in OpenAI/Anthropic/Google options with pricing, key validation via separate Dio endpoints (5s, no retry) before persist, cost-per-workout indicator, "more capable models" hint, "Skip AI for now" button, onboarding BYOK step with key entry form, 4 new repository tests (485 total passing), 0 analyze errors. All `setState` eliminated from `lib/` — both `_obscured` toggles use `ValueNotifier` + `ValueListenableBuilder`. |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed: `supportsToolCalling` column added, `Icons.*` replaced with SVGs, retry action on empty state, redaction test for gate messages, string audit. **4 combined tickets remain**: V1-M3-006 (P1 — profile→candidate wiring), V1-M3-007 (P1 — unit/preference handling), V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 504 tests passing. Zero `setState` calls in `lib/`. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## Completed Work
@@ -258,6 +258,53 @@
   - Test assertions updated for schema v5, cleared `experienceLevel` (now `''`), and async `updateDraft`.
 - Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
 
+### V1-M3-005 — Provider Capability Matrix & Gate Service (complete)
+
+- **`AiModelCapabilities` Drift table** (`lib/core/db/tables/ai_model_capabilities.dart`): Model-level capability cache — `id`, `providerName`, `modelName`, `supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `supportsToolCalling` (nullable), `maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `checkedAt`. Composite ID key (`${providerName}_$modelName`).
+- **Database migration**: Schema 6→7, `m.createTable(aiModelCapabilities)` in v7 step. Test schema version assertions updated 6→7.
+- **`AiModelCapabilityDao`** (`lib/core/db/daos/ai_model_capability_dao.dart`): 3 methods — `getCapability(providerName, modelName)`, `upsertCapability(AiModelCapabilitiesCompanion)`, `deleteCapability(providerName, modelName)`.
+- **Domain models** (`lib/features/settings/domain/`):
+  - `ProviderCapabilityType` — enum: `textInput`, `imageInput`, `jsonSchemaMode`, `streaming`, `toolCalling`.
+  - `ProviderOperationType` — enum: 7 operations: `aiChat`, `aiWorkoutGeneration`, `aiProgrammeGeneration`, `structuredSaveFlow`, `externalTextImportParse`, `imageImport`, `physiqueAnalysis`.
+  - `ProviderCapabilityViewData` — data class: `supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `checkedAt`.
+  - `ProviderGateDecision` — `allowed()`/`blocked(reason, message)` constructors with `isAllowed`, `reason` (`ProviderGateFailureReason`), `message` (safe `AppStrings` guidance).
+  - `ProviderGateFailureReason` — enum: 8 values — `missingProviderConfig`, `missingKey`, `unsupportedModel`, `missingTextCapability`, `missingImageCapability`, `missingJsonSchemaCapability`, `offline`, `capabilityUnknown`.
+- **`ProviderCapabilityRepository`** (abstract): `getCapability(providerName, modelName)` → `ProviderCapabilityViewData?`, `saveCapability()`, `clearCapability()`.
+- **`DriftProviderCapabilityRepository`** (`lib/features/settings/data/drift_provider_capability_repository.dart`): Maps `AiModelCapability` DB row ↔ `ProviderCapabilityViewData`. Uses `_capabilityId(providerName, modelName)` composite key. Imports `app_database.dart` for `AiModelCapabilitiesCompanion`.
+- **`ProviderGateService`** (abstract): `evaluate(operation)` → `ProviderGateDecision`.
+- **`DefaultProviderGateService`** (`lib/features/settings/data/default_provider_gate_service.dart`): Fail-closed gate — 7 sequential checks:
+  1. Active provider config exists → else `missingProviderConfig`
+  2. Key exists (`ByokRepository.hasKey`) → else `missingKey`
+  3. Network online (`NetworkStatus.check`) → else `offline`
+  4. Capability cache exists → else `capabilityUnknown`
+  5. Operation-specific capability: `aiChat`/`externalTextImportParse` → textInput; `aiWorkoutGeneration`/`aiProgrammeGeneration` → textInput + jsonSchemaMode; `structuredSaveFlow` → jsonSchemaMode; `imageImport`/`physiqueAnalysis` → imageInput
+  6. Required capability present → else `missingXxxCapability`
+  7. Allowed
+- All failure paths return safe `AppStrings` guidance messages (no internals, no prompts, no model IDs in error messages).
+- **`ProviderCapabilityState`** (`lib/features/settings/application/provider_capability_state.dart`): `isLoading`, `capability` (`ProviderCapabilityViewData?`), `errorCode`/`errorMessage`, `hasError`.
+- **`ProviderCapabilityController`** (`lib/features/settings/application/provider_capability_controller.dart`): `AsyncNotifier` with Riverpod 3.x family pattern (`AsyncNotifierProvider.family` + constructor args `(providerName, modelName)`). `build()` reads cached capability from repository; `reload()` refreshes.
+- **Optional `ProviderCapabilityScreen`** (`lib/features/settings/presentation/provider_capability_screen.dart`): `ConsumerWidget` — loading/error/capability views with capability tiles and info tiles.
+- **Provider wiring** (`lib/app/providers/providers.dart`): 4 new — `aiModelCapabilityDaoProvider`, `providerCapabilityRepositoryProvider`, `providerGateServiceProvider`, `providerCapabilityControllerProvider` (family).
+- **Strings**: 7 new `AppStrings` (`providerCapabilityUnavailable`, `providerTextOnly`, `providerImageUnsupported`, `providerJsonUnsupported`, `providerOfflineBlocked`, `providerSetupRequired`, `providerKeyRequired`), 2 new `AppErrorStrings` (`providerCapabilityUnknownMessage`, `providerCapabilityLoadFailedMessage`).
+- **Tests**: 18 new:
+  - 4 DAO tests: get null → nil, upsert → saved, get after upsert, delete → removed.
+  - 3 repository tests: save persists, get maps correctly, clear removes.
+  - 8 gate service tests: missing config, missing key, offline, missing image, missing json schema, text-only allowed, image allowed, capability unknown.
+  - 3 controller tests: initial build loads, build surfaces error, reload refreshes.
+  - Shared `FakeConfigDao`/`FakeSecureStorage`/`FakeNetworkStatus` extended.
+- **Fix applied**: Schema version assertions in `app_database_test.dart` and `migration_test.dart` updated 6→7.
+- **Gap closure** (post-V1-M3-005): Added `supportsToolCalling` nullable column to table/view/repository mappings. Replaced `Icons.check_circle`/`Icons.cancel` with `OutlinedSvgAssets.checkCircle`/`OutlinedSvgAssets.xCircle`. Added retry button to empty state view. Added redaction test verifying all gate messages are safe `AppStrings`.
+- Verification: `dart run build_runner build` — passed (298 outputs). `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 504/504 passed (19 new: 4 DAO + 3 repository + 8 gate service + 3 controller + 1 redaction).
+
+### Remaining M3 Tickets (not started)
+
+| Ticket | Title | Priority | Type |
+|--------|-------|----------|------|
+| V1-M3-006 | Connect profile preferences to candidate engine | P1 | data |
+| V1-M3-007 | Implement unit and measurement preference handling | P1 | feature |
+| V1-M3-008 | Create onboarding/profile/BYOK privacy tests | P0 | qa |
+| V1-M3-009 | Create M3 setup acceptance smoke flow | P0 | qa |
+
 ### V1-M3-004 — Full BYOK Provider Setup Flow (complete)
 
 - **`AiProviderConfigs` Drift table** (`lib/core/db/tables/ai_provider_configs.dart`): Metadata, capability flags (`supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `supportsToolCalling`), model limits (`maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `maxImageSizeBytes`), validation tracking (`lastValidatedAt`, `lastValidationStatus`, `lastErrorCode`), timestamps. Primary key `id`.
@@ -302,6 +349,7 @@
 
 ## Planned Work
 
+- **M3 remaining** — V1-M3-006 (profile→candidate wiring), V1-M3-007 (unit handling), V1-M3-008 (privacy tests), V1-M3-009 (acceptance smoke flow)
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
@@ -317,8 +365,8 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:30`)
-- `flutter test` — 485/485 passed (25 new: 6 DAO, 10 repository, 7 controller, 2 widget)
-- `dart run build_runner build` — passed (280 outputs)
+- `flutter test` — 504/504 passed (19 new: 4 DAO, 3 repository, 8 gate service, 3 controller, 1 redaction)
+- `dart run build_runner build` — passed (298 outputs)
 - `dart format` — all files formatted
 
 ## Codebase Convention Enforcement Status
