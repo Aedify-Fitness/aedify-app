@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed: `supportsToolCalling` column added, `Icons.*` replaced with SVGs, retry action on empty state, redaction test for gate messages, string audit. **4 combined tickets remain**: V1-M3-006 (P1 — profile→candidate wiring), V1-M3-007 (P1 — unit/preference handling), V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 504 tests passing. Zero `setState` calls in `lib/`. |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed: `supportsToolCalling` column added, `Icons.*` replaced with SVGs, retry action on empty state, redaction test for gate messages, string audit. V1-M3-006 complete — profile→candidate wiring (deterministic hard/soft filters), all gaps closed (modality hard-filter bug fixed, docs updated, privacy audit passed, backlog/data-model references cross-referenced). **3 tickets remain**: V1-M3-007 (P1 — unit/preference handling), V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 527 tests passing. Zero `setState` calls in `lib/`. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## Completed Work
@@ -296,11 +296,10 @@
 - **Gap closure** (post-V1-M3-005): Added `supportsToolCalling` nullable column to table/view/repository mappings. Replaced `Icons.check_circle`/`Icons.cancel` with `OutlinedSvgAssets.checkCircle`/`OutlinedSvgAssets.xCircle`. Added retry button to empty state view. Added redaction test verifying all gate messages are safe `AppStrings`.
 - Verification: `dart run build_runner build` — passed (298 outputs). `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 504/504 passed (19 new: 4 DAO + 3 repository + 8 gate service + 3 controller + 1 redaction).
 
-### Remaining M3 Tickets (not started)
+### Remaining M3 Tickets
 
 | Ticket | Title | Priority | Type |
 |--------|-------|----------|------|
-| V1-M3-006 | Connect profile preferences to candidate engine | P1 | data |
 | V1-M3-007 | Implement unit and measurement preference handling | P1 | feature |
 | V1-M3-008 | Create onboarding/profile/BYOK privacy tests | P0 | qa |
 | V1-M3-009 | Create M3 setup acceptance smoke flow | P0 | qa |
@@ -349,7 +348,7 @@
 
 ## Planned Work
 
-- **M3 remaining** — V1-M3-006 (profile→candidate wiring), V1-M3-007 (unit handling), V1-M3-008 (privacy tests), V1-M3-009 (acceptance smoke flow)
+- **M3 remaining** — V1-M3-007 (unit handling), V1-M3-008 (privacy tests), V1-M3-009 (acceptance smoke flow)
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
@@ -362,10 +361,28 @@
 - M13 — Optional AI Physique Analysis
 - M14 — Privacy, Resilience, Release Hardening
 
+### V1-M3-006 — Connect Profile Preferences to Candidate Engine (complete)
+
+- **`ProfileCandidatePreferences`** (`lib/features/profile/domain/profile_candidate_preferences.dart`): Bridge domain model — `allowedEquipment`, `allowedDifficulties`, `allowedModalities`, `excludedExerciseIds`, `excludedMuscleGroups`, `goalTags`, `preferredMuscleGroups`, `includeCustomExercises`.
+- **`ProfileCandidatePreferencesService`** (abstract) + **`DefaultProfileCandidatePreferencesService`** (`lib/features/profile/data/`): Reads `ProfileRepository.getProfile()`, maps deterministically:
+  - `equipmentAccess` → `allowedEquipment` (pass-through set)
+  - `experienceLevel` → `allowedDifficulties` (4-tier: Beginner → {novice, beginner}, Intermediate → {beginner, intermediate}, Advanced/unknown/null → all 4)
+  - Goals → `goalTags` soft ranking (Build muscle → hypertrophy, Lose weight/Improve endurance → cardio, Increase strength → strength)
+  - `substitutedExerciseIds` → `excludedExerciseIds` (hard exclusion)
+  - `injuriesLimitations` → `excludedMuscleGroups` → empty (no free-text heuristics)
+  - `allowedModalities` → empty (no hard filter on modality; handled by `goalTags` soft ranking)
+- **Provider wired**: `profileCandidatePreferencesServiceProvider` in `AppProviders` (`lib/app/providers/providers.dart:313`).
+- **Gap closure** (post-implementation audit): `_mapModalities` was returning raw goal strings (`"Build muscle"`) which never matched exercise modality taxonomy values (`"strength"`, `"hypertrophy"`, `"cardio"`), causing the hard filter to block all candidates. Fixed to return empty set. Corresponding test updated.
+- **No signature changes** to `CandidateExerciseQuery` or `CandidateExerciseQueryService` — existing 9-field model covers all requirements.
+- **No `ProfileViewData` expansion** needed — all 7 fields already present.
+- **Tests**: 18 new — 17 service tests (equipment, experience, goal tags, substitutions, defaults, null profile) + 4 profile-derived candidate integration tests (equipment restriction, difficulty restriction, substituted exclusion, goal ranking).
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 527/527 passed (18 new).
+- **Compliance closeout**: Privacy audit confirmed `DefaultProfileCandidatePreferencesService` is pure read-transform-return — no logging, no Crashlytics calls, no storage writes, no raw profile data in the `ProfileCandidatePreferences` DTO output. Backlog ticket (`references/aedify-v1-build-ticket-backlog-v1.0/05-...`) and data model plan (`references/aedify-v1-data-model-implementation-plan-v1.0/04-...`, `13-...`) cross-referenced. `dart run build_runner build` ran successfully. No rules violations remain.
+
 ## Verification Notes
 
 - `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:30`)
-- `flutter test` — 504/504 passed (19 new: 4 DAO, 3 repository, 8 gate service, 3 controller, 1 redaction)
+- `flutter test` — 527/527 passed (18 new: 17 service + 4 profile-derived candidate integration, −1 removed old modality test)
 - `dart run build_runner build` — passed (298 outputs)
 - `dart format` — all files formatted
 

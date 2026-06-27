@@ -26,9 +26,21 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-26
 
+### Added (V1-M3-006 — Connect profile preferences to candidate engine)
+
+- **`ProfileCandidatePreferences`**: New domain model bridging profile data with the candidate exercise engine — equipment, difficulty, modality, exclusions, goal tags, and ranking inputs.
+- **`ProfileCandidatePreferencesService`** (abstract) + **`DefaultProfileCandidatePreferencesService`**: Implementation reads `ProfileRepository.getProfile()` and maps deterministically — equipment pass-through, experience→difficulty 4-tier, goals→goalTags (hypertrophy/cardio/strength), substituted→excludedExerciseIds, no free-text injury heuristics.
+- **Provider wired**: `profileCandidatePreferencesServiceProvider` in `AppProviders`.
+- **Gap closed**: `_mapModalities` was returning raw goal strings (would hard-filter all exercises). Fixed to return empty set — no hard modality filter; modality scoring handled by `goalTags` soft ranking.
+- **No `CandidateExerciseQuery` or `CandidateExerciseQueryService` changes** — existing model covers all fields.
+- **No `ProfileViewData` expansion needed** — all 7 required fields already present.
+- **Tests**: 18 new (17 service + 4 profile-derived candidate integration, −1 removed old modality test). 527/527 total passing.
+- **Docs**: `implementation.md` updated — V1-M3-006 entry added, remaining tickets corrected (3 left), test count 527.
+- **Compliance closeout**: Cross-referenced build ticket backlog (V1-M3-006), data model plan (privacy/storage boundaries), and data privacy rules. Privacy audit confirmed `DefaultProfileCandidatePreferencesService` is clean — no logging, Crashlytics, storage writes, or raw profile data in DTOs. `dart run build_runner build` passed. No rules violations remain.
+
 ### Fixed (M3 status correction — 5 of 9 tickets complete, 4 remaining)
 
-- V1-M3-001 through V1-M3-005 are complete (onboarding, profile, settings, BYOK, capability gate). V1-M3-006 (P1), V1-M3-007 (P1), V1-M3-008 (P0), V1-M3-009 (P0) remain open.
+- V1-M3-001 through V1-M3-006 are complete (onboarding, profile, settings, BYOK, capability gate, profile→candidate wiring). V1-M3-007 (P1), V1-M3-008 (P0), V1-M3-009 (P0) remain open.
 - `docs/implementation.md` updated: status line, completed work section, planned work all reflect accurate M3 progress.
 - No code changes.
 

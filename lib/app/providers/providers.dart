@@ -47,7 +47,9 @@ import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
 import 'package:aedify/features/profile/application/profile_controller.dart';
+import 'package:aedify/features/profile/data/default_profile_candidate_preferences_service.dart';
 import 'package:aedify/features/profile/data/drift_profile_repository.dart';
+import 'package:aedify/features/profile/data/profile_candidate_preferences_service.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/application/settings_controller.dart';
@@ -307,6 +309,13 @@ class AppProviders {
       AsyncNotifierProvider<ProfileController, ProfileState>(
         ProfileController.new,
       );
+
+  static final profileCandidatePreferencesServiceProvider =
+      Provider<ProfileCandidatePreferencesService>((ref) {
+        return DefaultProfileCandidatePreferencesService(
+          profileRepository: ref.read(profileRepositoryProvider),
+        );
+      });
 
   // Settings
   static final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
