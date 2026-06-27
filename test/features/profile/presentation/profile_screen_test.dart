@@ -238,4 +238,56 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('metric selection shows weight label and unit suffix', (
+    tester,
+  ) async {
+    final repo = _FakeProfileRepository();
+    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+
+    await tester.pumpWidget(createTestApp(repo));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text(AppStrings.metricWeightLabel), findsOneWidget);
+  });
+
+  testWidgets('imperial selection updates weight label', (tester) async {
+    final repo = _FakeProfileRepository();
+    await repo.saveProfile(
+      const ProfileEditDraft(
+        experienceLevel: 'Beginner',
+        preferredUnits: PreferredUnit.imperial,
+      ),
+    );
+
+    await tester.pumpWidget(createTestApp(repo));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text(AppStrings.imperialWeightLabel), findsOneWidget);
+  });
+
+  testWidgets('stored canonical values display in selected units', (
+    tester,
+  ) async {
+    final repo = _FakeProfileRepository();
+    await repo.saveProfile(
+      const ProfileEditDraft(
+        experienceLevel: 'Beginner',
+        preferredUnits: PreferredUnit.metric,
+        bodyweightKg: 70,
+        heightCm: 175,
+      ),
+    );
+
+    await tester.pumpWidget(createTestApp(repo));
+    await tester.pump();
+    await tester.pump();
+
+    // Bodyweight formatted value (70.0 kg)
+    expect(find.text('70.0'), findsOneWidget);
+    // Height formatted value (175.0 cm)
+    expect(find.text('175.0'), findsOneWidget);
+  });
 }

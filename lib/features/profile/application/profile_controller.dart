@@ -4,6 +4,8 @@ import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/formatters/measurement_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileState {
@@ -180,6 +182,32 @@ class ProfileController extends AsyncNotifier<ProfileState> {
         ),
       );
     }
+  }
+
+  Future<void> updatePreferredUnits(PreferredUnit unit) async {
+    final current = state.requireValue;
+    final draft = current.draft ?? const ProfileEditDraft();
+    await updateDraft(draft.copyWith(preferredUnits: unit));
+  }
+
+  Future<void> updateBodyweightFromDisplay(String rawValue) async {
+    final current = state.requireValue;
+    final draft = current.draft ?? const ProfileEditDraft();
+    final canonical = MeasurementParser.parseWeightToCanonicalKg(
+      rawValue: rawValue,
+      preferredUnit: draft.preferredUnits,
+    );
+    await updateDraft(draft.copyWith(bodyweightKg: canonical));
+  }
+
+  Future<void> updateHeightFromDisplay(String rawValue) async {
+    final current = state.requireValue;
+    final draft = current.draft ?? const ProfileEditDraft();
+    final canonical = MeasurementParser.parseHeightToCanonicalCm(
+      rawValue: rawValue,
+      preferredUnit: draft.preferredUnits,
+    );
+    await updateDraft(draft.copyWith(heightCm: canonical));
   }
 
   String? _validateDraft(ProfileEditDraft draft) {

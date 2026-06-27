@@ -1,4 +1,5 @@
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/unit_conversion.dart';
 
 enum PreferredUnit {
   metric(
@@ -46,27 +47,47 @@ enum PreferredUnit {
     return PreferredUnit.values.firstWhere((u) => u.dbValue == value);
   }
 
+  double toDisplayWeight(double kilograms) {
+    if (isImperial) return UnitConversion.kilogramsToPounds(kilograms);
+    return kilograms;
+  }
+
+  double toDisplayHeight(double centimetres) {
+    if (isImperial) return UnitConversion.centimetresToInches(centimetres);
+    return centimetres;
+  }
+
+  double toCanonicalWeight(double input) {
+    if (isImperial) return UnitConversion.poundsToKilograms(input);
+    return input;
+  }
+
+  double toCanonicalHeight(double input) {
+    if (isImperial) return UnitConversion.inchesToCentimetres(input);
+    return input;
+  }
+
   double toImperialHeight(double cm) {
     if (isImperial) return cm;
 
-    return cm / 2.54;
+    return UnitConversion.centimetresToInches(cm);
   }
 
   double toImperialWeight(double kg) {
     if (isImperial) return kg;
 
-    return kg / 0.45359237;
+    return UnitConversion.kilogramsToPounds(kg);
   }
 
   double toMetricHeight(double inches) {
     if (!isImperial) return inches;
 
-    return inches * 2.54;
+    return UnitConversion.inchesToCentimetres(inches);
   }
 
   double toMetricWeight(double lbs) {
     if (!isImperial) return lbs;
 
-    return lbs * 0.45359237;
+    return UnitConversion.poundsToKilograms(lbs);
   }
 }

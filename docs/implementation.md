@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed: `supportsToolCalling` column added, `Icons.*` replaced with SVGs, retry action on empty state, redaction test for gate messages, string audit. V1-M3-006 complete — profile→candidate wiring (deterministic hard/soft filters), all gaps closed (modality hard-filter bug fixed, docs updated, privacy audit passed, backlog/data-model references cross-referenced). **3 tickets remain**: V1-M3-007 (P1 — unit/preference handling), V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 527 tests passing. Zero `setState` calls in `lib/`. |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed. V1-M3-006 complete — profile→candidate wiring. V1-M3-007 complete — unit and measurement preference handling (canonical kg/cm storage, display conversion, formatters/parsers, profile 1RM fields unit-aware). **2 tickets remain**: V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 555 tests passing. Zero `setState` calls in `lib/`. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## Completed Work
@@ -300,9 +300,22 @@
 
 | Ticket | Title | Priority | Type |
 |--------|-------|----------|------|
-| V1-M3-007 | Implement unit and measurement preference handling | P1 | feature |
 | V1-M3-008 | Create onboarding/profile/BYOK privacy tests | P0 | qa |
 | V1-M3-009 | Create M3 setup acceptance smoke flow | P0 | qa |
+
+### V1-M3-007 — Implement Unit and Measurement Preference Handling (complete)
+
+- **`UnitConversion`** (`lib/shared/domain/unit_conversion.dart`): Low-level pure numeric conversions — `kilogramsToPounds`, `poundsToKilograms`, `centimetresToInches`, `inchesToCentimetres`, `formatSafe`.
+- **`MeasurementParser`** (`lib/shared/formatters/measurement_parser.dart`): `parseWeightToCanonicalKg`, `parseHeightToCanonicalCm` — parse display input, convert to canonical kg/cm using `PreferredUnit.isImperial`.
+- **`MeasurementFormatter`** (`lib/shared/formatters/measurement_formatter.dart`): `formatWeight`, `formatHeight` — format canonical kg/cm into display string using `PreferredUnit.toDisplay*`.
+- **`PreferredUnit` extended** (`lib/shared/domain/preferred_unit.dart`): Added `toDisplayWeight`, `toDisplayHeight`, `toCanonicalWeight`, `toCanonicalHeight` — delegate to `UnitConversion` helpers. Legacy `toImperialHeight/Weight` and `toMetricHeight/Weight` consolidated to delegate to `UnitConversion` instead of inline conversion factors.
+- **`ProfileController` extended**: `updatePreferredUnits`, `updateBodyweightFromDisplay`, `updateHeightFromDisplay` — convert display→canonical via `MeasurementParser`.
+- **`ProfileScreen` unit-aware**: Bodyweight/height fields use `MeasurementFormatter` for display and `MeasurementParser` for input. All three 1RM fields (bench/squat/deadlift) upgraded from hardcoded `'kg'` suffix + raw `double.tryParse` to `MeasurementFormatter.formatWeight()` display + `MeasurementParser.parseWeightToCanonicalKg()` input + dynamic `draft.preferredUnits.weightUnit` suffix.
+- **`_FormField.didUpdateWidget`**: Added to sync `TextEditingController` when `initialValue` changes on unit switch.
+- **No changes needed**: `drift_profile_repository.dart`, `settings_edit_draft.dart`, `settings_view_data.dart`, `settings_controller.dart`, `settings_screen.dart`, `drift_settings_repository.dart`, `AppStrings` — all already correct.
+- **Tests**: 28 new — `preferred_unit_test.dart` (10), `measurement_parser_test.dart` (6), `measurement_formatter_test.dart` (6), `profile_controller_test.dart` (+3), `profile_screen_test.dart` (+3).
+- **Gap closed**: 1RM fields had hardcoded `'kg'` suffix with no unit conversion — now unit-aware using `MeasurementFormatter`/`MeasurementParser`.
+- **Verification**: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 555/555 passed.
 
 ### V1-M3-004 — Full BYOK Provider Setup Flow (complete)
 
@@ -348,7 +361,7 @@
 
 ## Planned Work
 
-- **M3 remaining** — V1-M3-007 (unit handling), V1-M3-008 (privacy tests), V1-M3-009 (acceptance smoke flow)
+- **M3 remaining** — V1-M3-008 (privacy tests), V1-M3-009 (acceptance smoke flow)
 - M4 — Manual Programmes, Workouts, Logging
 - M5 — Analytics, PRs, Plateau Base Logic
 - M6 — Progress Media Tracking
@@ -382,7 +395,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:30`)
-- `flutter test` — 527/527 passed (18 new: 17 service + 4 profile-derived candidate integration, −1 removed old modality test)
+- `flutter test` — 555/555 passed (28 new: 10 preferred_unit + 6 parser + 6 formatter + 3 profile_controller + 3 profile_screen)
 - `dart run build_runner build` — passed (298 outputs)
 - `dart format` — all files formatted
 

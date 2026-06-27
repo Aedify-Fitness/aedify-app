@@ -144,5 +144,59 @@ void main() {
       expect(state.requireValue.isLoading, isFalse);
       expect(state.requireValue.profile, isNotNull);
     });
+
+    test('updatePreferredUnits updates draft units', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.profileControllerProvider.notifier,
+      );
+
+      await controller.build();
+
+      await controller.updatePreferredUnits(PreferredUnit.imperial);
+
+      final state = container.read(AppProviders.profileControllerProvider);
+      expect(state.requireValue.draft!.preferredUnits, PreferredUnit.imperial);
+    });
+
+    test('updateBodyweightFromDisplay converts to canonical kg', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.profileControllerProvider.notifier,
+      );
+
+      await controller.build();
+      await controller.updateDraft(
+        const ProfileEditDraft(
+          experienceLevel: 'Beginner',
+          preferredUnits: PreferredUnit.imperial,
+        ),
+      );
+
+      await controller.updateBodyweightFromDisplay('154');
+
+      final state = container.read(AppProviders.profileControllerProvider);
+      expect(state.requireValue.draft!.bodyweightKg, closeTo(69.9, 0.1));
+    });
+
+    test('updateHeightFromDisplay converts to canonical cm', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.profileControllerProvider.notifier,
+      );
+
+      await controller.build();
+      await controller.updateDraft(
+        const ProfileEditDraft(
+          experienceLevel: 'Beginner',
+          preferredUnits: PreferredUnit.imperial,
+        ),
+      );
+
+      await controller.updateHeightFromDisplay('69');
+
+      final state = container.read(AppProviders.profileControllerProvider);
+      expect(state.requireValue.draft!.heightCm, closeTo(175.3, 0.1));
+    });
   });
 }

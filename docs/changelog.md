@@ -24,6 +24,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
 - **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
 
+## 2026-06-27
+
+### Added (V1-M3-007 — Implement unit and measurement preference handling)
+
+- **`UnitConversion`** (`lib/shared/domain/unit_conversion.dart`): Pure numeric conversions — kg↔lb, cm↔in, `formatSafe`.
+- **Consolidated conversion math**: `PreferredUnit.toImperialHeight/Weight` and `toMetricHeight/Weight` now delegate to `UnitConversion` instead of inline `* 0.45359237` / `/ 2.54` factors.
+- **`MeasurementParser`** (`lib/shared/formatters/measurement_parser.dart`): `parseWeightToCanonicalKg`, `parseHeightToCanonicalCm`.
+- **`MeasurementFormatter`** (`lib/shared/formatters/measurement_formatter.dart`): `formatWeight`, `formatHeight`.
+- **`PreferredUnit` extended** (`lib/shared/domain/preferred_unit.dart`): `toDisplayWeight`, `toDisplayHeight`, `toCanonicalWeight`, `toCanonicalHeight`.
+- **`ProfileController` extended**: `updatePreferredUnits`, `updateBodyweightFromDisplay`, `updateHeightFromDisplay`.
+- **`ProfileScreen` unit-aware**: Bodyweight/height + all three 1RM fields use `MeasurementFormatter`/`MeasurementParser` + dynamic unit suffix.
+- **`_FormField.didUpdateWidget`**: Syncs `TextEditingController` when `initialValue` changes on unit switch.
+- **Gap closed**: 1RM fields had hardcoded `'kg'` suffix + raw `double.tryParse` — now unit-aware with display conversion and input parsing.
+- **Tests**: 28 new. **555/555 passing**.
+- **M3 status**: V1-M3-007 complete. **2 tickets remain**: V1-M3-008 (P0), V1-M3-009 (P0).
+
 ## 2026-06-26
 
 ### Added (V1-M3-006 — Connect profile preferences to candidate engine)

@@ -6,6 +6,8 @@ import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/formatters/measurement_formatter.dart';
+import 'package:aedify/shared/formatters/measurement_parser.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -313,31 +315,31 @@ class _ProfileContentView extends ConsumerWidget {
           _SectionCard(
             title: AppStrings.bodyweight,
             child: _FormField(
-              label: '',
-              initialValue: draft.bodyweightKg?.toString() ?? '',
-              hintText: '70',
-              suffixText: 'kg',
+              label: draft.preferredUnits.weightLabel,
+              initialValue: MeasurementFormatter.formatWeight(
+                weightKg: draft.bodyweightKg,
+                preferredUnit: draft.preferredUnits,
+              ),
+              hintText: draft.preferredUnits.weightHint,
+              suffixText: draft.preferredUnits.weightUnit,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              onChanged: (value) {
-                final parsed = double.tryParse(value);
-                controller.updateDraft(draft.copyWith(bodyweightKg: parsed));
-              },
+              onChanged: controller.updateBodyweightFromDisplay,
             ),
           ),
           AppWhiteSpace.hMd,
 
           _FormField(
-            label: AppStrings.height,
-            initialValue: draft.heightCm?.toString() ?? '',
-            hintText: '170',
-            suffixText: 'cm',
+            label: draft.preferredUnits.heightLabel,
+            initialValue: MeasurementFormatter.formatHeight(
+              heightCm: draft.heightCm,
+              preferredUnit: draft.preferredUnits,
+            ),
+            hintText: draft.preferredUnits.heightHint,
+            suffixText: draft.preferredUnits.heightUnit,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (value) {
-              final parsed = double.tryParse(value);
-              controller.updateDraft(draft.copyWith(heightCm: parsed));
-            },
+            onChanged: controller.updateHeightFromDisplay,
           ),
           AppWhiteSpace.hMd,
 
@@ -348,42 +350,60 @@ class _ProfileContentView extends ConsumerWidget {
               children: [
                 _FormField(
                   label: AppStrings.bench1Rm,
-                  initialValue: draft.bench1RmKg?.toString() ?? '',
+                  initialValue: MeasurementFormatter.formatWeight(
+                    weightKg: draft.bench1RmKg,
+                    preferredUnit: draft.preferredUnits,
+                  ),
                   hintText: '60',
-                  suffixText: 'kg',
+                  suffixText: draft.preferredUnits.weightUnit,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
                   onChanged: (value) {
-                    final parsed = double.tryParse(value);
+                    final parsed = MeasurementParser.parseWeightToCanonicalKg(
+                      rawValue: value,
+                      preferredUnit: draft.preferredUnits,
+                    );
                     controller.updateDraft(draft.copyWith(bench1RmKg: parsed));
                   },
                 ),
                 AppWhiteSpace.hMd,
                 _FormField(
                   label: AppStrings.squat1Rm,
-                  initialValue: draft.squat1RmKg?.toString() ?? '',
+                  initialValue: MeasurementFormatter.formatWeight(
+                    weightKg: draft.squat1RmKg,
+                    preferredUnit: draft.preferredUnits,
+                  ),
                   hintText: '80',
-                  suffixText: 'kg',
+                  suffixText: draft.preferredUnits.weightUnit,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
                   onChanged: (value) {
-                    final parsed = double.tryParse(value);
+                    final parsed = MeasurementParser.parseWeightToCanonicalKg(
+                      rawValue: value,
+                      preferredUnit: draft.preferredUnits,
+                    );
                     controller.updateDraft(draft.copyWith(squat1RmKg: parsed));
                   },
                 ),
                 AppWhiteSpace.hMd,
                 _FormField(
                   label: AppStrings.deadlift1Rm,
-                  initialValue: draft.deadlift1RmKg?.toString() ?? '',
+                  initialValue: MeasurementFormatter.formatWeight(
+                    weightKg: draft.deadlift1RmKg,
+                    preferredUnit: draft.preferredUnits,
+                  ),
                   hintText: '100',
-                  suffixText: 'kg',
+                  suffixText: draft.preferredUnits.weightUnit,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
                   onChanged: (value) {
-                    final parsed = double.tryParse(value);
+                    final parsed = MeasurementParser.parseWeightToCanonicalKg(
+                      rawValue: value,
+                      preferredUnit: draft.preferredUnits,
+                    );
                     controller.updateDraft(
                       draft.copyWith(deadlift1RmKg: parsed),
                     );
@@ -794,6 +814,14 @@ class _FormFieldState extends State<_FormField> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(_FormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      _controller.text = widget.initialValue;
+    }
   }
 
   @override
