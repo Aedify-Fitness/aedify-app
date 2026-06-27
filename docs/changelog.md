@@ -6,6 +6,13 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-27
 
+### Fixed (Test infrastructure — drift warning suppression, off-screen taps)
+
+- **Drift "multiple database instances" warning fix**: Removed ineffectual top-level IIFE from `test/features/settings/data/fake_dependencies.dart` — Dart `final` top-level variables are lazily initialized, so the private `_suppressDriftWarning` variable was never read and never ran. Moved `driftRuntimeOptions.dontWarnAboutMultipleDatabases = true` directly into `main()` in 3 test files: `drift_byok_repository_test.dart`, `byok_setup_controller_test.dart`, `byok_settings_screen_test.dart`.
+- **Profile screen off-screen tap fix** (`test/features/profile/presentation/profile_screen_test.dart:221`): Added `tester.ensureVisible()` before tapping "Save profile" — button was below the 800×600 viewport.
+- **Onboarding screen off-screen tap fix** (`test/features/onboarding/presentation/onboarding_screen_test.dart:265`): Added `tester.ensureVisible()` before tapping "Build muscle" goal — chip was below the viewport in the full-flow test.
+- Verification: `dart format` — passed. `flutter test` — 606/606 passed, zero drift warnings, zero off-screen tap warnings.
+
 ### Fixed (M3 audit — isCheapest, resume-byokOptional, unused DAOs)
 
 - **Removed broken `isCheapest` getter** (`lib/features/settings/domain/byok_model_option.dart`): The `totalCostPer1kTokens == 0` check always returned `false`. The getter was unused in UI code (`_MoreCapableHint` computes cost comparison inline), so it was removed entirely.

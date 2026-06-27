@@ -9,6 +9,7 @@ import 'package:aedify/features/onboarding/application/onboarding_controller.dar
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   testWidgets('renders startup loading state by default', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: AedifyApp()));
     await tester.pump();

@@ -5,6 +5,7 @@ import 'package:aedify/features/settings/presentation/byok_settings_screen.dart'
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +13,7 @@ import '../../support/privacy/privacy_sentinel_values.dart';
 import 'm3_test_harness.dart';
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   group('M3 Setup Smoke Flow', () {
     late M3TestHarness harness;
 

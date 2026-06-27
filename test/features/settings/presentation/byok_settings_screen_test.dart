@@ -7,6 +7,7 @@ import 'package:aedify/shared/constants/app_error_strings.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_test/flutter_test.dart';
 import '../data/fake_dependencies.dart';
 
@@ -50,6 +51,7 @@ Widget createTestApp({required ByokRepository repository}) {
 }
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late FakeConfigDao configDao;
   late FakeSecureStorage secureStorage;
   late ByokRepository repository;

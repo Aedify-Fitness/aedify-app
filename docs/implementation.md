@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed. V1-M3-006 complete — profile→candidate wiring. V1-M3-007 complete — unit and measurement preference handling. V1-M3-008 complete — onboarding/profile/BYOK privacy tests. **V1-M3-009 complete** — M3 acceptance smoke flow (8 tests, all passing). **All M3 tickets closed.** Schema v7. **606 tests passing** (3 fixes: removed dead `isCheapest`, fixed resume bypass, cleaned unused DAO fields). Zero `setState` calls in `lib/`. |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed. V1-M3-006 complete — profile→candidate wiring. V1-M3-007 complete — unit and measurement preference handling. V1-M3-008 complete — onboarding/profile/BYOK privacy tests. **V1-M3-009 complete** — M3 acceptance smoke flow (8 tests, all passing). **All M3 tickets closed.** Schema v7. **606 tests passing** (3 fixes: removed dead `isCheapest`, fixed resume bypass, cleaned unused DAO fields; 2 infra fixes: lazy drift IIFE → direct main() flag, off-screen tap → ensureVisible). Zero drift warnings in test output. Zero `setState` calls in `lib/`. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## Completed Work
@@ -363,6 +363,12 @@
   - Router navigation tests need 2 `pump()` calls to settle after `router.go()`.
 - **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 605/605 passed (8 new M3 smoke flow + 1 new route + 4 new BYOK/onboarding/gate + 12 expanded existing).
 
+### Test infrastructure fixes (post-M3 cleanup)
+
+- **Drift warning suppression**: The top-level `_suppressDriftWarning` IIFE in `fake_dependencies.dart` relied on Dart eagerly initializing a `final` top-level variable, but Dart initializes them lazily — the private variable was never read, so the closure never ran. Removed the IIFE and drift import from `fake_dependencies.dart`. Added `driftRuntimeOptions.dontWarnAboutMultipleDatabases = true` directly in `main()` of `drift_byok_repository_test.dart`, `byok_setup_controller_test.dart`, and `byok_settings_screen_test.dart`.
+- **Off-screen taps**: Both `profile_screen_test.dart` and `onboarding_screen_test.dart` had `tester.tap()` calls targeting widgets below the 800×600 viewport (Save profile at y=3010, Build muscle at y=795). Fixed with `tester.ensureVisible()` before `tester.tap()`.
+- Verification: all 606 tests pass, zero drift warnings, zero off-screen tap warnings.
+
 ### V1-M3-004 — Full BYOK Provider Setup Flow (complete)
 
 - **`AiProviderConfigs` Drift table** (`lib/core/db/tables/ai_provider_configs.dart`): Metadata, capability flags (`supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `supportsToolCalling`), model limits (`maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `maxImageSizeBytes`), validation tracking (`lastValidatedAt`, `lastValidationStatus`, `lastErrorCode`), timestamps. Primary key `id`.
@@ -441,7 +447,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues (2 pre-existing unused-field warnings in `drift_profile_repository.dart:28:24` and `:30:30`)
-- `flutter test` — 555/555 passed (28 new: 10 preferred_unit + 6 parser + 6 formatter + 3 profile_controller + 3 profile_screen)
+- `flutter test` — 606/606 passed (zero drift warnings, zero off-screen tap warnings)
 - `dart run build_runner build` — passed (298 outputs)
 - `dart format` — all files formatted
 

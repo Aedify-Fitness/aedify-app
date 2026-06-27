@@ -218,6 +218,8 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.ensureVisible(find.text(AppStrings.saveProfile));
+    await tester.pump();
     await tester.tap(find.text(AppStrings.saveProfile));
     await tester.pump();
     await tester.pump();

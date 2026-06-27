@@ -3,10 +3,12 @@ import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_model_option.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_test/flutter_test.dart';
 import 'fake_dependencies.dart';
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late FakeConfigDao configDao;
   late FakeSecureStorage secureStorage;
   late DriftByokRepository repository;

@@ -3,6 +3,7 @@ import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -50,6 +51,7 @@ Future<void> pumpUntilLoaded(WidgetTester tester) async {
 }
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   group('OnboardingScreen', () {
     testWidgets('fresh install shows onboarding welcome', (tester) async {
       await pumpUntilLoaded(tester);
@@ -259,6 +261,10 @@ void main() {
 
       // Experience & goals
       await tester.tap(find.text(AppStrings.onboardingExperienceIntermediate));
+      await tester.pump();
+      await tester.ensureVisible(
+        find.text(AppStrings.onboardingGoalBuildMuscle),
+      );
       await tester.pump();
       await tester.tap(find.text(AppStrings.onboardingGoalBuildMuscle));
       await tester.pump();

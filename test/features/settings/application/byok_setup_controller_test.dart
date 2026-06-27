@@ -4,6 +4,7 @@ import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../data/fake_dependencies.dart';
@@ -49,6 +50,7 @@ class _ValidatingFakeRepository extends DriftByokRepository {
 }
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late FakeConfigDao configDao;
   late FakeSecureStorage secureStorage;
   late ByokRepository repository;
