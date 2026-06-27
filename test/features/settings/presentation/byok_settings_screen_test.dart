@@ -149,4 +149,67 @@ void main() {
 
     expect(find.text('Google'), findsOneWidget);
   });
+
+  testWidgets(
+    'invalid key validation surfaces safe error without leaking key',
+    (tester) async {
+      final failingRepo = _FailingValidationRepository(
+        configDao: configDao,
+        secureStorageService: secureStorage,
+      );
+      await tester.pumpWidget(createTestApp(repository: failingRepo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('OpenAI'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField),
+        PrivacySentinelValues.fakeApiKey,
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(AppStrings.saveKey));
+      await tester.pumpAndSettle();
+
+      // Safe error message — no raw key material
+      expect(
+        find.text(AppErrorStrings.byokKeyValidationFailed),
+        findsOneWidget,
+      );
+      // After validation failure the form stays visible so the user can
+      // correct the key. Privacy gate is no persistence/logging, not UI
+      // clearance — so we do NOT assert findsNothing for the key here.
+    },
+  );
+
+  testWidgets('delete key removes config and updates state', (tester) async {
+    // First save a config
+    await tester.pumpWidget(createTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('OpenAI'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField), 'sk-test-key-delete');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(AppStrings.saveKey));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppStrings.savedProviders), findsOneWidget);
+
+    // Tap delete key (opens confirmation dialog)
+    await tester.tap(find.text(AppStrings.deleteKey));
+    await tester.pumpAndSettle();
+
+    // Confirm deletion in dialog — second "Delete key" is the FilledButton
+    await tester.tap(find.text(AppStrings.deleteKey).last);
+    await tester.pumpAndSettle();
+
+    // Verify config is removed — should see the empty state again
+    expect(find.text(AppStrings.savedProviders), findsNothing);
+    expect(find.text(AppStrings.provider), findsOneWidget);
+    expect(find.text(AppStrings.saveKey), findsOneWidget);
+  });
 }

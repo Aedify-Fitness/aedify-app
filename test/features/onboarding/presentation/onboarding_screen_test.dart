@@ -210,5 +210,94 @@ void main() {
 
       expect(find.text(AppStrings.onboardingScheduleTitle), findsOneWidget);
     });
+
+    testWidgets('minimal onboarding completes successfully', (tester) async {
+      final repo = _FakeOnboardingRepository();
+
+      await tester.pumpWidget(createTestApp(repo));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.onboardingExperienceIntermediate));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text('4'));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      expect(find.text(AppStrings.onboardingReviewTitle), findsOneWidget);
+
+      await tester.tap(find.text(AppStrings.finishSetup));
+      await tester.pump();
+      await tester.pump();
+
+      expect(await repo.isOnboardingCompleted(), isTrue);
+    });
+
+    testWidgets('full onboarding with all fields completes', (tester) async {
+      final repo = _FakeOnboardingRepository();
+
+      await tester.pumpWidget(createTestApp(repo));
+      await tester.pump();
+      await tester.pump();
+
+      // Welcome -> continue
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Experience & goals
+      await tester.tap(find.text(AppStrings.onboardingExperienceIntermediate));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.onboardingGoalBuildMuscle));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Schedule
+      await tester.tap(find.text('4'));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Equipment (select dumbbells)
+      await tester.tap(find.text(AppStrings.onboardingEquipmentDumbbells));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Units & metrics (accept default metric)
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Limitations (select none)
+      await tester.tap(find.text(AppStrings.onboardingLimitationNone));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // BYOK optional -> continue (skip)
+      await tester.tap(find.text(AppStrings.continueLabel));
+      await tester.pump();
+
+      // Review -> finish
+      expect(find.text(AppStrings.onboardingReviewTitle), findsOneWidget);
+      await tester.tap(find.text(AppStrings.finishSetup));
+      await tester.pump();
+      await tester.pump();
+
+      expect(await repo.isOnboardingCompleted(), isTrue);
+    });
   });
 }

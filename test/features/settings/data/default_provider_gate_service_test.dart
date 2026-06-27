@@ -312,6 +312,96 @@ void main() {
       },
     );
 
+    test('text-capable AI allows chat and text import parse', () async {
+      final gate = DefaultProviderGateService(
+        byokRepository: _MockByokRepository(activeConfig: _config()),
+        capabilityRepository: _MockCapabilityRepository(
+          capability: textCapability,
+        ),
+        networkStatus: _MockNetworkStatus(isOnline: true),
+      );
+
+      final chatDecision = await gate.evaluate(
+        operation: ProviderOperationType.aiChat,
+      );
+      expect(chatDecision.isAllowed, isTrue);
+
+      final externalTextDecision = await gate.evaluate(
+        operation: ProviderOperationType.externalTextImportParse,
+      );
+      expect(externalTextDecision.isAllowed, isTrue);
+    });
+
+    test(
+      'text-only AI blocks workout/programme generation (needs json schema)',
+      () async {
+        final gate = DefaultProviderGateService(
+          byokRepository: _MockByokRepository(activeConfig: _config()),
+          capabilityRepository: _MockCapabilityRepository(
+            capability: textCapability,
+          ),
+          networkStatus: _MockNetworkStatus(isOnline: true),
+        );
+
+        final workoutDecision = await gate.evaluate(
+          operation: ProviderOperationType.aiWorkoutGeneration,
+        );
+        expect(workoutDecision.isAllowed, isFalse);
+        expect(
+          workoutDecision.reason,
+          equals(ProviderGateFailureReason.missingJsonSchemaCapability),
+        );
+
+        final programmeDecision = await gate.evaluate(
+          operation: ProviderOperationType.aiProgrammeGeneration,
+        );
+        expect(programmeDecision.isAllowed, isFalse);
+        expect(
+          programmeDecision.reason,
+          equals(ProviderGateFailureReason.missingJsonSchemaCapability),
+        );
+      },
+    );
+
+    test(
+      'missing image capability blocks image import and physique analysis',
+      () async {
+        final gate = DefaultProviderGateService(
+          byokRepository: _MockByokRepository(activeConfig: _config()),
+          capabilityRepository: _MockCapabilityRepository(
+            capability: textCapability,
+          ),
+          networkStatus: _MockNetworkStatus(isOnline: true),
+        );
+
+        final imageDecision = await gate.evaluate(
+          operation: ProviderOperationType.imageImport,
+        );
+        expect(imageDecision.isAllowed, isFalse);
+        expect(
+          imageDecision.reason,
+          equals(ProviderGateFailureReason.missingImageCapability),
+        );
+        expect(
+          imageDecision.message,
+          equals(AppStrings.providerImageUnsupported),
+        );
+
+        final physiqueDecision = await gate.evaluate(
+          operation: ProviderOperationType.physiqueAnalysis,
+        );
+        expect(physiqueDecision.isAllowed, isFalse);
+        expect(
+          physiqueDecision.reason,
+          equals(ProviderGateFailureReason.missingImageCapability),
+        );
+        expect(
+          physiqueDecision.message,
+          equals(AppStrings.providerImageUnsupported),
+        );
+      },
+    );
+
     test(
       'all block messages are safe AppStrings — no internal details leaked',
       () async {

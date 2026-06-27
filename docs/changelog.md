@@ -35,6 +35,15 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests**: 30 new. **585/585 passing**.
 - **M3 status**: V1-M3-008 complete. **1 ticket remains**: V1-M3-009 (P0).
 
+### Added (V1-M3-009 — M3 acceptance smoke flow tests)
+
+- **Test scaffold**: `test/app/m3/fake_m3_dependencies.dart` (5 fakes) + `m3_test_harness.dart` (pumpApp with 10 overrides) + `m3_setup_smoke_flow_test.dart` (8 acceptance tests).
+- **8 acceptance tests**: fresh install → onboarding welcome, full 7-step onboarding, post-onboarding nav (profile/settings/BYOK), BYOK key save (no sentinel leak), AI gating missing/available key, onboarding validation block, BYOK validation safe error.
+- **Existing tests expanded**: `app_router_test` (M3 gate routes), `onboarding_screen_test` (completion), `byok_settings_screen_test` (validation + delete), `default_provider_gate_service_test` (text-capable vs json-schema).
+- **Fixes**: gate service json-schema requirement, AI gating split, BYOK validation assertion (form stays visible on failure — privacy gate is no persistence/logging), `AppStrings.profileEdit` for profile screen, router nav 2 `pump()` calls, delete dialog confirmation required.
+- **M3 complete**: **All V1-M3 tickets closed** (001–009).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 605/605 passed.
+
 ### Added (V1-M3-007 — Implement unit and measurement preference handling)
 
 - **`UnitConversion`** (`lib/shared/domain/unit_conversion.dart`): Pure numeric conversions — kg↔lb, cm↔in, `formatSafe`.

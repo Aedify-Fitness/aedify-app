@@ -425,6 +425,121 @@ void main() {
         equals(AppRoutes.bodymap().path),
       );
     });
+
+    testWidgets('settings and BYOK settings routes reachable post-onboarding', (
+      tester,
+    ) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.missingKey,
+        draft: DraftGuard.clear,
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+
+      // Settings should be reachable even with missing AI key
+      router.go(AppRoutes.settings().path);
+      await tester.pump();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.settings().path),
+      );
+
+      // BYOK settings should be reachable
+      router.go(AppRoutes.byokSettings().path);
+      await tester.pump();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.byokSettings().path),
+      );
+    });
+
+    testWidgets('exercise library route reachable post-onboarding', (
+      tester,
+    ) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+
+      router.go(AppRoutes.exercises().path);
+      await tester.pump();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.exercises().path),
+      );
+    });
+
+    testWidgets(
+      'import-image route blocked by importsDisabled flag, reachable when enabled',
+      (tester) async {
+        // Blocked when disabled
+        final disabledRouter = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+          flags: const FeatureFlags(importsEnabled: false),
+        );
+        disabledRouter.go(AppRoutes.home().path);
+        await tester.pump();
+        disabledRouter.go(AppRoutes.importImage().path);
+        await tester.pump();
+        expect(
+          disabledRouter.routeInformationProvider.value.uri.path,
+          equals(AppRoutes.importDisabled().path),
+        );
+
+        // Reachable when enabled
+        final enabledRouter = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+          flags: const FeatureFlags(importsEnabled: true),
+        );
+        enabledRouter.go(AppRoutes.home().path);
+        await tester.pump();
+        enabledRouter.go(AppRoutes.importImage().path);
+        await tester.pump();
+        expect(
+          enabledRouter.routeInformationProvider.value.uri.path,
+          equals(AppRoutes.importImage().path),
+        );
+      },
+    );
+
+    testWidgets('draft guard blocks import and import-image routes', (
+      tester,
+    ) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.blockedByUnsavedDraft,
+      );
+      router.go(AppRoutes.home().path);
+      await tester.pump();
+
+      router.go(AppRoutes.import().path);
+      await tester.pump();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.draftBlocked().path),
+      );
+
+      router.go(AppRoutes.importImage().path);
+      await tester.pump();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        equals(AppRoutes.draftBlocked().path),
+      );
+    });
   });
 }
 
