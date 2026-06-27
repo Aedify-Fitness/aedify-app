@@ -2,11 +2,11 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed. V1-M3-006 complete — profile→candidate wiring. V1-M3-007 complete — unit and measurement preference handling (canonical kg/cm storage, display conversion, formatters/parsers, profile 1RM fields unit-aware). **2 tickets remain**: V1-M3-008 (P0 — privacy tests), V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 555 tests passing. Zero `setState` calls in `lib/`. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M3 — Onboarding, Profile, Settings, BYOK Setup                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Status**            | V1-M3-001 complete. V1-M3-002 complete. V1-M3-003 complete. V1-M3-004 complete. V1-M3-005 complete — all gaps closed. V1-M3-006 complete — profile→candidate wiring. V1-M3-007 complete — unit and measurement preference handling (canonical kg/cm storage, display conversion, formatters/parsers, profile 1RM fields unit-aware). V1-M3-008 complete — onboarding/profile/BYOK privacy tests (585/585 passing). **1 ticket remains**: V1-M3-009 (P0 — acceptance smoke flow). Schema v7. 585 tests passing. Zero `setState` calls in `lib/`. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ## Completed Work
 
@@ -298,10 +298,9 @@
 
 ### Remaining M3 Tickets
 
-| Ticket | Title | Priority | Type |
-|--------|-------|----------|------|
-| V1-M3-008 | Create onboarding/profile/BYOK privacy tests | P0 | qa |
-| V1-M3-009 | Create M3 setup acceptance smoke flow | P0 | qa |
+| Ticket    | Title                                 | Priority | Type |
+| --------- | ------------------------------------- | -------- | ---- |
+| V1-M3-009 | Create M3 setup acceptance smoke flow | P0       | qa   |
 
 ### V1-M3-007 — Implement Unit and Measurement Preference Handling (complete)
 
@@ -316,6 +315,25 @@
 - **Tests**: 28 new — `preferred_unit_test.dart` (10), `measurement_parser_test.dart` (6), `measurement_formatter_test.dart` (6), `profile_controller_test.dart` (+3), `profile_screen_test.dart` (+3).
 - **Gap closed**: 1RM fields had hardcoded `'kg'` suffix with no unit conversion — now unit-aware using `MeasurementFormatter`/`MeasurementParser`.
 - **Verification**: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 555/555 passed.
+
+### V1-M3-008 — Create Onboarding/Profile/BYOK Privacy Tests (complete)
+
+- **3 support files**: `test/support/privacy/privacy_sentinel_values.dart` (fakeApiKey, fakeInjuryNote, fakeBodyweight, fakeProfileNote), `privacy_output_matchers.dart` (doesNotContainAny, expectNoLeakInString, expectNoLeakInMap), `fake_crashlytics_capture.dart` (FakeCrashlyticsCapture implements CrashlyticsClient).
+- **Core privacy tests expanded**:
+  - `crashlytics_service_test.dart` (+4): injury/bodyweight/profile note sentinels redacted in metadata and logs.
+  - `secure_storage_service_test.dart` (+1): failure messages do not include fake API key.
+  - `app_logger_test.dart` (+3): profile note, injury, bodyweight sentinels redacted in logs.
+- **Onboarding**: `drift_onboarding_repository_test.dart` (+3), `onboarding_controller_test.dart` (+2) — safe error messages, no draft notes leaked.
+- **Profile**: `drift_profile_repository_test.dart` (+3), `profile_controller_test.dart` (+2) — canonical storage, safe errors.
+- **BYOK**: `drift_byok_repository_test.dart` (+4), `byok_setup_controller_test.dart` (+3), `byok_settings_screen_test.dart` (+2) — key in secure storage only, safe errors, no key echo.
+- **Provider capability**: `default_provider_gate_service_test.dart` (+1), `provider_capability_controller_test.dart` (+2) — blocked decisions safe, no secrets in errors.
+- **Leaks found and fixed**:
+  - `notes` not redacted in Crashlytics logs — added to `Redaction._sensitiveFields` and `PrivacyClassifier._forbiddenFields`.
+  - Empty key validation test used `contains('')` (always true) → changed to `isNotEmpty`.
+  - `rotateKey` fail test used non-existent config ID (didn't throw) → used `shouldThrowOnRotate` flag.
+  - Onboarding save error test asserted `hasError` after `nextStep()` (error cleared by step advance) → asserts step advanced correctly.
+  - BYOK widget validation failure test asserted `find.text(key, findsNothing)` (key visible in EditableText) → removed; error message privacy is the valid concern.
+- **Verification**: `dart format` — passed (270 files, 1 changed). `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 585/585 passed.
 
 ### V1-M3-004 — Full BYOK Provider Setup Flow (complete)
 

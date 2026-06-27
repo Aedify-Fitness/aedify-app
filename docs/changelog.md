@@ -26,6 +26,15 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-27
 
+### Added (V1-M3-008 — Create onboarding/profile/BYOK privacy tests)
+
+- **3 support files**: `privacy_sentinel_values.dart`, `privacy_output_matchers.dart`, `fake_crashlytics_capture.dart`.
+- **30 new privacy tests** across crashlytics, secure storage, logger, onboarding, profile, BYOK, provider gate, BYOK widget.
+- **5 leaks found and fixed**: Crashlytics `notes` redaction gap, empty key test `contains('')`, `rotateKey` fake repo override, onboarding save error assertion, BYOK widget validation test.
+- **`notes` added to `Redaction._sensitiveFields`** and `PrivacyClassifier._forbiddenFields`.
+- **Tests**: 30 new. **585/585 passing**.
+- **M3 status**: V1-M3-008 complete. **1 ticket remains**: V1-M3-009 (P0).
+
 ### Added (V1-M3-007 — Implement unit and measurement preference handling)
 
 - **`UnitConversion`** (`lib/shared/domain/unit_conversion.dart`): Pure numeric conversions — kg↔lb, cm↔in, `formatSafe`.

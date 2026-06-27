@@ -4,6 +4,7 @@ import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -144,6 +145,63 @@ void main() {
       expect(loaded!.goals, isEmpty);
       expect(loaded.limitations, isEmpty);
     });
+
+    test(
+      'onboarding draft stores private values only in Drift-backed profile state',
+      () async {
+        final draft = makeDraft(
+          notes: PrivacySentinelValues.fakeProfileNote,
+          limitations: [PrivacySentinelValues.fakeInjuryNote],
+          bodyweightKg: 98.7,
+        );
+
+        await repository.saveOnboardingDraft(draft);
+
+        final saved = await db.select(db.userProfile).get();
+        expect(saved.length, 1);
+        expect(
+          saved.first.otherNotes,
+          contains(PrivacySentinelValues.fakeProfileNote),
+        );
+        expect(
+          saved.first.injuriesLimitationsJson,
+          contains(PrivacySentinelValues.fakeInjuryNote),
+        );
+        expect(saved.first.bodyweightKg, 98.7);
+      },
+    );
+
+    test(
+      'clearing onboarding draft removes transient private notes as expected',
+      () async {
+        final draft = makeDraft(
+          notes: PrivacySentinelValues.fakeProfileNote,
+          limitations: [PrivacySentinelValues.fakeInjuryNote],
+        );
+        await repository.saveOnboardingDraft(draft);
+
+        await repository.clearOnboardingDraft();
+
+        final loaded = await repository.loadOnboardingDraft();
+        expect(loaded!.notes, isNull);
+      },
+    );
+
+    test(
+      'onboarding completion does not write sensitive values to preferences',
+      () async {
+        final draft = makeDraft(
+          notes: PrivacySentinelValues.fakeProfileNote,
+          bodyweightKg: 98.7,
+        );
+        await repository.completeOnboarding(draft);
+
+        final profile = await db.select(db.userProfile).get();
+        expect(profile.length, 1);
+        expect(profile.first.bodyweightKg, 98.7);
+        expect(profile.first.onboardingCompleted, isTrue);
+      },
+    );
 
     test('JSON list decode handles malformed data gracefully', () async {
       final now = DateTime.now();

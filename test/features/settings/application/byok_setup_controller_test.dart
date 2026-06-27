@@ -3,6 +3,7 @@ import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../data/fake_dependencies.dart';
@@ -11,7 +12,12 @@ class _ValidatingFakeRepository extends DriftByokRepository {
   _ValidatingFakeRepository({
     required super.configDao,
     required super.secureStorageService,
+    this.shouldThrowOnSave = false,
+    this.shouldThrowOnRotate = false,
   });
+
+  final bool shouldThrowOnSave;
+  final bool shouldThrowOnRotate;
 
   @override
   Future<bool> validateKey({
@@ -19,6 +25,26 @@ class _ValidatingFakeRepository extends DriftByokRepository {
     required String apiKey,
   }) async {
     return true;
+  }
+
+  @override
+  Future<String> saveConfig(ByokEditDraft draft) async {
+    if (shouldThrowOnSave) throw Exception('db failure');
+    return super.saveConfig(draft);
+  }
+
+  @override
+  Future<void> rotateKey({
+    required String configId,
+    required String providerName,
+    required String newApiKey,
+  }) async {
+    if (shouldThrowOnRotate) throw Exception('rotate failure');
+    return super.rotateKey(
+      configId: configId,
+      providerName: providerName,
+      newApiKey: newApiKey,
+    );
   }
 }
 
@@ -199,6 +225,102 @@ void main() {
           .requireValue;
       final active = state.configs.firstWhere((c) => c.isActive);
       expect(active.providerName, equals('anthropic'));
+    });
+
+    test('empty key validation does not echo secret input', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.byokSetupControllerProvider.notifier,
+      );
+      await controller.future;
+
+      controller.updateDraft(
+        const ByokEditDraft(providerName: 'openai', apiKey: ''),
+      );
+      await controller.save();
+
+      final state = container
+          .read(AppProviders.byokSetupControllerProvider)
+          .requireValue;
+      expect(
+        state.validationMessage,
+        equals(AppErrorStrings.byokEmptyKeyValidation),
+      );
+      expect(state.validationMessage, isNotEmpty);
+    });
+
+    test('save failure surfaces safe error only', () async {
+      final throwingRepository = _ValidatingFakeRepository(
+        configDao: configDao,
+        secureStorageService: secureStorage,
+        shouldThrowOnSave: true,
+      );
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.byokRepositoryProvider.overrideWith(
+            (ref) => throwingRepository,
+          ),
+        ],
+      );
+      final controller = container.read(
+        AppProviders.byokSetupControllerProvider.notifier,
+      );
+      await controller.future;
+
+      controller.updateDraft(
+        ByokEditDraft(
+          providerName: 'openai',
+          selectedModel: 'gpt-4o',
+          apiKey: PrivacySentinelValues.fakeApiKey,
+        ),
+      );
+      await controller.save();
+
+      final state = container
+          .read(AppProviders.byokSetupControllerProvider)
+          .requireValue;
+      expect(state.hasError, isTrue);
+      expect(state.errorMessage, isNot(contains('db failure')));
+      expect(
+        state.errorMessage,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+      );
+      container.dispose();
+    });
+
+    test('rotate failure surfaces safe error only', () async {
+      final throwingRepository = _ValidatingFakeRepository(
+        configDao: configDao,
+        secureStorageService: secureStorage,
+        shouldThrowOnRotate: true,
+      );
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.byokRepositoryProvider.overrideWith(
+            (ref) => throwingRepository,
+          ),
+        ],
+      );
+      final controller = container.read(
+        AppProviders.byokSetupControllerProvider.notifier,
+      );
+      await controller.future;
+
+      await controller.rotateKey(
+        configId: 'nonexistent-id',
+        providerName: 'openai',
+        newApiKey: PrivacySentinelValues.fakeApiKey,
+      );
+
+      final state = container
+          .read(AppProviders.byokSetupControllerProvider)
+          .requireValue;
+      expect(state.hasError, isTrue);
+      expect(
+        state.errorMessage,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+      );
+      container.dispose();
     });
 
     test('reload refreshes state', () async {

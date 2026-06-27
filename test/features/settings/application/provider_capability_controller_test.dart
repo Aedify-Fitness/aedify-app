@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/data/provider_capability_repository.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -96,6 +97,78 @@ void main() {
       expect(state.capability, isNull);
       expect(state.hasError, isTrue);
       expect(state.errorCode, equals('capability_load_failed'));
+    });
+
+    test('capability load failure exposes safe error code only', () async {
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.providerCapabilityRepositoryProvider.overrideWith(
+            (ref) => _MockCapabilityRepository(shouldThrow: true),
+          ),
+        ],
+      );
+
+      final controller = container.read(
+        AppProviders.providerCapabilityControllerProvider((
+          providerName: 'openai',
+          modelName: 'gpt-4o',
+        )).notifier,
+      );
+
+      final state = await controller.future;
+
+      expect(state.hasError, isTrue);
+      expect(state.errorCode, equals('capability_load_failed'));
+      expect(state.errorCode, isNot(contains('Database')));
+      expect(
+        state.errorCode,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+      );
+    });
+
+    test('capability state does not expose provider secrets', () async {
+      final capability = ProviderCapabilityViewData(
+        providerName: 'openai',
+        modelName: 'gpt-4o',
+        supportsTextInput: true,
+        supportsImageInput: false,
+        supportsJsonSchemaMode: false,
+        supportsStreaming: true,
+        maxContextTokens: null,
+        maxOutputTokens: null,
+        maxImagesPerRequest: null,
+        checkedAt: DateTime.now(),
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.providerCapabilityRepositoryProvider.overrideWith(
+            (ref) => _MockCapabilityRepository(capability: capability),
+          ),
+        ],
+      );
+
+      final controller = container.read(
+        AppProviders.providerCapabilityControllerProvider((
+          providerName: 'openai',
+          modelName: 'gpt-4o',
+        )).notifier,
+      );
+
+      final state = await controller.future;
+
+      expect(state.capability, isNotNull);
+      expect(state.capability!.providerName, equals('openai'));
+      expect(state.capability!.supportsTextInput, isTrue);
+      expect(state.capability!.maxContextTokens, isNull);
+      expect(
+        state.capability!.providerName,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+      );
+      expect(
+        state.capability!.modelName,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+      );
     });
 
     test('reload refreshes capability state', () async {

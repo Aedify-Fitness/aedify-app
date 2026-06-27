@@ -4,6 +4,7 @@ import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,6 +12,7 @@ class FakeOnboardingRepository implements OnboardingRepository {
   bool _completed = false;
   OnboardingDraft? _saved;
   int saveCallCount = 0;
+  bool shouldThrowOnSave = false;
 
   @override
   Future<bool> isOnboardingCompleted() async => _completed;
@@ -20,12 +22,14 @@ class FakeOnboardingRepository implements OnboardingRepository {
 
   @override
   Future<void> saveOnboardingDraft(OnboardingDraft draft) async {
+    if (shouldThrowOnSave) throw Exception('db failure');
     _saved = draft;
     saveCallCount++;
   }
 
   @override
   Future<void> completeOnboarding(OnboardingDraft draft) async {
+    if (shouldThrowOnSave) throw Exception('db failure');
     _saved = draft;
     _completed = true;
   }
@@ -374,6 +378,58 @@ void main() {
       expect(state.currentStep, OnboardingStep.schedule);
       expect(state.draft.experienceLevel, 'Beginner');
     });
+
+    test(
+      'repository save failure surfaces safe error without leaking draft notes',
+      () async {
+        repository.shouldThrowOnSave = true;
+        await container.read(AppProviders.onboardingControllerProvider.future);
+
+        controller.updateDraft(
+          OnboardingDraft(
+            experienceLevel: 'Intermediate',
+            goals: ['Build muscle'],
+            notes: PrivacySentinelValues.fakeProfileNote,
+          ),
+        );
+
+        await controller.nextStep();
+
+        final state = readState();
+        expect(state.currentStep, OnboardingStep.experienceGoals);
+        expect(
+          state.draft.notes,
+          equals(PrivacySentinelValues.fakeProfileNote),
+        );
+        expect(state.hasError, isFalse);
+      },
+    );
+
+    test(
+      'validation errors do not log private bodyweight/notes values',
+      () async {
+        await container.read(AppProviders.onboardingControllerProvider.future);
+
+        controller.updateDraft(
+          OnboardingDraft(
+            experienceLevel: '',
+            bodyweightKg: 98.7,
+            notes: PrivacySentinelValues.fakeProfileNote,
+          ),
+        );
+
+        await controller.nextStep();
+        await controller.nextStep();
+
+        final state = readState();
+        expect(state.hasValidationMessage, isTrue);
+        expect(state.validationMessage, isNot(contains('98.7')));
+        expect(
+          state.validationMessage,
+          isNot(contains(PrivacySentinelValues.fakeProfileNote)),
+        );
+      },
+    );
 
     test('loadExistingDraft does nothing when no draft exists', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);

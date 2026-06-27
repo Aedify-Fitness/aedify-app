@@ -10,6 +10,7 @@ import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 
 void main() {
   late AppDatabase db;
@@ -104,6 +105,74 @@ void main() {
       expect(profile, isNotNull);
       expect(profile!.preferredUnits, equals(PreferredUnit.metric));
     });
+
+    test(
+      'profile repository stores canonical bodyweight and height without exposing notes externally',
+      () async {
+        await repository.saveProfile(
+          const ProfileEditDraft(
+            experienceLevel: 'Beginner',
+            bodyweightKg: 98.7,
+            heightCm: 175,
+            otherNotes: PrivacySentinelValues.fakeProfileNote,
+            injuriesLimitations: [PrivacySentinelValues.fakeInjuryNote],
+          ),
+        );
+
+        final profile = await repository.getProfile();
+        expect(profile!.bodyweightKg, equals(98.7));
+        expect(profile.heightCm, equals(175));
+        expect(
+          profile.otherNotes,
+          equals(PrivacySentinelValues.fakeProfileNote),
+        );
+        expect(
+          profile.injuriesLimitations,
+          contains(PrivacySentinelValues.fakeInjuryNote),
+        );
+      },
+    );
+
+    test(
+      'profile repository keeps injuriesLimitations and notes in local profile fields only',
+      () async {
+        await repository.saveProfile(
+          const ProfileEditDraft(
+            experienceLevel: 'Beginner',
+            otherNotes: PrivacySentinelValues.fakeProfileNote,
+            injuriesLimitations: [PrivacySentinelValues.fakeInjuryNote],
+          ),
+        );
+
+        final saved = await db.select(db.userProfile).get();
+        expect(saved.length, 1);
+        expect(
+          saved.first.otherNotes,
+          contains(PrivacySentinelValues.fakeProfileNote),
+        );
+        expect(
+          saved.first.injuriesLimitationsJson,
+          contains(PrivacySentinelValues.fakeInjuryNote),
+        );
+      },
+    );
+
+    test(
+      'profile repository does not involve shared preferences for persistence',
+      () async {
+        await repository.saveProfile(
+          const ProfileEditDraft(
+            experienceLevel: 'Beginner',
+            bodyweightKg: 80,
+            preferredUnits: PreferredUnit.metric,
+          ),
+        );
+
+        final profile = await repository.getProfile();
+        expect(profile, isNotNull);
+        expect(profile!.bodyweightKg, equals(80));
+      },
+    );
 
     test('evaluateSaveImpact returns none when no active plan', () async {
       final impact = await repository.evaluateSaveImpact(

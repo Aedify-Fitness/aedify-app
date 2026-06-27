@@ -2,6 +2,7 @@ import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_model_option.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'fake_dependencies.dart';
 
@@ -146,6 +147,78 @@ void main() {
     expect(displayNames, contains('Claude Sonnet 4.6'));
     expect(displayNames, contains('Claude Haiku 4.5'));
     expect(displayNames, contains('Claude Opus 4.7'));
+  });
+
+  test('saveConfig stores API key only in secure storage', () async {
+    await repository.saveConfig(
+      const ByokEditDraft(
+        providerName: 'openai',
+        apiKey: PrivacySentinelValues.fakeApiKey,
+      ),
+    );
+
+    final configs = await repository.getConfigs();
+    expect(configs.length, equals(1));
+    expect(configs.first.hasKey, isTrue);
+
+    final rawConfigs = await configDao.getAllConfigs();
+    for (final row in rawConfigs) {
+      expect(
+        row.secureKeyAlias,
+        isNot(contains(PrivacySentinelValues.fakeApiKey)),
+        reason: 'secureKeyAlias must not contain the raw API key',
+      );
+    }
+  });
+
+  test('saveConfig does not persist raw API key in Drift metadata', () async {
+    await repository.saveConfig(
+      const ByokEditDraft(
+        providerName: 'openai',
+        apiKey: PrivacySentinelValues.fakeApiKey,
+      ),
+    );
+
+    final configs = await repository.getConfigs();
+    expect(
+      configs.first.providerName,
+      isNot(contains(PrivacySentinelValues.fakeApiKey)),
+    );
+    expect(configs.first.id, isNot(contains(PrivacySentinelValues.fakeApiKey)));
+    expect(
+      configs.first.selectedModel,
+      isNot(contains(PrivacySentinelValues.fakeApiKey)),
+    );
+  });
+
+  test(
+    'rotateKey does not expose old or new key in repository-facing state',
+    () async {
+      final configId = await repository.saveConfig(
+        const ByokEditDraft(providerName: 'openai', apiKey: 'sk-old-key'),
+      );
+
+      await repository.rotateKey(
+        configId: configId,
+        providerName: 'openai',
+        newApiKey: PrivacySentinelValues.fakeApiKey,
+      );
+
+      final configs = await repository.getConfigs();
+      expect(configs.first.hasKey, isTrue);
+      expect(() => configs.first as dynamic..apiKey, throwsNoSuchMethodError);
+    },
+  );
+
+  test('deleteConfig removes or invalidates secure key alias', () async {
+    final configId = await repository.saveConfig(
+      const ByokEditDraft(providerName: 'openai', apiKey: 'sk-delete-me'),
+    );
+
+    await repository.deleteConfig(configId);
+
+    final hasKey = await secureStorage.hasProviderApiKey(configId);
+    expect(hasKey, isFalse);
   });
 
   test('correct Google models', () async {

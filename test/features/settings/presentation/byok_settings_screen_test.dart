@@ -3,6 +3,8 @@ import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +22,21 @@ class _ValidatingFakeRepository extends DriftByokRepository {
     required String apiKey,
   }) async {
     return true;
+  }
+}
+
+class _FailingValidationRepository extends DriftByokRepository {
+  _FailingValidationRepository({
+    required super.configDao,
+    required super.secureStorageService,
+  });
+
+  @override
+  Future<bool> validateKey({
+    required String providerName,
+    required String apiKey,
+  }) async {
+    return false;
   }
 }
 
@@ -78,6 +95,52 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(AppStrings.savedProviders), findsOneWidget);
+  });
+
+  testWidgets('saved key is never displayed back in full', (tester) async {
+    await tester.pumpWidget(createTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('OpenAI'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField),
+      PrivacySentinelValues.fakeApiKey,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(AppStrings.saveKey));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppStrings.savedProviders), findsOneWidget);
+    expect(find.text(PrivacySentinelValues.fakeApiKey), findsNothing);
+    expect(find.text(AppStrings.keySaved), findsOneWidget);
+  });
+
+  testWidgets('validation failure surfaces safe error without leaking key', (
+    tester,
+  ) async {
+    final failingRepo = _FailingValidationRepository(
+      configDao: configDao,
+      secureStorageService: secureStorage,
+    );
+    await tester.pumpWidget(createTestApp(repository: failingRepo));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('OpenAI'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField),
+      PrivacySentinelValues.fakeApiKey,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(AppStrings.saveKey));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppErrorStrings.byokKeyValidationFailed), findsOneWidget);
   });
 
   testWidgets('shows Google as a provider option', (tester) async {

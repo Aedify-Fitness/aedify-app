@@ -9,6 +9,7 @@ import 'package:aedify/features/settings/domain/provider_capability_view_data.da
 import 'package:aedify/features/settings/domain/provider_gate_decision.dart';
 import 'package:aedify/features/settings/domain/provider_operation_type.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _MockByokRepository implements ByokRepository {
@@ -284,6 +285,32 @@ void main() {
         equals(AppStrings.providerCapabilityUnavailable),
       );
     });
+
+    test(
+      'blocked decisions never include raw secure key aliases or key material',
+      () async {
+        final gate = DefaultProviderGateService(
+          byokRepository: _MockByokRepository(
+            activeConfig: _config(),
+            hasKeyValue: false,
+          ),
+          capabilityRepository: _MockCapabilityRepository(),
+          networkStatus: _MockNetworkStatus(isOnline: true),
+        );
+
+        final decision = await gate.evaluate(
+          operation: ProviderOperationType.aiChat,
+        );
+
+        expect(decision.isAllowed, isFalse);
+        expect(
+          decision.message,
+          isNot(contains(PrivacySentinelValues.fakeApiKey)),
+        );
+        expect(decision.message, isNot(contains('api_key')));
+        expect(decision.message, isNot(contains('secureKeyAlias')));
+      },
+    );
 
     test(
       'all block messages are safe AppStrings — no internal details leaked',
