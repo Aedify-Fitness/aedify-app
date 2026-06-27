@@ -1,7 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
-import 'package:aedify/features/settings/domain/byok_model_option.dart';
+import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -286,15 +286,14 @@ class _CostIndicator extends StatelessWidget {
     required this.selectedModelId,
   });
 
-  final List<dynamic> options;
+  final List<ByokProviderOption> options;
   final String providerName;
   final String selectedModelId;
 
   @override
   Widget build(BuildContext context) {
-    final option =
-        options.firstWhere((o) => o.providerName == providerName) as dynamic;
-    final models = option.models as List<ByokModelOption>;
+    final option = options.firstWhere((o) => o.providerName == providerName);
+    final models = option.models;
     final selectedModel = models
         .where((m) => m.id == selectedModelId)
         .firstOrNull;
@@ -331,15 +330,14 @@ class _MoreCapableHint extends StatelessWidget {
     required this.selectedModelId,
   });
 
-  final List<dynamic> options;
+  final List<ByokProviderOption> options;
   final String providerName;
   final String selectedModelId;
 
   @override
   Widget build(BuildContext context) {
-    final option =
-        options.firstWhere((o) => o.providerName == providerName) as dynamic;
-    final models = option.models as List<ByokModelOption>;
+    final option = options.firstWhere((o) => o.providerName == providerName);
+    final models = option.models;
     final selectedModel = models
         .where((m) => m.id == selectedModelId)
         .firstOrNull;
@@ -554,7 +552,9 @@ class _ConfigCard extends StatelessWidget {
                 onPressed: onDelete,
                 child: Text(
                   AppStrings.deleteKey,
-                  style: TextStyle(color: context.colorScheme.error),
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: context.colorScheme.error,
+                  ),
                 ),
               ),
             ],
@@ -602,7 +602,7 @@ class _ModelSelector extends StatelessWidget {
   });
 
   final String providerName;
-  final List<dynamic> options;
+  final List<ByokProviderOption> options;
   final String? selectedModelId;
   final ValueChanged<String?> onChanged;
 
@@ -611,7 +611,7 @@ class _ModelSelector extends StatelessWidget {
     final byokOption = options.firstWhere(
       (o) => o.providerName == providerName,
     );
-    final models = (byokOption.models as List<ByokModelOption>);
+    final models = byokOption.models;
     return DropdownButtonFormField<String>(
       initialValue: selectedModelId,
       decoration: const InputDecoration(

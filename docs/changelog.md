@@ -19,6 +19,18 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Fixed resume step for BYOK-skipped drafts** (`lib/features/onboarding/application/onboarding_controller.dart`): Changed `_resumeStepForDraft` to send to `review` instead of `byokOptional` when `byokSkipped` is `true`, avoiding unnecessary detours.
 - **Removed unused `_appSettingsDao` and `_bodyMeasurementDao`** (`lib/features/profile/data/drift_profile_repository.dart`): Cleaned up constructor, fields, and all provider/test wiring. Removed unused imports from `test/`.
 
+### Refactored (M1–M3 codebase sweep — theme, casts, SVGs, architecture, deps, font tokens)
+
+- **Batch 1 — `Theme.of(context)` → `context.theme`**: Fixed 5 occurrences across `placeholder_screen.dart` (×4) and `exercise_step_audio_button.dart` (×1).
+- **Batch 2 — Inline `TextStyle()` → `AppTextStyles`**: Replaced 10 inline `TextStyle(fontSize: ...)` in `exercise_detail_screen.dart`, `exercise_library_screen.dart`, `bodymap_bucket_chip_bar.dart`, `byok_settings_screen.dart`.
+- **Batch 3 — Safe typed casts**: Changed `_CostIndicator`, `_MoreCapableHint`, `_ModelSelector` from `List<dynamic>` to `List<ByokProviderOption>`. Removed 3 unsafe `as` casts in `byok_settings_screen.dart`.
+- **Batch 4 — Bodymap SVG constant class**: Created `BodymapSvgAssets` in `lib/shared/constants/svg_assets_bodymap.dart`. Updated `bodymap_asset_contract.dart` to reference it.
+- **Batch 5 — Sync controller architecture fix**: Added `exerciseLibraryImporterProvider` in `providers.dart`. Updated `ExerciseDatasetSyncController` to use providers instead of inline DAO/importer construction.
+- **Batch 6 — Removed unused deps**: Removed `cupertino_icons` and `equatable` from `pubspec.yaml`.
+- **Batch 7 — AppFontSizes extended**: Added `xxs(10)`, `sm(14)`, `md(16)`, `lg(18)`, `xl(20)`, `xxl(24)`, `xxxl(28)`, `displaySm(32)`, `displayMd(40)`. Updated `AppTextStyles` and `AppTextStylesDark` to reference them.
+- **Batch 8 — Theme constants consolidated**: Moved `app_colors.dart` from `lib/app/theme/` to `lib/shared/theme/`. Updated `app_theme.dart` import.
+- Verification: `dart format` ✓ → `flutter analyze` ✓ 0 errors → `flutter test` ✓ 606/606 passing.
+
 ## 2026-06-25
 
 ### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)

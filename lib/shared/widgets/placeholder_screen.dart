@@ -1,4 +1,5 @@
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class PlaceholderScreen extends StatelessWidget {
@@ -29,18 +30,18 @@ class PlaceholderScreen extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: AppSpacing.xxxl,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: context.colorScheme.secondary,
                   ),
                 ),
-              Text(title, style: Theme.of(context).textTheme.headlineSmall),
+              Text(title, style: context.textTheme.headlineSmall),
               if (message != null)
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpacing.sm),
                   child: Text(
                     message!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

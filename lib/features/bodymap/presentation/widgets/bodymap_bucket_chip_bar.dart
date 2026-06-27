@@ -2,6 +2,7 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -30,10 +31,7 @@ class BodymapBucketChipBar extends StatelessWidget {
             children: [
               ...BodymapBucket.values.map(
                 (bucket) => ChoiceChip(
-                  label: Text(
-                    bucket.label,
-                    style: const TextStyle(fontSize: AppFontSizes.xs),
-                  ),
+                  label: Text(bucket.label, style: AppTextStyles.labelSm),
                   selected: selectedBucket == bucket,
                   onSelected: (isSelected) =>
                       isSelected ? onSelected(bucket) : onClear(),

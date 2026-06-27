@@ -37,6 +37,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
+import 'package:aedify/features/exercise_library/data/dataset/exercise_library_importer.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/features/exercise_library/data/candidate_exercise_query_service.dart';
 import 'package:aedify/features/exercise_library/data/custom_exercise_identity_service.dart';
@@ -251,6 +252,16 @@ class AppProviders {
   static final libraryMetaDaoProvider = Provider<LibraryMetaDao>((ref) {
     return LibraryMetaDao(ref.read(appDatabaseProvider));
   });
+
+  static final exerciseLibraryImporterProvider =
+      Provider<ExerciseLibraryImporter>((ref) {
+        return ExerciseLibraryImporter(
+          database: ref.read(appDatabaseProvider),
+          exerciseDao: ref.read(exerciseDaoProvider),
+          exerciseVideoDao: ref.read(exerciseVideoDaoProvider),
+          libraryMetaDao: ref.read(libraryMetaDaoProvider),
+        );
+      });
 
   static final exerciseDatasetSyncControllerProvider =
       AsyncNotifierProvider<
