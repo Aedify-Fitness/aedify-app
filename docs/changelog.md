@@ -4,6 +4,14 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-27
+
+### Fixed (M3 audit — isCheapest, resume-byokOptional, unused DAOs)
+
+- **Removed broken `isCheapest` getter** (`lib/features/settings/domain/byok_model_option.dart`): The `totalCostPer1kTokens == 0` check always returned `false`. The getter was unused in UI code (`_MoreCapableHint` computes cost comparison inline), so it was removed entirely.
+- **Fixed resume step for BYOK-skipped drafts** (`lib/features/onboarding/application/onboarding_controller.dart`): Changed `_resumeStepForDraft` to send to `review` instead of `byokOptional` when `byokSkipped` is `true`, avoiding unnecessary detours.
+- **Removed unused `_appSettingsDao` and `_bodyMeasurementDao`** (`lib/features/profile/data/drift_profile_repository.dart`): Cleaned up constructor, fields, and all provider/test wiring. Removed unused imports from `test/`.
+
 ## 2026-06-25
 
 ### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)

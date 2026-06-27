@@ -1,8 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/db/app_database.dart';
-import 'package:aedify/core/db/daos/app_settings_dao.dart';
-import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/profile/data/drift_profile_repository.dart';
@@ -21,9 +19,7 @@ void main() {
     repository = DriftProfileRepository(
       database: db,
       userProfileDao: UserProfileDao(db),
-      appSettingsDao: AppSettingsDao(db),
       strengthAnchorDao: StrengthAnchorDao(db),
-      bodyMeasurementDao: BodyMeasurementDao(db),
     );
   });
 

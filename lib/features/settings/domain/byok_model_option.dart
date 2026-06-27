@@ -27,6 +27,4 @@ class ByokModelOption {
     }
     return '\$${cost.toStringAsFixed(2)}';
   }
-
-  bool get isCheapest => totalCostPer1kTokens == 0;
 }

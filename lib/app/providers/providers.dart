@@ -299,9 +299,7 @@ class AppProviders {
     return DriftProfileRepository(
       database: ref.read(appDatabaseProvider),
       userProfileDao: ref.read(userProfileDaoProvider),
-      appSettingsDao: ref.read(appSettingsDaoProvider),
       strengthAnchorDao: ref.read(strengthAnchorDaoProvider),
-      bodyMeasurementDao: ref.read(bodyMeasurementDaoProvider),
     );
   });
 

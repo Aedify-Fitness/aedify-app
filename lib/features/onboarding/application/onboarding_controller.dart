@@ -213,8 +213,8 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         (draft.notes == null || draft.notes!.isEmpty)) {
       return OnboardingStep.limitations;
     }
-    if (draft.byokSkipped) {
-      return OnboardingStep.byokOptional;
+    if (!draft.byokSkipped) {
+      return OnboardingStep.review;
     }
     return OnboardingStep.review;
   }

@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:aedify/core/db/app_database.dart';
-import 'package:aedify/core/db/daos/app_settings_dao.dart';
-import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
@@ -15,20 +13,14 @@ class DriftProfileRepository implements ProfileRepository {
   DriftProfileRepository({
     required AppDatabase database,
     required UserProfileDao userProfileDao,
-    required AppSettingsDao appSettingsDao,
     required StrengthAnchorDao strengthAnchorDao,
-    required BodyMeasurementDao bodyMeasurementDao,
   }) : _database = database,
        _userProfileDao = userProfileDao,
-       _appSettingsDao = appSettingsDao,
-       _strengthAnchorDao = strengthAnchorDao,
-       _bodyMeasurementDao = bodyMeasurementDao;
+       _strengthAnchorDao = strengthAnchorDao;
 
   final AppDatabase _database;
   final UserProfileDao _userProfileDao;
-  final AppSettingsDao _appSettingsDao;
   final StrengthAnchorDao _strengthAnchorDao;
-  final BodyMeasurementDao _bodyMeasurementDao;
 
   @override
   Future<ProfileViewData?> getProfile() async {
