@@ -26,7 +26,7 @@ When instructions conflict, follow this order:
 4. `DESIGN.md` for the approved Flutter mobile visual system, design tokens,
    component guidance, and interaction direction.
 5. `rules.md` for general Flutter and Dart coding rules.
-6. `skills/skills.md` for available Flutter agent skills and skill references.
+6. `./opencode/skills/skills.md` for available Flutter agent skills and skill references.
 7. The Flutter mobile design skill pack for mobile UI craft workflow.
 8. Existing code conventions in the repository.
 
@@ -117,7 +117,7 @@ and folders:
   motion, or reusable UI patterns.
 - Use `rules.md` for general Dart and Flutter style, testing, formatting, and
   coding practices.
-- Use `skills/skills.md` to identify the correct Flutter skill workflow when a task
+- Use `./opencode/skills/skills.md` to identify the correct Flutter skill workflow when a task
   matches one of the listed skills.
 
 Do not invent a new architecture. The project uses the architecture already
@@ -429,7 +429,7 @@ Update rules:
 
 ## Skill Reference Usage
 
-`skills/skills.md` is the reference index for Flutter skills. The Flutter mobile
+`./opencode/skills/skills.md` is the reference index for Flutter skills. The Flutter mobile
 design skill pack is the supporting design-craft workflow for mobile UI tasks.
 
 When a task matches a listed skill, use that skill workflow as supporting
