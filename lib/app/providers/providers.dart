@@ -1,11 +1,17 @@
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/ai_model_capability_dao.dart';
+import 'package:aedify/core/db/daos/ai_provider_config_dao.dart';
+import 'package:aedify/core/db/daos/app_settings_dao.dart';
+import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/exercise_audio_cache_dao.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/daos/local_file_record_dao.dart';
+import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
+import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/core/firebase/crashlytics_service.dart';
 import 'package:aedify/core/firebase/firebase_auth_service.dart';
 import 'package:aedify/core/firebase/firebase_bootstrap.dart';
@@ -31,11 +37,33 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_service.dart';
+import 'package:aedify/features/exercise_library/data/dataset/exercise_library_importer.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/features/exercise_library/data/candidate_exercise_query_service.dart';
 import 'package:aedify/features/exercise_library/data/custom_exercise_identity_service.dart';
 import 'package:aedify/features/exercise_library/data/drift_candidate_exercise_query_service.dart';
 import 'package:aedify/features/bodymap/application/bodymap_selection_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_state.dart';
+import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
+import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
+import 'package:aedify/features/profile/application/profile_controller.dart';
+import 'package:aedify/features/profile/data/default_profile_candidate_preferences_service.dart';
+import 'package:aedify/features/profile/data/drift_profile_repository.dart';
+import 'package:aedify/features/profile/data/profile_candidate_preferences_service.dart';
+import 'package:aedify/features/profile/data/profile_repository.dart';
+import 'package:aedify/features/settings/application/byok_setup_controller.dart';
+import 'package:aedify/features/settings/application/settings_controller.dart';
+import 'package:aedify/features/settings/data/byok_repository.dart';
+import 'package:aedify/features/settings/data/default_provider_gate_service.dart';
+import 'package:aedify/features/settings/data/drift_byok_repository.dart';
+import 'package:aedify/features/settings/data/drift_provider_capability_repository.dart';
+import 'package:aedify/features/settings/data/drift_settings_repository.dart';
+import 'package:aedify/features/settings/data/provider_capability_repository.dart';
+import 'package:aedify/features/settings/data/provider_gate_service.dart';
+import 'package:aedify/features/settings/data/settings_repository.dart';
+import 'package:aedify/features/settings/application/provider_capability_controller.dart';
+import 'package:aedify/features/settings/application/provider_capability_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -109,8 +137,25 @@ class AppProviders {
     return FeatureFlags.defaultFlags;
   });
 
-  static final onboardingStatusProvider = Provider<OnboardingStatus>((ref) {
-    return OnboardingStatus.incomplete;
+  static final onboardingRepositoryProvider = Provider<OnboardingRepository>((
+    ref,
+  ) {
+    return DriftOnboardingRepository(
+      database: ref.read(AppProviders.appDatabaseProvider),
+    );
+  });
+
+  static final onboardingControllerProvider =
+      AsyncNotifierProvider<OnboardingController, OnboardingState>(
+        OnboardingController.new,
+      );
+
+  static final onboardingStatusProvider = FutureProvider<OnboardingStatus>((
+    ref,
+  ) async {
+    final repository = ref.read(onboardingRepositoryProvider);
+    final complete = await repository.isOnboardingCompleted();
+    return complete ? OnboardingStatus.complete : OnboardingStatus.incomplete;
   });
 
   static final aiAvailabilityProvider = Provider<AiAvailability>((ref) {
@@ -208,6 +253,16 @@ class AppProviders {
     return LibraryMetaDao(ref.read(appDatabaseProvider));
   });
 
+  static final exerciseLibraryImporterProvider =
+      Provider<ExerciseLibraryImporter>((ref) {
+        return ExerciseLibraryImporter(
+          database: ref.read(appDatabaseProvider),
+          exerciseDao: ref.read(exerciseDaoProvider),
+          exerciseVideoDao: ref.read(exerciseVideoDaoProvider),
+          libraryMetaDao: ref.read(libraryMetaDaoProvider),
+        );
+      });
+
   static final exerciseDatasetSyncControllerProvider =
       AsyncNotifierProvider<
         ExerciseDatasetSyncController,
@@ -232,4 +287,105 @@ class AppProviders {
         ExerciseStepAudioController,
         Map<String, ExerciseStepAudioState>
       >(ExerciseStepAudioController.new);
+
+  // Profile DAOs
+  static final userProfileDaoProvider = Provider<UserProfileDao>((ref) {
+    return UserProfileDao(ref.read(appDatabaseProvider));
+  });
+
+  static final strengthAnchorDaoProvider = Provider<StrengthAnchorDao>((ref) {
+    return StrengthAnchorDao(ref.read(appDatabaseProvider));
+  });
+
+  static final bodyMeasurementDaoProvider = Provider<BodyMeasurementDao>((ref) {
+    return BodyMeasurementDao(ref.read(appDatabaseProvider));
+  });
+
+  static final appSettingsDaoProvider = Provider<AppSettingsDao>((ref) {
+    return AppSettingsDao(ref.read(appDatabaseProvider));
+  });
+
+  // Profile repository and controller
+  static final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+    return DriftProfileRepository(
+      database: ref.read(appDatabaseProvider),
+      userProfileDao: ref.read(userProfileDaoProvider),
+      strengthAnchorDao: ref.read(strengthAnchorDaoProvider),
+    );
+  });
+
+  static final profileControllerProvider =
+      AsyncNotifierProvider<ProfileController, ProfileState>(
+        ProfileController.new,
+      );
+
+  static final profileCandidatePreferencesServiceProvider =
+      Provider<ProfileCandidatePreferencesService>((ref) {
+        return DefaultProfileCandidatePreferencesService(
+          profileRepository: ref.read(profileRepositoryProvider),
+        );
+      });
+
+  // Settings
+  static final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
+    return DriftSettingsRepository(
+      appSettingsDao: ref.read(appSettingsDaoProvider),
+      featureFlags: ref.read(featureFlagsProvider),
+    );
+  });
+
+  static final settingsControllerProvider =
+      AsyncNotifierProvider<SettingsController, SettingsState>(
+        SettingsController.new,
+      );
+
+  // BYOK
+  static final aiProviderConfigDaoProvider = Provider<AiProviderConfigDao>((
+    ref,
+  ) {
+    return AiProviderConfigDao(ref.read(appDatabaseProvider));
+  });
+
+  static final byokRepositoryProvider = Provider<ByokRepository>((ref) {
+    return DriftByokRepository(
+      configDao: ref.read(aiProviderConfigDaoProvider),
+      secureStorageService: ref.read(secureStorageProvider),
+    );
+  });
+
+  static final byokSetupControllerProvider =
+      AsyncNotifierProvider<ByokSetupController, ByokSetupState>(
+        ByokSetupController.new,
+      );
+
+  // Provider capability
+  static final aiModelCapabilityDaoProvider = Provider<AiModelCapabilityDao>((
+    ref,
+  ) {
+    return AiModelCapabilityDao(ref.read(appDatabaseProvider));
+  });
+
+  static final providerCapabilityRepositoryProvider =
+      Provider<ProviderCapabilityRepository>((ref) {
+        return DriftProviderCapabilityRepository(
+          capabilityDao: ref.read(aiModelCapabilityDaoProvider),
+        );
+      });
+
+  static final providerGateServiceProvider = Provider<ProviderGateService>((
+    ref,
+  ) {
+    return DefaultProviderGateService(
+      byokRepository: ref.read(byokRepositoryProvider),
+      capabilityRepository: ref.read(providerCapabilityRepositoryProvider),
+      networkStatus: ref.read(networkStatusProvider),
+    );
+  });
+
+  static final providerCapabilityControllerProvider =
+      AsyncNotifierProvider.family<
+        ProviderCapabilityController,
+        ProviderCapabilityState,
+        ({String providerName, String modelName})
+      >((arg) => ProviderCapabilityController(arg.providerName, arg.modelName));
 }

@@ -10,6 +10,8 @@ import 'package:aedify/app/bootstrap/bootstrap_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:aedify/features/profile/presentation/profile_screen.dart';
+import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
@@ -59,7 +61,9 @@ class AppRouter {
 
   static final appRouterProvider = Provider<GoRouter>((ref) {
     final bootstrapState = ref.watch(AppBootstrap.controllerProvider);
-    final onboardingStatus = ref.watch(AppProviders.onboardingStatusProvider);
+    final onboardingStatusAsync = ref.watch(
+      AppProviders.onboardingStatusProvider,
+    );
     final aiAvailability = ref.watch(AppProviders.aiAvailabilityProvider);
     final draftGuard = ref.watch(AppProviders.draftGuardProvider);
     final featureFlags = ref.watch(AppProviders.featureFlagsProvider);
@@ -77,10 +81,21 @@ class AppRouter {
           return null;
         }
 
-        if (isOnStartup) return AppRoutes.onboarding().path;
+        // 1.5 Unresolved onboarding status — keep on startup
+        if (onboardingStatusAsync.isLoading || onboardingStatusAsync.hasError) {
+          if (!isOnStartup) return AppRoutes.startup().path;
+          return null;
+        }
+
+        final onboardingStatus = onboardingStatusAsync.asData?.value;
 
         // 2. Onboarding guard
-        if (onboardingStatus == OnboardingStatus.incomplete) {
+        if (onboardingStatus == OnboardingStatus.complete) {
+          if (isOnStartup || location == AppRoutes.onboarding().path) {
+            return AppRoutes.home().path;
+          }
+        } else if (onboardingStatus == OnboardingStatus.incomplete) {
+          if (isOnStartup) return AppRoutes.onboarding().path;
           final isOnOnboarding = location == AppRoutes.onboarding().path;
           if (!isOnOnboarding) return AppRoutes.onboarding().path;
         }
@@ -259,6 +274,22 @@ class AppRouter {
           path: AppRoutes.settings().path,
           name: AppRoutes.settings().name,
           builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.profile().path,
+          name: AppRoutes.profile().name,
+          builder: (context, state) => const ProfileScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.aiProviderSettings().path,
+          name: AppRoutes.aiProviderSettings().name,
+          redirect: (context, state) =>
+              state.namedLocation(AppRoutes.byokSettings().name),
+        ),
+        GoRoute(
+          path: AppRoutes.byokSettings().path,
+          name: AppRoutes.byokSettings().name,
+          builder: (context, state) => const ByokSettingsScreen(),
         ),
         GoRoute(
           path: AppRoutes.share().path,

@@ -43,6 +43,7 @@ class PrivacyClassifier {
     'candidate_exercise_lists',
     'injury_note',
     'injuries',
+    'notes',
     'screenshot_path',
     'source_file_excerpt',
     'local_database_dump',

@@ -4,14 +4,20 @@ import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/router/app_router.dart';
+import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/features/onboarding/application/onboarding_controller.dart';
+import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   testWidgets('renders startup loading state by default', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: AedifyApp()));
     await tester.pump();
@@ -37,49 +43,91 @@ void main() {
   testWidgets('redirects to onboarding when bootstrap succeeds', (
     tester,
   ) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
     final bootstrapOverride = AppBootstrap.controllerProvider.overrideWith(
       () => _SucceedingBootstrapController(),
     );
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [bootstrapOverride], child: const AedifyApp()),
+      ProviderScope(
+        overrides: [
+          bootstrapOverride,
+          AppProviders.appDatabaseProvider.overrideWithValue(db),
+          AppProviders.onboardingStatusProvider.overrideWithValue(
+            AsyncData(OnboardingStatus.incomplete),
+          ),
+          AppProviders.onboardingControllerProvider.overrideWith(
+            () => _FixedOnboardingNotifier(),
+          ),
+        ],
+        child: const AedifyApp(),
+      ),
     );
     await tester.pump();
-    await tester.pump();
-    expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
+    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
   });
 
   testWidgets(
     'shows offline info on onboarding when bootstrap succeeds offline',
     (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
       final bootstrapOverride = AppBootstrap.controllerProvider.overrideWith(
         () => _SucceedingOfflineBootstrapController(),
       );
 
       await tester.pumpWidget(
-        ProviderScope(overrides: [bootstrapOverride], child: const AedifyApp()),
+        ProviderScope(
+          overrides: [
+            bootstrapOverride,
+            AppProviders.appDatabaseProvider.overrideWithValue(db),
+            AppProviders.onboardingStatusProvider.overrideWithValue(
+              AsyncData(OnboardingStatus.incomplete),
+            ),
+            AppProviders.onboardingControllerProvider.overrideWith(
+              () => _FixedOnboardingNotifier(),
+            ),
+          ],
+          child: const AedifyApp(),
+        ),
       );
       await tester.pump();
       await tester.pump();
-      expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
-      expect(find.text(AppStrings.offlineModeInfo), findsOneWidget);
+      expect(
+        find.text(AppStrings.onboardingWelcomeDescription),
+        findsOneWidget,
+      );
+      expect(find.text(AppStrings.offlineModeInfo), findsNothing);
     },
   );
 
   testWidgets('redirects to onboarding when onboarding incomplete', (
     tester,
   ) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
     final bootstrapOverride = AppBootstrap.controllerProvider.overrideWith(
       () => _SucceedingBootstrapController(),
     );
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [bootstrapOverride], child: const AedifyApp()),
+      ProviderScope(
+        overrides: [
+          bootstrapOverride,
+          AppProviders.appDatabaseProvider.overrideWithValue(db),
+          AppProviders.onboardingStatusProvider.overrideWithValue(
+            AsyncData(OnboardingStatus.incomplete),
+          ),
+          AppProviders.onboardingControllerProvider.overrideWith(
+            () => _FixedOnboardingNotifier(),
+          ),
+        ],
+        child: const AedifyApp(),
+      ),
     );
     await tester.pump();
-    await tester.pump();
-
-    expect(find.text(AppStrings.onboardingTitle), findsOneWidget);
+    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
   });
 
   testWidgets('allows navigation when onboarding complete', (tester) async {
@@ -89,8 +137,8 @@ void main() {
           AppBootstrap.controllerProvider.overrideWith(
             () => _SucceedingBootstrapController(),
           ),
-          AppProviders.onboardingStatusProvider.overrideWith(
-            (ref) => OnboardingStatus.complete,
+          AppProviders.onboardingStatusProvider.overrideWithValue(
+            AsyncData(OnboardingStatus.complete),
           ),
           AppProviders.aiAvailabilityProvider.overrideWith(
             (ref) => AiAvailability.available,
@@ -109,6 +157,11 @@ void main() {
   });
 
   group('router guards', () {
+    late AppDatabase testDatabase;
+
+    setUp(() => testDatabase = AppDatabase(NativeDatabase.memory()));
+    tearDown(() => testDatabase.close());
+
     /// Pumps the app with overrides and returns a list containing the latest
     /// GoRouter. Uses a list (mutable reference) so the test always reads the
     /// most recent GoRouter instance — the Consumer rebuilds when
@@ -126,8 +179,9 @@ void main() {
             AppBootstrap.controllerProvider.overrideWith(
               () => _SucceedingBootstrapController(),
             ),
-            AppProviders.onboardingStatusProvider.overrideWith(
-              (ref) => onboarding,
+            AppProviders.appDatabaseProvider.overrideWithValue(testDatabase),
+            AppProviders.onboardingStatusProvider.overrideWithValue(
+              AsyncData(onboarding),
             ),
             AppProviders.aiAvailabilityProvider.overrideWith((ref) => ai),
             AppProviders.draftGuardProvider.overrideWith((ref) => draft),
@@ -231,6 +285,13 @@ void main() {
   });
 }
 
+class _FixedOnboardingNotifier extends OnboardingController {
+  @override
+  Future<OnboardingState> build() async {
+    return const OnboardingState.initial();
+  }
+}
+
 class _FailingBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
@@ -252,23 +313,13 @@ class _FailingBootstrapController extends BootstrapController {
 class _SucceedingBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
-    return const BootstrapState.initializing();
-  }
-
-  @override
-  Future<void> start() async {
-    state = const BootstrapState.success();
+    return const BootstrapState.success();
   }
 }
 
 class _SucceedingOfflineBootstrapController extends BootstrapController {
   @override
   BootstrapState build() {
-    return const BootstrapState.initializing();
-  }
-
-  @override
-  Future<void> start() async {
-    state = const BootstrapState.success(isOffline: true);
+    return const BootstrapState.success(isOffline: true);
   }
 }

@@ -349,5 +349,89 @@ void main() {
       final names = results.map((e) => e.name).toSet();
       expect(names, isNot(contains('Deleted Row')));
     });
+
+    // Profile-derived query integration tests
+    group('profile-derived queries', () {
+      test('profile equipment restricts candidate output', () async {
+        // Simulate a profile with only dumbbell access
+        final results = await service.queryCandidates(
+          const CandidateExerciseQuery(
+            allowedEquipment: {'dumbbell'},
+            allowedDifficulties: {'beginner', 'intermediate'},
+            allowedModalities: {'strength', 'hypertrophy'},
+            excludedExerciseIds: {},
+            excludedMuscleGroups: {},
+            goalTags: {},
+          ),
+        );
+        final names = results.map((e) => e.name).toSet();
+        // Only Bicep Curl has dumbbell equipment
+        expect(names, {'Bicep Curl'});
+      });
+
+      test('profile experience restricts candidate difficulty', () async {
+        // Simulate a beginner profile (novice, beginner difficulty only)
+        final results = await service.queryCandidates(
+          const CandidateExerciseQuery(
+            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
+            allowedDifficulties: {'novice', 'beginner'},
+            allowedModalities: {'strength', 'hypertrophy'},
+            excludedExerciseIds: {},
+            excludedMuscleGroups: {},
+            goalTags: {},
+          ),
+        );
+        final names = results.map((e) => e.name).toSet();
+        // Bench Press is intermediate — excluded
+        // Squat is intermediate — excluded
+        // Deadlift has null difficulty — passes null-difficulty check
+        // Push Up is beginner — included
+        // Bicep Curl is beginner — included
+        expect(names, containsAll(['Push Up', 'Bicep Curl']));
+        expect(names, isNot(contains('Bench Press')));
+        expect(names, isNot(contains('Squat')));
+      });
+
+      test('profile substituted exercises are excluded', () async {
+        // Simulate a profile with Squat and Push Up substituted
+        final results = await service.queryCandidates(
+          const CandidateExerciseQuery(
+            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
+            allowedDifficulties: {'beginner', 'intermediate'},
+            allowedModalities: {'strength', 'hypertrophy'},
+            excludedExerciseIds: {2, 4},
+            excludedMuscleGroups: {},
+            goalTags: {},
+          ),
+        );
+        final names = results.map((e) => e.name).toSet();
+        expect(names, isNot(contains('Squat')));
+        expect(names, isNot(contains('Push Up')));
+      });
+
+      test('profile goals influence ranking order', () async {
+        // Simulate a profile with strength goal
+        final results = await service.queryCandidates(
+          const CandidateExerciseQuery(
+            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
+            allowedDifficulties: {'beginner', 'intermediate'},
+            allowedModalities: {'strength', 'hypertrophy'},
+            excludedExerciseIds: {},
+            excludedMuscleGroups: {},
+            goalTags: {'strength'},
+            includeCustomExercises: false,
+          ),
+        );
+        // Strength goal tag matches force (push/pull) and mechanic (compound)
+        // Bench Press: push, compound -> +4 (push + compound)
+        // Deadlift: pull, compound -> +4 (pull + compound)
+        // Squat: push, compound -> +4 (push + compound)
+        // Push Up: push, compound -> +4 (push + compound)
+        // Bicep Curl: pull, isolation -> +2 (pull only)
+        expect(results.length, 5);
+        // Bicep Curl should be last (lowest score)
+        expect(results.last.name, 'Bicep Curl');
+      });
+    });
   });
 }

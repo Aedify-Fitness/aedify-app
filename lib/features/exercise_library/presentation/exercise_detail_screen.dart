@@ -5,6 +5,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -158,10 +159,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                     children: loaded.muscleGroups
                         .map(
                           (g) => Chip(
-                            label: Text(
-                              g,
-                              style: const TextStyle(fontSize: AppFontSizes.xs),
-                            ),
+                            label: Text(g, style: AppTextStyles.labelSm),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             visualDensity: VisualDensity.compact,
@@ -183,10 +181,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                     children: loaded.primaryMuscles
                         .map(
                           (m) => Chip(
-                            label: Text(
-                              m,
-                              style: const TextStyle(fontSize: AppFontSizes.xs),
-                            ),
+                            label: Text(m, style: AppTextStyles.labelSm),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             visualDensity: VisualDensity.compact,
@@ -218,9 +213,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                             child: Center(
                               child: Text(
                                 '${entry.key + 1}',
-                                style: const TextStyle(
-                                  fontSize: AppFontSizes.xs,
-                                ),
+                                style: AppTextStyles.labelSm,
                               ),
                             ),
                           ),
@@ -274,7 +267,7 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Chip(
-      label: Text(label, style: const TextStyle(fontSize: AppFontSizes.xs)),
+      label: Text(label, style: AppTextStyles.labelSm),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );

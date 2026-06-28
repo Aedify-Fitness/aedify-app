@@ -21,7 +21,9 @@ class _BootstrapScreenState extends ConsumerState<BootstrapScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(AppBootstrap.controllerProvider.notifier).start();
+      if (mounted) {
+        ref.read(AppBootstrap.controllerProvider.notifier).start();
+      }
     });
   }
 

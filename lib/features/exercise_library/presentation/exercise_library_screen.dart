@@ -7,6 +7,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -288,7 +289,7 @@ class _ActiveFilterBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: AppSpacing.xs),
       child: Chip(
-        label: Text(label, style: const TextStyle(fontSize: AppFontSizes.xs)),
+        label: Text(label, style: AppTextStyles.labelSm),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
       ),
@@ -322,16 +323,13 @@ class _ExerciseListTile extends StatelessWidget {
       subtitle: Row(
         children: [
           if (difficulty != null) ...[
-            Text(
-              difficulty!,
-              style: const TextStyle(fontSize: AppFontSizes.xs),
-            ),
+            Text(difficulty!, style: AppTextStyles.labelSm),
             AppWhiteSpace.wSm,
           ],
-          Text(modality, style: const TextStyle(fontSize: AppFontSizes.xs)),
+          Text(modality, style: AppTextStyles.labelSm),
           if (equipment != null) ...[
             AppWhiteSpace.wSm,
-            Text(equipment!, style: const TextStyle(fontSize: AppFontSizes.xs)),
+            Text(equipment!, style: AppTextStyles.labelSm),
           ],
         ],
       ),

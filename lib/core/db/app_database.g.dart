@@ -4837,6 +4837,5535 @@ class ExerciseAudioCacheCompanion
   }
 }
 
+class $UserProfileTable extends UserProfile
+    with TableInfo<$UserProfileTable, UserProfileData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserProfileTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sexMeta = const VerificationMeta('sex');
+  @override
+  late final GeneratedColumn<String> sex = GeneratedColumn<String>(
+    'sex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateOfBirthMeta = const VerificationMeta(
+    'dateOfBirth',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dateOfBirth = GeneratedColumn<DateTime>(
+    'date_of_birth',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyweightLoggedAtMeta =
+      const VerificationMeta('bodyweightLoggedAt');
+  @override
+  late final GeneratedColumn<DateTime> bodyweightLoggedAt =
+      GeneratedColumn<DateTime>(
+        'bodyweight_logged_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _preferredUnitsMeta = const VerificationMeta(
+    'preferredUnits',
+  );
+  @override
+  late final GeneratedColumn<String> preferredUnits = GeneratedColumn<String>(
+    'preferred_units',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('metric'),
+  );
+  static const VerificationMeta _experienceLevelMeta = const VerificationMeta(
+    'experienceLevel',
+  );
+  @override
+  late final GeneratedColumn<String> experienceLevel = GeneratedColumn<String>(
+    'experience_level',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetSessionLengthMinutesMeta =
+      const VerificationMeta('targetSessionLengthMinutes');
+  @override
+  late final GeneratedColumn<int> targetSessionLengthMinutes =
+      GeneratedColumn<int>(
+        'target_session_length_minutes',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _trainingDaysPerWeekMeta =
+      const VerificationMeta('trainingDaysPerWeek');
+  @override
+  late final GeneratedColumn<int> trainingDaysPerWeek = GeneratedColumn<int>(
+    'training_days_per_week',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _trainingDayNamesJsonMeta =
+      const VerificationMeta('trainingDayNamesJson');
+  @override
+  late final GeneratedColumn<String> trainingDayNamesJson =
+      GeneratedColumn<String>(
+        'training_day_names_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _onboardingCompletedMeta =
+      const VerificationMeta('onboardingCompleted');
+  @override
+  late final GeneratedColumn<bool> onboardingCompleted = GeneratedColumn<bool>(
+    'onboarding_completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("onboarding_completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _onboardingCompletedAtMeta =
+      const VerificationMeta('onboardingCompletedAt');
+  @override
+  late final GeneratedColumn<DateTime> onboardingCompletedAt =
+      GeneratedColumn<DateTime>(
+        'onboarding_completed_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _goalsJsonMeta = const VerificationMeta(
+    'goalsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalsJson = GeneratedColumn<String>(
+    'goals_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _equipmentAccessJsonMeta =
+      const VerificationMeta('equipmentAccessJson');
+  @override
+  late final GeneratedColumn<String> equipmentAccessJson =
+      GeneratedColumn<String>(
+        'equipment_access_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _favoriteExerciseIdsJsonMeta =
+      const VerificationMeta('favoriteExerciseIdsJson');
+  @override
+  late final GeneratedColumn<String> favoriteExerciseIdsJson =
+      GeneratedColumn<String>(
+        'favorite_exercise_ids_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _substitutedExerciseIdsJsonMeta =
+      const VerificationMeta('substitutedExerciseIdsJson');
+  @override
+  late final GeneratedColumn<String> substitutedExerciseIdsJson =
+      GeneratedColumn<String>(
+        'substituted_exercise_ids_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _injuriesLimitationsJsonMeta =
+      const VerificationMeta('injuriesLimitationsJson');
+  @override
+  late final GeneratedColumn<String> injuriesLimitationsJson =
+      GeneratedColumn<String>(
+        'injuries_limitations_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _otherNotesMeta = const VerificationMeta(
+    'otherNotes',
+  );
+  @override
+  late final GeneratedColumn<String> otherNotes = GeneratedColumn<String>(
+    'other_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    sex,
+    dateOfBirth,
+    heightCm,
+    bodyweightKg,
+    bodyweightLoggedAt,
+    preferredUnits,
+    experienceLevel,
+    targetSessionLengthMinutes,
+    trainingDaysPerWeek,
+    trainingDayNamesJson,
+    onboardingCompleted,
+    onboardingCompletedAt,
+    goalsJson,
+    equipmentAccessJson,
+    favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson,
+    injuriesLimitationsJson,
+    otherNotes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_profile';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserProfileData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('sex')) {
+      context.handle(
+        _sexMeta,
+        sex.isAcceptableOrUnknown(data['sex']!, _sexMeta),
+      );
+    }
+    if (data.containsKey('date_of_birth')) {
+      context.handle(
+        _dateOfBirthMeta,
+        dateOfBirth.isAcceptableOrUnknown(
+          data['date_of_birth']!,
+          _dateOfBirthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_logged_at')) {
+      context.handle(
+        _bodyweightLoggedAtMeta,
+        bodyweightLoggedAt.isAcceptableOrUnknown(
+          data['bodyweight_logged_at']!,
+          _bodyweightLoggedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('preferred_units')) {
+      context.handle(
+        _preferredUnitsMeta,
+        preferredUnits.isAcceptableOrUnknown(
+          data['preferred_units']!,
+          _preferredUnitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('experience_level')) {
+      context.handle(
+        _experienceLevelMeta,
+        experienceLevel.isAcceptableOrUnknown(
+          data['experience_level']!,
+          _experienceLevelMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_experienceLevelMeta);
+    }
+    if (data.containsKey('target_session_length_minutes')) {
+      context.handle(
+        _targetSessionLengthMinutesMeta,
+        targetSessionLengthMinutes.isAcceptableOrUnknown(
+          data['target_session_length_minutes']!,
+          _targetSessionLengthMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('training_days_per_week')) {
+      context.handle(
+        _trainingDaysPerWeekMeta,
+        trainingDaysPerWeek.isAcceptableOrUnknown(
+          data['training_days_per_week']!,
+          _trainingDaysPerWeekMeta,
+        ),
+      );
+    }
+    if (data.containsKey('training_day_names_json')) {
+      context.handle(
+        _trainingDayNamesJsonMeta,
+        trainingDayNamesJson.isAcceptableOrUnknown(
+          data['training_day_names_json']!,
+          _trainingDayNamesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('onboarding_completed')) {
+      context.handle(
+        _onboardingCompletedMeta,
+        onboardingCompleted.isAcceptableOrUnknown(
+          data['onboarding_completed']!,
+          _onboardingCompletedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('onboarding_completed_at')) {
+      context.handle(
+        _onboardingCompletedAtMeta,
+        onboardingCompletedAt.isAcceptableOrUnknown(
+          data['onboarding_completed_at']!,
+          _onboardingCompletedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goals_json')) {
+      context.handle(
+        _goalsJsonMeta,
+        goalsJson.isAcceptableOrUnknown(data['goals_json']!, _goalsJsonMeta),
+      );
+    }
+    if (data.containsKey('equipment_access_json')) {
+      context.handle(
+        _equipmentAccessJsonMeta,
+        equipmentAccessJson.isAcceptableOrUnknown(
+          data['equipment_access_json']!,
+          _equipmentAccessJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('favorite_exercise_ids_json')) {
+      context.handle(
+        _favoriteExerciseIdsJsonMeta,
+        favoriteExerciseIdsJson.isAcceptableOrUnknown(
+          data['favorite_exercise_ids_json']!,
+          _favoriteExerciseIdsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('substituted_exercise_ids_json')) {
+      context.handle(
+        _substitutedExerciseIdsJsonMeta,
+        substitutedExerciseIdsJson.isAcceptableOrUnknown(
+          data['substituted_exercise_ids_json']!,
+          _substitutedExerciseIdsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('injuries_limitations_json')) {
+      context.handle(
+        _injuriesLimitationsJsonMeta,
+        injuriesLimitationsJson.isAcceptableOrUnknown(
+          data['injuries_limitations_json']!,
+          _injuriesLimitationsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('other_notes')) {
+      context.handle(
+        _otherNotesMeta,
+        otherNotes.isAcceptableOrUnknown(data['other_notes']!, _otherNotesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserProfileData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      sex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sex'],
+      ),
+      dateOfBirth: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date_of_birth'],
+      ),
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      bodyweightLoggedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}bodyweight_logged_at'],
+      ),
+      preferredUnits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_units'],
+      )!,
+      experienceLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_level'],
+      )!,
+      targetSessionLengthMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_session_length_minutes'],
+      ),
+      trainingDaysPerWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}training_days_per_week'],
+      ),
+      trainingDayNamesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}training_day_names_json'],
+      )!,
+      onboardingCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}onboarding_completed'],
+      )!,
+      onboardingCompletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}onboarding_completed_at'],
+      ),
+      goalsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goals_json'],
+      )!,
+      equipmentAccessJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipment_access_json'],
+      )!,
+      favoriteExerciseIdsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}favorite_exercise_ids_json'],
+      )!,
+      substitutedExerciseIdsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}substituted_exercise_ids_json'],
+      )!,
+      injuriesLimitationsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}injuries_limitations_json'],
+      )!,
+      otherNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}other_notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserProfileTable createAlias(String alias) {
+    return $UserProfileTable(attachedDatabase, alias);
+  }
+}
+
+class UserProfileData extends DataClass implements Insertable<UserProfileData> {
+  final String id;
+  final String? name;
+  final String? sex;
+  final DateTime? dateOfBirth;
+  final double? heightCm;
+  final double? bodyweightKg;
+  final DateTime? bodyweightLoggedAt;
+  final String preferredUnits;
+  final String experienceLevel;
+  final int? targetSessionLengthMinutes;
+  final int? trainingDaysPerWeek;
+  final String trainingDayNamesJson;
+  final bool onboardingCompleted;
+  final DateTime? onboardingCompletedAt;
+  final String goalsJson;
+  final String equipmentAccessJson;
+  final String favoriteExerciseIdsJson;
+  final String substitutedExerciseIdsJson;
+  final String injuriesLimitationsJson;
+  final String? otherNotes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const UserProfileData({
+    required this.id,
+    this.name,
+    this.sex,
+    this.dateOfBirth,
+    this.heightCm,
+    this.bodyweightKg,
+    this.bodyweightLoggedAt,
+    required this.preferredUnits,
+    required this.experienceLevel,
+    this.targetSessionLengthMinutes,
+    this.trainingDaysPerWeek,
+    required this.trainingDayNamesJson,
+    required this.onboardingCompleted,
+    this.onboardingCompletedAt,
+    required this.goalsJson,
+    required this.equipmentAccessJson,
+    required this.favoriteExerciseIdsJson,
+    required this.substitutedExerciseIdsJson,
+    required this.injuriesLimitationsJson,
+    this.otherNotes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || sex != null) {
+      map['sex'] = Variable<String>(sex);
+    }
+    if (!nullToAbsent || dateOfBirth != null) {
+      map['date_of_birth'] = Variable<DateTime>(dateOfBirth);
+    }
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || bodyweightLoggedAt != null) {
+      map['bodyweight_logged_at'] = Variable<DateTime>(bodyweightLoggedAt);
+    }
+    map['preferred_units'] = Variable<String>(preferredUnits);
+    map['experience_level'] = Variable<String>(experienceLevel);
+    if (!nullToAbsent || targetSessionLengthMinutes != null) {
+      map['target_session_length_minutes'] = Variable<int>(
+        targetSessionLengthMinutes,
+      );
+    }
+    if (!nullToAbsent || trainingDaysPerWeek != null) {
+      map['training_days_per_week'] = Variable<int>(trainingDaysPerWeek);
+    }
+    map['training_day_names_json'] = Variable<String>(trainingDayNamesJson);
+    map['onboarding_completed'] = Variable<bool>(onboardingCompleted);
+    if (!nullToAbsent || onboardingCompletedAt != null) {
+      map['onboarding_completed_at'] = Variable<DateTime>(
+        onboardingCompletedAt,
+      );
+    }
+    map['goals_json'] = Variable<String>(goalsJson);
+    map['equipment_access_json'] = Variable<String>(equipmentAccessJson);
+    map['favorite_exercise_ids_json'] = Variable<String>(
+      favoriteExerciseIdsJson,
+    );
+    map['substituted_exercise_ids_json'] = Variable<String>(
+      substitutedExerciseIdsJson,
+    );
+    map['injuries_limitations_json'] = Variable<String>(
+      injuriesLimitationsJson,
+    );
+    if (!nullToAbsent || otherNotes != null) {
+      map['other_notes'] = Variable<String>(otherNotes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserProfileCompanion toCompanion(bool nullToAbsent) {
+    return UserProfileCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      sex: sex == null && nullToAbsent ? const Value.absent() : Value(sex),
+      dateOfBirth: dateOfBirth == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dateOfBirth),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      bodyweightLoggedAt: bodyweightLoggedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightLoggedAt),
+      preferredUnits: Value(preferredUnits),
+      experienceLevel: Value(experienceLevel),
+      targetSessionLengthMinutes:
+          targetSessionLengthMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetSessionLengthMinutes),
+      trainingDaysPerWeek: trainingDaysPerWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trainingDaysPerWeek),
+      trainingDayNamesJson: Value(trainingDayNamesJson),
+      onboardingCompleted: Value(onboardingCompleted),
+      onboardingCompletedAt: onboardingCompletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(onboardingCompletedAt),
+      goalsJson: Value(goalsJson),
+      equipmentAccessJson: Value(equipmentAccessJson),
+      favoriteExerciseIdsJson: Value(favoriteExerciseIdsJson),
+      substitutedExerciseIdsJson: Value(substitutedExerciseIdsJson),
+      injuriesLimitationsJson: Value(injuriesLimitationsJson),
+      otherNotes: otherNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(otherNotes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserProfileData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserProfileData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      sex: serializer.fromJson<String?>(json['sex']),
+      dateOfBirth: serializer.fromJson<DateTime?>(json['dateOfBirth']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      bodyweightLoggedAt: serializer.fromJson<DateTime?>(
+        json['bodyweightLoggedAt'],
+      ),
+      preferredUnits: serializer.fromJson<String>(json['preferredUnits']),
+      experienceLevel: serializer.fromJson<String>(json['experienceLevel']),
+      targetSessionLengthMinutes: serializer.fromJson<int?>(
+        json['targetSessionLengthMinutes'],
+      ),
+      trainingDaysPerWeek: serializer.fromJson<int?>(
+        json['trainingDaysPerWeek'],
+      ),
+      trainingDayNamesJson: serializer.fromJson<String>(
+        json['trainingDayNamesJson'],
+      ),
+      onboardingCompleted: serializer.fromJson<bool>(
+        json['onboardingCompleted'],
+      ),
+      onboardingCompletedAt: serializer.fromJson<DateTime?>(
+        json['onboardingCompletedAt'],
+      ),
+      goalsJson: serializer.fromJson<String>(json['goalsJson']),
+      equipmentAccessJson: serializer.fromJson<String>(
+        json['equipmentAccessJson'],
+      ),
+      favoriteExerciseIdsJson: serializer.fromJson<String>(
+        json['favoriteExerciseIdsJson'],
+      ),
+      substitutedExerciseIdsJson: serializer.fromJson<String>(
+        json['substitutedExerciseIdsJson'],
+      ),
+      injuriesLimitationsJson: serializer.fromJson<String>(
+        json['injuriesLimitationsJson'],
+      ),
+      otherNotes: serializer.fromJson<String?>(json['otherNotes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String?>(name),
+      'sex': serializer.toJson<String?>(sex),
+      'dateOfBirth': serializer.toJson<DateTime?>(dateOfBirth),
+      'heightCm': serializer.toJson<double?>(heightCm),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'bodyweightLoggedAt': serializer.toJson<DateTime?>(bodyweightLoggedAt),
+      'preferredUnits': serializer.toJson<String>(preferredUnits),
+      'experienceLevel': serializer.toJson<String>(experienceLevel),
+      'targetSessionLengthMinutes': serializer.toJson<int?>(
+        targetSessionLengthMinutes,
+      ),
+      'trainingDaysPerWeek': serializer.toJson<int?>(trainingDaysPerWeek),
+      'trainingDayNamesJson': serializer.toJson<String>(trainingDayNamesJson),
+      'onboardingCompleted': serializer.toJson<bool>(onboardingCompleted),
+      'onboardingCompletedAt': serializer.toJson<DateTime?>(
+        onboardingCompletedAt,
+      ),
+      'goalsJson': serializer.toJson<String>(goalsJson),
+      'equipmentAccessJson': serializer.toJson<String>(equipmentAccessJson),
+      'favoriteExerciseIdsJson': serializer.toJson<String>(
+        favoriteExerciseIdsJson,
+      ),
+      'substitutedExerciseIdsJson': serializer.toJson<String>(
+        substitutedExerciseIdsJson,
+      ),
+      'injuriesLimitationsJson': serializer.toJson<String>(
+        injuriesLimitationsJson,
+      ),
+      'otherNotes': serializer.toJson<String?>(otherNotes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserProfileData copyWith({
+    String? id,
+    Value<String?> name = const Value.absent(),
+    Value<String?> sex = const Value.absent(),
+    Value<DateTime?> dateOfBirth = const Value.absent(),
+    Value<double?> heightCm = const Value.absent(),
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+    String? preferredUnits,
+    String? experienceLevel,
+    Value<int?> targetSessionLengthMinutes = const Value.absent(),
+    Value<int?> trainingDaysPerWeek = const Value.absent(),
+    String? trainingDayNamesJson,
+    bool? onboardingCompleted,
+    Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+    String? goalsJson,
+    String? equipmentAccessJson,
+    String? favoriteExerciseIdsJson,
+    String? substitutedExerciseIdsJson,
+    String? injuriesLimitationsJson,
+    Value<String?> otherNotes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => UserProfileData(
+    id: id ?? this.id,
+    name: name.present ? name.value : this.name,
+    sex: sex.present ? sex.value : this.sex,
+    dateOfBirth: dateOfBirth.present ? dateOfBirth.value : this.dateOfBirth,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    bodyweightLoggedAt: bodyweightLoggedAt.present
+        ? bodyweightLoggedAt.value
+        : this.bodyweightLoggedAt,
+    preferredUnits: preferredUnits ?? this.preferredUnits,
+    experienceLevel: experienceLevel ?? this.experienceLevel,
+    targetSessionLengthMinutes: targetSessionLengthMinutes.present
+        ? targetSessionLengthMinutes.value
+        : this.targetSessionLengthMinutes,
+    trainingDaysPerWeek: trainingDaysPerWeek.present
+        ? trainingDaysPerWeek.value
+        : this.trainingDaysPerWeek,
+    trainingDayNamesJson: trainingDayNamesJson ?? this.trainingDayNamesJson,
+    onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+    onboardingCompletedAt: onboardingCompletedAt.present
+        ? onboardingCompletedAt.value
+        : this.onboardingCompletedAt,
+    goalsJson: goalsJson ?? this.goalsJson,
+    equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+    favoriteExerciseIdsJson:
+        favoriteExerciseIdsJson ?? this.favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson:
+        substitutedExerciseIdsJson ?? this.substitutedExerciseIdsJson,
+    injuriesLimitationsJson:
+        injuriesLimitationsJson ?? this.injuriesLimitationsJson,
+    otherNotes: otherNotes.present ? otherNotes.value : this.otherNotes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserProfileData copyWithCompanion(UserProfileCompanion data) {
+    return UserProfileData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      sex: data.sex.present ? data.sex.value : this.sex,
+      dateOfBirth: data.dateOfBirth.present
+          ? data.dateOfBirth.value
+          : this.dateOfBirth,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      bodyweightLoggedAt: data.bodyweightLoggedAt.present
+          ? data.bodyweightLoggedAt.value
+          : this.bodyweightLoggedAt,
+      preferredUnits: data.preferredUnits.present
+          ? data.preferredUnits.value
+          : this.preferredUnits,
+      experienceLevel: data.experienceLevel.present
+          ? data.experienceLevel.value
+          : this.experienceLevel,
+      targetSessionLengthMinutes: data.targetSessionLengthMinutes.present
+          ? data.targetSessionLengthMinutes.value
+          : this.targetSessionLengthMinutes,
+      trainingDaysPerWeek: data.trainingDaysPerWeek.present
+          ? data.trainingDaysPerWeek.value
+          : this.trainingDaysPerWeek,
+      trainingDayNamesJson: data.trainingDayNamesJson.present
+          ? data.trainingDayNamesJson.value
+          : this.trainingDayNamesJson,
+      onboardingCompleted: data.onboardingCompleted.present
+          ? data.onboardingCompleted.value
+          : this.onboardingCompleted,
+      onboardingCompletedAt: data.onboardingCompletedAt.present
+          ? data.onboardingCompletedAt.value
+          : this.onboardingCompletedAt,
+      goalsJson: data.goalsJson.present ? data.goalsJson.value : this.goalsJson,
+      equipmentAccessJson: data.equipmentAccessJson.present
+          ? data.equipmentAccessJson.value
+          : this.equipmentAccessJson,
+      favoriteExerciseIdsJson: data.favoriteExerciseIdsJson.present
+          ? data.favoriteExerciseIdsJson.value
+          : this.favoriteExerciseIdsJson,
+      substitutedExerciseIdsJson: data.substitutedExerciseIdsJson.present
+          ? data.substitutedExerciseIdsJson.value
+          : this.substitutedExerciseIdsJson,
+      injuriesLimitationsJson: data.injuriesLimitationsJson.present
+          ? data.injuriesLimitationsJson.value
+          : this.injuriesLimitationsJson,
+      otherNotes: data.otherNotes.present
+          ? data.otherNotes.value
+          : this.otherNotes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfileData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('sex: $sex, ')
+          ..write('dateOfBirth: $dateOfBirth, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyweightLoggedAt: $bodyweightLoggedAt, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('experienceLevel: $experienceLevel, ')
+          ..write('targetSessionLengthMinutes: $targetSessionLengthMinutes, ')
+          ..write('trainingDaysPerWeek: $trainingDaysPerWeek, ')
+          ..write('trainingDayNamesJson: $trainingDayNamesJson, ')
+          ..write('onboardingCompleted: $onboardingCompleted, ')
+          ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
+          ..write('goalsJson: $goalsJson, ')
+          ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('favoriteExerciseIdsJson: $favoriteExerciseIdsJson, ')
+          ..write('substitutedExerciseIdsJson: $substitutedExerciseIdsJson, ')
+          ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
+          ..write('otherNotes: $otherNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    name,
+    sex,
+    dateOfBirth,
+    heightCm,
+    bodyweightKg,
+    bodyweightLoggedAt,
+    preferredUnits,
+    experienceLevel,
+    targetSessionLengthMinutes,
+    trainingDaysPerWeek,
+    trainingDayNamesJson,
+    onboardingCompleted,
+    onboardingCompletedAt,
+    goalsJson,
+    equipmentAccessJson,
+    favoriteExerciseIdsJson,
+    substitutedExerciseIdsJson,
+    injuriesLimitationsJson,
+    otherNotes,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserProfileData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.sex == this.sex &&
+          other.dateOfBirth == this.dateOfBirth &&
+          other.heightCm == this.heightCm &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.bodyweightLoggedAt == this.bodyweightLoggedAt &&
+          other.preferredUnits == this.preferredUnits &&
+          other.experienceLevel == this.experienceLevel &&
+          other.targetSessionLengthMinutes == this.targetSessionLengthMinutes &&
+          other.trainingDaysPerWeek == this.trainingDaysPerWeek &&
+          other.trainingDayNamesJson == this.trainingDayNamesJson &&
+          other.onboardingCompleted == this.onboardingCompleted &&
+          other.onboardingCompletedAt == this.onboardingCompletedAt &&
+          other.goalsJson == this.goalsJson &&
+          other.equipmentAccessJson == this.equipmentAccessJson &&
+          other.favoriteExerciseIdsJson == this.favoriteExerciseIdsJson &&
+          other.substitutedExerciseIdsJson == this.substitutedExerciseIdsJson &&
+          other.injuriesLimitationsJson == this.injuriesLimitationsJson &&
+          other.otherNotes == this.otherNotes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserProfileCompanion extends UpdateCompanion<UserProfileData> {
+  final Value<String> id;
+  final Value<String?> name;
+  final Value<String?> sex;
+  final Value<DateTime?> dateOfBirth;
+  final Value<double?> heightCm;
+  final Value<double?> bodyweightKg;
+  final Value<DateTime?> bodyweightLoggedAt;
+  final Value<String> preferredUnits;
+  final Value<String> experienceLevel;
+  final Value<int?> targetSessionLengthMinutes;
+  final Value<int?> trainingDaysPerWeek;
+  final Value<String> trainingDayNamesJson;
+  final Value<bool> onboardingCompleted;
+  final Value<DateTime?> onboardingCompletedAt;
+  final Value<String> goalsJson;
+  final Value<String> equipmentAccessJson;
+  final Value<String> favoriteExerciseIdsJson;
+  final Value<String> substitutedExerciseIdsJson;
+  final Value<String> injuriesLimitationsJson;
+  final Value<String?> otherNotes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const UserProfileCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.dateOfBirth = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyweightLoggedAt = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.experienceLevel = const Value.absent(),
+    this.targetSessionLengthMinutes = const Value.absent(),
+    this.trainingDaysPerWeek = const Value.absent(),
+    this.trainingDayNamesJson = const Value.absent(),
+    this.onboardingCompleted = const Value.absent(),
+    this.onboardingCompletedAt = const Value.absent(),
+    this.goalsJson = const Value.absent(),
+    this.equipmentAccessJson = const Value.absent(),
+    this.favoriteExerciseIdsJson = const Value.absent(),
+    this.substitutedExerciseIdsJson = const Value.absent(),
+    this.injuriesLimitationsJson = const Value.absent(),
+    this.otherNotes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UserProfileCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.dateOfBirth = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyweightLoggedAt = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    required String experienceLevel,
+    this.targetSessionLengthMinutes = const Value.absent(),
+    this.trainingDaysPerWeek = const Value.absent(),
+    this.trainingDayNamesJson = const Value.absent(),
+    this.onboardingCompleted = const Value.absent(),
+    this.onboardingCompletedAt = const Value.absent(),
+    this.goalsJson = const Value.absent(),
+    this.equipmentAccessJson = const Value.absent(),
+    this.favoriteExerciseIdsJson = const Value.absent(),
+    this.substitutedExerciseIdsJson = const Value.absent(),
+    this.injuriesLimitationsJson = const Value.absent(),
+    this.otherNotes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : experienceLevel = Value(experienceLevel),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<UserProfileData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? sex,
+    Expression<DateTime>? dateOfBirth,
+    Expression<double>? heightCm,
+    Expression<double>? bodyweightKg,
+    Expression<DateTime>? bodyweightLoggedAt,
+    Expression<String>? preferredUnits,
+    Expression<String>? experienceLevel,
+    Expression<int>? targetSessionLengthMinutes,
+    Expression<int>? trainingDaysPerWeek,
+    Expression<String>? trainingDayNamesJson,
+    Expression<bool>? onboardingCompleted,
+    Expression<DateTime>? onboardingCompletedAt,
+    Expression<String>? goalsJson,
+    Expression<String>? equipmentAccessJson,
+    Expression<String>? favoriteExerciseIdsJson,
+    Expression<String>? substitutedExerciseIdsJson,
+    Expression<String>? injuriesLimitationsJson,
+    Expression<String>? otherNotes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (sex != null) 'sex': sex,
+      if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (bodyweightLoggedAt != null)
+        'bodyweight_logged_at': bodyweightLoggedAt,
+      if (preferredUnits != null) 'preferred_units': preferredUnits,
+      if (experienceLevel != null) 'experience_level': experienceLevel,
+      if (targetSessionLengthMinutes != null)
+        'target_session_length_minutes': targetSessionLengthMinutes,
+      if (trainingDaysPerWeek != null)
+        'training_days_per_week': trainingDaysPerWeek,
+      if (trainingDayNamesJson != null)
+        'training_day_names_json': trainingDayNamesJson,
+      if (onboardingCompleted != null)
+        'onboarding_completed': onboardingCompleted,
+      if (onboardingCompletedAt != null)
+        'onboarding_completed_at': onboardingCompletedAt,
+      if (goalsJson != null) 'goals_json': goalsJson,
+      if (equipmentAccessJson != null)
+        'equipment_access_json': equipmentAccessJson,
+      if (favoriteExerciseIdsJson != null)
+        'favorite_exercise_ids_json': favoriteExerciseIdsJson,
+      if (substitutedExerciseIdsJson != null)
+        'substituted_exercise_ids_json': substitutedExerciseIdsJson,
+      if (injuriesLimitationsJson != null)
+        'injuries_limitations_json': injuriesLimitationsJson,
+      if (otherNotes != null) 'other_notes': otherNotes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UserProfileCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? name,
+    Value<String?>? sex,
+    Value<DateTime?>? dateOfBirth,
+    Value<double?>? heightCm,
+    Value<double?>? bodyweightKg,
+    Value<DateTime?>? bodyweightLoggedAt,
+    Value<String>? preferredUnits,
+    Value<String>? experienceLevel,
+    Value<int?>? targetSessionLengthMinutes,
+    Value<int?>? trainingDaysPerWeek,
+    Value<String>? trainingDayNamesJson,
+    Value<bool>? onboardingCompleted,
+    Value<DateTime?>? onboardingCompletedAt,
+    Value<String>? goalsJson,
+    Value<String>? equipmentAccessJson,
+    Value<String>? favoriteExerciseIdsJson,
+    Value<String>? substitutedExerciseIdsJson,
+    Value<String>? injuriesLimitationsJson,
+    Value<String?>? otherNotes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return UserProfileCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      sex: sex ?? this.sex,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      heightCm: heightCm ?? this.heightCm,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      bodyweightLoggedAt: bodyweightLoggedAt ?? this.bodyweightLoggedAt,
+      preferredUnits: preferredUnits ?? this.preferredUnits,
+      experienceLevel: experienceLevel ?? this.experienceLevel,
+      targetSessionLengthMinutes:
+          targetSessionLengthMinutes ?? this.targetSessionLengthMinutes,
+      trainingDaysPerWeek: trainingDaysPerWeek ?? this.trainingDaysPerWeek,
+      trainingDayNamesJson: trainingDayNamesJson ?? this.trainingDayNamesJson,
+      onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+      onboardingCompletedAt:
+          onboardingCompletedAt ?? this.onboardingCompletedAt,
+      goalsJson: goalsJson ?? this.goalsJson,
+      equipmentAccessJson: equipmentAccessJson ?? this.equipmentAccessJson,
+      favoriteExerciseIdsJson:
+          favoriteExerciseIdsJson ?? this.favoriteExerciseIdsJson,
+      substitutedExerciseIdsJson:
+          substitutedExerciseIdsJson ?? this.substitutedExerciseIdsJson,
+      injuriesLimitationsJson:
+          injuriesLimitationsJson ?? this.injuriesLimitationsJson,
+      otherNotes: otherNotes ?? this.otherNotes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (sex.present) {
+      map['sex'] = Variable<String>(sex.value);
+    }
+    if (dateOfBirth.present) {
+      map['date_of_birth'] = Variable<DateTime>(dateOfBirth.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (bodyweightLoggedAt.present) {
+      map['bodyweight_logged_at'] = Variable<DateTime>(
+        bodyweightLoggedAt.value,
+      );
+    }
+    if (preferredUnits.present) {
+      map['preferred_units'] = Variable<String>(preferredUnits.value);
+    }
+    if (experienceLevel.present) {
+      map['experience_level'] = Variable<String>(experienceLevel.value);
+    }
+    if (targetSessionLengthMinutes.present) {
+      map['target_session_length_minutes'] = Variable<int>(
+        targetSessionLengthMinutes.value,
+      );
+    }
+    if (trainingDaysPerWeek.present) {
+      map['training_days_per_week'] = Variable<int>(trainingDaysPerWeek.value);
+    }
+    if (trainingDayNamesJson.present) {
+      map['training_day_names_json'] = Variable<String>(
+        trainingDayNamesJson.value,
+      );
+    }
+    if (onboardingCompleted.present) {
+      map['onboarding_completed'] = Variable<bool>(onboardingCompleted.value);
+    }
+    if (onboardingCompletedAt.present) {
+      map['onboarding_completed_at'] = Variable<DateTime>(
+        onboardingCompletedAt.value,
+      );
+    }
+    if (goalsJson.present) {
+      map['goals_json'] = Variable<String>(goalsJson.value);
+    }
+    if (equipmentAccessJson.present) {
+      map['equipment_access_json'] = Variable<String>(
+        equipmentAccessJson.value,
+      );
+    }
+    if (favoriteExerciseIdsJson.present) {
+      map['favorite_exercise_ids_json'] = Variable<String>(
+        favoriteExerciseIdsJson.value,
+      );
+    }
+    if (substitutedExerciseIdsJson.present) {
+      map['substituted_exercise_ids_json'] = Variable<String>(
+        substitutedExerciseIdsJson.value,
+      );
+    }
+    if (injuriesLimitationsJson.present) {
+      map['injuries_limitations_json'] = Variable<String>(
+        injuriesLimitationsJson.value,
+      );
+    }
+    if (otherNotes.present) {
+      map['other_notes'] = Variable<String>(otherNotes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfileCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('sex: $sex, ')
+          ..write('dateOfBirth: $dateOfBirth, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyweightLoggedAt: $bodyweightLoggedAt, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('experienceLevel: $experienceLevel, ')
+          ..write('targetSessionLengthMinutes: $targetSessionLengthMinutes, ')
+          ..write('trainingDaysPerWeek: $trainingDaysPerWeek, ')
+          ..write('trainingDayNamesJson: $trainingDayNamesJson, ')
+          ..write('onboardingCompleted: $onboardingCompleted, ')
+          ..write('onboardingCompletedAt: $onboardingCompletedAt, ')
+          ..write('goalsJson: $goalsJson, ')
+          ..write('equipmentAccessJson: $equipmentAccessJson, ')
+          ..write('favoriteExerciseIdsJson: $favoriteExerciseIdsJson, ')
+          ..write('substitutedExerciseIdsJson: $substitutedExerciseIdsJson, ')
+          ..write('injuriesLimitationsJson: $injuriesLimitationsJson, ')
+          ..write('otherNotes: $otherNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StrengthAnchorsTable extends StrengthAnchors
+    with TableInfo<$StrengthAnchorsTable, StrengthAnchor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthAnchorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _anchorTypeMeta = const VerificationMeta(
+    'anchorType',
+  );
+  @override
+  late final GeneratedColumn<String> anchorType = GeneratedColumn<String>(
+    'anchor_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _repsMeta = const VerificationMeta('reps');
+  @override
+  late final GeneratedColumn<int> reps = GeneratedColumn<int>(
+    'reps',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMeta = const VerificationMeta('rpe');
+  @override
+  late final GeneratedColumn<double> rpe = GeneratedColumn<double>(
+    'rpe',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rirMeta = const VerificationMeta('rir');
+  @override
+  late final GeneratedColumn<int> rir = GeneratedColumn<int>(
+    'rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceSetLogIdMeta = const VerificationMeta(
+    'sourceSetLogId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceSetLogId = GeneratedColumn<String>(
+    'source_set_log_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _confidenceMeta = const VerificationMeta(
+    'confidence',
+  );
+  @override
+  late final GeneratedColumn<String> confidence = GeneratedColumn<String>(
+    'confidence',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loggedAtMeta = const VerificationMeta(
+    'loggedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> loggedAt = GeneratedColumn<DateTime>(
+    'logged_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    exerciseId,
+    anchorType,
+    weightKg,
+    reps,
+    rpe,
+    rir,
+    source,
+    sourceSetLogId,
+    confidence,
+    loggedAt,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_anchors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StrengthAnchor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('anchor_type')) {
+      context.handle(
+        _anchorTypeMeta,
+        anchorType.isAcceptableOrUnknown(data['anchor_type']!, _anchorTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_anchorTypeMeta);
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('reps')) {
+      context.handle(
+        _repsMeta,
+        reps.isAcceptableOrUnknown(data['reps']!, _repsMeta),
+      );
+    }
+    if (data.containsKey('rpe')) {
+      context.handle(
+        _rpeMeta,
+        rpe.isAcceptableOrUnknown(data['rpe']!, _rpeMeta),
+      );
+    }
+    if (data.containsKey('rir')) {
+      context.handle(
+        _rirMeta,
+        rir.isAcceptableOrUnknown(data['rir']!, _rirMeta),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('source_set_log_id')) {
+      context.handle(
+        _sourceSetLogIdMeta,
+        sourceSetLogId.isAcceptableOrUnknown(
+          data['source_set_log_id']!,
+          _sourceSetLogIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('confidence')) {
+      context.handle(
+        _confidenceMeta,
+        confidence.isAcceptableOrUnknown(data['confidence']!, _confidenceMeta),
+      );
+    }
+    if (data.containsKey('logged_at')) {
+      context.handle(
+        _loggedAtMeta,
+        loggedAt.isAcceptableOrUnknown(data['logged_at']!, _loggedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthAnchor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthAnchor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      anchorType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anchor_type'],
+      )!,
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      reps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reps'],
+      ),
+      rpe: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe'],
+      ),
+      rir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rir'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      sourceSetLogId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_set_log_id'],
+      ),
+      confidence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}confidence'],
+      ),
+      loggedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}logged_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StrengthAnchorsTable createAlias(String alias) {
+    return $StrengthAnchorsTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthAnchor extends DataClass implements Insertable<StrengthAnchor> {
+  final String id;
+  final int exerciseId;
+  final String anchorType;
+  final double? weightKg;
+  final int? reps;
+  final double? rpe;
+  final int? rir;
+  final String source;
+  final String? sourceSetLogId;
+  final String? confidence;
+  final DateTime? loggedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const StrengthAnchor({
+    required this.id,
+    required this.exerciseId,
+    required this.anchorType,
+    this.weightKg,
+    this.reps,
+    this.rpe,
+    this.rir,
+    required this.source,
+    this.sourceSetLogId,
+    this.confidence,
+    this.loggedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['anchor_type'] = Variable<String>(anchorType);
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    if (!nullToAbsent || reps != null) {
+      map['reps'] = Variable<int>(reps);
+    }
+    if (!nullToAbsent || rpe != null) {
+      map['rpe'] = Variable<double>(rpe);
+    }
+    if (!nullToAbsent || rir != null) {
+      map['rir'] = Variable<int>(rir);
+    }
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || sourceSetLogId != null) {
+      map['source_set_log_id'] = Variable<String>(sourceSetLogId);
+    }
+    if (!nullToAbsent || confidence != null) {
+      map['confidence'] = Variable<String>(confidence);
+    }
+    if (!nullToAbsent || loggedAt != null) {
+      map['logged_at'] = Variable<DateTime>(loggedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  StrengthAnchorsCompanion toCompanion(bool nullToAbsent) {
+    return StrengthAnchorsCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      anchorType: Value(anchorType),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      reps: reps == null && nullToAbsent ? const Value.absent() : Value(reps),
+      rpe: rpe == null && nullToAbsent ? const Value.absent() : Value(rpe),
+      rir: rir == null && nullToAbsent ? const Value.absent() : Value(rir),
+      source: Value(source),
+      sourceSetLogId: sourceSetLogId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceSetLogId),
+      confidence: confidence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(confidence),
+      loggedAt: loggedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loggedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory StrengthAnchor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthAnchor(
+      id: serializer.fromJson<String>(json['id']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      anchorType: serializer.fromJson<String>(json['anchorType']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      reps: serializer.fromJson<int?>(json['reps']),
+      rpe: serializer.fromJson<double?>(json['rpe']),
+      rir: serializer.fromJson<int?>(json['rir']),
+      source: serializer.fromJson<String>(json['source']),
+      sourceSetLogId: serializer.fromJson<String?>(json['sourceSetLogId']),
+      confidence: serializer.fromJson<String?>(json['confidence']),
+      loggedAt: serializer.fromJson<DateTime?>(json['loggedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'anchorType': serializer.toJson<String>(anchorType),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'reps': serializer.toJson<int?>(reps),
+      'rpe': serializer.toJson<double?>(rpe),
+      'rir': serializer.toJson<int?>(rir),
+      'source': serializer.toJson<String>(source),
+      'sourceSetLogId': serializer.toJson<String?>(sourceSetLogId),
+      'confidence': serializer.toJson<String?>(confidence),
+      'loggedAt': serializer.toJson<DateTime?>(loggedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  StrengthAnchor copyWith({
+    String? id,
+    int? exerciseId,
+    String? anchorType,
+    Value<double?> weightKg = const Value.absent(),
+    Value<int?> reps = const Value.absent(),
+    Value<double?> rpe = const Value.absent(),
+    Value<int?> rir = const Value.absent(),
+    String? source,
+    Value<String?> sourceSetLogId = const Value.absent(),
+    Value<String?> confidence = const Value.absent(),
+    Value<DateTime?> loggedAt = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => StrengthAnchor(
+    id: id ?? this.id,
+    exerciseId: exerciseId ?? this.exerciseId,
+    anchorType: anchorType ?? this.anchorType,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    reps: reps.present ? reps.value : this.reps,
+    rpe: rpe.present ? rpe.value : this.rpe,
+    rir: rir.present ? rir.value : this.rir,
+    source: source ?? this.source,
+    sourceSetLogId: sourceSetLogId.present
+        ? sourceSetLogId.value
+        : this.sourceSetLogId,
+    confidence: confidence.present ? confidence.value : this.confidence,
+    loggedAt: loggedAt.present ? loggedAt.value : this.loggedAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  StrengthAnchor copyWithCompanion(StrengthAnchorsCompanion data) {
+    return StrengthAnchor(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      anchorType: data.anchorType.present
+          ? data.anchorType.value
+          : this.anchorType,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      reps: data.reps.present ? data.reps.value : this.reps,
+      rpe: data.rpe.present ? data.rpe.value : this.rpe,
+      rir: data.rir.present ? data.rir.value : this.rir,
+      source: data.source.present ? data.source.value : this.source,
+      sourceSetLogId: data.sourceSetLogId.present
+          ? data.sourceSetLogId.value
+          : this.sourceSetLogId,
+      confidence: data.confidence.present
+          ? data.confidence.value
+          : this.confidence,
+      loggedAt: data.loggedAt.present ? data.loggedAt.value : this.loggedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthAnchor(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('anchorType: $anchorType, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('rpe: $rpe, ')
+          ..write('rir: $rir, ')
+          ..write('source: $source, ')
+          ..write('sourceSetLogId: $sourceSetLogId, ')
+          ..write('confidence: $confidence, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    exerciseId,
+    anchorType,
+    weightKg,
+    reps,
+    rpe,
+    rir,
+    source,
+    sourceSetLogId,
+    confidence,
+    loggedAt,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthAnchor &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.anchorType == this.anchorType &&
+          other.weightKg == this.weightKg &&
+          other.reps == this.reps &&
+          other.rpe == this.rpe &&
+          other.rir == this.rir &&
+          other.source == this.source &&
+          other.sourceSetLogId == this.sourceSetLogId &&
+          other.confidence == this.confidence &&
+          other.loggedAt == this.loggedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class StrengthAnchorsCompanion extends UpdateCompanion<StrengthAnchor> {
+  final Value<String> id;
+  final Value<int> exerciseId;
+  final Value<String> anchorType;
+  final Value<double?> weightKg;
+  final Value<int?> reps;
+  final Value<double?> rpe;
+  final Value<int?> rir;
+  final Value<String> source;
+  final Value<String?> sourceSetLogId;
+  final Value<String?> confidence;
+  final Value<DateTime?> loggedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const StrengthAnchorsCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.anchorType = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.rpe = const Value.absent(),
+    this.rir = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceSetLogId = const Value.absent(),
+    this.confidence = const Value.absent(),
+    this.loggedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StrengthAnchorsCompanion.insert({
+    required String id,
+    required int exerciseId,
+    required String anchorType,
+    this.weightKg = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.rpe = const Value.absent(),
+    this.rir = const Value.absent(),
+    required String source,
+    this.sourceSetLogId = const Value.absent(),
+    this.confidence = const Value.absent(),
+    this.loggedAt = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       exerciseId = Value(exerciseId),
+       anchorType = Value(anchorType),
+       source = Value(source),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<StrengthAnchor> custom({
+    Expression<String>? id,
+    Expression<int>? exerciseId,
+    Expression<String>? anchorType,
+    Expression<double>? weightKg,
+    Expression<int>? reps,
+    Expression<double>? rpe,
+    Expression<int>? rir,
+    Expression<String>? source,
+    Expression<String>? sourceSetLogId,
+    Expression<String>? confidence,
+    Expression<DateTime>? loggedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (anchorType != null) 'anchor_type': anchorType,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (reps != null) 'reps': reps,
+      if (rpe != null) 'rpe': rpe,
+      if (rir != null) 'rir': rir,
+      if (source != null) 'source': source,
+      if (sourceSetLogId != null) 'source_set_log_id': sourceSetLogId,
+      if (confidence != null) 'confidence': confidence,
+      if (loggedAt != null) 'logged_at': loggedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StrengthAnchorsCompanion copyWith({
+    Value<String>? id,
+    Value<int>? exerciseId,
+    Value<String>? anchorType,
+    Value<double?>? weightKg,
+    Value<int?>? reps,
+    Value<double?>? rpe,
+    Value<int?>? rir,
+    Value<String>? source,
+    Value<String?>? sourceSetLogId,
+    Value<String?>? confidence,
+    Value<DateTime?>? loggedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return StrengthAnchorsCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      anchorType: anchorType ?? this.anchorType,
+      weightKg: weightKg ?? this.weightKg,
+      reps: reps ?? this.reps,
+      rpe: rpe ?? this.rpe,
+      rir: rir ?? this.rir,
+      source: source ?? this.source,
+      sourceSetLogId: sourceSetLogId ?? this.sourceSetLogId,
+      confidence: confidence ?? this.confidence,
+      loggedAt: loggedAt ?? this.loggedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (anchorType.present) {
+      map['anchor_type'] = Variable<String>(anchorType.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (reps.present) {
+      map['reps'] = Variable<int>(reps.value);
+    }
+    if (rpe.present) {
+      map['rpe'] = Variable<double>(rpe.value);
+    }
+    if (rir.present) {
+      map['rir'] = Variable<int>(rir.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (sourceSetLogId.present) {
+      map['source_set_log_id'] = Variable<String>(sourceSetLogId.value);
+    }
+    if (confidence.present) {
+      map['confidence'] = Variable<String>(confidence.value);
+    }
+    if (loggedAt.present) {
+      map['logged_at'] = Variable<DateTime>(loggedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthAnchorsCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('anchorType: $anchorType, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('rpe: $rpe, ')
+          ..write('rir: $rir, ')
+          ..write('source: $source, ')
+          ..write('sourceSetLogId: $sourceSetLogId, ')
+          ..write('confidence: $confidence, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BodyMeasurementsTable extends BodyMeasurements
+    with TableInfo<$BodyMeasurementsTable, BodyMeasurement> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BodyMeasurementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> measuredAt = GeneratedColumn<DateTime>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _waistCmMeta = const VerificationMeta(
+    'waistCm',
+  );
+  @override
+  late final GeneratedColumn<double> waistCm = GeneratedColumn<double>(
+    'waist_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chestCmMeta = const VerificationMeta(
+    'chestCm',
+  );
+  @override
+  late final GeneratedColumn<double> chestCm = GeneratedColumn<double>(
+    'chest_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hipsCmMeta = const VerificationMeta('hipsCm');
+  @override
+  late final GeneratedColumn<double> hipsCm = GeneratedColumn<double>(
+    'hips_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftArmCmMeta = const VerificationMeta(
+    'leftArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftArmCm = GeneratedColumn<double>(
+    'left_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightArmCmMeta = const VerificationMeta(
+    'rightArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightArmCm = GeneratedColumn<double>(
+    'right_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftThighCmMeta = const VerificationMeta(
+    'leftThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftThighCm = GeneratedColumn<double>(
+    'left_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightThighCmMeta = const VerificationMeta(
+    'rightThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightThighCm = GeneratedColumn<double>(
+    'right_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'body_measurements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BodyMeasurement> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('waist_cm')) {
+      context.handle(
+        _waistCmMeta,
+        waistCm.isAcceptableOrUnknown(data['waist_cm']!, _waistCmMeta),
+      );
+    }
+    if (data.containsKey('chest_cm')) {
+      context.handle(
+        _chestCmMeta,
+        chestCm.isAcceptableOrUnknown(data['chest_cm']!, _chestCmMeta),
+      );
+    }
+    if (data.containsKey('hips_cm')) {
+      context.handle(
+        _hipsCmMeta,
+        hipsCm.isAcceptableOrUnknown(data['hips_cm']!, _hipsCmMeta),
+      );
+    }
+    if (data.containsKey('left_arm_cm')) {
+      context.handle(
+        _leftArmCmMeta,
+        leftArmCm.isAcceptableOrUnknown(data['left_arm_cm']!, _leftArmCmMeta),
+      );
+    }
+    if (data.containsKey('right_arm_cm')) {
+      context.handle(
+        _rightArmCmMeta,
+        rightArmCm.isAcceptableOrUnknown(
+          data['right_arm_cm']!,
+          _rightArmCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('left_thigh_cm')) {
+      context.handle(
+        _leftThighCmMeta,
+        leftThighCm.isAcceptableOrUnknown(
+          data['left_thigh_cm']!,
+          _leftThighCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('right_thigh_cm')) {
+      context.handle(
+        _rightThighCmMeta,
+        rightThighCm.isAcceptableOrUnknown(
+          data['right_thigh_cm']!,
+          _rightThighCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BodyMeasurement map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BodyMeasurement(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      waistCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}waist_cm'],
+      ),
+      chestCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}chest_cm'],
+      ),
+      hipsCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}hips_cm'],
+      ),
+      leftArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_arm_cm'],
+      ),
+      rightArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_arm_cm'],
+      ),
+      leftThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_thigh_cm'],
+      ),
+      rightThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_thigh_cm'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BodyMeasurementsTable createAlias(String alias) {
+    return $BodyMeasurementsTable(attachedDatabase, alias);
+  }
+}
+
+class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
+  final String id;
+  final DateTime measuredAt;
+  final double? bodyweightKg;
+  final double? waistCm;
+  final double? chestCm;
+  final double? hipsCm;
+  final double? leftArmCm;
+  final double? rightArmCm;
+  final double? leftThighCm;
+  final double? rightThighCm;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const BodyMeasurement({
+    required this.id,
+    required this.measuredAt,
+    this.bodyweightKg,
+    this.waistCm,
+    this.chestCm,
+    this.hipsCm,
+    this.leftArmCm,
+    this.rightArmCm,
+    this.leftThighCm,
+    this.rightThighCm,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['measured_at'] = Variable<DateTime>(measuredAt);
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || waistCm != null) {
+      map['waist_cm'] = Variable<double>(waistCm);
+    }
+    if (!nullToAbsent || chestCm != null) {
+      map['chest_cm'] = Variable<double>(chestCm);
+    }
+    if (!nullToAbsent || hipsCm != null) {
+      map['hips_cm'] = Variable<double>(hipsCm);
+    }
+    if (!nullToAbsent || leftArmCm != null) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm);
+    }
+    if (!nullToAbsent || rightArmCm != null) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm);
+    }
+    if (!nullToAbsent || leftThighCm != null) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm);
+    }
+    if (!nullToAbsent || rightThighCm != null) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  BodyMeasurementsCompanion toCompanion(bool nullToAbsent) {
+    return BodyMeasurementsCompanion(
+      id: Value(id),
+      measuredAt: Value(measuredAt),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      waistCm: waistCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waistCm),
+      chestCm: chestCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chestCm),
+      hipsCm: hipsCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hipsCm),
+      leftArmCm: leftArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftArmCm),
+      rightArmCm: rightArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightArmCm),
+      leftThighCm: leftThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftThighCm),
+      rightThighCm: rightThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightThighCm),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BodyMeasurement.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BodyMeasurement(
+      id: serializer.fromJson<String>(json['id']),
+      measuredAt: serializer.fromJson<DateTime>(json['measuredAt']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      waistCm: serializer.fromJson<double?>(json['waistCm']),
+      chestCm: serializer.fromJson<double?>(json['chestCm']),
+      hipsCm: serializer.fromJson<double?>(json['hipsCm']),
+      leftArmCm: serializer.fromJson<double?>(json['leftArmCm']),
+      rightArmCm: serializer.fromJson<double?>(json['rightArmCm']),
+      leftThighCm: serializer.fromJson<double?>(json['leftThighCm']),
+      rightThighCm: serializer.fromJson<double?>(json['rightThighCm']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'measuredAt': serializer.toJson<DateTime>(measuredAt),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'waistCm': serializer.toJson<double?>(waistCm),
+      'chestCm': serializer.toJson<double?>(chestCm),
+      'hipsCm': serializer.toJson<double?>(hipsCm),
+      'leftArmCm': serializer.toJson<double?>(leftArmCm),
+      'rightArmCm': serializer.toJson<double?>(rightArmCm),
+      'leftThighCm': serializer.toJson<double?>(leftThighCm),
+      'rightThighCm': serializer.toJson<double?>(rightThighCm),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  BodyMeasurement copyWith({
+    String? id,
+    DateTime? measuredAt,
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<double?> waistCm = const Value.absent(),
+    Value<double?> chestCm = const Value.absent(),
+    Value<double?> hipsCm = const Value.absent(),
+    Value<double?> leftArmCm = const Value.absent(),
+    Value<double?> rightArmCm = const Value.absent(),
+    Value<double?> leftThighCm = const Value.absent(),
+    Value<double?> rightThighCm = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => BodyMeasurement(
+    id: id ?? this.id,
+    measuredAt: measuredAt ?? this.measuredAt,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    waistCm: waistCm.present ? waistCm.value : this.waistCm,
+    chestCm: chestCm.present ? chestCm.value : this.chestCm,
+    hipsCm: hipsCm.present ? hipsCm.value : this.hipsCm,
+    leftArmCm: leftArmCm.present ? leftArmCm.value : this.leftArmCm,
+    rightArmCm: rightArmCm.present ? rightArmCm.value : this.rightArmCm,
+    leftThighCm: leftThighCm.present ? leftThighCm.value : this.leftThighCm,
+    rightThighCm: rightThighCm.present ? rightThighCm.value : this.rightThighCm,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BodyMeasurement copyWithCompanion(BodyMeasurementsCompanion data) {
+    return BodyMeasurement(
+      id: data.id.present ? data.id.value : this.id,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      waistCm: data.waistCm.present ? data.waistCm.value : this.waistCm,
+      chestCm: data.chestCm.present ? data.chestCm.value : this.chestCm,
+      hipsCm: data.hipsCm.present ? data.hipsCm.value : this.hipsCm,
+      leftArmCm: data.leftArmCm.present ? data.leftArmCm.value : this.leftArmCm,
+      rightArmCm: data.rightArmCm.present
+          ? data.rightArmCm.value
+          : this.rightArmCm,
+      leftThighCm: data.leftThighCm.present
+          ? data.leftThighCm.value
+          : this.leftThighCm,
+      rightThighCm: data.rightThighCm.present
+          ? data.rightThighCm.value
+          : this.rightThighCm,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BodyMeasurement(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BodyMeasurement &&
+          other.id == this.id &&
+          other.measuredAt == this.measuredAt &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.waistCm == this.waistCm &&
+          other.chestCm == this.chestCm &&
+          other.hipsCm == this.hipsCm &&
+          other.leftArmCm == this.leftArmCm &&
+          other.rightArmCm == this.rightArmCm &&
+          other.leftThighCm == this.leftThighCm &&
+          other.rightThighCm == this.rightThighCm &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
+  final Value<String> id;
+  final Value<DateTime> measuredAt;
+  final Value<double?> bodyweightKg;
+  final Value<double?> waistCm;
+  final Value<double?> chestCm;
+  final Value<double?> hipsCm;
+  final Value<double?> leftArmCm;
+  final Value<double?> rightArmCm;
+  final Value<double?> leftThighCm;
+  final Value<double?> rightThighCm;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const BodyMeasurementsCompanion({
+    this.id = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BodyMeasurementsCompanion.insert({
+    required String id,
+    required DateTime measuredAt,
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       measuredAt = Value(measuredAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<BodyMeasurement> custom({
+    Expression<String>? id,
+    Expression<DateTime>? measuredAt,
+    Expression<double>? bodyweightKg,
+    Expression<double>? waistCm,
+    Expression<double>? chestCm,
+    Expression<double>? hipsCm,
+    Expression<double>? leftArmCm,
+    Expression<double>? rightArmCm,
+    Expression<double>? leftThighCm,
+    Expression<double>? rightThighCm,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (waistCm != null) 'waist_cm': waistCm,
+      if (chestCm != null) 'chest_cm': chestCm,
+      if (hipsCm != null) 'hips_cm': hipsCm,
+      if (leftArmCm != null) 'left_arm_cm': leftArmCm,
+      if (rightArmCm != null) 'right_arm_cm': rightArmCm,
+      if (leftThighCm != null) 'left_thigh_cm': leftThighCm,
+      if (rightThighCm != null) 'right_thigh_cm': rightThighCm,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BodyMeasurementsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? measuredAt,
+    Value<double?>? bodyweightKg,
+    Value<double?>? waistCm,
+    Value<double?>? chestCm,
+    Value<double?>? hipsCm,
+    Value<double?>? leftArmCm,
+    Value<double?>? rightArmCm,
+    Value<double?>? leftThighCm,
+    Value<double?>? rightThighCm,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return BodyMeasurementsCompanion(
+      id: id ?? this.id,
+      measuredAt: measuredAt ?? this.measuredAt,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      waistCm: waistCm ?? this.waistCm,
+      chestCm: chestCm ?? this.chestCm,
+      hipsCm: hipsCm ?? this.hipsCm,
+      leftArmCm: leftArmCm ?? this.leftArmCm,
+      rightArmCm: rightArmCm ?? this.rightArmCm,
+      leftThighCm: leftThighCm ?? this.leftThighCm,
+      rightThighCm: rightThighCm ?? this.rightThighCm,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<DateTime>(measuredAt.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (waistCm.present) {
+      map['waist_cm'] = Variable<double>(waistCm.value);
+    }
+    if (chestCm.present) {
+      map['chest_cm'] = Variable<double>(chestCm.value);
+    }
+    if (hipsCm.present) {
+      map['hips_cm'] = Variable<double>(hipsCm.value);
+    }
+    if (leftArmCm.present) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm.value);
+    }
+    if (rightArmCm.present) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm.value);
+    }
+    if (leftThighCm.present) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm.value);
+    }
+    if (rightThighCm.present) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BodyMeasurementsCompanion(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AppSettingsTable extends AppSettings
+    with TableInfo<$AppSettingsTable, AppSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _preferredUnitsMeta = const VerificationMeta(
+    'preferredUnits',
+  );
+  @override
+  late final GeneratedColumn<String> preferredUnits = GeneratedColumn<String>(
+    'preferred_units',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('metric'),
+  );
+  static const VerificationMeta _themeModeMeta = const VerificationMeta(
+    'themeMode',
+  );
+  @override
+  late final GeneratedColumn<String> themeMode = GeneratedColumn<String>(
+    'theme_mode',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notificationsEnabledMeta =
+      const VerificationMeta('notificationsEnabled');
+  @override
+  late final GeneratedColumn<bool> notificationsEnabled = GeneratedColumn<bool>(
+    'notifications_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("notifications_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _workoutTimerSoundEnabledMeta =
+      const VerificationMeta('workoutTimerSoundEnabled');
+  @override
+  late final GeneratedColumn<bool> workoutTimerSoundEnabled =
+      GeneratedColumn<bool>(
+        'workout_timer_sound_enabled',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("workout_timer_sound_enabled" IN (0, 1))',
+        ),
+        defaultValue: const Constant(true),
+      );
+  static const VerificationMeta _exerciseAudioEnabledMeta =
+      const VerificationMeta('exerciseAudioEnabled');
+  @override
+  late final GeneratedColumn<bool> exerciseAudioEnabled = GeneratedColumn<bool>(
+    'exercise_audio_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("exercise_audio_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _crashlyticsEnabledMeta =
+      const VerificationMeta('crashlyticsEnabled');
+  @override
+  late final GeneratedColumn<bool> crashlyticsEnabled = GeneratedColumn<bool>(
+    'crashlytics_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("crashlytics_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _redactionStrictModeMeta =
+      const VerificationMeta('redactionStrictMode');
+  @override
+  late final GeneratedColumn<bool> redactionStrictMode = GeneratedColumn<bool>(
+    'redaction_strict_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("redaction_strict_mode" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    preferredUnits,
+    themeMode,
+    notificationsEnabled,
+    workoutTimerSoundEnabled,
+    exerciseAudioEnabled,
+    crashlyticsEnabled,
+    redactionStrictMode,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AppSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('preferred_units')) {
+      context.handle(
+        _preferredUnitsMeta,
+        preferredUnits.isAcceptableOrUnknown(
+          data['preferred_units']!,
+          _preferredUnitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('theme_mode')) {
+      context.handle(
+        _themeModeMeta,
+        themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta),
+      );
+    }
+    if (data.containsKey('notifications_enabled')) {
+      context.handle(
+        _notificationsEnabledMeta,
+        notificationsEnabled.isAcceptableOrUnknown(
+          data['notifications_enabled']!,
+          _notificationsEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('workout_timer_sound_enabled')) {
+      context.handle(
+        _workoutTimerSoundEnabledMeta,
+        workoutTimerSoundEnabled.isAcceptableOrUnknown(
+          data['workout_timer_sound_enabled']!,
+          _workoutTimerSoundEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_audio_enabled')) {
+      context.handle(
+        _exerciseAudioEnabledMeta,
+        exerciseAudioEnabled.isAcceptableOrUnknown(
+          data['exercise_audio_enabled']!,
+          _exerciseAudioEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('crashlytics_enabled')) {
+      context.handle(
+        _crashlyticsEnabledMeta,
+        crashlyticsEnabled.isAcceptableOrUnknown(
+          data['crashlytics_enabled']!,
+          _crashlyticsEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('redaction_strict_mode')) {
+      context.handle(
+        _redactionStrictModeMeta,
+        redactionStrictMode.isAcceptableOrUnknown(
+          data['redaction_strict_mode']!,
+          _redactionStrictModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      preferredUnits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_units'],
+      )!,
+      themeMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}theme_mode'],
+      ),
+      notificationsEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}notifications_enabled'],
+      )!,
+      workoutTimerSoundEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}workout_timer_sound_enabled'],
+      )!,
+      exerciseAudioEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}exercise_audio_enabled'],
+      )!,
+      crashlyticsEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}crashlytics_enabled'],
+      )!,
+      redactionStrictMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}redaction_strict_mode'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AppSettingsTable createAlias(String alias) {
+    return $AppSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class AppSetting extends DataClass implements Insertable<AppSetting> {
+  final String id;
+  final String preferredUnits;
+  final String? themeMode;
+  final bool notificationsEnabled;
+  final bool workoutTimerSoundEnabled;
+  final bool exerciseAudioEnabled;
+  final bool crashlyticsEnabled;
+  final bool redactionStrictMode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AppSetting({
+    required this.id,
+    required this.preferredUnits,
+    this.themeMode,
+    required this.notificationsEnabled,
+    required this.workoutTimerSoundEnabled,
+    required this.exerciseAudioEnabled,
+    required this.crashlyticsEnabled,
+    required this.redactionStrictMode,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['preferred_units'] = Variable<String>(preferredUnits);
+    if (!nullToAbsent || themeMode != null) {
+      map['theme_mode'] = Variable<String>(themeMode);
+    }
+    map['notifications_enabled'] = Variable<bool>(notificationsEnabled);
+    map['workout_timer_sound_enabled'] = Variable<bool>(
+      workoutTimerSoundEnabled,
+    );
+    map['exercise_audio_enabled'] = Variable<bool>(exerciseAudioEnabled);
+    map['crashlytics_enabled'] = Variable<bool>(crashlyticsEnabled);
+    map['redaction_strict_mode'] = Variable<bool>(redactionStrictMode);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AppSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AppSettingsCompanion(
+      id: Value(id),
+      preferredUnits: Value(preferredUnits),
+      themeMode: themeMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(themeMode),
+      notificationsEnabled: Value(notificationsEnabled),
+      workoutTimerSoundEnabled: Value(workoutTimerSoundEnabled),
+      exerciseAudioEnabled: Value(exerciseAudioEnabled),
+      crashlyticsEnabled: Value(crashlyticsEnabled),
+      redactionStrictMode: Value(redactionStrictMode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AppSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppSetting(
+      id: serializer.fromJson<String>(json['id']),
+      preferredUnits: serializer.fromJson<String>(json['preferredUnits']),
+      themeMode: serializer.fromJson<String?>(json['themeMode']),
+      notificationsEnabled: serializer.fromJson<bool>(
+        json['notificationsEnabled'],
+      ),
+      workoutTimerSoundEnabled: serializer.fromJson<bool>(
+        json['workoutTimerSoundEnabled'],
+      ),
+      exerciseAudioEnabled: serializer.fromJson<bool>(
+        json['exerciseAudioEnabled'],
+      ),
+      crashlyticsEnabled: serializer.fromJson<bool>(json['crashlyticsEnabled']),
+      redactionStrictMode: serializer.fromJson<bool>(
+        json['redactionStrictMode'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'preferredUnits': serializer.toJson<String>(preferredUnits),
+      'themeMode': serializer.toJson<String?>(themeMode),
+      'notificationsEnabled': serializer.toJson<bool>(notificationsEnabled),
+      'workoutTimerSoundEnabled': serializer.toJson<bool>(
+        workoutTimerSoundEnabled,
+      ),
+      'exerciseAudioEnabled': serializer.toJson<bool>(exerciseAudioEnabled),
+      'crashlyticsEnabled': serializer.toJson<bool>(crashlyticsEnabled),
+      'redactionStrictMode': serializer.toJson<bool>(redactionStrictMode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AppSetting copyWith({
+    String? id,
+    String? preferredUnits,
+    Value<String?> themeMode = const Value.absent(),
+    bool? notificationsEnabled,
+    bool? workoutTimerSoundEnabled,
+    bool? exerciseAudioEnabled,
+    bool? crashlyticsEnabled,
+    bool? redactionStrictMode,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AppSetting(
+    id: id ?? this.id,
+    preferredUnits: preferredUnits ?? this.preferredUnits,
+    themeMode: themeMode.present ? themeMode.value : this.themeMode,
+    notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    workoutTimerSoundEnabled:
+        workoutTimerSoundEnabled ?? this.workoutTimerSoundEnabled,
+    exerciseAudioEnabled: exerciseAudioEnabled ?? this.exerciseAudioEnabled,
+    crashlyticsEnabled: crashlyticsEnabled ?? this.crashlyticsEnabled,
+    redactionStrictMode: redactionStrictMode ?? this.redactionStrictMode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AppSetting copyWithCompanion(AppSettingsCompanion data) {
+    return AppSetting(
+      id: data.id.present ? data.id.value : this.id,
+      preferredUnits: data.preferredUnits.present
+          ? data.preferredUnits.value
+          : this.preferredUnits,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      notificationsEnabled: data.notificationsEnabled.present
+          ? data.notificationsEnabled.value
+          : this.notificationsEnabled,
+      workoutTimerSoundEnabled: data.workoutTimerSoundEnabled.present
+          ? data.workoutTimerSoundEnabled.value
+          : this.workoutTimerSoundEnabled,
+      exerciseAudioEnabled: data.exerciseAudioEnabled.present
+          ? data.exerciseAudioEnabled.value
+          : this.exerciseAudioEnabled,
+      crashlyticsEnabled: data.crashlyticsEnabled.present
+          ? data.crashlyticsEnabled.value
+          : this.crashlyticsEnabled,
+      redactionStrictMode: data.redactionStrictMode.present
+          ? data.redactionStrictMode.value
+          : this.redactionStrictMode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSetting(')
+          ..write('id: $id, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('notificationsEnabled: $notificationsEnabled, ')
+          ..write('workoutTimerSoundEnabled: $workoutTimerSoundEnabled, ')
+          ..write('exerciseAudioEnabled: $exerciseAudioEnabled, ')
+          ..write('crashlyticsEnabled: $crashlyticsEnabled, ')
+          ..write('redactionStrictMode: $redactionStrictMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    preferredUnits,
+    themeMode,
+    notificationsEnabled,
+    workoutTimerSoundEnabled,
+    exerciseAudioEnabled,
+    crashlyticsEnabled,
+    redactionStrictMode,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSetting &&
+          other.id == this.id &&
+          other.preferredUnits == this.preferredUnits &&
+          other.themeMode == this.themeMode &&
+          other.notificationsEnabled == this.notificationsEnabled &&
+          other.workoutTimerSoundEnabled == this.workoutTimerSoundEnabled &&
+          other.exerciseAudioEnabled == this.exerciseAudioEnabled &&
+          other.crashlyticsEnabled == this.crashlyticsEnabled &&
+          other.redactionStrictMode == this.redactionStrictMode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
+  final Value<String> id;
+  final Value<String> preferredUnits;
+  final Value<String?> themeMode;
+  final Value<bool> notificationsEnabled;
+  final Value<bool> workoutTimerSoundEnabled;
+  final Value<bool> exerciseAudioEnabled;
+  final Value<bool> crashlyticsEnabled;
+  final Value<bool> redactionStrictMode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const AppSettingsCompanion({
+    this.id = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.notificationsEnabled = const Value.absent(),
+    this.workoutTimerSoundEnabled = const Value.absent(),
+    this.exerciseAudioEnabled = const Value.absent(),
+    this.crashlyticsEnabled = const Value.absent(),
+    this.redactionStrictMode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.preferredUnits = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.notificationsEnabled = const Value.absent(),
+    this.workoutTimerSoundEnabled = const Value.absent(),
+    this.exerciseAudioEnabled = const Value.absent(),
+    this.crashlyticsEnabled = const Value.absent(),
+    this.redactionStrictMode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AppSetting> custom({
+    Expression<String>? id,
+    Expression<String>? preferredUnits,
+    Expression<String>? themeMode,
+    Expression<bool>? notificationsEnabled,
+    Expression<bool>? workoutTimerSoundEnabled,
+    Expression<bool>? exerciseAudioEnabled,
+    Expression<bool>? crashlyticsEnabled,
+    Expression<bool>? redactionStrictMode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (preferredUnits != null) 'preferred_units': preferredUnits,
+      if (themeMode != null) 'theme_mode': themeMode,
+      if (notificationsEnabled != null)
+        'notifications_enabled': notificationsEnabled,
+      if (workoutTimerSoundEnabled != null)
+        'workout_timer_sound_enabled': workoutTimerSoundEnabled,
+      if (exerciseAudioEnabled != null)
+        'exercise_audio_enabled': exerciseAudioEnabled,
+      if (crashlyticsEnabled != null) 'crashlytics_enabled': crashlyticsEnabled,
+      if (redactionStrictMode != null)
+        'redaction_strict_mode': redactionStrictMode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppSettingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? preferredUnits,
+    Value<String?>? themeMode,
+    Value<bool>? notificationsEnabled,
+    Value<bool>? workoutTimerSoundEnabled,
+    Value<bool>? exerciseAudioEnabled,
+    Value<bool>? crashlyticsEnabled,
+    Value<bool>? redactionStrictMode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return AppSettingsCompanion(
+      id: id ?? this.id,
+      preferredUnits: preferredUnits ?? this.preferredUnits,
+      themeMode: themeMode ?? this.themeMode,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      workoutTimerSoundEnabled:
+          workoutTimerSoundEnabled ?? this.workoutTimerSoundEnabled,
+      exerciseAudioEnabled: exerciseAudioEnabled ?? this.exerciseAudioEnabled,
+      crashlyticsEnabled: crashlyticsEnabled ?? this.crashlyticsEnabled,
+      redactionStrictMode: redactionStrictMode ?? this.redactionStrictMode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (preferredUnits.present) {
+      map['preferred_units'] = Variable<String>(preferredUnits.value);
+    }
+    if (themeMode.present) {
+      map['theme_mode'] = Variable<String>(themeMode.value);
+    }
+    if (notificationsEnabled.present) {
+      map['notifications_enabled'] = Variable<bool>(notificationsEnabled.value);
+    }
+    if (workoutTimerSoundEnabled.present) {
+      map['workout_timer_sound_enabled'] = Variable<bool>(
+        workoutTimerSoundEnabled.value,
+      );
+    }
+    if (exerciseAudioEnabled.present) {
+      map['exercise_audio_enabled'] = Variable<bool>(
+        exerciseAudioEnabled.value,
+      );
+    }
+    if (crashlyticsEnabled.present) {
+      map['crashlytics_enabled'] = Variable<bool>(crashlyticsEnabled.value);
+    }
+    if (redactionStrictMode.present) {
+      map['redaction_strict_mode'] = Variable<bool>(redactionStrictMode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('preferredUnits: $preferredUnits, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('notificationsEnabled: $notificationsEnabled, ')
+          ..write('workoutTimerSoundEnabled: $workoutTimerSoundEnabled, ')
+          ..write('exerciseAudioEnabled: $exerciseAudioEnabled, ')
+          ..write('crashlyticsEnabled: $crashlyticsEnabled, ')
+          ..write('redactionStrictMode: $redactionStrictMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiModelCapabilitiesTable extends AiModelCapabilities
+    with TableInfo<$AiModelCapabilitiesTable, AiModelCapability> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiModelCapabilitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelNameMeta = const VerificationMeta(
+    'modelName',
+  );
+  @override
+  late final GeneratedColumn<String> modelName = GeneratedColumn<String>(
+    'model_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supportsTextInputMeta = const VerificationMeta(
+    'supportsTextInput',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsTextInput = GeneratedColumn<bool>(
+    'supports_text_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_text_input" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsImageInputMeta =
+      const VerificationMeta('supportsImageInput');
+  @override
+  late final GeneratedColumn<bool> supportsImageInput = GeneratedColumn<bool>(
+    'supports_image_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_image_input" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsJsonSchemaModeMeta =
+      const VerificationMeta('supportsJsonSchemaMode');
+  @override
+  late final GeneratedColumn<bool> supportsJsonSchemaMode =
+      GeneratedColumn<bool>(
+        'supports_json_schema_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("supports_json_schema_mode" IN (0, 1))',
+        ),
+      );
+  static const VerificationMeta _supportsStreamingMeta = const VerificationMeta(
+    'supportsStreaming',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsStreaming = GeneratedColumn<bool>(
+    'supports_streaming',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_streaming" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _supportsToolCallingMeta =
+      const VerificationMeta('supportsToolCalling');
+  @override
+  late final GeneratedColumn<bool> supportsToolCalling = GeneratedColumn<bool>(
+    'supports_tool_calling',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_tool_calling" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _maxContextTokensMeta = const VerificationMeta(
+    'maxContextTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxContextTokens = GeneratedColumn<int>(
+    'max_context_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxOutputTokensMeta = const VerificationMeta(
+    'maxOutputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxOutputTokens = GeneratedColumn<int>(
+    'max_output_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImagesPerRequestMeta =
+      const VerificationMeta('maxImagesPerRequest');
+  @override
+  late final GeneratedColumn<int> maxImagesPerRequest = GeneratedColumn<int>(
+    'max_images_per_request',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    providerName,
+    modelName,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    checkedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_model_capabilities';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiModelCapability> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_providerNameMeta);
+    }
+    if (data.containsKey('model_name')) {
+      context.handle(
+        _modelNameMeta,
+        modelName.isAcceptableOrUnknown(data['model_name']!, _modelNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modelNameMeta);
+    }
+    if (data.containsKey('supports_text_input')) {
+      context.handle(
+        _supportsTextInputMeta,
+        supportsTextInput.isAcceptableOrUnknown(
+          data['supports_text_input']!,
+          _supportsTextInputMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsTextInputMeta);
+    }
+    if (data.containsKey('supports_image_input')) {
+      context.handle(
+        _supportsImageInputMeta,
+        supportsImageInput.isAcceptableOrUnknown(
+          data['supports_image_input']!,
+          _supportsImageInputMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsImageInputMeta);
+    }
+    if (data.containsKey('supports_json_schema_mode')) {
+      context.handle(
+        _supportsJsonSchemaModeMeta,
+        supportsJsonSchemaMode.isAcceptableOrUnknown(
+          data['supports_json_schema_mode']!,
+          _supportsJsonSchemaModeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsJsonSchemaModeMeta);
+    }
+    if (data.containsKey('supports_streaming')) {
+      context.handle(
+        _supportsStreamingMeta,
+        supportsStreaming.isAcceptableOrUnknown(
+          data['supports_streaming']!,
+          _supportsStreamingMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportsStreamingMeta);
+    }
+    if (data.containsKey('supports_tool_calling')) {
+      context.handle(
+        _supportsToolCallingMeta,
+        supportsToolCalling.isAcceptableOrUnknown(
+          data['supports_tool_calling']!,
+          _supportsToolCallingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_context_tokens')) {
+      context.handle(
+        _maxContextTokensMeta,
+        maxContextTokens.isAcceptableOrUnknown(
+          data['max_context_tokens']!,
+          _maxContextTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_output_tokens')) {
+      context.handle(
+        _maxOutputTokensMeta,
+        maxOutputTokens.isAcceptableOrUnknown(
+          data['max_output_tokens']!,
+          _maxOutputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_images_per_request')) {
+      context.handle(
+        _maxImagesPerRequestMeta,
+        maxImagesPerRequest.isAcceptableOrUnknown(
+          data['max_images_per_request']!,
+          _maxImagesPerRequestMeta,
+        ),
+      );
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiModelCapability map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiModelCapability(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      )!,
+      modelName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model_name'],
+      )!,
+      supportsTextInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_text_input'],
+      )!,
+      supportsImageInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_image_input'],
+      )!,
+      supportsJsonSchemaMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_json_schema_mode'],
+      )!,
+      supportsStreaming: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_streaming'],
+      )!,
+      supportsToolCalling: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_tool_calling'],
+      ),
+      maxContextTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_context_tokens'],
+      ),
+      maxOutputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_output_tokens'],
+      ),
+      maxImagesPerRequest: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_images_per_request'],
+      ),
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiModelCapabilitiesTable createAlias(String alias) {
+    return $AiModelCapabilitiesTable(attachedDatabase, alias);
+  }
+}
+
+class AiModelCapability extends DataClass
+    implements Insertable<AiModelCapability> {
+  final String id;
+  final String providerName;
+  final String modelName;
+  final bool supportsTextInput;
+  final bool supportsImageInput;
+  final bool supportsJsonSchemaMode;
+  final bool supportsStreaming;
+  final bool? supportsToolCalling;
+  final int? maxContextTokens;
+  final int? maxOutputTokens;
+  final int? maxImagesPerRequest;
+  final DateTime checkedAt;
+  const AiModelCapability({
+    required this.id,
+    required this.providerName,
+    required this.modelName,
+    required this.supportsTextInput,
+    required this.supportsImageInput,
+    required this.supportsJsonSchemaMode,
+    required this.supportsStreaming,
+    this.supportsToolCalling,
+    this.maxContextTokens,
+    this.maxOutputTokens,
+    this.maxImagesPerRequest,
+    required this.checkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['provider_name'] = Variable<String>(providerName);
+    map['model_name'] = Variable<String>(modelName);
+    map['supports_text_input'] = Variable<bool>(supportsTextInput);
+    map['supports_image_input'] = Variable<bool>(supportsImageInput);
+    map['supports_json_schema_mode'] = Variable<bool>(supportsJsonSchemaMode);
+    map['supports_streaming'] = Variable<bool>(supportsStreaming);
+    if (!nullToAbsent || supportsToolCalling != null) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling);
+    }
+    if (!nullToAbsent || maxContextTokens != null) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens);
+    }
+    if (!nullToAbsent || maxOutputTokens != null) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens);
+    }
+    if (!nullToAbsent || maxImagesPerRequest != null) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest);
+    }
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  AiModelCapabilitiesCompanion toCompanion(bool nullToAbsent) {
+    return AiModelCapabilitiesCompanion(
+      id: Value(id),
+      providerName: Value(providerName),
+      modelName: Value(modelName),
+      supportsTextInput: Value(supportsTextInput),
+      supportsImageInput: Value(supportsImageInput),
+      supportsJsonSchemaMode: Value(supportsJsonSchemaMode),
+      supportsStreaming: Value(supportsStreaming),
+      supportsToolCalling: supportsToolCalling == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supportsToolCalling),
+      maxContextTokens: maxContextTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxContextTokens),
+      maxOutputTokens: maxOutputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxOutputTokens),
+      maxImagesPerRequest: maxImagesPerRequest == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImagesPerRequest),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory AiModelCapability.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiModelCapability(
+      id: serializer.fromJson<String>(json['id']),
+      providerName: serializer.fromJson<String>(json['providerName']),
+      modelName: serializer.fromJson<String>(json['modelName']),
+      supportsTextInput: serializer.fromJson<bool>(json['supportsTextInput']),
+      supportsImageInput: serializer.fromJson<bool>(json['supportsImageInput']),
+      supportsJsonSchemaMode: serializer.fromJson<bool>(
+        json['supportsJsonSchemaMode'],
+      ),
+      supportsStreaming: serializer.fromJson<bool>(json['supportsStreaming']),
+      supportsToolCalling: serializer.fromJson<bool?>(
+        json['supportsToolCalling'],
+      ),
+      maxContextTokens: serializer.fromJson<int?>(json['maxContextTokens']),
+      maxOutputTokens: serializer.fromJson<int?>(json['maxOutputTokens']),
+      maxImagesPerRequest: serializer.fromJson<int?>(
+        json['maxImagesPerRequest'],
+      ),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'providerName': serializer.toJson<String>(providerName),
+      'modelName': serializer.toJson<String>(modelName),
+      'supportsTextInput': serializer.toJson<bool>(supportsTextInput),
+      'supportsImageInput': serializer.toJson<bool>(supportsImageInput),
+      'supportsJsonSchemaMode': serializer.toJson<bool>(supportsJsonSchemaMode),
+      'supportsStreaming': serializer.toJson<bool>(supportsStreaming),
+      'supportsToolCalling': serializer.toJson<bool?>(supportsToolCalling),
+      'maxContextTokens': serializer.toJson<int?>(maxContextTokens),
+      'maxOutputTokens': serializer.toJson<int?>(maxOutputTokens),
+      'maxImagesPerRequest': serializer.toJson<int?>(maxImagesPerRequest),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  AiModelCapability copyWith({
+    String? id,
+    String? providerName,
+    String? modelName,
+    bool? supportsTextInput,
+    bool? supportsImageInput,
+    bool? supportsJsonSchemaMode,
+    bool? supportsStreaming,
+    Value<bool?> supportsToolCalling = const Value.absent(),
+    Value<int?> maxContextTokens = const Value.absent(),
+    Value<int?> maxOutputTokens = const Value.absent(),
+    Value<int?> maxImagesPerRequest = const Value.absent(),
+    DateTime? checkedAt,
+  }) => AiModelCapability(
+    id: id ?? this.id,
+    providerName: providerName ?? this.providerName,
+    modelName: modelName ?? this.modelName,
+    supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+    supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+    supportsJsonSchemaMode:
+        supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+    supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+    supportsToolCalling: supportsToolCalling.present
+        ? supportsToolCalling.value
+        : this.supportsToolCalling,
+    maxContextTokens: maxContextTokens.present
+        ? maxContextTokens.value
+        : this.maxContextTokens,
+    maxOutputTokens: maxOutputTokens.present
+        ? maxOutputTokens.value
+        : this.maxOutputTokens,
+    maxImagesPerRequest: maxImagesPerRequest.present
+        ? maxImagesPerRequest.value
+        : this.maxImagesPerRequest,
+    checkedAt: checkedAt ?? this.checkedAt,
+  );
+  AiModelCapability copyWithCompanion(AiModelCapabilitiesCompanion data) {
+    return AiModelCapability(
+      id: data.id.present ? data.id.value : this.id,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      modelName: data.modelName.present ? data.modelName.value : this.modelName,
+      supportsTextInput: data.supportsTextInput.present
+          ? data.supportsTextInput.value
+          : this.supportsTextInput,
+      supportsImageInput: data.supportsImageInput.present
+          ? data.supportsImageInput.value
+          : this.supportsImageInput,
+      supportsJsonSchemaMode: data.supportsJsonSchemaMode.present
+          ? data.supportsJsonSchemaMode.value
+          : this.supportsJsonSchemaMode,
+      supportsStreaming: data.supportsStreaming.present
+          ? data.supportsStreaming.value
+          : this.supportsStreaming,
+      supportsToolCalling: data.supportsToolCalling.present
+          ? data.supportsToolCalling.value
+          : this.supportsToolCalling,
+      maxContextTokens: data.maxContextTokens.present
+          ? data.maxContextTokens.value
+          : this.maxContextTokens,
+      maxOutputTokens: data.maxOutputTokens.present
+          ? data.maxOutputTokens.value
+          : this.maxOutputTokens,
+      maxImagesPerRequest: data.maxImagesPerRequest.present
+          ? data.maxImagesPerRequest.value
+          : this.maxImagesPerRequest,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCapability(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('modelName: $modelName, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    providerName,
+    modelName,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    checkedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiModelCapability &&
+          other.id == this.id &&
+          other.providerName == this.providerName &&
+          other.modelName == this.modelName &&
+          other.supportsTextInput == this.supportsTextInput &&
+          other.supportsImageInput == this.supportsImageInput &&
+          other.supportsJsonSchemaMode == this.supportsJsonSchemaMode &&
+          other.supportsStreaming == this.supportsStreaming &&
+          other.supportsToolCalling == this.supportsToolCalling &&
+          other.maxContextTokens == this.maxContextTokens &&
+          other.maxOutputTokens == this.maxOutputTokens &&
+          other.maxImagesPerRequest == this.maxImagesPerRequest &&
+          other.checkedAt == this.checkedAt);
+}
+
+class AiModelCapabilitiesCompanion extends UpdateCompanion<AiModelCapability> {
+  final Value<String> id;
+  final Value<String> providerName;
+  final Value<String> modelName;
+  final Value<bool> supportsTextInput;
+  final Value<bool> supportsImageInput;
+  final Value<bool> supportsJsonSchemaMode;
+  final Value<bool> supportsStreaming;
+  final Value<bool?> supportsToolCalling;
+  final Value<int?> maxContextTokens;
+  final Value<int?> maxOutputTokens;
+  final Value<int?> maxImagesPerRequest;
+  final Value<DateTime> checkedAt;
+  final Value<int> rowid;
+  const AiModelCapabilitiesCompanion({
+    this.id = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.modelName = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiModelCapabilitiesCompanion.insert({
+    required String id,
+    required String providerName,
+    required String modelName,
+    required bool supportsTextInput,
+    required bool supportsImageInput,
+    required bool supportsJsonSchemaMode,
+    required bool supportsStreaming,
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    required DateTime checkedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       providerName = Value(providerName),
+       modelName = Value(modelName),
+       supportsTextInput = Value(supportsTextInput),
+       supportsImageInput = Value(supportsImageInput),
+       supportsJsonSchemaMode = Value(supportsJsonSchemaMode),
+       supportsStreaming = Value(supportsStreaming),
+       checkedAt = Value(checkedAt);
+  static Insertable<AiModelCapability> custom({
+    Expression<String>? id,
+    Expression<String>? providerName,
+    Expression<String>? modelName,
+    Expression<bool>? supportsTextInput,
+    Expression<bool>? supportsImageInput,
+    Expression<bool>? supportsJsonSchemaMode,
+    Expression<bool>? supportsStreaming,
+    Expression<bool>? supportsToolCalling,
+    Expression<int>? maxContextTokens,
+    Expression<int>? maxOutputTokens,
+    Expression<int>? maxImagesPerRequest,
+    Expression<DateTime>? checkedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (providerName != null) 'provider_name': providerName,
+      if (modelName != null) 'model_name': modelName,
+      if (supportsTextInput != null) 'supports_text_input': supportsTextInput,
+      if (supportsImageInput != null)
+        'supports_image_input': supportsImageInput,
+      if (supportsJsonSchemaMode != null)
+        'supports_json_schema_mode': supportsJsonSchemaMode,
+      if (supportsStreaming != null) 'supports_streaming': supportsStreaming,
+      if (supportsToolCalling != null)
+        'supports_tool_calling': supportsToolCalling,
+      if (maxContextTokens != null) 'max_context_tokens': maxContextTokens,
+      if (maxOutputTokens != null) 'max_output_tokens': maxOutputTokens,
+      if (maxImagesPerRequest != null)
+        'max_images_per_request': maxImagesPerRequest,
+      if (checkedAt != null) 'checked_at': checkedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiModelCapabilitiesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? providerName,
+    Value<String>? modelName,
+    Value<bool>? supportsTextInput,
+    Value<bool>? supportsImageInput,
+    Value<bool>? supportsJsonSchemaMode,
+    Value<bool>? supportsStreaming,
+    Value<bool?>? supportsToolCalling,
+    Value<int?>? maxContextTokens,
+    Value<int?>? maxOutputTokens,
+    Value<int?>? maxImagesPerRequest,
+    Value<DateTime>? checkedAt,
+    Value<int>? rowid,
+  }) {
+    return AiModelCapabilitiesCompanion(
+      id: id ?? this.id,
+      providerName: providerName ?? this.providerName,
+      modelName: modelName ?? this.modelName,
+      supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+      supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+      supportsJsonSchemaMode:
+          supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+      supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+      supportsToolCalling: supportsToolCalling ?? this.supportsToolCalling,
+      maxContextTokens: maxContextTokens ?? this.maxContextTokens,
+      maxOutputTokens: maxOutputTokens ?? this.maxOutputTokens,
+      maxImagesPerRequest: maxImagesPerRequest ?? this.maxImagesPerRequest,
+      checkedAt: checkedAt ?? this.checkedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (modelName.present) {
+      map['model_name'] = Variable<String>(modelName.value);
+    }
+    if (supportsTextInput.present) {
+      map['supports_text_input'] = Variable<bool>(supportsTextInput.value);
+    }
+    if (supportsImageInput.present) {
+      map['supports_image_input'] = Variable<bool>(supportsImageInput.value);
+    }
+    if (supportsJsonSchemaMode.present) {
+      map['supports_json_schema_mode'] = Variable<bool>(
+        supportsJsonSchemaMode.value,
+      );
+    }
+    if (supportsStreaming.present) {
+      map['supports_streaming'] = Variable<bool>(supportsStreaming.value);
+    }
+    if (supportsToolCalling.present) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling.value);
+    }
+    if (maxContextTokens.present) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens.value);
+    }
+    if (maxOutputTokens.present) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens.value);
+    }
+    if (maxImagesPerRequest.present) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCapabilitiesCompanion(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('modelName: $modelName, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('checkedAt: $checkedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiProviderConfigsTable extends AiProviderConfigs
+    with TableInfo<$AiProviderConfigsTable, AiProviderConfig> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiProviderConfigsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _selectedModelMeta = const VerificationMeta(
+    'selectedModel',
+  );
+  @override
+  late final GeneratedColumn<String> selectedModel = GeneratedColumn<String>(
+    'selected_model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _secureKeyAliasMeta = const VerificationMeta(
+    'secureKeyAlias',
+  );
+  @override
+  late final GeneratedColumn<String> secureKeyAlias = GeneratedColumn<String>(
+    'secure_key_alias',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsTextInputMeta = const VerificationMeta(
+    'supportsTextInput',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsTextInput = GeneratedColumn<bool>(
+    'supports_text_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_text_input" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _supportsImageInputMeta =
+      const VerificationMeta('supportsImageInput');
+  @override
+  late final GeneratedColumn<bool> supportsImageInput = GeneratedColumn<bool>(
+    'supports_image_input',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_image_input" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsJsonSchemaModeMeta =
+      const VerificationMeta('supportsJsonSchemaMode');
+  @override
+  late final GeneratedColumn<bool> supportsJsonSchemaMode =
+      GeneratedColumn<bool>(
+        'supports_json_schema_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("supports_json_schema_mode" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _supportsStreamingMeta = const VerificationMeta(
+    'supportsStreaming',
+  );
+  @override
+  late final GeneratedColumn<bool> supportsStreaming = GeneratedColumn<bool>(
+    'supports_streaming',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_streaming" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _supportsToolCallingMeta =
+      const VerificationMeta('supportsToolCalling');
+  @override
+  late final GeneratedColumn<bool> supportsToolCalling = GeneratedColumn<bool>(
+    'supports_tool_calling',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("supports_tool_calling" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _maxContextTokensMeta = const VerificationMeta(
+    'maxContextTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxContextTokens = GeneratedColumn<int>(
+    'max_context_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxOutputTokensMeta = const VerificationMeta(
+    'maxOutputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> maxOutputTokens = GeneratedColumn<int>(
+    'max_output_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImagesPerRequestMeta =
+      const VerificationMeta('maxImagesPerRequest');
+  @override
+  late final GeneratedColumn<int> maxImagesPerRequest = GeneratedColumn<int>(
+    'max_images_per_request',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxImageSizeBytesMeta = const VerificationMeta(
+    'maxImageSizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> maxImageSizeBytes = GeneratedColumn<int>(
+    'max_image_size_bytes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastValidatedAtMeta = const VerificationMeta(
+    'lastValidatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastValidatedAt =
+      GeneratedColumn<DateTime>(
+        'last_validated_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastValidationStatusMeta =
+      const VerificationMeta('lastValidationStatus');
+  @override
+  late final GeneratedColumn<String> lastValidationStatus =
+      GeneratedColumn<String>(
+        'last_validation_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastErrorCodeMeta = const VerificationMeta(
+    'lastErrorCode',
+  );
+  @override
+  late final GeneratedColumn<String> lastErrorCode = GeneratedColumn<String>(
+    'last_error_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    providerName,
+    displayName,
+    selectedModel,
+    secureKeyAlias,
+    isActive,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    maxImageSizeBytes,
+    lastValidatedAt,
+    lastValidationStatus,
+    lastErrorCode,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_provider_configs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiProviderConfig> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_providerNameMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('selected_model')) {
+      context.handle(
+        _selectedModelMeta,
+        selectedModel.isAcceptableOrUnknown(
+          data['selected_model']!,
+          _selectedModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secure_key_alias')) {
+      context.handle(
+        _secureKeyAliasMeta,
+        secureKeyAlias.isAcceptableOrUnknown(
+          data['secure_key_alias']!,
+          _secureKeyAliasMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_secureKeyAliasMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('supports_text_input')) {
+      context.handle(
+        _supportsTextInputMeta,
+        supportsTextInput.isAcceptableOrUnknown(
+          data['supports_text_input']!,
+          _supportsTextInputMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_image_input')) {
+      context.handle(
+        _supportsImageInputMeta,
+        supportsImageInput.isAcceptableOrUnknown(
+          data['supports_image_input']!,
+          _supportsImageInputMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_json_schema_mode')) {
+      context.handle(
+        _supportsJsonSchemaModeMeta,
+        supportsJsonSchemaMode.isAcceptableOrUnknown(
+          data['supports_json_schema_mode']!,
+          _supportsJsonSchemaModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_streaming')) {
+      context.handle(
+        _supportsStreamingMeta,
+        supportsStreaming.isAcceptableOrUnknown(
+          data['supports_streaming']!,
+          _supportsStreamingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supports_tool_calling')) {
+      context.handle(
+        _supportsToolCallingMeta,
+        supportsToolCalling.isAcceptableOrUnknown(
+          data['supports_tool_calling']!,
+          _supportsToolCallingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_context_tokens')) {
+      context.handle(
+        _maxContextTokensMeta,
+        maxContextTokens.isAcceptableOrUnknown(
+          data['max_context_tokens']!,
+          _maxContextTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_output_tokens')) {
+      context.handle(
+        _maxOutputTokensMeta,
+        maxOutputTokens.isAcceptableOrUnknown(
+          data['max_output_tokens']!,
+          _maxOutputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_images_per_request')) {
+      context.handle(
+        _maxImagesPerRequestMeta,
+        maxImagesPerRequest.isAcceptableOrUnknown(
+          data['max_images_per_request']!,
+          _maxImagesPerRequestMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_image_size_bytes')) {
+      context.handle(
+        _maxImageSizeBytesMeta,
+        maxImageSizeBytes.isAcceptableOrUnknown(
+          data['max_image_size_bytes']!,
+          _maxImageSizeBytesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_validated_at')) {
+      context.handle(
+        _lastValidatedAtMeta,
+        lastValidatedAt.isAcceptableOrUnknown(
+          data['last_validated_at']!,
+          _lastValidatedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_validation_status')) {
+      context.handle(
+        _lastValidationStatusMeta,
+        lastValidationStatus.isAcceptableOrUnknown(
+          data['last_validation_status']!,
+          _lastValidationStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error_code')) {
+      context.handle(
+        _lastErrorCodeMeta,
+        lastErrorCode.isAcceptableOrUnknown(
+          data['last_error_code']!,
+          _lastErrorCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiProviderConfig map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiProviderConfig(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      ),
+      selectedModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}selected_model'],
+      ),
+      secureKeyAlias: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}secure_key_alias'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      supportsTextInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_text_input'],
+      )!,
+      supportsImageInput: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_image_input'],
+      )!,
+      supportsJsonSchemaMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_json_schema_mode'],
+      )!,
+      supportsStreaming: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_streaming'],
+      )!,
+      supportsToolCalling: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}supports_tool_calling'],
+      ),
+      maxContextTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_context_tokens'],
+      ),
+      maxOutputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_output_tokens'],
+      ),
+      maxImagesPerRequest: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_images_per_request'],
+      ),
+      maxImageSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_image_size_bytes'],
+      ),
+      lastValidatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_validated_at'],
+      ),
+      lastValidationStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_validation_status'],
+      ),
+      lastErrorCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error_code'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiProviderConfigsTable createAlias(String alias) {
+    return $AiProviderConfigsTable(attachedDatabase, alias);
+  }
+}
+
+class AiProviderConfig extends DataClass
+    implements Insertable<AiProviderConfig> {
+  final String id;
+  final String providerName;
+  final String? displayName;
+  final String? selectedModel;
+  final String secureKeyAlias;
+  final bool isActive;
+  final bool supportsTextInput;
+  final bool supportsImageInput;
+  final bool supportsJsonSchemaMode;
+  final bool supportsStreaming;
+  final bool? supportsToolCalling;
+  final int? maxContextTokens;
+  final int? maxOutputTokens;
+  final int? maxImagesPerRequest;
+  final int? maxImageSizeBytes;
+  final DateTime? lastValidatedAt;
+  final String? lastValidationStatus;
+  final String? lastErrorCode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AiProviderConfig({
+    required this.id,
+    required this.providerName,
+    this.displayName,
+    this.selectedModel,
+    required this.secureKeyAlias,
+    required this.isActive,
+    required this.supportsTextInput,
+    required this.supportsImageInput,
+    required this.supportsJsonSchemaMode,
+    required this.supportsStreaming,
+    this.supportsToolCalling,
+    this.maxContextTokens,
+    this.maxOutputTokens,
+    this.maxImagesPerRequest,
+    this.maxImageSizeBytes,
+    this.lastValidatedAt,
+    this.lastValidationStatus,
+    this.lastErrorCode,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['provider_name'] = Variable<String>(providerName);
+    if (!nullToAbsent || displayName != null) {
+      map['display_name'] = Variable<String>(displayName);
+    }
+    if (!nullToAbsent || selectedModel != null) {
+      map['selected_model'] = Variable<String>(selectedModel);
+    }
+    map['secure_key_alias'] = Variable<String>(secureKeyAlias);
+    map['is_active'] = Variable<bool>(isActive);
+    map['supports_text_input'] = Variable<bool>(supportsTextInput);
+    map['supports_image_input'] = Variable<bool>(supportsImageInput);
+    map['supports_json_schema_mode'] = Variable<bool>(supportsJsonSchemaMode);
+    map['supports_streaming'] = Variable<bool>(supportsStreaming);
+    if (!nullToAbsent || supportsToolCalling != null) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling);
+    }
+    if (!nullToAbsent || maxContextTokens != null) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens);
+    }
+    if (!nullToAbsent || maxOutputTokens != null) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens);
+    }
+    if (!nullToAbsent || maxImagesPerRequest != null) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest);
+    }
+    if (!nullToAbsent || maxImageSizeBytes != null) {
+      map['max_image_size_bytes'] = Variable<int>(maxImageSizeBytes);
+    }
+    if (!nullToAbsent || lastValidatedAt != null) {
+      map['last_validated_at'] = Variable<DateTime>(lastValidatedAt);
+    }
+    if (!nullToAbsent || lastValidationStatus != null) {
+      map['last_validation_status'] = Variable<String>(lastValidationStatus);
+    }
+    if (!nullToAbsent || lastErrorCode != null) {
+      map['last_error_code'] = Variable<String>(lastErrorCode);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AiProviderConfigsCompanion toCompanion(bool nullToAbsent) {
+    return AiProviderConfigsCompanion(
+      id: Value(id),
+      providerName: Value(providerName),
+      displayName: displayName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(displayName),
+      selectedModel: selectedModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selectedModel),
+      secureKeyAlias: Value(secureKeyAlias),
+      isActive: Value(isActive),
+      supportsTextInput: Value(supportsTextInput),
+      supportsImageInput: Value(supportsImageInput),
+      supportsJsonSchemaMode: Value(supportsJsonSchemaMode),
+      supportsStreaming: Value(supportsStreaming),
+      supportsToolCalling: supportsToolCalling == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supportsToolCalling),
+      maxContextTokens: maxContextTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxContextTokens),
+      maxOutputTokens: maxOutputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxOutputTokens),
+      maxImagesPerRequest: maxImagesPerRequest == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImagesPerRequest),
+      maxImageSizeBytes: maxImageSizeBytes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxImageSizeBytes),
+      lastValidatedAt: lastValidatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastValidatedAt),
+      lastValidationStatus: lastValidationStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastValidationStatus),
+      lastErrorCode: lastErrorCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastErrorCode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AiProviderConfig.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiProviderConfig(
+      id: serializer.fromJson<String>(json['id']),
+      providerName: serializer.fromJson<String>(json['providerName']),
+      displayName: serializer.fromJson<String?>(json['displayName']),
+      selectedModel: serializer.fromJson<String?>(json['selectedModel']),
+      secureKeyAlias: serializer.fromJson<String>(json['secureKeyAlias']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      supportsTextInput: serializer.fromJson<bool>(json['supportsTextInput']),
+      supportsImageInput: serializer.fromJson<bool>(json['supportsImageInput']),
+      supportsJsonSchemaMode: serializer.fromJson<bool>(
+        json['supportsJsonSchemaMode'],
+      ),
+      supportsStreaming: serializer.fromJson<bool>(json['supportsStreaming']),
+      supportsToolCalling: serializer.fromJson<bool?>(
+        json['supportsToolCalling'],
+      ),
+      maxContextTokens: serializer.fromJson<int?>(json['maxContextTokens']),
+      maxOutputTokens: serializer.fromJson<int?>(json['maxOutputTokens']),
+      maxImagesPerRequest: serializer.fromJson<int?>(
+        json['maxImagesPerRequest'],
+      ),
+      maxImageSizeBytes: serializer.fromJson<int?>(json['maxImageSizeBytes']),
+      lastValidatedAt: serializer.fromJson<DateTime?>(json['lastValidatedAt']),
+      lastValidationStatus: serializer.fromJson<String?>(
+        json['lastValidationStatus'],
+      ),
+      lastErrorCode: serializer.fromJson<String?>(json['lastErrorCode']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'providerName': serializer.toJson<String>(providerName),
+      'displayName': serializer.toJson<String?>(displayName),
+      'selectedModel': serializer.toJson<String?>(selectedModel),
+      'secureKeyAlias': serializer.toJson<String>(secureKeyAlias),
+      'isActive': serializer.toJson<bool>(isActive),
+      'supportsTextInput': serializer.toJson<bool>(supportsTextInput),
+      'supportsImageInput': serializer.toJson<bool>(supportsImageInput),
+      'supportsJsonSchemaMode': serializer.toJson<bool>(supportsJsonSchemaMode),
+      'supportsStreaming': serializer.toJson<bool>(supportsStreaming),
+      'supportsToolCalling': serializer.toJson<bool?>(supportsToolCalling),
+      'maxContextTokens': serializer.toJson<int?>(maxContextTokens),
+      'maxOutputTokens': serializer.toJson<int?>(maxOutputTokens),
+      'maxImagesPerRequest': serializer.toJson<int?>(maxImagesPerRequest),
+      'maxImageSizeBytes': serializer.toJson<int?>(maxImageSizeBytes),
+      'lastValidatedAt': serializer.toJson<DateTime?>(lastValidatedAt),
+      'lastValidationStatus': serializer.toJson<String?>(lastValidationStatus),
+      'lastErrorCode': serializer.toJson<String?>(lastErrorCode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AiProviderConfig copyWith({
+    String? id,
+    String? providerName,
+    Value<String?> displayName = const Value.absent(),
+    Value<String?> selectedModel = const Value.absent(),
+    String? secureKeyAlias,
+    bool? isActive,
+    bool? supportsTextInput,
+    bool? supportsImageInput,
+    bool? supportsJsonSchemaMode,
+    bool? supportsStreaming,
+    Value<bool?> supportsToolCalling = const Value.absent(),
+    Value<int?> maxContextTokens = const Value.absent(),
+    Value<int?> maxOutputTokens = const Value.absent(),
+    Value<int?> maxImagesPerRequest = const Value.absent(),
+    Value<int?> maxImageSizeBytes = const Value.absent(),
+    Value<DateTime?> lastValidatedAt = const Value.absent(),
+    Value<String?> lastValidationStatus = const Value.absent(),
+    Value<String?> lastErrorCode = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AiProviderConfig(
+    id: id ?? this.id,
+    providerName: providerName ?? this.providerName,
+    displayName: displayName.present ? displayName.value : this.displayName,
+    selectedModel: selectedModel.present
+        ? selectedModel.value
+        : this.selectedModel,
+    secureKeyAlias: secureKeyAlias ?? this.secureKeyAlias,
+    isActive: isActive ?? this.isActive,
+    supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+    supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+    supportsJsonSchemaMode:
+        supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+    supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+    supportsToolCalling: supportsToolCalling.present
+        ? supportsToolCalling.value
+        : this.supportsToolCalling,
+    maxContextTokens: maxContextTokens.present
+        ? maxContextTokens.value
+        : this.maxContextTokens,
+    maxOutputTokens: maxOutputTokens.present
+        ? maxOutputTokens.value
+        : this.maxOutputTokens,
+    maxImagesPerRequest: maxImagesPerRequest.present
+        ? maxImagesPerRequest.value
+        : this.maxImagesPerRequest,
+    maxImageSizeBytes: maxImageSizeBytes.present
+        ? maxImageSizeBytes.value
+        : this.maxImageSizeBytes,
+    lastValidatedAt: lastValidatedAt.present
+        ? lastValidatedAt.value
+        : this.lastValidatedAt,
+    lastValidationStatus: lastValidationStatus.present
+        ? lastValidationStatus.value
+        : this.lastValidationStatus,
+    lastErrorCode: lastErrorCode.present
+        ? lastErrorCode.value
+        : this.lastErrorCode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AiProviderConfig copyWithCompanion(AiProviderConfigsCompanion data) {
+    return AiProviderConfig(
+      id: data.id.present ? data.id.value : this.id,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      selectedModel: data.selectedModel.present
+          ? data.selectedModel.value
+          : this.selectedModel,
+      secureKeyAlias: data.secureKeyAlias.present
+          ? data.secureKeyAlias.value
+          : this.secureKeyAlias,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      supportsTextInput: data.supportsTextInput.present
+          ? data.supportsTextInput.value
+          : this.supportsTextInput,
+      supportsImageInput: data.supportsImageInput.present
+          ? data.supportsImageInput.value
+          : this.supportsImageInput,
+      supportsJsonSchemaMode: data.supportsJsonSchemaMode.present
+          ? data.supportsJsonSchemaMode.value
+          : this.supportsJsonSchemaMode,
+      supportsStreaming: data.supportsStreaming.present
+          ? data.supportsStreaming.value
+          : this.supportsStreaming,
+      supportsToolCalling: data.supportsToolCalling.present
+          ? data.supportsToolCalling.value
+          : this.supportsToolCalling,
+      maxContextTokens: data.maxContextTokens.present
+          ? data.maxContextTokens.value
+          : this.maxContextTokens,
+      maxOutputTokens: data.maxOutputTokens.present
+          ? data.maxOutputTokens.value
+          : this.maxOutputTokens,
+      maxImagesPerRequest: data.maxImagesPerRequest.present
+          ? data.maxImagesPerRequest.value
+          : this.maxImagesPerRequest,
+      maxImageSizeBytes: data.maxImageSizeBytes.present
+          ? data.maxImageSizeBytes.value
+          : this.maxImageSizeBytes,
+      lastValidatedAt: data.lastValidatedAt.present
+          ? data.lastValidatedAt.value
+          : this.lastValidatedAt,
+      lastValidationStatus: data.lastValidationStatus.present
+          ? data.lastValidationStatus.value
+          : this.lastValidationStatus,
+      lastErrorCode: data.lastErrorCode.present
+          ? data.lastErrorCode.value
+          : this.lastErrorCode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiProviderConfig(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('displayName: $displayName, ')
+          ..write('selectedModel: $selectedModel, ')
+          ..write('secureKeyAlias: $secureKeyAlias, ')
+          ..write('isActive: $isActive, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('maxImageSizeBytes: $maxImageSizeBytes, ')
+          ..write('lastValidatedAt: $lastValidatedAt, ')
+          ..write('lastValidationStatus: $lastValidationStatus, ')
+          ..write('lastErrorCode: $lastErrorCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    providerName,
+    displayName,
+    selectedModel,
+    secureKeyAlias,
+    isActive,
+    supportsTextInput,
+    supportsImageInput,
+    supportsJsonSchemaMode,
+    supportsStreaming,
+    supportsToolCalling,
+    maxContextTokens,
+    maxOutputTokens,
+    maxImagesPerRequest,
+    maxImageSizeBytes,
+    lastValidatedAt,
+    lastValidationStatus,
+    lastErrorCode,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiProviderConfig &&
+          other.id == this.id &&
+          other.providerName == this.providerName &&
+          other.displayName == this.displayName &&
+          other.selectedModel == this.selectedModel &&
+          other.secureKeyAlias == this.secureKeyAlias &&
+          other.isActive == this.isActive &&
+          other.supportsTextInput == this.supportsTextInput &&
+          other.supportsImageInput == this.supportsImageInput &&
+          other.supportsJsonSchemaMode == this.supportsJsonSchemaMode &&
+          other.supportsStreaming == this.supportsStreaming &&
+          other.supportsToolCalling == this.supportsToolCalling &&
+          other.maxContextTokens == this.maxContextTokens &&
+          other.maxOutputTokens == this.maxOutputTokens &&
+          other.maxImagesPerRequest == this.maxImagesPerRequest &&
+          other.maxImageSizeBytes == this.maxImageSizeBytes &&
+          other.lastValidatedAt == this.lastValidatedAt &&
+          other.lastValidationStatus == this.lastValidationStatus &&
+          other.lastErrorCode == this.lastErrorCode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AiProviderConfigsCompanion extends UpdateCompanion<AiProviderConfig> {
+  final Value<String> id;
+  final Value<String> providerName;
+  final Value<String?> displayName;
+  final Value<String?> selectedModel;
+  final Value<String> secureKeyAlias;
+  final Value<bool> isActive;
+  final Value<bool> supportsTextInput;
+  final Value<bool> supportsImageInput;
+  final Value<bool> supportsJsonSchemaMode;
+  final Value<bool> supportsStreaming;
+  final Value<bool?> supportsToolCalling;
+  final Value<int?> maxContextTokens;
+  final Value<int?> maxOutputTokens;
+  final Value<int?> maxImagesPerRequest;
+  final Value<int?> maxImageSizeBytes;
+  final Value<DateTime?> lastValidatedAt;
+  final Value<String?> lastValidationStatus;
+  final Value<String?> lastErrorCode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const AiProviderConfigsCompanion({
+    this.id = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.selectedModel = const Value.absent(),
+    this.secureKeyAlias = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.maxImageSizeBytes = const Value.absent(),
+    this.lastValidatedAt = const Value.absent(),
+    this.lastValidationStatus = const Value.absent(),
+    this.lastErrorCode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiProviderConfigsCompanion.insert({
+    required String id,
+    required String providerName,
+    this.displayName = const Value.absent(),
+    this.selectedModel = const Value.absent(),
+    required String secureKeyAlias,
+    this.isActive = const Value.absent(),
+    this.supportsTextInput = const Value.absent(),
+    this.supportsImageInput = const Value.absent(),
+    this.supportsJsonSchemaMode = const Value.absent(),
+    this.supportsStreaming = const Value.absent(),
+    this.supportsToolCalling = const Value.absent(),
+    this.maxContextTokens = const Value.absent(),
+    this.maxOutputTokens = const Value.absent(),
+    this.maxImagesPerRequest = const Value.absent(),
+    this.maxImageSizeBytes = const Value.absent(),
+    this.lastValidatedAt = const Value.absent(),
+    this.lastValidationStatus = const Value.absent(),
+    this.lastErrorCode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       providerName = Value(providerName),
+       secureKeyAlias = Value(secureKeyAlias),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AiProviderConfig> custom({
+    Expression<String>? id,
+    Expression<String>? providerName,
+    Expression<String>? displayName,
+    Expression<String>? selectedModel,
+    Expression<String>? secureKeyAlias,
+    Expression<bool>? isActive,
+    Expression<bool>? supportsTextInput,
+    Expression<bool>? supportsImageInput,
+    Expression<bool>? supportsJsonSchemaMode,
+    Expression<bool>? supportsStreaming,
+    Expression<bool>? supportsToolCalling,
+    Expression<int>? maxContextTokens,
+    Expression<int>? maxOutputTokens,
+    Expression<int>? maxImagesPerRequest,
+    Expression<int>? maxImageSizeBytes,
+    Expression<DateTime>? lastValidatedAt,
+    Expression<String>? lastValidationStatus,
+    Expression<String>? lastErrorCode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (providerName != null) 'provider_name': providerName,
+      if (displayName != null) 'display_name': displayName,
+      if (selectedModel != null) 'selected_model': selectedModel,
+      if (secureKeyAlias != null) 'secure_key_alias': secureKeyAlias,
+      if (isActive != null) 'is_active': isActive,
+      if (supportsTextInput != null) 'supports_text_input': supportsTextInput,
+      if (supportsImageInput != null)
+        'supports_image_input': supportsImageInput,
+      if (supportsJsonSchemaMode != null)
+        'supports_json_schema_mode': supportsJsonSchemaMode,
+      if (supportsStreaming != null) 'supports_streaming': supportsStreaming,
+      if (supportsToolCalling != null)
+        'supports_tool_calling': supportsToolCalling,
+      if (maxContextTokens != null) 'max_context_tokens': maxContextTokens,
+      if (maxOutputTokens != null) 'max_output_tokens': maxOutputTokens,
+      if (maxImagesPerRequest != null)
+        'max_images_per_request': maxImagesPerRequest,
+      if (maxImageSizeBytes != null) 'max_image_size_bytes': maxImageSizeBytes,
+      if (lastValidatedAt != null) 'last_validated_at': lastValidatedAt,
+      if (lastValidationStatus != null)
+        'last_validation_status': lastValidationStatus,
+      if (lastErrorCode != null) 'last_error_code': lastErrorCode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiProviderConfigsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? providerName,
+    Value<String?>? displayName,
+    Value<String?>? selectedModel,
+    Value<String>? secureKeyAlias,
+    Value<bool>? isActive,
+    Value<bool>? supportsTextInput,
+    Value<bool>? supportsImageInput,
+    Value<bool>? supportsJsonSchemaMode,
+    Value<bool>? supportsStreaming,
+    Value<bool?>? supportsToolCalling,
+    Value<int?>? maxContextTokens,
+    Value<int?>? maxOutputTokens,
+    Value<int?>? maxImagesPerRequest,
+    Value<int?>? maxImageSizeBytes,
+    Value<DateTime?>? lastValidatedAt,
+    Value<String?>? lastValidationStatus,
+    Value<String?>? lastErrorCode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return AiProviderConfigsCompanion(
+      id: id ?? this.id,
+      providerName: providerName ?? this.providerName,
+      displayName: displayName ?? this.displayName,
+      selectedModel: selectedModel ?? this.selectedModel,
+      secureKeyAlias: secureKeyAlias ?? this.secureKeyAlias,
+      isActive: isActive ?? this.isActive,
+      supportsTextInput: supportsTextInput ?? this.supportsTextInput,
+      supportsImageInput: supportsImageInput ?? this.supportsImageInput,
+      supportsJsonSchemaMode:
+          supportsJsonSchemaMode ?? this.supportsJsonSchemaMode,
+      supportsStreaming: supportsStreaming ?? this.supportsStreaming,
+      supportsToolCalling: supportsToolCalling ?? this.supportsToolCalling,
+      maxContextTokens: maxContextTokens ?? this.maxContextTokens,
+      maxOutputTokens: maxOutputTokens ?? this.maxOutputTokens,
+      maxImagesPerRequest: maxImagesPerRequest ?? this.maxImagesPerRequest,
+      maxImageSizeBytes: maxImageSizeBytes ?? this.maxImageSizeBytes,
+      lastValidatedAt: lastValidatedAt ?? this.lastValidatedAt,
+      lastValidationStatus: lastValidationStatus ?? this.lastValidationStatus,
+      lastErrorCode: lastErrorCode ?? this.lastErrorCode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (selectedModel.present) {
+      map['selected_model'] = Variable<String>(selectedModel.value);
+    }
+    if (secureKeyAlias.present) {
+      map['secure_key_alias'] = Variable<String>(secureKeyAlias.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (supportsTextInput.present) {
+      map['supports_text_input'] = Variable<bool>(supportsTextInput.value);
+    }
+    if (supportsImageInput.present) {
+      map['supports_image_input'] = Variable<bool>(supportsImageInput.value);
+    }
+    if (supportsJsonSchemaMode.present) {
+      map['supports_json_schema_mode'] = Variable<bool>(
+        supportsJsonSchemaMode.value,
+      );
+    }
+    if (supportsStreaming.present) {
+      map['supports_streaming'] = Variable<bool>(supportsStreaming.value);
+    }
+    if (supportsToolCalling.present) {
+      map['supports_tool_calling'] = Variable<bool>(supportsToolCalling.value);
+    }
+    if (maxContextTokens.present) {
+      map['max_context_tokens'] = Variable<int>(maxContextTokens.value);
+    }
+    if (maxOutputTokens.present) {
+      map['max_output_tokens'] = Variable<int>(maxOutputTokens.value);
+    }
+    if (maxImagesPerRequest.present) {
+      map['max_images_per_request'] = Variable<int>(maxImagesPerRequest.value);
+    }
+    if (maxImageSizeBytes.present) {
+      map['max_image_size_bytes'] = Variable<int>(maxImageSizeBytes.value);
+    }
+    if (lastValidatedAt.present) {
+      map['last_validated_at'] = Variable<DateTime>(lastValidatedAt.value);
+    }
+    if (lastValidationStatus.present) {
+      map['last_validation_status'] = Variable<String>(
+        lastValidationStatus.value,
+      );
+    }
+    if (lastErrorCode.present) {
+      map['last_error_code'] = Variable<String>(lastErrorCode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiProviderConfigsCompanion(')
+          ..write('id: $id, ')
+          ..write('providerName: $providerName, ')
+          ..write('displayName: $displayName, ')
+          ..write('selectedModel: $selectedModel, ')
+          ..write('secureKeyAlias: $secureKeyAlias, ')
+          ..write('isActive: $isActive, ')
+          ..write('supportsTextInput: $supportsTextInput, ')
+          ..write('supportsImageInput: $supportsImageInput, ')
+          ..write('supportsJsonSchemaMode: $supportsJsonSchemaMode, ')
+          ..write('supportsStreaming: $supportsStreaming, ')
+          ..write('supportsToolCalling: $supportsToolCalling, ')
+          ..write('maxContextTokens: $maxContextTokens, ')
+          ..write('maxOutputTokens: $maxOutputTokens, ')
+          ..write('maxImagesPerRequest: $maxImagesPerRequest, ')
+          ..write('maxImageSizeBytes: $maxImageSizeBytes, ')
+          ..write('lastValidatedAt: $lastValidatedAt, ')
+          ..write('lastValidationStatus: $lastValidationStatus, ')
+          ..write('lastErrorCode: $lastErrorCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4851,6 +10380,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExerciseVideosTable exerciseVideos = $ExerciseVideosTable(this);
   late final $ExerciseAudioCacheTable exerciseAudioCache =
       $ExerciseAudioCacheTable(this);
+  late final $UserProfileTable userProfile = $UserProfileTable(this);
+  late final $StrengthAnchorsTable strengthAnchors = $StrengthAnchorsTable(
+    this,
+  );
+  late final $BodyMeasurementsTable bodyMeasurements = $BodyMeasurementsTable(
+    this,
+  );
+  late final $AppSettingsTable appSettings = $AppSettingsTable(this);
+  late final $AiModelCapabilitiesTable aiModelCapabilities =
+      $AiModelCapabilitiesTable(this);
+  late final $AiProviderConfigsTable aiProviderConfigs =
+      $AiProviderConfigsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4863,6 +10404,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     libraryMeta,
     exerciseVideos,
     exerciseAudioCache,
+    userProfile,
+    strengthAnchors,
+    bodyMeasurements,
+    appSettings,
+    aiModelCapabilities,
+    aiProviderConfigs,
   ];
 }
 
@@ -7615,6 +13162,2497 @@ typedef $$ExerciseAudioCacheTableProcessedTableManager =
       ExerciseAudioCacheData,
       PrefetchHooks Function({bool exerciseId})
     >;
+typedef $$UserProfileTableCreateCompanionBuilder =
+    UserProfileCompanion Function({
+      Value<String> id,
+      Value<String?> name,
+      Value<String?> sex,
+      Value<DateTime?> dateOfBirth,
+      Value<double?> heightCm,
+      Value<double?> bodyweightKg,
+      Value<DateTime?> bodyweightLoggedAt,
+      Value<String> preferredUnits,
+      required String experienceLevel,
+      Value<int?> targetSessionLengthMinutes,
+      Value<int?> trainingDaysPerWeek,
+      Value<String> trainingDayNamesJson,
+      Value<bool> onboardingCompleted,
+      Value<DateTime?> onboardingCompletedAt,
+      Value<String> goalsJson,
+      Value<String> equipmentAccessJson,
+      Value<String> favoriteExerciseIdsJson,
+      Value<String> substitutedExerciseIdsJson,
+      Value<String> injuriesLimitationsJson,
+      Value<String?> otherNotes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$UserProfileTableUpdateCompanionBuilder =
+    UserProfileCompanion Function({
+      Value<String> id,
+      Value<String?> name,
+      Value<String?> sex,
+      Value<DateTime?> dateOfBirth,
+      Value<double?> heightCm,
+      Value<double?> bodyweightKg,
+      Value<DateTime?> bodyweightLoggedAt,
+      Value<String> preferredUnits,
+      Value<String> experienceLevel,
+      Value<int?> targetSessionLengthMinutes,
+      Value<int?> trainingDaysPerWeek,
+      Value<String> trainingDayNamesJson,
+      Value<bool> onboardingCompleted,
+      Value<DateTime?> onboardingCompletedAt,
+      Value<String> goalsJson,
+      Value<String> equipmentAccessJson,
+      Value<String> favoriteExerciseIdsJson,
+      Value<String> substitutedExerciseIdsJson,
+      Value<String> injuriesLimitationsJson,
+      Value<String?> otherNotes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$UserProfileTableFilterComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserProfileTableOrderingComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserProfileTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UserProfileTable> {
+  $$UserProfileTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get sex =>
+      $composableBuilder(column: $table.sex, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dateOfBirth => $composableBuilder(
+    column: $table.dateOfBirth,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get bodyweightLoggedAt => $composableBuilder(
+    column: $table.bodyweightLoggedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get targetSessionLengthMinutes => $composableBuilder(
+    column: $table.targetSessionLengthMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get trainingDaysPerWeek => $composableBuilder(
+    column: $table.trainingDaysPerWeek,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trainingDayNamesJson => $composableBuilder(
+    column: $table.trainingDayNamesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get onboardingCompleted => $composableBuilder(
+    column: $table.onboardingCompleted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get onboardingCompletedAt => $composableBuilder(
+    column: $table.onboardingCompletedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get goalsJson =>
+      $composableBuilder(column: $table.goalsJson, builder: (column) => column);
+
+  GeneratedColumn<String> get equipmentAccessJson => $composableBuilder(
+    column: $table.equipmentAccessJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get favoriteExerciseIdsJson => $composableBuilder(
+    column: $table.favoriteExerciseIdsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get substitutedExerciseIdsJson => $composableBuilder(
+    column: $table.substitutedExerciseIdsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get injuriesLimitationsJson => $composableBuilder(
+    column: $table.injuriesLimitationsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get otherNotes => $composableBuilder(
+    column: $table.otherNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$UserProfileTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserProfileTable,
+          UserProfileData,
+          $$UserProfileTableFilterComposer,
+          $$UserProfileTableOrderingComposer,
+          $$UserProfileTableAnnotationComposer,
+          $$UserProfileTableCreateCompanionBuilder,
+          $$UserProfileTableUpdateCompanionBuilder,
+          (
+            UserProfileData,
+            BaseReferences<_$AppDatabase, $UserProfileTable, UserProfileData>,
+          ),
+          UserProfileData,
+          PrefetchHooks Function()
+        > {
+  $$UserProfileTableTableManager(_$AppDatabase db, $UserProfileTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserProfileTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserProfileTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserProfileTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<DateTime?> dateOfBirth = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String> experienceLevel = const Value.absent(),
+                Value<int?> targetSessionLengthMinutes = const Value.absent(),
+                Value<int?> trainingDaysPerWeek = const Value.absent(),
+                Value<String> trainingDayNamesJson = const Value.absent(),
+                Value<bool> onboardingCompleted = const Value.absent(),
+                Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+                Value<String> goalsJson = const Value.absent(),
+                Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> favoriteExerciseIdsJson = const Value.absent(),
+                Value<String> substitutedExerciseIdsJson = const Value.absent(),
+                Value<String> injuriesLimitationsJson = const Value.absent(),
+                Value<String?> otherNotes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileCompanion(
+                id: id,
+                name: name,
+                sex: sex,
+                dateOfBirth: dateOfBirth,
+                heightCm: heightCm,
+                bodyweightKg: bodyweightKg,
+                bodyweightLoggedAt: bodyweightLoggedAt,
+                preferredUnits: preferredUnits,
+                experienceLevel: experienceLevel,
+                targetSessionLengthMinutes: targetSessionLengthMinutes,
+                trainingDaysPerWeek: trainingDaysPerWeek,
+                trainingDayNamesJson: trainingDayNamesJson,
+                onboardingCompleted: onboardingCompleted,
+                onboardingCompletedAt: onboardingCompletedAt,
+                goalsJson: goalsJson,
+                equipmentAccessJson: equipmentAccessJson,
+                favoriteExerciseIdsJson: favoriteExerciseIdsJson,
+                substitutedExerciseIdsJson: substitutedExerciseIdsJson,
+                injuriesLimitationsJson: injuriesLimitationsJson,
+                otherNotes: otherNotes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<DateTime?> dateOfBirth = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<DateTime?> bodyweightLoggedAt = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                required String experienceLevel,
+                Value<int?> targetSessionLengthMinutes = const Value.absent(),
+                Value<int?> trainingDaysPerWeek = const Value.absent(),
+                Value<String> trainingDayNamesJson = const Value.absent(),
+                Value<bool> onboardingCompleted = const Value.absent(),
+                Value<DateTime?> onboardingCompletedAt = const Value.absent(),
+                Value<String> goalsJson = const Value.absent(),
+                Value<String> equipmentAccessJson = const Value.absent(),
+                Value<String> favoriteExerciseIdsJson = const Value.absent(),
+                Value<String> substitutedExerciseIdsJson = const Value.absent(),
+                Value<String> injuriesLimitationsJson = const Value.absent(),
+                Value<String?> otherNotes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileCompanion.insert(
+                id: id,
+                name: name,
+                sex: sex,
+                dateOfBirth: dateOfBirth,
+                heightCm: heightCm,
+                bodyweightKg: bodyweightKg,
+                bodyweightLoggedAt: bodyweightLoggedAt,
+                preferredUnits: preferredUnits,
+                experienceLevel: experienceLevel,
+                targetSessionLengthMinutes: targetSessionLengthMinutes,
+                trainingDaysPerWeek: trainingDaysPerWeek,
+                trainingDayNamesJson: trainingDayNamesJson,
+                onboardingCompleted: onboardingCompleted,
+                onboardingCompletedAt: onboardingCompletedAt,
+                goalsJson: goalsJson,
+                equipmentAccessJson: equipmentAccessJson,
+                favoriteExerciseIdsJson: favoriteExerciseIdsJson,
+                substitutedExerciseIdsJson: substitutedExerciseIdsJson,
+                injuriesLimitationsJson: injuriesLimitationsJson,
+                otherNotes: otherNotes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserProfileTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserProfileTable,
+      UserProfileData,
+      $$UserProfileTableFilterComposer,
+      $$UserProfileTableOrderingComposer,
+      $$UserProfileTableAnnotationComposer,
+      $$UserProfileTableCreateCompanionBuilder,
+      $$UserProfileTableUpdateCompanionBuilder,
+      (
+        UserProfileData,
+        BaseReferences<_$AppDatabase, $UserProfileTable, UserProfileData>,
+      ),
+      UserProfileData,
+      PrefetchHooks Function()
+    >;
+typedef $$StrengthAnchorsTableCreateCompanionBuilder =
+    StrengthAnchorsCompanion Function({
+      required String id,
+      required int exerciseId,
+      required String anchorType,
+      Value<double?> weightKg,
+      Value<int?> reps,
+      Value<double?> rpe,
+      Value<int?> rir,
+      required String source,
+      Value<String?> sourceSetLogId,
+      Value<String?> confidence,
+      Value<DateTime?> loggedAt,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$StrengthAnchorsTableUpdateCompanionBuilder =
+    StrengthAnchorsCompanion Function({
+      Value<String> id,
+      Value<int> exerciseId,
+      Value<String> anchorType,
+      Value<double?> weightKg,
+      Value<int?> reps,
+      Value<double?> rpe,
+      Value<int?> rir,
+      Value<String> source,
+      Value<String?> sourceSetLogId,
+      Value<String?> confidence,
+      Value<DateTime?> loggedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$StrengthAnchorsTableFilterComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reps => $composableBuilder(
+    column: $table.reps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpe => $composableBuilder(
+    column: $table.rpe,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StrengthAnchorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reps => $composableBuilder(
+    column: $table.reps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpe => $composableBuilder(
+    column: $table.rpe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StrengthAnchorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StrengthAnchorsTable> {
+  $$StrengthAnchorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get anchorType => $composableBuilder(
+    column: $table.anchorType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<int> get reps =>
+      $composableBuilder(column: $table.reps, builder: (column) => column);
+
+  GeneratedColumn<double> get rpe =>
+      $composableBuilder(column: $table.rpe, builder: (column) => column);
+
+  GeneratedColumn<int> get rir =>
+      $composableBuilder(column: $table.rir, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceSetLogId => $composableBuilder(
+    column: $table.sourceSetLogId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get confidence => $composableBuilder(
+    column: $table.confidence,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get loggedAt =>
+      $composableBuilder(column: $table.loggedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$StrengthAnchorsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StrengthAnchorsTable,
+          StrengthAnchor,
+          $$StrengthAnchorsTableFilterComposer,
+          $$StrengthAnchorsTableOrderingComposer,
+          $$StrengthAnchorsTableAnnotationComposer,
+          $$StrengthAnchorsTableCreateCompanionBuilder,
+          $$StrengthAnchorsTableUpdateCompanionBuilder,
+          (
+            StrengthAnchor,
+            BaseReferences<
+              _$AppDatabase,
+              $StrengthAnchorsTable,
+              StrengthAnchor
+            >,
+          ),
+          StrengthAnchor,
+          PrefetchHooks Function()
+        > {
+  $$StrengthAnchorsTableTableManager(
+    _$AppDatabase db,
+    $StrengthAnchorsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StrengthAnchorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StrengthAnchorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StrengthAnchorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String> anchorType = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> reps = const Value.absent(),
+                Value<double?> rpe = const Value.absent(),
+                Value<int?> rir = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> sourceSetLogId = const Value.absent(),
+                Value<String?> confidence = const Value.absent(),
+                Value<DateTime?> loggedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StrengthAnchorsCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                anchorType: anchorType,
+                weightKg: weightKg,
+                reps: reps,
+                rpe: rpe,
+                rir: rir,
+                source: source,
+                sourceSetLogId: sourceSetLogId,
+                confidence: confidence,
+                loggedAt: loggedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int exerciseId,
+                required String anchorType,
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> reps = const Value.absent(),
+                Value<double?> rpe = const Value.absent(),
+                Value<int?> rir = const Value.absent(),
+                required String source,
+                Value<String?> sourceSetLogId = const Value.absent(),
+                Value<String?> confidence = const Value.absent(),
+                Value<DateTime?> loggedAt = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => StrengthAnchorsCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                anchorType: anchorType,
+                weightKg: weightKg,
+                reps: reps,
+                rpe: rpe,
+                rir: rir,
+                source: source,
+                sourceSetLogId: sourceSetLogId,
+                confidence: confidence,
+                loggedAt: loggedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StrengthAnchorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StrengthAnchorsTable,
+      StrengthAnchor,
+      $$StrengthAnchorsTableFilterComposer,
+      $$StrengthAnchorsTableOrderingComposer,
+      $$StrengthAnchorsTableAnnotationComposer,
+      $$StrengthAnchorsTableCreateCompanionBuilder,
+      $$StrengthAnchorsTableUpdateCompanionBuilder,
+      (
+        StrengthAnchor,
+        BaseReferences<_$AppDatabase, $StrengthAnchorsTable, StrengthAnchor>,
+      ),
+      StrengthAnchor,
+      PrefetchHooks Function()
+    >;
+typedef $$BodyMeasurementsTableCreateCompanionBuilder =
+    BodyMeasurementsCompanion Function({
+      required String id,
+      required DateTime measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$BodyMeasurementsTableUpdateCompanionBuilder =
+    BodyMeasurementsCompanion Function({
+      Value<String> id,
+      Value<DateTime> measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$BodyMeasurementsTableFilterComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BodyMeasurementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BodyMeasurementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BodyMeasurementsTable> {
+  $$BodyMeasurementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get waistCm =>
+      $composableBuilder(column: $table.waistCm, builder: (column) => column);
+
+  GeneratedColumn<double> get chestCm =>
+      $composableBuilder(column: $table.chestCm, builder: (column) => column);
+
+  GeneratedColumn<double> get hipsCm =>
+      $composableBuilder(column: $table.hipsCm, builder: (column) => column);
+
+  GeneratedColumn<double> get leftArmCm =>
+      $composableBuilder(column: $table.leftArmCm, builder: (column) => column);
+
+  GeneratedColumn<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$BodyMeasurementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BodyMeasurementsTable,
+          BodyMeasurement,
+          $$BodyMeasurementsTableFilterComposer,
+          $$BodyMeasurementsTableOrderingComposer,
+          $$BodyMeasurementsTableAnnotationComposer,
+          $$BodyMeasurementsTableCreateCompanionBuilder,
+          $$BodyMeasurementsTableUpdateCompanionBuilder,
+          (
+            BodyMeasurement,
+            BaseReferences<
+              _$AppDatabase,
+              $BodyMeasurementsTable,
+              BodyMeasurement
+            >,
+          ),
+          BodyMeasurement,
+          PrefetchHooks Function()
+        > {
+  $$BodyMeasurementsTableTableManager(
+    _$AppDatabase db,
+    $BodyMeasurementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BodyMeasurementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BodyMeasurementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BodyMeasurementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> measuredAt = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BodyMeasurementsCompanion(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime measuredAt,
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BodyMeasurementsCompanion.insert(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BodyMeasurementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BodyMeasurementsTable,
+      BodyMeasurement,
+      $$BodyMeasurementsTableFilterComposer,
+      $$BodyMeasurementsTableOrderingComposer,
+      $$BodyMeasurementsTableAnnotationComposer,
+      $$BodyMeasurementsTableCreateCompanionBuilder,
+      $$BodyMeasurementsTableUpdateCompanionBuilder,
+      (
+        BodyMeasurement,
+        BaseReferences<_$AppDatabase, $BodyMeasurementsTable, BodyMeasurement>,
+      ),
+      BodyMeasurement,
+      PrefetchHooks Function()
+    >;
+typedef $$AppSettingsTableCreateCompanionBuilder =
+    AppSettingsCompanion Function({
+      Value<String> id,
+      Value<String> preferredUnits,
+      Value<String?> themeMode,
+      Value<bool> notificationsEnabled,
+      Value<bool> workoutTimerSoundEnabled,
+      Value<bool> exerciseAudioEnabled,
+      Value<bool> crashlyticsEnabled,
+      Value<bool> redactionStrictMode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$AppSettingsTableUpdateCompanionBuilder =
+    AppSettingsCompanion Function({
+      Value<String> id,
+      Value<String> preferredUnits,
+      Value<String?> themeMode,
+      Value<bool> notificationsEnabled,
+      Value<bool> workoutTimerSoundEnabled,
+      Value<bool> exerciseAudioEnabled,
+      Value<bool> crashlyticsEnabled,
+      Value<bool> redactionStrictMode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$AppSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get themeMode => $composableBuilder(
+    column: $table.themeMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AppSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get themeMode => $composableBuilder(
+    column: $table.themeMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AppSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get preferredUnits => $composableBuilder(
+    column: $table.preferredUnits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumn<bool> get notificationsEnabled => $composableBuilder(
+    column: $table.notificationsEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get workoutTimerSoundEnabled => $composableBuilder(
+    column: $table.workoutTimerSoundEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get exerciseAudioEnabled => $composableBuilder(
+    column: $table.exerciseAudioEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get crashlyticsEnabled => $composableBuilder(
+    column: $table.crashlyticsEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get redactionStrictMode => $composableBuilder(
+    column: $table.redactionStrictMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AppSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AppSettingsTable,
+          AppSetting,
+          $$AppSettingsTableFilterComposer,
+          $$AppSettingsTableOrderingComposer,
+          $$AppSettingsTableAnnotationComposer,
+          $$AppSettingsTableCreateCompanionBuilder,
+          $$AppSettingsTableUpdateCompanionBuilder,
+          (
+            AppSetting,
+            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>,
+          ),
+          AppSetting,
+          PrefetchHooks Function()
+        > {
+  $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> themeMode = const Value.absent(),
+                Value<bool> notificationsEnabled = const Value.absent(),
+                Value<bool> workoutTimerSoundEnabled = const Value.absent(),
+                Value<bool> exerciseAudioEnabled = const Value.absent(),
+                Value<bool> crashlyticsEnabled = const Value.absent(),
+                Value<bool> redactionStrictMode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion(
+                id: id,
+                preferredUnits: preferredUnits,
+                themeMode: themeMode,
+                notificationsEnabled: notificationsEnabled,
+                workoutTimerSoundEnabled: workoutTimerSoundEnabled,
+                exerciseAudioEnabled: exerciseAudioEnabled,
+                crashlyticsEnabled: crashlyticsEnabled,
+                redactionStrictMode: redactionStrictMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> preferredUnits = const Value.absent(),
+                Value<String?> themeMode = const Value.absent(),
+                Value<bool> notificationsEnabled = const Value.absent(),
+                Value<bool> workoutTimerSoundEnabled = const Value.absent(),
+                Value<bool> exerciseAudioEnabled = const Value.absent(),
+                Value<bool> crashlyticsEnabled = const Value.absent(),
+                Value<bool> redactionStrictMode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion.insert(
+                id: id,
+                preferredUnits: preferredUnits,
+                themeMode: themeMode,
+                notificationsEnabled: notificationsEnabled,
+                workoutTimerSoundEnabled: workoutTimerSoundEnabled,
+                exerciseAudioEnabled: exerciseAudioEnabled,
+                crashlyticsEnabled: crashlyticsEnabled,
+                redactionStrictMode: redactionStrictMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AppSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AppSettingsTable,
+      AppSetting,
+      $$AppSettingsTableFilterComposer,
+      $$AppSettingsTableOrderingComposer,
+      $$AppSettingsTableAnnotationComposer,
+      $$AppSettingsTableCreateCompanionBuilder,
+      $$AppSettingsTableUpdateCompanionBuilder,
+      (
+        AppSetting,
+        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>,
+      ),
+      AppSetting,
+      PrefetchHooks Function()
+    >;
+typedef $$AiModelCapabilitiesTableCreateCompanionBuilder =
+    AiModelCapabilitiesCompanion Function({
+      required String id,
+      required String providerName,
+      required String modelName,
+      required bool supportsTextInput,
+      required bool supportsImageInput,
+      required bool supportsJsonSchemaMode,
+      required bool supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      required DateTime checkedAt,
+      Value<int> rowid,
+    });
+typedef $$AiModelCapabilitiesTableUpdateCompanionBuilder =
+    AiModelCapabilitiesCompanion Function({
+      Value<String> id,
+      Value<String> providerName,
+      Value<String> modelName,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<DateTime> checkedAt,
+      Value<int> rowid,
+    });
+
+class $$AiModelCapabilitiesTableFilterComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modelName => $composableBuilder(
+    column: $table.modelName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiModelCapabilitiesTableOrderingComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modelName => $composableBuilder(
+    column: $table.modelName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiModelCapabilitiesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AiModelCapabilitiesTable> {
+  $$AiModelCapabilitiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modelName =>
+      $composableBuilder(column: $table.modelName, builder: (column) => column);
+
+  GeneratedColumn<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+}
+
+class $$AiModelCapabilitiesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AiModelCapabilitiesTable,
+          AiModelCapability,
+          $$AiModelCapabilitiesTableFilterComposer,
+          $$AiModelCapabilitiesTableOrderingComposer,
+          $$AiModelCapabilitiesTableAnnotationComposer,
+          $$AiModelCapabilitiesTableCreateCompanionBuilder,
+          $$AiModelCapabilitiesTableUpdateCompanionBuilder,
+          (
+            AiModelCapability,
+            BaseReferences<
+              _$AppDatabase,
+              $AiModelCapabilitiesTable,
+              AiModelCapability
+            >,
+          ),
+          AiModelCapability,
+          PrefetchHooks Function()
+        > {
+  $$AiModelCapabilitiesTableTableManager(
+    _$AppDatabase db,
+    $AiModelCapabilitiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiModelCapabilitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiModelCapabilitiesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AiModelCapabilitiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> providerName = const Value.absent(),
+                Value<String> modelName = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCapabilitiesCompanion(
+                id: id,
+                providerName: providerName,
+                modelName: modelName,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String providerName,
+                required String modelName,
+                required bool supportsTextInput,
+                required bool supportsImageInput,
+                required bool supportsJsonSchemaMode,
+                required bool supportsStreaming,
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                required DateTime checkedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCapabilitiesCompanion.insert(
+                id: id,
+                providerName: providerName,
+                modelName: modelName,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiModelCapabilitiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AiModelCapabilitiesTable,
+      AiModelCapability,
+      $$AiModelCapabilitiesTableFilterComposer,
+      $$AiModelCapabilitiesTableOrderingComposer,
+      $$AiModelCapabilitiesTableAnnotationComposer,
+      $$AiModelCapabilitiesTableCreateCompanionBuilder,
+      $$AiModelCapabilitiesTableUpdateCompanionBuilder,
+      (
+        AiModelCapability,
+        BaseReferences<
+          _$AppDatabase,
+          $AiModelCapabilitiesTable,
+          AiModelCapability
+        >,
+      ),
+      AiModelCapability,
+      PrefetchHooks Function()
+    >;
+typedef $$AiProviderConfigsTableCreateCompanionBuilder =
+    AiProviderConfigsCompanion Function({
+      required String id,
+      required String providerName,
+      Value<String?> displayName,
+      Value<String?> selectedModel,
+      required String secureKeyAlias,
+      Value<bool> isActive,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<int?> maxImageSizeBytes,
+      Value<DateTime?> lastValidatedAt,
+      Value<String?> lastValidationStatus,
+      Value<String?> lastErrorCode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$AiProviderConfigsTableUpdateCompanionBuilder =
+    AiProviderConfigsCompanion Function({
+      Value<String> id,
+      Value<String> providerName,
+      Value<String?> displayName,
+      Value<String?> selectedModel,
+      Value<String> secureKeyAlias,
+      Value<bool> isActive,
+      Value<bool> supportsTextInput,
+      Value<bool> supportsImageInput,
+      Value<bool> supportsJsonSchemaMode,
+      Value<bool> supportsStreaming,
+      Value<bool?> supportsToolCalling,
+      Value<int?> maxContextTokens,
+      Value<int?> maxOutputTokens,
+      Value<int?> maxImagesPerRequest,
+      Value<int?> maxImageSizeBytes,
+      Value<DateTime?> lastValidatedAt,
+      Value<String?> lastValidationStatus,
+      Value<String?> lastErrorCode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$AiProviderConfigsTableFilterComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiProviderConfigsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiProviderConfigsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AiProviderConfigsTable> {
+  $$AiProviderConfigsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get selectedModel => $composableBuilder(
+    column: $table.selectedModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get secureKeyAlias => $composableBuilder(
+    column: $table.secureKeyAlias,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<bool> get supportsTextInput => $composableBuilder(
+    column: $table.supportsTextInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsImageInput => $composableBuilder(
+    column: $table.supportsImageInput,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsJsonSchemaMode => $composableBuilder(
+    column: $table.supportsJsonSchemaMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsStreaming => $composableBuilder(
+    column: $table.supportsStreaming,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get supportsToolCalling => $composableBuilder(
+    column: $table.supportsToolCalling,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxContextTokens => $composableBuilder(
+    column: $table.maxContextTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxOutputTokens => $composableBuilder(
+    column: $table.maxOutputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImagesPerRequest => $composableBuilder(
+    column: $table.maxImagesPerRequest,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxImageSizeBytes => $composableBuilder(
+    column: $table.maxImageSizeBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastValidatedAt => $composableBuilder(
+    column: $table.lastValidatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastValidationStatus => $composableBuilder(
+    column: $table.lastValidationStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastErrorCode => $composableBuilder(
+    column: $table.lastErrorCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AiProviderConfigsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AiProviderConfigsTable,
+          AiProviderConfig,
+          $$AiProviderConfigsTableFilterComposer,
+          $$AiProviderConfigsTableOrderingComposer,
+          $$AiProviderConfigsTableAnnotationComposer,
+          $$AiProviderConfigsTableCreateCompanionBuilder,
+          $$AiProviderConfigsTableUpdateCompanionBuilder,
+          (
+            AiProviderConfig,
+            BaseReferences<
+              _$AppDatabase,
+              $AiProviderConfigsTable,
+              AiProviderConfig
+            >,
+          ),
+          AiProviderConfig,
+          PrefetchHooks Function()
+        > {
+  $$AiProviderConfigsTableTableManager(
+    _$AppDatabase db,
+    $AiProviderConfigsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiProviderConfigsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiProviderConfigsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiProviderConfigsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> providerName = const Value.absent(),
+                Value<String?> displayName = const Value.absent(),
+                Value<String?> selectedModel = const Value.absent(),
+                Value<String> secureKeyAlias = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<int?> maxImageSizeBytes = const Value.absent(),
+                Value<DateTime?> lastValidatedAt = const Value.absent(),
+                Value<String?> lastValidationStatus = const Value.absent(),
+                Value<String?> lastErrorCode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiProviderConfigsCompanion(
+                id: id,
+                providerName: providerName,
+                displayName: displayName,
+                selectedModel: selectedModel,
+                secureKeyAlias: secureKeyAlias,
+                isActive: isActive,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                maxImageSizeBytes: maxImageSizeBytes,
+                lastValidatedAt: lastValidatedAt,
+                lastValidationStatus: lastValidationStatus,
+                lastErrorCode: lastErrorCode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String providerName,
+                Value<String?> displayName = const Value.absent(),
+                Value<String?> selectedModel = const Value.absent(),
+                required String secureKeyAlias,
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> supportsTextInput = const Value.absent(),
+                Value<bool> supportsImageInput = const Value.absent(),
+                Value<bool> supportsJsonSchemaMode = const Value.absent(),
+                Value<bool> supportsStreaming = const Value.absent(),
+                Value<bool?> supportsToolCalling = const Value.absent(),
+                Value<int?> maxContextTokens = const Value.absent(),
+                Value<int?> maxOutputTokens = const Value.absent(),
+                Value<int?> maxImagesPerRequest = const Value.absent(),
+                Value<int?> maxImageSizeBytes = const Value.absent(),
+                Value<DateTime?> lastValidatedAt = const Value.absent(),
+                Value<String?> lastValidationStatus = const Value.absent(),
+                Value<String?> lastErrorCode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiProviderConfigsCompanion.insert(
+                id: id,
+                providerName: providerName,
+                displayName: displayName,
+                selectedModel: selectedModel,
+                secureKeyAlias: secureKeyAlias,
+                isActive: isActive,
+                supportsTextInput: supportsTextInput,
+                supportsImageInput: supportsImageInput,
+                supportsJsonSchemaMode: supportsJsonSchemaMode,
+                supportsStreaming: supportsStreaming,
+                supportsToolCalling: supportsToolCalling,
+                maxContextTokens: maxContextTokens,
+                maxOutputTokens: maxOutputTokens,
+                maxImagesPerRequest: maxImagesPerRequest,
+                maxImageSizeBytes: maxImageSizeBytes,
+                lastValidatedAt: lastValidatedAt,
+                lastValidationStatus: lastValidationStatus,
+                lastErrorCode: lastErrorCode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiProviderConfigsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AiProviderConfigsTable,
+      AiProviderConfig,
+      $$AiProviderConfigsTableFilterComposer,
+      $$AiProviderConfigsTableOrderingComposer,
+      $$AiProviderConfigsTableAnnotationComposer,
+      $$AiProviderConfigsTableCreateCompanionBuilder,
+      $$AiProviderConfigsTableUpdateCompanionBuilder,
+      (
+        AiProviderConfig,
+        BaseReferences<
+          _$AppDatabase,
+          $AiProviderConfigsTable,
+          AiProviderConfig
+        >,
+      ),
+      AiProviderConfig,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7633,4 +15671,16 @@ class $AppDatabaseManager {
       $$ExerciseVideosTableTableManager(_db, _db.exerciseVideos);
   $$ExerciseAudioCacheTableTableManager get exerciseAudioCache =>
       $$ExerciseAudioCacheTableTableManager(_db, _db.exerciseAudioCache);
+  $$UserProfileTableTableManager get userProfile =>
+      $$UserProfileTableTableManager(_db, _db.userProfile);
+  $$StrengthAnchorsTableTableManager get strengthAnchors =>
+      $$StrengthAnchorsTableTableManager(_db, _db.strengthAnchors);
+  $$BodyMeasurementsTableTableManager get bodyMeasurements =>
+      $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
+  $$AppSettingsTableTableManager get appSettings =>
+      $$AppSettingsTableTableManager(_db, _db.appSettings);
+  $$AiModelCapabilitiesTableTableManager get aiModelCapabilities =>
+      $$AiModelCapabilitiesTableTableManager(_db, _db.aiModelCapabilities);
+  $$AiProviderConfigsTableTableManager get aiProviderConfigs =>
+      $$AiProviderConfigsTableTableManager(_db, _db.aiProviderConfigs);
 }

@@ -3,6 +3,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_step_audio_stat
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,7 +36,7 @@ class ExerciseStepAudioButton extends ConsumerWidget {
     WidgetRef ref,
     ExerciseStepAudioState stepState,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = context.colorScheme;
 
     switch (stepState.phase) {
       case ExerciseStepAudioPhase.idle:

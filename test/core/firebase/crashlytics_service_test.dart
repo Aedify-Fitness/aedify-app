@@ -1,4 +1,5 @@
 import 'package:aedify/core/firebase/crashlytics_service.dart';
+import '../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeCrashlyticsClient implements CrashlyticsClient {
@@ -112,5 +113,61 @@ void main() {
       final service = CrashlyticsService(client: null);
       expect(service.enabled, isTrue);
     });
+
+    test('injury sentinel is redacted in crashlytics metadata', () {
+      final client = _FakeCrashlyticsClient();
+      final service = CrashlyticsService(client: client);
+
+      service.setCustomKeySafe(
+        'injury_notes',
+        PrivacySentinelValues.fakeInjuryNote,
+      );
+
+      expect(client.keys, isEmpty);
+    });
+
+    test('bodyweight sentinel is redacted in crashlytics metadata', () {
+      final client = _FakeCrashlyticsClient();
+      final service = CrashlyticsService(client: client);
+
+      service.setCustomKeySafe(
+        'bodyweight',
+        PrivacySentinelValues.fakeBodyweight,
+      );
+
+      expect(client.keys, isEmpty);
+    });
+
+    test('profile note sentinel is redacted in crashlytics metadata', () {
+      final client = _FakeCrashlyticsClient();
+      final service = CrashlyticsService(client: client);
+
+      service.setCustomKeySafe(
+        'profile_notes',
+        PrivacySentinelValues.fakeProfileNote,
+      );
+
+      expect(client.keys, isEmpty);
+    });
+
+    test(
+      'profile note and injury sentinels are redacted in crashlytics logs',
+      () {
+        final client = _FakeCrashlyticsClient();
+        final service = CrashlyticsService(client: client);
+
+        service.logSafe(
+          'test log',
+          metadata: {
+            'injury': PrivacySentinelValues.fakeInjuryNote,
+            'notes': PrivacySentinelValues.fakeProfileNote,
+          },
+        );
+
+        expect(client.logs.single, contains('[REDACTED]'));
+        expect(client.logs.single, isNot(contains('shoulder impingement')));
+        expect(client.logs.single, isNot(contains('profile note')));
+      },
+    );
   });
 }

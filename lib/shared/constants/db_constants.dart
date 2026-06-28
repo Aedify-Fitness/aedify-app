@@ -3,7 +3,7 @@ class DbConstants {
 
   static const String databaseFileName = 'aedify.sqlite';
 
-  static const String initialDriftSchemaVersion = '3';
+  static const String initialDriftSchemaVersion = '4';
   static const String defaultExerciseLibraryVersion = '0';
   static const String defaultDataModelPlanVersion = '1.0';
   static const String defaultInstructionSetVersion = '1.10';

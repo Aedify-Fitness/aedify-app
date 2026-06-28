@@ -2,18 +2,16 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
-import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/enums/library_sync_status.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_failure.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_parser.dart';
-import 'package:aedify/features/exercise_library/data/dataset/exercise_library_importer.dart';
 
 class ExerciseDatasetSyncController
     extends AsyncNotifier<ExerciseDatasetSyncState> {
   @override
   Future<ExerciseDatasetSyncState> build() async {
-    final dao = LibraryMetaDao(ref.read(AppProviders.appDatabaseProvider));
+    final dao = ref.read(AppProviders.libraryMetaDaoProvider);
     final meta = await dao.getLibraryMeta();
     if (meta == null) {
       return const ExerciseDatasetSyncState.neverSynced();
@@ -58,7 +56,7 @@ class ExerciseDatasetSyncController
   }
 
   Future<void> clearFailure() async {
-    final dao = LibraryMetaDao(ref.read(AppProviders.appDatabaseProvider));
+    final dao = ref.read(AppProviders.libraryMetaDaoProvider);
     final current = await future;
     if (current.isSynced) return;
     await dao.setSyncStatus(syncStatus: LibrarySyncStatus.synced);
@@ -71,18 +69,13 @@ class ExerciseDatasetSyncController
   }
 
   Future<void> _runSync() async {
-    final dao = LibraryMetaDao(ref.read(AppProviders.appDatabaseProvider));
+    final dao = ref.read(AppProviders.libraryMetaDaoProvider);
     final networkStatus = ref.read(AppProviders.networkStatusProvider);
     final downloadService = ref.read(
       AppProviders.exerciseDatasetDownloadServiceProvider,
     );
     final parser = const ExerciseDatasetParser();
-    final importer = ExerciseLibraryImporter(
-      database: ref.read(AppProviders.appDatabaseProvider),
-      exerciseDao: ref.read(AppProviders.exerciseDaoProvider),
-      exerciseVideoDao: ref.read(AppProviders.exerciseVideoDaoProvider),
-      libraryMetaDao: dao,
-    );
+    final importer = ref.read(AppProviders.exerciseLibraryImporterProvider);
 
     final isOnline = await networkStatus.check();
     if (!isOnline) {

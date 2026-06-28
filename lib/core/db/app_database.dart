@@ -11,6 +11,12 @@ import 'tables/schema_migrations_log.dart';
 import 'tables/library_meta.dart';
 import 'tables/exercise_videos.dart';
 import 'tables/exercise_audio_cache.dart';
+import 'tables/user_profile.dart';
+import 'tables/strength_anchors.dart';
+import 'tables/body_measurements.dart';
+import 'tables/app_settings.dart';
+import 'tables/ai_model_capabilities.dart';
+import 'tables/ai_provider_configs.dart';
 
 part 'app_database.g.dart';
 
@@ -23,6 +29,12 @@ part 'app_database.g.dart';
     LibraryMeta,
     ExerciseVideos,
     ExerciseAudioCache,
+    UserProfile,
+    StrengthAnchors,
+    BodyMeasurements,
+    AppSettings,
+    AiModelCapabilities,
+    AiProviderConfigs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -30,14 +42,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 3);
+      await _logMigration(m, fromVersion: 0, toVersion: 7);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -50,6 +62,20 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(exerciseVideos);
         await m.createTable(exerciseAudioCache);
         await _addExerciseColumns(m);
+      }
+      if (from < 4) {
+        await m.createTable(userProfile);
+      }
+      if (from < 5) {
+        await m.createTable(strengthAnchors);
+        await m.createTable(bodyMeasurements);
+        await m.createTable(appSettings);
+      }
+      if (from < 6) {
+        await m.createTable(aiProviderConfigs);
+      }
+      if (from < 7) {
+        await m.createTable(aiModelCapabilities);
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

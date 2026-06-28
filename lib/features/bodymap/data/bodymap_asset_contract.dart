@@ -1,11 +1,12 @@
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_view_side.dart';
+import 'package:aedify/shared/constants/svg_assets_bodymap.dart';
 
 class BodymapAssetContract {
   BodymapAssetContract._();
 
-  static const String frontAssetPath = 'assets/svgs/bodymap/front.svg';
-  static const String backAssetPath = 'assets/svgs/bodymap/back.svg';
+  static const String frontAssetPath = BodymapSvgAssets.front;
+  static const String backAssetPath = BodymapSvgAssets.back;
 
   static const Map<String, BodymapBucket> frontPathToBucket = {
     'chest': BodymapBucket.chest,

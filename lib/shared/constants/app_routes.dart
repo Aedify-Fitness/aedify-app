@@ -47,4 +47,9 @@ class AppRoutes {
       AppRoutes._(path: '/import-disabled', name: 'importDisabled');
   factory AppRoutes.progressDisabled() =>
       AppRoutes._(path: '/progress-disabled', name: 'progressDisabled');
+  factory AppRoutes.profile() => AppRoutes._(path: '/profile', name: 'profile');
+  factory AppRoutes.aiProviderSettings() =>
+      AppRoutes._(path: '/settings/ai-provider', name: 'aiProviderSettings');
+  factory AppRoutes.byokSettings() =>
+      AppRoutes._(path: '/settings/byok', name: 'byokSettings');
 }

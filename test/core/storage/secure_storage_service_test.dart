@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
+import '../../support/privacy/privacy_sentinel_values.dart';
 
 class _FakeFlutterSecureStorage extends FlutterSecureStorage {
   final _store = <String, String>{};
@@ -186,19 +187,42 @@ void main() {
       );
     });
 
-    test('read failure throws sanitized SecureStorageFailure', () async {
+    test('failure messages do not include fake API key sentinel', () async {
       service = SecureStorageService(storage: _ThrowingFlutterSecureStorage());
 
       await expectLater(
-        () => service.readProviderApiKey('openai'),
+        () => service.saveProviderApiKey(
+          'openai',
+          PrivacySentinelValues.fakeApiKey,
+        ),
         throwsA(
           isA<SecureStorageFailure>().having(
-            (e) => e.code,
-            'code',
-            'secure_storage_read_failed',
+            (e) => e.message,
+            'message',
+            isNot(contains(PrivacySentinelValues.fakeApiKey)),
           ),
         ),
       );
     });
+
+    test(
+      'read failure messages do not include fake API key sentinel',
+      () async {
+        service = SecureStorageService(
+          storage: _ThrowingFlutterSecureStorage(),
+        );
+
+        await expectLater(
+          () => service.readProviderApiKey('openai'),
+          throwsA(
+            isA<SecureStorageFailure>().having(
+              (e) => e.code,
+              'code',
+              'secure_storage_read_failed',
+            ),
+          ),
+        );
+      },
+    );
   });
 }

@@ -4,6 +4,282 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-27
+
+### Fixed (Test infrastructure — drift warning suppression, off-screen taps)
+
+- **Drift "multiple database instances" warning fix**: Removed ineffectual top-level IIFE from `test/features/settings/data/fake_dependencies.dart` — Dart `final` top-level variables are lazily initialized, so the private `_suppressDriftWarning` variable was never read and never ran. Moved `driftRuntimeOptions.dontWarnAboutMultipleDatabases = true` directly into `main()` in 3 test files: `drift_byok_repository_test.dart`, `byok_setup_controller_test.dart`, `byok_settings_screen_test.dart`.
+- **Profile screen off-screen tap fix** (`test/features/profile/presentation/profile_screen_test.dart:221`): Added `tester.ensureVisible()` before tapping "Save profile" — button was below the 800×600 viewport.
+- **Onboarding screen off-screen tap fix** (`test/features/onboarding/presentation/onboarding_screen_test.dart:265`): Added `tester.ensureVisible()` before tapping "Build muscle" goal — chip was below the viewport in the full-flow test.
+- Verification: `dart format` — passed. `flutter test` — 606/606 passed, zero drift warnings, zero off-screen tap warnings.
+
+### Fixed (M3 audit — isCheapest, resume-byokOptional, unused DAOs)
+
+- **Removed broken `isCheapest` getter** (`lib/features/settings/domain/byok_model_option.dart`): The `totalCostPer1kTokens == 0` check always returned `false`. The getter was unused in UI code (`_MoreCapableHint` computes cost comparison inline), so it was removed entirely.
+- **Fixed resume step for BYOK-skipped drafts** (`lib/features/onboarding/application/onboarding_controller.dart`): Changed `_resumeStepForDraft` to send to `review` instead of `byokOptional` when `byokSkipped` is `true`, avoiding unnecessary detours.
+- **Removed unused `_appSettingsDao` and `_bodyMeasurementDao`** (`lib/features/profile/data/drift_profile_repository.dart`): Cleaned up constructor, fields, and all provider/test wiring. Removed unused imports from `test/`.
+
+### Refactored (M1–M3 codebase sweep — theme, casts, SVGs, architecture, deps, font tokens)
+
+- **Batch 1 — `Theme.of(context)` → `context.theme`**: Fixed 5 occurrences across `placeholder_screen.dart` (×4) and `exercise_step_audio_button.dart` (×1).
+- **Batch 2 — Inline `TextStyle()` → `AppTextStyles`**: Replaced 10 inline `TextStyle(fontSize: ...)` in `exercise_detail_screen.dart`, `exercise_library_screen.dart`, `bodymap_bucket_chip_bar.dart`, `byok_settings_screen.dart`.
+- **Batch 3 — Safe typed casts**: Changed `_CostIndicator`, `_MoreCapableHint`, `_ModelSelector` from `List<dynamic>` to `List<ByokProviderOption>`. Removed 3 unsafe `as` casts in `byok_settings_screen.dart`.
+- **Batch 4 — Bodymap SVG constant class**: Created `BodymapSvgAssets` in `lib/shared/constants/svg_assets_bodymap.dart`. Updated `bodymap_asset_contract.dart` to reference it.
+- **Batch 5 — Sync controller architecture fix**: Added `exerciseLibraryImporterProvider` in `providers.dart`. Updated `ExerciseDatasetSyncController` to use providers instead of inline DAO/importer construction.
+- **Batch 6 — Removed unused deps**: Removed `cupertino_icons` and `equatable` from `pubspec.yaml`.
+- **Batch 7 — AppFontSizes extended**: Added `xxs(10)`, `sm(14)`, `md(16)`, `lg(18)`, `xl(20)`, `xxl(24)`, `xxxl(28)`, `displaySm(32)`, `displayMd(40)`. Updated `AppTextStyles` and `AppTextStylesDark` to reference them.
+- **Batch 8 — Theme constants consolidated**: Moved `app_colors.dart` from `lib/app/theme/` to `lib/shared/theme/`. Updated `app_theme.dart` import.
+- Verification: `dart format` ✓ → `flutter analyze` ✓ 0 errors → `flutter test` ✓ 606/606 passing.
+
+## 2026-06-25
+
+### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
+
+- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
+- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
+- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
+- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
+- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
+- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
+- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
+- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
+- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
+- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
+- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
+- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
+- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
+- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
+
+## 2026-06-27
+
+### Added (V1-M3-008 — Create onboarding/profile/BYOK privacy tests)
+
+- **3 support files**: `privacy_sentinel_values.dart`, `privacy_output_matchers.dart`, `fake_crashlytics_capture.dart`.
+- **30 new privacy tests** across crashlytics, secure storage, logger, onboarding, profile, BYOK, provider gate, BYOK widget.
+- **5 leaks found and fixed**: Crashlytics `notes` redaction gap, empty key test `contains('')`, `rotateKey` fake repo override, onboarding save error assertion, BYOK widget validation test.
+- **`notes` added to `Redaction._sensitiveFields`** and `PrivacyClassifier._forbiddenFields`.
+- **Tests**: 30 new. **585/585 passing**.
+- **M3 status**: V1-M3-008 complete. **1 ticket remains**: V1-M3-009 (P0).
+
+### Added (V1-M3-009 — M3 acceptance smoke flow tests)
+
+- **Test scaffold**: `test/app/m3/fake_m3_dependencies.dart` (5 fakes) + `m3_test_harness.dart` (pumpApp with 10 overrides) + `m3_setup_smoke_flow_test.dart` (8 acceptance tests).
+- **8 acceptance tests**: fresh install → onboarding welcome, full 7-step onboarding, post-onboarding nav (profile/settings/BYOK), BYOK key save (no sentinel leak), AI gating missing/available key, onboarding validation block, BYOK validation safe error.
+- **Existing tests expanded**: `app_router_test` (M3 gate routes), `onboarding_screen_test` (completion), `byok_settings_screen_test` (validation + delete), `default_provider_gate_service_test` (text-capable vs json-schema).
+- **Fixes**: gate service json-schema requirement, AI gating split, BYOK validation assertion (form stays visible on failure — privacy gate is no persistence/logging), `AppStrings.profileEdit` for profile screen, router nav 2 `pump()` calls, delete dialog confirmation required.
+- **M3 complete**: **All V1-M3 tickets closed** (001–009).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 605/605 passed.
+
+### Added (V1-M3-007 — Implement unit and measurement preference handling)
+
+- **`UnitConversion`** (`lib/shared/domain/unit_conversion.dart`): Pure numeric conversions — kg↔lb, cm↔in, `formatSafe`.
+- **Consolidated conversion math**: `PreferredUnit.toImperialHeight/Weight` and `toMetricHeight/Weight` now delegate to `UnitConversion` instead of inline `* 0.45359237` / `/ 2.54` factors.
+- **`MeasurementParser`** (`lib/shared/formatters/measurement_parser.dart`): `parseWeightToCanonicalKg`, `parseHeightToCanonicalCm`.
+- **`MeasurementFormatter`** (`lib/shared/formatters/measurement_formatter.dart`): `formatWeight`, `formatHeight`.
+- **`PreferredUnit` extended** (`lib/shared/domain/preferred_unit.dart`): `toDisplayWeight`, `toDisplayHeight`, `toCanonicalWeight`, `toCanonicalHeight`.
+- **`ProfileController` extended**: `updatePreferredUnits`, `updateBodyweightFromDisplay`, `updateHeightFromDisplay`.
+- **`ProfileScreen` unit-aware**: Bodyweight/height + all three 1RM fields use `MeasurementFormatter`/`MeasurementParser` + dynamic unit suffix.
+- **`_FormField.didUpdateWidget`**: Syncs `TextEditingController` when `initialValue` changes on unit switch.
+- **Gap closed**: 1RM fields had hardcoded `'kg'` suffix + raw `double.tryParse` — now unit-aware with display conversion and input parsing.
+- **Tests**: 28 new. **555/555 passing**.
+- **M3 status**: V1-M3-007 complete. **2 tickets remain**: V1-M3-008 (P0), V1-M3-009 (P0).
+
+## 2026-06-26
+
+### Added (V1-M3-006 — Connect profile preferences to candidate engine)
+
+- **`ProfileCandidatePreferences`**: New domain model bridging profile data with the candidate exercise engine — equipment, difficulty, modality, exclusions, goal tags, and ranking inputs.
+- **`ProfileCandidatePreferencesService`** (abstract) + **`DefaultProfileCandidatePreferencesService`**: Implementation reads `ProfileRepository.getProfile()` and maps deterministically — equipment pass-through, experience→difficulty 4-tier, goals→goalTags (hypertrophy/cardio/strength), substituted→excludedExerciseIds, no free-text injury heuristics.
+- **Provider wired**: `profileCandidatePreferencesServiceProvider` in `AppProviders`.
+- **Gap closed**: `_mapModalities` was returning raw goal strings (would hard-filter all exercises). Fixed to return empty set — no hard modality filter; modality scoring handled by `goalTags` soft ranking.
+- **No `CandidateExerciseQuery` or `CandidateExerciseQueryService` changes** — existing model covers all fields.
+- **No `ProfileViewData` expansion needed** — all 7 required fields already present.
+- **Tests**: 18 new (17 service + 4 profile-derived candidate integration, −1 removed old modality test). 527/527 total passing.
+- **Docs**: `implementation.md` updated — V1-M3-006 entry added, remaining tickets corrected (3 left), test count 527.
+- **Compliance closeout**: Cross-referenced build ticket backlog (V1-M3-006), data model plan (privacy/storage boundaries), and data privacy rules. Privacy audit confirmed `DefaultProfileCandidatePreferencesService` is clean — no logging, Crashlytics, storage writes, or raw profile data in DTOs. `dart run build_runner build` passed. No rules violations remain.
+
+### Fixed (M3 status correction — 5 of 9 tickets complete, 4 remaining)
+
+- V1-M3-001 through V1-M3-006 are complete (onboarding, profile, settings, BYOK, capability gate, profile→candidate wiring). V1-M3-007 (P1), V1-M3-008 (P0), V1-M3-009 (P0) remain open.
+- `docs/implementation.md` updated: status line, completed work section, planned work all reflect accurate M3 progress.
+- No code changes.
+
+### Changed (setState elimination — API key visibility toggles use ValueNotifier)
+
+- `_ByokOptionalStepState` (`onboarding_screen.dart`): Replaced `bool _obscured` + `setState` with `ValueNotifier<bool>` + `ValueListenableBuilder` for the API key obscurity toggle.
+- `_ApiKeyFieldState` (`byok_settings_screen.dart`): Same refactor — `ValueNotifier<bool>` + `ValueListenableBuilder` instead of `setState`.
+- Result: **Zero `setState` calls remain anywhere in `lib/`**.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 485/485 passed.
+
+### Added (V1-M3-005 — Provider Capability Matrix & Gate Service)
+
+- **`AiModelCapabilities` Drift table** (`lib/core/db/tables/ai_model_capabilities.dart`): Model-level capability cache — `id`, `providerName`, `modelName`, `supportsTextInput`, `supportsImageInput`, `supportsJsonSchemaMode`, `supportsStreaming`, `maxContextTokens`, `maxOutputTokens`, `maxImagesPerRequest`, `checkedAt`. Composite ID key.
+- **Database migration**: Schema 6→7, `m.createTable(aiModelCapabilities)` in v7 step.
+- **`AiModelCapabilityDao`** (`lib/core/db/daos/ai_model_capability_dao.dart`): 3 methods — `getCapability(providerName, modelName)`, `upsertCapability(AiModelCapabilitiesCompanion)`, `deleteCapability(providerName, modelName)`.
+- **Domain models** (`lib/features/settings/domain/`):
+  - `ProviderCapabilityType` — enum: `textInput`, `imageInput`, `jsonSchemaMode`, `streaming`, `toolCalling`.
+  - `ProviderOperationType` — enum: `aiChat`, `aiWorkoutGeneration`, `aiProgrammeGeneration`, `structuredSaveFlow`, `externalTextImportParse`, `imageImport`, `physiqueAnalysis`.
+  - `ProviderCapabilityViewData` — data class with all capability flags + `checkedAt`.
+  - `ProviderGateDecision` — `allowed`/`blocked` constructors with `isAllowed`, `reason`, `message`.
+  - `ProviderGateFailureReason` — enum: 8 failure reasons (`missingProviderConfig`, `missingKey`, `unsupportedModel`, `missingTextCapability`, `missingImageCapability`, `missingJsonSchemaCapability`, `offline`, `capabilityUnknown`).
+- **`ProviderCapabilityRepository`** (abstract) + **`DriftProviderCapabilityRepository`** (`lib/features/settings/data/`): Maps DB row ↔ `ProviderCapabilityViewData`. Methods: `getCapability`, `saveCapability`, `clearCapability`.
+- **`ProviderGateService`** (abstract) + **`DefaultProviderGateService`** (`lib/features/settings/data/`): Fail-closed gate — checks: active config exists → hasKey → model selected → network online → capability cache exists → operation-specific capability present → allowed. All failure paths return safe `AppStrings` guidance.
+- Capability requirements per operation: `aiChat`/`externalTextImportParse` → textInput; `aiWorkoutGeneration`/`aiProgrammeGeneration` → textInput + jsonSchemaMode; `structuredSaveFlow` → jsonSchemaMode; `imageImport`/`physiqueAnalysis` → imageInput.
+- **`ProviderCapabilityState`** + **`ProviderCapabilityController`** (`lib/features/settings/application/`): `AsyncNotifier` using Riverpod 3.x family pattern (`AsyncNotifierProvider.family` with constructor args). `build()` reads cached capability; `reload()` refreshes.
+- **Optional `ProviderCapabilityScreen`** (`lib/features/settings/presentation/provider_capability_screen.dart`): `ConsumerWidget` for displaying cached capability (loading/error/capability views).
+- **Provider wiring** (`lib/app/providers/providers.dart`): 4 new providers — `aiModelCapabilityDaoProvider`, `providerCapabilityRepositoryProvider`, `providerGateServiceProvider`, `providerCapabilityControllerProvider` (family).
+- **Strings**: 7 new `AppStrings` (capability and gate guidance messages), 2 new `AppErrorStrings` (capability load errors).
+- **Tests**: 18 new — 4 DAO, 3 repository, 8 gate service (all fail-closed scenarios), 3 controller. Shared `FakeConfigDao`/`FakeSecureStorage`/`FakeNetworkStatus` extended. Schema version tests updated 6→7.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `dart run build_runner build` — passed (314 outputs). `flutter test` — 503/503 passed.
+
+### Fixed (V1-M3-005 gap closure — tool calling, SVGs, retry, redaction test, AppStrings compliance)
+
+- **`AiModelCapabilities` table**: Added `supportsToolCalling` nullable bool column — matches data model plan §9. Companion updated by codegen.
+- **`ProviderCapabilityViewData`**: Added `supportsToolCalling` nullable field with conditional display in capability screen.
+- **`DriftProviderCapabilityRepository`**: Added `supportsToolCalling` to DB↔view data mapping in both read and save paths.
+- **`ProviderCapabilityScreen`**: Added Tool Calling capability tile (shown only when non-null). Replaced `Icons.check_circle`/`Icons.cancel` with `OutlinedSvgAssets.checkCircle`/`OutlinedSvgAssets.xCircle`. Added retry button (`OutlinedButton.icon` with `arrowPath` SVG) to `_UnavailableView` that invalidates the controller provider.
+- **Hardcoded strings → AppStrings**: Moved all 10 user-facing labels (`providerCapabilityTitle`, `capabilityTextInput`, `capabilityImageInput`, `capabilityJsonSchemaMode`, `capabilityStreaming`, `capabilityToolCalling`, `capabilityMaxContextTokens`, `capabilityMaxOutputTokens`, `capabilityMaxImagesPerRequest`, `capabilityLastChecked`) and reused existing `AppStrings.retry`. Zero hardcoded strings remain in the screen.
+- **Design compliance**: Read `DESIGN.md` per AGENTS.md §162. Applied Flutter mobile design skill pack per §163-164. Confirmed colors use `context.colorScheme`, text uses `AppTextStyles`, spacing uses `AppSpacing`/`AppWhiteSpace`/`AppSizing`, no raw tokens.
+- **Redaction test**: Added `all block messages are safe AppStrings — no internal details leaked` test — verifies all 6 failure-path messages are known safe `AppStrings` constants with no forbidden patterns (provider/model names, API keys, file paths, error terminology).
+- **1 new test** — 504 total passing. No schema change (nullable column addition, no migration needed).
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 504/504 passed.
+
+### Added (V1-M3-004 — Full BYOK Provider Setup Flow)
+
+- `AiProviderConfigs` Drift table with metadata, capability flags, validation tracking, timestamps; schema 5→6 migration.
+- `AiProviderConfigDao` with 8 methods (getAll, getById, getActive, upsert, setActive, clearActive, delete, updateValidation).
+- Domain models: `ByokProviderOption`, `ByokConfigViewData`, `ByokEditDraft` (with `copyWith`/clear flags).
+- `ByokRepository` (abstract) + `DriftByokRepository`: built-in OpenAI/Anthropic provider options, save/rotate/delete/setActive, API key stored only in `SecureStorageService` (never in Drift), `hasKey` boolean only.
+- `ByokSetupController` (AsyncNotifier): build/updateDraft/save (with empty-key validation)/rotateKey/deleteConfig/setActiveConfig/reload.
+- `ByokSettingsScreen`: provider selector (ChoiceChip), model selector (DropdownButtonFormField), obscured API key input with toggle, config cards with active badge/setActive/delete, error/validation banners.
+- Routing: `AppRoutes.byokSettings()` (`/settings/byok`), `aiProviderSettings` redirect → `byokSettings`.
+- 13 `AppStrings` + 6 `AppErrorStrings` for BYOK flow.
+- 21 tests (6 DAO, 6 repository, 7 controller, 2 widget) — 481 total passing.
+- Shared `FakeConfigDao`/`FakeSecureStorage` test dependencies.
+- Fixed `_ModelSelector` type cast for `DropdownButtonFormField<String>`.
+- Fixed `_ApiKeyField` Riverpod build-time state modification (moved `onChanged` to `TextFormField.onChanged`).
+
+### Added (V1-M3-003 — Settings Shell, BYOK Entry, Feature Status Display)
+
+- **`PreferredUnit` enum expanded** (`lib/shared/domain/preferred_unit.dart`): Now owns all unit concerns — `isImperial`, `isMetric` getters, `heightLabel`/`weightLabel`/`heightHint`/`weightHint`/`heightUnit`/`weightUnit` display properties, `toMetricHeight`/`toMetricWeight`/`toImperialHeight`/`toImperialWeight` conversion methods. Replaced raw conversion constants and static helper methods in widgets. Converted to enhanced enum with field constructors matching `ThemeModeSetting`'s pattern.
+- **DRY dropdown refactor**: Both settings dropdowns (`PreferredUnit`, `ThemeModeSetting`) now derive options and labels via `.values.map((e) => e.name / .displayLabel)` instead of hardcoded arrays — consistent, type-safe, and DRY.
+- **`ThemeModeSetting` enum** (`lib/shared/domain/theme_mode_setting.dart`): `system`/`light`/`dark` with `dbValue`/`fromDb`/`toMaterialThemeMode`/`displayLabel`.
+- **Domain models using enums**: `OnboardingDraft.preferredUnits` (`String?` → `PreferredUnit?`), `ProfileViewData.preferredUnits` (`String` → `PreferredUnit`), `ProfileEditDraft.preferredUnits` (`String` → `PreferredUnit`), `SettingsViewData.preferredUnits`/`themeMode` typed enums.
+- **Repository boundary conversion**: `DriftOnboardingRepository`, `DriftProfileRepository`, `DriftSettingsRepository` now convert enum ↔ DB string via `.dbValue`/`.fromDb()` at the boundary.
+- **Settings domain**: `SettingsViewData` (13 fields), `SettingsEditDraft` (7 mutable fields with `copyWith()`), `SettingsRepository` (abstract), `DriftSettingsRepository` (reads/writes `AppSettings` table, merges `FeatureFlags`).
+- **SettingsController**: `AsyncNotifier<SettingsState>` with `updateDraft()`/`save()`/`reload()`.
+- **SettingsScreen**: Full shell — profile nav tile, exercise dataset status, app settings card (units dropdown, theme dropdown, 5 switches + save), AI setup nav tile, feature status section (5 tiles from FeatureFlags), privacy/storage card, diagnostics nav tile.
+- **3 widget files**: `settings_section_card.dart`, `settings_feature_status_tile.dart`, `settings_storage_boundary_card.dart`.
+- **Theme mode wiring**: `AedifyApp` watches `settingsControllerProvider` and applies `themeMode.toMaterialThemeMode()` instead of hardcoded `ThemeMode.system`.
+- **Routing**: `AppRoutes.aiProviderSettings()` + placeholder GoRoute.
+- **Providers**: `settingsRepositoryProvider`, `settingsControllerProvider` registered.
+- **AppStrings**: 18 new strings (settings labels, imperial units, unit labels/hints).
+- **AppErrorStrings**: 2 new strings (`settingsLoadFailedMessage`, `settingsSaveFailedMessage`).
+- **Onboarding screen form behavior**: Switching units now converts displayed values (cm↔in, kg↔lbs); `_FormField` uses `ValueKey` to force recreation on unit change; review step shows correct unit labels and converted imperial values.
+- **Tests**: 18 new — 3 drift_settings_repository, 5 settings_controller, 8 settings_screen, 2 storage_boundary_card. Profile/onboarding tests updated for `PreferredUnit` enum type. App test bootstrap controllers simplified (start in `success` state directly); `_FixedOnboardingNotifier` overrides `onboardingControllerProvider` to bypass Drift in widget tests.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 460/460 passed.
+
+## 2026-06-24
+
+### Added (V1-M3-002 — Profile Repository and Edit Screens)
+
+- **4 Drift tables**: `user_profile`, `strength_anchors`, `body_measurements`, `app_settings` — JSON columns for array fields (goals, equipment, injuries), all with primary keys.
+- **4 DAOs**: `UserProfileDao` (get/upsert/markOnboardingCompleted), `StrengthAnchorDao`, `BodyMeasurementDao`, `AppSettingsDao` (read/upsert).
+- **Domain layer**: `ProfileViewData` (display model), `ProfileEditDraft` (edit model with `copyWith` + clear flags), `ProfileSaveImpact` (none / mayAffectActiveProgrammes).
+- **Repository layer**: `ProfileRepository` (abstract) + `DriftProfileRepository` (impl with JSON encode/decode, transactional save, placeholder `evaluateSaveImpact`).
+- **ProfileController**: `AsyncNotifier<ProfileState>` — auto-evaluates impact on build and every draft update; validates `experienceLevel` required; loads profile on init.
+- **ProfileScreen**: Full editable form — experience/goal chips, equipment chips, days-per-week selector, session length field, unit toggle, bodyweight/height fields, injuries chips, notes field, save button; `_ErrorView`, `_ProfileContentView`, `_ValidationBanner`, `_ImpactWarning`, `_SectionCard`, `_ChipSelector`, `_DaysPerWeekSelector`, `_UnitSelector`, `_FormField` widgets.
+- **App wiring**: `AppDatabase` schema v5 (migration v4→v5), providers registered, `/profile` route added.
+- **AppStrings/AppErrorStrings**: ~15 profile labels + validation/save error strings.
+- **5 test files**: DAO tests (user_profile, app_settings), repository tests, controller tests, widget tests (loading, save, edit, impact warning).
+- **Fixes**: Added `primaryKey` to `UserProfile` and `AppSettings` tables for `insertOnConflictUpdate`; automatic impact evaluation on build and draft update; onboarding welcome step now shows title above hero; onboarding repository fixed for non-null `experienceLevel` column.
+- Verification: `dart run build_runner build` — passed. `dart format` — passed. `flutter analyze` — 0 errors (3 pre-existing unused-field warnings). `flutter test` — 439/439 passed.
+
+### Changed (Onboarding scaffold — title visibility)
+
+- `onboarding_step_scaffold.dart`: Always render the step title, even when a hero widget is present. Previously the hero replaced the title; now it appears below the title + description.
+
+### Changed (Profile controller — auto-evaluate impact)
+
+- `profile_controller.dart`: `build()` now calls `evaluateSaveImpact()` and sets initial impact. `updateDraft()` auto-evaluates impact on every draft change (was a no-op).
+
+### Fixed (Drift schema errors)
+
+- `user_profile.dart`: Added `@override Set<Column> get primaryKey => {id};` — required for `insertOnConflictUpdate` to work.
+- `app_settings.dart`: Added `@override Set<Column> get primaryKey => {id};` — same fix.
+- `drift_onboarding_repository.dart`: `experienceLevel` column is non-nullable `Text` — uses `Value(draft.experienceLevel ?? '')` in save and `const Value('')` in clear instead of `Value(null)`.
+
+### Fixed (Test assertions)
+
+- `onboarding_screen_test.dart`: Uses hero description text (`onboardingWelcomeDescription`) instead of title text (`onboardingWelcomeTitle`) which is not rendered when hero is present.
+- `drift_onboarding_repository_test.dart`: Expects `''` instead of `null` for cleared `experienceLevel`.
+- `app_database_test.dart`: Schema version 4→5.
+- `migration_test.dart`: Migration `toVersion` 4→5.
+- `profile_controller_test.dart`: `updateDraft` calls are now `await` (was `void`, now `Future<void>`). Initial build test checks `hasError` and `requireValue.isLoading` instead of `isLoading` on raw `AsyncValue`.
+- `profile_screen_test.dart`: `_FakeProfileRepositoryWithImpact` returns non-null profile + matches `ProfileViewData` required params.
+
+### Redesigned (Onboarding UI refresh across all steps)
+
+- **Scaffold + progress refresh** (`onboarding_step_scaffold.dart`, `onboarding_progress_header.dart`): Reworked onboarding chrome with branded step header, `Step x of y` label, slim progress bar, cleaner content spacing, and elevated bottom CTA area. Added branded light/dark logo assets (`assets/images/logo_light.png`, `logo_dark.png`) wired through `ImageAssets.appLogo()`.
+- **Welcome screen refresh** (`onboarding_screen.dart`): Added hero copy, privacy-focused onboarding panels, and an AI-optional informational card inspired by the reference designs.
+- **Experience / schedule / equipment / units / limitations refresh** (`onboarding_screen.dart`): Converted plain form layout into surfaced sections with premium selection cards, metric tiles, grouped equipment chip panels, and structured body-metric / notes cards.
+- **BYOK + review refresh** (`onboarding_screen.dart`): Redesigned BYOK as a benefits/info surface and grouped review into editable summary cards while preserving jump-to-step behavior.
+- **Supporting content + tokens** (`app_strings.dart`, `app_spacing.dart`): Added onboarding-specific helper copy, labels, review affordances, and sizing tokens for cards, badges, and progress UI.
+- **Tests updated** (`test/features/onboarding/presentation/onboarding_screen_test.dart`): Adjusted onboarding widget tests to match the refreshed interaction model while keeping existing flow assertions.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Refactored (AGENTS.md compliance — onboarding widget code conventions)
+
+- **`Colors.white` → theme token** (`onboarding_step_scaffold.dart`): Replaced hardcoded `Colors.white` with `context.colorScheme.onPrimary` via `ThemeX` extension. Added missing `context_extensions.dart` import.
+- **`Theme.of(context)` → `context.colorScheme`** (`onboarding_progress_header.dart`): Replaced `Theme.of(context).colorScheme.*` with `context.colorScheme.*` via `ThemeX` extension. Added missing `context_extensions.dart` import.
+- **Hardcoded input hint/suffix strings → `AppStrings`** (`onboarding_screen.dart`): 3 hint texts and 3 suffix texts moved to `AppStrings` constants.
+- **Raw `width: 120` → `AppSizing.fieldWidth`** (`onboarding_screen.dart`): 3 usages replaced with new sizing token.
+- **Function widget builders → proper widget classes** (`onboarding_screen.dart`): Extracted `_buildStep` → `_OnboardingStepView`, `_stepContent` → `_StepContent`, `_buildValidationOrError` → `_ValidationMessage`, `_reviewRow` → `_ReviewRow` as proper `StatelessWidget`/`ConsumerWidget` classes per `rules.md` §118-121.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Bootstrap screen — `mounted` guard for post-frame callback)
+
+- **`mounted` guard added** (`bootstrap_screen.dart:24`): Wrapped `ref.read(AppBootstrap.controllerProvider.notifier).start()` call in `if (mounted)` to prevent `StateError:`ref`used after widget was disposed` when the post-frame callback fires after the widget has been unmounted.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Chip theme — missing DESIGN.md color tokens in `app_theme.dart`)
+
+- **Light `chipTheme`** (`app_theme.dart`): Added `backgroundColor: AedifyLightColors.surfaceContainerLow`, `selectedColor: AedifyLightColors.secondaryContainer`. Removed `labelStyle` — chips now fall back to `textTheme.labelSmall` (already `AppTextStyles.labelSm`) and auto-resolve text color from `ColorScheme` (`onSurfaceVariant` unselected, `onSecondaryContainer` selected).
+- **Dark `chipTheme`** (`app_theme.dart`): Added `backgroundColor: AedifyDarkColors.surfaceContainerHigh`, `selectedColor: AedifyDarkColors.primaryContainer.withValues(alpha: 0.3)`, removed `labelStyle`, fixed `labelSmall` in textTheme to use `AppTextStylesDark.labelSm`.
+- Fixes `withOpacity` deprecation → `withValues(alpha: ...)`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (Onboarding text fields — focus loss on keystroke)
+
+- **Root cause**: Inline `TextEditingController(...)` in `StatelessWidget.build()` created a new controller instance on every rebuild, causing Flutter to lose focus on every keystroke.
+- **Fix**: Extracted `_FormField` `StatefulWidget` (`onboarding_screen.dart`) that creates its `TextEditingController` once in `initState`, disposes it in `dispose`, and never overwrites controller text from external rebuilds.
+- Applied to all 4 text fields: `_ScheduleStep` (session minutes), `_UnitsMetricsStep` (height, weight), `_LimitationsStep` (notes).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Added (Onboarding back navigation and editable review rows)
+
+- **`OnboardingController.jumpToStep()`** (`onboarding_controller.dart`): New method that sets `currentStep` to any step — enables tappable review rows and direct step navigation.
+- **Back from `experienceGoals`** (`onboarding_screen.dart`): Removed guard blocking back button on first non-welcome step. Back now works on every step (including review going back to BYOK).
+- **BYOK step simplified** (`onboarding_screen.dart`): Removed special "Skip for now" back-button override. Since `byokSkipped` defaults to `true`, the user clicks **Continue** to proceed to review. Left button shows "Back" → `previousStep()`.
+- **Review rows now tappable** (`onboarding_screen.dart`): Each `_ReviewRow` maps to its source step — tap any field to jump back and edit, then Continue returns to review.
+- **Test updated**: "Continue from BYOK advances to review" replaces "BYOK skip advances to review".
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
+### Fixed (V1-M3-001 — Onboarding completion gate, debounced autosave, resume-to-step)
+
+- **Router gate fix** (`lib/app/router/app_router.dart`): Replaced unconditional `startup -> onboarding` redirect. New behavior:
+  - Bootstrap guard unchanged.
+  - Unresolved onboarding status stays on startup.
+  - `OnboardingStatus.complete` redirects from startup/onboarding to home.
+  - `OnboardingStatus.incomplete` redirects non-onboarding routes to onboarding.
+- **Debounced draft autosave** (`lib/features/onboarding/application/onboarding_controller.dart`): `updateDraft()` now schedules a 400ms debounced Drift save. `nextStep()` and `completeOnboarding()` flush pending saves immediately. Timer cancelled via `ref.onDispose`.
+- **Resume-to-next-incomplete-step** (`OnboardingController._resumeStepForDraft`): `build()` and `loadExistingDraft()` now derive the correct step from saved draft contents instead of always starting at welcome. Order: experienceGoals → schedule → equipment → unitsMetrics → limitations → byokOptional → review.
+- **BYOK explicit skip action** (`lib/features/onboarding/presentation/onboarding_screen.dart`): BYOK step shows `Skip for now` which sets `byokSkipped: true` and advances to review.
+- **Hardcoded strings → AppStrings constants**: Goal labels, equipment labels, limitation labels, unit labels, review labels moved to `AppStrings` in `lib/shared/constants/app_strings.dart`.
+- **Tests updated**: Controller tests cover debounce, flush-on-next, resume-step, and collapse behavior. Router tests cover complete→home, incomplete→onboarding, and unresolved→startup. Widget tests cover BYOK skip and partial-draft resume.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
+
 ## 2026-06-22
 
 ### Added (V1-M2 TTS/audio-cache slice — TTS service, audio cache DAO, step audio controller, per-step playback UI)

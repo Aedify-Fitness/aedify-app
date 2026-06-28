@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/logging/app_logger.dart';
+import '../../support/privacy/privacy_sentinel_values.dart';
 
 void main() {
   group('AppLogger', () {
@@ -97,6 +98,87 @@ void main() {
     test('custom name is used', () {
       final logger = AppLogger(name: 'custom-test');
       expect(logger.name, equals('custom-test'));
+    });
+
+    test('profile note sentinel is redacted in logs', () {
+      late String capturedMessage;
+      final logger = AppLogger(
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedMessage = message;
+            },
+      );
+
+      logger.debug(
+        'profile event',
+        metadata: {'notes': PrivacySentinelValues.fakeProfileNote},
+      );
+
+      expect(capturedMessage, contains('[REDACTED]'));
+      expect(
+        capturedMessage,
+        isNot(contains(PrivacySentinelValues.fakeProfileNote)),
+      );
+    });
+
+    test('injury sentinel is redacted in logs', () {
+      late String capturedMessage;
+      final logger = AppLogger(
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedMessage = message;
+            },
+      );
+
+      logger.warn(
+        'injury event',
+        metadata: {'injury': PrivacySentinelValues.fakeInjuryNote},
+      );
+
+      expect(capturedMessage, contains('[REDACTED]'));
+      expect(
+        capturedMessage,
+        isNot(contains(PrivacySentinelValues.fakeInjuryNote)),
+      );
+    });
+
+    test('bodyweight sentinel is redacted in logs', () {
+      late String capturedMessage;
+      final logger = AppLogger(
+        sink:
+            (
+              message, {
+              required String name,
+              required int level,
+              Object? error,
+              StackTrace? stackTrace,
+            }) {
+              capturedMessage = message;
+            },
+      );
+
+      logger.info(
+        'weight event',
+        metadata: {'bodyweight': PrivacySentinelValues.fakeBodyweight},
+      );
+
+      expect(capturedMessage, contains('[REDACTED]'));
+      expect(
+        capturedMessage,
+        isNot(contains(PrivacySentinelValues.fakeBodyweight)),
+      );
     });
   });
 }

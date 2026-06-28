@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aedify/app/theme/app_colors.dart';
+import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 
@@ -103,7 +103,8 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
-      labelStyle: AppTextStyles.labelSm,
+      backgroundColor: AedifyLightColors.surfaceContainerLow,
+      selectedColor: AedifyLightColors.secondaryContainer,
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStyles.headlineXl,
@@ -214,7 +215,8 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
-      labelStyle: AppTextStyles.labelSm,
+      backgroundColor: AedifyDarkColors.surfaceContainerHigh,
+      selectedColor: AedifyDarkColors.primaryContainer.withValues(alpha: 0.3),
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStylesDark.headlineXl,
