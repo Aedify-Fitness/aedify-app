@@ -7,6 +7,21 @@ import 'package:aedify/core/db/daos/app_settings_dao.dart';
 import 'package:aedify/core/db/daos/body_measurement_dao.dart';
 import 'package:aedify/core/db/daos/exercise_audio_cache_dao.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
+import 'package:aedify/core/db/daos/program_dao.dart';
+import 'package:aedify/core/db/daos/program_workout_template_dao.dart';
+import 'package:aedify/core/db/daos/program_template_exercise_dao.dart';
+import 'package:aedify/core/db/daos/program_template_exercise_set_dao.dart';
+import 'package:aedify/core/db/daos/program_week_dao.dart';
+import 'package:aedify/core/db/daos/program_workout_dao.dart';
+import 'package:aedify/core/db/daos/program_exercise_dao.dart';
+import 'package:aedify/core/db/daos/program_exercise_set_dao.dart';
+import 'package:aedify/core/db/daos/saved_workout_dao.dart';
+import 'package:aedify/core/db/daos/saved_workout_exercise_dao.dart';
+import 'package:aedify/core/db/daos/saved_workout_exercise_set_dao.dart';
+import 'package:aedify/core/db/daos/workout_session_dao.dart';
+import 'package:aedify/core/db/daos/workout_session_exercise_dao.dart';
+import 'package:aedify/core/db/daos/set_log_dao.dart';
+import 'package:aedify/core/db/daos/program_revision_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/daos/local_file_record_dao.dart';
@@ -64,6 +79,12 @@ import 'package:aedify/features/settings/data/provider_gate_service.dart';
 import 'package:aedify/features/settings/data/settings_repository.dart';
 import 'package:aedify/features/settings/application/provider_capability_controller.dart';
 import 'package:aedify/features/settings/application/provider_capability_state.dart';
+import 'package:aedify/features/programmes/data/programme_repository.dart';
+import 'package:aedify/features/programmes/data/drift_programme_repository.dart';
+import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
+import 'package:aedify/features/workout_builder/data/drift_saved_workout_repository.dart';
+import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
+import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -388,4 +409,117 @@ class AppProviders {
         ProviderCapabilityState,
         ({String providerName, String modelName})
       >((arg) => ProviderCapabilityController(arg.providerName, arg.modelName));
+
+  // M4 DAO providers
+  static final programDaoProvider = Provider<ProgramDao>((ref) {
+    return ProgramDao(ref.read(appDatabaseProvider));
+  });
+
+  static final programWorkoutTemplateDaoProvider =
+      Provider<ProgramWorkoutTemplateDao>((ref) {
+        return ProgramWorkoutTemplateDao(ref.read(appDatabaseProvider));
+      });
+
+  static final programTemplateExerciseDaoProvider =
+      Provider<ProgramTemplateExerciseDao>((ref) {
+        return ProgramTemplateExerciseDao(ref.read(appDatabaseProvider));
+      });
+
+  static final programTemplateExerciseSetDaoProvider =
+      Provider<ProgramTemplateExerciseSetDao>((ref) {
+        return ProgramTemplateExerciseSetDao(ref.read(appDatabaseProvider));
+      });
+
+  static final programWeekDaoProvider = Provider<ProgramWeekDao>((ref) {
+    return ProgramWeekDao(ref.read(appDatabaseProvider));
+  });
+
+  static final programWorkoutDaoProvider = Provider<ProgramWorkoutDao>((ref) {
+    return ProgramWorkoutDao(ref.read(appDatabaseProvider));
+  });
+
+  static final programExerciseDaoProvider = Provider<ProgramExerciseDao>((ref) {
+    return ProgramExerciseDao(ref.read(appDatabaseProvider));
+  });
+
+  static final programExerciseSetDaoProvider = Provider<ProgramExerciseSetDao>((
+    ref,
+  ) {
+    return ProgramExerciseSetDao(ref.read(appDatabaseProvider));
+  });
+
+  static final savedWorkoutDaoProvider = Provider<SavedWorkoutDao>((ref) {
+    return SavedWorkoutDao(ref.read(appDatabaseProvider));
+  });
+
+  static final savedWorkoutExerciseDaoProvider =
+      Provider<SavedWorkoutExerciseDao>((ref) {
+        return SavedWorkoutExerciseDao(ref.read(appDatabaseProvider));
+      });
+
+  static final savedWorkoutExerciseSetDaoProvider =
+      Provider<SavedWorkoutExerciseSetDao>((ref) {
+        return SavedWorkoutExerciseSetDao(ref.read(appDatabaseProvider));
+      });
+
+  static final workoutSessionDaoProvider = Provider<WorkoutSessionDao>((ref) {
+    return WorkoutSessionDao(ref.read(appDatabaseProvider));
+  });
+
+  static final workoutSessionExerciseDaoProvider =
+      Provider<WorkoutSessionExerciseDao>((ref) {
+        return WorkoutSessionExerciseDao(ref.read(appDatabaseProvider));
+      });
+
+  static final setLogDaoProvider = Provider<SetLogDao>((ref) {
+    return SetLogDao(ref.read(appDatabaseProvider));
+  });
+
+  static final programRevisionDaoProvider = Provider<ProgramRevisionDao>((ref) {
+    return ProgramRevisionDao(ref.read(appDatabaseProvider));
+  });
+
+  // M4 repository providers
+  static final programmeRepositoryProvider = Provider<ProgrammeRepository>((
+    ref,
+  ) {
+    return DriftProgrammeRepository(
+      database: ref.read(appDatabaseProvider),
+      programDao: ref.read(programDaoProvider),
+      programWorkoutTemplateDao: ref.read(programWorkoutTemplateDaoProvider),
+      programTemplateExerciseDao: ref.read(programTemplateExerciseDaoProvider),
+      programTemplateExerciseSetDao: ref.read(
+        programTemplateExerciseSetDaoProvider,
+      ),
+      programWeekDao: ref.read(programWeekDaoProvider),
+      programWorkoutDao: ref.read(programWorkoutDaoProvider),
+      programExerciseDao: ref.read(programExerciseDaoProvider),
+      programExerciseSetDao: ref.read(programExerciseSetDaoProvider),
+      programRevisionDao: ref.read(programRevisionDaoProvider),
+    );
+  });
+
+  static final savedWorkoutRepositoryProvider =
+      Provider<SavedWorkoutRepository>((ref) {
+        return DriftSavedWorkoutRepository(
+          database: ref.read(appDatabaseProvider),
+          savedWorkoutDao: ref.read(savedWorkoutDaoProvider),
+          savedWorkoutExerciseDao: ref.read(savedWorkoutExerciseDaoProvider),
+          savedWorkoutExerciseSetDao: ref.read(
+            savedWorkoutExerciseSetDaoProvider,
+          ),
+        );
+      });
+
+  static final workoutSessionRepositoryProvider =
+      Provider<WorkoutSessionRepository>((ref) {
+        return DriftWorkoutSessionRepository(
+          database: ref.read(appDatabaseProvider),
+          workoutSessionDao: ref.read(workoutSessionDaoProvider),
+          workoutSessionExerciseDao: ref.read(
+            workoutSessionExerciseDaoProvider,
+          ),
+          setLogDao: ref.read(setLogDaoProvider),
+        );
+      });
 }

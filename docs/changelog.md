@@ -4,6 +4,23 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-28
+
+### Implemented (V1-M4-001 — M4 persistence foundation: schema v8, 15 tables, 15 DAOs, 3 repos, domain models, provider wiring)
+
+- **Schema v8**: Added 15 new Drift tables (`programs`, `program_workout_templates`, `program_template_exercises`, `program_template_exercise_sets`, `program_weeks`, `program_workouts`, `program_exercises`, `program_exercise_sets`, `program_revisions`, `saved_workouts`, `saved_workout_exercises`, `saved_workout_exercise_sets`, `workout_sessions`, `workout_session_exercises`, `set_logs`) with v7→v8 migration (parent-first creation order).
+- **15 DAOs**: Full CRUD methods for each table including upsert, delete-by-parent, ordered queries.
+- **Domain models**: 11 draft/aggregate files across programmes, workout_builder, and workout_execution features.
+- **3 repository implementations**: `DriftProgrammeRepository` (template+expanded hierarchy save with child replacement, active program management, soft-delete with history check), `DriftSavedWorkoutRepository` (full CRUD with child replacement, history-safe delete), `DriftWorkoutSessionRepository` (session lifecycle: start/save/complete/abandon/delete with in-progress guard).
+- **Provider graph**: 15 DAO providers + 3 repository providers in `AppProviders`.
+- **Privacy updates**: Added M4-sensitive field keys to `Redaction._sensitiveFields` and `PrivacyClassifier._forbiddenFields`.
+- **Duplicate entries removed**: Cleaned up duplicated keys in `redaction.dart` and `privacy_classifier.dart` const sets.
+- **Cleanup**: Removed unnecessary casts in DAOs, unused imports/elements in repos, unused `Uuid`/`_newId()` helpers.
+- **Fixed expanded rows data integrity**: `_insertExpandedProgramRows` now copies template exercises and sets into `program_exercises`/`program_exercise_sets` per expanded workout. Previously rows were deleted but never repopulated, causing `_buildAggregate` to return empty lists.
+- **Fixed root upsert DAO methods**: `upsertProgram`, `upsertSavedWorkout`, `upsertSession` changed from plain `insert()` to `insert(mode: InsertMode.insertOrReplace)` to handle re-save of the same root id.
+- **Repository tests**: Added `test/features/programmes/data/drift_programme_repository_test.dart` with 6 tests covering CRUD, expanded rows round-trip, child replacement on re-save, archive, soft-delete, and activate/deactivate.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 612/612 passed.
+
 ## 2026-06-27
 
 ### Fixed (Test infrastructure — drift warning suppression, off-screen taps)
@@ -30,28 +47,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Batch 7 — AppFontSizes extended**: Added `xxs(10)`, `sm(14)`, `md(16)`, `lg(18)`, `xl(20)`, `xxl(24)`, `xxxl(28)`, `displaySm(32)`, `displayMd(40)`. Updated `AppTextStyles` and `AppTextStylesDark` to reference them.
 - **Batch 8 — Theme constants consolidated**: Moved `app_colors.dart` from `lib/app/theme/` to `lib/shared/theme/`. Updated `app_theme.dart` import.
 - Verification: `dart format` ✓ → `flutter analyze` ✓ 0 errors → `flutter test` ✓ 606/606 passing.
-
-## 2026-06-25
-
-### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
-
-- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
-- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
-- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
-- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
-- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
-- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
-- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
-- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
-- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
-- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
-- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
-- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
-- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
-- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
-- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
-
-## 2026-06-27
 
 ### Added (V1-M3-008 — Create onboarding/profile/BYOK privacy tests)
 
@@ -144,6 +139,26 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Redaction test**: Added `all block messages are safe AppStrings — no internal details leaked` test — verifies all 6 failure-path messages are known safe `AppStrings` constants with no forbidden patterns (provider/model names, API keys, file paths, error terminology).
 - **1 new test** — 504 total passing. No schema change (nullable column addition, no migration needed).
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 504/504 passed.
+
+## 2026-06-25
+
+### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
+
+- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
+- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
+- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
+- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
+- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
+- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
+- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
+- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
+- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
+- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
+- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
+- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
+- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
+- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
 
 ### Added (V1-M3-004 — Full BYOK Provider Setup Flow)
 

@@ -10366,6 +10366,16393 @@ class AiProviderConfigsCompanion extends UpdateCompanion<AiProviderConfig> {
   }
 }
 
+class $ProgramsTable extends Programs with TableInfo<$ProgramsTable, Program> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creationMethodMeta = const VerificationMeta(
+    'creationMethod',
+  );
+  @override
+  late final GeneratedColumn<String> creationMethod = GeneratedColumn<String>(
+    'creation_method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importOriginMeta = const VerificationMeta(
+    'importOrigin',
+  );
+  @override
+  late final GeneratedColumn<String> importOrigin = GeneratedColumn<String>(
+    'import_origin',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('draft'),
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _startDateLocalMeta = const VerificationMeta(
+    'startDateLocal',
+  );
+  @override
+  late final GeneratedColumn<String> startDateLocal = GeneratedColumn<String>(
+    'start_date_local',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endDateLocalMeta = const VerificationMeta(
+    'endDateLocal',
+  );
+  @override
+  late final GeneratedColumn<String> endDateLocal = GeneratedColumn<String>(
+    'end_date_local',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weeksTotalMeta = const VerificationMeta(
+    'weeksTotal',
+  );
+  @override
+  late final GeneratedColumn<int> weeksTotal = GeneratedColumn<int>(
+    'weeks_total',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _daysPerWeekMeta = const VerificationMeta(
+    'daysPerWeek',
+  );
+  @override
+  late final GeneratedColumn<int> daysPerWeek = GeneratedColumn<int>(
+    'days_per_week',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sessionLengthMinutesMeta =
+      const VerificationMeta('sessionLengthMinutes');
+  @override
+  late final GeneratedColumn<int> sessionLengthMinutes = GeneratedColumn<int>(
+    'session_length_minutes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _goalTagsJsonMeta = const VerificationMeta(
+    'goalTagsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalTagsJson = GeneratedColumn<String>(
+    'goal_tags_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _equipmentJsonMeta = const VerificationMeta(
+    'equipmentJson',
+  );
+  @override
+  late final GeneratedColumn<String> equipmentJson = GeneratedColumn<String>(
+    'equipment_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _experienceLevelAtCreationMeta =
+      const VerificationMeta('experienceLevelAtCreation');
+  @override
+  late final GeneratedColumn<String> experienceLevelAtCreation =
+      GeneratedColumn<String>(
+        'experience_level_at_creation',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _preferredUnitsAtCreationMeta =
+      const VerificationMeta('preferredUnitsAtCreation');
+  @override
+  late final GeneratedColumn<String> preferredUnitsAtCreation =
+      GeneratedColumn<String>(
+        'preferred_units_at_creation',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _periodisationModelMeta =
+      const VerificationMeta('periodisationModel');
+  @override
+  late final GeneratedColumn<String> periodisationModel =
+      GeneratedColumn<String>(
+        'periodisation_model',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _trainingStyleMeta = const VerificationMeta(
+    'trainingStyle',
+  );
+  @override
+  late final GeneratedColumn<String> trainingStyle = GeneratedColumn<String>(
+    'training_style',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenceStrategyMeta = const VerificationMeta(
+    'referenceStrategy',
+  );
+  @override
+  late final GeneratedColumn<String> referenceStrategy =
+      GeneratedColumn<String>(
+        'reference_strategy',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _blockTypeMeta = const VerificationMeta(
+    'blockType',
+  );
+  @override
+  late final GeneratedColumn<String> blockType = GeneratedColumn<String>(
+    'block_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _progressionRulesJsonMeta =
+      const VerificationMeta('progressionRulesJson');
+  @override
+  late final GeneratedColumn<String> progressionRulesJson =
+      GeneratedColumn<String>(
+        'progression_rules_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _deloadRulesJsonMeta = const VerificationMeta(
+    'deloadRulesJson',
+  );
+  @override
+  late final GeneratedColumn<String> deloadRulesJson = GeneratedColumn<String>(
+    'deload_rules_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _warmupPolicyJsonMeta = const VerificationMeta(
+    'warmupPolicyJson',
+  );
+  @override
+  late final GeneratedColumn<String> warmupPolicyJson = GeneratedColumn<String>(
+    'warmup_policy_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fatigueManagementJsonMeta =
+      const VerificationMeta('fatigueManagementJson');
+  @override
+  late final GeneratedColumn<String> fatigueManagementJson =
+      GeneratedColumn<String>(
+        'fatigue_management_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _aiGenerationSnapshotIdMeta =
+      const VerificationMeta('aiGenerationSnapshotId');
+  @override
+  late final GeneratedColumn<String> aiGenerationSnapshotId =
+      GeneratedColumn<String>(
+        'ai_generation_snapshot_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _aiOutputSchemaVersionMeta =
+      const VerificationMeta('aiOutputSchemaVersion');
+  @override
+  late final GeneratedColumn<int> aiOutputSchemaVersion = GeneratedColumn<int>(
+    'ai_output_schema_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importedMeta = const VerificationMeta(
+    'imported',
+  );
+  @override
+  late final GeneratedColumn<bool> imported = GeneratedColumn<bool>(
+    'imported',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("imported" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _importedAtMeta = const VerificationMeta(
+    'importedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> importedAt = GeneratedColumn<DateTime>(
+    'imported_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importSourceFileTypeMeta =
+      const VerificationMeta('importSourceFileType');
+  @override
+  late final GeneratedColumn<String> importSourceFileType =
+      GeneratedColumn<String>(
+        'import_source_file_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _importReviewStatusMeta =
+      const VerificationMeta('importReviewStatus');
+  @override
+  late final GeneratedColumn<String> importReviewStatus =
+      GeneratedColumn<String>(
+        'import_review_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _sourceFileRetainedMeta =
+      const VerificationMeta('sourceFileRetained');
+  @override
+  late final GeneratedColumn<bool> sourceFileRetained = GeneratedColumn<bool>(
+    'source_file_retained',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("source_file_retained" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _shareSchemaVersionMeta =
+      const VerificationMeta('shareSchemaVersion');
+  @override
+  late final GeneratedColumn<int> shareSchemaVersion = GeneratedColumn<int>(
+    'share_schema_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _externalShareIdMeta = const VerificationMeta(
+    'externalShareId',
+  );
+  @override
+  late final GeneratedColumn<String> externalShareId = GeneratedColumn<String>(
+    'external_share_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exportPrivacyModeMeta = const VerificationMeta(
+    'exportPrivacyMode',
+  );
+  @override
+  late final GeneratedColumn<String> exportPrivacyMode =
+      GeneratedColumn<String>(
+        'export_privacy_mode',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _archivedAtMeta = const VerificationMeta(
+    'archivedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> archivedAt = GeneratedColumn<DateTime>(
+    'archived_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    description,
+    source,
+    creationMethod,
+    importOrigin,
+    status,
+    active,
+    startDateLocal,
+    endDateLocal,
+    weeksTotal,
+    daysPerWeek,
+    sessionLengthMinutes,
+    goalTagsJson,
+    equipmentJson,
+    experienceLevelAtCreation,
+    preferredUnitsAtCreation,
+    periodisationModel,
+    trainingStyle,
+    referenceStrategy,
+    blockType,
+    progressionRulesJson,
+    deloadRulesJson,
+    warmupPolicyJson,
+    fatigueManagementJson,
+    aiGenerationSnapshotId,
+    aiOutputSchemaVersion,
+    imported,
+    importedAt,
+    importSourceFileType,
+    importReviewStatus,
+    sourceFileRetained,
+    shareSchemaVersion,
+    externalShareId,
+    exportPrivacyMode,
+    createdAt,
+    updatedAt,
+    archivedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'programs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Program> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('creation_method')) {
+      context.handle(
+        _creationMethodMeta,
+        creationMethod.isAcceptableOrUnknown(
+          data['creation_method']!,
+          _creationMethodMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_creationMethodMeta);
+    }
+    if (data.containsKey('import_origin')) {
+      context.handle(
+        _importOriginMeta,
+        importOrigin.isAcceptableOrUnknown(
+          data['import_origin']!,
+          _importOriginMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    if (data.containsKey('start_date_local')) {
+      context.handle(
+        _startDateLocalMeta,
+        startDateLocal.isAcceptableOrUnknown(
+          data['start_date_local']!,
+          _startDateLocalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('end_date_local')) {
+      context.handle(
+        _endDateLocalMeta,
+        endDateLocal.isAcceptableOrUnknown(
+          data['end_date_local']!,
+          _endDateLocalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weeks_total')) {
+      context.handle(
+        _weeksTotalMeta,
+        weeksTotal.isAcceptableOrUnknown(data['weeks_total']!, _weeksTotalMeta),
+      );
+    }
+    if (data.containsKey('days_per_week')) {
+      context.handle(
+        _daysPerWeekMeta,
+        daysPerWeek.isAcceptableOrUnknown(
+          data['days_per_week']!,
+          _daysPerWeekMeta,
+        ),
+      );
+    }
+    if (data.containsKey('session_length_minutes')) {
+      context.handle(
+        _sessionLengthMinutesMeta,
+        sessionLengthMinutes.isAcceptableOrUnknown(
+          data['session_length_minutes']!,
+          _sessionLengthMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goal_tags_json')) {
+      context.handle(
+        _goalTagsJsonMeta,
+        goalTagsJson.isAcceptableOrUnknown(
+          data['goal_tags_json']!,
+          _goalTagsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('equipment_json')) {
+      context.handle(
+        _equipmentJsonMeta,
+        equipmentJson.isAcceptableOrUnknown(
+          data['equipment_json']!,
+          _equipmentJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('experience_level_at_creation')) {
+      context.handle(
+        _experienceLevelAtCreationMeta,
+        experienceLevelAtCreation.isAcceptableOrUnknown(
+          data['experience_level_at_creation']!,
+          _experienceLevelAtCreationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('preferred_units_at_creation')) {
+      context.handle(
+        _preferredUnitsAtCreationMeta,
+        preferredUnitsAtCreation.isAcceptableOrUnknown(
+          data['preferred_units_at_creation']!,
+          _preferredUnitsAtCreationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('periodisation_model')) {
+      context.handle(
+        _periodisationModelMeta,
+        periodisationModel.isAcceptableOrUnknown(
+          data['periodisation_model']!,
+          _periodisationModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('training_style')) {
+      context.handle(
+        _trainingStyleMeta,
+        trainingStyle.isAcceptableOrUnknown(
+          data['training_style']!,
+          _trainingStyleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_strategy')) {
+      context.handle(
+        _referenceStrategyMeta,
+        referenceStrategy.isAcceptableOrUnknown(
+          data['reference_strategy']!,
+          _referenceStrategyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('block_type')) {
+      context.handle(
+        _blockTypeMeta,
+        blockType.isAcceptableOrUnknown(data['block_type']!, _blockTypeMeta),
+      );
+    }
+    if (data.containsKey('progression_rules_json')) {
+      context.handle(
+        _progressionRulesJsonMeta,
+        progressionRulesJson.isAcceptableOrUnknown(
+          data['progression_rules_json']!,
+          _progressionRulesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deload_rules_json')) {
+      context.handle(
+        _deloadRulesJsonMeta,
+        deloadRulesJson.isAcceptableOrUnknown(
+          data['deload_rules_json']!,
+          _deloadRulesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('warmup_policy_json')) {
+      context.handle(
+        _warmupPolicyJsonMeta,
+        warmupPolicyJson.isAcceptableOrUnknown(
+          data['warmup_policy_json']!,
+          _warmupPolicyJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fatigue_management_json')) {
+      context.handle(
+        _fatigueManagementJsonMeta,
+        fatigueManagementJson.isAcceptableOrUnknown(
+          data['fatigue_management_json']!,
+          _fatigueManagementJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ai_generation_snapshot_id')) {
+      context.handle(
+        _aiGenerationSnapshotIdMeta,
+        aiGenerationSnapshotId.isAcceptableOrUnknown(
+          data['ai_generation_snapshot_id']!,
+          _aiGenerationSnapshotIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ai_output_schema_version')) {
+      context.handle(
+        _aiOutputSchemaVersionMeta,
+        aiOutputSchemaVersion.isAcceptableOrUnknown(
+          data['ai_output_schema_version']!,
+          _aiOutputSchemaVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('imported')) {
+      context.handle(
+        _importedMeta,
+        imported.isAcceptableOrUnknown(data['imported']!, _importedMeta),
+      );
+    }
+    if (data.containsKey('imported_at')) {
+      context.handle(
+        _importedAtMeta,
+        importedAt.isAcceptableOrUnknown(data['imported_at']!, _importedAtMeta),
+      );
+    }
+    if (data.containsKey('import_source_file_type')) {
+      context.handle(
+        _importSourceFileTypeMeta,
+        importSourceFileType.isAcceptableOrUnknown(
+          data['import_source_file_type']!,
+          _importSourceFileTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('import_review_status')) {
+      context.handle(
+        _importReviewStatusMeta,
+        importReviewStatus.isAcceptableOrUnknown(
+          data['import_review_status']!,
+          _importReviewStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source_file_retained')) {
+      context.handle(
+        _sourceFileRetainedMeta,
+        sourceFileRetained.isAcceptableOrUnknown(
+          data['source_file_retained']!,
+          _sourceFileRetainedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('share_schema_version')) {
+      context.handle(
+        _shareSchemaVersionMeta,
+        shareSchemaVersion.isAcceptableOrUnknown(
+          data['share_schema_version']!,
+          _shareSchemaVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('external_share_id')) {
+      context.handle(
+        _externalShareIdMeta,
+        externalShareId.isAcceptableOrUnknown(
+          data['external_share_id']!,
+          _externalShareIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('export_privacy_mode')) {
+      context.handle(
+        _exportPrivacyModeMeta,
+        exportPrivacyMode.isAcceptableOrUnknown(
+          data['export_privacy_mode']!,
+          _exportPrivacyModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('archived_at')) {
+      context.handle(
+        _archivedAtMeta,
+        archivedAt.isAcceptableOrUnknown(data['archived_at']!, _archivedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Program map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Program(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      creationMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creation_method'],
+      )!,
+      importOrigin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_origin'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+      startDateLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}start_date_local'],
+      ),
+      endDateLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}end_date_local'],
+      ),
+      weeksTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weeks_total'],
+      ),
+      daysPerWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}days_per_week'],
+      ),
+      sessionLengthMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_length_minutes'],
+      ),
+      goalTagsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goal_tags_json'],
+      )!,
+      equipmentJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipment_json'],
+      )!,
+      experienceLevelAtCreation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_level_at_creation'],
+      ),
+      preferredUnitsAtCreation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_units_at_creation'],
+      ),
+      periodisationModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}periodisation_model'],
+      ),
+      trainingStyle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}training_style'],
+      ),
+      referenceStrategy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_strategy'],
+      ),
+      blockType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}block_type'],
+      ),
+      progressionRulesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}progression_rules_json'],
+      ),
+      deloadRulesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deload_rules_json'],
+      ),
+      warmupPolicyJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}warmup_policy_json'],
+      ),
+      fatigueManagementJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fatigue_management_json'],
+      ),
+      aiGenerationSnapshotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ai_generation_snapshot_id'],
+      ),
+      aiOutputSchemaVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ai_output_schema_version'],
+      ),
+      imported: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}imported'],
+      )!,
+      importedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}imported_at'],
+      ),
+      importSourceFileType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_source_file_type'],
+      ),
+      importReviewStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_review_status'],
+      ),
+      sourceFileRetained: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}source_file_retained'],
+      )!,
+      shareSchemaVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}share_schema_version'],
+      ),
+      externalShareId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_share_id'],
+      ),
+      exportPrivacyMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}export_privacy_mode'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      archivedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}archived_at'],
+      ),
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $ProgramsTable createAlias(String alias) {
+    return $ProgramsTable(attachedDatabase, alias);
+  }
+}
+
+class Program extends DataClass implements Insertable<Program> {
+  final String id;
+  final String name;
+  final String? description;
+  final String source;
+  final String creationMethod;
+  final String? importOrigin;
+  final String status;
+  final bool active;
+  final String? startDateLocal;
+  final String? endDateLocal;
+  final int? weeksTotal;
+  final int? daysPerWeek;
+  final int? sessionLengthMinutes;
+  final String goalTagsJson;
+  final String equipmentJson;
+  final String? experienceLevelAtCreation;
+  final String? preferredUnitsAtCreation;
+  final String? periodisationModel;
+  final String? trainingStyle;
+  final String? referenceStrategy;
+  final String? blockType;
+  final String? progressionRulesJson;
+  final String? deloadRulesJson;
+  final String? warmupPolicyJson;
+  final String? fatigueManagementJson;
+  final String? aiGenerationSnapshotId;
+  final int? aiOutputSchemaVersion;
+  final bool imported;
+  final DateTime? importedAt;
+  final String? importSourceFileType;
+  final String? importReviewStatus;
+  final bool sourceFileRetained;
+  final int? shareSchemaVersion;
+  final String? externalShareId;
+  final String? exportPrivacyMode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? archivedAt;
+  final DateTime? deletedAt;
+  const Program({
+    required this.id,
+    required this.name,
+    this.description,
+    required this.source,
+    required this.creationMethod,
+    this.importOrigin,
+    required this.status,
+    required this.active,
+    this.startDateLocal,
+    this.endDateLocal,
+    this.weeksTotal,
+    this.daysPerWeek,
+    this.sessionLengthMinutes,
+    required this.goalTagsJson,
+    required this.equipmentJson,
+    this.experienceLevelAtCreation,
+    this.preferredUnitsAtCreation,
+    this.periodisationModel,
+    this.trainingStyle,
+    this.referenceStrategy,
+    this.blockType,
+    this.progressionRulesJson,
+    this.deloadRulesJson,
+    this.warmupPolicyJson,
+    this.fatigueManagementJson,
+    this.aiGenerationSnapshotId,
+    this.aiOutputSchemaVersion,
+    required this.imported,
+    this.importedAt,
+    this.importSourceFileType,
+    this.importReviewStatus,
+    required this.sourceFileRetained,
+    this.shareSchemaVersion,
+    this.externalShareId,
+    this.exportPrivacyMode,
+    required this.createdAt,
+    required this.updatedAt,
+    this.archivedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['source'] = Variable<String>(source);
+    map['creation_method'] = Variable<String>(creationMethod);
+    if (!nullToAbsent || importOrigin != null) {
+      map['import_origin'] = Variable<String>(importOrigin);
+    }
+    map['status'] = Variable<String>(status);
+    map['active'] = Variable<bool>(active);
+    if (!nullToAbsent || startDateLocal != null) {
+      map['start_date_local'] = Variable<String>(startDateLocal);
+    }
+    if (!nullToAbsent || endDateLocal != null) {
+      map['end_date_local'] = Variable<String>(endDateLocal);
+    }
+    if (!nullToAbsent || weeksTotal != null) {
+      map['weeks_total'] = Variable<int>(weeksTotal);
+    }
+    if (!nullToAbsent || daysPerWeek != null) {
+      map['days_per_week'] = Variable<int>(daysPerWeek);
+    }
+    if (!nullToAbsent || sessionLengthMinutes != null) {
+      map['session_length_minutes'] = Variable<int>(sessionLengthMinutes);
+    }
+    map['goal_tags_json'] = Variable<String>(goalTagsJson);
+    map['equipment_json'] = Variable<String>(equipmentJson);
+    if (!nullToAbsent || experienceLevelAtCreation != null) {
+      map['experience_level_at_creation'] = Variable<String>(
+        experienceLevelAtCreation,
+      );
+    }
+    if (!nullToAbsent || preferredUnitsAtCreation != null) {
+      map['preferred_units_at_creation'] = Variable<String>(
+        preferredUnitsAtCreation,
+      );
+    }
+    if (!nullToAbsent || periodisationModel != null) {
+      map['periodisation_model'] = Variable<String>(periodisationModel);
+    }
+    if (!nullToAbsent || trainingStyle != null) {
+      map['training_style'] = Variable<String>(trainingStyle);
+    }
+    if (!nullToAbsent || referenceStrategy != null) {
+      map['reference_strategy'] = Variable<String>(referenceStrategy);
+    }
+    if (!nullToAbsent || blockType != null) {
+      map['block_type'] = Variable<String>(blockType);
+    }
+    if (!nullToAbsent || progressionRulesJson != null) {
+      map['progression_rules_json'] = Variable<String>(progressionRulesJson);
+    }
+    if (!nullToAbsent || deloadRulesJson != null) {
+      map['deload_rules_json'] = Variable<String>(deloadRulesJson);
+    }
+    if (!nullToAbsent || warmupPolicyJson != null) {
+      map['warmup_policy_json'] = Variable<String>(warmupPolicyJson);
+    }
+    if (!nullToAbsent || fatigueManagementJson != null) {
+      map['fatigue_management_json'] = Variable<String>(fatigueManagementJson);
+    }
+    if (!nullToAbsent || aiGenerationSnapshotId != null) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId,
+      );
+    }
+    if (!nullToAbsent || aiOutputSchemaVersion != null) {
+      map['ai_output_schema_version'] = Variable<int>(aiOutputSchemaVersion);
+    }
+    map['imported'] = Variable<bool>(imported);
+    if (!nullToAbsent || importedAt != null) {
+      map['imported_at'] = Variable<DateTime>(importedAt);
+    }
+    if (!nullToAbsent || importSourceFileType != null) {
+      map['import_source_file_type'] = Variable<String>(importSourceFileType);
+    }
+    if (!nullToAbsent || importReviewStatus != null) {
+      map['import_review_status'] = Variable<String>(importReviewStatus);
+    }
+    map['source_file_retained'] = Variable<bool>(sourceFileRetained);
+    if (!nullToAbsent || shareSchemaVersion != null) {
+      map['share_schema_version'] = Variable<int>(shareSchemaVersion);
+    }
+    if (!nullToAbsent || externalShareId != null) {
+      map['external_share_id'] = Variable<String>(externalShareId);
+    }
+    if (!nullToAbsent || exportPrivacyMode != null) {
+      map['export_privacy_mode'] = Variable<String>(exportPrivacyMode);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || archivedAt != null) {
+      map['archived_at'] = Variable<DateTime>(archivedAt);
+    }
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  ProgramsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      source: Value(source),
+      creationMethod: Value(creationMethod),
+      importOrigin: importOrigin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importOrigin),
+      status: Value(status),
+      active: Value(active),
+      startDateLocal: startDateLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startDateLocal),
+      endDateLocal: endDateLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDateLocal),
+      weeksTotal: weeksTotal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weeksTotal),
+      daysPerWeek: daysPerWeek == null && nullToAbsent
+          ? const Value.absent()
+          : Value(daysPerWeek),
+      sessionLengthMinutes: sessionLengthMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionLengthMinutes),
+      goalTagsJson: Value(goalTagsJson),
+      equipmentJson: Value(equipmentJson),
+      experienceLevelAtCreation:
+          experienceLevelAtCreation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(experienceLevelAtCreation),
+      preferredUnitsAtCreation: preferredUnitsAtCreation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preferredUnitsAtCreation),
+      periodisationModel: periodisationModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(periodisationModel),
+      trainingStyle: trainingStyle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trainingStyle),
+      referenceStrategy: referenceStrategy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceStrategy),
+      blockType: blockType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(blockType),
+      progressionRulesJson: progressionRulesJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progressionRulesJson),
+      deloadRulesJson: deloadRulesJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deloadRulesJson),
+      warmupPolicyJson: warmupPolicyJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(warmupPolicyJson),
+      fatigueManagementJson: fatigueManagementJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fatigueManagementJson),
+      aiGenerationSnapshotId: aiGenerationSnapshotId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiGenerationSnapshotId),
+      aiOutputSchemaVersion: aiOutputSchemaVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiOutputSchemaVersion),
+      imported: Value(imported),
+      importedAt: importedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importedAt),
+      importSourceFileType: importSourceFileType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importSourceFileType),
+      importReviewStatus: importReviewStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importReviewStatus),
+      sourceFileRetained: Value(sourceFileRetained),
+      shareSchemaVersion: shareSchemaVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shareSchemaVersion),
+      externalShareId: externalShareId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalShareId),
+      exportPrivacyMode: exportPrivacyMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exportPrivacyMode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      archivedAt: archivedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(archivedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory Program.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Program(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      source: serializer.fromJson<String>(json['source']),
+      creationMethod: serializer.fromJson<String>(json['creationMethod']),
+      importOrigin: serializer.fromJson<String?>(json['importOrigin']),
+      status: serializer.fromJson<String>(json['status']),
+      active: serializer.fromJson<bool>(json['active']),
+      startDateLocal: serializer.fromJson<String?>(json['startDateLocal']),
+      endDateLocal: serializer.fromJson<String?>(json['endDateLocal']),
+      weeksTotal: serializer.fromJson<int?>(json['weeksTotal']),
+      daysPerWeek: serializer.fromJson<int?>(json['daysPerWeek']),
+      sessionLengthMinutes: serializer.fromJson<int?>(
+        json['sessionLengthMinutes'],
+      ),
+      goalTagsJson: serializer.fromJson<String>(json['goalTagsJson']),
+      equipmentJson: serializer.fromJson<String>(json['equipmentJson']),
+      experienceLevelAtCreation: serializer.fromJson<String?>(
+        json['experienceLevelAtCreation'],
+      ),
+      preferredUnitsAtCreation: serializer.fromJson<String?>(
+        json['preferredUnitsAtCreation'],
+      ),
+      periodisationModel: serializer.fromJson<String?>(
+        json['periodisationModel'],
+      ),
+      trainingStyle: serializer.fromJson<String?>(json['trainingStyle']),
+      referenceStrategy: serializer.fromJson<String?>(
+        json['referenceStrategy'],
+      ),
+      blockType: serializer.fromJson<String?>(json['blockType']),
+      progressionRulesJson: serializer.fromJson<String?>(
+        json['progressionRulesJson'],
+      ),
+      deloadRulesJson: serializer.fromJson<String?>(json['deloadRulesJson']),
+      warmupPolicyJson: serializer.fromJson<String?>(json['warmupPolicyJson']),
+      fatigueManagementJson: serializer.fromJson<String?>(
+        json['fatigueManagementJson'],
+      ),
+      aiGenerationSnapshotId: serializer.fromJson<String?>(
+        json['aiGenerationSnapshotId'],
+      ),
+      aiOutputSchemaVersion: serializer.fromJson<int?>(
+        json['aiOutputSchemaVersion'],
+      ),
+      imported: serializer.fromJson<bool>(json['imported']),
+      importedAt: serializer.fromJson<DateTime?>(json['importedAt']),
+      importSourceFileType: serializer.fromJson<String?>(
+        json['importSourceFileType'],
+      ),
+      importReviewStatus: serializer.fromJson<String?>(
+        json['importReviewStatus'],
+      ),
+      sourceFileRetained: serializer.fromJson<bool>(json['sourceFileRetained']),
+      shareSchemaVersion: serializer.fromJson<int?>(json['shareSchemaVersion']),
+      externalShareId: serializer.fromJson<String?>(json['externalShareId']),
+      exportPrivacyMode: serializer.fromJson<String?>(
+        json['exportPrivacyMode'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      archivedAt: serializer.fromJson<DateTime?>(json['archivedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'source': serializer.toJson<String>(source),
+      'creationMethod': serializer.toJson<String>(creationMethod),
+      'importOrigin': serializer.toJson<String?>(importOrigin),
+      'status': serializer.toJson<String>(status),
+      'active': serializer.toJson<bool>(active),
+      'startDateLocal': serializer.toJson<String?>(startDateLocal),
+      'endDateLocal': serializer.toJson<String?>(endDateLocal),
+      'weeksTotal': serializer.toJson<int?>(weeksTotal),
+      'daysPerWeek': serializer.toJson<int?>(daysPerWeek),
+      'sessionLengthMinutes': serializer.toJson<int?>(sessionLengthMinutes),
+      'goalTagsJson': serializer.toJson<String>(goalTagsJson),
+      'equipmentJson': serializer.toJson<String>(equipmentJson),
+      'experienceLevelAtCreation': serializer.toJson<String?>(
+        experienceLevelAtCreation,
+      ),
+      'preferredUnitsAtCreation': serializer.toJson<String?>(
+        preferredUnitsAtCreation,
+      ),
+      'periodisationModel': serializer.toJson<String?>(periodisationModel),
+      'trainingStyle': serializer.toJson<String?>(trainingStyle),
+      'referenceStrategy': serializer.toJson<String?>(referenceStrategy),
+      'blockType': serializer.toJson<String?>(blockType),
+      'progressionRulesJson': serializer.toJson<String?>(progressionRulesJson),
+      'deloadRulesJson': serializer.toJson<String?>(deloadRulesJson),
+      'warmupPolicyJson': serializer.toJson<String?>(warmupPolicyJson),
+      'fatigueManagementJson': serializer.toJson<String?>(
+        fatigueManagementJson,
+      ),
+      'aiGenerationSnapshotId': serializer.toJson<String?>(
+        aiGenerationSnapshotId,
+      ),
+      'aiOutputSchemaVersion': serializer.toJson<int?>(aiOutputSchemaVersion),
+      'imported': serializer.toJson<bool>(imported),
+      'importedAt': serializer.toJson<DateTime?>(importedAt),
+      'importSourceFileType': serializer.toJson<String?>(importSourceFileType),
+      'importReviewStatus': serializer.toJson<String?>(importReviewStatus),
+      'sourceFileRetained': serializer.toJson<bool>(sourceFileRetained),
+      'shareSchemaVersion': serializer.toJson<int?>(shareSchemaVersion),
+      'externalShareId': serializer.toJson<String?>(externalShareId),
+      'exportPrivacyMode': serializer.toJson<String?>(exportPrivacyMode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'archivedAt': serializer.toJson<DateTime?>(archivedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  Program copyWith({
+    String? id,
+    String? name,
+    Value<String?> description = const Value.absent(),
+    String? source,
+    String? creationMethod,
+    Value<String?> importOrigin = const Value.absent(),
+    String? status,
+    bool? active,
+    Value<String?> startDateLocal = const Value.absent(),
+    Value<String?> endDateLocal = const Value.absent(),
+    Value<int?> weeksTotal = const Value.absent(),
+    Value<int?> daysPerWeek = const Value.absent(),
+    Value<int?> sessionLengthMinutes = const Value.absent(),
+    String? goalTagsJson,
+    String? equipmentJson,
+    Value<String?> experienceLevelAtCreation = const Value.absent(),
+    Value<String?> preferredUnitsAtCreation = const Value.absent(),
+    Value<String?> periodisationModel = const Value.absent(),
+    Value<String?> trainingStyle = const Value.absent(),
+    Value<String?> referenceStrategy = const Value.absent(),
+    Value<String?> blockType = const Value.absent(),
+    Value<String?> progressionRulesJson = const Value.absent(),
+    Value<String?> deloadRulesJson = const Value.absent(),
+    Value<String?> warmupPolicyJson = const Value.absent(),
+    Value<String?> fatigueManagementJson = const Value.absent(),
+    Value<String?> aiGenerationSnapshotId = const Value.absent(),
+    Value<int?> aiOutputSchemaVersion = const Value.absent(),
+    bool? imported,
+    Value<DateTime?> importedAt = const Value.absent(),
+    Value<String?> importSourceFileType = const Value.absent(),
+    Value<String?> importReviewStatus = const Value.absent(),
+    bool? sourceFileRetained,
+    Value<int?> shareSchemaVersion = const Value.absent(),
+    Value<String?> externalShareId = const Value.absent(),
+    Value<String?> exportPrivacyMode = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> archivedAt = const Value.absent(),
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => Program(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    description: description.present ? description.value : this.description,
+    source: source ?? this.source,
+    creationMethod: creationMethod ?? this.creationMethod,
+    importOrigin: importOrigin.present ? importOrigin.value : this.importOrigin,
+    status: status ?? this.status,
+    active: active ?? this.active,
+    startDateLocal: startDateLocal.present
+        ? startDateLocal.value
+        : this.startDateLocal,
+    endDateLocal: endDateLocal.present ? endDateLocal.value : this.endDateLocal,
+    weeksTotal: weeksTotal.present ? weeksTotal.value : this.weeksTotal,
+    daysPerWeek: daysPerWeek.present ? daysPerWeek.value : this.daysPerWeek,
+    sessionLengthMinutes: sessionLengthMinutes.present
+        ? sessionLengthMinutes.value
+        : this.sessionLengthMinutes,
+    goalTagsJson: goalTagsJson ?? this.goalTagsJson,
+    equipmentJson: equipmentJson ?? this.equipmentJson,
+    experienceLevelAtCreation: experienceLevelAtCreation.present
+        ? experienceLevelAtCreation.value
+        : this.experienceLevelAtCreation,
+    preferredUnitsAtCreation: preferredUnitsAtCreation.present
+        ? preferredUnitsAtCreation.value
+        : this.preferredUnitsAtCreation,
+    periodisationModel: periodisationModel.present
+        ? periodisationModel.value
+        : this.periodisationModel,
+    trainingStyle: trainingStyle.present
+        ? trainingStyle.value
+        : this.trainingStyle,
+    referenceStrategy: referenceStrategy.present
+        ? referenceStrategy.value
+        : this.referenceStrategy,
+    blockType: blockType.present ? blockType.value : this.blockType,
+    progressionRulesJson: progressionRulesJson.present
+        ? progressionRulesJson.value
+        : this.progressionRulesJson,
+    deloadRulesJson: deloadRulesJson.present
+        ? deloadRulesJson.value
+        : this.deloadRulesJson,
+    warmupPolicyJson: warmupPolicyJson.present
+        ? warmupPolicyJson.value
+        : this.warmupPolicyJson,
+    fatigueManagementJson: fatigueManagementJson.present
+        ? fatigueManagementJson.value
+        : this.fatigueManagementJson,
+    aiGenerationSnapshotId: aiGenerationSnapshotId.present
+        ? aiGenerationSnapshotId.value
+        : this.aiGenerationSnapshotId,
+    aiOutputSchemaVersion: aiOutputSchemaVersion.present
+        ? aiOutputSchemaVersion.value
+        : this.aiOutputSchemaVersion,
+    imported: imported ?? this.imported,
+    importedAt: importedAt.present ? importedAt.value : this.importedAt,
+    importSourceFileType: importSourceFileType.present
+        ? importSourceFileType.value
+        : this.importSourceFileType,
+    importReviewStatus: importReviewStatus.present
+        ? importReviewStatus.value
+        : this.importReviewStatus,
+    sourceFileRetained: sourceFileRetained ?? this.sourceFileRetained,
+    shareSchemaVersion: shareSchemaVersion.present
+        ? shareSchemaVersion.value
+        : this.shareSchemaVersion,
+    externalShareId: externalShareId.present
+        ? externalShareId.value
+        : this.externalShareId,
+    exportPrivacyMode: exportPrivacyMode.present
+        ? exportPrivacyMode.value
+        : this.exportPrivacyMode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    archivedAt: archivedAt.present ? archivedAt.value : this.archivedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  Program copyWithCompanion(ProgramsCompanion data) {
+    return Program(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      source: data.source.present ? data.source.value : this.source,
+      creationMethod: data.creationMethod.present
+          ? data.creationMethod.value
+          : this.creationMethod,
+      importOrigin: data.importOrigin.present
+          ? data.importOrigin.value
+          : this.importOrigin,
+      status: data.status.present ? data.status.value : this.status,
+      active: data.active.present ? data.active.value : this.active,
+      startDateLocal: data.startDateLocal.present
+          ? data.startDateLocal.value
+          : this.startDateLocal,
+      endDateLocal: data.endDateLocal.present
+          ? data.endDateLocal.value
+          : this.endDateLocal,
+      weeksTotal: data.weeksTotal.present
+          ? data.weeksTotal.value
+          : this.weeksTotal,
+      daysPerWeek: data.daysPerWeek.present
+          ? data.daysPerWeek.value
+          : this.daysPerWeek,
+      sessionLengthMinutes: data.sessionLengthMinutes.present
+          ? data.sessionLengthMinutes.value
+          : this.sessionLengthMinutes,
+      goalTagsJson: data.goalTagsJson.present
+          ? data.goalTagsJson.value
+          : this.goalTagsJson,
+      equipmentJson: data.equipmentJson.present
+          ? data.equipmentJson.value
+          : this.equipmentJson,
+      experienceLevelAtCreation: data.experienceLevelAtCreation.present
+          ? data.experienceLevelAtCreation.value
+          : this.experienceLevelAtCreation,
+      preferredUnitsAtCreation: data.preferredUnitsAtCreation.present
+          ? data.preferredUnitsAtCreation.value
+          : this.preferredUnitsAtCreation,
+      periodisationModel: data.periodisationModel.present
+          ? data.periodisationModel.value
+          : this.periodisationModel,
+      trainingStyle: data.trainingStyle.present
+          ? data.trainingStyle.value
+          : this.trainingStyle,
+      referenceStrategy: data.referenceStrategy.present
+          ? data.referenceStrategy.value
+          : this.referenceStrategy,
+      blockType: data.blockType.present ? data.blockType.value : this.blockType,
+      progressionRulesJson: data.progressionRulesJson.present
+          ? data.progressionRulesJson.value
+          : this.progressionRulesJson,
+      deloadRulesJson: data.deloadRulesJson.present
+          ? data.deloadRulesJson.value
+          : this.deloadRulesJson,
+      warmupPolicyJson: data.warmupPolicyJson.present
+          ? data.warmupPolicyJson.value
+          : this.warmupPolicyJson,
+      fatigueManagementJson: data.fatigueManagementJson.present
+          ? data.fatigueManagementJson.value
+          : this.fatigueManagementJson,
+      aiGenerationSnapshotId: data.aiGenerationSnapshotId.present
+          ? data.aiGenerationSnapshotId.value
+          : this.aiGenerationSnapshotId,
+      aiOutputSchemaVersion: data.aiOutputSchemaVersion.present
+          ? data.aiOutputSchemaVersion.value
+          : this.aiOutputSchemaVersion,
+      imported: data.imported.present ? data.imported.value : this.imported,
+      importedAt: data.importedAt.present
+          ? data.importedAt.value
+          : this.importedAt,
+      importSourceFileType: data.importSourceFileType.present
+          ? data.importSourceFileType.value
+          : this.importSourceFileType,
+      importReviewStatus: data.importReviewStatus.present
+          ? data.importReviewStatus.value
+          : this.importReviewStatus,
+      sourceFileRetained: data.sourceFileRetained.present
+          ? data.sourceFileRetained.value
+          : this.sourceFileRetained,
+      shareSchemaVersion: data.shareSchemaVersion.present
+          ? data.shareSchemaVersion.value
+          : this.shareSchemaVersion,
+      externalShareId: data.externalShareId.present
+          ? data.externalShareId.value
+          : this.externalShareId,
+      exportPrivacyMode: data.exportPrivacyMode.present
+          ? data.exportPrivacyMode.value
+          : this.exportPrivacyMode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      archivedAt: data.archivedAt.present
+          ? data.archivedAt.value
+          : this.archivedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Program(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('source: $source, ')
+          ..write('creationMethod: $creationMethod, ')
+          ..write('importOrigin: $importOrigin, ')
+          ..write('status: $status, ')
+          ..write('active: $active, ')
+          ..write('startDateLocal: $startDateLocal, ')
+          ..write('endDateLocal: $endDateLocal, ')
+          ..write('weeksTotal: $weeksTotal, ')
+          ..write('daysPerWeek: $daysPerWeek, ')
+          ..write('sessionLengthMinutes: $sessionLengthMinutes, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
+          ..write('equipmentJson: $equipmentJson, ')
+          ..write('experienceLevelAtCreation: $experienceLevelAtCreation, ')
+          ..write('preferredUnitsAtCreation: $preferredUnitsAtCreation, ')
+          ..write('periodisationModel: $periodisationModel, ')
+          ..write('trainingStyle: $trainingStyle, ')
+          ..write('referenceStrategy: $referenceStrategy, ')
+          ..write('blockType: $blockType, ')
+          ..write('progressionRulesJson: $progressionRulesJson, ')
+          ..write('deloadRulesJson: $deloadRulesJson, ')
+          ..write('warmupPolicyJson: $warmupPolicyJson, ')
+          ..write('fatigueManagementJson: $fatigueManagementJson, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('aiOutputSchemaVersion: $aiOutputSchemaVersion, ')
+          ..write('imported: $imported, ')
+          ..write('importedAt: $importedAt, ')
+          ..write('importSourceFileType: $importSourceFileType, ')
+          ..write('importReviewStatus: $importReviewStatus, ')
+          ..write('sourceFileRetained: $sourceFileRetained, ')
+          ..write('shareSchemaVersion: $shareSchemaVersion, ')
+          ..write('externalShareId: $externalShareId, ')
+          ..write('exportPrivacyMode: $exportPrivacyMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('archivedAt: $archivedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    name,
+    description,
+    source,
+    creationMethod,
+    importOrigin,
+    status,
+    active,
+    startDateLocal,
+    endDateLocal,
+    weeksTotal,
+    daysPerWeek,
+    sessionLengthMinutes,
+    goalTagsJson,
+    equipmentJson,
+    experienceLevelAtCreation,
+    preferredUnitsAtCreation,
+    periodisationModel,
+    trainingStyle,
+    referenceStrategy,
+    blockType,
+    progressionRulesJson,
+    deloadRulesJson,
+    warmupPolicyJson,
+    fatigueManagementJson,
+    aiGenerationSnapshotId,
+    aiOutputSchemaVersion,
+    imported,
+    importedAt,
+    importSourceFileType,
+    importReviewStatus,
+    sourceFileRetained,
+    shareSchemaVersion,
+    externalShareId,
+    exportPrivacyMode,
+    createdAt,
+    updatedAt,
+    archivedAt,
+    deletedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Program &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.source == this.source &&
+          other.creationMethod == this.creationMethod &&
+          other.importOrigin == this.importOrigin &&
+          other.status == this.status &&
+          other.active == this.active &&
+          other.startDateLocal == this.startDateLocal &&
+          other.endDateLocal == this.endDateLocal &&
+          other.weeksTotal == this.weeksTotal &&
+          other.daysPerWeek == this.daysPerWeek &&
+          other.sessionLengthMinutes == this.sessionLengthMinutes &&
+          other.goalTagsJson == this.goalTagsJson &&
+          other.equipmentJson == this.equipmentJson &&
+          other.experienceLevelAtCreation == this.experienceLevelAtCreation &&
+          other.preferredUnitsAtCreation == this.preferredUnitsAtCreation &&
+          other.periodisationModel == this.periodisationModel &&
+          other.trainingStyle == this.trainingStyle &&
+          other.referenceStrategy == this.referenceStrategy &&
+          other.blockType == this.blockType &&
+          other.progressionRulesJson == this.progressionRulesJson &&
+          other.deloadRulesJson == this.deloadRulesJson &&
+          other.warmupPolicyJson == this.warmupPolicyJson &&
+          other.fatigueManagementJson == this.fatigueManagementJson &&
+          other.aiGenerationSnapshotId == this.aiGenerationSnapshotId &&
+          other.aiOutputSchemaVersion == this.aiOutputSchemaVersion &&
+          other.imported == this.imported &&
+          other.importedAt == this.importedAt &&
+          other.importSourceFileType == this.importSourceFileType &&
+          other.importReviewStatus == this.importReviewStatus &&
+          other.sourceFileRetained == this.sourceFileRetained &&
+          other.shareSchemaVersion == this.shareSchemaVersion &&
+          other.externalShareId == this.externalShareId &&
+          other.exportPrivacyMode == this.exportPrivacyMode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.archivedAt == this.archivedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class ProgramsCompanion extends UpdateCompanion<Program> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<String> source;
+  final Value<String> creationMethod;
+  final Value<String?> importOrigin;
+  final Value<String> status;
+  final Value<bool> active;
+  final Value<String?> startDateLocal;
+  final Value<String?> endDateLocal;
+  final Value<int?> weeksTotal;
+  final Value<int?> daysPerWeek;
+  final Value<int?> sessionLengthMinutes;
+  final Value<String> goalTagsJson;
+  final Value<String> equipmentJson;
+  final Value<String?> experienceLevelAtCreation;
+  final Value<String?> preferredUnitsAtCreation;
+  final Value<String?> periodisationModel;
+  final Value<String?> trainingStyle;
+  final Value<String?> referenceStrategy;
+  final Value<String?> blockType;
+  final Value<String?> progressionRulesJson;
+  final Value<String?> deloadRulesJson;
+  final Value<String?> warmupPolicyJson;
+  final Value<String?> fatigueManagementJson;
+  final Value<String?> aiGenerationSnapshotId;
+  final Value<int?> aiOutputSchemaVersion;
+  final Value<bool> imported;
+  final Value<DateTime?> importedAt;
+  final Value<String?> importSourceFileType;
+  final Value<String?> importReviewStatus;
+  final Value<bool> sourceFileRetained;
+  final Value<int?> shareSchemaVersion;
+  final Value<String?> externalShareId;
+  final Value<String?> exportPrivacyMode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> archivedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const ProgramsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.source = const Value.absent(),
+    this.creationMethod = const Value.absent(),
+    this.importOrigin = const Value.absent(),
+    this.status = const Value.absent(),
+    this.active = const Value.absent(),
+    this.startDateLocal = const Value.absent(),
+    this.endDateLocal = const Value.absent(),
+    this.weeksTotal = const Value.absent(),
+    this.daysPerWeek = const Value.absent(),
+    this.sessionLengthMinutes = const Value.absent(),
+    this.goalTagsJson = const Value.absent(),
+    this.equipmentJson = const Value.absent(),
+    this.experienceLevelAtCreation = const Value.absent(),
+    this.preferredUnitsAtCreation = const Value.absent(),
+    this.periodisationModel = const Value.absent(),
+    this.trainingStyle = const Value.absent(),
+    this.referenceStrategy = const Value.absent(),
+    this.blockType = const Value.absent(),
+    this.progressionRulesJson = const Value.absent(),
+    this.deloadRulesJson = const Value.absent(),
+    this.warmupPolicyJson = const Value.absent(),
+    this.fatigueManagementJson = const Value.absent(),
+    this.aiGenerationSnapshotId = const Value.absent(),
+    this.aiOutputSchemaVersion = const Value.absent(),
+    this.imported = const Value.absent(),
+    this.importedAt = const Value.absent(),
+    this.importSourceFileType = const Value.absent(),
+    this.importReviewStatus = const Value.absent(),
+    this.sourceFileRetained = const Value.absent(),
+    this.shareSchemaVersion = const Value.absent(),
+    this.externalShareId = const Value.absent(),
+    this.exportPrivacyMode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.archivedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramsCompanion.insert({
+    required String id,
+    required String name,
+    this.description = const Value.absent(),
+    required String source,
+    required String creationMethod,
+    this.importOrigin = const Value.absent(),
+    this.status = const Value.absent(),
+    this.active = const Value.absent(),
+    this.startDateLocal = const Value.absent(),
+    this.endDateLocal = const Value.absent(),
+    this.weeksTotal = const Value.absent(),
+    this.daysPerWeek = const Value.absent(),
+    this.sessionLengthMinutes = const Value.absent(),
+    this.goalTagsJson = const Value.absent(),
+    this.equipmentJson = const Value.absent(),
+    this.experienceLevelAtCreation = const Value.absent(),
+    this.preferredUnitsAtCreation = const Value.absent(),
+    this.periodisationModel = const Value.absent(),
+    this.trainingStyle = const Value.absent(),
+    this.referenceStrategy = const Value.absent(),
+    this.blockType = const Value.absent(),
+    this.progressionRulesJson = const Value.absent(),
+    this.deloadRulesJson = const Value.absent(),
+    this.warmupPolicyJson = const Value.absent(),
+    this.fatigueManagementJson = const Value.absent(),
+    this.aiGenerationSnapshotId = const Value.absent(),
+    this.aiOutputSchemaVersion = const Value.absent(),
+    this.imported = const Value.absent(),
+    this.importedAt = const Value.absent(),
+    this.importSourceFileType = const Value.absent(),
+    this.importReviewStatus = const Value.absent(),
+    this.sourceFileRetained = const Value.absent(),
+    this.shareSchemaVersion = const Value.absent(),
+    this.externalShareId = const Value.absent(),
+    this.exportPrivacyMode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.archivedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       source = Value(source),
+       creationMethod = Value(creationMethod),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Program> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? source,
+    Expression<String>? creationMethod,
+    Expression<String>? importOrigin,
+    Expression<String>? status,
+    Expression<bool>? active,
+    Expression<String>? startDateLocal,
+    Expression<String>? endDateLocal,
+    Expression<int>? weeksTotal,
+    Expression<int>? daysPerWeek,
+    Expression<int>? sessionLengthMinutes,
+    Expression<String>? goalTagsJson,
+    Expression<String>? equipmentJson,
+    Expression<String>? experienceLevelAtCreation,
+    Expression<String>? preferredUnitsAtCreation,
+    Expression<String>? periodisationModel,
+    Expression<String>? trainingStyle,
+    Expression<String>? referenceStrategy,
+    Expression<String>? blockType,
+    Expression<String>? progressionRulesJson,
+    Expression<String>? deloadRulesJson,
+    Expression<String>? warmupPolicyJson,
+    Expression<String>? fatigueManagementJson,
+    Expression<String>? aiGenerationSnapshotId,
+    Expression<int>? aiOutputSchemaVersion,
+    Expression<bool>? imported,
+    Expression<DateTime>? importedAt,
+    Expression<String>? importSourceFileType,
+    Expression<String>? importReviewStatus,
+    Expression<bool>? sourceFileRetained,
+    Expression<int>? shareSchemaVersion,
+    Expression<String>? externalShareId,
+    Expression<String>? exportPrivacyMode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? archivedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (creationMethod != null) 'creation_method': creationMethod,
+      if (importOrigin != null) 'import_origin': importOrigin,
+      if (status != null) 'status': status,
+      if (active != null) 'active': active,
+      if (startDateLocal != null) 'start_date_local': startDateLocal,
+      if (endDateLocal != null) 'end_date_local': endDateLocal,
+      if (weeksTotal != null) 'weeks_total': weeksTotal,
+      if (daysPerWeek != null) 'days_per_week': daysPerWeek,
+      if (sessionLengthMinutes != null)
+        'session_length_minutes': sessionLengthMinutes,
+      if (goalTagsJson != null) 'goal_tags_json': goalTagsJson,
+      if (equipmentJson != null) 'equipment_json': equipmentJson,
+      if (experienceLevelAtCreation != null)
+        'experience_level_at_creation': experienceLevelAtCreation,
+      if (preferredUnitsAtCreation != null)
+        'preferred_units_at_creation': preferredUnitsAtCreation,
+      if (periodisationModel != null) 'periodisation_model': periodisationModel,
+      if (trainingStyle != null) 'training_style': trainingStyle,
+      if (referenceStrategy != null) 'reference_strategy': referenceStrategy,
+      if (blockType != null) 'block_type': blockType,
+      if (progressionRulesJson != null)
+        'progression_rules_json': progressionRulesJson,
+      if (deloadRulesJson != null) 'deload_rules_json': deloadRulesJson,
+      if (warmupPolicyJson != null) 'warmup_policy_json': warmupPolicyJson,
+      if (fatigueManagementJson != null)
+        'fatigue_management_json': fatigueManagementJson,
+      if (aiGenerationSnapshotId != null)
+        'ai_generation_snapshot_id': aiGenerationSnapshotId,
+      if (aiOutputSchemaVersion != null)
+        'ai_output_schema_version': aiOutputSchemaVersion,
+      if (imported != null) 'imported': imported,
+      if (importedAt != null) 'imported_at': importedAt,
+      if (importSourceFileType != null)
+        'import_source_file_type': importSourceFileType,
+      if (importReviewStatus != null)
+        'import_review_status': importReviewStatus,
+      if (sourceFileRetained != null)
+        'source_file_retained': sourceFileRetained,
+      if (shareSchemaVersion != null)
+        'share_schema_version': shareSchemaVersion,
+      if (externalShareId != null) 'external_share_id': externalShareId,
+      if (exportPrivacyMode != null) 'export_privacy_mode': exportPrivacyMode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (archivedAt != null) 'archived_at': archivedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? description,
+    Value<String>? source,
+    Value<String>? creationMethod,
+    Value<String?>? importOrigin,
+    Value<String>? status,
+    Value<bool>? active,
+    Value<String?>? startDateLocal,
+    Value<String?>? endDateLocal,
+    Value<int?>? weeksTotal,
+    Value<int?>? daysPerWeek,
+    Value<int?>? sessionLengthMinutes,
+    Value<String>? goalTagsJson,
+    Value<String>? equipmentJson,
+    Value<String?>? experienceLevelAtCreation,
+    Value<String?>? preferredUnitsAtCreation,
+    Value<String?>? periodisationModel,
+    Value<String?>? trainingStyle,
+    Value<String?>? referenceStrategy,
+    Value<String?>? blockType,
+    Value<String?>? progressionRulesJson,
+    Value<String?>? deloadRulesJson,
+    Value<String?>? warmupPolicyJson,
+    Value<String?>? fatigueManagementJson,
+    Value<String?>? aiGenerationSnapshotId,
+    Value<int?>? aiOutputSchemaVersion,
+    Value<bool>? imported,
+    Value<DateTime?>? importedAt,
+    Value<String?>? importSourceFileType,
+    Value<String?>? importReviewStatus,
+    Value<bool>? sourceFileRetained,
+    Value<int?>? shareSchemaVersion,
+    Value<String?>? externalShareId,
+    Value<String?>? exportPrivacyMode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? archivedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      source: source ?? this.source,
+      creationMethod: creationMethod ?? this.creationMethod,
+      importOrigin: importOrigin ?? this.importOrigin,
+      status: status ?? this.status,
+      active: active ?? this.active,
+      startDateLocal: startDateLocal ?? this.startDateLocal,
+      endDateLocal: endDateLocal ?? this.endDateLocal,
+      weeksTotal: weeksTotal ?? this.weeksTotal,
+      daysPerWeek: daysPerWeek ?? this.daysPerWeek,
+      sessionLengthMinutes: sessionLengthMinutes ?? this.sessionLengthMinutes,
+      goalTagsJson: goalTagsJson ?? this.goalTagsJson,
+      equipmentJson: equipmentJson ?? this.equipmentJson,
+      experienceLevelAtCreation:
+          experienceLevelAtCreation ?? this.experienceLevelAtCreation,
+      preferredUnitsAtCreation:
+          preferredUnitsAtCreation ?? this.preferredUnitsAtCreation,
+      periodisationModel: periodisationModel ?? this.periodisationModel,
+      trainingStyle: trainingStyle ?? this.trainingStyle,
+      referenceStrategy: referenceStrategy ?? this.referenceStrategy,
+      blockType: blockType ?? this.blockType,
+      progressionRulesJson: progressionRulesJson ?? this.progressionRulesJson,
+      deloadRulesJson: deloadRulesJson ?? this.deloadRulesJson,
+      warmupPolicyJson: warmupPolicyJson ?? this.warmupPolicyJson,
+      fatigueManagementJson:
+          fatigueManagementJson ?? this.fatigueManagementJson,
+      aiGenerationSnapshotId:
+          aiGenerationSnapshotId ?? this.aiGenerationSnapshotId,
+      aiOutputSchemaVersion:
+          aiOutputSchemaVersion ?? this.aiOutputSchemaVersion,
+      imported: imported ?? this.imported,
+      importedAt: importedAt ?? this.importedAt,
+      importSourceFileType: importSourceFileType ?? this.importSourceFileType,
+      importReviewStatus: importReviewStatus ?? this.importReviewStatus,
+      sourceFileRetained: sourceFileRetained ?? this.sourceFileRetained,
+      shareSchemaVersion: shareSchemaVersion ?? this.shareSchemaVersion,
+      externalShareId: externalShareId ?? this.externalShareId,
+      exportPrivacyMode: exportPrivacyMode ?? this.exportPrivacyMode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      archivedAt: archivedAt ?? this.archivedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (creationMethod.present) {
+      map['creation_method'] = Variable<String>(creationMethod.value);
+    }
+    if (importOrigin.present) {
+      map['import_origin'] = Variable<String>(importOrigin.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (startDateLocal.present) {
+      map['start_date_local'] = Variable<String>(startDateLocal.value);
+    }
+    if (endDateLocal.present) {
+      map['end_date_local'] = Variable<String>(endDateLocal.value);
+    }
+    if (weeksTotal.present) {
+      map['weeks_total'] = Variable<int>(weeksTotal.value);
+    }
+    if (daysPerWeek.present) {
+      map['days_per_week'] = Variable<int>(daysPerWeek.value);
+    }
+    if (sessionLengthMinutes.present) {
+      map['session_length_minutes'] = Variable<int>(sessionLengthMinutes.value);
+    }
+    if (goalTagsJson.present) {
+      map['goal_tags_json'] = Variable<String>(goalTagsJson.value);
+    }
+    if (equipmentJson.present) {
+      map['equipment_json'] = Variable<String>(equipmentJson.value);
+    }
+    if (experienceLevelAtCreation.present) {
+      map['experience_level_at_creation'] = Variable<String>(
+        experienceLevelAtCreation.value,
+      );
+    }
+    if (preferredUnitsAtCreation.present) {
+      map['preferred_units_at_creation'] = Variable<String>(
+        preferredUnitsAtCreation.value,
+      );
+    }
+    if (periodisationModel.present) {
+      map['periodisation_model'] = Variable<String>(periodisationModel.value);
+    }
+    if (trainingStyle.present) {
+      map['training_style'] = Variable<String>(trainingStyle.value);
+    }
+    if (referenceStrategy.present) {
+      map['reference_strategy'] = Variable<String>(referenceStrategy.value);
+    }
+    if (blockType.present) {
+      map['block_type'] = Variable<String>(blockType.value);
+    }
+    if (progressionRulesJson.present) {
+      map['progression_rules_json'] = Variable<String>(
+        progressionRulesJson.value,
+      );
+    }
+    if (deloadRulesJson.present) {
+      map['deload_rules_json'] = Variable<String>(deloadRulesJson.value);
+    }
+    if (warmupPolicyJson.present) {
+      map['warmup_policy_json'] = Variable<String>(warmupPolicyJson.value);
+    }
+    if (fatigueManagementJson.present) {
+      map['fatigue_management_json'] = Variable<String>(
+        fatigueManagementJson.value,
+      );
+    }
+    if (aiGenerationSnapshotId.present) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId.value,
+      );
+    }
+    if (aiOutputSchemaVersion.present) {
+      map['ai_output_schema_version'] = Variable<int>(
+        aiOutputSchemaVersion.value,
+      );
+    }
+    if (imported.present) {
+      map['imported'] = Variable<bool>(imported.value);
+    }
+    if (importedAt.present) {
+      map['imported_at'] = Variable<DateTime>(importedAt.value);
+    }
+    if (importSourceFileType.present) {
+      map['import_source_file_type'] = Variable<String>(
+        importSourceFileType.value,
+      );
+    }
+    if (importReviewStatus.present) {
+      map['import_review_status'] = Variable<String>(importReviewStatus.value);
+    }
+    if (sourceFileRetained.present) {
+      map['source_file_retained'] = Variable<bool>(sourceFileRetained.value);
+    }
+    if (shareSchemaVersion.present) {
+      map['share_schema_version'] = Variable<int>(shareSchemaVersion.value);
+    }
+    if (externalShareId.present) {
+      map['external_share_id'] = Variable<String>(externalShareId.value);
+    }
+    if (exportPrivacyMode.present) {
+      map['export_privacy_mode'] = Variable<String>(exportPrivacyMode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (archivedAt.present) {
+      map['archived_at'] = Variable<DateTime>(archivedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('source: $source, ')
+          ..write('creationMethod: $creationMethod, ')
+          ..write('importOrigin: $importOrigin, ')
+          ..write('status: $status, ')
+          ..write('active: $active, ')
+          ..write('startDateLocal: $startDateLocal, ')
+          ..write('endDateLocal: $endDateLocal, ')
+          ..write('weeksTotal: $weeksTotal, ')
+          ..write('daysPerWeek: $daysPerWeek, ')
+          ..write('sessionLengthMinutes: $sessionLengthMinutes, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
+          ..write('equipmentJson: $equipmentJson, ')
+          ..write('experienceLevelAtCreation: $experienceLevelAtCreation, ')
+          ..write('preferredUnitsAtCreation: $preferredUnitsAtCreation, ')
+          ..write('periodisationModel: $periodisationModel, ')
+          ..write('trainingStyle: $trainingStyle, ')
+          ..write('referenceStrategy: $referenceStrategy, ')
+          ..write('blockType: $blockType, ')
+          ..write('progressionRulesJson: $progressionRulesJson, ')
+          ..write('deloadRulesJson: $deloadRulesJson, ')
+          ..write('warmupPolicyJson: $warmupPolicyJson, ')
+          ..write('fatigueManagementJson: $fatigueManagementJson, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('aiOutputSchemaVersion: $aiOutputSchemaVersion, ')
+          ..write('imported: $imported, ')
+          ..write('importedAt: $importedAt, ')
+          ..write('importSourceFileType: $importSourceFileType, ')
+          ..write('importReviewStatus: $importReviewStatus, ')
+          ..write('sourceFileRetained: $sourceFileRetained, ')
+          ..write('shareSchemaVersion: $shareSchemaVersion, ')
+          ..write('externalShareId: $externalShareId, ')
+          ..write('exportPrivacyMode: $exportPrivacyMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('archivedAt: $archivedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
+    with TableInfo<$ProgramWorkoutTemplatesTable, ProgramWorkoutTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramWorkoutTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _templateKeyMeta = const VerificationMeta(
+    'templateKey',
+  );
+  @override
+  late final GeneratedColumn<String> templateKey = GeneratedColumn<String>(
+    'template_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dayTypeMeta = const VerificationMeta(
+    'dayType',
+  );
+  @override
+  late final GeneratedColumn<String> dayType = GeneratedColumn<String>(
+    'day_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _estimatedDurationMinutesMeta =
+      const VerificationMeta('estimatedDurationMinutes');
+  @override
+  late final GeneratedColumn<int> estimatedDurationMinutes =
+      GeneratedColumn<int>(
+        'estimated_duration_minutes',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programId,
+    templateKey,
+    name,
+    description,
+    dayType,
+    estimatedDurationMinutes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_workout_templates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramWorkoutTemplate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('template_key')) {
+      context.handle(
+        _templateKeyMeta,
+        templateKey.isAcceptableOrUnknown(
+          data['template_key']!,
+          _templateKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_templateKeyMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('day_type')) {
+      context.handle(
+        _dayTypeMeta,
+        dayType.isAcceptableOrUnknown(data['day_type']!, _dayTypeMeta),
+      );
+    }
+    if (data.containsKey('estimated_duration_minutes')) {
+      context.handle(
+        _estimatedDurationMinutesMeta,
+        estimatedDurationMinutes.isAcceptableOrUnknown(
+          data['estimated_duration_minutes']!,
+          _estimatedDurationMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramWorkoutTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramWorkoutTemplate(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      templateKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}template_key'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      dayType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day_type'],
+      ),
+      estimatedDurationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}estimated_duration_minutes'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramWorkoutTemplatesTable createAlias(String alias) {
+    return $ProgramWorkoutTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramWorkoutTemplate extends DataClass
+    implements Insertable<ProgramWorkoutTemplate> {
+  final String id;
+  final String programId;
+  final String templateKey;
+  final String name;
+  final String? description;
+  final String? dayType;
+  final int? estimatedDurationMinutes;
+  final int sortOrder;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProgramWorkoutTemplate({
+    required this.id,
+    required this.programId,
+    required this.templateKey,
+    required this.name,
+    this.description,
+    this.dayType,
+    this.estimatedDurationMinutes,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_id'] = Variable<String>(programId);
+    map['template_key'] = Variable<String>(templateKey);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || dayType != null) {
+      map['day_type'] = Variable<String>(dayType);
+    }
+    if (!nullToAbsent || estimatedDurationMinutes != null) {
+      map['estimated_duration_minutes'] = Variable<int>(
+        estimatedDurationMinutes,
+      );
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProgramWorkoutTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return ProgramWorkoutTemplatesCompanion(
+      id: Value(id),
+      programId: Value(programId),
+      templateKey: Value(templateKey),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      dayType: dayType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dayType),
+      estimatedDurationMinutes: estimatedDurationMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(estimatedDurationMinutes),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProgramWorkoutTemplate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramWorkoutTemplate(
+      id: serializer.fromJson<String>(json['id']),
+      programId: serializer.fromJson<String>(json['programId']),
+      templateKey: serializer.fromJson<String>(json['templateKey']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      dayType: serializer.fromJson<String?>(json['dayType']),
+      estimatedDurationMinutes: serializer.fromJson<int?>(
+        json['estimatedDurationMinutes'],
+      ),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programId': serializer.toJson<String>(programId),
+      'templateKey': serializer.toJson<String>(templateKey),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'dayType': serializer.toJson<String?>(dayType),
+      'estimatedDurationMinutes': serializer.toJson<int?>(
+        estimatedDurationMinutes,
+      ),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProgramWorkoutTemplate copyWith({
+    String? id,
+    String? programId,
+    String? templateKey,
+    String? name,
+    Value<String?> description = const Value.absent(),
+    Value<String?> dayType = const Value.absent(),
+    Value<int?> estimatedDurationMinutes = const Value.absent(),
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProgramWorkoutTemplate(
+    id: id ?? this.id,
+    programId: programId ?? this.programId,
+    templateKey: templateKey ?? this.templateKey,
+    name: name ?? this.name,
+    description: description.present ? description.value : this.description,
+    dayType: dayType.present ? dayType.value : this.dayType,
+    estimatedDurationMinutes: estimatedDurationMinutes.present
+        ? estimatedDurationMinutes.value
+        : this.estimatedDurationMinutes,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProgramWorkoutTemplate copyWithCompanion(
+    ProgramWorkoutTemplatesCompanion data,
+  ) {
+    return ProgramWorkoutTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      templateKey: data.templateKey.present
+          ? data.templateKey.value
+          : this.templateKey,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      dayType: data.dayType.present ? data.dayType.value : this.dayType,
+      estimatedDurationMinutes: data.estimatedDurationMinutes.present
+          ? data.estimatedDurationMinutes.value
+          : this.estimatedDurationMinutes,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWorkoutTemplate(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('templateKey: $templateKey, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('dayType: $dayType, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    programId,
+    templateKey,
+    name,
+    description,
+    dayType,
+    estimatedDurationMinutes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramWorkoutTemplate &&
+          other.id == this.id &&
+          other.programId == this.programId &&
+          other.templateKey == this.templateKey &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.dayType == this.dayType &&
+          other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProgramWorkoutTemplatesCompanion
+    extends UpdateCompanion<ProgramWorkoutTemplate> {
+  final Value<String> id;
+  final Value<String> programId;
+  final Value<String> templateKey;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<String?> dayType;
+  final Value<int?> estimatedDurationMinutes;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProgramWorkoutTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.templateKey = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.dayType = const Value.absent(),
+    this.estimatedDurationMinutes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramWorkoutTemplatesCompanion.insert({
+    required String id,
+    required String programId,
+    required String templateKey,
+    required String name,
+    this.description = const Value.absent(),
+    this.dayType = const Value.absent(),
+    this.estimatedDurationMinutes = const Value.absent(),
+    required int sortOrder,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programId = Value(programId),
+       templateKey = Value(templateKey),
+       name = Value(name),
+       sortOrder = Value(sortOrder),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProgramWorkoutTemplate> custom({
+    Expression<String>? id,
+    Expression<String>? programId,
+    Expression<String>? templateKey,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? dayType,
+    Expression<int>? estimatedDurationMinutes,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programId != null) 'program_id': programId,
+      if (templateKey != null) 'template_key': templateKey,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (dayType != null) 'day_type': dayType,
+      if (estimatedDurationMinutes != null)
+        'estimated_duration_minutes': estimatedDurationMinutes,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramWorkoutTemplatesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programId,
+    Value<String>? templateKey,
+    Value<String>? name,
+    Value<String?>? description,
+    Value<String?>? dayType,
+    Value<int?>? estimatedDurationMinutes,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramWorkoutTemplatesCompanion(
+      id: id ?? this.id,
+      programId: programId ?? this.programId,
+      templateKey: templateKey ?? this.templateKey,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      dayType: dayType ?? this.dayType,
+      estimatedDurationMinutes:
+          estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (templateKey.present) {
+      map['template_key'] = Variable<String>(templateKey.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (dayType.present) {
+      map['day_type'] = Variable<String>(dayType.value);
+    }
+    if (estimatedDurationMinutes.present) {
+      map['estimated_duration_minutes'] = Variable<int>(
+        estimatedDurationMinutes.value,
+      );
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWorkoutTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('templateKey: $templateKey, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('dayType: $dayType, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramTemplateExercisesTable extends ProgramTemplateExercises
+    with TableInfo<$ProgramTemplateExercisesTable, ProgramTemplateExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramTemplateExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workoutTemplateIdMeta = const VerificationMeta(
+    'workoutTemplateId',
+  );
+  @override
+  late final GeneratedColumn<String> workoutTemplateId =
+      GeneratedColumn<String>(
+        'workout_template_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseRefMeta = const VerificationMeta(
+    'exerciseRef',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseRef = GeneratedColumn<String>(
+    'exercise_ref',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exerciseRoleMeta = const VerificationMeta(
+    'exerciseRole',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseRole = GeneratedColumn<String>(
+    'exercise_role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _programmeRoleMeta = const VerificationMeta(
+    'programmeRole',
+  );
+  @override
+  late final GeneratedColumn<String> programmeRole = GeneratedColumn<String>(
+    'programme_role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetGroupIdMeta = const VerificationMeta(
+    'supersetGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> supersetGroupId = GeneratedColumn<String>(
+    'superset_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetOrderMeta = const VerificationMeta(
+    'supersetOrder',
+  );
+  @override
+  late final GeneratedColumn<int> supersetOrder = GeneratedColumn<int>(
+    'superset_order',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cuesJsonMeta = const VerificationMeta(
+    'cuesJson',
+  );
+  @override
+  late final GeneratedColumn<String> cuesJson = GeneratedColumn<String>(
+    'cues_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workoutTemplateId,
+    exerciseId,
+    exerciseRef,
+    exerciseRole,
+    programmeRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+    cuesJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_template_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramTemplateExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workout_template_id')) {
+      context.handle(
+        _workoutTemplateIdMeta,
+        workoutTemplateId.isAcceptableOrUnknown(
+          data['workout_template_id']!,
+          _workoutTemplateIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workoutTemplateIdMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('exercise_ref')) {
+      context.handle(
+        _exerciseRefMeta,
+        exerciseRef.isAcceptableOrUnknown(
+          data['exercise_ref']!,
+          _exerciseRefMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_role')) {
+      context.handle(
+        _exerciseRoleMeta,
+        exerciseRole.isAcceptableOrUnknown(
+          data['exercise_role']!,
+          _exerciseRoleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('programme_role')) {
+      context.handle(
+        _programmeRoleMeta,
+        programmeRole.isAcceptableOrUnknown(
+          data['programme_role']!,
+          _programmeRoleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_group_id')) {
+      context.handle(
+        _supersetGroupIdMeta,
+        supersetGroupId.isAcceptableOrUnknown(
+          data['superset_group_id']!,
+          _supersetGroupIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_order')) {
+      context.handle(
+        _supersetOrderMeta,
+        supersetOrder.isAcceptableOrUnknown(
+          data['superset_order']!,
+          _supersetOrderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('cues_json')) {
+      context.handle(
+        _cuesJsonMeta,
+        cuesJson.isAcceptableOrUnknown(data['cues_json']!, _cuesJsonMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramTemplateExercise map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramTemplateExercise(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workoutTemplateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workout_template_id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      exerciseRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_ref'],
+      ),
+      exerciseRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_role'],
+      ),
+      programmeRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}programme_role'],
+      ),
+      supersetGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}superset_group_id'],
+      ),
+      supersetOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}superset_order'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      cuesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cues_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramTemplateExercisesTable createAlias(String alias) {
+    return $ProgramTemplateExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramTemplateExercise extends DataClass
+    implements Insertable<ProgramTemplateExercise> {
+  final String id;
+  final String workoutTemplateId;
+  final int exerciseId;
+  final String? exerciseRef;
+  final String? exerciseRole;
+  final String? programmeRole;
+  final String? supersetGroupId;
+  final int? supersetOrder;
+  final int sortOrder;
+  final String? notes;
+  final String? cuesJson;
+  final DateTime createdAt;
+  const ProgramTemplateExercise({
+    required this.id,
+    required this.workoutTemplateId,
+    required this.exerciseId,
+    this.exerciseRef,
+    this.exerciseRole,
+    this.programmeRole,
+    this.supersetGroupId,
+    this.supersetOrder,
+    required this.sortOrder,
+    this.notes,
+    this.cuesJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workout_template_id'] = Variable<String>(workoutTemplateId);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    if (!nullToAbsent || exerciseRef != null) {
+      map['exercise_ref'] = Variable<String>(exerciseRef);
+    }
+    if (!nullToAbsent || exerciseRole != null) {
+      map['exercise_role'] = Variable<String>(exerciseRole);
+    }
+    if (!nullToAbsent || programmeRole != null) {
+      map['programme_role'] = Variable<String>(programmeRole);
+    }
+    if (!nullToAbsent || supersetGroupId != null) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId);
+    }
+    if (!nullToAbsent || supersetOrder != null) {
+      map['superset_order'] = Variable<int>(supersetOrder);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || cuesJson != null) {
+      map['cues_json'] = Variable<String>(cuesJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ProgramTemplateExercisesCompanion toCompanion(bool nullToAbsent) {
+    return ProgramTemplateExercisesCompanion(
+      id: Value(id),
+      workoutTemplateId: Value(workoutTemplateId),
+      exerciseId: Value(exerciseId),
+      exerciseRef: exerciseRef == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exerciseRef),
+      exerciseRole: exerciseRole == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exerciseRole),
+      programmeRole: programmeRole == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programmeRole),
+      supersetGroupId: supersetGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetGroupId),
+      supersetOrder: supersetOrder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetOrder),
+      sortOrder: Value(sortOrder),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      cuesJson: cuesJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cuesJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ProgramTemplateExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramTemplateExercise(
+      id: serializer.fromJson<String>(json['id']),
+      workoutTemplateId: serializer.fromJson<String>(json['workoutTemplateId']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      exerciseRef: serializer.fromJson<String?>(json['exerciseRef']),
+      exerciseRole: serializer.fromJson<String?>(json['exerciseRole']),
+      programmeRole: serializer.fromJson<String?>(json['programmeRole']),
+      supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
+      supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      cuesJson: serializer.fromJson<String?>(json['cuesJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workoutTemplateId': serializer.toJson<String>(workoutTemplateId),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'exerciseRef': serializer.toJson<String?>(exerciseRef),
+      'exerciseRole': serializer.toJson<String?>(exerciseRole),
+      'programmeRole': serializer.toJson<String?>(programmeRole),
+      'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
+      'supersetOrder': serializer.toJson<int?>(supersetOrder),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'notes': serializer.toJson<String?>(notes),
+      'cuesJson': serializer.toJson<String?>(cuesJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ProgramTemplateExercise copyWith({
+    String? id,
+    String? workoutTemplateId,
+    int? exerciseId,
+    Value<String?> exerciseRef = const Value.absent(),
+    Value<String?> exerciseRole = const Value.absent(),
+    Value<String?> programmeRole = const Value.absent(),
+    Value<String?> supersetGroupId = const Value.absent(),
+    Value<int?> supersetOrder = const Value.absent(),
+    int? sortOrder,
+    Value<String?> notes = const Value.absent(),
+    Value<String?> cuesJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => ProgramTemplateExercise(
+    id: id ?? this.id,
+    workoutTemplateId: workoutTemplateId ?? this.workoutTemplateId,
+    exerciseId: exerciseId ?? this.exerciseId,
+    exerciseRef: exerciseRef.present ? exerciseRef.value : this.exerciseRef,
+    exerciseRole: exerciseRole.present ? exerciseRole.value : this.exerciseRole,
+    programmeRole: programmeRole.present
+        ? programmeRole.value
+        : this.programmeRole,
+    supersetGroupId: supersetGroupId.present
+        ? supersetGroupId.value
+        : this.supersetGroupId,
+    supersetOrder: supersetOrder.present
+        ? supersetOrder.value
+        : this.supersetOrder,
+    sortOrder: sortOrder ?? this.sortOrder,
+    notes: notes.present ? notes.value : this.notes,
+    cuesJson: cuesJson.present ? cuesJson.value : this.cuesJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ProgramTemplateExercise copyWithCompanion(
+    ProgramTemplateExercisesCompanion data,
+  ) {
+    return ProgramTemplateExercise(
+      id: data.id.present ? data.id.value : this.id,
+      workoutTemplateId: data.workoutTemplateId.present
+          ? data.workoutTemplateId.value
+          : this.workoutTemplateId,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      exerciseRef: data.exerciseRef.present
+          ? data.exerciseRef.value
+          : this.exerciseRef,
+      exerciseRole: data.exerciseRole.present
+          ? data.exerciseRole.value
+          : this.exerciseRole,
+      programmeRole: data.programmeRole.present
+          ? data.programmeRole.value
+          : this.programmeRole,
+      supersetGroupId: data.supersetGroupId.present
+          ? data.supersetGroupId.value
+          : this.supersetGroupId,
+      supersetOrder: data.supersetOrder.present
+          ? data.supersetOrder.value
+          : this.supersetOrder,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      cuesJson: data.cuesJson.present ? data.cuesJson.value : this.cuesJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTemplateExercise(')
+          ..write('id: $id, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRef: $exerciseRef, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('programmeRole: $programmeRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes, ')
+          ..write('cuesJson: $cuesJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workoutTemplateId,
+    exerciseId,
+    exerciseRef,
+    exerciseRole,
+    programmeRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+    cuesJson,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramTemplateExercise &&
+          other.id == this.id &&
+          other.workoutTemplateId == this.workoutTemplateId &&
+          other.exerciseId == this.exerciseId &&
+          other.exerciseRef == this.exerciseRef &&
+          other.exerciseRole == this.exerciseRole &&
+          other.programmeRole == this.programmeRole &&
+          other.supersetGroupId == this.supersetGroupId &&
+          other.supersetOrder == this.supersetOrder &&
+          other.sortOrder == this.sortOrder &&
+          other.notes == this.notes &&
+          other.cuesJson == this.cuesJson &&
+          other.createdAt == this.createdAt);
+}
+
+class ProgramTemplateExercisesCompanion
+    extends UpdateCompanion<ProgramTemplateExercise> {
+  final Value<String> id;
+  final Value<String> workoutTemplateId;
+  final Value<int> exerciseId;
+  final Value<String?> exerciseRef;
+  final Value<String?> exerciseRole;
+  final Value<String?> programmeRole;
+  final Value<String?> supersetGroupId;
+  final Value<int?> supersetOrder;
+  final Value<int> sortOrder;
+  final Value<String?> notes;
+  final Value<String?> cuesJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const ProgramTemplateExercisesCompanion({
+    this.id = const Value.absent(),
+    this.workoutTemplateId = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.exerciseRef = const Value.absent(),
+    this.exerciseRole = const Value.absent(),
+    this.programmeRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.cuesJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramTemplateExercisesCompanion.insert({
+    required String id,
+    required String workoutTemplateId,
+    required int exerciseId,
+    this.exerciseRef = const Value.absent(),
+    this.exerciseRole = const Value.absent(),
+    this.programmeRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    required int sortOrder,
+    this.notes = const Value.absent(),
+    this.cuesJson = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workoutTemplateId = Value(workoutTemplateId),
+       exerciseId = Value(exerciseId),
+       sortOrder = Value(sortOrder),
+       createdAt = Value(createdAt);
+  static Insertable<ProgramTemplateExercise> custom({
+    Expression<String>? id,
+    Expression<String>? workoutTemplateId,
+    Expression<int>? exerciseId,
+    Expression<String>? exerciseRef,
+    Expression<String>? exerciseRole,
+    Expression<String>? programmeRole,
+    Expression<String>? supersetGroupId,
+    Expression<int>? supersetOrder,
+    Expression<int>? sortOrder,
+    Expression<String>? notes,
+    Expression<String>? cuesJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workoutTemplateId != null) 'workout_template_id': workoutTemplateId,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (exerciseRef != null) 'exercise_ref': exerciseRef,
+      if (exerciseRole != null) 'exercise_role': exerciseRole,
+      if (programmeRole != null) 'programme_role': programmeRole,
+      if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
+      if (supersetOrder != null) 'superset_order': supersetOrder,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (notes != null) 'notes': notes,
+      if (cuesJson != null) 'cues_json': cuesJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramTemplateExercisesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workoutTemplateId,
+    Value<int>? exerciseId,
+    Value<String?>? exerciseRef,
+    Value<String?>? exerciseRole,
+    Value<String?>? programmeRole,
+    Value<String?>? supersetGroupId,
+    Value<int?>? supersetOrder,
+    Value<int>? sortOrder,
+    Value<String?>? notes,
+    Value<String?>? cuesJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramTemplateExercisesCompanion(
+      id: id ?? this.id,
+      workoutTemplateId: workoutTemplateId ?? this.workoutTemplateId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      exerciseRef: exerciseRef ?? this.exerciseRef,
+      exerciseRole: exerciseRole ?? this.exerciseRole,
+      programmeRole: programmeRole ?? this.programmeRole,
+      supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      supersetOrder: supersetOrder ?? this.supersetOrder,
+      sortOrder: sortOrder ?? this.sortOrder,
+      notes: notes ?? this.notes,
+      cuesJson: cuesJson ?? this.cuesJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workoutTemplateId.present) {
+      map['workout_template_id'] = Variable<String>(workoutTemplateId.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (exerciseRef.present) {
+      map['exercise_ref'] = Variable<String>(exerciseRef.value);
+    }
+    if (exerciseRole.present) {
+      map['exercise_role'] = Variable<String>(exerciseRole.value);
+    }
+    if (programmeRole.present) {
+      map['programme_role'] = Variable<String>(programmeRole.value);
+    }
+    if (supersetGroupId.present) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId.value);
+    }
+    if (supersetOrder.present) {
+      map['superset_order'] = Variable<int>(supersetOrder.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (cuesJson.present) {
+      map['cues_json'] = Variable<String>(cuesJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTemplateExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRef: $exerciseRef, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('programmeRole: $programmeRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes, ')
+          ..write('cuesJson: $cuesJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramTemplateExerciseSetsTable extends ProgramTemplateExerciseSets
+    with
+        TableInfo<
+          $ProgramTemplateExerciseSetsTable,
+          ProgramTemplateExerciseSet
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramTemplateExerciseSetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _templateExerciseIdMeta =
+      const VerificationMeta('templateExerciseId');
+  @override
+  late final GeneratedColumn<String> templateExerciseId =
+      GeneratedColumn<String>(
+        'template_exercise_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _setIndexMeta = const VerificationMeta(
+    'setIndex',
+  );
+  @override
+  late final GeneratedColumn<int> setIndex = GeneratedColumn<int>(
+    'set_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setTypeMeta = const VerificationMeta(
+    'setType',
+  );
+  @override
+  late final GeneratedColumn<String> setType = GeneratedColumn<String>(
+    'set_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setIntentMeta = const VerificationMeta(
+    'setIntent',
+  );
+  @override
+  late final GeneratedColumn<String> setIntent = GeneratedColumn<String>(
+    'set_intent',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMinMeta = const VerificationMeta(
+    'prescribedRepsMin',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMin = GeneratedColumn<int>(
+    'prescribed_reps_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMaxMeta = const VerificationMeta(
+    'prescribedRepsMax',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMax = GeneratedColumn<int>(
+    'prescribed_reps_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsExactMeta =
+      const VerificationMeta('prescribedRepsExact');
+  @override
+  late final GeneratedColumn<int> prescribedRepsExact = GeneratedColumn<int>(
+    'prescribed_reps_exact',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _distanceMetersMeta = const VerificationMeta(
+    'distanceMeters',
+  );
+  @override
+  late final GeneratedColumn<double> distanceMeters = GeneratedColumn<double>(
+    'distance_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightPrescriptionTypeMeta =
+      const VerificationMeta('weightPrescriptionType');
+  @override
+  late final GeneratedColumn<String> weightPrescriptionType =
+      GeneratedColumn<String>(
+        'weight_prescription_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightKgMeta =
+      const VerificationMeta('prescribedWeightKg');
+  @override
+  late final GeneratedColumn<double> prescribedWeightKg =
+      GeneratedColumn<double>(
+        'prescribed_weight_kg',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPct1rmMeta =
+      const VerificationMeta('prescribedWeightPct1rm');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPct1rm =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct1rm',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPctWorkingMeta =
+      const VerificationMeta('prescribedWeightPctWorking');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPctWorking =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct_working',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _bodyweightMultiplierMeta =
+      const VerificationMeta('bodyweightMultiplier');
+  @override
+  late final GeneratedColumn<double> bodyweightMultiplier =
+      GeneratedColumn<double>(
+        'bodyweight_multiplier',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedRpeMinMeta = const VerificationMeta(
+    'prescribedRpeMin',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMin = GeneratedColumn<double>(
+    'prescribed_rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRpeMaxMeta = const VerificationMeta(
+    'prescribedRpeMax',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMax = GeneratedColumn<double>(
+    'prescribed_rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRirMeta = const VerificationMeta(
+    'prescribedRir',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRir = GeneratedColumn<int>(
+    'prescribed_rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _restSecondsMeta = const VerificationMeta(
+    'restSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> restSeconds = GeneratedColumn<int>(
+    'rest_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadingModelMeta = const VerificationMeta(
+    'loadingModel',
+  );
+  @override
+  late final GeneratedColumn<String> loadingModel = GeneratedColumn<String>(
+    'loading_model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMinMeta = const VerificationMeta(
+    'percent1rmMin',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMin = GeneratedColumn<double>(
+    'percent1rm_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMaxMeta = const VerificationMeta(
+    'percent1rmMax',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMax = GeneratedColumn<double>(
+    'percent1rm_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMinMeta = const VerificationMeta('rpeMin');
+  @override
+  late final GeneratedColumn<double> rpeMin = GeneratedColumn<double>(
+    'rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMaxMeta = const VerificationMeta('rpeMax');
+  @override
+  late final GeneratedColumn<double> rpeMax = GeneratedColumn<double>(
+    'rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadSelectionNoteMeta = const VerificationMeta(
+    'loadSelectionNote',
+  );
+  @override
+  late final GeneratedColumn<String> loadSelectionNote =
+      GeneratedColumn<String>(
+        'load_selection_note',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isCalibrationEstimateMeta =
+      const VerificationMeta('isCalibrationEstimate');
+  @override
+  late final GeneratedColumn<bool> isCalibrationEstimate =
+      GeneratedColumn<bool>(
+        'is_calibration_estimate',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_calibration_estimate" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _derivedFromWorkingSetIndexMeta =
+      const VerificationMeta('derivedFromWorkingSetIndex');
+  @override
+  late final GeneratedColumn<int> derivedFromWorkingSetIndex =
+      GeneratedColumn<int>(
+        'derived_from_working_set_index',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _warmupWeightRuleJsonMeta =
+      const VerificationMeta('warmupWeightRuleJson');
+  @override
+  late final GeneratedColumn<String> warmupWeightRuleJson =
+      GeneratedColumn<String>(
+        'warmup_weight_rule_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    templateExerciseId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_template_exercise_sets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramTemplateExerciseSet> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('template_exercise_id')) {
+      context.handle(
+        _templateExerciseIdMeta,
+        templateExerciseId.isAcceptableOrUnknown(
+          data['template_exercise_id']!,
+          _templateExerciseIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_templateExerciseIdMeta);
+    }
+    if (data.containsKey('set_index')) {
+      context.handle(
+        _setIndexMeta,
+        setIndex.isAcceptableOrUnknown(data['set_index']!, _setIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setIndexMeta);
+    }
+    if (data.containsKey('set_type')) {
+      context.handle(
+        _setTypeMeta,
+        setType.isAcceptableOrUnknown(data['set_type']!, _setTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setTypeMeta);
+    }
+    if (data.containsKey('set_intent')) {
+      context.handle(
+        _setIntentMeta,
+        setIntent.isAcceptableOrUnknown(data['set_intent']!, _setIntentMeta),
+      );
+    }
+    if (data.containsKey('prescribed_reps_min')) {
+      context.handle(
+        _prescribedRepsMinMeta,
+        prescribedRepsMin.isAcceptableOrUnknown(
+          data['prescribed_reps_min']!,
+          _prescribedRepsMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_max')) {
+      context.handle(
+        _prescribedRepsMaxMeta,
+        prescribedRepsMax.isAcceptableOrUnknown(
+          data['prescribed_reps_max']!,
+          _prescribedRepsMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_exact')) {
+      context.handle(
+        _prescribedRepsExactMeta,
+        prescribedRepsExact.isAcceptableOrUnknown(
+          data['prescribed_reps_exact']!,
+          _prescribedRepsExactMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('distance_meters')) {
+      context.handle(
+        _distanceMetersMeta,
+        distanceMeters.isAcceptableOrUnknown(
+          data['distance_meters']!,
+          _distanceMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight_prescription_type')) {
+      context.handle(
+        _weightPrescriptionTypeMeta,
+        weightPrescriptionType.isAcceptableOrUnknown(
+          data['weight_prescription_type']!,
+          _weightPrescriptionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_kg')) {
+      context.handle(
+        _prescribedWeightKgMeta,
+        prescribedWeightKg.isAcceptableOrUnknown(
+          data['prescribed_weight_kg']!,
+          _prescribedWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct1rm')) {
+      context.handle(
+        _prescribedWeightPct1rmMeta,
+        prescribedWeightPct1rm.isAcceptableOrUnknown(
+          data['prescribed_weight_pct1rm']!,
+          _prescribedWeightPct1rmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct_working')) {
+      context.handle(
+        _prescribedWeightPctWorkingMeta,
+        prescribedWeightPctWorking.isAcceptableOrUnknown(
+          data['prescribed_weight_pct_working']!,
+          _prescribedWeightPctWorkingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_multiplier')) {
+      context.handle(
+        _bodyweightMultiplierMeta,
+        bodyweightMultiplier.isAcceptableOrUnknown(
+          data['bodyweight_multiplier']!,
+          _bodyweightMultiplierMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_min')) {
+      context.handle(
+        _prescribedRpeMinMeta,
+        prescribedRpeMin.isAcceptableOrUnknown(
+          data['prescribed_rpe_min']!,
+          _prescribedRpeMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_max')) {
+      context.handle(
+        _prescribedRpeMaxMeta,
+        prescribedRpeMax.isAcceptableOrUnknown(
+          data['prescribed_rpe_max']!,
+          _prescribedRpeMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rir')) {
+      context.handle(
+        _prescribedRirMeta,
+        prescribedRir.isAcceptableOrUnknown(
+          data['prescribed_rir']!,
+          _prescribedRirMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rest_seconds')) {
+      context.handle(
+        _restSecondsMeta,
+        restSeconds.isAcceptableOrUnknown(
+          data['rest_seconds']!,
+          _restSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loading_model')) {
+      context.handle(
+        _loadingModelMeta,
+        loadingModel.isAcceptableOrUnknown(
+          data['loading_model']!,
+          _loadingModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_min')) {
+      context.handle(
+        _percent1rmMinMeta,
+        percent1rmMin.isAcceptableOrUnknown(
+          data['percent1rm_min']!,
+          _percent1rmMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_max')) {
+      context.handle(
+        _percent1rmMaxMeta,
+        percent1rmMax.isAcceptableOrUnknown(
+          data['percent1rm_max']!,
+          _percent1rmMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rpe_min')) {
+      context.handle(
+        _rpeMinMeta,
+        rpeMin.isAcceptableOrUnknown(data['rpe_min']!, _rpeMinMeta),
+      );
+    }
+    if (data.containsKey('rpe_max')) {
+      context.handle(
+        _rpeMaxMeta,
+        rpeMax.isAcceptableOrUnknown(data['rpe_max']!, _rpeMaxMeta),
+      );
+    }
+    if (data.containsKey('load_selection_note')) {
+      context.handle(
+        _loadSelectionNoteMeta,
+        loadSelectionNote.isAcceptableOrUnknown(
+          data['load_selection_note']!,
+          _loadSelectionNoteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_calibration_estimate')) {
+      context.handle(
+        _isCalibrationEstimateMeta,
+        isCalibrationEstimate.isAcceptableOrUnknown(
+          data['is_calibration_estimate']!,
+          _isCalibrationEstimateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('derived_from_working_set_index')) {
+      context.handle(
+        _derivedFromWorkingSetIndexMeta,
+        derivedFromWorkingSetIndex.isAcceptableOrUnknown(
+          data['derived_from_working_set_index']!,
+          _derivedFromWorkingSetIndexMeta,
+        ),
+      );
+    }
+    if (data.containsKey('warmup_weight_rule_json')) {
+      context.handle(
+        _warmupWeightRuleJsonMeta,
+        warmupWeightRuleJson.isAcceptableOrUnknown(
+          data['warmup_weight_rule_json']!,
+          _warmupWeightRuleJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramTemplateExerciseSet map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramTemplateExerciseSet(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      templateExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}template_exercise_id'],
+      )!,
+      setIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}set_index'],
+      )!,
+      setType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_type'],
+      )!,
+      setIntent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_intent'],
+      ),
+      prescribedRepsMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_min'],
+      ),
+      prescribedRepsMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_max'],
+      ),
+      prescribedRepsExact: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_exact'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      distanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_meters'],
+      ),
+      weightPrescriptionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weight_prescription_type'],
+      ),
+      prescribedWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_kg'],
+      ),
+      prescribedWeightPct1rm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct1rm'],
+      ),
+      prescribedWeightPctWorking: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct_working'],
+      ),
+      bodyweightMultiplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_multiplier'],
+      ),
+      prescribedRpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_min'],
+      ),
+      prescribedRpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_max'],
+      ),
+      prescribedRir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_rir'],
+      ),
+      restSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_seconds'],
+      ),
+      loadingModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}loading_model'],
+      ),
+      percent1rmMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_min'],
+      ),
+      percent1rmMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_max'],
+      ),
+      rpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_min'],
+      ),
+      rpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_max'],
+      ),
+      loadSelectionNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}load_selection_note'],
+      ),
+      isCalibrationEstimate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_calibration_estimate'],
+      )!,
+      derivedFromWorkingSetIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}derived_from_working_set_index'],
+      ),
+      warmupWeightRuleJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}warmup_weight_rule_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramTemplateExerciseSetsTable createAlias(String alias) {
+    return $ProgramTemplateExerciseSetsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramTemplateExerciseSet extends DataClass
+    implements Insertable<ProgramTemplateExerciseSet> {
+  final String id;
+  final String templateExerciseId;
+  final int setIndex;
+  final String setType;
+  final String? setIntent;
+  final int? prescribedRepsMin;
+  final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
+  final int? durationSeconds;
+  final double? distanceMeters;
+  final String? weightPrescriptionType;
+  final double? prescribedWeightKg;
+  final double? prescribedWeightPct1rm;
+  final double? prescribedWeightPctWorking;
+  final double? bodyweightMultiplier;
+  final double? prescribedRpeMin;
+  final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? restSeconds;
+  final String? loadingModel;
+  final double? percent1rmMin;
+  final double? percent1rmMax;
+  final double? rpeMin;
+  final double? rpeMax;
+  final String? loadSelectionNote;
+  final bool isCalibrationEstimate;
+  final int? derivedFromWorkingSetIndex;
+  final String? warmupWeightRuleJson;
+  final DateTime createdAt;
+  const ProgramTemplateExerciseSet({
+    required this.id,
+    required this.templateExerciseId,
+    required this.setIndex,
+    required this.setType,
+    this.setIntent,
+    this.prescribedRepsMin,
+    this.prescribedRepsMax,
+    this.prescribedRepsExact,
+    this.durationSeconds,
+    this.distanceMeters,
+    this.weightPrescriptionType,
+    this.prescribedWeightKg,
+    this.prescribedWeightPct1rm,
+    this.prescribedWeightPctWorking,
+    this.bodyweightMultiplier,
+    this.prescribedRpeMin,
+    this.prescribedRpeMax,
+    this.prescribedRir,
+    this.restSeconds,
+    this.loadingModel,
+    this.percent1rmMin,
+    this.percent1rmMax,
+    this.rpeMin,
+    this.rpeMax,
+    this.loadSelectionNote,
+    required this.isCalibrationEstimate,
+    this.derivedFromWorkingSetIndex,
+    this.warmupWeightRuleJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['template_exercise_id'] = Variable<String>(templateExerciseId);
+    map['set_index'] = Variable<int>(setIndex);
+    map['set_type'] = Variable<String>(setType);
+    if (!nullToAbsent || setIntent != null) {
+      map['set_intent'] = Variable<String>(setIntent);
+    }
+    if (!nullToAbsent || prescribedRepsMin != null) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin);
+    }
+    if (!nullToAbsent || prescribedRepsMax != null) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax);
+    }
+    if (!nullToAbsent || prescribedRepsExact != null) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    if (!nullToAbsent || distanceMeters != null) {
+      map['distance_meters'] = Variable<double>(distanceMeters);
+    }
+    if (!nullToAbsent || weightPrescriptionType != null) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightKg != null) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg);
+    }
+    if (!nullToAbsent || prescribedWeightPct1rm != null) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightPctWorking != null) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking,
+      );
+    }
+    if (!nullToAbsent || bodyweightMultiplier != null) {
+      map['bodyweight_multiplier'] = Variable<double>(bodyweightMultiplier);
+    }
+    if (!nullToAbsent || prescribedRpeMin != null) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin);
+    }
+    if (!nullToAbsent || prescribedRpeMax != null) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax);
+    }
+    if (!nullToAbsent || prescribedRir != null) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir);
+    }
+    if (!nullToAbsent || restSeconds != null) {
+      map['rest_seconds'] = Variable<int>(restSeconds);
+    }
+    if (!nullToAbsent || loadingModel != null) {
+      map['loading_model'] = Variable<String>(loadingModel);
+    }
+    if (!nullToAbsent || percent1rmMin != null) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin);
+    }
+    if (!nullToAbsent || percent1rmMax != null) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax);
+    }
+    if (!nullToAbsent || rpeMin != null) {
+      map['rpe_min'] = Variable<double>(rpeMin);
+    }
+    if (!nullToAbsent || rpeMax != null) {
+      map['rpe_max'] = Variable<double>(rpeMax);
+    }
+    if (!nullToAbsent || loadSelectionNote != null) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote);
+    }
+    map['is_calibration_estimate'] = Variable<bool>(isCalibrationEstimate);
+    if (!nullToAbsent || derivedFromWorkingSetIndex != null) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex,
+      );
+    }
+    if (!nullToAbsent || warmupWeightRuleJson != null) {
+      map['warmup_weight_rule_json'] = Variable<String>(warmupWeightRuleJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ProgramTemplateExerciseSetsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramTemplateExerciseSetsCompanion(
+      id: Value(id),
+      templateExerciseId: Value(templateExerciseId),
+      setIndex: Value(setIndex),
+      setType: Value(setType),
+      setIntent: setIntent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(setIntent),
+      prescribedRepsMin: prescribedRepsMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMin),
+      prescribedRepsMax: prescribedRepsMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMax),
+      prescribedRepsExact: prescribedRepsExact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsExact),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      distanceMeters: distanceMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(distanceMeters),
+      weightPrescriptionType: weightPrescriptionType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightPrescriptionType),
+      prescribedWeightKg: prescribedWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightKg),
+      prescribedWeightPct1rm: prescribedWeightPct1rm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPct1rm),
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPctWorking),
+      bodyweightMultiplier: bodyweightMultiplier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightMultiplier),
+      prescribedRpeMin: prescribedRpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMin),
+      prescribedRpeMax: prescribedRpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMax),
+      prescribedRir: prescribedRir == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRir),
+      restSeconds: restSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restSeconds),
+      loadingModel: loadingModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadingModel),
+      percent1rmMin: percent1rmMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMin),
+      percent1rmMax: percent1rmMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMax),
+      rpeMin: rpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMin),
+      rpeMax: rpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMax),
+      loadSelectionNote: loadSelectionNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadSelectionNote),
+      isCalibrationEstimate: Value(isCalibrationEstimate),
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(derivedFromWorkingSetIndex),
+      warmupWeightRuleJson: warmupWeightRuleJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(warmupWeightRuleJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ProgramTemplateExerciseSet.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramTemplateExerciseSet(
+      id: serializer.fromJson<String>(json['id']),
+      templateExerciseId: serializer.fromJson<String>(
+        json['templateExerciseId'],
+      ),
+      setIndex: serializer.fromJson<int>(json['setIndex']),
+      setType: serializer.fromJson<String>(json['setType']),
+      setIntent: serializer.fromJson<String?>(json['setIntent']),
+      prescribedRepsMin: serializer.fromJson<int?>(json['prescribedRepsMin']),
+      prescribedRepsMax: serializer.fromJson<int?>(json['prescribedRepsMax']),
+      prescribedRepsExact: serializer.fromJson<int?>(
+        json['prescribedRepsExact'],
+      ),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      distanceMeters: serializer.fromJson<double?>(json['distanceMeters']),
+      weightPrescriptionType: serializer.fromJson<String?>(
+        json['weightPrescriptionType'],
+      ),
+      prescribedWeightKg: serializer.fromJson<double?>(
+        json['prescribedWeightKg'],
+      ),
+      prescribedWeightPct1rm: serializer.fromJson<double?>(
+        json['prescribedWeightPct1rm'],
+      ),
+      prescribedWeightPctWorking: serializer.fromJson<double?>(
+        json['prescribedWeightPctWorking'],
+      ),
+      bodyweightMultiplier: serializer.fromJson<double?>(
+        json['bodyweightMultiplier'],
+      ),
+      prescribedRpeMin: serializer.fromJson<double?>(json['prescribedRpeMin']),
+      prescribedRpeMax: serializer.fromJson<double?>(json['prescribedRpeMax']),
+      prescribedRir: serializer.fromJson<int?>(json['prescribedRir']),
+      restSeconds: serializer.fromJson<int?>(json['restSeconds']),
+      loadingModel: serializer.fromJson<String?>(json['loadingModel']),
+      percent1rmMin: serializer.fromJson<double?>(json['percent1rmMin']),
+      percent1rmMax: serializer.fromJson<double?>(json['percent1rmMax']),
+      rpeMin: serializer.fromJson<double?>(json['rpeMin']),
+      rpeMax: serializer.fromJson<double?>(json['rpeMax']),
+      loadSelectionNote: serializer.fromJson<String?>(
+        json['loadSelectionNote'],
+      ),
+      isCalibrationEstimate: serializer.fromJson<bool>(
+        json['isCalibrationEstimate'],
+      ),
+      derivedFromWorkingSetIndex: serializer.fromJson<int?>(
+        json['derivedFromWorkingSetIndex'],
+      ),
+      warmupWeightRuleJson: serializer.fromJson<String?>(
+        json['warmupWeightRuleJson'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'templateExerciseId': serializer.toJson<String>(templateExerciseId),
+      'setIndex': serializer.toJson<int>(setIndex),
+      'setType': serializer.toJson<String>(setType),
+      'setIntent': serializer.toJson<String?>(setIntent),
+      'prescribedRepsMin': serializer.toJson<int?>(prescribedRepsMin),
+      'prescribedRepsMax': serializer.toJson<int?>(prescribedRepsMax),
+      'prescribedRepsExact': serializer.toJson<int?>(prescribedRepsExact),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'distanceMeters': serializer.toJson<double?>(distanceMeters),
+      'weightPrescriptionType': serializer.toJson<String?>(
+        weightPrescriptionType,
+      ),
+      'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
+      'prescribedWeightPct1rm': serializer.toJson<double?>(
+        prescribedWeightPct1rm,
+      ),
+      'prescribedWeightPctWorking': serializer.toJson<double?>(
+        prescribedWeightPctWorking,
+      ),
+      'bodyweightMultiplier': serializer.toJson<double?>(bodyweightMultiplier),
+      'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
+      'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
+      'prescribedRir': serializer.toJson<int?>(prescribedRir),
+      'restSeconds': serializer.toJson<int?>(restSeconds),
+      'loadingModel': serializer.toJson<String?>(loadingModel),
+      'percent1rmMin': serializer.toJson<double?>(percent1rmMin),
+      'percent1rmMax': serializer.toJson<double?>(percent1rmMax),
+      'rpeMin': serializer.toJson<double?>(rpeMin),
+      'rpeMax': serializer.toJson<double?>(rpeMax),
+      'loadSelectionNote': serializer.toJson<String?>(loadSelectionNote),
+      'isCalibrationEstimate': serializer.toJson<bool>(isCalibrationEstimate),
+      'derivedFromWorkingSetIndex': serializer.toJson<int?>(
+        derivedFromWorkingSetIndex,
+      ),
+      'warmupWeightRuleJson': serializer.toJson<String?>(warmupWeightRuleJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ProgramTemplateExerciseSet copyWith({
+    String? id,
+    String? templateExerciseId,
+    int? setIndex,
+    String? setType,
+    Value<String?> setIntent = const Value.absent(),
+    Value<int?> prescribedRepsMin = const Value.absent(),
+    Value<int?> prescribedRepsMax = const Value.absent(),
+    Value<int?> prescribedRepsExact = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    Value<double?> distanceMeters = const Value.absent(),
+    Value<String?> weightPrescriptionType = const Value.absent(),
+    Value<double?> prescribedWeightKg = const Value.absent(),
+    Value<double?> prescribedWeightPct1rm = const Value.absent(),
+    Value<double?> prescribedWeightPctWorking = const Value.absent(),
+    Value<double?> bodyweightMultiplier = const Value.absent(),
+    Value<double?> prescribedRpeMin = const Value.absent(),
+    Value<double?> prescribedRpeMax = const Value.absent(),
+    Value<int?> prescribedRir = const Value.absent(),
+    Value<int?> restSeconds = const Value.absent(),
+    Value<String?> loadingModel = const Value.absent(),
+    Value<double?> percent1rmMin = const Value.absent(),
+    Value<double?> percent1rmMax = const Value.absent(),
+    Value<double?> rpeMin = const Value.absent(),
+    Value<double?> rpeMax = const Value.absent(),
+    Value<String?> loadSelectionNote = const Value.absent(),
+    bool? isCalibrationEstimate,
+    Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+    Value<String?> warmupWeightRuleJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => ProgramTemplateExerciseSet(
+    id: id ?? this.id,
+    templateExerciseId: templateExerciseId ?? this.templateExerciseId,
+    setIndex: setIndex ?? this.setIndex,
+    setType: setType ?? this.setType,
+    setIntent: setIntent.present ? setIntent.value : this.setIntent,
+    prescribedRepsMin: prescribedRepsMin.present
+        ? prescribedRepsMin.value
+        : this.prescribedRepsMin,
+    prescribedRepsMax: prescribedRepsMax.present
+        ? prescribedRepsMax.value
+        : this.prescribedRepsMax,
+    prescribedRepsExact: prescribedRepsExact.present
+        ? prescribedRepsExact.value
+        : this.prescribedRepsExact,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    distanceMeters: distanceMeters.present
+        ? distanceMeters.value
+        : this.distanceMeters,
+    weightPrescriptionType: weightPrescriptionType.present
+        ? weightPrescriptionType.value
+        : this.weightPrescriptionType,
+    prescribedWeightKg: prescribedWeightKg.present
+        ? prescribedWeightKg.value
+        : this.prescribedWeightKg,
+    prescribedWeightPct1rm: prescribedWeightPct1rm.present
+        ? prescribedWeightPct1rm.value
+        : this.prescribedWeightPct1rm,
+    prescribedWeightPctWorking: prescribedWeightPctWorking.present
+        ? prescribedWeightPctWorking.value
+        : this.prescribedWeightPctWorking,
+    bodyweightMultiplier: bodyweightMultiplier.present
+        ? bodyweightMultiplier.value
+        : this.bodyweightMultiplier,
+    prescribedRpeMin: prescribedRpeMin.present
+        ? prescribedRpeMin.value
+        : this.prescribedRpeMin,
+    prescribedRpeMax: prescribedRpeMax.present
+        ? prescribedRpeMax.value
+        : this.prescribedRpeMax,
+    prescribedRir: prescribedRir.present
+        ? prescribedRir.value
+        : this.prescribedRir,
+    restSeconds: restSeconds.present ? restSeconds.value : this.restSeconds,
+    loadingModel: loadingModel.present ? loadingModel.value : this.loadingModel,
+    percent1rmMin: percent1rmMin.present
+        ? percent1rmMin.value
+        : this.percent1rmMin,
+    percent1rmMax: percent1rmMax.present
+        ? percent1rmMax.value
+        : this.percent1rmMax,
+    rpeMin: rpeMin.present ? rpeMin.value : this.rpeMin,
+    rpeMax: rpeMax.present ? rpeMax.value : this.rpeMax,
+    loadSelectionNote: loadSelectionNote.present
+        ? loadSelectionNote.value
+        : this.loadSelectionNote,
+    isCalibrationEstimate: isCalibrationEstimate ?? this.isCalibrationEstimate,
+    derivedFromWorkingSetIndex: derivedFromWorkingSetIndex.present
+        ? derivedFromWorkingSetIndex.value
+        : this.derivedFromWorkingSetIndex,
+    warmupWeightRuleJson: warmupWeightRuleJson.present
+        ? warmupWeightRuleJson.value
+        : this.warmupWeightRuleJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ProgramTemplateExerciseSet copyWithCompanion(
+    ProgramTemplateExerciseSetsCompanion data,
+  ) {
+    return ProgramTemplateExerciseSet(
+      id: data.id.present ? data.id.value : this.id,
+      templateExerciseId: data.templateExerciseId.present
+          ? data.templateExerciseId.value
+          : this.templateExerciseId,
+      setIndex: data.setIndex.present ? data.setIndex.value : this.setIndex,
+      setType: data.setType.present ? data.setType.value : this.setType,
+      setIntent: data.setIntent.present ? data.setIntent.value : this.setIntent,
+      prescribedRepsMin: data.prescribedRepsMin.present
+          ? data.prescribedRepsMin.value
+          : this.prescribedRepsMin,
+      prescribedRepsMax: data.prescribedRepsMax.present
+          ? data.prescribedRepsMax.value
+          : this.prescribedRepsMax,
+      prescribedRepsExact: data.prescribedRepsExact.present
+          ? data.prescribedRepsExact.value
+          : this.prescribedRepsExact,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      distanceMeters: data.distanceMeters.present
+          ? data.distanceMeters.value
+          : this.distanceMeters,
+      weightPrescriptionType: data.weightPrescriptionType.present
+          ? data.weightPrescriptionType.value
+          : this.weightPrescriptionType,
+      prescribedWeightKg: data.prescribedWeightKg.present
+          ? data.prescribedWeightKg.value
+          : this.prescribedWeightKg,
+      prescribedWeightPct1rm: data.prescribedWeightPct1rm.present
+          ? data.prescribedWeightPct1rm.value
+          : this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking: data.prescribedWeightPctWorking.present
+          ? data.prescribedWeightPctWorking.value
+          : this.prescribedWeightPctWorking,
+      bodyweightMultiplier: data.bodyweightMultiplier.present
+          ? data.bodyweightMultiplier.value
+          : this.bodyweightMultiplier,
+      prescribedRpeMin: data.prescribedRpeMin.present
+          ? data.prescribedRpeMin.value
+          : this.prescribedRpeMin,
+      prescribedRpeMax: data.prescribedRpeMax.present
+          ? data.prescribedRpeMax.value
+          : this.prescribedRpeMax,
+      prescribedRir: data.prescribedRir.present
+          ? data.prescribedRir.value
+          : this.prescribedRir,
+      restSeconds: data.restSeconds.present
+          ? data.restSeconds.value
+          : this.restSeconds,
+      loadingModel: data.loadingModel.present
+          ? data.loadingModel.value
+          : this.loadingModel,
+      percent1rmMin: data.percent1rmMin.present
+          ? data.percent1rmMin.value
+          : this.percent1rmMin,
+      percent1rmMax: data.percent1rmMax.present
+          ? data.percent1rmMax.value
+          : this.percent1rmMax,
+      rpeMin: data.rpeMin.present ? data.rpeMin.value : this.rpeMin,
+      rpeMax: data.rpeMax.present ? data.rpeMax.value : this.rpeMax,
+      loadSelectionNote: data.loadSelectionNote.present
+          ? data.loadSelectionNote.value
+          : this.loadSelectionNote,
+      isCalibrationEstimate: data.isCalibrationEstimate.present
+          ? data.isCalibrationEstimate.value
+          : this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex: data.derivedFromWorkingSetIndex.present
+          ? data.derivedFromWorkingSetIndex.value
+          : this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: data.warmupWeightRuleJson.present
+          ? data.warmupWeightRuleJson.value
+          : this.warmupWeightRuleJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTemplateExerciseSet(')
+          ..write('id: $id, ')
+          ..write('templateExerciseId: $templateExerciseId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    templateExerciseId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramTemplateExerciseSet &&
+          other.id == this.id &&
+          other.templateExerciseId == this.templateExerciseId &&
+          other.setIndex == this.setIndex &&
+          other.setType == this.setType &&
+          other.setIntent == this.setIntent &&
+          other.prescribedRepsMin == this.prescribedRepsMin &&
+          other.prescribedRepsMax == this.prescribedRepsMax &&
+          other.prescribedRepsExact == this.prescribedRepsExact &&
+          other.durationSeconds == this.durationSeconds &&
+          other.distanceMeters == this.distanceMeters &&
+          other.weightPrescriptionType == this.weightPrescriptionType &&
+          other.prescribedWeightKg == this.prescribedWeightKg &&
+          other.prescribedWeightPct1rm == this.prescribedWeightPct1rm &&
+          other.prescribedWeightPctWorking == this.prescribedWeightPctWorking &&
+          other.bodyweightMultiplier == this.bodyweightMultiplier &&
+          other.prescribedRpeMin == this.prescribedRpeMin &&
+          other.prescribedRpeMax == this.prescribedRpeMax &&
+          other.prescribedRir == this.prescribedRir &&
+          other.restSeconds == this.restSeconds &&
+          other.loadingModel == this.loadingModel &&
+          other.percent1rmMin == this.percent1rmMin &&
+          other.percent1rmMax == this.percent1rmMax &&
+          other.rpeMin == this.rpeMin &&
+          other.rpeMax == this.rpeMax &&
+          other.loadSelectionNote == this.loadSelectionNote &&
+          other.isCalibrationEstimate == this.isCalibrationEstimate &&
+          other.derivedFromWorkingSetIndex == this.derivedFromWorkingSetIndex &&
+          other.warmupWeightRuleJson == this.warmupWeightRuleJson &&
+          other.createdAt == this.createdAt);
+}
+
+class ProgramTemplateExerciseSetsCompanion
+    extends UpdateCompanion<ProgramTemplateExerciseSet> {
+  final Value<String> id;
+  final Value<String> templateExerciseId;
+  final Value<int> setIndex;
+  final Value<String> setType;
+  final Value<String?> setIntent;
+  final Value<int?> prescribedRepsMin;
+  final Value<int?> prescribedRepsMax;
+  final Value<int?> prescribedRepsExact;
+  final Value<int?> durationSeconds;
+  final Value<double?> distanceMeters;
+  final Value<String?> weightPrescriptionType;
+  final Value<double?> prescribedWeightKg;
+  final Value<double?> prescribedWeightPct1rm;
+  final Value<double?> prescribedWeightPctWorking;
+  final Value<double?> bodyweightMultiplier;
+  final Value<double?> prescribedRpeMin;
+  final Value<double?> prescribedRpeMax;
+  final Value<int?> prescribedRir;
+  final Value<int?> restSeconds;
+  final Value<String?> loadingModel;
+  final Value<double?> percent1rmMin;
+  final Value<double?> percent1rmMax;
+  final Value<double?> rpeMin;
+  final Value<double?> rpeMax;
+  final Value<String?> loadSelectionNote;
+  final Value<bool> isCalibrationEstimate;
+  final Value<int?> derivedFromWorkingSetIndex;
+  final Value<String?> warmupWeightRuleJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const ProgramTemplateExerciseSetsCompanion({
+    this.id = const Value.absent(),
+    this.templateExerciseId = const Value.absent(),
+    this.setIndex = const Value.absent(),
+    this.setType = const Value.absent(),
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramTemplateExerciseSetsCompanion.insert({
+    required String id,
+    required String templateExerciseId,
+    required int setIndex,
+    required String setType,
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       templateExerciseId = Value(templateExerciseId),
+       setIndex = Value(setIndex),
+       setType = Value(setType),
+       createdAt = Value(createdAt);
+  static Insertable<ProgramTemplateExerciseSet> custom({
+    Expression<String>? id,
+    Expression<String>? templateExerciseId,
+    Expression<int>? setIndex,
+    Expression<String>? setType,
+    Expression<String>? setIntent,
+    Expression<int>? prescribedRepsMin,
+    Expression<int>? prescribedRepsMax,
+    Expression<int>? prescribedRepsExact,
+    Expression<int>? durationSeconds,
+    Expression<double>? distanceMeters,
+    Expression<String>? weightPrescriptionType,
+    Expression<double>? prescribedWeightKg,
+    Expression<double>? prescribedWeightPct1rm,
+    Expression<double>? prescribedWeightPctWorking,
+    Expression<double>? bodyweightMultiplier,
+    Expression<double>? prescribedRpeMin,
+    Expression<double>? prescribedRpeMax,
+    Expression<int>? prescribedRir,
+    Expression<int>? restSeconds,
+    Expression<String>? loadingModel,
+    Expression<double>? percent1rmMin,
+    Expression<double>? percent1rmMax,
+    Expression<double>? rpeMin,
+    Expression<double>? rpeMax,
+    Expression<String>? loadSelectionNote,
+    Expression<bool>? isCalibrationEstimate,
+    Expression<int>? derivedFromWorkingSetIndex,
+    Expression<String>? warmupWeightRuleJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (templateExerciseId != null)
+        'template_exercise_id': templateExerciseId,
+      if (setIndex != null) 'set_index': setIndex,
+      if (setType != null) 'set_type': setType,
+      if (setIntent != null) 'set_intent': setIntent,
+      if (prescribedRepsMin != null) 'prescribed_reps_min': prescribedRepsMin,
+      if (prescribedRepsMax != null) 'prescribed_reps_max': prescribedRepsMax,
+      if (prescribedRepsExact != null)
+        'prescribed_reps_exact': prescribedRepsExact,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (distanceMeters != null) 'distance_meters': distanceMeters,
+      if (weightPrescriptionType != null)
+        'weight_prescription_type': weightPrescriptionType,
+      if (prescribedWeightKg != null)
+        'prescribed_weight_kg': prescribedWeightKg,
+      if (prescribedWeightPct1rm != null)
+        'prescribed_weight_pct1rm': prescribedWeightPct1rm,
+      if (prescribedWeightPctWorking != null)
+        'prescribed_weight_pct_working': prescribedWeightPctWorking,
+      if (bodyweightMultiplier != null)
+        'bodyweight_multiplier': bodyweightMultiplier,
+      if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
+      if (prescribedRpeMax != null) 'prescribed_rpe_max': prescribedRpeMax,
+      if (prescribedRir != null) 'prescribed_rir': prescribedRir,
+      if (restSeconds != null) 'rest_seconds': restSeconds,
+      if (loadingModel != null) 'loading_model': loadingModel,
+      if (percent1rmMin != null) 'percent1rm_min': percent1rmMin,
+      if (percent1rmMax != null) 'percent1rm_max': percent1rmMax,
+      if (rpeMin != null) 'rpe_min': rpeMin,
+      if (rpeMax != null) 'rpe_max': rpeMax,
+      if (loadSelectionNote != null) 'load_selection_note': loadSelectionNote,
+      if (isCalibrationEstimate != null)
+        'is_calibration_estimate': isCalibrationEstimate,
+      if (derivedFromWorkingSetIndex != null)
+        'derived_from_working_set_index': derivedFromWorkingSetIndex,
+      if (warmupWeightRuleJson != null)
+        'warmup_weight_rule_json': warmupWeightRuleJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramTemplateExerciseSetsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? templateExerciseId,
+    Value<int>? setIndex,
+    Value<String>? setType,
+    Value<String?>? setIntent,
+    Value<int?>? prescribedRepsMin,
+    Value<int?>? prescribedRepsMax,
+    Value<int?>? prescribedRepsExact,
+    Value<int?>? durationSeconds,
+    Value<double?>? distanceMeters,
+    Value<String?>? weightPrescriptionType,
+    Value<double?>? prescribedWeightKg,
+    Value<double?>? prescribedWeightPct1rm,
+    Value<double?>? prescribedWeightPctWorking,
+    Value<double?>? bodyweightMultiplier,
+    Value<double?>? prescribedRpeMin,
+    Value<double?>? prescribedRpeMax,
+    Value<int?>? prescribedRir,
+    Value<int?>? restSeconds,
+    Value<String?>? loadingModel,
+    Value<double?>? percent1rmMin,
+    Value<double?>? percent1rmMax,
+    Value<double?>? rpeMin,
+    Value<double?>? rpeMax,
+    Value<String?>? loadSelectionNote,
+    Value<bool>? isCalibrationEstimate,
+    Value<int?>? derivedFromWorkingSetIndex,
+    Value<String?>? warmupWeightRuleJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramTemplateExerciseSetsCompanion(
+      id: id ?? this.id,
+      templateExerciseId: templateExerciseId ?? this.templateExerciseId,
+      setIndex: setIndex ?? this.setIndex,
+      setType: setType ?? this.setType,
+      setIntent: setIntent ?? this.setIntent,
+      prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact ?? this.prescribedRepsExact,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      distanceMeters: distanceMeters ?? this.distanceMeters,
+      weightPrescriptionType:
+          weightPrescriptionType ?? this.weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
+      prescribedWeightPct1rm:
+          prescribedWeightPct1rm ?? this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking ?? this.prescribedWeightPctWorking,
+      bodyweightMultiplier: bodyweightMultiplier ?? this.bodyweightMultiplier,
+      prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      prescribedRir: prescribedRir ?? this.prescribedRir,
+      restSeconds: restSeconds ?? this.restSeconds,
+      loadingModel: loadingModel ?? this.loadingModel,
+      percent1rmMin: percent1rmMin ?? this.percent1rmMin,
+      percent1rmMax: percent1rmMax ?? this.percent1rmMax,
+      rpeMin: rpeMin ?? this.rpeMin,
+      rpeMax: rpeMax ?? this.rpeMax,
+      loadSelectionNote: loadSelectionNote ?? this.loadSelectionNote,
+      isCalibrationEstimate:
+          isCalibrationEstimate ?? this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex ?? this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: warmupWeightRuleJson ?? this.warmupWeightRuleJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (templateExerciseId.present) {
+      map['template_exercise_id'] = Variable<String>(templateExerciseId.value);
+    }
+    if (setIndex.present) {
+      map['set_index'] = Variable<int>(setIndex.value);
+    }
+    if (setType.present) {
+      map['set_type'] = Variable<String>(setType.value);
+    }
+    if (setIntent.present) {
+      map['set_intent'] = Variable<String>(setIntent.value);
+    }
+    if (prescribedRepsMin.present) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin.value);
+    }
+    if (prescribedRepsMax.present) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax.value);
+    }
+    if (prescribedRepsExact.present) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (distanceMeters.present) {
+      map['distance_meters'] = Variable<double>(distanceMeters.value);
+    }
+    if (weightPrescriptionType.present) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType.value,
+      );
+    }
+    if (prescribedWeightKg.present) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg.value);
+    }
+    if (prescribedWeightPct1rm.present) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm.value,
+      );
+    }
+    if (prescribedWeightPctWorking.present) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking.value,
+      );
+    }
+    if (bodyweightMultiplier.present) {
+      map['bodyweight_multiplier'] = Variable<double>(
+        bodyweightMultiplier.value,
+      );
+    }
+    if (prescribedRpeMin.present) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin.value);
+    }
+    if (prescribedRpeMax.present) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax.value);
+    }
+    if (prescribedRir.present) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir.value);
+    }
+    if (restSeconds.present) {
+      map['rest_seconds'] = Variable<int>(restSeconds.value);
+    }
+    if (loadingModel.present) {
+      map['loading_model'] = Variable<String>(loadingModel.value);
+    }
+    if (percent1rmMin.present) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin.value);
+    }
+    if (percent1rmMax.present) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax.value);
+    }
+    if (rpeMin.present) {
+      map['rpe_min'] = Variable<double>(rpeMin.value);
+    }
+    if (rpeMax.present) {
+      map['rpe_max'] = Variable<double>(rpeMax.value);
+    }
+    if (loadSelectionNote.present) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote.value);
+    }
+    if (isCalibrationEstimate.present) {
+      map['is_calibration_estimate'] = Variable<bool>(
+        isCalibrationEstimate.value,
+      );
+    }
+    if (derivedFromWorkingSetIndex.present) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex.value,
+      );
+    }
+    if (warmupWeightRuleJson.present) {
+      map['warmup_weight_rule_json'] = Variable<String>(
+        warmupWeightRuleJson.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTemplateExerciseSetsCompanion(')
+          ..write('id: $id, ')
+          ..write('templateExerciseId: $templateExerciseId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramWeeksTable extends ProgramWeeks
+    with TableInfo<$ProgramWeeksTable, ProgramWeek> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramWeeksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weekNumberMeta = const VerificationMeta(
+    'weekNumber',
+  );
+  @override
+  late final GeneratedColumn<int> weekNumber = GeneratedColumn<int>(
+    'week_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weekTypeMeta = const VerificationMeta(
+    'weekType',
+  );
+  @override
+  late final GeneratedColumn<String> weekType = GeneratedColumn<String>(
+    'week_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startsOnLocalMeta = const VerificationMeta(
+    'startsOnLocal',
+  );
+  @override
+  late final GeneratedColumn<String> startsOnLocal = GeneratedColumn<String>(
+    'starts_on_local',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programId,
+    weekNumber,
+    weekType,
+    startsOnLocal,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_weeks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramWeek> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('week_number')) {
+      context.handle(
+        _weekNumberMeta,
+        weekNumber.isAcceptableOrUnknown(data['week_number']!, _weekNumberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weekNumberMeta);
+    }
+    if (data.containsKey('week_type')) {
+      context.handle(
+        _weekTypeMeta,
+        weekType.isAcceptableOrUnknown(data['week_type']!, _weekTypeMeta),
+      );
+    }
+    if (data.containsKey('starts_on_local')) {
+      context.handle(
+        _startsOnLocalMeta,
+        startsOnLocal.isAcceptableOrUnknown(
+          data['starts_on_local']!,
+          _startsOnLocalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramWeek map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramWeek(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      weekNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}week_number'],
+      )!,
+      weekType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}week_type'],
+      ),
+      startsOnLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}starts_on_local'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $ProgramWeeksTable createAlias(String alias) {
+    return $ProgramWeeksTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramWeek extends DataClass implements Insertable<ProgramWeek> {
+  final String id;
+  final String programId;
+  final int weekNumber;
+  final String? weekType;
+  final String? startsOnLocal;
+  final String? notes;
+  const ProgramWeek({
+    required this.id,
+    required this.programId,
+    required this.weekNumber,
+    this.weekType,
+    this.startsOnLocal,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_id'] = Variable<String>(programId);
+    map['week_number'] = Variable<int>(weekNumber);
+    if (!nullToAbsent || weekType != null) {
+      map['week_type'] = Variable<String>(weekType);
+    }
+    if (!nullToAbsent || startsOnLocal != null) {
+      map['starts_on_local'] = Variable<String>(startsOnLocal);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  ProgramWeeksCompanion toCompanion(bool nullToAbsent) {
+    return ProgramWeeksCompanion(
+      id: Value(id),
+      programId: Value(programId),
+      weekNumber: Value(weekNumber),
+      weekType: weekType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weekType),
+      startsOnLocal: startsOnLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startsOnLocal),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory ProgramWeek.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramWeek(
+      id: serializer.fromJson<String>(json['id']),
+      programId: serializer.fromJson<String>(json['programId']),
+      weekNumber: serializer.fromJson<int>(json['weekNumber']),
+      weekType: serializer.fromJson<String?>(json['weekType']),
+      startsOnLocal: serializer.fromJson<String?>(json['startsOnLocal']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programId': serializer.toJson<String>(programId),
+      'weekNumber': serializer.toJson<int>(weekNumber),
+      'weekType': serializer.toJson<String?>(weekType),
+      'startsOnLocal': serializer.toJson<String?>(startsOnLocal),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  ProgramWeek copyWith({
+    String? id,
+    String? programId,
+    int? weekNumber,
+    Value<String?> weekType = const Value.absent(),
+    Value<String?> startsOnLocal = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => ProgramWeek(
+    id: id ?? this.id,
+    programId: programId ?? this.programId,
+    weekNumber: weekNumber ?? this.weekNumber,
+    weekType: weekType.present ? weekType.value : this.weekType,
+    startsOnLocal: startsOnLocal.present
+        ? startsOnLocal.value
+        : this.startsOnLocal,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  ProgramWeek copyWithCompanion(ProgramWeeksCompanion data) {
+    return ProgramWeek(
+      id: data.id.present ? data.id.value : this.id,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      weekNumber: data.weekNumber.present
+          ? data.weekNumber.value
+          : this.weekNumber,
+      weekType: data.weekType.present ? data.weekType.value : this.weekType,
+      startsOnLocal: data.startsOnLocal.present
+          ? data.startsOnLocal.value
+          : this.startsOnLocal,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWeek(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('weekNumber: $weekNumber, ')
+          ..write('weekType: $weekType, ')
+          ..write('startsOnLocal: $startsOnLocal, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, programId, weekNumber, weekType, startsOnLocal, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramWeek &&
+          other.id == this.id &&
+          other.programId == this.programId &&
+          other.weekNumber == this.weekNumber &&
+          other.weekType == this.weekType &&
+          other.startsOnLocal == this.startsOnLocal &&
+          other.notes == this.notes);
+}
+
+class ProgramWeeksCompanion extends UpdateCompanion<ProgramWeek> {
+  final Value<String> id;
+  final Value<String> programId;
+  final Value<int> weekNumber;
+  final Value<String?> weekType;
+  final Value<String?> startsOnLocal;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const ProgramWeeksCompanion({
+    this.id = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.weekNumber = const Value.absent(),
+    this.weekType = const Value.absent(),
+    this.startsOnLocal = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramWeeksCompanion.insert({
+    required String id,
+    required String programId,
+    required int weekNumber,
+    this.weekType = const Value.absent(),
+    this.startsOnLocal = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programId = Value(programId),
+       weekNumber = Value(weekNumber);
+  static Insertable<ProgramWeek> custom({
+    Expression<String>? id,
+    Expression<String>? programId,
+    Expression<int>? weekNumber,
+    Expression<String>? weekType,
+    Expression<String>? startsOnLocal,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programId != null) 'program_id': programId,
+      if (weekNumber != null) 'week_number': weekNumber,
+      if (weekType != null) 'week_type': weekType,
+      if (startsOnLocal != null) 'starts_on_local': startsOnLocal,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramWeeksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programId,
+    Value<int>? weekNumber,
+    Value<String?>? weekType,
+    Value<String?>? startsOnLocal,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return ProgramWeeksCompanion(
+      id: id ?? this.id,
+      programId: programId ?? this.programId,
+      weekNumber: weekNumber ?? this.weekNumber,
+      weekType: weekType ?? this.weekType,
+      startsOnLocal: startsOnLocal ?? this.startsOnLocal,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (weekNumber.present) {
+      map['week_number'] = Variable<int>(weekNumber.value);
+    }
+    if (weekType.present) {
+      map['week_type'] = Variable<String>(weekType.value);
+    }
+    if (startsOnLocal.present) {
+      map['starts_on_local'] = Variable<String>(startsOnLocal.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWeeksCompanion(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('weekNumber: $weekNumber, ')
+          ..write('weekType: $weekType, ')
+          ..write('startsOnLocal: $startsOnLocal, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramWorkoutsTable extends ProgramWorkouts
+    with TableInfo<$ProgramWorkoutsTable, ProgramWorkout> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramWorkoutsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programWeekIdMeta = const VerificationMeta(
+    'programWeekId',
+  );
+  @override
+  late final GeneratedColumn<String> programWeekId = GeneratedColumn<String>(
+    'program_week_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _workoutTemplateIdMeta = const VerificationMeta(
+    'workoutTemplateId',
+  );
+  @override
+  late final GeneratedColumn<String> workoutTemplateId =
+      GeneratedColumn<String>(
+        'workout_template_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _occurrenceRefMeta = const VerificationMeta(
+    'occurrenceRef',
+  );
+  @override
+  late final GeneratedColumn<String> occurrenceRef = GeneratedColumn<String>(
+    'occurrence_ref',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _scheduledDateLocalMeta =
+      const VerificationMeta('scheduledDateLocal');
+  @override
+  late final GeneratedColumn<String> scheduledDateLocal =
+      GeneratedColumn<String>(
+        'scheduled_date_local',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _scheduledDayIndexMeta = const VerificationMeta(
+    'scheduledDayIndex',
+  );
+  @override
+  late final GeneratedColumn<int> scheduledDayIndex = GeneratedColumn<int>(
+    'scheduled_day_index',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('planned'),
+  );
+  static const VerificationMeta _revisionIdMeta = const VerificationMeta(
+    'revisionId',
+  );
+  @override
+  late final GeneratedColumn<String> revisionId = GeneratedColumn<String>(
+    'revision_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programId,
+    programWeekId,
+    workoutTemplateId,
+    occurrenceRef,
+    name,
+    scheduledDateLocal,
+    scheduledDayIndex,
+    status,
+    revisionId,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_workouts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramWorkout> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('program_week_id')) {
+      context.handle(
+        _programWeekIdMeta,
+        programWeekId.isAcceptableOrUnknown(
+          data['program_week_id']!,
+          _programWeekIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('workout_template_id')) {
+      context.handle(
+        _workoutTemplateIdMeta,
+        workoutTemplateId.isAcceptableOrUnknown(
+          data['workout_template_id']!,
+          _workoutTemplateIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('occurrence_ref')) {
+      context.handle(
+        _occurrenceRefMeta,
+        occurrenceRef.isAcceptableOrUnknown(
+          data['occurrence_ref']!,
+          _occurrenceRefMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_occurrenceRefMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('scheduled_date_local')) {
+      context.handle(
+        _scheduledDateLocalMeta,
+        scheduledDateLocal.isAcceptableOrUnknown(
+          data['scheduled_date_local']!,
+          _scheduledDateLocalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('scheduled_day_index')) {
+      context.handle(
+        _scheduledDayIndexMeta,
+        scheduledDayIndex.isAcceptableOrUnknown(
+          data['scheduled_day_index']!,
+          _scheduledDayIndexMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('revision_id')) {
+      context.handle(
+        _revisionIdMeta,
+        revisionId.isAcceptableOrUnknown(data['revision_id']!, _revisionIdMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramWorkout map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramWorkout(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      programWeekId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_week_id'],
+      ),
+      workoutTemplateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workout_template_id'],
+      ),
+      occurrenceRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}occurrence_ref'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      scheduledDateLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scheduled_date_local'],
+      ),
+      scheduledDayIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scheduled_day_index'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      revisionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}revision_id'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramWorkoutsTable createAlias(String alias) {
+    return $ProgramWorkoutsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramWorkout extends DataClass implements Insertable<ProgramWorkout> {
+  final String id;
+  final String programId;
+  final String? programWeekId;
+  final String? workoutTemplateId;
+  final String occurrenceRef;
+  final String name;
+  final String? scheduledDateLocal;
+  final int? scheduledDayIndex;
+  final String status;
+  final String? revisionId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProgramWorkout({
+    required this.id,
+    required this.programId,
+    this.programWeekId,
+    this.workoutTemplateId,
+    required this.occurrenceRef,
+    required this.name,
+    this.scheduledDateLocal,
+    this.scheduledDayIndex,
+    required this.status,
+    this.revisionId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_id'] = Variable<String>(programId);
+    if (!nullToAbsent || programWeekId != null) {
+      map['program_week_id'] = Variable<String>(programWeekId);
+    }
+    if (!nullToAbsent || workoutTemplateId != null) {
+      map['workout_template_id'] = Variable<String>(workoutTemplateId);
+    }
+    map['occurrence_ref'] = Variable<String>(occurrenceRef);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || scheduledDateLocal != null) {
+      map['scheduled_date_local'] = Variable<String>(scheduledDateLocal);
+    }
+    if (!nullToAbsent || scheduledDayIndex != null) {
+      map['scheduled_day_index'] = Variable<int>(scheduledDayIndex);
+    }
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || revisionId != null) {
+      map['revision_id'] = Variable<String>(revisionId);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProgramWorkoutsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramWorkoutsCompanion(
+      id: Value(id),
+      programId: Value(programId),
+      programWeekId: programWeekId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programWeekId),
+      workoutTemplateId: workoutTemplateId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workoutTemplateId),
+      occurrenceRef: Value(occurrenceRef),
+      name: Value(name),
+      scheduledDateLocal: scheduledDateLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scheduledDateLocal),
+      scheduledDayIndex: scheduledDayIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scheduledDayIndex),
+      status: Value(status),
+      revisionId: revisionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(revisionId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProgramWorkout.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramWorkout(
+      id: serializer.fromJson<String>(json['id']),
+      programId: serializer.fromJson<String>(json['programId']),
+      programWeekId: serializer.fromJson<String?>(json['programWeekId']),
+      workoutTemplateId: serializer.fromJson<String?>(
+        json['workoutTemplateId'],
+      ),
+      occurrenceRef: serializer.fromJson<String>(json['occurrenceRef']),
+      name: serializer.fromJson<String>(json['name']),
+      scheduledDateLocal: serializer.fromJson<String?>(
+        json['scheduledDateLocal'],
+      ),
+      scheduledDayIndex: serializer.fromJson<int?>(json['scheduledDayIndex']),
+      status: serializer.fromJson<String>(json['status']),
+      revisionId: serializer.fromJson<String?>(json['revisionId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programId': serializer.toJson<String>(programId),
+      'programWeekId': serializer.toJson<String?>(programWeekId),
+      'workoutTemplateId': serializer.toJson<String?>(workoutTemplateId),
+      'occurrenceRef': serializer.toJson<String>(occurrenceRef),
+      'name': serializer.toJson<String>(name),
+      'scheduledDateLocal': serializer.toJson<String?>(scheduledDateLocal),
+      'scheduledDayIndex': serializer.toJson<int?>(scheduledDayIndex),
+      'status': serializer.toJson<String>(status),
+      'revisionId': serializer.toJson<String?>(revisionId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProgramWorkout copyWith({
+    String? id,
+    String? programId,
+    Value<String?> programWeekId = const Value.absent(),
+    Value<String?> workoutTemplateId = const Value.absent(),
+    String? occurrenceRef,
+    String? name,
+    Value<String?> scheduledDateLocal = const Value.absent(),
+    Value<int?> scheduledDayIndex = const Value.absent(),
+    String? status,
+    Value<String?> revisionId = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProgramWorkout(
+    id: id ?? this.id,
+    programId: programId ?? this.programId,
+    programWeekId: programWeekId.present
+        ? programWeekId.value
+        : this.programWeekId,
+    workoutTemplateId: workoutTemplateId.present
+        ? workoutTemplateId.value
+        : this.workoutTemplateId,
+    occurrenceRef: occurrenceRef ?? this.occurrenceRef,
+    name: name ?? this.name,
+    scheduledDateLocal: scheduledDateLocal.present
+        ? scheduledDateLocal.value
+        : this.scheduledDateLocal,
+    scheduledDayIndex: scheduledDayIndex.present
+        ? scheduledDayIndex.value
+        : this.scheduledDayIndex,
+    status: status ?? this.status,
+    revisionId: revisionId.present ? revisionId.value : this.revisionId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProgramWorkout copyWithCompanion(ProgramWorkoutsCompanion data) {
+    return ProgramWorkout(
+      id: data.id.present ? data.id.value : this.id,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      programWeekId: data.programWeekId.present
+          ? data.programWeekId.value
+          : this.programWeekId,
+      workoutTemplateId: data.workoutTemplateId.present
+          ? data.workoutTemplateId.value
+          : this.workoutTemplateId,
+      occurrenceRef: data.occurrenceRef.present
+          ? data.occurrenceRef.value
+          : this.occurrenceRef,
+      name: data.name.present ? data.name.value : this.name,
+      scheduledDateLocal: data.scheduledDateLocal.present
+          ? data.scheduledDateLocal.value
+          : this.scheduledDateLocal,
+      scheduledDayIndex: data.scheduledDayIndex.present
+          ? data.scheduledDayIndex.value
+          : this.scheduledDayIndex,
+      status: data.status.present ? data.status.value : this.status,
+      revisionId: data.revisionId.present
+          ? data.revisionId.value
+          : this.revisionId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWorkout(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('programWeekId: $programWeekId, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('occurrenceRef: $occurrenceRef, ')
+          ..write('name: $name, ')
+          ..write('scheduledDateLocal: $scheduledDateLocal, ')
+          ..write('scheduledDayIndex: $scheduledDayIndex, ')
+          ..write('status: $status, ')
+          ..write('revisionId: $revisionId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    programId,
+    programWeekId,
+    workoutTemplateId,
+    occurrenceRef,
+    name,
+    scheduledDateLocal,
+    scheduledDayIndex,
+    status,
+    revisionId,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramWorkout &&
+          other.id == this.id &&
+          other.programId == this.programId &&
+          other.programWeekId == this.programWeekId &&
+          other.workoutTemplateId == this.workoutTemplateId &&
+          other.occurrenceRef == this.occurrenceRef &&
+          other.name == this.name &&
+          other.scheduledDateLocal == this.scheduledDateLocal &&
+          other.scheduledDayIndex == this.scheduledDayIndex &&
+          other.status == this.status &&
+          other.revisionId == this.revisionId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProgramWorkoutsCompanion extends UpdateCompanion<ProgramWorkout> {
+  final Value<String> id;
+  final Value<String> programId;
+  final Value<String?> programWeekId;
+  final Value<String?> workoutTemplateId;
+  final Value<String> occurrenceRef;
+  final Value<String> name;
+  final Value<String?> scheduledDateLocal;
+  final Value<int?> scheduledDayIndex;
+  final Value<String> status;
+  final Value<String?> revisionId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProgramWorkoutsCompanion({
+    this.id = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.programWeekId = const Value.absent(),
+    this.workoutTemplateId = const Value.absent(),
+    this.occurrenceRef = const Value.absent(),
+    this.name = const Value.absent(),
+    this.scheduledDateLocal = const Value.absent(),
+    this.scheduledDayIndex = const Value.absent(),
+    this.status = const Value.absent(),
+    this.revisionId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramWorkoutsCompanion.insert({
+    required String id,
+    required String programId,
+    this.programWeekId = const Value.absent(),
+    this.workoutTemplateId = const Value.absent(),
+    required String occurrenceRef,
+    required String name,
+    this.scheduledDateLocal = const Value.absent(),
+    this.scheduledDayIndex = const Value.absent(),
+    this.status = const Value.absent(),
+    this.revisionId = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programId = Value(programId),
+       occurrenceRef = Value(occurrenceRef),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProgramWorkout> custom({
+    Expression<String>? id,
+    Expression<String>? programId,
+    Expression<String>? programWeekId,
+    Expression<String>? workoutTemplateId,
+    Expression<String>? occurrenceRef,
+    Expression<String>? name,
+    Expression<String>? scheduledDateLocal,
+    Expression<int>? scheduledDayIndex,
+    Expression<String>? status,
+    Expression<String>? revisionId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programId != null) 'program_id': programId,
+      if (programWeekId != null) 'program_week_id': programWeekId,
+      if (workoutTemplateId != null) 'workout_template_id': workoutTemplateId,
+      if (occurrenceRef != null) 'occurrence_ref': occurrenceRef,
+      if (name != null) 'name': name,
+      if (scheduledDateLocal != null)
+        'scheduled_date_local': scheduledDateLocal,
+      if (scheduledDayIndex != null) 'scheduled_day_index': scheduledDayIndex,
+      if (status != null) 'status': status,
+      if (revisionId != null) 'revision_id': revisionId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramWorkoutsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programId,
+    Value<String?>? programWeekId,
+    Value<String?>? workoutTemplateId,
+    Value<String>? occurrenceRef,
+    Value<String>? name,
+    Value<String?>? scheduledDateLocal,
+    Value<int?>? scheduledDayIndex,
+    Value<String>? status,
+    Value<String?>? revisionId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramWorkoutsCompanion(
+      id: id ?? this.id,
+      programId: programId ?? this.programId,
+      programWeekId: programWeekId ?? this.programWeekId,
+      workoutTemplateId: workoutTemplateId ?? this.workoutTemplateId,
+      occurrenceRef: occurrenceRef ?? this.occurrenceRef,
+      name: name ?? this.name,
+      scheduledDateLocal: scheduledDateLocal ?? this.scheduledDateLocal,
+      scheduledDayIndex: scheduledDayIndex ?? this.scheduledDayIndex,
+      status: status ?? this.status,
+      revisionId: revisionId ?? this.revisionId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (programWeekId.present) {
+      map['program_week_id'] = Variable<String>(programWeekId.value);
+    }
+    if (workoutTemplateId.present) {
+      map['workout_template_id'] = Variable<String>(workoutTemplateId.value);
+    }
+    if (occurrenceRef.present) {
+      map['occurrence_ref'] = Variable<String>(occurrenceRef.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (scheduledDateLocal.present) {
+      map['scheduled_date_local'] = Variable<String>(scheduledDateLocal.value);
+    }
+    if (scheduledDayIndex.present) {
+      map['scheduled_day_index'] = Variable<int>(scheduledDayIndex.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (revisionId.present) {
+      map['revision_id'] = Variable<String>(revisionId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramWorkoutsCompanion(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('programWeekId: $programWeekId, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('occurrenceRef: $occurrenceRef, ')
+          ..write('name: $name, ')
+          ..write('scheduledDateLocal: $scheduledDateLocal, ')
+          ..write('scheduledDayIndex: $scheduledDayIndex, ')
+          ..write('status: $status, ')
+          ..write('revisionId: $revisionId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramExercisesTable extends ProgramExercises
+    with TableInfo<$ProgramExercisesTable, ProgramExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programWorkoutIdMeta = const VerificationMeta(
+    'programWorkoutId',
+  );
+  @override
+  late final GeneratedColumn<String> programWorkoutId = GeneratedColumn<String>(
+    'program_workout_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceTemplateExerciseIdMeta =
+      const VerificationMeta('sourceTemplateExerciseId');
+  @override
+  late final GeneratedColumn<String> sourceTemplateExerciseId =
+      GeneratedColumn<String>(
+        'source_template_exercise_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseRoleMeta = const VerificationMeta(
+    'exerciseRole',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseRole = GeneratedColumn<String>(
+    'exercise_role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetGroupIdMeta = const VerificationMeta(
+    'supersetGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> supersetGroupId = GeneratedColumn<String>(
+    'superset_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetOrderMeta = const VerificationMeta(
+    'supersetOrder',
+  );
+  @override
+  late final GeneratedColumn<int> supersetOrder = GeneratedColumn<int>(
+    'superset_order',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programWorkoutId,
+    sourceTemplateExerciseId,
+    exerciseId,
+    exerciseRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_workout_id')) {
+      context.handle(
+        _programWorkoutIdMeta,
+        programWorkoutId.isAcceptableOrUnknown(
+          data['program_workout_id']!,
+          _programWorkoutIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programWorkoutIdMeta);
+    }
+    if (data.containsKey('source_template_exercise_id')) {
+      context.handle(
+        _sourceTemplateExerciseIdMeta,
+        sourceTemplateExerciseId.isAcceptableOrUnknown(
+          data['source_template_exercise_id']!,
+          _sourceTemplateExerciseIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('exercise_role')) {
+      context.handle(
+        _exerciseRoleMeta,
+        exerciseRole.isAcceptableOrUnknown(
+          data['exercise_role']!,
+          _exerciseRoleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_group_id')) {
+      context.handle(
+        _supersetGroupIdMeta,
+        supersetGroupId.isAcceptableOrUnknown(
+          data['superset_group_id']!,
+          _supersetGroupIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_order')) {
+      context.handle(
+        _supersetOrderMeta,
+        supersetOrder.isAcceptableOrUnknown(
+          data['superset_order']!,
+          _supersetOrderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramExercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramExercise(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programWorkoutId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_workout_id'],
+      )!,
+      sourceTemplateExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_template_exercise_id'],
+      ),
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      exerciseRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_role'],
+      ),
+      supersetGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}superset_group_id'],
+      ),
+      supersetOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}superset_order'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $ProgramExercisesTable createAlias(String alias) {
+    return $ProgramExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramExercise extends DataClass implements Insertable<ProgramExercise> {
+  final String id;
+  final String programWorkoutId;
+  final String? sourceTemplateExerciseId;
+  final int exerciseId;
+  final String? exerciseRole;
+  final String? supersetGroupId;
+  final int? supersetOrder;
+  final int sortOrder;
+  final String? notes;
+  const ProgramExercise({
+    required this.id,
+    required this.programWorkoutId,
+    this.sourceTemplateExerciseId,
+    required this.exerciseId,
+    this.exerciseRole,
+    this.supersetGroupId,
+    this.supersetOrder,
+    required this.sortOrder,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_workout_id'] = Variable<String>(programWorkoutId);
+    if (!nullToAbsent || sourceTemplateExerciseId != null) {
+      map['source_template_exercise_id'] = Variable<String>(
+        sourceTemplateExerciseId,
+      );
+    }
+    map['exercise_id'] = Variable<int>(exerciseId);
+    if (!nullToAbsent || exerciseRole != null) {
+      map['exercise_role'] = Variable<String>(exerciseRole);
+    }
+    if (!nullToAbsent || supersetGroupId != null) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId);
+    }
+    if (!nullToAbsent || supersetOrder != null) {
+      map['superset_order'] = Variable<int>(supersetOrder);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  ProgramExercisesCompanion toCompanion(bool nullToAbsent) {
+    return ProgramExercisesCompanion(
+      id: Value(id),
+      programWorkoutId: Value(programWorkoutId),
+      sourceTemplateExerciseId: sourceTemplateExerciseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceTemplateExerciseId),
+      exerciseId: Value(exerciseId),
+      exerciseRole: exerciseRole == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exerciseRole),
+      supersetGroupId: supersetGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetGroupId),
+      supersetOrder: supersetOrder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetOrder),
+      sortOrder: Value(sortOrder),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory ProgramExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramExercise(
+      id: serializer.fromJson<String>(json['id']),
+      programWorkoutId: serializer.fromJson<String>(json['programWorkoutId']),
+      sourceTemplateExerciseId: serializer.fromJson<String?>(
+        json['sourceTemplateExerciseId'],
+      ),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      exerciseRole: serializer.fromJson<String?>(json['exerciseRole']),
+      supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
+      supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programWorkoutId': serializer.toJson<String>(programWorkoutId),
+      'sourceTemplateExerciseId': serializer.toJson<String?>(
+        sourceTemplateExerciseId,
+      ),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'exerciseRole': serializer.toJson<String?>(exerciseRole),
+      'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
+      'supersetOrder': serializer.toJson<int?>(supersetOrder),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  ProgramExercise copyWith({
+    String? id,
+    String? programWorkoutId,
+    Value<String?> sourceTemplateExerciseId = const Value.absent(),
+    int? exerciseId,
+    Value<String?> exerciseRole = const Value.absent(),
+    Value<String?> supersetGroupId = const Value.absent(),
+    Value<int?> supersetOrder = const Value.absent(),
+    int? sortOrder,
+    Value<String?> notes = const Value.absent(),
+  }) => ProgramExercise(
+    id: id ?? this.id,
+    programWorkoutId: programWorkoutId ?? this.programWorkoutId,
+    sourceTemplateExerciseId: sourceTemplateExerciseId.present
+        ? sourceTemplateExerciseId.value
+        : this.sourceTemplateExerciseId,
+    exerciseId: exerciseId ?? this.exerciseId,
+    exerciseRole: exerciseRole.present ? exerciseRole.value : this.exerciseRole,
+    supersetGroupId: supersetGroupId.present
+        ? supersetGroupId.value
+        : this.supersetGroupId,
+    supersetOrder: supersetOrder.present
+        ? supersetOrder.value
+        : this.supersetOrder,
+    sortOrder: sortOrder ?? this.sortOrder,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  ProgramExercise copyWithCompanion(ProgramExercisesCompanion data) {
+    return ProgramExercise(
+      id: data.id.present ? data.id.value : this.id,
+      programWorkoutId: data.programWorkoutId.present
+          ? data.programWorkoutId.value
+          : this.programWorkoutId,
+      sourceTemplateExerciseId: data.sourceTemplateExerciseId.present
+          ? data.sourceTemplateExerciseId.value
+          : this.sourceTemplateExerciseId,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      exerciseRole: data.exerciseRole.present
+          ? data.exerciseRole.value
+          : this.exerciseRole,
+      supersetGroupId: data.supersetGroupId.present
+          ? data.supersetGroupId.value
+          : this.supersetGroupId,
+      supersetOrder: data.supersetOrder.present
+          ? data.supersetOrder.value
+          : this.supersetOrder,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramExercise(')
+          ..write('id: $id, ')
+          ..write('programWorkoutId: $programWorkoutId, ')
+          ..write('sourceTemplateExerciseId: $sourceTemplateExerciseId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    programWorkoutId,
+    sourceTemplateExerciseId,
+    exerciseId,
+    exerciseRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramExercise &&
+          other.id == this.id &&
+          other.programWorkoutId == this.programWorkoutId &&
+          other.sourceTemplateExerciseId == this.sourceTemplateExerciseId &&
+          other.exerciseId == this.exerciseId &&
+          other.exerciseRole == this.exerciseRole &&
+          other.supersetGroupId == this.supersetGroupId &&
+          other.supersetOrder == this.supersetOrder &&
+          other.sortOrder == this.sortOrder &&
+          other.notes == this.notes);
+}
+
+class ProgramExercisesCompanion extends UpdateCompanion<ProgramExercise> {
+  final Value<String> id;
+  final Value<String> programWorkoutId;
+  final Value<String?> sourceTemplateExerciseId;
+  final Value<int> exerciseId;
+  final Value<String?> exerciseRole;
+  final Value<String?> supersetGroupId;
+  final Value<int?> supersetOrder;
+  final Value<int> sortOrder;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const ProgramExercisesCompanion({
+    this.id = const Value.absent(),
+    this.programWorkoutId = const Value.absent(),
+    this.sourceTemplateExerciseId = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.exerciseRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramExercisesCompanion.insert({
+    required String id,
+    required String programWorkoutId,
+    this.sourceTemplateExerciseId = const Value.absent(),
+    required int exerciseId,
+    this.exerciseRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    required int sortOrder,
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programWorkoutId = Value(programWorkoutId),
+       exerciseId = Value(exerciseId),
+       sortOrder = Value(sortOrder);
+  static Insertable<ProgramExercise> custom({
+    Expression<String>? id,
+    Expression<String>? programWorkoutId,
+    Expression<String>? sourceTemplateExerciseId,
+    Expression<int>? exerciseId,
+    Expression<String>? exerciseRole,
+    Expression<String>? supersetGroupId,
+    Expression<int>? supersetOrder,
+    Expression<int>? sortOrder,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programWorkoutId != null) 'program_workout_id': programWorkoutId,
+      if (sourceTemplateExerciseId != null)
+        'source_template_exercise_id': sourceTemplateExerciseId,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (exerciseRole != null) 'exercise_role': exerciseRole,
+      if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
+      if (supersetOrder != null) 'superset_order': supersetOrder,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramExercisesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programWorkoutId,
+    Value<String?>? sourceTemplateExerciseId,
+    Value<int>? exerciseId,
+    Value<String?>? exerciseRole,
+    Value<String?>? supersetGroupId,
+    Value<int?>? supersetOrder,
+    Value<int>? sortOrder,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return ProgramExercisesCompanion(
+      id: id ?? this.id,
+      programWorkoutId: programWorkoutId ?? this.programWorkoutId,
+      sourceTemplateExerciseId:
+          sourceTemplateExerciseId ?? this.sourceTemplateExerciseId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      exerciseRole: exerciseRole ?? this.exerciseRole,
+      supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      supersetOrder: supersetOrder ?? this.supersetOrder,
+      sortOrder: sortOrder ?? this.sortOrder,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programWorkoutId.present) {
+      map['program_workout_id'] = Variable<String>(programWorkoutId.value);
+    }
+    if (sourceTemplateExerciseId.present) {
+      map['source_template_exercise_id'] = Variable<String>(
+        sourceTemplateExerciseId.value,
+      );
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (exerciseRole.present) {
+      map['exercise_role'] = Variable<String>(exerciseRole.value);
+    }
+    if (supersetGroupId.present) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId.value);
+    }
+    if (supersetOrder.present) {
+      map['superset_order'] = Variable<int>(supersetOrder.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('programWorkoutId: $programWorkoutId, ')
+          ..write('sourceTemplateExerciseId: $sourceTemplateExerciseId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramExerciseSetsTable extends ProgramExerciseSets
+    with TableInfo<$ProgramExerciseSetsTable, ProgramExerciseSet> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramExerciseSetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programExerciseIdMeta = const VerificationMeta(
+    'programExerciseId',
+  );
+  @override
+  late final GeneratedColumn<String> programExerciseId =
+      GeneratedColumn<String>(
+        'program_exercise_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _sourceTemplateSetIdMeta =
+      const VerificationMeta('sourceTemplateSetId');
+  @override
+  late final GeneratedColumn<String> sourceTemplateSetId =
+      GeneratedColumn<String>(
+        'source_template_set_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _setIndexMeta = const VerificationMeta(
+    'setIndex',
+  );
+  @override
+  late final GeneratedColumn<int> setIndex = GeneratedColumn<int>(
+    'set_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setTypeMeta = const VerificationMeta(
+    'setType',
+  );
+  @override
+  late final GeneratedColumn<String> setType = GeneratedColumn<String>(
+    'set_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setIntentMeta = const VerificationMeta(
+    'setIntent',
+  );
+  @override
+  late final GeneratedColumn<String> setIntent = GeneratedColumn<String>(
+    'set_intent',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMinMeta = const VerificationMeta(
+    'prescribedRepsMin',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMin = GeneratedColumn<int>(
+    'prescribed_reps_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMaxMeta = const VerificationMeta(
+    'prescribedRepsMax',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMax = GeneratedColumn<int>(
+    'prescribed_reps_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsExactMeta =
+      const VerificationMeta('prescribedRepsExact');
+  @override
+  late final GeneratedColumn<int> prescribedRepsExact = GeneratedColumn<int>(
+    'prescribed_reps_exact',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _distanceMetersMeta = const VerificationMeta(
+    'distanceMeters',
+  );
+  @override
+  late final GeneratedColumn<double> distanceMeters = GeneratedColumn<double>(
+    'distance_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightPrescriptionTypeMeta =
+      const VerificationMeta('weightPrescriptionType');
+  @override
+  late final GeneratedColumn<String> weightPrescriptionType =
+      GeneratedColumn<String>(
+        'weight_prescription_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightKgMeta =
+      const VerificationMeta('prescribedWeightKg');
+  @override
+  late final GeneratedColumn<double> prescribedWeightKg =
+      GeneratedColumn<double>(
+        'prescribed_weight_kg',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPct1rmMeta =
+      const VerificationMeta('prescribedWeightPct1rm');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPct1rm =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct1rm',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPctWorkingMeta =
+      const VerificationMeta('prescribedWeightPctWorking');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPctWorking =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct_working',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _bodyweightMultiplierMeta =
+      const VerificationMeta('bodyweightMultiplier');
+  @override
+  late final GeneratedColumn<double> bodyweightMultiplier =
+      GeneratedColumn<double>(
+        'bodyweight_multiplier',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedRpeMinMeta = const VerificationMeta(
+    'prescribedRpeMin',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMin = GeneratedColumn<double>(
+    'prescribed_rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRpeMaxMeta = const VerificationMeta(
+    'prescribedRpeMax',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMax = GeneratedColumn<double>(
+    'prescribed_rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRirMeta = const VerificationMeta(
+    'prescribedRir',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRir = GeneratedColumn<int>(
+    'prescribed_rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _restSecondsMeta = const VerificationMeta(
+    'restSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> restSeconds = GeneratedColumn<int>(
+    'rest_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadingModelMeta = const VerificationMeta(
+    'loadingModel',
+  );
+  @override
+  late final GeneratedColumn<String> loadingModel = GeneratedColumn<String>(
+    'loading_model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMinMeta = const VerificationMeta(
+    'percent1rmMin',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMin = GeneratedColumn<double>(
+    'percent1rm_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMaxMeta = const VerificationMeta(
+    'percent1rmMax',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMax = GeneratedColumn<double>(
+    'percent1rm_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMinMeta = const VerificationMeta('rpeMin');
+  @override
+  late final GeneratedColumn<double> rpeMin = GeneratedColumn<double>(
+    'rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMaxMeta = const VerificationMeta('rpeMax');
+  @override
+  late final GeneratedColumn<double> rpeMax = GeneratedColumn<double>(
+    'rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadSelectionNoteMeta = const VerificationMeta(
+    'loadSelectionNote',
+  );
+  @override
+  late final GeneratedColumn<String> loadSelectionNote =
+      GeneratedColumn<String>(
+        'load_selection_note',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isCalibrationEstimateMeta =
+      const VerificationMeta('isCalibrationEstimate');
+  @override
+  late final GeneratedColumn<bool> isCalibrationEstimate =
+      GeneratedColumn<bool>(
+        'is_calibration_estimate',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_calibration_estimate" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _derivedFromWorkingSetIndexMeta =
+      const VerificationMeta('derivedFromWorkingSetIndex');
+  @override
+  late final GeneratedColumn<int> derivedFromWorkingSetIndex =
+      GeneratedColumn<int>(
+        'derived_from_working_set_index',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _warmupWeightRuleJsonMeta =
+      const VerificationMeta('warmupWeightRuleJson');
+  @override
+  late final GeneratedColumn<String> warmupWeightRuleJson =
+      GeneratedColumn<String>(
+        'warmup_weight_rule_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programExerciseId,
+    sourceTemplateSetId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_exercise_sets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramExerciseSet> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_exercise_id')) {
+      context.handle(
+        _programExerciseIdMeta,
+        programExerciseId.isAcceptableOrUnknown(
+          data['program_exercise_id']!,
+          _programExerciseIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programExerciseIdMeta);
+    }
+    if (data.containsKey('source_template_set_id')) {
+      context.handle(
+        _sourceTemplateSetIdMeta,
+        sourceTemplateSetId.isAcceptableOrUnknown(
+          data['source_template_set_id']!,
+          _sourceTemplateSetIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('set_index')) {
+      context.handle(
+        _setIndexMeta,
+        setIndex.isAcceptableOrUnknown(data['set_index']!, _setIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setIndexMeta);
+    }
+    if (data.containsKey('set_type')) {
+      context.handle(
+        _setTypeMeta,
+        setType.isAcceptableOrUnknown(data['set_type']!, _setTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setTypeMeta);
+    }
+    if (data.containsKey('set_intent')) {
+      context.handle(
+        _setIntentMeta,
+        setIntent.isAcceptableOrUnknown(data['set_intent']!, _setIntentMeta),
+      );
+    }
+    if (data.containsKey('prescribed_reps_min')) {
+      context.handle(
+        _prescribedRepsMinMeta,
+        prescribedRepsMin.isAcceptableOrUnknown(
+          data['prescribed_reps_min']!,
+          _prescribedRepsMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_max')) {
+      context.handle(
+        _prescribedRepsMaxMeta,
+        prescribedRepsMax.isAcceptableOrUnknown(
+          data['prescribed_reps_max']!,
+          _prescribedRepsMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_exact')) {
+      context.handle(
+        _prescribedRepsExactMeta,
+        prescribedRepsExact.isAcceptableOrUnknown(
+          data['prescribed_reps_exact']!,
+          _prescribedRepsExactMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('distance_meters')) {
+      context.handle(
+        _distanceMetersMeta,
+        distanceMeters.isAcceptableOrUnknown(
+          data['distance_meters']!,
+          _distanceMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight_prescription_type')) {
+      context.handle(
+        _weightPrescriptionTypeMeta,
+        weightPrescriptionType.isAcceptableOrUnknown(
+          data['weight_prescription_type']!,
+          _weightPrescriptionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_kg')) {
+      context.handle(
+        _prescribedWeightKgMeta,
+        prescribedWeightKg.isAcceptableOrUnknown(
+          data['prescribed_weight_kg']!,
+          _prescribedWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct1rm')) {
+      context.handle(
+        _prescribedWeightPct1rmMeta,
+        prescribedWeightPct1rm.isAcceptableOrUnknown(
+          data['prescribed_weight_pct1rm']!,
+          _prescribedWeightPct1rmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct_working')) {
+      context.handle(
+        _prescribedWeightPctWorkingMeta,
+        prescribedWeightPctWorking.isAcceptableOrUnknown(
+          data['prescribed_weight_pct_working']!,
+          _prescribedWeightPctWorkingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_multiplier')) {
+      context.handle(
+        _bodyweightMultiplierMeta,
+        bodyweightMultiplier.isAcceptableOrUnknown(
+          data['bodyweight_multiplier']!,
+          _bodyweightMultiplierMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_min')) {
+      context.handle(
+        _prescribedRpeMinMeta,
+        prescribedRpeMin.isAcceptableOrUnknown(
+          data['prescribed_rpe_min']!,
+          _prescribedRpeMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_max')) {
+      context.handle(
+        _prescribedRpeMaxMeta,
+        prescribedRpeMax.isAcceptableOrUnknown(
+          data['prescribed_rpe_max']!,
+          _prescribedRpeMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rir')) {
+      context.handle(
+        _prescribedRirMeta,
+        prescribedRir.isAcceptableOrUnknown(
+          data['prescribed_rir']!,
+          _prescribedRirMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rest_seconds')) {
+      context.handle(
+        _restSecondsMeta,
+        restSeconds.isAcceptableOrUnknown(
+          data['rest_seconds']!,
+          _restSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loading_model')) {
+      context.handle(
+        _loadingModelMeta,
+        loadingModel.isAcceptableOrUnknown(
+          data['loading_model']!,
+          _loadingModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_min')) {
+      context.handle(
+        _percent1rmMinMeta,
+        percent1rmMin.isAcceptableOrUnknown(
+          data['percent1rm_min']!,
+          _percent1rmMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_max')) {
+      context.handle(
+        _percent1rmMaxMeta,
+        percent1rmMax.isAcceptableOrUnknown(
+          data['percent1rm_max']!,
+          _percent1rmMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rpe_min')) {
+      context.handle(
+        _rpeMinMeta,
+        rpeMin.isAcceptableOrUnknown(data['rpe_min']!, _rpeMinMeta),
+      );
+    }
+    if (data.containsKey('rpe_max')) {
+      context.handle(
+        _rpeMaxMeta,
+        rpeMax.isAcceptableOrUnknown(data['rpe_max']!, _rpeMaxMeta),
+      );
+    }
+    if (data.containsKey('load_selection_note')) {
+      context.handle(
+        _loadSelectionNoteMeta,
+        loadSelectionNote.isAcceptableOrUnknown(
+          data['load_selection_note']!,
+          _loadSelectionNoteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_calibration_estimate')) {
+      context.handle(
+        _isCalibrationEstimateMeta,
+        isCalibrationEstimate.isAcceptableOrUnknown(
+          data['is_calibration_estimate']!,
+          _isCalibrationEstimateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('derived_from_working_set_index')) {
+      context.handle(
+        _derivedFromWorkingSetIndexMeta,
+        derivedFromWorkingSetIndex.isAcceptableOrUnknown(
+          data['derived_from_working_set_index']!,
+          _derivedFromWorkingSetIndexMeta,
+        ),
+      );
+    }
+    if (data.containsKey('warmup_weight_rule_json')) {
+      context.handle(
+        _warmupWeightRuleJsonMeta,
+        warmupWeightRuleJson.isAcceptableOrUnknown(
+          data['warmup_weight_rule_json']!,
+          _warmupWeightRuleJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramExerciseSet map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramExerciseSet(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_exercise_id'],
+      )!,
+      sourceTemplateSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_template_set_id'],
+      ),
+      setIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}set_index'],
+      )!,
+      setType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_type'],
+      )!,
+      setIntent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_intent'],
+      ),
+      prescribedRepsMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_min'],
+      ),
+      prescribedRepsMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_max'],
+      ),
+      prescribedRepsExact: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_exact'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      distanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_meters'],
+      ),
+      weightPrescriptionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weight_prescription_type'],
+      ),
+      prescribedWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_kg'],
+      ),
+      prescribedWeightPct1rm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct1rm'],
+      ),
+      prescribedWeightPctWorking: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct_working'],
+      ),
+      bodyweightMultiplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_multiplier'],
+      ),
+      prescribedRpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_min'],
+      ),
+      prescribedRpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_max'],
+      ),
+      prescribedRir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_rir'],
+      ),
+      restSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_seconds'],
+      ),
+      loadingModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}loading_model'],
+      ),
+      percent1rmMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_min'],
+      ),
+      percent1rmMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_max'],
+      ),
+      rpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_min'],
+      ),
+      rpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_max'],
+      ),
+      loadSelectionNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}load_selection_note'],
+      ),
+      isCalibrationEstimate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_calibration_estimate'],
+      )!,
+      derivedFromWorkingSetIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}derived_from_working_set_index'],
+      ),
+      warmupWeightRuleJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}warmup_weight_rule_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramExerciseSetsTable createAlias(String alias) {
+    return $ProgramExerciseSetsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramExerciseSet extends DataClass
+    implements Insertable<ProgramExerciseSet> {
+  final String id;
+  final String programExerciseId;
+  final String? sourceTemplateSetId;
+  final int setIndex;
+  final String setType;
+  final String? setIntent;
+  final int? prescribedRepsMin;
+  final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
+  final int? durationSeconds;
+  final double? distanceMeters;
+  final String? weightPrescriptionType;
+  final double? prescribedWeightKg;
+  final double? prescribedWeightPct1rm;
+  final double? prescribedWeightPctWorking;
+  final double? bodyweightMultiplier;
+  final double? prescribedRpeMin;
+  final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? restSeconds;
+  final String? loadingModel;
+  final double? percent1rmMin;
+  final double? percent1rmMax;
+  final double? rpeMin;
+  final double? rpeMax;
+  final String? loadSelectionNote;
+  final bool isCalibrationEstimate;
+  final int? derivedFromWorkingSetIndex;
+  final String? warmupWeightRuleJson;
+  final DateTime createdAt;
+  const ProgramExerciseSet({
+    required this.id,
+    required this.programExerciseId,
+    this.sourceTemplateSetId,
+    required this.setIndex,
+    required this.setType,
+    this.setIntent,
+    this.prescribedRepsMin,
+    this.prescribedRepsMax,
+    this.prescribedRepsExact,
+    this.durationSeconds,
+    this.distanceMeters,
+    this.weightPrescriptionType,
+    this.prescribedWeightKg,
+    this.prescribedWeightPct1rm,
+    this.prescribedWeightPctWorking,
+    this.bodyweightMultiplier,
+    this.prescribedRpeMin,
+    this.prescribedRpeMax,
+    this.prescribedRir,
+    this.restSeconds,
+    this.loadingModel,
+    this.percent1rmMin,
+    this.percent1rmMax,
+    this.rpeMin,
+    this.rpeMax,
+    this.loadSelectionNote,
+    required this.isCalibrationEstimate,
+    this.derivedFromWorkingSetIndex,
+    this.warmupWeightRuleJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_exercise_id'] = Variable<String>(programExerciseId);
+    if (!nullToAbsent || sourceTemplateSetId != null) {
+      map['source_template_set_id'] = Variable<String>(sourceTemplateSetId);
+    }
+    map['set_index'] = Variable<int>(setIndex);
+    map['set_type'] = Variable<String>(setType);
+    if (!nullToAbsent || setIntent != null) {
+      map['set_intent'] = Variable<String>(setIntent);
+    }
+    if (!nullToAbsent || prescribedRepsMin != null) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin);
+    }
+    if (!nullToAbsent || prescribedRepsMax != null) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax);
+    }
+    if (!nullToAbsent || prescribedRepsExact != null) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    if (!nullToAbsent || distanceMeters != null) {
+      map['distance_meters'] = Variable<double>(distanceMeters);
+    }
+    if (!nullToAbsent || weightPrescriptionType != null) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightKg != null) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg);
+    }
+    if (!nullToAbsent || prescribedWeightPct1rm != null) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightPctWorking != null) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking,
+      );
+    }
+    if (!nullToAbsent || bodyweightMultiplier != null) {
+      map['bodyweight_multiplier'] = Variable<double>(bodyweightMultiplier);
+    }
+    if (!nullToAbsent || prescribedRpeMin != null) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin);
+    }
+    if (!nullToAbsent || prescribedRpeMax != null) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax);
+    }
+    if (!nullToAbsent || prescribedRir != null) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir);
+    }
+    if (!nullToAbsent || restSeconds != null) {
+      map['rest_seconds'] = Variable<int>(restSeconds);
+    }
+    if (!nullToAbsent || loadingModel != null) {
+      map['loading_model'] = Variable<String>(loadingModel);
+    }
+    if (!nullToAbsent || percent1rmMin != null) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin);
+    }
+    if (!nullToAbsent || percent1rmMax != null) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax);
+    }
+    if (!nullToAbsent || rpeMin != null) {
+      map['rpe_min'] = Variable<double>(rpeMin);
+    }
+    if (!nullToAbsent || rpeMax != null) {
+      map['rpe_max'] = Variable<double>(rpeMax);
+    }
+    if (!nullToAbsent || loadSelectionNote != null) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote);
+    }
+    map['is_calibration_estimate'] = Variable<bool>(isCalibrationEstimate);
+    if (!nullToAbsent || derivedFromWorkingSetIndex != null) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex,
+      );
+    }
+    if (!nullToAbsent || warmupWeightRuleJson != null) {
+      map['warmup_weight_rule_json'] = Variable<String>(warmupWeightRuleJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ProgramExerciseSetsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramExerciseSetsCompanion(
+      id: Value(id),
+      programExerciseId: Value(programExerciseId),
+      sourceTemplateSetId: sourceTemplateSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceTemplateSetId),
+      setIndex: Value(setIndex),
+      setType: Value(setType),
+      setIntent: setIntent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(setIntent),
+      prescribedRepsMin: prescribedRepsMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMin),
+      prescribedRepsMax: prescribedRepsMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMax),
+      prescribedRepsExact: prescribedRepsExact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsExact),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      distanceMeters: distanceMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(distanceMeters),
+      weightPrescriptionType: weightPrescriptionType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightPrescriptionType),
+      prescribedWeightKg: prescribedWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightKg),
+      prescribedWeightPct1rm: prescribedWeightPct1rm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPct1rm),
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPctWorking),
+      bodyweightMultiplier: bodyweightMultiplier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightMultiplier),
+      prescribedRpeMin: prescribedRpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMin),
+      prescribedRpeMax: prescribedRpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMax),
+      prescribedRir: prescribedRir == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRir),
+      restSeconds: restSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restSeconds),
+      loadingModel: loadingModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadingModel),
+      percent1rmMin: percent1rmMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMin),
+      percent1rmMax: percent1rmMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMax),
+      rpeMin: rpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMin),
+      rpeMax: rpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMax),
+      loadSelectionNote: loadSelectionNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadSelectionNote),
+      isCalibrationEstimate: Value(isCalibrationEstimate),
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(derivedFromWorkingSetIndex),
+      warmupWeightRuleJson: warmupWeightRuleJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(warmupWeightRuleJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ProgramExerciseSet.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramExerciseSet(
+      id: serializer.fromJson<String>(json['id']),
+      programExerciseId: serializer.fromJson<String>(json['programExerciseId']),
+      sourceTemplateSetId: serializer.fromJson<String?>(
+        json['sourceTemplateSetId'],
+      ),
+      setIndex: serializer.fromJson<int>(json['setIndex']),
+      setType: serializer.fromJson<String>(json['setType']),
+      setIntent: serializer.fromJson<String?>(json['setIntent']),
+      prescribedRepsMin: serializer.fromJson<int?>(json['prescribedRepsMin']),
+      prescribedRepsMax: serializer.fromJson<int?>(json['prescribedRepsMax']),
+      prescribedRepsExact: serializer.fromJson<int?>(
+        json['prescribedRepsExact'],
+      ),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      distanceMeters: serializer.fromJson<double?>(json['distanceMeters']),
+      weightPrescriptionType: serializer.fromJson<String?>(
+        json['weightPrescriptionType'],
+      ),
+      prescribedWeightKg: serializer.fromJson<double?>(
+        json['prescribedWeightKg'],
+      ),
+      prescribedWeightPct1rm: serializer.fromJson<double?>(
+        json['prescribedWeightPct1rm'],
+      ),
+      prescribedWeightPctWorking: serializer.fromJson<double?>(
+        json['prescribedWeightPctWorking'],
+      ),
+      bodyweightMultiplier: serializer.fromJson<double?>(
+        json['bodyweightMultiplier'],
+      ),
+      prescribedRpeMin: serializer.fromJson<double?>(json['prescribedRpeMin']),
+      prescribedRpeMax: serializer.fromJson<double?>(json['prescribedRpeMax']),
+      prescribedRir: serializer.fromJson<int?>(json['prescribedRir']),
+      restSeconds: serializer.fromJson<int?>(json['restSeconds']),
+      loadingModel: serializer.fromJson<String?>(json['loadingModel']),
+      percent1rmMin: serializer.fromJson<double?>(json['percent1rmMin']),
+      percent1rmMax: serializer.fromJson<double?>(json['percent1rmMax']),
+      rpeMin: serializer.fromJson<double?>(json['rpeMin']),
+      rpeMax: serializer.fromJson<double?>(json['rpeMax']),
+      loadSelectionNote: serializer.fromJson<String?>(
+        json['loadSelectionNote'],
+      ),
+      isCalibrationEstimate: serializer.fromJson<bool>(
+        json['isCalibrationEstimate'],
+      ),
+      derivedFromWorkingSetIndex: serializer.fromJson<int?>(
+        json['derivedFromWorkingSetIndex'],
+      ),
+      warmupWeightRuleJson: serializer.fromJson<String?>(
+        json['warmupWeightRuleJson'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programExerciseId': serializer.toJson<String>(programExerciseId),
+      'sourceTemplateSetId': serializer.toJson<String?>(sourceTemplateSetId),
+      'setIndex': serializer.toJson<int>(setIndex),
+      'setType': serializer.toJson<String>(setType),
+      'setIntent': serializer.toJson<String?>(setIntent),
+      'prescribedRepsMin': serializer.toJson<int?>(prescribedRepsMin),
+      'prescribedRepsMax': serializer.toJson<int?>(prescribedRepsMax),
+      'prescribedRepsExact': serializer.toJson<int?>(prescribedRepsExact),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'distanceMeters': serializer.toJson<double?>(distanceMeters),
+      'weightPrescriptionType': serializer.toJson<String?>(
+        weightPrescriptionType,
+      ),
+      'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
+      'prescribedWeightPct1rm': serializer.toJson<double?>(
+        prescribedWeightPct1rm,
+      ),
+      'prescribedWeightPctWorking': serializer.toJson<double?>(
+        prescribedWeightPctWorking,
+      ),
+      'bodyweightMultiplier': serializer.toJson<double?>(bodyweightMultiplier),
+      'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
+      'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
+      'prescribedRir': serializer.toJson<int?>(prescribedRir),
+      'restSeconds': serializer.toJson<int?>(restSeconds),
+      'loadingModel': serializer.toJson<String?>(loadingModel),
+      'percent1rmMin': serializer.toJson<double?>(percent1rmMin),
+      'percent1rmMax': serializer.toJson<double?>(percent1rmMax),
+      'rpeMin': serializer.toJson<double?>(rpeMin),
+      'rpeMax': serializer.toJson<double?>(rpeMax),
+      'loadSelectionNote': serializer.toJson<String?>(loadSelectionNote),
+      'isCalibrationEstimate': serializer.toJson<bool>(isCalibrationEstimate),
+      'derivedFromWorkingSetIndex': serializer.toJson<int?>(
+        derivedFromWorkingSetIndex,
+      ),
+      'warmupWeightRuleJson': serializer.toJson<String?>(warmupWeightRuleJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ProgramExerciseSet copyWith({
+    String? id,
+    String? programExerciseId,
+    Value<String?> sourceTemplateSetId = const Value.absent(),
+    int? setIndex,
+    String? setType,
+    Value<String?> setIntent = const Value.absent(),
+    Value<int?> prescribedRepsMin = const Value.absent(),
+    Value<int?> prescribedRepsMax = const Value.absent(),
+    Value<int?> prescribedRepsExact = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    Value<double?> distanceMeters = const Value.absent(),
+    Value<String?> weightPrescriptionType = const Value.absent(),
+    Value<double?> prescribedWeightKg = const Value.absent(),
+    Value<double?> prescribedWeightPct1rm = const Value.absent(),
+    Value<double?> prescribedWeightPctWorking = const Value.absent(),
+    Value<double?> bodyweightMultiplier = const Value.absent(),
+    Value<double?> prescribedRpeMin = const Value.absent(),
+    Value<double?> prescribedRpeMax = const Value.absent(),
+    Value<int?> prescribedRir = const Value.absent(),
+    Value<int?> restSeconds = const Value.absent(),
+    Value<String?> loadingModel = const Value.absent(),
+    Value<double?> percent1rmMin = const Value.absent(),
+    Value<double?> percent1rmMax = const Value.absent(),
+    Value<double?> rpeMin = const Value.absent(),
+    Value<double?> rpeMax = const Value.absent(),
+    Value<String?> loadSelectionNote = const Value.absent(),
+    bool? isCalibrationEstimate,
+    Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+    Value<String?> warmupWeightRuleJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => ProgramExerciseSet(
+    id: id ?? this.id,
+    programExerciseId: programExerciseId ?? this.programExerciseId,
+    sourceTemplateSetId: sourceTemplateSetId.present
+        ? sourceTemplateSetId.value
+        : this.sourceTemplateSetId,
+    setIndex: setIndex ?? this.setIndex,
+    setType: setType ?? this.setType,
+    setIntent: setIntent.present ? setIntent.value : this.setIntent,
+    prescribedRepsMin: prescribedRepsMin.present
+        ? prescribedRepsMin.value
+        : this.prescribedRepsMin,
+    prescribedRepsMax: prescribedRepsMax.present
+        ? prescribedRepsMax.value
+        : this.prescribedRepsMax,
+    prescribedRepsExact: prescribedRepsExact.present
+        ? prescribedRepsExact.value
+        : this.prescribedRepsExact,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    distanceMeters: distanceMeters.present
+        ? distanceMeters.value
+        : this.distanceMeters,
+    weightPrescriptionType: weightPrescriptionType.present
+        ? weightPrescriptionType.value
+        : this.weightPrescriptionType,
+    prescribedWeightKg: prescribedWeightKg.present
+        ? prescribedWeightKg.value
+        : this.prescribedWeightKg,
+    prescribedWeightPct1rm: prescribedWeightPct1rm.present
+        ? prescribedWeightPct1rm.value
+        : this.prescribedWeightPct1rm,
+    prescribedWeightPctWorking: prescribedWeightPctWorking.present
+        ? prescribedWeightPctWorking.value
+        : this.prescribedWeightPctWorking,
+    bodyweightMultiplier: bodyweightMultiplier.present
+        ? bodyweightMultiplier.value
+        : this.bodyweightMultiplier,
+    prescribedRpeMin: prescribedRpeMin.present
+        ? prescribedRpeMin.value
+        : this.prescribedRpeMin,
+    prescribedRpeMax: prescribedRpeMax.present
+        ? prescribedRpeMax.value
+        : this.prescribedRpeMax,
+    prescribedRir: prescribedRir.present
+        ? prescribedRir.value
+        : this.prescribedRir,
+    restSeconds: restSeconds.present ? restSeconds.value : this.restSeconds,
+    loadingModel: loadingModel.present ? loadingModel.value : this.loadingModel,
+    percent1rmMin: percent1rmMin.present
+        ? percent1rmMin.value
+        : this.percent1rmMin,
+    percent1rmMax: percent1rmMax.present
+        ? percent1rmMax.value
+        : this.percent1rmMax,
+    rpeMin: rpeMin.present ? rpeMin.value : this.rpeMin,
+    rpeMax: rpeMax.present ? rpeMax.value : this.rpeMax,
+    loadSelectionNote: loadSelectionNote.present
+        ? loadSelectionNote.value
+        : this.loadSelectionNote,
+    isCalibrationEstimate: isCalibrationEstimate ?? this.isCalibrationEstimate,
+    derivedFromWorkingSetIndex: derivedFromWorkingSetIndex.present
+        ? derivedFromWorkingSetIndex.value
+        : this.derivedFromWorkingSetIndex,
+    warmupWeightRuleJson: warmupWeightRuleJson.present
+        ? warmupWeightRuleJson.value
+        : this.warmupWeightRuleJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ProgramExerciseSet copyWithCompanion(ProgramExerciseSetsCompanion data) {
+    return ProgramExerciseSet(
+      id: data.id.present ? data.id.value : this.id,
+      programExerciseId: data.programExerciseId.present
+          ? data.programExerciseId.value
+          : this.programExerciseId,
+      sourceTemplateSetId: data.sourceTemplateSetId.present
+          ? data.sourceTemplateSetId.value
+          : this.sourceTemplateSetId,
+      setIndex: data.setIndex.present ? data.setIndex.value : this.setIndex,
+      setType: data.setType.present ? data.setType.value : this.setType,
+      setIntent: data.setIntent.present ? data.setIntent.value : this.setIntent,
+      prescribedRepsMin: data.prescribedRepsMin.present
+          ? data.prescribedRepsMin.value
+          : this.prescribedRepsMin,
+      prescribedRepsMax: data.prescribedRepsMax.present
+          ? data.prescribedRepsMax.value
+          : this.prescribedRepsMax,
+      prescribedRepsExact: data.prescribedRepsExact.present
+          ? data.prescribedRepsExact.value
+          : this.prescribedRepsExact,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      distanceMeters: data.distanceMeters.present
+          ? data.distanceMeters.value
+          : this.distanceMeters,
+      weightPrescriptionType: data.weightPrescriptionType.present
+          ? data.weightPrescriptionType.value
+          : this.weightPrescriptionType,
+      prescribedWeightKg: data.prescribedWeightKg.present
+          ? data.prescribedWeightKg.value
+          : this.prescribedWeightKg,
+      prescribedWeightPct1rm: data.prescribedWeightPct1rm.present
+          ? data.prescribedWeightPct1rm.value
+          : this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking: data.prescribedWeightPctWorking.present
+          ? data.prescribedWeightPctWorking.value
+          : this.prescribedWeightPctWorking,
+      bodyweightMultiplier: data.bodyweightMultiplier.present
+          ? data.bodyweightMultiplier.value
+          : this.bodyweightMultiplier,
+      prescribedRpeMin: data.prescribedRpeMin.present
+          ? data.prescribedRpeMin.value
+          : this.prescribedRpeMin,
+      prescribedRpeMax: data.prescribedRpeMax.present
+          ? data.prescribedRpeMax.value
+          : this.prescribedRpeMax,
+      prescribedRir: data.prescribedRir.present
+          ? data.prescribedRir.value
+          : this.prescribedRir,
+      restSeconds: data.restSeconds.present
+          ? data.restSeconds.value
+          : this.restSeconds,
+      loadingModel: data.loadingModel.present
+          ? data.loadingModel.value
+          : this.loadingModel,
+      percent1rmMin: data.percent1rmMin.present
+          ? data.percent1rmMin.value
+          : this.percent1rmMin,
+      percent1rmMax: data.percent1rmMax.present
+          ? data.percent1rmMax.value
+          : this.percent1rmMax,
+      rpeMin: data.rpeMin.present ? data.rpeMin.value : this.rpeMin,
+      rpeMax: data.rpeMax.present ? data.rpeMax.value : this.rpeMax,
+      loadSelectionNote: data.loadSelectionNote.present
+          ? data.loadSelectionNote.value
+          : this.loadSelectionNote,
+      isCalibrationEstimate: data.isCalibrationEstimate.present
+          ? data.isCalibrationEstimate.value
+          : this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex: data.derivedFromWorkingSetIndex.present
+          ? data.derivedFromWorkingSetIndex.value
+          : this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: data.warmupWeightRuleJson.present
+          ? data.warmupWeightRuleJson.value
+          : this.warmupWeightRuleJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramExerciseSet(')
+          ..write('id: $id, ')
+          ..write('programExerciseId: $programExerciseId, ')
+          ..write('sourceTemplateSetId: $sourceTemplateSetId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    programExerciseId,
+    sourceTemplateSetId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramExerciseSet &&
+          other.id == this.id &&
+          other.programExerciseId == this.programExerciseId &&
+          other.sourceTemplateSetId == this.sourceTemplateSetId &&
+          other.setIndex == this.setIndex &&
+          other.setType == this.setType &&
+          other.setIntent == this.setIntent &&
+          other.prescribedRepsMin == this.prescribedRepsMin &&
+          other.prescribedRepsMax == this.prescribedRepsMax &&
+          other.prescribedRepsExact == this.prescribedRepsExact &&
+          other.durationSeconds == this.durationSeconds &&
+          other.distanceMeters == this.distanceMeters &&
+          other.weightPrescriptionType == this.weightPrescriptionType &&
+          other.prescribedWeightKg == this.prescribedWeightKg &&
+          other.prescribedWeightPct1rm == this.prescribedWeightPct1rm &&
+          other.prescribedWeightPctWorking == this.prescribedWeightPctWorking &&
+          other.bodyweightMultiplier == this.bodyweightMultiplier &&
+          other.prescribedRpeMin == this.prescribedRpeMin &&
+          other.prescribedRpeMax == this.prescribedRpeMax &&
+          other.prescribedRir == this.prescribedRir &&
+          other.restSeconds == this.restSeconds &&
+          other.loadingModel == this.loadingModel &&
+          other.percent1rmMin == this.percent1rmMin &&
+          other.percent1rmMax == this.percent1rmMax &&
+          other.rpeMin == this.rpeMin &&
+          other.rpeMax == this.rpeMax &&
+          other.loadSelectionNote == this.loadSelectionNote &&
+          other.isCalibrationEstimate == this.isCalibrationEstimate &&
+          other.derivedFromWorkingSetIndex == this.derivedFromWorkingSetIndex &&
+          other.warmupWeightRuleJson == this.warmupWeightRuleJson &&
+          other.createdAt == this.createdAt);
+}
+
+class ProgramExerciseSetsCompanion extends UpdateCompanion<ProgramExerciseSet> {
+  final Value<String> id;
+  final Value<String> programExerciseId;
+  final Value<String?> sourceTemplateSetId;
+  final Value<int> setIndex;
+  final Value<String> setType;
+  final Value<String?> setIntent;
+  final Value<int?> prescribedRepsMin;
+  final Value<int?> prescribedRepsMax;
+  final Value<int?> prescribedRepsExact;
+  final Value<int?> durationSeconds;
+  final Value<double?> distanceMeters;
+  final Value<String?> weightPrescriptionType;
+  final Value<double?> prescribedWeightKg;
+  final Value<double?> prescribedWeightPct1rm;
+  final Value<double?> prescribedWeightPctWorking;
+  final Value<double?> bodyweightMultiplier;
+  final Value<double?> prescribedRpeMin;
+  final Value<double?> prescribedRpeMax;
+  final Value<int?> prescribedRir;
+  final Value<int?> restSeconds;
+  final Value<String?> loadingModel;
+  final Value<double?> percent1rmMin;
+  final Value<double?> percent1rmMax;
+  final Value<double?> rpeMin;
+  final Value<double?> rpeMax;
+  final Value<String?> loadSelectionNote;
+  final Value<bool> isCalibrationEstimate;
+  final Value<int?> derivedFromWorkingSetIndex;
+  final Value<String?> warmupWeightRuleJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const ProgramExerciseSetsCompanion({
+    this.id = const Value.absent(),
+    this.programExerciseId = const Value.absent(),
+    this.sourceTemplateSetId = const Value.absent(),
+    this.setIndex = const Value.absent(),
+    this.setType = const Value.absent(),
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramExerciseSetsCompanion.insert({
+    required String id,
+    required String programExerciseId,
+    this.sourceTemplateSetId = const Value.absent(),
+    required int setIndex,
+    required String setType,
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programExerciseId = Value(programExerciseId),
+       setIndex = Value(setIndex),
+       setType = Value(setType),
+       createdAt = Value(createdAt);
+  static Insertable<ProgramExerciseSet> custom({
+    Expression<String>? id,
+    Expression<String>? programExerciseId,
+    Expression<String>? sourceTemplateSetId,
+    Expression<int>? setIndex,
+    Expression<String>? setType,
+    Expression<String>? setIntent,
+    Expression<int>? prescribedRepsMin,
+    Expression<int>? prescribedRepsMax,
+    Expression<int>? prescribedRepsExact,
+    Expression<int>? durationSeconds,
+    Expression<double>? distanceMeters,
+    Expression<String>? weightPrescriptionType,
+    Expression<double>? prescribedWeightKg,
+    Expression<double>? prescribedWeightPct1rm,
+    Expression<double>? prescribedWeightPctWorking,
+    Expression<double>? bodyweightMultiplier,
+    Expression<double>? prescribedRpeMin,
+    Expression<double>? prescribedRpeMax,
+    Expression<int>? prescribedRir,
+    Expression<int>? restSeconds,
+    Expression<String>? loadingModel,
+    Expression<double>? percent1rmMin,
+    Expression<double>? percent1rmMax,
+    Expression<double>? rpeMin,
+    Expression<double>? rpeMax,
+    Expression<String>? loadSelectionNote,
+    Expression<bool>? isCalibrationEstimate,
+    Expression<int>? derivedFromWorkingSetIndex,
+    Expression<String>? warmupWeightRuleJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programExerciseId != null) 'program_exercise_id': programExerciseId,
+      if (sourceTemplateSetId != null)
+        'source_template_set_id': sourceTemplateSetId,
+      if (setIndex != null) 'set_index': setIndex,
+      if (setType != null) 'set_type': setType,
+      if (setIntent != null) 'set_intent': setIntent,
+      if (prescribedRepsMin != null) 'prescribed_reps_min': prescribedRepsMin,
+      if (prescribedRepsMax != null) 'prescribed_reps_max': prescribedRepsMax,
+      if (prescribedRepsExact != null)
+        'prescribed_reps_exact': prescribedRepsExact,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (distanceMeters != null) 'distance_meters': distanceMeters,
+      if (weightPrescriptionType != null)
+        'weight_prescription_type': weightPrescriptionType,
+      if (prescribedWeightKg != null)
+        'prescribed_weight_kg': prescribedWeightKg,
+      if (prescribedWeightPct1rm != null)
+        'prescribed_weight_pct1rm': prescribedWeightPct1rm,
+      if (prescribedWeightPctWorking != null)
+        'prescribed_weight_pct_working': prescribedWeightPctWorking,
+      if (bodyweightMultiplier != null)
+        'bodyweight_multiplier': bodyweightMultiplier,
+      if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
+      if (prescribedRpeMax != null) 'prescribed_rpe_max': prescribedRpeMax,
+      if (prescribedRir != null) 'prescribed_rir': prescribedRir,
+      if (restSeconds != null) 'rest_seconds': restSeconds,
+      if (loadingModel != null) 'loading_model': loadingModel,
+      if (percent1rmMin != null) 'percent1rm_min': percent1rmMin,
+      if (percent1rmMax != null) 'percent1rm_max': percent1rmMax,
+      if (rpeMin != null) 'rpe_min': rpeMin,
+      if (rpeMax != null) 'rpe_max': rpeMax,
+      if (loadSelectionNote != null) 'load_selection_note': loadSelectionNote,
+      if (isCalibrationEstimate != null)
+        'is_calibration_estimate': isCalibrationEstimate,
+      if (derivedFromWorkingSetIndex != null)
+        'derived_from_working_set_index': derivedFromWorkingSetIndex,
+      if (warmupWeightRuleJson != null)
+        'warmup_weight_rule_json': warmupWeightRuleJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramExerciseSetsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programExerciseId,
+    Value<String?>? sourceTemplateSetId,
+    Value<int>? setIndex,
+    Value<String>? setType,
+    Value<String?>? setIntent,
+    Value<int?>? prescribedRepsMin,
+    Value<int?>? prescribedRepsMax,
+    Value<int?>? prescribedRepsExact,
+    Value<int?>? durationSeconds,
+    Value<double?>? distanceMeters,
+    Value<String?>? weightPrescriptionType,
+    Value<double?>? prescribedWeightKg,
+    Value<double?>? prescribedWeightPct1rm,
+    Value<double?>? prescribedWeightPctWorking,
+    Value<double?>? bodyweightMultiplier,
+    Value<double?>? prescribedRpeMin,
+    Value<double?>? prescribedRpeMax,
+    Value<int?>? prescribedRir,
+    Value<int?>? restSeconds,
+    Value<String?>? loadingModel,
+    Value<double?>? percent1rmMin,
+    Value<double?>? percent1rmMax,
+    Value<double?>? rpeMin,
+    Value<double?>? rpeMax,
+    Value<String?>? loadSelectionNote,
+    Value<bool>? isCalibrationEstimate,
+    Value<int?>? derivedFromWorkingSetIndex,
+    Value<String?>? warmupWeightRuleJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramExerciseSetsCompanion(
+      id: id ?? this.id,
+      programExerciseId: programExerciseId ?? this.programExerciseId,
+      sourceTemplateSetId: sourceTemplateSetId ?? this.sourceTemplateSetId,
+      setIndex: setIndex ?? this.setIndex,
+      setType: setType ?? this.setType,
+      setIntent: setIntent ?? this.setIntent,
+      prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact ?? this.prescribedRepsExact,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      distanceMeters: distanceMeters ?? this.distanceMeters,
+      weightPrescriptionType:
+          weightPrescriptionType ?? this.weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
+      prescribedWeightPct1rm:
+          prescribedWeightPct1rm ?? this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking ?? this.prescribedWeightPctWorking,
+      bodyweightMultiplier: bodyweightMultiplier ?? this.bodyweightMultiplier,
+      prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      prescribedRir: prescribedRir ?? this.prescribedRir,
+      restSeconds: restSeconds ?? this.restSeconds,
+      loadingModel: loadingModel ?? this.loadingModel,
+      percent1rmMin: percent1rmMin ?? this.percent1rmMin,
+      percent1rmMax: percent1rmMax ?? this.percent1rmMax,
+      rpeMin: rpeMin ?? this.rpeMin,
+      rpeMax: rpeMax ?? this.rpeMax,
+      loadSelectionNote: loadSelectionNote ?? this.loadSelectionNote,
+      isCalibrationEstimate:
+          isCalibrationEstimate ?? this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex ?? this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: warmupWeightRuleJson ?? this.warmupWeightRuleJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programExerciseId.present) {
+      map['program_exercise_id'] = Variable<String>(programExerciseId.value);
+    }
+    if (sourceTemplateSetId.present) {
+      map['source_template_set_id'] = Variable<String>(
+        sourceTemplateSetId.value,
+      );
+    }
+    if (setIndex.present) {
+      map['set_index'] = Variable<int>(setIndex.value);
+    }
+    if (setType.present) {
+      map['set_type'] = Variable<String>(setType.value);
+    }
+    if (setIntent.present) {
+      map['set_intent'] = Variable<String>(setIntent.value);
+    }
+    if (prescribedRepsMin.present) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin.value);
+    }
+    if (prescribedRepsMax.present) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax.value);
+    }
+    if (prescribedRepsExact.present) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (distanceMeters.present) {
+      map['distance_meters'] = Variable<double>(distanceMeters.value);
+    }
+    if (weightPrescriptionType.present) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType.value,
+      );
+    }
+    if (prescribedWeightKg.present) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg.value);
+    }
+    if (prescribedWeightPct1rm.present) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm.value,
+      );
+    }
+    if (prescribedWeightPctWorking.present) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking.value,
+      );
+    }
+    if (bodyweightMultiplier.present) {
+      map['bodyweight_multiplier'] = Variable<double>(
+        bodyweightMultiplier.value,
+      );
+    }
+    if (prescribedRpeMin.present) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin.value);
+    }
+    if (prescribedRpeMax.present) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax.value);
+    }
+    if (prescribedRir.present) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir.value);
+    }
+    if (restSeconds.present) {
+      map['rest_seconds'] = Variable<int>(restSeconds.value);
+    }
+    if (loadingModel.present) {
+      map['loading_model'] = Variable<String>(loadingModel.value);
+    }
+    if (percent1rmMin.present) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin.value);
+    }
+    if (percent1rmMax.present) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax.value);
+    }
+    if (rpeMin.present) {
+      map['rpe_min'] = Variable<double>(rpeMin.value);
+    }
+    if (rpeMax.present) {
+      map['rpe_max'] = Variable<double>(rpeMax.value);
+    }
+    if (loadSelectionNote.present) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote.value);
+    }
+    if (isCalibrationEstimate.present) {
+      map['is_calibration_estimate'] = Variable<bool>(
+        isCalibrationEstimate.value,
+      );
+    }
+    if (derivedFromWorkingSetIndex.present) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex.value,
+      );
+    }
+    if (warmupWeightRuleJson.present) {
+      map['warmup_weight_rule_json'] = Variable<String>(
+        warmupWeightRuleJson.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramExerciseSetsCompanion(')
+          ..write('id: $id, ')
+          ..write('programExerciseId: $programExerciseId, ')
+          ..write('sourceTemplateSetId: $sourceTemplateSetId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SavedWorkoutsTable extends SavedWorkouts
+    with TableInfo<$SavedWorkoutsTable, SavedWorkout> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SavedWorkoutsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creationMethodMeta = const VerificationMeta(
+    'creationMethod',
+  );
+  @override
+  late final GeneratedColumn<String> creationMethod = GeneratedColumn<String>(
+    'creation_method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  static const VerificationMeta _estimatedDurationMinutesMeta =
+      const VerificationMeta('estimatedDurationMinutes');
+  @override
+  late final GeneratedColumn<int> estimatedDurationMinutes =
+      GeneratedColumn<int>(
+        'estimated_duration_minutes',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _goalTagsJsonMeta = const VerificationMeta(
+    'goalTagsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalTagsJson = GeneratedColumn<String>(
+    'goal_tags_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _equipmentJsonMeta = const VerificationMeta(
+    'equipmentJson',
+  );
+  @override
+  late final GeneratedColumn<String> equipmentJson = GeneratedColumn<String>(
+    'equipment_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _aiGenerationSnapshotIdMeta =
+      const VerificationMeta('aiGenerationSnapshotId');
+  @override
+  late final GeneratedColumn<String> aiGenerationSnapshotId =
+      GeneratedColumn<String>(
+        'ai_generation_snapshot_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _aiOutputSchemaVersionMeta =
+      const VerificationMeta('aiOutputSchemaVersion');
+  @override
+  late final GeneratedColumn<int> aiOutputSchemaVersion = GeneratedColumn<int>(
+    'ai_output_schema_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importedMeta = const VerificationMeta(
+    'imported',
+  );
+  @override
+  late final GeneratedColumn<bool> imported = GeneratedColumn<bool>(
+    'imported',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("imported" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _importedAtMeta = const VerificationMeta(
+    'importedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> importedAt = GeneratedColumn<DateTime>(
+    'imported_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importOriginMeta = const VerificationMeta(
+    'importOrigin',
+  );
+  @override
+  late final GeneratedColumn<String> importOrigin = GeneratedColumn<String>(
+    'import_origin',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importSourceFileTypeMeta =
+      const VerificationMeta('importSourceFileType');
+  @override
+  late final GeneratedColumn<String> importSourceFileType =
+      GeneratedColumn<String>(
+        'import_source_file_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _importReviewStatusMeta =
+      const VerificationMeta('importReviewStatus');
+  @override
+  late final GeneratedColumn<String> importReviewStatus =
+      GeneratedColumn<String>(
+        'import_review_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _shareSchemaVersionMeta =
+      const VerificationMeta('shareSchemaVersion');
+  @override
+  late final GeneratedColumn<int> shareSchemaVersion = GeneratedColumn<int>(
+    'share_schema_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _externalShareIdMeta = const VerificationMeta(
+    'externalShareId',
+  );
+  @override
+  late final GeneratedColumn<String> externalShareId = GeneratedColumn<String>(
+    'external_share_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exportPrivacyModeMeta = const VerificationMeta(
+    'exportPrivacyMode',
+  );
+  @override
+  late final GeneratedColumn<String> exportPrivacyMode =
+      GeneratedColumn<String>(
+        'export_privacy_mode',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _archivedAtMeta = const VerificationMeta(
+    'archivedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> archivedAt = GeneratedColumn<DateTime>(
+    'archived_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    description,
+    source,
+    creationMethod,
+    status,
+    estimatedDurationMinutes,
+    goalTagsJson,
+    equipmentJson,
+    aiGenerationSnapshotId,
+    aiOutputSchemaVersion,
+    imported,
+    importedAt,
+    importOrigin,
+    importSourceFileType,
+    importReviewStatus,
+    shareSchemaVersion,
+    externalShareId,
+    exportPrivacyMode,
+    createdAt,
+    updatedAt,
+    archivedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'saved_workouts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SavedWorkout> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('creation_method')) {
+      context.handle(
+        _creationMethodMeta,
+        creationMethod.isAcceptableOrUnknown(
+          data['creation_method']!,
+          _creationMethodMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_creationMethodMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('estimated_duration_minutes')) {
+      context.handle(
+        _estimatedDurationMinutesMeta,
+        estimatedDurationMinutes.isAcceptableOrUnknown(
+          data['estimated_duration_minutes']!,
+          _estimatedDurationMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goal_tags_json')) {
+      context.handle(
+        _goalTagsJsonMeta,
+        goalTagsJson.isAcceptableOrUnknown(
+          data['goal_tags_json']!,
+          _goalTagsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('equipment_json')) {
+      context.handle(
+        _equipmentJsonMeta,
+        equipmentJson.isAcceptableOrUnknown(
+          data['equipment_json']!,
+          _equipmentJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ai_generation_snapshot_id')) {
+      context.handle(
+        _aiGenerationSnapshotIdMeta,
+        aiGenerationSnapshotId.isAcceptableOrUnknown(
+          data['ai_generation_snapshot_id']!,
+          _aiGenerationSnapshotIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ai_output_schema_version')) {
+      context.handle(
+        _aiOutputSchemaVersionMeta,
+        aiOutputSchemaVersion.isAcceptableOrUnknown(
+          data['ai_output_schema_version']!,
+          _aiOutputSchemaVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('imported')) {
+      context.handle(
+        _importedMeta,
+        imported.isAcceptableOrUnknown(data['imported']!, _importedMeta),
+      );
+    }
+    if (data.containsKey('imported_at')) {
+      context.handle(
+        _importedAtMeta,
+        importedAt.isAcceptableOrUnknown(data['imported_at']!, _importedAtMeta),
+      );
+    }
+    if (data.containsKey('import_origin')) {
+      context.handle(
+        _importOriginMeta,
+        importOrigin.isAcceptableOrUnknown(
+          data['import_origin']!,
+          _importOriginMeta,
+        ),
+      );
+    }
+    if (data.containsKey('import_source_file_type')) {
+      context.handle(
+        _importSourceFileTypeMeta,
+        importSourceFileType.isAcceptableOrUnknown(
+          data['import_source_file_type']!,
+          _importSourceFileTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('import_review_status')) {
+      context.handle(
+        _importReviewStatusMeta,
+        importReviewStatus.isAcceptableOrUnknown(
+          data['import_review_status']!,
+          _importReviewStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('share_schema_version')) {
+      context.handle(
+        _shareSchemaVersionMeta,
+        shareSchemaVersion.isAcceptableOrUnknown(
+          data['share_schema_version']!,
+          _shareSchemaVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('external_share_id')) {
+      context.handle(
+        _externalShareIdMeta,
+        externalShareId.isAcceptableOrUnknown(
+          data['external_share_id']!,
+          _externalShareIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('export_privacy_mode')) {
+      context.handle(
+        _exportPrivacyModeMeta,
+        exportPrivacyMode.isAcceptableOrUnknown(
+          data['export_privacy_mode']!,
+          _exportPrivacyModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('archived_at')) {
+      context.handle(
+        _archivedAtMeta,
+        archivedAt.isAcceptableOrUnknown(data['archived_at']!, _archivedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavedWorkout map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavedWorkout(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      creationMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creation_method'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      estimatedDurationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}estimated_duration_minutes'],
+      ),
+      goalTagsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goal_tags_json'],
+      )!,
+      equipmentJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipment_json'],
+      )!,
+      aiGenerationSnapshotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ai_generation_snapshot_id'],
+      ),
+      aiOutputSchemaVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ai_output_schema_version'],
+      ),
+      imported: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}imported'],
+      )!,
+      importedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}imported_at'],
+      ),
+      importOrigin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_origin'],
+      ),
+      importSourceFileType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_source_file_type'],
+      ),
+      importReviewStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}import_review_status'],
+      ),
+      shareSchemaVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}share_schema_version'],
+      ),
+      externalShareId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_share_id'],
+      ),
+      exportPrivacyMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}export_privacy_mode'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      archivedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}archived_at'],
+      ),
+    );
+  }
+
+  @override
+  $SavedWorkoutsTable createAlias(String alias) {
+    return $SavedWorkoutsTable(attachedDatabase, alias);
+  }
+}
+
+class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
+  final String id;
+  final String name;
+  final String? description;
+  final String source;
+  final String creationMethod;
+  final String status;
+  final int? estimatedDurationMinutes;
+  final String goalTagsJson;
+  final String equipmentJson;
+  final String? aiGenerationSnapshotId;
+  final int? aiOutputSchemaVersion;
+  final bool imported;
+  final DateTime? importedAt;
+  final String? importOrigin;
+  final String? importSourceFileType;
+  final String? importReviewStatus;
+  final int? shareSchemaVersion;
+  final String? externalShareId;
+  final String? exportPrivacyMode;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? archivedAt;
+  const SavedWorkout({
+    required this.id,
+    required this.name,
+    this.description,
+    required this.source,
+    required this.creationMethod,
+    required this.status,
+    this.estimatedDurationMinutes,
+    required this.goalTagsJson,
+    required this.equipmentJson,
+    this.aiGenerationSnapshotId,
+    this.aiOutputSchemaVersion,
+    required this.imported,
+    this.importedAt,
+    this.importOrigin,
+    this.importSourceFileType,
+    this.importReviewStatus,
+    this.shareSchemaVersion,
+    this.externalShareId,
+    this.exportPrivacyMode,
+    required this.createdAt,
+    required this.updatedAt,
+    this.archivedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['source'] = Variable<String>(source);
+    map['creation_method'] = Variable<String>(creationMethod);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || estimatedDurationMinutes != null) {
+      map['estimated_duration_minutes'] = Variable<int>(
+        estimatedDurationMinutes,
+      );
+    }
+    map['goal_tags_json'] = Variable<String>(goalTagsJson);
+    map['equipment_json'] = Variable<String>(equipmentJson);
+    if (!nullToAbsent || aiGenerationSnapshotId != null) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId,
+      );
+    }
+    if (!nullToAbsent || aiOutputSchemaVersion != null) {
+      map['ai_output_schema_version'] = Variable<int>(aiOutputSchemaVersion);
+    }
+    map['imported'] = Variable<bool>(imported);
+    if (!nullToAbsent || importedAt != null) {
+      map['imported_at'] = Variable<DateTime>(importedAt);
+    }
+    if (!nullToAbsent || importOrigin != null) {
+      map['import_origin'] = Variable<String>(importOrigin);
+    }
+    if (!nullToAbsent || importSourceFileType != null) {
+      map['import_source_file_type'] = Variable<String>(importSourceFileType);
+    }
+    if (!nullToAbsent || importReviewStatus != null) {
+      map['import_review_status'] = Variable<String>(importReviewStatus);
+    }
+    if (!nullToAbsent || shareSchemaVersion != null) {
+      map['share_schema_version'] = Variable<int>(shareSchemaVersion);
+    }
+    if (!nullToAbsent || externalShareId != null) {
+      map['external_share_id'] = Variable<String>(externalShareId);
+    }
+    if (!nullToAbsent || exportPrivacyMode != null) {
+      map['export_privacy_mode'] = Variable<String>(exportPrivacyMode);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || archivedAt != null) {
+      map['archived_at'] = Variable<DateTime>(archivedAt);
+    }
+    return map;
+  }
+
+  SavedWorkoutsCompanion toCompanion(bool nullToAbsent) {
+    return SavedWorkoutsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      source: Value(source),
+      creationMethod: Value(creationMethod),
+      status: Value(status),
+      estimatedDurationMinutes: estimatedDurationMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(estimatedDurationMinutes),
+      goalTagsJson: Value(goalTagsJson),
+      equipmentJson: Value(equipmentJson),
+      aiGenerationSnapshotId: aiGenerationSnapshotId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiGenerationSnapshotId),
+      aiOutputSchemaVersion: aiOutputSchemaVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiOutputSchemaVersion),
+      imported: Value(imported),
+      importedAt: importedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importedAt),
+      importOrigin: importOrigin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importOrigin),
+      importSourceFileType: importSourceFileType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importSourceFileType),
+      importReviewStatus: importReviewStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importReviewStatus),
+      shareSchemaVersion: shareSchemaVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shareSchemaVersion),
+      externalShareId: externalShareId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalShareId),
+      exportPrivacyMode: exportPrivacyMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exportPrivacyMode),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      archivedAt: archivedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(archivedAt),
+    );
+  }
+
+  factory SavedWorkout.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SavedWorkout(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      source: serializer.fromJson<String>(json['source']),
+      creationMethod: serializer.fromJson<String>(json['creationMethod']),
+      status: serializer.fromJson<String>(json['status']),
+      estimatedDurationMinutes: serializer.fromJson<int?>(
+        json['estimatedDurationMinutes'],
+      ),
+      goalTagsJson: serializer.fromJson<String>(json['goalTagsJson']),
+      equipmentJson: serializer.fromJson<String>(json['equipmentJson']),
+      aiGenerationSnapshotId: serializer.fromJson<String?>(
+        json['aiGenerationSnapshotId'],
+      ),
+      aiOutputSchemaVersion: serializer.fromJson<int?>(
+        json['aiOutputSchemaVersion'],
+      ),
+      imported: serializer.fromJson<bool>(json['imported']),
+      importedAt: serializer.fromJson<DateTime?>(json['importedAt']),
+      importOrigin: serializer.fromJson<String?>(json['importOrigin']),
+      importSourceFileType: serializer.fromJson<String?>(
+        json['importSourceFileType'],
+      ),
+      importReviewStatus: serializer.fromJson<String?>(
+        json['importReviewStatus'],
+      ),
+      shareSchemaVersion: serializer.fromJson<int?>(json['shareSchemaVersion']),
+      externalShareId: serializer.fromJson<String?>(json['externalShareId']),
+      exportPrivacyMode: serializer.fromJson<String?>(
+        json['exportPrivacyMode'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      archivedAt: serializer.fromJson<DateTime?>(json['archivedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'source': serializer.toJson<String>(source),
+      'creationMethod': serializer.toJson<String>(creationMethod),
+      'status': serializer.toJson<String>(status),
+      'estimatedDurationMinutes': serializer.toJson<int?>(
+        estimatedDurationMinutes,
+      ),
+      'goalTagsJson': serializer.toJson<String>(goalTagsJson),
+      'equipmentJson': serializer.toJson<String>(equipmentJson),
+      'aiGenerationSnapshotId': serializer.toJson<String?>(
+        aiGenerationSnapshotId,
+      ),
+      'aiOutputSchemaVersion': serializer.toJson<int?>(aiOutputSchemaVersion),
+      'imported': serializer.toJson<bool>(imported),
+      'importedAt': serializer.toJson<DateTime?>(importedAt),
+      'importOrigin': serializer.toJson<String?>(importOrigin),
+      'importSourceFileType': serializer.toJson<String?>(importSourceFileType),
+      'importReviewStatus': serializer.toJson<String?>(importReviewStatus),
+      'shareSchemaVersion': serializer.toJson<int?>(shareSchemaVersion),
+      'externalShareId': serializer.toJson<String?>(externalShareId),
+      'exportPrivacyMode': serializer.toJson<String?>(exportPrivacyMode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'archivedAt': serializer.toJson<DateTime?>(archivedAt),
+    };
+  }
+
+  SavedWorkout copyWith({
+    String? id,
+    String? name,
+    Value<String?> description = const Value.absent(),
+    String? source,
+    String? creationMethod,
+    String? status,
+    Value<int?> estimatedDurationMinutes = const Value.absent(),
+    String? goalTagsJson,
+    String? equipmentJson,
+    Value<String?> aiGenerationSnapshotId = const Value.absent(),
+    Value<int?> aiOutputSchemaVersion = const Value.absent(),
+    bool? imported,
+    Value<DateTime?> importedAt = const Value.absent(),
+    Value<String?> importOrigin = const Value.absent(),
+    Value<String?> importSourceFileType = const Value.absent(),
+    Value<String?> importReviewStatus = const Value.absent(),
+    Value<int?> shareSchemaVersion = const Value.absent(),
+    Value<String?> externalShareId = const Value.absent(),
+    Value<String?> exportPrivacyMode = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> archivedAt = const Value.absent(),
+  }) => SavedWorkout(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    description: description.present ? description.value : this.description,
+    source: source ?? this.source,
+    creationMethod: creationMethod ?? this.creationMethod,
+    status: status ?? this.status,
+    estimatedDurationMinutes: estimatedDurationMinutes.present
+        ? estimatedDurationMinutes.value
+        : this.estimatedDurationMinutes,
+    goalTagsJson: goalTagsJson ?? this.goalTagsJson,
+    equipmentJson: equipmentJson ?? this.equipmentJson,
+    aiGenerationSnapshotId: aiGenerationSnapshotId.present
+        ? aiGenerationSnapshotId.value
+        : this.aiGenerationSnapshotId,
+    aiOutputSchemaVersion: aiOutputSchemaVersion.present
+        ? aiOutputSchemaVersion.value
+        : this.aiOutputSchemaVersion,
+    imported: imported ?? this.imported,
+    importedAt: importedAt.present ? importedAt.value : this.importedAt,
+    importOrigin: importOrigin.present ? importOrigin.value : this.importOrigin,
+    importSourceFileType: importSourceFileType.present
+        ? importSourceFileType.value
+        : this.importSourceFileType,
+    importReviewStatus: importReviewStatus.present
+        ? importReviewStatus.value
+        : this.importReviewStatus,
+    shareSchemaVersion: shareSchemaVersion.present
+        ? shareSchemaVersion.value
+        : this.shareSchemaVersion,
+    externalShareId: externalShareId.present
+        ? externalShareId.value
+        : this.externalShareId,
+    exportPrivacyMode: exportPrivacyMode.present
+        ? exportPrivacyMode.value
+        : this.exportPrivacyMode,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    archivedAt: archivedAt.present ? archivedAt.value : this.archivedAt,
+  );
+  SavedWorkout copyWithCompanion(SavedWorkoutsCompanion data) {
+    return SavedWorkout(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      source: data.source.present ? data.source.value : this.source,
+      creationMethod: data.creationMethod.present
+          ? data.creationMethod.value
+          : this.creationMethod,
+      status: data.status.present ? data.status.value : this.status,
+      estimatedDurationMinutes: data.estimatedDurationMinutes.present
+          ? data.estimatedDurationMinutes.value
+          : this.estimatedDurationMinutes,
+      goalTagsJson: data.goalTagsJson.present
+          ? data.goalTagsJson.value
+          : this.goalTagsJson,
+      equipmentJson: data.equipmentJson.present
+          ? data.equipmentJson.value
+          : this.equipmentJson,
+      aiGenerationSnapshotId: data.aiGenerationSnapshotId.present
+          ? data.aiGenerationSnapshotId.value
+          : this.aiGenerationSnapshotId,
+      aiOutputSchemaVersion: data.aiOutputSchemaVersion.present
+          ? data.aiOutputSchemaVersion.value
+          : this.aiOutputSchemaVersion,
+      imported: data.imported.present ? data.imported.value : this.imported,
+      importedAt: data.importedAt.present
+          ? data.importedAt.value
+          : this.importedAt,
+      importOrigin: data.importOrigin.present
+          ? data.importOrigin.value
+          : this.importOrigin,
+      importSourceFileType: data.importSourceFileType.present
+          ? data.importSourceFileType.value
+          : this.importSourceFileType,
+      importReviewStatus: data.importReviewStatus.present
+          ? data.importReviewStatus.value
+          : this.importReviewStatus,
+      shareSchemaVersion: data.shareSchemaVersion.present
+          ? data.shareSchemaVersion.value
+          : this.shareSchemaVersion,
+      externalShareId: data.externalShareId.present
+          ? data.externalShareId.value
+          : this.externalShareId,
+      exportPrivacyMode: data.exportPrivacyMode.present
+          ? data.exportPrivacyMode.value
+          : this.exportPrivacyMode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      archivedAt: data.archivedAt.present
+          ? data.archivedAt.value
+          : this.archivedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkout(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('source: $source, ')
+          ..write('creationMethod: $creationMethod, ')
+          ..write('status: $status, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
+          ..write('equipmentJson: $equipmentJson, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('aiOutputSchemaVersion: $aiOutputSchemaVersion, ')
+          ..write('imported: $imported, ')
+          ..write('importedAt: $importedAt, ')
+          ..write('importOrigin: $importOrigin, ')
+          ..write('importSourceFileType: $importSourceFileType, ')
+          ..write('importReviewStatus: $importReviewStatus, ')
+          ..write('shareSchemaVersion: $shareSchemaVersion, ')
+          ..write('externalShareId: $externalShareId, ')
+          ..write('exportPrivacyMode: $exportPrivacyMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('archivedAt: $archivedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    name,
+    description,
+    source,
+    creationMethod,
+    status,
+    estimatedDurationMinutes,
+    goalTagsJson,
+    equipmentJson,
+    aiGenerationSnapshotId,
+    aiOutputSchemaVersion,
+    imported,
+    importedAt,
+    importOrigin,
+    importSourceFileType,
+    importReviewStatus,
+    shareSchemaVersion,
+    externalShareId,
+    exportPrivacyMode,
+    createdAt,
+    updatedAt,
+    archivedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SavedWorkout &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.source == this.source &&
+          other.creationMethod == this.creationMethod &&
+          other.status == this.status &&
+          other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.goalTagsJson == this.goalTagsJson &&
+          other.equipmentJson == this.equipmentJson &&
+          other.aiGenerationSnapshotId == this.aiGenerationSnapshotId &&
+          other.aiOutputSchemaVersion == this.aiOutputSchemaVersion &&
+          other.imported == this.imported &&
+          other.importedAt == this.importedAt &&
+          other.importOrigin == this.importOrigin &&
+          other.importSourceFileType == this.importSourceFileType &&
+          other.importReviewStatus == this.importReviewStatus &&
+          other.shareSchemaVersion == this.shareSchemaVersion &&
+          other.externalShareId == this.externalShareId &&
+          other.exportPrivacyMode == this.exportPrivacyMode &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.archivedAt == this.archivedAt);
+}
+
+class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<String> source;
+  final Value<String> creationMethod;
+  final Value<String> status;
+  final Value<int?> estimatedDurationMinutes;
+  final Value<String> goalTagsJson;
+  final Value<String> equipmentJson;
+  final Value<String?> aiGenerationSnapshotId;
+  final Value<int?> aiOutputSchemaVersion;
+  final Value<bool> imported;
+  final Value<DateTime?> importedAt;
+  final Value<String?> importOrigin;
+  final Value<String?> importSourceFileType;
+  final Value<String?> importReviewStatus;
+  final Value<int?> shareSchemaVersion;
+  final Value<String?> externalShareId;
+  final Value<String?> exportPrivacyMode;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> archivedAt;
+  final Value<int> rowid;
+  const SavedWorkoutsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.source = const Value.absent(),
+    this.creationMethod = const Value.absent(),
+    this.status = const Value.absent(),
+    this.estimatedDurationMinutes = const Value.absent(),
+    this.goalTagsJson = const Value.absent(),
+    this.equipmentJson = const Value.absent(),
+    this.aiGenerationSnapshotId = const Value.absent(),
+    this.aiOutputSchemaVersion = const Value.absent(),
+    this.imported = const Value.absent(),
+    this.importedAt = const Value.absent(),
+    this.importOrigin = const Value.absent(),
+    this.importSourceFileType = const Value.absent(),
+    this.importReviewStatus = const Value.absent(),
+    this.shareSchemaVersion = const Value.absent(),
+    this.externalShareId = const Value.absent(),
+    this.exportPrivacyMode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.archivedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SavedWorkoutsCompanion.insert({
+    required String id,
+    required String name,
+    this.description = const Value.absent(),
+    required String source,
+    required String creationMethod,
+    this.status = const Value.absent(),
+    this.estimatedDurationMinutes = const Value.absent(),
+    this.goalTagsJson = const Value.absent(),
+    this.equipmentJson = const Value.absent(),
+    this.aiGenerationSnapshotId = const Value.absent(),
+    this.aiOutputSchemaVersion = const Value.absent(),
+    this.imported = const Value.absent(),
+    this.importedAt = const Value.absent(),
+    this.importOrigin = const Value.absent(),
+    this.importSourceFileType = const Value.absent(),
+    this.importReviewStatus = const Value.absent(),
+    this.shareSchemaVersion = const Value.absent(),
+    this.externalShareId = const Value.absent(),
+    this.exportPrivacyMode = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.archivedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       source = Value(source),
+       creationMethod = Value(creationMethod),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SavedWorkout> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? source,
+    Expression<String>? creationMethod,
+    Expression<String>? status,
+    Expression<int>? estimatedDurationMinutes,
+    Expression<String>? goalTagsJson,
+    Expression<String>? equipmentJson,
+    Expression<String>? aiGenerationSnapshotId,
+    Expression<int>? aiOutputSchemaVersion,
+    Expression<bool>? imported,
+    Expression<DateTime>? importedAt,
+    Expression<String>? importOrigin,
+    Expression<String>? importSourceFileType,
+    Expression<String>? importReviewStatus,
+    Expression<int>? shareSchemaVersion,
+    Expression<String>? externalShareId,
+    Expression<String>? exportPrivacyMode,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? archivedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (creationMethod != null) 'creation_method': creationMethod,
+      if (status != null) 'status': status,
+      if (estimatedDurationMinutes != null)
+        'estimated_duration_minutes': estimatedDurationMinutes,
+      if (goalTagsJson != null) 'goal_tags_json': goalTagsJson,
+      if (equipmentJson != null) 'equipment_json': equipmentJson,
+      if (aiGenerationSnapshotId != null)
+        'ai_generation_snapshot_id': aiGenerationSnapshotId,
+      if (aiOutputSchemaVersion != null)
+        'ai_output_schema_version': aiOutputSchemaVersion,
+      if (imported != null) 'imported': imported,
+      if (importedAt != null) 'imported_at': importedAt,
+      if (importOrigin != null) 'import_origin': importOrigin,
+      if (importSourceFileType != null)
+        'import_source_file_type': importSourceFileType,
+      if (importReviewStatus != null)
+        'import_review_status': importReviewStatus,
+      if (shareSchemaVersion != null)
+        'share_schema_version': shareSchemaVersion,
+      if (externalShareId != null) 'external_share_id': externalShareId,
+      if (exportPrivacyMode != null) 'export_privacy_mode': exportPrivacyMode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (archivedAt != null) 'archived_at': archivedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SavedWorkoutsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? description,
+    Value<String>? source,
+    Value<String>? creationMethod,
+    Value<String>? status,
+    Value<int?>? estimatedDurationMinutes,
+    Value<String>? goalTagsJson,
+    Value<String>? equipmentJson,
+    Value<String?>? aiGenerationSnapshotId,
+    Value<int?>? aiOutputSchemaVersion,
+    Value<bool>? imported,
+    Value<DateTime?>? importedAt,
+    Value<String?>? importOrigin,
+    Value<String?>? importSourceFileType,
+    Value<String?>? importReviewStatus,
+    Value<int?>? shareSchemaVersion,
+    Value<String?>? externalShareId,
+    Value<String?>? exportPrivacyMode,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? archivedAt,
+    Value<int>? rowid,
+  }) {
+    return SavedWorkoutsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      source: source ?? this.source,
+      creationMethod: creationMethod ?? this.creationMethod,
+      status: status ?? this.status,
+      estimatedDurationMinutes:
+          estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      goalTagsJson: goalTagsJson ?? this.goalTagsJson,
+      equipmentJson: equipmentJson ?? this.equipmentJson,
+      aiGenerationSnapshotId:
+          aiGenerationSnapshotId ?? this.aiGenerationSnapshotId,
+      aiOutputSchemaVersion:
+          aiOutputSchemaVersion ?? this.aiOutputSchemaVersion,
+      imported: imported ?? this.imported,
+      importedAt: importedAt ?? this.importedAt,
+      importOrigin: importOrigin ?? this.importOrigin,
+      importSourceFileType: importSourceFileType ?? this.importSourceFileType,
+      importReviewStatus: importReviewStatus ?? this.importReviewStatus,
+      shareSchemaVersion: shareSchemaVersion ?? this.shareSchemaVersion,
+      externalShareId: externalShareId ?? this.externalShareId,
+      exportPrivacyMode: exportPrivacyMode ?? this.exportPrivacyMode,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      archivedAt: archivedAt ?? this.archivedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (creationMethod.present) {
+      map['creation_method'] = Variable<String>(creationMethod.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (estimatedDurationMinutes.present) {
+      map['estimated_duration_minutes'] = Variable<int>(
+        estimatedDurationMinutes.value,
+      );
+    }
+    if (goalTagsJson.present) {
+      map['goal_tags_json'] = Variable<String>(goalTagsJson.value);
+    }
+    if (equipmentJson.present) {
+      map['equipment_json'] = Variable<String>(equipmentJson.value);
+    }
+    if (aiGenerationSnapshotId.present) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId.value,
+      );
+    }
+    if (aiOutputSchemaVersion.present) {
+      map['ai_output_schema_version'] = Variable<int>(
+        aiOutputSchemaVersion.value,
+      );
+    }
+    if (imported.present) {
+      map['imported'] = Variable<bool>(imported.value);
+    }
+    if (importedAt.present) {
+      map['imported_at'] = Variable<DateTime>(importedAt.value);
+    }
+    if (importOrigin.present) {
+      map['import_origin'] = Variable<String>(importOrigin.value);
+    }
+    if (importSourceFileType.present) {
+      map['import_source_file_type'] = Variable<String>(
+        importSourceFileType.value,
+      );
+    }
+    if (importReviewStatus.present) {
+      map['import_review_status'] = Variable<String>(importReviewStatus.value);
+    }
+    if (shareSchemaVersion.present) {
+      map['share_schema_version'] = Variable<int>(shareSchemaVersion.value);
+    }
+    if (externalShareId.present) {
+      map['external_share_id'] = Variable<String>(externalShareId.value);
+    }
+    if (exportPrivacyMode.present) {
+      map['export_privacy_mode'] = Variable<String>(exportPrivacyMode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (archivedAt.present) {
+      map['archived_at'] = Variable<DateTime>(archivedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkoutsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('source: $source, ')
+          ..write('creationMethod: $creationMethod, ')
+          ..write('status: $status, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
+          ..write('equipmentJson: $equipmentJson, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('aiOutputSchemaVersion: $aiOutputSchemaVersion, ')
+          ..write('imported: $imported, ')
+          ..write('importedAt: $importedAt, ')
+          ..write('importOrigin: $importOrigin, ')
+          ..write('importSourceFileType: $importSourceFileType, ')
+          ..write('importReviewStatus: $importReviewStatus, ')
+          ..write('shareSchemaVersion: $shareSchemaVersion, ')
+          ..write('externalShareId: $externalShareId, ')
+          ..write('exportPrivacyMode: $exportPrivacyMode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('archivedAt: $archivedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
+    with TableInfo<$SavedWorkoutExercisesTable, SavedWorkoutExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SavedWorkoutExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _savedWorkoutIdMeta = const VerificationMeta(
+    'savedWorkoutId',
+  );
+  @override
+  late final GeneratedColumn<String> savedWorkoutId = GeneratedColumn<String>(
+    'saved_workout_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseRefMeta = const VerificationMeta(
+    'exerciseRef',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseRef = GeneratedColumn<String>(
+    'exercise_ref',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _exerciseRoleMeta = const VerificationMeta(
+    'exerciseRole',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseRole = GeneratedColumn<String>(
+    'exercise_role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetGroupIdMeta = const VerificationMeta(
+    'supersetGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> supersetGroupId = GeneratedColumn<String>(
+    'superset_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _supersetOrderMeta = const VerificationMeta(
+    'supersetOrder',
+  );
+  @override
+  late final GeneratedColumn<int> supersetOrder = GeneratedColumn<int>(
+    'superset_order',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cuesJsonMeta = const VerificationMeta(
+    'cuesJson',
+  );
+  @override
+  late final GeneratedColumn<String> cuesJson = GeneratedColumn<String>(
+    'cues_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    savedWorkoutId,
+    exerciseId,
+    exerciseRef,
+    exerciseRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+    cuesJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'saved_workout_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SavedWorkoutExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('saved_workout_id')) {
+      context.handle(
+        _savedWorkoutIdMeta,
+        savedWorkoutId.isAcceptableOrUnknown(
+          data['saved_workout_id']!,
+          _savedWorkoutIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_savedWorkoutIdMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('exercise_ref')) {
+      context.handle(
+        _exerciseRefMeta,
+        exerciseRef.isAcceptableOrUnknown(
+          data['exercise_ref']!,
+          _exerciseRefMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_role')) {
+      context.handle(
+        _exerciseRoleMeta,
+        exerciseRole.isAcceptableOrUnknown(
+          data['exercise_role']!,
+          _exerciseRoleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_group_id')) {
+      context.handle(
+        _supersetGroupIdMeta,
+        supersetGroupId.isAcceptableOrUnknown(
+          data['superset_group_id']!,
+          _supersetGroupIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_order')) {
+      context.handle(
+        _supersetOrderMeta,
+        supersetOrder.isAcceptableOrUnknown(
+          data['superset_order']!,
+          _supersetOrderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('cues_json')) {
+      context.handle(
+        _cuesJsonMeta,
+        cuesJson.isAcceptableOrUnknown(data['cues_json']!, _cuesJsonMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavedWorkoutExercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavedWorkoutExercise(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      savedWorkoutId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}saved_workout_id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      exerciseRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_ref'],
+      ),
+      exerciseRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_role'],
+      ),
+      supersetGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}superset_group_id'],
+      ),
+      supersetOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}superset_order'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      cuesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cues_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SavedWorkoutExercisesTable createAlias(String alias) {
+    return $SavedWorkoutExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class SavedWorkoutExercise extends DataClass
+    implements Insertable<SavedWorkoutExercise> {
+  final String id;
+  final String savedWorkoutId;
+  final int exerciseId;
+  final String? exerciseRef;
+  final String? exerciseRole;
+  final String? supersetGroupId;
+  final int? supersetOrder;
+  final int sortOrder;
+  final String? notes;
+  final String? cuesJson;
+  final DateTime createdAt;
+  const SavedWorkoutExercise({
+    required this.id,
+    required this.savedWorkoutId,
+    required this.exerciseId,
+    this.exerciseRef,
+    this.exerciseRole,
+    this.supersetGroupId,
+    this.supersetOrder,
+    required this.sortOrder,
+    this.notes,
+    this.cuesJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['saved_workout_id'] = Variable<String>(savedWorkoutId);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    if (!nullToAbsent || exerciseRef != null) {
+      map['exercise_ref'] = Variable<String>(exerciseRef);
+    }
+    if (!nullToAbsent || exerciseRole != null) {
+      map['exercise_role'] = Variable<String>(exerciseRole);
+    }
+    if (!nullToAbsent || supersetGroupId != null) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId);
+    }
+    if (!nullToAbsent || supersetOrder != null) {
+      map['superset_order'] = Variable<int>(supersetOrder);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || cuesJson != null) {
+      map['cues_json'] = Variable<String>(cuesJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SavedWorkoutExercisesCompanion toCompanion(bool nullToAbsent) {
+    return SavedWorkoutExercisesCompanion(
+      id: Value(id),
+      savedWorkoutId: Value(savedWorkoutId),
+      exerciseId: Value(exerciseId),
+      exerciseRef: exerciseRef == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exerciseRef),
+      exerciseRole: exerciseRole == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exerciseRole),
+      supersetGroupId: supersetGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetGroupId),
+      supersetOrder: supersetOrder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetOrder),
+      sortOrder: Value(sortOrder),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      cuesJson: cuesJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cuesJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SavedWorkoutExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SavedWorkoutExercise(
+      id: serializer.fromJson<String>(json['id']),
+      savedWorkoutId: serializer.fromJson<String>(json['savedWorkoutId']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      exerciseRef: serializer.fromJson<String?>(json['exerciseRef']),
+      exerciseRole: serializer.fromJson<String?>(json['exerciseRole']),
+      supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
+      supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      cuesJson: serializer.fromJson<String?>(json['cuesJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'savedWorkoutId': serializer.toJson<String>(savedWorkoutId),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'exerciseRef': serializer.toJson<String?>(exerciseRef),
+      'exerciseRole': serializer.toJson<String?>(exerciseRole),
+      'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
+      'supersetOrder': serializer.toJson<int?>(supersetOrder),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'notes': serializer.toJson<String?>(notes),
+      'cuesJson': serializer.toJson<String?>(cuesJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SavedWorkoutExercise copyWith({
+    String? id,
+    String? savedWorkoutId,
+    int? exerciseId,
+    Value<String?> exerciseRef = const Value.absent(),
+    Value<String?> exerciseRole = const Value.absent(),
+    Value<String?> supersetGroupId = const Value.absent(),
+    Value<int?> supersetOrder = const Value.absent(),
+    int? sortOrder,
+    Value<String?> notes = const Value.absent(),
+    Value<String?> cuesJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => SavedWorkoutExercise(
+    id: id ?? this.id,
+    savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
+    exerciseId: exerciseId ?? this.exerciseId,
+    exerciseRef: exerciseRef.present ? exerciseRef.value : this.exerciseRef,
+    exerciseRole: exerciseRole.present ? exerciseRole.value : this.exerciseRole,
+    supersetGroupId: supersetGroupId.present
+        ? supersetGroupId.value
+        : this.supersetGroupId,
+    supersetOrder: supersetOrder.present
+        ? supersetOrder.value
+        : this.supersetOrder,
+    sortOrder: sortOrder ?? this.sortOrder,
+    notes: notes.present ? notes.value : this.notes,
+    cuesJson: cuesJson.present ? cuesJson.value : this.cuesJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  SavedWorkoutExercise copyWithCompanion(SavedWorkoutExercisesCompanion data) {
+    return SavedWorkoutExercise(
+      id: data.id.present ? data.id.value : this.id,
+      savedWorkoutId: data.savedWorkoutId.present
+          ? data.savedWorkoutId.value
+          : this.savedWorkoutId,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      exerciseRef: data.exerciseRef.present
+          ? data.exerciseRef.value
+          : this.exerciseRef,
+      exerciseRole: data.exerciseRole.present
+          ? data.exerciseRole.value
+          : this.exerciseRole,
+      supersetGroupId: data.supersetGroupId.present
+          ? data.supersetGroupId.value
+          : this.supersetGroupId,
+      supersetOrder: data.supersetOrder.present
+          ? data.supersetOrder.value
+          : this.supersetOrder,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      cuesJson: data.cuesJson.present ? data.cuesJson.value : this.cuesJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkoutExercise(')
+          ..write('id: $id, ')
+          ..write('savedWorkoutId: $savedWorkoutId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRef: $exerciseRef, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes, ')
+          ..write('cuesJson: $cuesJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    savedWorkoutId,
+    exerciseId,
+    exerciseRef,
+    exerciseRole,
+    supersetGroupId,
+    supersetOrder,
+    sortOrder,
+    notes,
+    cuesJson,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SavedWorkoutExercise &&
+          other.id == this.id &&
+          other.savedWorkoutId == this.savedWorkoutId &&
+          other.exerciseId == this.exerciseId &&
+          other.exerciseRef == this.exerciseRef &&
+          other.exerciseRole == this.exerciseRole &&
+          other.supersetGroupId == this.supersetGroupId &&
+          other.supersetOrder == this.supersetOrder &&
+          other.sortOrder == this.sortOrder &&
+          other.notes == this.notes &&
+          other.cuesJson == this.cuesJson &&
+          other.createdAt == this.createdAt);
+}
+
+class SavedWorkoutExercisesCompanion
+    extends UpdateCompanion<SavedWorkoutExercise> {
+  final Value<String> id;
+  final Value<String> savedWorkoutId;
+  final Value<int> exerciseId;
+  final Value<String?> exerciseRef;
+  final Value<String?> exerciseRole;
+  final Value<String?> supersetGroupId;
+  final Value<int?> supersetOrder;
+  final Value<int> sortOrder;
+  final Value<String?> notes;
+  final Value<String?> cuesJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SavedWorkoutExercisesCompanion({
+    this.id = const Value.absent(),
+    this.savedWorkoutId = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.exerciseRef = const Value.absent(),
+    this.exerciseRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.cuesJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SavedWorkoutExercisesCompanion.insert({
+    required String id,
+    required String savedWorkoutId,
+    required int exerciseId,
+    this.exerciseRef = const Value.absent(),
+    this.exerciseRole = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.supersetOrder = const Value.absent(),
+    required int sortOrder,
+    this.notes = const Value.absent(),
+    this.cuesJson = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       savedWorkoutId = Value(savedWorkoutId),
+       exerciseId = Value(exerciseId),
+       sortOrder = Value(sortOrder),
+       createdAt = Value(createdAt);
+  static Insertable<SavedWorkoutExercise> custom({
+    Expression<String>? id,
+    Expression<String>? savedWorkoutId,
+    Expression<int>? exerciseId,
+    Expression<String>? exerciseRef,
+    Expression<String>? exerciseRole,
+    Expression<String>? supersetGroupId,
+    Expression<int>? supersetOrder,
+    Expression<int>? sortOrder,
+    Expression<String>? notes,
+    Expression<String>? cuesJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (savedWorkoutId != null) 'saved_workout_id': savedWorkoutId,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (exerciseRef != null) 'exercise_ref': exerciseRef,
+      if (exerciseRole != null) 'exercise_role': exerciseRole,
+      if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
+      if (supersetOrder != null) 'superset_order': supersetOrder,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (notes != null) 'notes': notes,
+      if (cuesJson != null) 'cues_json': cuesJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SavedWorkoutExercisesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? savedWorkoutId,
+    Value<int>? exerciseId,
+    Value<String?>? exerciseRef,
+    Value<String?>? exerciseRole,
+    Value<String?>? supersetGroupId,
+    Value<int?>? supersetOrder,
+    Value<int>? sortOrder,
+    Value<String?>? notes,
+    Value<String?>? cuesJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return SavedWorkoutExercisesCompanion(
+      id: id ?? this.id,
+      savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      exerciseRef: exerciseRef ?? this.exerciseRef,
+      exerciseRole: exerciseRole ?? this.exerciseRole,
+      supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      supersetOrder: supersetOrder ?? this.supersetOrder,
+      sortOrder: sortOrder ?? this.sortOrder,
+      notes: notes ?? this.notes,
+      cuesJson: cuesJson ?? this.cuesJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (savedWorkoutId.present) {
+      map['saved_workout_id'] = Variable<String>(savedWorkoutId.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (exerciseRef.present) {
+      map['exercise_ref'] = Variable<String>(exerciseRef.value);
+    }
+    if (exerciseRole.present) {
+      map['exercise_role'] = Variable<String>(exerciseRole.value);
+    }
+    if (supersetGroupId.present) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId.value);
+    }
+    if (supersetOrder.present) {
+      map['superset_order'] = Variable<int>(supersetOrder.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (cuesJson.present) {
+      map['cues_json'] = Variable<String>(cuesJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkoutExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('savedWorkoutId: $savedWorkoutId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseRef: $exerciseRef, ')
+          ..write('exerciseRole: $exerciseRole, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('supersetOrder: $supersetOrder, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('notes: $notes, ')
+          ..write('cuesJson: $cuesJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SavedWorkoutExerciseSetsTable extends SavedWorkoutExerciseSets
+    with TableInfo<$SavedWorkoutExerciseSetsTable, SavedWorkoutExerciseSet> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SavedWorkoutExerciseSetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _savedWorkoutExerciseIdMeta =
+      const VerificationMeta('savedWorkoutExerciseId');
+  @override
+  late final GeneratedColumn<String> savedWorkoutExerciseId =
+      GeneratedColumn<String>(
+        'saved_workout_exercise_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _setIndexMeta = const VerificationMeta(
+    'setIndex',
+  );
+  @override
+  late final GeneratedColumn<int> setIndex = GeneratedColumn<int>(
+    'set_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setTypeMeta = const VerificationMeta(
+    'setType',
+  );
+  @override
+  late final GeneratedColumn<String> setType = GeneratedColumn<String>(
+    'set_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setIntentMeta = const VerificationMeta(
+    'setIntent',
+  );
+  @override
+  late final GeneratedColumn<String> setIntent = GeneratedColumn<String>(
+    'set_intent',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMinMeta = const VerificationMeta(
+    'prescribedRepsMin',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMin = GeneratedColumn<int>(
+    'prescribed_reps_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMaxMeta = const VerificationMeta(
+    'prescribedRepsMax',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMax = GeneratedColumn<int>(
+    'prescribed_reps_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsExactMeta =
+      const VerificationMeta('prescribedRepsExact');
+  @override
+  late final GeneratedColumn<int> prescribedRepsExact = GeneratedColumn<int>(
+    'prescribed_reps_exact',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _distanceMetersMeta = const VerificationMeta(
+    'distanceMeters',
+  );
+  @override
+  late final GeneratedColumn<double> distanceMeters = GeneratedColumn<double>(
+    'distance_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightPrescriptionTypeMeta =
+      const VerificationMeta('weightPrescriptionType');
+  @override
+  late final GeneratedColumn<String> weightPrescriptionType =
+      GeneratedColumn<String>(
+        'weight_prescription_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightKgMeta =
+      const VerificationMeta('prescribedWeightKg');
+  @override
+  late final GeneratedColumn<double> prescribedWeightKg =
+      GeneratedColumn<double>(
+        'prescribed_weight_kg',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPct1rmMeta =
+      const VerificationMeta('prescribedWeightPct1rm');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPct1rm =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct1rm',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedWeightPctWorkingMeta =
+      const VerificationMeta('prescribedWeightPctWorking');
+  @override
+  late final GeneratedColumn<double> prescribedWeightPctWorking =
+      GeneratedColumn<double>(
+        'prescribed_weight_pct_working',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _bodyweightMultiplierMeta =
+      const VerificationMeta('bodyweightMultiplier');
+  @override
+  late final GeneratedColumn<double> bodyweightMultiplier =
+      GeneratedColumn<double>(
+        'bodyweight_multiplier',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedRpeMinMeta = const VerificationMeta(
+    'prescribedRpeMin',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMin = GeneratedColumn<double>(
+    'prescribed_rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRpeMaxMeta = const VerificationMeta(
+    'prescribedRpeMax',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMax = GeneratedColumn<double>(
+    'prescribed_rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRirMeta = const VerificationMeta(
+    'prescribedRir',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRir = GeneratedColumn<int>(
+    'prescribed_rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _restSecondsMeta = const VerificationMeta(
+    'restSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> restSeconds = GeneratedColumn<int>(
+    'rest_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadingModelMeta = const VerificationMeta(
+    'loadingModel',
+  );
+  @override
+  late final GeneratedColumn<String> loadingModel = GeneratedColumn<String>(
+    'loading_model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMinMeta = const VerificationMeta(
+    'percent1rmMin',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMin = GeneratedColumn<double>(
+    'percent1rm_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _percent1rmMaxMeta = const VerificationMeta(
+    'percent1rmMax',
+  );
+  @override
+  late final GeneratedColumn<double> percent1rmMax = GeneratedColumn<double>(
+    'percent1rm_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMinMeta = const VerificationMeta('rpeMin');
+  @override
+  late final GeneratedColumn<double> rpeMin = GeneratedColumn<double>(
+    'rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rpeMaxMeta = const VerificationMeta('rpeMax');
+  @override
+  late final GeneratedColumn<double> rpeMax = GeneratedColumn<double>(
+    'rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _loadSelectionNoteMeta = const VerificationMeta(
+    'loadSelectionNote',
+  );
+  @override
+  late final GeneratedColumn<String> loadSelectionNote =
+      GeneratedColumn<String>(
+        'load_selection_note',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isCalibrationEstimateMeta =
+      const VerificationMeta('isCalibrationEstimate');
+  @override
+  late final GeneratedColumn<bool> isCalibrationEstimate =
+      GeneratedColumn<bool>(
+        'is_calibration_estimate',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_calibration_estimate" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _derivedFromWorkingSetIndexMeta =
+      const VerificationMeta('derivedFromWorkingSetIndex');
+  @override
+  late final GeneratedColumn<int> derivedFromWorkingSetIndex =
+      GeneratedColumn<int>(
+        'derived_from_working_set_index',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _warmupWeightRuleJsonMeta =
+      const VerificationMeta('warmupWeightRuleJson');
+  @override
+  late final GeneratedColumn<String> warmupWeightRuleJson =
+      GeneratedColumn<String>(
+        'warmup_weight_rule_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    savedWorkoutExerciseId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'saved_workout_exercise_sets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SavedWorkoutExerciseSet> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('saved_workout_exercise_id')) {
+      context.handle(
+        _savedWorkoutExerciseIdMeta,
+        savedWorkoutExerciseId.isAcceptableOrUnknown(
+          data['saved_workout_exercise_id']!,
+          _savedWorkoutExerciseIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_savedWorkoutExerciseIdMeta);
+    }
+    if (data.containsKey('set_index')) {
+      context.handle(
+        _setIndexMeta,
+        setIndex.isAcceptableOrUnknown(data['set_index']!, _setIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setIndexMeta);
+    }
+    if (data.containsKey('set_type')) {
+      context.handle(
+        _setTypeMeta,
+        setType.isAcceptableOrUnknown(data['set_type']!, _setTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setTypeMeta);
+    }
+    if (data.containsKey('set_intent')) {
+      context.handle(
+        _setIntentMeta,
+        setIntent.isAcceptableOrUnknown(data['set_intent']!, _setIntentMeta),
+      );
+    }
+    if (data.containsKey('prescribed_reps_min')) {
+      context.handle(
+        _prescribedRepsMinMeta,
+        prescribedRepsMin.isAcceptableOrUnknown(
+          data['prescribed_reps_min']!,
+          _prescribedRepsMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_max')) {
+      context.handle(
+        _prescribedRepsMaxMeta,
+        prescribedRepsMax.isAcceptableOrUnknown(
+          data['prescribed_reps_max']!,
+          _prescribedRepsMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_exact')) {
+      context.handle(
+        _prescribedRepsExactMeta,
+        prescribedRepsExact.isAcceptableOrUnknown(
+          data['prescribed_reps_exact']!,
+          _prescribedRepsExactMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('distance_meters')) {
+      context.handle(
+        _distanceMetersMeta,
+        distanceMeters.isAcceptableOrUnknown(
+          data['distance_meters']!,
+          _distanceMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight_prescription_type')) {
+      context.handle(
+        _weightPrescriptionTypeMeta,
+        weightPrescriptionType.isAcceptableOrUnknown(
+          data['weight_prescription_type']!,
+          _weightPrescriptionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_kg')) {
+      context.handle(
+        _prescribedWeightKgMeta,
+        prescribedWeightKg.isAcceptableOrUnknown(
+          data['prescribed_weight_kg']!,
+          _prescribedWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct1rm')) {
+      context.handle(
+        _prescribedWeightPct1rmMeta,
+        prescribedWeightPct1rm.isAcceptableOrUnknown(
+          data['prescribed_weight_pct1rm']!,
+          _prescribedWeightPct1rmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_pct_working')) {
+      context.handle(
+        _prescribedWeightPctWorkingMeta,
+        prescribedWeightPctWorking.isAcceptableOrUnknown(
+          data['prescribed_weight_pct_working']!,
+          _prescribedWeightPctWorkingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_multiplier')) {
+      context.handle(
+        _bodyweightMultiplierMeta,
+        bodyweightMultiplier.isAcceptableOrUnknown(
+          data['bodyweight_multiplier']!,
+          _bodyweightMultiplierMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_min')) {
+      context.handle(
+        _prescribedRpeMinMeta,
+        prescribedRpeMin.isAcceptableOrUnknown(
+          data['prescribed_rpe_min']!,
+          _prescribedRpeMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_max')) {
+      context.handle(
+        _prescribedRpeMaxMeta,
+        prescribedRpeMax.isAcceptableOrUnknown(
+          data['prescribed_rpe_max']!,
+          _prescribedRpeMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rir')) {
+      context.handle(
+        _prescribedRirMeta,
+        prescribedRir.isAcceptableOrUnknown(
+          data['prescribed_rir']!,
+          _prescribedRirMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rest_seconds')) {
+      context.handle(
+        _restSecondsMeta,
+        restSeconds.isAcceptableOrUnknown(
+          data['rest_seconds']!,
+          _restSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loading_model')) {
+      context.handle(
+        _loadingModelMeta,
+        loadingModel.isAcceptableOrUnknown(
+          data['loading_model']!,
+          _loadingModelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_min')) {
+      context.handle(
+        _percent1rmMinMeta,
+        percent1rmMin.isAcceptableOrUnknown(
+          data['percent1rm_min']!,
+          _percent1rmMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('percent1rm_max')) {
+      context.handle(
+        _percent1rmMaxMeta,
+        percent1rmMax.isAcceptableOrUnknown(
+          data['percent1rm_max']!,
+          _percent1rmMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rpe_min')) {
+      context.handle(
+        _rpeMinMeta,
+        rpeMin.isAcceptableOrUnknown(data['rpe_min']!, _rpeMinMeta),
+      );
+    }
+    if (data.containsKey('rpe_max')) {
+      context.handle(
+        _rpeMaxMeta,
+        rpeMax.isAcceptableOrUnknown(data['rpe_max']!, _rpeMaxMeta),
+      );
+    }
+    if (data.containsKey('load_selection_note')) {
+      context.handle(
+        _loadSelectionNoteMeta,
+        loadSelectionNote.isAcceptableOrUnknown(
+          data['load_selection_note']!,
+          _loadSelectionNoteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_calibration_estimate')) {
+      context.handle(
+        _isCalibrationEstimateMeta,
+        isCalibrationEstimate.isAcceptableOrUnknown(
+          data['is_calibration_estimate']!,
+          _isCalibrationEstimateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('derived_from_working_set_index')) {
+      context.handle(
+        _derivedFromWorkingSetIndexMeta,
+        derivedFromWorkingSetIndex.isAcceptableOrUnknown(
+          data['derived_from_working_set_index']!,
+          _derivedFromWorkingSetIndexMeta,
+        ),
+      );
+    }
+    if (data.containsKey('warmup_weight_rule_json')) {
+      context.handle(
+        _warmupWeightRuleJsonMeta,
+        warmupWeightRuleJson.isAcceptableOrUnknown(
+          data['warmup_weight_rule_json']!,
+          _warmupWeightRuleJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavedWorkoutExerciseSet map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavedWorkoutExerciseSet(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      savedWorkoutExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}saved_workout_exercise_id'],
+      )!,
+      setIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}set_index'],
+      )!,
+      setType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_type'],
+      )!,
+      setIntent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_intent'],
+      ),
+      prescribedRepsMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_min'],
+      ),
+      prescribedRepsMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_max'],
+      ),
+      prescribedRepsExact: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_exact'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      distanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_meters'],
+      ),
+      weightPrescriptionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weight_prescription_type'],
+      ),
+      prescribedWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_kg'],
+      ),
+      prescribedWeightPct1rm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct1rm'],
+      ),
+      prescribedWeightPctWorking: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_pct_working'],
+      ),
+      bodyweightMultiplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_multiplier'],
+      ),
+      prescribedRpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_min'],
+      ),
+      prescribedRpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_max'],
+      ),
+      prescribedRir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_rir'],
+      ),
+      restSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_seconds'],
+      ),
+      loadingModel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}loading_model'],
+      ),
+      percent1rmMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_min'],
+      ),
+      percent1rmMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}percent1rm_max'],
+      ),
+      rpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_min'],
+      ),
+      rpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rpe_max'],
+      ),
+      loadSelectionNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}load_selection_note'],
+      ),
+      isCalibrationEstimate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_calibration_estimate'],
+      )!,
+      derivedFromWorkingSetIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}derived_from_working_set_index'],
+      ),
+      warmupWeightRuleJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}warmup_weight_rule_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SavedWorkoutExerciseSetsTable createAlias(String alias) {
+    return $SavedWorkoutExerciseSetsTable(attachedDatabase, alias);
+  }
+}
+
+class SavedWorkoutExerciseSet extends DataClass
+    implements Insertable<SavedWorkoutExerciseSet> {
+  final String id;
+  final String savedWorkoutExerciseId;
+  final int setIndex;
+  final String setType;
+  final String? setIntent;
+  final int? prescribedRepsMin;
+  final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
+  final int? durationSeconds;
+  final double? distanceMeters;
+  final String? weightPrescriptionType;
+  final double? prescribedWeightKg;
+  final double? prescribedWeightPct1rm;
+  final double? prescribedWeightPctWorking;
+  final double? bodyweightMultiplier;
+  final double? prescribedRpeMin;
+  final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? restSeconds;
+  final String? loadingModel;
+  final double? percent1rmMin;
+  final double? percent1rmMax;
+  final double? rpeMin;
+  final double? rpeMax;
+  final String? loadSelectionNote;
+  final bool isCalibrationEstimate;
+  final int? derivedFromWorkingSetIndex;
+  final String? warmupWeightRuleJson;
+  final DateTime createdAt;
+  const SavedWorkoutExerciseSet({
+    required this.id,
+    required this.savedWorkoutExerciseId,
+    required this.setIndex,
+    required this.setType,
+    this.setIntent,
+    this.prescribedRepsMin,
+    this.prescribedRepsMax,
+    this.prescribedRepsExact,
+    this.durationSeconds,
+    this.distanceMeters,
+    this.weightPrescriptionType,
+    this.prescribedWeightKg,
+    this.prescribedWeightPct1rm,
+    this.prescribedWeightPctWorking,
+    this.bodyweightMultiplier,
+    this.prescribedRpeMin,
+    this.prescribedRpeMax,
+    this.prescribedRir,
+    this.restSeconds,
+    this.loadingModel,
+    this.percent1rmMin,
+    this.percent1rmMax,
+    this.rpeMin,
+    this.rpeMax,
+    this.loadSelectionNote,
+    required this.isCalibrationEstimate,
+    this.derivedFromWorkingSetIndex,
+    this.warmupWeightRuleJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['saved_workout_exercise_id'] = Variable<String>(savedWorkoutExerciseId);
+    map['set_index'] = Variable<int>(setIndex);
+    map['set_type'] = Variable<String>(setType);
+    if (!nullToAbsent || setIntent != null) {
+      map['set_intent'] = Variable<String>(setIntent);
+    }
+    if (!nullToAbsent || prescribedRepsMin != null) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin);
+    }
+    if (!nullToAbsent || prescribedRepsMax != null) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax);
+    }
+    if (!nullToAbsent || prescribedRepsExact != null) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    if (!nullToAbsent || distanceMeters != null) {
+      map['distance_meters'] = Variable<double>(distanceMeters);
+    }
+    if (!nullToAbsent || weightPrescriptionType != null) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightKg != null) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg);
+    }
+    if (!nullToAbsent || prescribedWeightPct1rm != null) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm,
+      );
+    }
+    if (!nullToAbsent || prescribedWeightPctWorking != null) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking,
+      );
+    }
+    if (!nullToAbsent || bodyweightMultiplier != null) {
+      map['bodyweight_multiplier'] = Variable<double>(bodyweightMultiplier);
+    }
+    if (!nullToAbsent || prescribedRpeMin != null) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin);
+    }
+    if (!nullToAbsent || prescribedRpeMax != null) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax);
+    }
+    if (!nullToAbsent || prescribedRir != null) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir);
+    }
+    if (!nullToAbsent || restSeconds != null) {
+      map['rest_seconds'] = Variable<int>(restSeconds);
+    }
+    if (!nullToAbsent || loadingModel != null) {
+      map['loading_model'] = Variable<String>(loadingModel);
+    }
+    if (!nullToAbsent || percent1rmMin != null) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin);
+    }
+    if (!nullToAbsent || percent1rmMax != null) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax);
+    }
+    if (!nullToAbsent || rpeMin != null) {
+      map['rpe_min'] = Variable<double>(rpeMin);
+    }
+    if (!nullToAbsent || rpeMax != null) {
+      map['rpe_max'] = Variable<double>(rpeMax);
+    }
+    if (!nullToAbsent || loadSelectionNote != null) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote);
+    }
+    map['is_calibration_estimate'] = Variable<bool>(isCalibrationEstimate);
+    if (!nullToAbsent || derivedFromWorkingSetIndex != null) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex,
+      );
+    }
+    if (!nullToAbsent || warmupWeightRuleJson != null) {
+      map['warmup_weight_rule_json'] = Variable<String>(warmupWeightRuleJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SavedWorkoutExerciseSetsCompanion toCompanion(bool nullToAbsent) {
+    return SavedWorkoutExerciseSetsCompanion(
+      id: Value(id),
+      savedWorkoutExerciseId: Value(savedWorkoutExerciseId),
+      setIndex: Value(setIndex),
+      setType: Value(setType),
+      setIntent: setIntent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(setIntent),
+      prescribedRepsMin: prescribedRepsMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMin),
+      prescribedRepsMax: prescribedRepsMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMax),
+      prescribedRepsExact: prescribedRepsExact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsExact),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      distanceMeters: distanceMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(distanceMeters),
+      weightPrescriptionType: weightPrescriptionType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightPrescriptionType),
+      prescribedWeightKg: prescribedWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightKg),
+      prescribedWeightPct1rm: prescribedWeightPct1rm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPct1rm),
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightPctWorking),
+      bodyweightMultiplier: bodyweightMultiplier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightMultiplier),
+      prescribedRpeMin: prescribedRpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMin),
+      prescribedRpeMax: prescribedRpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMax),
+      prescribedRir: prescribedRir == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRir),
+      restSeconds: restSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restSeconds),
+      loadingModel: loadingModel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadingModel),
+      percent1rmMin: percent1rmMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMin),
+      percent1rmMax: percent1rmMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(percent1rmMax),
+      rpeMin: rpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMin),
+      rpeMax: rpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rpeMax),
+      loadSelectionNote: loadSelectionNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loadSelectionNote),
+      isCalibrationEstimate: Value(isCalibrationEstimate),
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(derivedFromWorkingSetIndex),
+      warmupWeightRuleJson: warmupWeightRuleJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(warmupWeightRuleJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SavedWorkoutExerciseSet.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SavedWorkoutExerciseSet(
+      id: serializer.fromJson<String>(json['id']),
+      savedWorkoutExerciseId: serializer.fromJson<String>(
+        json['savedWorkoutExerciseId'],
+      ),
+      setIndex: serializer.fromJson<int>(json['setIndex']),
+      setType: serializer.fromJson<String>(json['setType']),
+      setIntent: serializer.fromJson<String?>(json['setIntent']),
+      prescribedRepsMin: serializer.fromJson<int?>(json['prescribedRepsMin']),
+      prescribedRepsMax: serializer.fromJson<int?>(json['prescribedRepsMax']),
+      prescribedRepsExact: serializer.fromJson<int?>(
+        json['prescribedRepsExact'],
+      ),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      distanceMeters: serializer.fromJson<double?>(json['distanceMeters']),
+      weightPrescriptionType: serializer.fromJson<String?>(
+        json['weightPrescriptionType'],
+      ),
+      prescribedWeightKg: serializer.fromJson<double?>(
+        json['prescribedWeightKg'],
+      ),
+      prescribedWeightPct1rm: serializer.fromJson<double?>(
+        json['prescribedWeightPct1rm'],
+      ),
+      prescribedWeightPctWorking: serializer.fromJson<double?>(
+        json['prescribedWeightPctWorking'],
+      ),
+      bodyweightMultiplier: serializer.fromJson<double?>(
+        json['bodyweightMultiplier'],
+      ),
+      prescribedRpeMin: serializer.fromJson<double?>(json['prescribedRpeMin']),
+      prescribedRpeMax: serializer.fromJson<double?>(json['prescribedRpeMax']),
+      prescribedRir: serializer.fromJson<int?>(json['prescribedRir']),
+      restSeconds: serializer.fromJson<int?>(json['restSeconds']),
+      loadingModel: serializer.fromJson<String?>(json['loadingModel']),
+      percent1rmMin: serializer.fromJson<double?>(json['percent1rmMin']),
+      percent1rmMax: serializer.fromJson<double?>(json['percent1rmMax']),
+      rpeMin: serializer.fromJson<double?>(json['rpeMin']),
+      rpeMax: serializer.fromJson<double?>(json['rpeMax']),
+      loadSelectionNote: serializer.fromJson<String?>(
+        json['loadSelectionNote'],
+      ),
+      isCalibrationEstimate: serializer.fromJson<bool>(
+        json['isCalibrationEstimate'],
+      ),
+      derivedFromWorkingSetIndex: serializer.fromJson<int?>(
+        json['derivedFromWorkingSetIndex'],
+      ),
+      warmupWeightRuleJson: serializer.fromJson<String?>(
+        json['warmupWeightRuleJson'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'savedWorkoutExerciseId': serializer.toJson<String>(
+        savedWorkoutExerciseId,
+      ),
+      'setIndex': serializer.toJson<int>(setIndex),
+      'setType': serializer.toJson<String>(setType),
+      'setIntent': serializer.toJson<String?>(setIntent),
+      'prescribedRepsMin': serializer.toJson<int?>(prescribedRepsMin),
+      'prescribedRepsMax': serializer.toJson<int?>(prescribedRepsMax),
+      'prescribedRepsExact': serializer.toJson<int?>(prescribedRepsExact),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'distanceMeters': serializer.toJson<double?>(distanceMeters),
+      'weightPrescriptionType': serializer.toJson<String?>(
+        weightPrescriptionType,
+      ),
+      'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
+      'prescribedWeightPct1rm': serializer.toJson<double?>(
+        prescribedWeightPct1rm,
+      ),
+      'prescribedWeightPctWorking': serializer.toJson<double?>(
+        prescribedWeightPctWorking,
+      ),
+      'bodyweightMultiplier': serializer.toJson<double?>(bodyweightMultiplier),
+      'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
+      'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
+      'prescribedRir': serializer.toJson<int?>(prescribedRir),
+      'restSeconds': serializer.toJson<int?>(restSeconds),
+      'loadingModel': serializer.toJson<String?>(loadingModel),
+      'percent1rmMin': serializer.toJson<double?>(percent1rmMin),
+      'percent1rmMax': serializer.toJson<double?>(percent1rmMax),
+      'rpeMin': serializer.toJson<double?>(rpeMin),
+      'rpeMax': serializer.toJson<double?>(rpeMax),
+      'loadSelectionNote': serializer.toJson<String?>(loadSelectionNote),
+      'isCalibrationEstimate': serializer.toJson<bool>(isCalibrationEstimate),
+      'derivedFromWorkingSetIndex': serializer.toJson<int?>(
+        derivedFromWorkingSetIndex,
+      ),
+      'warmupWeightRuleJson': serializer.toJson<String?>(warmupWeightRuleJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SavedWorkoutExerciseSet copyWith({
+    String? id,
+    String? savedWorkoutExerciseId,
+    int? setIndex,
+    String? setType,
+    Value<String?> setIntent = const Value.absent(),
+    Value<int?> prescribedRepsMin = const Value.absent(),
+    Value<int?> prescribedRepsMax = const Value.absent(),
+    Value<int?> prescribedRepsExact = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    Value<double?> distanceMeters = const Value.absent(),
+    Value<String?> weightPrescriptionType = const Value.absent(),
+    Value<double?> prescribedWeightKg = const Value.absent(),
+    Value<double?> prescribedWeightPct1rm = const Value.absent(),
+    Value<double?> prescribedWeightPctWorking = const Value.absent(),
+    Value<double?> bodyweightMultiplier = const Value.absent(),
+    Value<double?> prescribedRpeMin = const Value.absent(),
+    Value<double?> prescribedRpeMax = const Value.absent(),
+    Value<int?> prescribedRir = const Value.absent(),
+    Value<int?> restSeconds = const Value.absent(),
+    Value<String?> loadingModel = const Value.absent(),
+    Value<double?> percent1rmMin = const Value.absent(),
+    Value<double?> percent1rmMax = const Value.absent(),
+    Value<double?> rpeMin = const Value.absent(),
+    Value<double?> rpeMax = const Value.absent(),
+    Value<String?> loadSelectionNote = const Value.absent(),
+    bool? isCalibrationEstimate,
+    Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+    Value<String?> warmupWeightRuleJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => SavedWorkoutExerciseSet(
+    id: id ?? this.id,
+    savedWorkoutExerciseId:
+        savedWorkoutExerciseId ?? this.savedWorkoutExerciseId,
+    setIndex: setIndex ?? this.setIndex,
+    setType: setType ?? this.setType,
+    setIntent: setIntent.present ? setIntent.value : this.setIntent,
+    prescribedRepsMin: prescribedRepsMin.present
+        ? prescribedRepsMin.value
+        : this.prescribedRepsMin,
+    prescribedRepsMax: prescribedRepsMax.present
+        ? prescribedRepsMax.value
+        : this.prescribedRepsMax,
+    prescribedRepsExact: prescribedRepsExact.present
+        ? prescribedRepsExact.value
+        : this.prescribedRepsExact,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    distanceMeters: distanceMeters.present
+        ? distanceMeters.value
+        : this.distanceMeters,
+    weightPrescriptionType: weightPrescriptionType.present
+        ? weightPrescriptionType.value
+        : this.weightPrescriptionType,
+    prescribedWeightKg: prescribedWeightKg.present
+        ? prescribedWeightKg.value
+        : this.prescribedWeightKg,
+    prescribedWeightPct1rm: prescribedWeightPct1rm.present
+        ? prescribedWeightPct1rm.value
+        : this.prescribedWeightPct1rm,
+    prescribedWeightPctWorking: prescribedWeightPctWorking.present
+        ? prescribedWeightPctWorking.value
+        : this.prescribedWeightPctWorking,
+    bodyweightMultiplier: bodyweightMultiplier.present
+        ? bodyweightMultiplier.value
+        : this.bodyweightMultiplier,
+    prescribedRpeMin: prescribedRpeMin.present
+        ? prescribedRpeMin.value
+        : this.prescribedRpeMin,
+    prescribedRpeMax: prescribedRpeMax.present
+        ? prescribedRpeMax.value
+        : this.prescribedRpeMax,
+    prescribedRir: prescribedRir.present
+        ? prescribedRir.value
+        : this.prescribedRir,
+    restSeconds: restSeconds.present ? restSeconds.value : this.restSeconds,
+    loadingModel: loadingModel.present ? loadingModel.value : this.loadingModel,
+    percent1rmMin: percent1rmMin.present
+        ? percent1rmMin.value
+        : this.percent1rmMin,
+    percent1rmMax: percent1rmMax.present
+        ? percent1rmMax.value
+        : this.percent1rmMax,
+    rpeMin: rpeMin.present ? rpeMin.value : this.rpeMin,
+    rpeMax: rpeMax.present ? rpeMax.value : this.rpeMax,
+    loadSelectionNote: loadSelectionNote.present
+        ? loadSelectionNote.value
+        : this.loadSelectionNote,
+    isCalibrationEstimate: isCalibrationEstimate ?? this.isCalibrationEstimate,
+    derivedFromWorkingSetIndex: derivedFromWorkingSetIndex.present
+        ? derivedFromWorkingSetIndex.value
+        : this.derivedFromWorkingSetIndex,
+    warmupWeightRuleJson: warmupWeightRuleJson.present
+        ? warmupWeightRuleJson.value
+        : this.warmupWeightRuleJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  SavedWorkoutExerciseSet copyWithCompanion(
+    SavedWorkoutExerciseSetsCompanion data,
+  ) {
+    return SavedWorkoutExerciseSet(
+      id: data.id.present ? data.id.value : this.id,
+      savedWorkoutExerciseId: data.savedWorkoutExerciseId.present
+          ? data.savedWorkoutExerciseId.value
+          : this.savedWorkoutExerciseId,
+      setIndex: data.setIndex.present ? data.setIndex.value : this.setIndex,
+      setType: data.setType.present ? data.setType.value : this.setType,
+      setIntent: data.setIntent.present ? data.setIntent.value : this.setIntent,
+      prescribedRepsMin: data.prescribedRepsMin.present
+          ? data.prescribedRepsMin.value
+          : this.prescribedRepsMin,
+      prescribedRepsMax: data.prescribedRepsMax.present
+          ? data.prescribedRepsMax.value
+          : this.prescribedRepsMax,
+      prescribedRepsExact: data.prescribedRepsExact.present
+          ? data.prescribedRepsExact.value
+          : this.prescribedRepsExact,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      distanceMeters: data.distanceMeters.present
+          ? data.distanceMeters.value
+          : this.distanceMeters,
+      weightPrescriptionType: data.weightPrescriptionType.present
+          ? data.weightPrescriptionType.value
+          : this.weightPrescriptionType,
+      prescribedWeightKg: data.prescribedWeightKg.present
+          ? data.prescribedWeightKg.value
+          : this.prescribedWeightKg,
+      prescribedWeightPct1rm: data.prescribedWeightPct1rm.present
+          ? data.prescribedWeightPct1rm.value
+          : this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking: data.prescribedWeightPctWorking.present
+          ? data.prescribedWeightPctWorking.value
+          : this.prescribedWeightPctWorking,
+      bodyweightMultiplier: data.bodyweightMultiplier.present
+          ? data.bodyweightMultiplier.value
+          : this.bodyweightMultiplier,
+      prescribedRpeMin: data.prescribedRpeMin.present
+          ? data.prescribedRpeMin.value
+          : this.prescribedRpeMin,
+      prescribedRpeMax: data.prescribedRpeMax.present
+          ? data.prescribedRpeMax.value
+          : this.prescribedRpeMax,
+      prescribedRir: data.prescribedRir.present
+          ? data.prescribedRir.value
+          : this.prescribedRir,
+      restSeconds: data.restSeconds.present
+          ? data.restSeconds.value
+          : this.restSeconds,
+      loadingModel: data.loadingModel.present
+          ? data.loadingModel.value
+          : this.loadingModel,
+      percent1rmMin: data.percent1rmMin.present
+          ? data.percent1rmMin.value
+          : this.percent1rmMin,
+      percent1rmMax: data.percent1rmMax.present
+          ? data.percent1rmMax.value
+          : this.percent1rmMax,
+      rpeMin: data.rpeMin.present ? data.rpeMin.value : this.rpeMin,
+      rpeMax: data.rpeMax.present ? data.rpeMax.value : this.rpeMax,
+      loadSelectionNote: data.loadSelectionNote.present
+          ? data.loadSelectionNote.value
+          : this.loadSelectionNote,
+      isCalibrationEstimate: data.isCalibrationEstimate.present
+          ? data.isCalibrationEstimate.value
+          : this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex: data.derivedFromWorkingSetIndex.present
+          ? data.derivedFromWorkingSetIndex.value
+          : this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: data.warmupWeightRuleJson.present
+          ? data.warmupWeightRuleJson.value
+          : this.warmupWeightRuleJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkoutExerciseSet(')
+          ..write('id: $id, ')
+          ..write('savedWorkoutExerciseId: $savedWorkoutExerciseId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    savedWorkoutExerciseId,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedWeightPct1rm,
+    prescribedWeightPctWorking,
+    bodyweightMultiplier,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+    loadingModel,
+    percent1rmMin,
+    percent1rmMax,
+    rpeMin,
+    rpeMax,
+    loadSelectionNote,
+    isCalibrationEstimate,
+    derivedFromWorkingSetIndex,
+    warmupWeightRuleJson,
+    createdAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SavedWorkoutExerciseSet &&
+          other.id == this.id &&
+          other.savedWorkoutExerciseId == this.savedWorkoutExerciseId &&
+          other.setIndex == this.setIndex &&
+          other.setType == this.setType &&
+          other.setIntent == this.setIntent &&
+          other.prescribedRepsMin == this.prescribedRepsMin &&
+          other.prescribedRepsMax == this.prescribedRepsMax &&
+          other.prescribedRepsExact == this.prescribedRepsExact &&
+          other.durationSeconds == this.durationSeconds &&
+          other.distanceMeters == this.distanceMeters &&
+          other.weightPrescriptionType == this.weightPrescriptionType &&
+          other.prescribedWeightKg == this.prescribedWeightKg &&
+          other.prescribedWeightPct1rm == this.prescribedWeightPct1rm &&
+          other.prescribedWeightPctWorking == this.prescribedWeightPctWorking &&
+          other.bodyweightMultiplier == this.bodyweightMultiplier &&
+          other.prescribedRpeMin == this.prescribedRpeMin &&
+          other.prescribedRpeMax == this.prescribedRpeMax &&
+          other.prescribedRir == this.prescribedRir &&
+          other.restSeconds == this.restSeconds &&
+          other.loadingModel == this.loadingModel &&
+          other.percent1rmMin == this.percent1rmMin &&
+          other.percent1rmMax == this.percent1rmMax &&
+          other.rpeMin == this.rpeMin &&
+          other.rpeMax == this.rpeMax &&
+          other.loadSelectionNote == this.loadSelectionNote &&
+          other.isCalibrationEstimate == this.isCalibrationEstimate &&
+          other.derivedFromWorkingSetIndex == this.derivedFromWorkingSetIndex &&
+          other.warmupWeightRuleJson == this.warmupWeightRuleJson &&
+          other.createdAt == this.createdAt);
+}
+
+class SavedWorkoutExerciseSetsCompanion
+    extends UpdateCompanion<SavedWorkoutExerciseSet> {
+  final Value<String> id;
+  final Value<String> savedWorkoutExerciseId;
+  final Value<int> setIndex;
+  final Value<String> setType;
+  final Value<String?> setIntent;
+  final Value<int?> prescribedRepsMin;
+  final Value<int?> prescribedRepsMax;
+  final Value<int?> prescribedRepsExact;
+  final Value<int?> durationSeconds;
+  final Value<double?> distanceMeters;
+  final Value<String?> weightPrescriptionType;
+  final Value<double?> prescribedWeightKg;
+  final Value<double?> prescribedWeightPct1rm;
+  final Value<double?> prescribedWeightPctWorking;
+  final Value<double?> bodyweightMultiplier;
+  final Value<double?> prescribedRpeMin;
+  final Value<double?> prescribedRpeMax;
+  final Value<int?> prescribedRir;
+  final Value<int?> restSeconds;
+  final Value<String?> loadingModel;
+  final Value<double?> percent1rmMin;
+  final Value<double?> percent1rmMax;
+  final Value<double?> rpeMin;
+  final Value<double?> rpeMax;
+  final Value<String?> loadSelectionNote;
+  final Value<bool> isCalibrationEstimate;
+  final Value<int?> derivedFromWorkingSetIndex;
+  final Value<String?> warmupWeightRuleJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SavedWorkoutExerciseSetsCompanion({
+    this.id = const Value.absent(),
+    this.savedWorkoutExerciseId = const Value.absent(),
+    this.setIndex = const Value.absent(),
+    this.setType = const Value.absent(),
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SavedWorkoutExerciseSetsCompanion.insert({
+    required String id,
+    required String savedWorkoutExerciseId,
+    required int setIndex,
+    required String setType,
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.distanceMeters = const Value.absent(),
+    this.weightPrescriptionType = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedWeightPct1rm = const Value.absent(),
+    this.prescribedWeightPctWorking = const Value.absent(),
+    this.bodyweightMultiplier = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.restSeconds = const Value.absent(),
+    this.loadingModel = const Value.absent(),
+    this.percent1rmMin = const Value.absent(),
+    this.percent1rmMax = const Value.absent(),
+    this.rpeMin = const Value.absent(),
+    this.rpeMax = const Value.absent(),
+    this.loadSelectionNote = const Value.absent(),
+    this.isCalibrationEstimate = const Value.absent(),
+    this.derivedFromWorkingSetIndex = const Value.absent(),
+    this.warmupWeightRuleJson = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       savedWorkoutExerciseId = Value(savedWorkoutExerciseId),
+       setIndex = Value(setIndex),
+       setType = Value(setType),
+       createdAt = Value(createdAt);
+  static Insertable<SavedWorkoutExerciseSet> custom({
+    Expression<String>? id,
+    Expression<String>? savedWorkoutExerciseId,
+    Expression<int>? setIndex,
+    Expression<String>? setType,
+    Expression<String>? setIntent,
+    Expression<int>? prescribedRepsMin,
+    Expression<int>? prescribedRepsMax,
+    Expression<int>? prescribedRepsExact,
+    Expression<int>? durationSeconds,
+    Expression<double>? distanceMeters,
+    Expression<String>? weightPrescriptionType,
+    Expression<double>? prescribedWeightKg,
+    Expression<double>? prescribedWeightPct1rm,
+    Expression<double>? prescribedWeightPctWorking,
+    Expression<double>? bodyweightMultiplier,
+    Expression<double>? prescribedRpeMin,
+    Expression<double>? prescribedRpeMax,
+    Expression<int>? prescribedRir,
+    Expression<int>? restSeconds,
+    Expression<String>? loadingModel,
+    Expression<double>? percent1rmMin,
+    Expression<double>? percent1rmMax,
+    Expression<double>? rpeMin,
+    Expression<double>? rpeMax,
+    Expression<String>? loadSelectionNote,
+    Expression<bool>? isCalibrationEstimate,
+    Expression<int>? derivedFromWorkingSetIndex,
+    Expression<String>? warmupWeightRuleJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (savedWorkoutExerciseId != null)
+        'saved_workout_exercise_id': savedWorkoutExerciseId,
+      if (setIndex != null) 'set_index': setIndex,
+      if (setType != null) 'set_type': setType,
+      if (setIntent != null) 'set_intent': setIntent,
+      if (prescribedRepsMin != null) 'prescribed_reps_min': prescribedRepsMin,
+      if (prescribedRepsMax != null) 'prescribed_reps_max': prescribedRepsMax,
+      if (prescribedRepsExact != null)
+        'prescribed_reps_exact': prescribedRepsExact,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (distanceMeters != null) 'distance_meters': distanceMeters,
+      if (weightPrescriptionType != null)
+        'weight_prescription_type': weightPrescriptionType,
+      if (prescribedWeightKg != null)
+        'prescribed_weight_kg': prescribedWeightKg,
+      if (prescribedWeightPct1rm != null)
+        'prescribed_weight_pct1rm': prescribedWeightPct1rm,
+      if (prescribedWeightPctWorking != null)
+        'prescribed_weight_pct_working': prescribedWeightPctWorking,
+      if (bodyweightMultiplier != null)
+        'bodyweight_multiplier': bodyweightMultiplier,
+      if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
+      if (prescribedRpeMax != null) 'prescribed_rpe_max': prescribedRpeMax,
+      if (prescribedRir != null) 'prescribed_rir': prescribedRir,
+      if (restSeconds != null) 'rest_seconds': restSeconds,
+      if (loadingModel != null) 'loading_model': loadingModel,
+      if (percent1rmMin != null) 'percent1rm_min': percent1rmMin,
+      if (percent1rmMax != null) 'percent1rm_max': percent1rmMax,
+      if (rpeMin != null) 'rpe_min': rpeMin,
+      if (rpeMax != null) 'rpe_max': rpeMax,
+      if (loadSelectionNote != null) 'load_selection_note': loadSelectionNote,
+      if (isCalibrationEstimate != null)
+        'is_calibration_estimate': isCalibrationEstimate,
+      if (derivedFromWorkingSetIndex != null)
+        'derived_from_working_set_index': derivedFromWorkingSetIndex,
+      if (warmupWeightRuleJson != null)
+        'warmup_weight_rule_json': warmupWeightRuleJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SavedWorkoutExerciseSetsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? savedWorkoutExerciseId,
+    Value<int>? setIndex,
+    Value<String>? setType,
+    Value<String?>? setIntent,
+    Value<int?>? prescribedRepsMin,
+    Value<int?>? prescribedRepsMax,
+    Value<int?>? prescribedRepsExact,
+    Value<int?>? durationSeconds,
+    Value<double?>? distanceMeters,
+    Value<String?>? weightPrescriptionType,
+    Value<double?>? prescribedWeightKg,
+    Value<double?>? prescribedWeightPct1rm,
+    Value<double?>? prescribedWeightPctWorking,
+    Value<double?>? bodyweightMultiplier,
+    Value<double?>? prescribedRpeMin,
+    Value<double?>? prescribedRpeMax,
+    Value<int?>? prescribedRir,
+    Value<int?>? restSeconds,
+    Value<String?>? loadingModel,
+    Value<double?>? percent1rmMin,
+    Value<double?>? percent1rmMax,
+    Value<double?>? rpeMin,
+    Value<double?>? rpeMax,
+    Value<String?>? loadSelectionNote,
+    Value<bool>? isCalibrationEstimate,
+    Value<int?>? derivedFromWorkingSetIndex,
+    Value<String?>? warmupWeightRuleJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return SavedWorkoutExerciseSetsCompanion(
+      id: id ?? this.id,
+      savedWorkoutExerciseId:
+          savedWorkoutExerciseId ?? this.savedWorkoutExerciseId,
+      setIndex: setIndex ?? this.setIndex,
+      setType: setType ?? this.setType,
+      setIntent: setIntent ?? this.setIntent,
+      prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact ?? this.prescribedRepsExact,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      distanceMeters: distanceMeters ?? this.distanceMeters,
+      weightPrescriptionType:
+          weightPrescriptionType ?? this.weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
+      prescribedWeightPct1rm:
+          prescribedWeightPct1rm ?? this.prescribedWeightPct1rm,
+      prescribedWeightPctWorking:
+          prescribedWeightPctWorking ?? this.prescribedWeightPctWorking,
+      bodyweightMultiplier: bodyweightMultiplier ?? this.bodyweightMultiplier,
+      prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      prescribedRir: prescribedRir ?? this.prescribedRir,
+      restSeconds: restSeconds ?? this.restSeconds,
+      loadingModel: loadingModel ?? this.loadingModel,
+      percent1rmMin: percent1rmMin ?? this.percent1rmMin,
+      percent1rmMax: percent1rmMax ?? this.percent1rmMax,
+      rpeMin: rpeMin ?? this.rpeMin,
+      rpeMax: rpeMax ?? this.rpeMax,
+      loadSelectionNote: loadSelectionNote ?? this.loadSelectionNote,
+      isCalibrationEstimate:
+          isCalibrationEstimate ?? this.isCalibrationEstimate,
+      derivedFromWorkingSetIndex:
+          derivedFromWorkingSetIndex ?? this.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: warmupWeightRuleJson ?? this.warmupWeightRuleJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (savedWorkoutExerciseId.present) {
+      map['saved_workout_exercise_id'] = Variable<String>(
+        savedWorkoutExerciseId.value,
+      );
+    }
+    if (setIndex.present) {
+      map['set_index'] = Variable<int>(setIndex.value);
+    }
+    if (setType.present) {
+      map['set_type'] = Variable<String>(setType.value);
+    }
+    if (setIntent.present) {
+      map['set_intent'] = Variable<String>(setIntent.value);
+    }
+    if (prescribedRepsMin.present) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin.value);
+    }
+    if (prescribedRepsMax.present) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax.value);
+    }
+    if (prescribedRepsExact.present) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (distanceMeters.present) {
+      map['distance_meters'] = Variable<double>(distanceMeters.value);
+    }
+    if (weightPrescriptionType.present) {
+      map['weight_prescription_type'] = Variable<String>(
+        weightPrescriptionType.value,
+      );
+    }
+    if (prescribedWeightKg.present) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg.value);
+    }
+    if (prescribedWeightPct1rm.present) {
+      map['prescribed_weight_pct1rm'] = Variable<double>(
+        prescribedWeightPct1rm.value,
+      );
+    }
+    if (prescribedWeightPctWorking.present) {
+      map['prescribed_weight_pct_working'] = Variable<double>(
+        prescribedWeightPctWorking.value,
+      );
+    }
+    if (bodyweightMultiplier.present) {
+      map['bodyweight_multiplier'] = Variable<double>(
+        bodyweightMultiplier.value,
+      );
+    }
+    if (prescribedRpeMin.present) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin.value);
+    }
+    if (prescribedRpeMax.present) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax.value);
+    }
+    if (prescribedRir.present) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir.value);
+    }
+    if (restSeconds.present) {
+      map['rest_seconds'] = Variable<int>(restSeconds.value);
+    }
+    if (loadingModel.present) {
+      map['loading_model'] = Variable<String>(loadingModel.value);
+    }
+    if (percent1rmMin.present) {
+      map['percent1rm_min'] = Variable<double>(percent1rmMin.value);
+    }
+    if (percent1rmMax.present) {
+      map['percent1rm_max'] = Variable<double>(percent1rmMax.value);
+    }
+    if (rpeMin.present) {
+      map['rpe_min'] = Variable<double>(rpeMin.value);
+    }
+    if (rpeMax.present) {
+      map['rpe_max'] = Variable<double>(rpeMax.value);
+    }
+    if (loadSelectionNote.present) {
+      map['load_selection_note'] = Variable<String>(loadSelectionNote.value);
+    }
+    if (isCalibrationEstimate.present) {
+      map['is_calibration_estimate'] = Variable<bool>(
+        isCalibrationEstimate.value,
+      );
+    }
+    if (derivedFromWorkingSetIndex.present) {
+      map['derived_from_working_set_index'] = Variable<int>(
+        derivedFromWorkingSetIndex.value,
+      );
+    }
+    if (warmupWeightRuleJson.present) {
+      map['warmup_weight_rule_json'] = Variable<String>(
+        warmupWeightRuleJson.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedWorkoutExerciseSetsCompanion(')
+          ..write('id: $id, ')
+          ..write('savedWorkoutExerciseId: $savedWorkoutExerciseId, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('distanceMeters: $distanceMeters, ')
+          ..write('weightPrescriptionType: $weightPrescriptionType, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedWeightPct1rm: $prescribedWeightPct1rm, ')
+          ..write('prescribedWeightPctWorking: $prescribedWeightPctWorking, ')
+          ..write('bodyweightMultiplier: $bodyweightMultiplier, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('loadingModel: $loadingModel, ')
+          ..write('percent1rmMin: $percent1rmMin, ')
+          ..write('percent1rmMax: $percent1rmMax, ')
+          ..write('rpeMin: $rpeMin, ')
+          ..write('rpeMax: $rpeMax, ')
+          ..write('loadSelectionNote: $loadSelectionNote, ')
+          ..write('isCalibrationEstimate: $isCalibrationEstimate, ')
+          ..write('derivedFromWorkingSetIndex: $derivedFromWorkingSetIndex, ')
+          ..write('warmupWeightRuleJson: $warmupWeightRuleJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkoutSessionsTable extends WorkoutSessions
+    with TableInfo<$WorkoutSessionsTable, WorkoutSession> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkoutSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _programWorkoutIdMeta = const VerificationMeta(
+    'programWorkoutId',
+  );
+  @override
+  late final GeneratedColumn<String> programWorkoutId = GeneratedColumn<String>(
+    'program_workout_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _savedWorkoutIdMeta = const VerificationMeta(
+    'savedWorkoutId',
+  );
+  @override
+  late final GeneratedColumn<String> savedWorkoutId = GeneratedColumn<String>(
+    'saved_workout_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyweightKgAtSessionMeta =
+      const VerificationMeta('bodyweightKgAtSession');
+  @override
+  late final GeneratedColumn<double> bodyweightKgAtSession =
+      GeneratedColumn<double>(
+        'bodyweight_kg_at_session',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _energyLevelMeta = const VerificationMeta(
+    'energyLevel',
+  );
+  @override
+  late final GeneratedColumn<int> energyLevel = GeneratedColumn<int>(
+    'energy_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _perceivedDifficultyMeta =
+      const VerificationMeta('perceivedDifficulty');
+  @override
+  late final GeneratedColumn<int> perceivedDifficulty = GeneratedColumn<int>(
+    'perceived_difficulty',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    source,
+    programId,
+    programWorkoutId,
+    savedWorkoutId,
+    name,
+    startedAt,
+    completedAt,
+    durationSeconds,
+    status,
+    bodyweightKgAtSession,
+    notes,
+    energyLevel,
+    perceivedDifficulty,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workout_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkoutSession> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    }
+    if (data.containsKey('program_workout_id')) {
+      context.handle(
+        _programWorkoutIdMeta,
+        programWorkoutId.isAcceptableOrUnknown(
+          data['program_workout_id']!,
+          _programWorkoutIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('saved_workout_id')) {
+      context.handle(
+        _savedWorkoutIdMeta,
+        savedWorkoutId.isAcceptableOrUnknown(
+          data['saved_workout_id']!,
+          _savedWorkoutIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('bodyweight_kg_at_session')) {
+      context.handle(
+        _bodyweightKgAtSessionMeta,
+        bodyweightKgAtSession.isAcceptableOrUnknown(
+          data['bodyweight_kg_at_session']!,
+          _bodyweightKgAtSessionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('energy_level')) {
+      context.handle(
+        _energyLevelMeta,
+        energyLevel.isAcceptableOrUnknown(
+          data['energy_level']!,
+          _energyLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('perceived_difficulty')) {
+      context.handle(
+        _perceivedDifficultyMeta,
+        perceivedDifficulty.isAcceptableOrUnknown(
+          data['perceived_difficulty']!,
+          _perceivedDifficultyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WorkoutSession map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkoutSession(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      ),
+      programWorkoutId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_workout_id'],
+      ),
+      savedWorkoutId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}saved_workout_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      bodyweightKgAtSession: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg_at_session'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      energyLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}energy_level'],
+      ),
+      perceivedDifficulty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}perceived_difficulty'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkoutSessionsTable createAlias(String alias) {
+    return $WorkoutSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkoutSession extends DataClass implements Insertable<WorkoutSession> {
+  final String id;
+  final String source;
+  final String? programId;
+  final String? programWorkoutId;
+  final String? savedWorkoutId;
+  final String name;
+  final DateTime startedAt;
+  final DateTime? completedAt;
+  final int? durationSeconds;
+  final String status;
+  final double? bodyweightKgAtSession;
+  final String? notes;
+  final int? energyLevel;
+  final int? perceivedDifficulty;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const WorkoutSession({
+    required this.id,
+    required this.source,
+    this.programId,
+    this.programWorkoutId,
+    this.savedWorkoutId,
+    required this.name,
+    required this.startedAt,
+    this.completedAt,
+    this.durationSeconds,
+    required this.status,
+    this.bodyweightKgAtSession,
+    this.notes,
+    this.energyLevel,
+    this.perceivedDifficulty,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || programId != null) {
+      map['program_id'] = Variable<String>(programId);
+    }
+    if (!nullToAbsent || programWorkoutId != null) {
+      map['program_workout_id'] = Variable<String>(programWorkoutId);
+    }
+    if (!nullToAbsent || savedWorkoutId != null) {
+      map['saved_workout_id'] = Variable<String>(savedWorkoutId);
+    }
+    map['name'] = Variable<String>(name);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || bodyweightKgAtSession != null) {
+      map['bodyweight_kg_at_session'] = Variable<double>(bodyweightKgAtSession);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || energyLevel != null) {
+      map['energy_level'] = Variable<int>(energyLevel);
+    }
+    if (!nullToAbsent || perceivedDifficulty != null) {
+      map['perceived_difficulty'] = Variable<int>(perceivedDifficulty);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  WorkoutSessionsCompanion toCompanion(bool nullToAbsent) {
+    return WorkoutSessionsCompanion(
+      id: Value(id),
+      source: Value(source),
+      programId: programId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programId),
+      programWorkoutId: programWorkoutId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programWorkoutId),
+      savedWorkoutId: savedWorkoutId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(savedWorkoutId),
+      name: Value(name),
+      startedAt: Value(startedAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      status: Value(status),
+      bodyweightKgAtSession: bodyweightKgAtSession == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKgAtSession),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      energyLevel: energyLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(energyLevel),
+      perceivedDifficulty: perceivedDifficulty == null && nullToAbsent
+          ? const Value.absent()
+          : Value(perceivedDifficulty),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory WorkoutSession.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkoutSession(
+      id: serializer.fromJson<String>(json['id']),
+      source: serializer.fromJson<String>(json['source']),
+      programId: serializer.fromJson<String?>(json['programId']),
+      programWorkoutId: serializer.fromJson<String?>(json['programWorkoutId']),
+      savedWorkoutId: serializer.fromJson<String?>(json['savedWorkoutId']),
+      name: serializer.fromJson<String>(json['name']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      status: serializer.fromJson<String>(json['status']),
+      bodyweightKgAtSession: serializer.fromJson<double?>(
+        json['bodyweightKgAtSession'],
+      ),
+      notes: serializer.fromJson<String?>(json['notes']),
+      energyLevel: serializer.fromJson<int?>(json['energyLevel']),
+      perceivedDifficulty: serializer.fromJson<int?>(
+        json['perceivedDifficulty'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'source': serializer.toJson<String>(source),
+      'programId': serializer.toJson<String?>(programId),
+      'programWorkoutId': serializer.toJson<String?>(programWorkoutId),
+      'savedWorkoutId': serializer.toJson<String?>(savedWorkoutId),
+      'name': serializer.toJson<String>(name),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'status': serializer.toJson<String>(status),
+      'bodyweightKgAtSession': serializer.toJson<double?>(
+        bodyweightKgAtSession,
+      ),
+      'notes': serializer.toJson<String?>(notes),
+      'energyLevel': serializer.toJson<int?>(energyLevel),
+      'perceivedDifficulty': serializer.toJson<int?>(perceivedDifficulty),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  WorkoutSession copyWith({
+    String? id,
+    String? source,
+    Value<String?> programId = const Value.absent(),
+    Value<String?> programWorkoutId = const Value.absent(),
+    Value<String?> savedWorkoutId = const Value.absent(),
+    String? name,
+    DateTime? startedAt,
+    Value<DateTime?> completedAt = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    String? status,
+    Value<double?> bodyweightKgAtSession = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    Value<int?> energyLevel = const Value.absent(),
+    Value<int?> perceivedDifficulty = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => WorkoutSession(
+    id: id ?? this.id,
+    source: source ?? this.source,
+    programId: programId.present ? programId.value : this.programId,
+    programWorkoutId: programWorkoutId.present
+        ? programWorkoutId.value
+        : this.programWorkoutId,
+    savedWorkoutId: savedWorkoutId.present
+        ? savedWorkoutId.value
+        : this.savedWorkoutId,
+    name: name ?? this.name,
+    startedAt: startedAt ?? this.startedAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    status: status ?? this.status,
+    bodyweightKgAtSession: bodyweightKgAtSession.present
+        ? bodyweightKgAtSession.value
+        : this.bodyweightKgAtSession,
+    notes: notes.present ? notes.value : this.notes,
+    energyLevel: energyLevel.present ? energyLevel.value : this.energyLevel,
+    perceivedDifficulty: perceivedDifficulty.present
+        ? perceivedDifficulty.value
+        : this.perceivedDifficulty,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  WorkoutSession copyWithCompanion(WorkoutSessionsCompanion data) {
+    return WorkoutSession(
+      id: data.id.present ? data.id.value : this.id,
+      source: data.source.present ? data.source.value : this.source,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      programWorkoutId: data.programWorkoutId.present
+          ? data.programWorkoutId.value
+          : this.programWorkoutId,
+      savedWorkoutId: data.savedWorkoutId.present
+          ? data.savedWorkoutId.value
+          : this.savedWorkoutId,
+      name: data.name.present ? data.name.value : this.name,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      status: data.status.present ? data.status.value : this.status,
+      bodyweightKgAtSession: data.bodyweightKgAtSession.present
+          ? data.bodyweightKgAtSession.value
+          : this.bodyweightKgAtSession,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      energyLevel: data.energyLevel.present
+          ? data.energyLevel.value
+          : this.energyLevel,
+      perceivedDifficulty: data.perceivedDifficulty.present
+          ? data.perceivedDifficulty.value
+          : this.perceivedDifficulty,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutSession(')
+          ..write('id: $id, ')
+          ..write('source: $source, ')
+          ..write('programId: $programId, ')
+          ..write('programWorkoutId: $programWorkoutId, ')
+          ..write('savedWorkoutId: $savedWorkoutId, ')
+          ..write('name: $name, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('status: $status, ')
+          ..write('bodyweightKgAtSession: $bodyweightKgAtSession, ')
+          ..write('notes: $notes, ')
+          ..write('energyLevel: $energyLevel, ')
+          ..write('perceivedDifficulty: $perceivedDifficulty, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    source,
+    programId,
+    programWorkoutId,
+    savedWorkoutId,
+    name,
+    startedAt,
+    completedAt,
+    durationSeconds,
+    status,
+    bodyweightKgAtSession,
+    notes,
+    energyLevel,
+    perceivedDifficulty,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkoutSession &&
+          other.id == this.id &&
+          other.source == this.source &&
+          other.programId == this.programId &&
+          other.programWorkoutId == this.programWorkoutId &&
+          other.savedWorkoutId == this.savedWorkoutId &&
+          other.name == this.name &&
+          other.startedAt == this.startedAt &&
+          other.completedAt == this.completedAt &&
+          other.durationSeconds == this.durationSeconds &&
+          other.status == this.status &&
+          other.bodyweightKgAtSession == this.bodyweightKgAtSession &&
+          other.notes == this.notes &&
+          other.energyLevel == this.energyLevel &&
+          other.perceivedDifficulty == this.perceivedDifficulty &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class WorkoutSessionsCompanion extends UpdateCompanion<WorkoutSession> {
+  final Value<String> id;
+  final Value<String> source;
+  final Value<String?> programId;
+  final Value<String?> programWorkoutId;
+  final Value<String?> savedWorkoutId;
+  final Value<String> name;
+  final Value<DateTime> startedAt;
+  final Value<DateTime?> completedAt;
+  final Value<int?> durationSeconds;
+  final Value<String> status;
+  final Value<double?> bodyweightKgAtSession;
+  final Value<String?> notes;
+  final Value<int?> energyLevel;
+  final Value<int?> perceivedDifficulty;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const WorkoutSessionsCompanion({
+    this.id = const Value.absent(),
+    this.source = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.programWorkoutId = const Value.absent(),
+    this.savedWorkoutId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.status = const Value.absent(),
+    this.bodyweightKgAtSession = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.energyLevel = const Value.absent(),
+    this.perceivedDifficulty = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkoutSessionsCompanion.insert({
+    required String id,
+    required String source,
+    this.programId = const Value.absent(),
+    this.programWorkoutId = const Value.absent(),
+    this.savedWorkoutId = const Value.absent(),
+    required String name,
+    required DateTime startedAt,
+    this.completedAt = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    required String status,
+    this.bodyweightKgAtSession = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.energyLevel = const Value.absent(),
+    this.perceivedDifficulty = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       source = Value(source),
+       name = Value(name),
+       startedAt = Value(startedAt),
+       status = Value(status),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<WorkoutSession> custom({
+    Expression<String>? id,
+    Expression<String>? source,
+    Expression<String>? programId,
+    Expression<String>? programWorkoutId,
+    Expression<String>? savedWorkoutId,
+    Expression<String>? name,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? completedAt,
+    Expression<int>? durationSeconds,
+    Expression<String>? status,
+    Expression<double>? bodyweightKgAtSession,
+    Expression<String>? notes,
+    Expression<int>? energyLevel,
+    Expression<int>? perceivedDifficulty,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (source != null) 'source': source,
+      if (programId != null) 'program_id': programId,
+      if (programWorkoutId != null) 'program_workout_id': programWorkoutId,
+      if (savedWorkoutId != null) 'saved_workout_id': savedWorkoutId,
+      if (name != null) 'name': name,
+      if (startedAt != null) 'started_at': startedAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (status != null) 'status': status,
+      if (bodyweightKgAtSession != null)
+        'bodyweight_kg_at_session': bodyweightKgAtSession,
+      if (notes != null) 'notes': notes,
+      if (energyLevel != null) 'energy_level': energyLevel,
+      if (perceivedDifficulty != null)
+        'perceived_difficulty': perceivedDifficulty,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkoutSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? source,
+    Value<String?>? programId,
+    Value<String?>? programWorkoutId,
+    Value<String?>? savedWorkoutId,
+    Value<String>? name,
+    Value<DateTime>? startedAt,
+    Value<DateTime?>? completedAt,
+    Value<int?>? durationSeconds,
+    Value<String>? status,
+    Value<double?>? bodyweightKgAtSession,
+    Value<String?>? notes,
+    Value<int?>? energyLevel,
+    Value<int?>? perceivedDifficulty,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return WorkoutSessionsCompanion(
+      id: id ?? this.id,
+      source: source ?? this.source,
+      programId: programId ?? this.programId,
+      programWorkoutId: programWorkoutId ?? this.programWorkoutId,
+      savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
+      name: name ?? this.name,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      status: status ?? this.status,
+      bodyweightKgAtSession:
+          bodyweightKgAtSession ?? this.bodyweightKgAtSession,
+      notes: notes ?? this.notes,
+      energyLevel: energyLevel ?? this.energyLevel,
+      perceivedDifficulty: perceivedDifficulty ?? this.perceivedDifficulty,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (programWorkoutId.present) {
+      map['program_workout_id'] = Variable<String>(programWorkoutId.value);
+    }
+    if (savedWorkoutId.present) {
+      map['saved_workout_id'] = Variable<String>(savedWorkoutId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (bodyweightKgAtSession.present) {
+      map['bodyweight_kg_at_session'] = Variable<double>(
+        bodyweightKgAtSession.value,
+      );
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (energyLevel.present) {
+      map['energy_level'] = Variable<int>(energyLevel.value);
+    }
+    if (perceivedDifficulty.present) {
+      map['perceived_difficulty'] = Variable<int>(perceivedDifficulty.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('source: $source, ')
+          ..write('programId: $programId, ')
+          ..write('programWorkoutId: $programWorkoutId, ')
+          ..write('savedWorkoutId: $savedWorkoutId, ')
+          ..write('name: $name, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('status: $status, ')
+          ..write('bodyweightKgAtSession: $bodyweightKgAtSession, ')
+          ..write('notes: $notes, ')
+          ..write('energyLevel: $energyLevel, ')
+          ..write('perceivedDifficulty: $perceivedDifficulty, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
+    with TableInfo<$WorkoutSessionExercisesTable, WorkoutSessionExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkoutSessionExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workoutSessionIdMeta = const VerificationMeta(
+    'workoutSessionId',
+  );
+  @override
+  late final GeneratedColumn<String> workoutSessionId = GeneratedColumn<String>(
+    'workout_session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceProgramExerciseIdMeta =
+      const VerificationMeta('sourceProgramExerciseId');
+  @override
+  late final GeneratedColumn<String> sourceProgramExerciseId =
+      GeneratedColumn<String>(
+        'source_program_exercise_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _sourceSavedWorkoutExerciseIdMeta =
+      const VerificationMeta('sourceSavedWorkoutExerciseId');
+  @override
+  late final GeneratedColumn<String> sourceSavedWorkoutExerciseId =
+      GeneratedColumn<String>(
+        'source_saved_workout_exercise_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseNameSnapshotMeta =
+      const VerificationMeta('exerciseNameSnapshot');
+  @override
+  late final GeneratedColumn<String> exerciseNameSnapshot =
+      GeneratedColumn<String>(
+        'exercise_name_snapshot',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supersetGroupIdMeta = const VerificationMeta(
+    'supersetGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> supersetGroupId = GeneratedColumn<String>(
+    'superset_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workoutSessionId,
+    sourceProgramExerciseId,
+    sourceSavedWorkoutExerciseId,
+    exerciseId,
+    exerciseNameSnapshot,
+    sortOrder,
+    supersetGroupId,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workout_session_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkoutSessionExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workout_session_id')) {
+      context.handle(
+        _workoutSessionIdMeta,
+        workoutSessionId.isAcceptableOrUnknown(
+          data['workout_session_id']!,
+          _workoutSessionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workoutSessionIdMeta);
+    }
+    if (data.containsKey('source_program_exercise_id')) {
+      context.handle(
+        _sourceProgramExerciseIdMeta,
+        sourceProgramExerciseId.isAcceptableOrUnknown(
+          data['source_program_exercise_id']!,
+          _sourceProgramExerciseIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source_saved_workout_exercise_id')) {
+      context.handle(
+        _sourceSavedWorkoutExerciseIdMeta,
+        sourceSavedWorkoutExerciseId.isAcceptableOrUnknown(
+          data['source_saved_workout_exercise_id']!,
+          _sourceSavedWorkoutExerciseIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('exercise_name_snapshot')) {
+      context.handle(
+        _exerciseNameSnapshotMeta,
+        exerciseNameSnapshot.isAcceptableOrUnknown(
+          data['exercise_name_snapshot']!,
+          _exerciseNameSnapshotMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseNameSnapshotMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('superset_group_id')) {
+      context.handle(
+        _supersetGroupIdMeta,
+        supersetGroupId.isAcceptableOrUnknown(
+          data['superset_group_id']!,
+          _supersetGroupIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WorkoutSessionExercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkoutSessionExercise(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workoutSessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workout_session_id'],
+      )!,
+      sourceProgramExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_program_exercise_id'],
+      ),
+      sourceSavedWorkoutExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_saved_workout_exercise_id'],
+      ),
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      exerciseNameSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_name_snapshot'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      supersetGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}superset_group_id'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $WorkoutSessionExercisesTable createAlias(String alias) {
+    return $WorkoutSessionExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class WorkoutSessionExercise extends DataClass
+    implements Insertable<WorkoutSessionExercise> {
+  final String id;
+  final String workoutSessionId;
+  final String? sourceProgramExerciseId;
+  final String? sourceSavedWorkoutExerciseId;
+  final int exerciseId;
+  final String exerciseNameSnapshot;
+  final int sortOrder;
+  final String? supersetGroupId;
+  final String? notes;
+  const WorkoutSessionExercise({
+    required this.id,
+    required this.workoutSessionId,
+    this.sourceProgramExerciseId,
+    this.sourceSavedWorkoutExerciseId,
+    required this.exerciseId,
+    required this.exerciseNameSnapshot,
+    required this.sortOrder,
+    this.supersetGroupId,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workout_session_id'] = Variable<String>(workoutSessionId);
+    if (!nullToAbsent || sourceProgramExerciseId != null) {
+      map['source_program_exercise_id'] = Variable<String>(
+        sourceProgramExerciseId,
+      );
+    }
+    if (!nullToAbsent || sourceSavedWorkoutExerciseId != null) {
+      map['source_saved_workout_exercise_id'] = Variable<String>(
+        sourceSavedWorkoutExerciseId,
+      );
+    }
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['exercise_name_snapshot'] = Variable<String>(exerciseNameSnapshot);
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || supersetGroupId != null) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  WorkoutSessionExercisesCompanion toCompanion(bool nullToAbsent) {
+    return WorkoutSessionExercisesCompanion(
+      id: Value(id),
+      workoutSessionId: Value(workoutSessionId),
+      sourceProgramExerciseId: sourceProgramExerciseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceProgramExerciseId),
+      sourceSavedWorkoutExerciseId:
+          sourceSavedWorkoutExerciseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceSavedWorkoutExerciseId),
+      exerciseId: Value(exerciseId),
+      exerciseNameSnapshot: Value(exerciseNameSnapshot),
+      sortOrder: Value(sortOrder),
+      supersetGroupId: supersetGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetGroupId),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory WorkoutSessionExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkoutSessionExercise(
+      id: serializer.fromJson<String>(json['id']),
+      workoutSessionId: serializer.fromJson<String>(json['workoutSessionId']),
+      sourceProgramExerciseId: serializer.fromJson<String?>(
+        json['sourceProgramExerciseId'],
+      ),
+      sourceSavedWorkoutExerciseId: serializer.fromJson<String?>(
+        json['sourceSavedWorkoutExerciseId'],
+      ),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      exerciseNameSnapshot: serializer.fromJson<String>(
+        json['exerciseNameSnapshot'],
+      ),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workoutSessionId': serializer.toJson<String>(workoutSessionId),
+      'sourceProgramExerciseId': serializer.toJson<String?>(
+        sourceProgramExerciseId,
+      ),
+      'sourceSavedWorkoutExerciseId': serializer.toJson<String?>(
+        sourceSavedWorkoutExerciseId,
+      ),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'exerciseNameSnapshot': serializer.toJson<String>(exerciseNameSnapshot),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  WorkoutSessionExercise copyWith({
+    String? id,
+    String? workoutSessionId,
+    Value<String?> sourceProgramExerciseId = const Value.absent(),
+    Value<String?> sourceSavedWorkoutExerciseId = const Value.absent(),
+    int? exerciseId,
+    String? exerciseNameSnapshot,
+    int? sortOrder,
+    Value<String?> supersetGroupId = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => WorkoutSessionExercise(
+    id: id ?? this.id,
+    workoutSessionId: workoutSessionId ?? this.workoutSessionId,
+    sourceProgramExerciseId: sourceProgramExerciseId.present
+        ? sourceProgramExerciseId.value
+        : this.sourceProgramExerciseId,
+    sourceSavedWorkoutExerciseId: sourceSavedWorkoutExerciseId.present
+        ? sourceSavedWorkoutExerciseId.value
+        : this.sourceSavedWorkoutExerciseId,
+    exerciseId: exerciseId ?? this.exerciseId,
+    exerciseNameSnapshot: exerciseNameSnapshot ?? this.exerciseNameSnapshot,
+    sortOrder: sortOrder ?? this.sortOrder,
+    supersetGroupId: supersetGroupId.present
+        ? supersetGroupId.value
+        : this.supersetGroupId,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  WorkoutSessionExercise copyWithCompanion(
+    WorkoutSessionExercisesCompanion data,
+  ) {
+    return WorkoutSessionExercise(
+      id: data.id.present ? data.id.value : this.id,
+      workoutSessionId: data.workoutSessionId.present
+          ? data.workoutSessionId.value
+          : this.workoutSessionId,
+      sourceProgramExerciseId: data.sourceProgramExerciseId.present
+          ? data.sourceProgramExerciseId.value
+          : this.sourceProgramExerciseId,
+      sourceSavedWorkoutExerciseId: data.sourceSavedWorkoutExerciseId.present
+          ? data.sourceSavedWorkoutExerciseId.value
+          : this.sourceSavedWorkoutExerciseId,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      exerciseNameSnapshot: data.exerciseNameSnapshot.present
+          ? data.exerciseNameSnapshot.value
+          : this.exerciseNameSnapshot,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      supersetGroupId: data.supersetGroupId.present
+          ? data.supersetGroupId.value
+          : this.supersetGroupId,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutSessionExercise(')
+          ..write('id: $id, ')
+          ..write('workoutSessionId: $workoutSessionId, ')
+          ..write('sourceProgramExerciseId: $sourceProgramExerciseId, ')
+          ..write(
+            'sourceSavedWorkoutExerciseId: $sourceSavedWorkoutExerciseId, ',
+          )
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseNameSnapshot: $exerciseNameSnapshot, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workoutSessionId,
+    sourceProgramExerciseId,
+    sourceSavedWorkoutExerciseId,
+    exerciseId,
+    exerciseNameSnapshot,
+    sortOrder,
+    supersetGroupId,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkoutSessionExercise &&
+          other.id == this.id &&
+          other.workoutSessionId == this.workoutSessionId &&
+          other.sourceProgramExerciseId == this.sourceProgramExerciseId &&
+          other.sourceSavedWorkoutExerciseId ==
+              this.sourceSavedWorkoutExerciseId &&
+          other.exerciseId == this.exerciseId &&
+          other.exerciseNameSnapshot == this.exerciseNameSnapshot &&
+          other.sortOrder == this.sortOrder &&
+          other.supersetGroupId == this.supersetGroupId &&
+          other.notes == this.notes);
+}
+
+class WorkoutSessionExercisesCompanion
+    extends UpdateCompanion<WorkoutSessionExercise> {
+  final Value<String> id;
+  final Value<String> workoutSessionId;
+  final Value<String?> sourceProgramExerciseId;
+  final Value<String?> sourceSavedWorkoutExerciseId;
+  final Value<int> exerciseId;
+  final Value<String> exerciseNameSnapshot;
+  final Value<int> sortOrder;
+  final Value<String?> supersetGroupId;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const WorkoutSessionExercisesCompanion({
+    this.id = const Value.absent(),
+    this.workoutSessionId = const Value.absent(),
+    this.sourceProgramExerciseId = const Value.absent(),
+    this.sourceSavedWorkoutExerciseId = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.exerciseNameSnapshot = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.supersetGroupId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkoutSessionExercisesCompanion.insert({
+    required String id,
+    required String workoutSessionId,
+    this.sourceProgramExerciseId = const Value.absent(),
+    this.sourceSavedWorkoutExerciseId = const Value.absent(),
+    required int exerciseId,
+    required String exerciseNameSnapshot,
+    required int sortOrder,
+    this.supersetGroupId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workoutSessionId = Value(workoutSessionId),
+       exerciseId = Value(exerciseId),
+       exerciseNameSnapshot = Value(exerciseNameSnapshot),
+       sortOrder = Value(sortOrder);
+  static Insertable<WorkoutSessionExercise> custom({
+    Expression<String>? id,
+    Expression<String>? workoutSessionId,
+    Expression<String>? sourceProgramExerciseId,
+    Expression<String>? sourceSavedWorkoutExerciseId,
+    Expression<int>? exerciseId,
+    Expression<String>? exerciseNameSnapshot,
+    Expression<int>? sortOrder,
+    Expression<String>? supersetGroupId,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workoutSessionId != null) 'workout_session_id': workoutSessionId,
+      if (sourceProgramExerciseId != null)
+        'source_program_exercise_id': sourceProgramExerciseId,
+      if (sourceSavedWorkoutExerciseId != null)
+        'source_saved_workout_exercise_id': sourceSavedWorkoutExerciseId,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (exerciseNameSnapshot != null)
+        'exercise_name_snapshot': exerciseNameSnapshot,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkoutSessionExercisesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workoutSessionId,
+    Value<String?>? sourceProgramExerciseId,
+    Value<String?>? sourceSavedWorkoutExerciseId,
+    Value<int>? exerciseId,
+    Value<String>? exerciseNameSnapshot,
+    Value<int>? sortOrder,
+    Value<String?>? supersetGroupId,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return WorkoutSessionExercisesCompanion(
+      id: id ?? this.id,
+      workoutSessionId: workoutSessionId ?? this.workoutSessionId,
+      sourceProgramExerciseId:
+          sourceProgramExerciseId ?? this.sourceProgramExerciseId,
+      sourceSavedWorkoutExerciseId:
+          sourceSavedWorkoutExerciseId ?? this.sourceSavedWorkoutExerciseId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      exerciseNameSnapshot: exerciseNameSnapshot ?? this.exerciseNameSnapshot,
+      sortOrder: sortOrder ?? this.sortOrder,
+      supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workoutSessionId.present) {
+      map['workout_session_id'] = Variable<String>(workoutSessionId.value);
+    }
+    if (sourceProgramExerciseId.present) {
+      map['source_program_exercise_id'] = Variable<String>(
+        sourceProgramExerciseId.value,
+      );
+    }
+    if (sourceSavedWorkoutExerciseId.present) {
+      map['source_saved_workout_exercise_id'] = Variable<String>(
+        sourceSavedWorkoutExerciseId.value,
+      );
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (exerciseNameSnapshot.present) {
+      map['exercise_name_snapshot'] = Variable<String>(
+        exerciseNameSnapshot.value,
+      );
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (supersetGroupId.present) {
+      map['superset_group_id'] = Variable<String>(supersetGroupId.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutSessionExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('workoutSessionId: $workoutSessionId, ')
+          ..write('sourceProgramExerciseId: $sourceProgramExerciseId, ')
+          ..write(
+            'sourceSavedWorkoutExerciseId: $sourceSavedWorkoutExerciseId, ',
+          )
+          ..write('exerciseId: $exerciseId, ')
+          ..write('exerciseNameSnapshot: $exerciseNameSnapshot, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SetLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workoutSessionExerciseIdMeta =
+      const VerificationMeta('workoutSessionExerciseId');
+  @override
+  late final GeneratedColumn<String> workoutSessionExerciseId =
+      GeneratedColumn<String>(
+        'workout_session_exercise_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _performedAtMeta = const VerificationMeta(
+    'performedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> performedAt = GeneratedColumn<DateTime>(
+    'performed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setIndexMeta = const VerificationMeta(
+    'setIndex',
+  );
+  @override
+  late final GeneratedColumn<int> setIndex = GeneratedColumn<int>(
+    'set_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setTypeMeta = const VerificationMeta(
+    'setType',
+  );
+  @override
+  late final GeneratedColumn<String> setType = GeneratedColumn<String>(
+    'set_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('working'),
+  );
+  static const VerificationMeta _setIntentMeta = const VerificationMeta(
+    'setIntent',
+  );
+  @override
+  late final GeneratedColumn<String> setIntent = GeneratedColumn<String>(
+    'set_intent',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMinMeta = const VerificationMeta(
+    'prescribedRepsMin',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMin = GeneratedColumn<int>(
+    'prescribed_reps_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRepsMaxMeta = const VerificationMeta(
+    'prescribedRepsMax',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRepsMax = GeneratedColumn<int>(
+    'prescribed_reps_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedWeightKgMeta =
+      const VerificationMeta('prescribedWeightKg');
+  @override
+  late final GeneratedColumn<double> prescribedWeightKg =
+      GeneratedColumn<double>(
+        'prescribed_weight_kg',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedRpeMinMeta = const VerificationMeta(
+    'prescribedRpeMin',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMin = GeneratedColumn<double>(
+    'prescribed_rpe_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedRpeMaxMeta = const VerificationMeta(
+    'prescribedRpeMax',
+  );
+  @override
+  late final GeneratedColumn<double> prescribedRpeMax = GeneratedColumn<double>(
+    'prescribed_rpe_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualRepsMeta = const VerificationMeta(
+    'actualReps',
+  );
+  @override
+  late final GeneratedColumn<int> actualReps = GeneratedColumn<int>(
+    'actual_reps',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualWeightKgMeta = const VerificationMeta(
+    'actualWeightKg',
+  );
+  @override
+  late final GeneratedColumn<double> actualWeightKg = GeneratedColumn<double>(
+    'actual_weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualDurationSecondsMeta =
+      const VerificationMeta('actualDurationSeconds');
+  @override
+  late final GeneratedColumn<int> actualDurationSeconds = GeneratedColumn<int>(
+    'actual_duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualDistanceMetersMeta =
+      const VerificationMeta('actualDistanceMeters');
+  @override
+  late final GeneratedColumn<double> actualDistanceMeters =
+      GeneratedColumn<double>(
+        'actual_distance_meters',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _actualRpeMeta = const VerificationMeta(
+    'actualRpe',
+  );
+  @override
+  late final GeneratedColumn<double> actualRpe = GeneratedColumn<double>(
+    'actual_rpe',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _actualRirMeta = const VerificationMeta(
+    'actualRir',
+  );
+  @override
+  late final GeneratedColumn<int> actualRir = GeneratedColumn<int>(
+    'actual_rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _completedMeta = const VerificationMeta(
+    'completed',
+  );
+  @override
+  late final GeneratedColumn<bool> completed = GeneratedColumn<bool>(
+    'completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _skippedMeta = const VerificationMeta(
+    'skipped',
+  );
+  @override
+  late final GeneratedColumn<bool> skipped = GeneratedColumn<bool>(
+    'skipped',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("skipped" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isPrMeta = const VerificationMeta('isPr');
+  @override
+  late final GeneratedColumn<bool> isPr = GeneratedColumn<bool>(
+    'is_pr',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_pr" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _estimated1rmKgMeta = const VerificationMeta(
+    'estimated1rmKg',
+  );
+  @override
+  late final GeneratedColumn<double> estimated1rmKg = GeneratedColumn<double>(
+    'estimated1rm_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workoutSessionExerciseId,
+    exerciseId,
+    performedAt,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedWeightKg,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    actualReps,
+    actualWeightKg,
+    actualDurationSeconds,
+    actualDistanceMeters,
+    actualRpe,
+    actualRir,
+    completed,
+    skipped,
+    isPr,
+    estimated1rmKg,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'set_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SetLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workout_session_exercise_id')) {
+      context.handle(
+        _workoutSessionExerciseIdMeta,
+        workoutSessionExerciseId.isAcceptableOrUnknown(
+          data['workout_session_exercise_id']!,
+          _workoutSessionExerciseIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workoutSessionExerciseIdMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('performed_at')) {
+      context.handle(
+        _performedAtMeta,
+        performedAt.isAcceptableOrUnknown(
+          data['performed_at']!,
+          _performedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_performedAtMeta);
+    }
+    if (data.containsKey('set_index')) {
+      context.handle(
+        _setIndexMeta,
+        setIndex.isAcceptableOrUnknown(data['set_index']!, _setIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_setIndexMeta);
+    }
+    if (data.containsKey('set_type')) {
+      context.handle(
+        _setTypeMeta,
+        setType.isAcceptableOrUnknown(data['set_type']!, _setTypeMeta),
+      );
+    }
+    if (data.containsKey('set_intent')) {
+      context.handle(
+        _setIntentMeta,
+        setIntent.isAcceptableOrUnknown(data['set_intent']!, _setIntentMeta),
+      );
+    }
+    if (data.containsKey('prescribed_reps_min')) {
+      context.handle(
+        _prescribedRepsMinMeta,
+        prescribedRepsMin.isAcceptableOrUnknown(
+          data['prescribed_reps_min']!,
+          _prescribedRepsMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_max')) {
+      context.handle(
+        _prescribedRepsMaxMeta,
+        prescribedRepsMax.isAcceptableOrUnknown(
+          data['prescribed_reps_max']!,
+          _prescribedRepsMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_weight_kg')) {
+      context.handle(
+        _prescribedWeightKgMeta,
+        prescribedWeightKg.isAcceptableOrUnknown(
+          data['prescribed_weight_kg']!,
+          _prescribedWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_min')) {
+      context.handle(
+        _prescribedRpeMinMeta,
+        prescribedRpeMin.isAcceptableOrUnknown(
+          data['prescribed_rpe_min']!,
+          _prescribedRpeMinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rpe_max')) {
+      context.handle(
+        _prescribedRpeMaxMeta,
+        prescribedRpeMax.isAcceptableOrUnknown(
+          data['prescribed_rpe_max']!,
+          _prescribedRpeMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_reps')) {
+      context.handle(
+        _actualRepsMeta,
+        actualReps.isAcceptableOrUnknown(data['actual_reps']!, _actualRepsMeta),
+      );
+    }
+    if (data.containsKey('actual_weight_kg')) {
+      context.handle(
+        _actualWeightKgMeta,
+        actualWeightKg.isAcceptableOrUnknown(
+          data['actual_weight_kg']!,
+          _actualWeightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_duration_seconds')) {
+      context.handle(
+        _actualDurationSecondsMeta,
+        actualDurationSeconds.isAcceptableOrUnknown(
+          data['actual_duration_seconds']!,
+          _actualDurationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_distance_meters')) {
+      context.handle(
+        _actualDistanceMetersMeta,
+        actualDistanceMeters.isAcceptableOrUnknown(
+          data['actual_distance_meters']!,
+          _actualDistanceMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_rpe')) {
+      context.handle(
+        _actualRpeMeta,
+        actualRpe.isAcceptableOrUnknown(data['actual_rpe']!, _actualRpeMeta),
+      );
+    }
+    if (data.containsKey('actual_rir')) {
+      context.handle(
+        _actualRirMeta,
+        actualRir.isAcceptableOrUnknown(data['actual_rir']!, _actualRirMeta),
+      );
+    }
+    if (data.containsKey('completed')) {
+      context.handle(
+        _completedMeta,
+        completed.isAcceptableOrUnknown(data['completed']!, _completedMeta),
+      );
+    }
+    if (data.containsKey('skipped')) {
+      context.handle(
+        _skippedMeta,
+        skipped.isAcceptableOrUnknown(data['skipped']!, _skippedMeta),
+      );
+    }
+    if (data.containsKey('is_pr')) {
+      context.handle(
+        _isPrMeta,
+        isPr.isAcceptableOrUnknown(data['is_pr']!, _isPrMeta),
+      );
+    }
+    if (data.containsKey('estimated1rm_kg')) {
+      context.handle(
+        _estimated1rmKgMeta,
+        estimated1rmKg.isAcceptableOrUnknown(
+          data['estimated1rm_kg']!,
+          _estimated1rmKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SetLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SetLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workoutSessionExerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workout_session_exercise_id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      performedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}performed_at'],
+      )!,
+      setIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}set_index'],
+      )!,
+      setType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_type'],
+      )!,
+      setIntent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set_intent'],
+      ),
+      prescribedRepsMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_min'],
+      ),
+      prescribedRepsMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_max'],
+      ),
+      prescribedWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_weight_kg'],
+      ),
+      prescribedRpeMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_min'],
+      ),
+      prescribedRpeMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_rpe_max'],
+      ),
+      actualReps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}actual_reps'],
+      ),
+      actualWeightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_weight_kg'],
+      ),
+      actualDurationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}actual_duration_seconds'],
+      ),
+      actualDistanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_distance_meters'],
+      ),
+      actualRpe: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_rpe'],
+      ),
+      actualRir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}actual_rir'],
+      ),
+      completed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}completed'],
+      )!,
+      skipped: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}skipped'],
+      )!,
+      isPr: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_pr'],
+      )!,
+      estimated1rmKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}estimated1rm_kg'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SetLogsTable createAlias(String alias) {
+    return $SetLogsTable(attachedDatabase, alias);
+  }
+}
+
+class SetLog extends DataClass implements Insertable<SetLog> {
+  final String id;
+  final String workoutSessionExerciseId;
+  final int exerciseId;
+  final DateTime performedAt;
+  final int setIndex;
+  final String setType;
+  final String? setIntent;
+  final int? prescribedRepsMin;
+  final int? prescribedRepsMax;
+  final double? prescribedWeightKg;
+  final double? prescribedRpeMin;
+  final double? prescribedRpeMax;
+  final int? actualReps;
+  final double? actualWeightKg;
+  final int? actualDurationSeconds;
+  final double? actualDistanceMeters;
+  final double? actualRpe;
+  final int? actualRir;
+  final bool completed;
+  final bool skipped;
+  final bool isPr;
+  final double? estimated1rmKg;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SetLog({
+    required this.id,
+    required this.workoutSessionExerciseId,
+    required this.exerciseId,
+    required this.performedAt,
+    required this.setIndex,
+    required this.setType,
+    this.setIntent,
+    this.prescribedRepsMin,
+    this.prescribedRepsMax,
+    this.prescribedWeightKg,
+    this.prescribedRpeMin,
+    this.prescribedRpeMax,
+    this.actualReps,
+    this.actualWeightKg,
+    this.actualDurationSeconds,
+    this.actualDistanceMeters,
+    this.actualRpe,
+    this.actualRir,
+    required this.completed,
+    required this.skipped,
+    required this.isPr,
+    this.estimated1rmKg,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workout_session_exercise_id'] = Variable<String>(
+      workoutSessionExerciseId,
+    );
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['performed_at'] = Variable<DateTime>(performedAt);
+    map['set_index'] = Variable<int>(setIndex);
+    map['set_type'] = Variable<String>(setType);
+    if (!nullToAbsent || setIntent != null) {
+      map['set_intent'] = Variable<String>(setIntent);
+    }
+    if (!nullToAbsent || prescribedRepsMin != null) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin);
+    }
+    if (!nullToAbsent || prescribedRepsMax != null) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax);
+    }
+    if (!nullToAbsent || prescribedWeightKg != null) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg);
+    }
+    if (!nullToAbsent || prescribedRpeMin != null) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin);
+    }
+    if (!nullToAbsent || prescribedRpeMax != null) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax);
+    }
+    if (!nullToAbsent || actualReps != null) {
+      map['actual_reps'] = Variable<int>(actualReps);
+    }
+    if (!nullToAbsent || actualWeightKg != null) {
+      map['actual_weight_kg'] = Variable<double>(actualWeightKg);
+    }
+    if (!nullToAbsent || actualDurationSeconds != null) {
+      map['actual_duration_seconds'] = Variable<int>(actualDurationSeconds);
+    }
+    if (!nullToAbsent || actualDistanceMeters != null) {
+      map['actual_distance_meters'] = Variable<double>(actualDistanceMeters);
+    }
+    if (!nullToAbsent || actualRpe != null) {
+      map['actual_rpe'] = Variable<double>(actualRpe);
+    }
+    if (!nullToAbsent || actualRir != null) {
+      map['actual_rir'] = Variable<int>(actualRir);
+    }
+    map['completed'] = Variable<bool>(completed);
+    map['skipped'] = Variable<bool>(skipped);
+    map['is_pr'] = Variable<bool>(isPr);
+    if (!nullToAbsent || estimated1rmKg != null) {
+      map['estimated1rm_kg'] = Variable<double>(estimated1rmKg);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SetLogsCompanion toCompanion(bool nullToAbsent) {
+    return SetLogsCompanion(
+      id: Value(id),
+      workoutSessionExerciseId: Value(workoutSessionExerciseId),
+      exerciseId: Value(exerciseId),
+      performedAt: Value(performedAt),
+      setIndex: Value(setIndex),
+      setType: Value(setType),
+      setIntent: setIntent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(setIntent),
+      prescribedRepsMin: prescribedRepsMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMin),
+      prescribedRepsMax: prescribedRepsMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsMax),
+      prescribedWeightKg: prescribedWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedWeightKg),
+      prescribedRpeMin: prescribedRpeMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMin),
+      prescribedRpeMax: prescribedRpeMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRpeMax),
+      actualReps: actualReps == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualReps),
+      actualWeightKg: actualWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualWeightKg),
+      actualDurationSeconds: actualDurationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualDurationSeconds),
+      actualDistanceMeters: actualDistanceMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualDistanceMeters),
+      actualRpe: actualRpe == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualRpe),
+      actualRir: actualRir == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualRir),
+      completed: Value(completed),
+      skipped: Value(skipped),
+      isPr: Value(isPr),
+      estimated1rmKg: estimated1rmKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(estimated1rmKg),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SetLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SetLog(
+      id: serializer.fromJson<String>(json['id']),
+      workoutSessionExerciseId: serializer.fromJson<String>(
+        json['workoutSessionExerciseId'],
+      ),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      performedAt: serializer.fromJson<DateTime>(json['performedAt']),
+      setIndex: serializer.fromJson<int>(json['setIndex']),
+      setType: serializer.fromJson<String>(json['setType']),
+      setIntent: serializer.fromJson<String?>(json['setIntent']),
+      prescribedRepsMin: serializer.fromJson<int?>(json['prescribedRepsMin']),
+      prescribedRepsMax: serializer.fromJson<int?>(json['prescribedRepsMax']),
+      prescribedWeightKg: serializer.fromJson<double?>(
+        json['prescribedWeightKg'],
+      ),
+      prescribedRpeMin: serializer.fromJson<double?>(json['prescribedRpeMin']),
+      prescribedRpeMax: serializer.fromJson<double?>(json['prescribedRpeMax']),
+      actualReps: serializer.fromJson<int?>(json['actualReps']),
+      actualWeightKg: serializer.fromJson<double?>(json['actualWeightKg']),
+      actualDurationSeconds: serializer.fromJson<int?>(
+        json['actualDurationSeconds'],
+      ),
+      actualDistanceMeters: serializer.fromJson<double?>(
+        json['actualDistanceMeters'],
+      ),
+      actualRpe: serializer.fromJson<double?>(json['actualRpe']),
+      actualRir: serializer.fromJson<int?>(json['actualRir']),
+      completed: serializer.fromJson<bool>(json['completed']),
+      skipped: serializer.fromJson<bool>(json['skipped']),
+      isPr: serializer.fromJson<bool>(json['isPr']),
+      estimated1rmKg: serializer.fromJson<double?>(json['estimated1rmKg']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workoutSessionExerciseId': serializer.toJson<String>(
+        workoutSessionExerciseId,
+      ),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'performedAt': serializer.toJson<DateTime>(performedAt),
+      'setIndex': serializer.toJson<int>(setIndex),
+      'setType': serializer.toJson<String>(setType),
+      'setIntent': serializer.toJson<String?>(setIntent),
+      'prescribedRepsMin': serializer.toJson<int?>(prescribedRepsMin),
+      'prescribedRepsMax': serializer.toJson<int?>(prescribedRepsMax),
+      'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
+      'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
+      'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
+      'actualReps': serializer.toJson<int?>(actualReps),
+      'actualWeightKg': serializer.toJson<double?>(actualWeightKg),
+      'actualDurationSeconds': serializer.toJson<int?>(actualDurationSeconds),
+      'actualDistanceMeters': serializer.toJson<double?>(actualDistanceMeters),
+      'actualRpe': serializer.toJson<double?>(actualRpe),
+      'actualRir': serializer.toJson<int?>(actualRir),
+      'completed': serializer.toJson<bool>(completed),
+      'skipped': serializer.toJson<bool>(skipped),
+      'isPr': serializer.toJson<bool>(isPr),
+      'estimated1rmKg': serializer.toJson<double?>(estimated1rmKg),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SetLog copyWith({
+    String? id,
+    String? workoutSessionExerciseId,
+    int? exerciseId,
+    DateTime? performedAt,
+    int? setIndex,
+    String? setType,
+    Value<String?> setIntent = const Value.absent(),
+    Value<int?> prescribedRepsMin = const Value.absent(),
+    Value<int?> prescribedRepsMax = const Value.absent(),
+    Value<double?> prescribedWeightKg = const Value.absent(),
+    Value<double?> prescribedRpeMin = const Value.absent(),
+    Value<double?> prescribedRpeMax = const Value.absent(),
+    Value<int?> actualReps = const Value.absent(),
+    Value<double?> actualWeightKg = const Value.absent(),
+    Value<int?> actualDurationSeconds = const Value.absent(),
+    Value<double?> actualDistanceMeters = const Value.absent(),
+    Value<double?> actualRpe = const Value.absent(),
+    Value<int?> actualRir = const Value.absent(),
+    bool? completed,
+    bool? skipped,
+    bool? isPr,
+    Value<double?> estimated1rmKg = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SetLog(
+    id: id ?? this.id,
+    workoutSessionExerciseId:
+        workoutSessionExerciseId ?? this.workoutSessionExerciseId,
+    exerciseId: exerciseId ?? this.exerciseId,
+    performedAt: performedAt ?? this.performedAt,
+    setIndex: setIndex ?? this.setIndex,
+    setType: setType ?? this.setType,
+    setIntent: setIntent.present ? setIntent.value : this.setIntent,
+    prescribedRepsMin: prescribedRepsMin.present
+        ? prescribedRepsMin.value
+        : this.prescribedRepsMin,
+    prescribedRepsMax: prescribedRepsMax.present
+        ? prescribedRepsMax.value
+        : this.prescribedRepsMax,
+    prescribedWeightKg: prescribedWeightKg.present
+        ? prescribedWeightKg.value
+        : this.prescribedWeightKg,
+    prescribedRpeMin: prescribedRpeMin.present
+        ? prescribedRpeMin.value
+        : this.prescribedRpeMin,
+    prescribedRpeMax: prescribedRpeMax.present
+        ? prescribedRpeMax.value
+        : this.prescribedRpeMax,
+    actualReps: actualReps.present ? actualReps.value : this.actualReps,
+    actualWeightKg: actualWeightKg.present
+        ? actualWeightKg.value
+        : this.actualWeightKg,
+    actualDurationSeconds: actualDurationSeconds.present
+        ? actualDurationSeconds.value
+        : this.actualDurationSeconds,
+    actualDistanceMeters: actualDistanceMeters.present
+        ? actualDistanceMeters.value
+        : this.actualDistanceMeters,
+    actualRpe: actualRpe.present ? actualRpe.value : this.actualRpe,
+    actualRir: actualRir.present ? actualRir.value : this.actualRir,
+    completed: completed ?? this.completed,
+    skipped: skipped ?? this.skipped,
+    isPr: isPr ?? this.isPr,
+    estimated1rmKg: estimated1rmKg.present
+        ? estimated1rmKg.value
+        : this.estimated1rmKg,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SetLog copyWithCompanion(SetLogsCompanion data) {
+    return SetLog(
+      id: data.id.present ? data.id.value : this.id,
+      workoutSessionExerciseId: data.workoutSessionExerciseId.present
+          ? data.workoutSessionExerciseId.value
+          : this.workoutSessionExerciseId,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      performedAt: data.performedAt.present
+          ? data.performedAt.value
+          : this.performedAt,
+      setIndex: data.setIndex.present ? data.setIndex.value : this.setIndex,
+      setType: data.setType.present ? data.setType.value : this.setType,
+      setIntent: data.setIntent.present ? data.setIntent.value : this.setIntent,
+      prescribedRepsMin: data.prescribedRepsMin.present
+          ? data.prescribedRepsMin.value
+          : this.prescribedRepsMin,
+      prescribedRepsMax: data.prescribedRepsMax.present
+          ? data.prescribedRepsMax.value
+          : this.prescribedRepsMax,
+      prescribedWeightKg: data.prescribedWeightKg.present
+          ? data.prescribedWeightKg.value
+          : this.prescribedWeightKg,
+      prescribedRpeMin: data.prescribedRpeMin.present
+          ? data.prescribedRpeMin.value
+          : this.prescribedRpeMin,
+      prescribedRpeMax: data.prescribedRpeMax.present
+          ? data.prescribedRpeMax.value
+          : this.prescribedRpeMax,
+      actualReps: data.actualReps.present
+          ? data.actualReps.value
+          : this.actualReps,
+      actualWeightKg: data.actualWeightKg.present
+          ? data.actualWeightKg.value
+          : this.actualWeightKg,
+      actualDurationSeconds: data.actualDurationSeconds.present
+          ? data.actualDurationSeconds.value
+          : this.actualDurationSeconds,
+      actualDistanceMeters: data.actualDistanceMeters.present
+          ? data.actualDistanceMeters.value
+          : this.actualDistanceMeters,
+      actualRpe: data.actualRpe.present ? data.actualRpe.value : this.actualRpe,
+      actualRir: data.actualRir.present ? data.actualRir.value : this.actualRir,
+      completed: data.completed.present ? data.completed.value : this.completed,
+      skipped: data.skipped.present ? data.skipped.value : this.skipped,
+      isPr: data.isPr.present ? data.isPr.value : this.isPr,
+      estimated1rmKg: data.estimated1rmKg.present
+          ? data.estimated1rmKg.value
+          : this.estimated1rmKg,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SetLog(')
+          ..write('id: $id, ')
+          ..write('workoutSessionExerciseId: $workoutSessionExerciseId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('performedAt: $performedAt, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('actualReps: $actualReps, ')
+          ..write('actualWeightKg: $actualWeightKg, ')
+          ..write('actualDurationSeconds: $actualDurationSeconds, ')
+          ..write('actualDistanceMeters: $actualDistanceMeters, ')
+          ..write('actualRpe: $actualRpe, ')
+          ..write('actualRir: $actualRir, ')
+          ..write('completed: $completed, ')
+          ..write('skipped: $skipped, ')
+          ..write('isPr: $isPr, ')
+          ..write('estimated1rmKg: $estimated1rmKg, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    workoutSessionExerciseId,
+    exerciseId,
+    performedAt,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedWeightKg,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    actualReps,
+    actualWeightKg,
+    actualDurationSeconds,
+    actualDistanceMeters,
+    actualRpe,
+    actualRir,
+    completed,
+    skipped,
+    isPr,
+    estimated1rmKg,
+    notes,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SetLog &&
+          other.id == this.id &&
+          other.workoutSessionExerciseId == this.workoutSessionExerciseId &&
+          other.exerciseId == this.exerciseId &&
+          other.performedAt == this.performedAt &&
+          other.setIndex == this.setIndex &&
+          other.setType == this.setType &&
+          other.setIntent == this.setIntent &&
+          other.prescribedRepsMin == this.prescribedRepsMin &&
+          other.prescribedRepsMax == this.prescribedRepsMax &&
+          other.prescribedWeightKg == this.prescribedWeightKg &&
+          other.prescribedRpeMin == this.prescribedRpeMin &&
+          other.prescribedRpeMax == this.prescribedRpeMax &&
+          other.actualReps == this.actualReps &&
+          other.actualWeightKg == this.actualWeightKg &&
+          other.actualDurationSeconds == this.actualDurationSeconds &&
+          other.actualDistanceMeters == this.actualDistanceMeters &&
+          other.actualRpe == this.actualRpe &&
+          other.actualRir == this.actualRir &&
+          other.completed == this.completed &&
+          other.skipped == this.skipped &&
+          other.isPr == this.isPr &&
+          other.estimated1rmKg == this.estimated1rmKg &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SetLogsCompanion extends UpdateCompanion<SetLog> {
+  final Value<String> id;
+  final Value<String> workoutSessionExerciseId;
+  final Value<int> exerciseId;
+  final Value<DateTime> performedAt;
+  final Value<int> setIndex;
+  final Value<String> setType;
+  final Value<String?> setIntent;
+  final Value<int?> prescribedRepsMin;
+  final Value<int?> prescribedRepsMax;
+  final Value<double?> prescribedWeightKg;
+  final Value<double?> prescribedRpeMin;
+  final Value<double?> prescribedRpeMax;
+  final Value<int?> actualReps;
+  final Value<double?> actualWeightKg;
+  final Value<int?> actualDurationSeconds;
+  final Value<double?> actualDistanceMeters;
+  final Value<double?> actualRpe;
+  final Value<int?> actualRir;
+  final Value<bool> completed;
+  final Value<bool> skipped;
+  final Value<bool> isPr;
+  final Value<double?> estimated1rmKg;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SetLogsCompanion({
+    this.id = const Value.absent(),
+    this.workoutSessionExerciseId = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.performedAt = const Value.absent(),
+    this.setIndex = const Value.absent(),
+    this.setType = const Value.absent(),
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.actualReps = const Value.absent(),
+    this.actualWeightKg = const Value.absent(),
+    this.actualDurationSeconds = const Value.absent(),
+    this.actualDistanceMeters = const Value.absent(),
+    this.actualRpe = const Value.absent(),
+    this.actualRir = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.skipped = const Value.absent(),
+    this.isPr = const Value.absent(),
+    this.estimated1rmKg = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SetLogsCompanion.insert({
+    required String id,
+    required String workoutSessionExerciseId,
+    required int exerciseId,
+    required DateTime performedAt,
+    required int setIndex,
+    this.setType = const Value.absent(),
+    this.setIntent = const Value.absent(),
+    this.prescribedRepsMin = const Value.absent(),
+    this.prescribedRepsMax = const Value.absent(),
+    this.prescribedWeightKg = const Value.absent(),
+    this.prescribedRpeMin = const Value.absent(),
+    this.prescribedRpeMax = const Value.absent(),
+    this.actualReps = const Value.absent(),
+    this.actualWeightKg = const Value.absent(),
+    this.actualDurationSeconds = const Value.absent(),
+    this.actualDistanceMeters = const Value.absent(),
+    this.actualRpe = const Value.absent(),
+    this.actualRir = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.skipped = const Value.absent(),
+    this.isPr = const Value.absent(),
+    this.estimated1rmKg = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workoutSessionExerciseId = Value(workoutSessionExerciseId),
+       exerciseId = Value(exerciseId),
+       performedAt = Value(performedAt),
+       setIndex = Value(setIndex),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SetLog> custom({
+    Expression<String>? id,
+    Expression<String>? workoutSessionExerciseId,
+    Expression<int>? exerciseId,
+    Expression<DateTime>? performedAt,
+    Expression<int>? setIndex,
+    Expression<String>? setType,
+    Expression<String>? setIntent,
+    Expression<int>? prescribedRepsMin,
+    Expression<int>? prescribedRepsMax,
+    Expression<double>? prescribedWeightKg,
+    Expression<double>? prescribedRpeMin,
+    Expression<double>? prescribedRpeMax,
+    Expression<int>? actualReps,
+    Expression<double>? actualWeightKg,
+    Expression<int>? actualDurationSeconds,
+    Expression<double>? actualDistanceMeters,
+    Expression<double>? actualRpe,
+    Expression<int>? actualRir,
+    Expression<bool>? completed,
+    Expression<bool>? skipped,
+    Expression<bool>? isPr,
+    Expression<double>? estimated1rmKg,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workoutSessionExerciseId != null)
+        'workout_session_exercise_id': workoutSessionExerciseId,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (performedAt != null) 'performed_at': performedAt,
+      if (setIndex != null) 'set_index': setIndex,
+      if (setType != null) 'set_type': setType,
+      if (setIntent != null) 'set_intent': setIntent,
+      if (prescribedRepsMin != null) 'prescribed_reps_min': prescribedRepsMin,
+      if (prescribedRepsMax != null) 'prescribed_reps_max': prescribedRepsMax,
+      if (prescribedWeightKg != null)
+        'prescribed_weight_kg': prescribedWeightKg,
+      if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
+      if (prescribedRpeMax != null) 'prescribed_rpe_max': prescribedRpeMax,
+      if (actualReps != null) 'actual_reps': actualReps,
+      if (actualWeightKg != null) 'actual_weight_kg': actualWeightKg,
+      if (actualDurationSeconds != null)
+        'actual_duration_seconds': actualDurationSeconds,
+      if (actualDistanceMeters != null)
+        'actual_distance_meters': actualDistanceMeters,
+      if (actualRpe != null) 'actual_rpe': actualRpe,
+      if (actualRir != null) 'actual_rir': actualRir,
+      if (completed != null) 'completed': completed,
+      if (skipped != null) 'skipped': skipped,
+      if (isPr != null) 'is_pr': isPr,
+      if (estimated1rmKg != null) 'estimated1rm_kg': estimated1rmKg,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SetLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workoutSessionExerciseId,
+    Value<int>? exerciseId,
+    Value<DateTime>? performedAt,
+    Value<int>? setIndex,
+    Value<String>? setType,
+    Value<String?>? setIntent,
+    Value<int?>? prescribedRepsMin,
+    Value<int?>? prescribedRepsMax,
+    Value<double?>? prescribedWeightKg,
+    Value<double?>? prescribedRpeMin,
+    Value<double?>? prescribedRpeMax,
+    Value<int?>? actualReps,
+    Value<double?>? actualWeightKg,
+    Value<int?>? actualDurationSeconds,
+    Value<double?>? actualDistanceMeters,
+    Value<double?>? actualRpe,
+    Value<int?>? actualRir,
+    Value<bool>? completed,
+    Value<bool>? skipped,
+    Value<bool>? isPr,
+    Value<double?>? estimated1rmKg,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SetLogsCompanion(
+      id: id ?? this.id,
+      workoutSessionExerciseId:
+          workoutSessionExerciseId ?? this.workoutSessionExerciseId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      performedAt: performedAt ?? this.performedAt,
+      setIndex: setIndex ?? this.setIndex,
+      setType: setType ?? this.setType,
+      setIntent: setIntent ?? this.setIntent,
+      prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
+      prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      actualReps: actualReps ?? this.actualReps,
+      actualWeightKg: actualWeightKg ?? this.actualWeightKg,
+      actualDurationSeconds:
+          actualDurationSeconds ?? this.actualDurationSeconds,
+      actualDistanceMeters: actualDistanceMeters ?? this.actualDistanceMeters,
+      actualRpe: actualRpe ?? this.actualRpe,
+      actualRir: actualRir ?? this.actualRir,
+      completed: completed ?? this.completed,
+      skipped: skipped ?? this.skipped,
+      isPr: isPr ?? this.isPr,
+      estimated1rmKg: estimated1rmKg ?? this.estimated1rmKg,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workoutSessionExerciseId.present) {
+      map['workout_session_exercise_id'] = Variable<String>(
+        workoutSessionExerciseId.value,
+      );
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (performedAt.present) {
+      map['performed_at'] = Variable<DateTime>(performedAt.value);
+    }
+    if (setIndex.present) {
+      map['set_index'] = Variable<int>(setIndex.value);
+    }
+    if (setType.present) {
+      map['set_type'] = Variable<String>(setType.value);
+    }
+    if (setIntent.present) {
+      map['set_intent'] = Variable<String>(setIntent.value);
+    }
+    if (prescribedRepsMin.present) {
+      map['prescribed_reps_min'] = Variable<int>(prescribedRepsMin.value);
+    }
+    if (prescribedRepsMax.present) {
+      map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax.value);
+    }
+    if (prescribedWeightKg.present) {
+      map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg.value);
+    }
+    if (prescribedRpeMin.present) {
+      map['prescribed_rpe_min'] = Variable<double>(prescribedRpeMin.value);
+    }
+    if (prescribedRpeMax.present) {
+      map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax.value);
+    }
+    if (actualReps.present) {
+      map['actual_reps'] = Variable<int>(actualReps.value);
+    }
+    if (actualWeightKg.present) {
+      map['actual_weight_kg'] = Variable<double>(actualWeightKg.value);
+    }
+    if (actualDurationSeconds.present) {
+      map['actual_duration_seconds'] = Variable<int>(
+        actualDurationSeconds.value,
+      );
+    }
+    if (actualDistanceMeters.present) {
+      map['actual_distance_meters'] = Variable<double>(
+        actualDistanceMeters.value,
+      );
+    }
+    if (actualRpe.present) {
+      map['actual_rpe'] = Variable<double>(actualRpe.value);
+    }
+    if (actualRir.present) {
+      map['actual_rir'] = Variable<int>(actualRir.value);
+    }
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
+    }
+    if (skipped.present) {
+      map['skipped'] = Variable<bool>(skipped.value);
+    }
+    if (isPr.present) {
+      map['is_pr'] = Variable<bool>(isPr.value);
+    }
+    if (estimated1rmKg.present) {
+      map['estimated1rm_kg'] = Variable<double>(estimated1rmKg.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SetLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('workoutSessionExerciseId: $workoutSessionExerciseId, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('performedAt: $performedAt, ')
+          ..write('setIndex: $setIndex, ')
+          ..write('setType: $setType, ')
+          ..write('setIntent: $setIntent, ')
+          ..write('prescribedRepsMin: $prescribedRepsMin, ')
+          ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedWeightKg: $prescribedWeightKg, ')
+          ..write('prescribedRpeMin: $prescribedRpeMin, ')
+          ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('actualReps: $actualReps, ')
+          ..write('actualWeightKg: $actualWeightKg, ')
+          ..write('actualDurationSeconds: $actualDurationSeconds, ')
+          ..write('actualDistanceMeters: $actualDistanceMeters, ')
+          ..write('actualRpe: $actualRpe, ')
+          ..write('actualRir: $actualRir, ')
+          ..write('completed: $completed, ')
+          ..write('skipped: $skipped, ')
+          ..write('isPr: $isPr, ')
+          ..write('estimated1rmKg: $estimated1rmKg, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramRevisionsTable extends ProgramRevisions
+    with TableInfo<$ProgramRevisionsTable, ProgramRevision> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramRevisionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _revisionNumberMeta = const VerificationMeta(
+    'revisionNumber',
+  );
+  @override
+  late final GeneratedColumn<int> revisionNumber = GeneratedColumn<int>(
+    'revision_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _changeTypeMeta = const VerificationMeta(
+    'changeType',
+  );
+  @override
+  late final GeneratedColumn<String> changeType = GeneratedColumn<String>(
+    'change_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updateScopeMeta = const VerificationMeta(
+    'updateScope',
+  );
+  @override
+  late final GeneratedColumn<String> updateScope = GeneratedColumn<String>(
+    'update_scope',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _affectedRefsJsonMeta = const VerificationMeta(
+    'affectedRefsJson',
+  );
+  @override
+  late final GeneratedColumn<String> affectedRefsJson = GeneratedColumn<String>(
+    'affected_refs_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _aiGenerationSnapshotIdMeta =
+      const VerificationMeta('aiGenerationSnapshotId');
+  @override
+  late final GeneratedColumn<String> aiGenerationSnapshotId =
+      GeneratedColumn<String>(
+        'ai_generation_snapshot_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programId,
+    revisionNumber,
+    changeType,
+    updateScope,
+    affectedRefsJson,
+    summary,
+    aiGenerationSnapshotId,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_revisions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramRevision> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('revision_number')) {
+      context.handle(
+        _revisionNumberMeta,
+        revisionNumber.isAcceptableOrUnknown(
+          data['revision_number']!,
+          _revisionNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionNumberMeta);
+    }
+    if (data.containsKey('change_type')) {
+      context.handle(
+        _changeTypeMeta,
+        changeType.isAcceptableOrUnknown(data['change_type']!, _changeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_changeTypeMeta);
+    }
+    if (data.containsKey('update_scope')) {
+      context.handle(
+        _updateScopeMeta,
+        updateScope.isAcceptableOrUnknown(
+          data['update_scope']!,
+          _updateScopeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('affected_refs_json')) {
+      context.handle(
+        _affectedRefsJsonMeta,
+        affectedRefsJson.isAcceptableOrUnknown(
+          data['affected_refs_json']!,
+          _affectedRefsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
+    if (data.containsKey('ai_generation_snapshot_id')) {
+      context.handle(
+        _aiGenerationSnapshotIdMeta,
+        aiGenerationSnapshotId.isAcceptableOrUnknown(
+          data['ai_generation_snapshot_id']!,
+          _aiGenerationSnapshotIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramRevision map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramRevision(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      revisionNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision_number'],
+      )!,
+      changeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}change_type'],
+      )!,
+      updateScope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}update_scope'],
+      ),
+      affectedRefsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}affected_refs_json'],
+      ),
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      aiGenerationSnapshotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ai_generation_snapshot_id'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramRevisionsTable createAlias(String alias) {
+    return $ProgramRevisionsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramRevision extends DataClass implements Insertable<ProgramRevision> {
+  final String id;
+  final String programId;
+  final int revisionNumber;
+  final String changeType;
+  final String? updateScope;
+  final String? affectedRefsJson;
+  final String summary;
+  final String? aiGenerationSnapshotId;
+  final DateTime createdAt;
+  const ProgramRevision({
+    required this.id,
+    required this.programId,
+    required this.revisionNumber,
+    required this.changeType,
+    this.updateScope,
+    this.affectedRefsJson,
+    required this.summary,
+    this.aiGenerationSnapshotId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_id'] = Variable<String>(programId);
+    map['revision_number'] = Variable<int>(revisionNumber);
+    map['change_type'] = Variable<String>(changeType);
+    if (!nullToAbsent || updateScope != null) {
+      map['update_scope'] = Variable<String>(updateScope);
+    }
+    if (!nullToAbsent || affectedRefsJson != null) {
+      map['affected_refs_json'] = Variable<String>(affectedRefsJson);
+    }
+    map['summary'] = Variable<String>(summary);
+    if (!nullToAbsent || aiGenerationSnapshotId != null) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId,
+      );
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ProgramRevisionsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramRevisionsCompanion(
+      id: Value(id),
+      programId: Value(programId),
+      revisionNumber: Value(revisionNumber),
+      changeType: Value(changeType),
+      updateScope: updateScope == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updateScope),
+      affectedRefsJson: affectedRefsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(affectedRefsJson),
+      summary: Value(summary),
+      aiGenerationSnapshotId: aiGenerationSnapshotId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiGenerationSnapshotId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ProgramRevision.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramRevision(
+      id: serializer.fromJson<String>(json['id']),
+      programId: serializer.fromJson<String>(json['programId']),
+      revisionNumber: serializer.fromJson<int>(json['revisionNumber']),
+      changeType: serializer.fromJson<String>(json['changeType']),
+      updateScope: serializer.fromJson<String?>(json['updateScope']),
+      affectedRefsJson: serializer.fromJson<String?>(json['affectedRefsJson']),
+      summary: serializer.fromJson<String>(json['summary']),
+      aiGenerationSnapshotId: serializer.fromJson<String?>(
+        json['aiGenerationSnapshotId'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programId': serializer.toJson<String>(programId),
+      'revisionNumber': serializer.toJson<int>(revisionNumber),
+      'changeType': serializer.toJson<String>(changeType),
+      'updateScope': serializer.toJson<String?>(updateScope),
+      'affectedRefsJson': serializer.toJson<String?>(affectedRefsJson),
+      'summary': serializer.toJson<String>(summary),
+      'aiGenerationSnapshotId': serializer.toJson<String?>(
+        aiGenerationSnapshotId,
+      ),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ProgramRevision copyWith({
+    String? id,
+    String? programId,
+    int? revisionNumber,
+    String? changeType,
+    Value<String?> updateScope = const Value.absent(),
+    Value<String?> affectedRefsJson = const Value.absent(),
+    String? summary,
+    Value<String?> aiGenerationSnapshotId = const Value.absent(),
+    DateTime? createdAt,
+  }) => ProgramRevision(
+    id: id ?? this.id,
+    programId: programId ?? this.programId,
+    revisionNumber: revisionNumber ?? this.revisionNumber,
+    changeType: changeType ?? this.changeType,
+    updateScope: updateScope.present ? updateScope.value : this.updateScope,
+    affectedRefsJson: affectedRefsJson.present
+        ? affectedRefsJson.value
+        : this.affectedRefsJson,
+    summary: summary ?? this.summary,
+    aiGenerationSnapshotId: aiGenerationSnapshotId.present
+        ? aiGenerationSnapshotId.value
+        : this.aiGenerationSnapshotId,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ProgramRevision copyWithCompanion(ProgramRevisionsCompanion data) {
+    return ProgramRevision(
+      id: data.id.present ? data.id.value : this.id,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      revisionNumber: data.revisionNumber.present
+          ? data.revisionNumber.value
+          : this.revisionNumber,
+      changeType: data.changeType.present
+          ? data.changeType.value
+          : this.changeType,
+      updateScope: data.updateScope.present
+          ? data.updateScope.value
+          : this.updateScope,
+      affectedRefsJson: data.affectedRefsJson.present
+          ? data.affectedRefsJson.value
+          : this.affectedRefsJson,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      aiGenerationSnapshotId: data.aiGenerationSnapshotId.present
+          ? data.aiGenerationSnapshotId.value
+          : this.aiGenerationSnapshotId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramRevision(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('revisionNumber: $revisionNumber, ')
+          ..write('changeType: $changeType, ')
+          ..write('updateScope: $updateScope, ')
+          ..write('affectedRefsJson: $affectedRefsJson, ')
+          ..write('summary: $summary, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    programId,
+    revisionNumber,
+    changeType,
+    updateScope,
+    affectedRefsJson,
+    summary,
+    aiGenerationSnapshotId,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramRevision &&
+          other.id == this.id &&
+          other.programId == this.programId &&
+          other.revisionNumber == this.revisionNumber &&
+          other.changeType == this.changeType &&
+          other.updateScope == this.updateScope &&
+          other.affectedRefsJson == this.affectedRefsJson &&
+          other.summary == this.summary &&
+          other.aiGenerationSnapshotId == this.aiGenerationSnapshotId &&
+          other.createdAt == this.createdAt);
+}
+
+class ProgramRevisionsCompanion extends UpdateCompanion<ProgramRevision> {
+  final Value<String> id;
+  final Value<String> programId;
+  final Value<int> revisionNumber;
+  final Value<String> changeType;
+  final Value<String?> updateScope;
+  final Value<String?> affectedRefsJson;
+  final Value<String> summary;
+  final Value<String?> aiGenerationSnapshotId;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const ProgramRevisionsCompanion({
+    this.id = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.revisionNumber = const Value.absent(),
+    this.changeType = const Value.absent(),
+    this.updateScope = const Value.absent(),
+    this.affectedRefsJson = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.aiGenerationSnapshotId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramRevisionsCompanion.insert({
+    required String id,
+    required String programId,
+    required int revisionNumber,
+    required String changeType,
+    this.updateScope = const Value.absent(),
+    this.affectedRefsJson = const Value.absent(),
+    required String summary,
+    this.aiGenerationSnapshotId = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programId = Value(programId),
+       revisionNumber = Value(revisionNumber),
+       changeType = Value(changeType),
+       summary = Value(summary),
+       createdAt = Value(createdAt);
+  static Insertable<ProgramRevision> custom({
+    Expression<String>? id,
+    Expression<String>? programId,
+    Expression<int>? revisionNumber,
+    Expression<String>? changeType,
+    Expression<String>? updateScope,
+    Expression<String>? affectedRefsJson,
+    Expression<String>? summary,
+    Expression<String>? aiGenerationSnapshotId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programId != null) 'program_id': programId,
+      if (revisionNumber != null) 'revision_number': revisionNumber,
+      if (changeType != null) 'change_type': changeType,
+      if (updateScope != null) 'update_scope': updateScope,
+      if (affectedRefsJson != null) 'affected_refs_json': affectedRefsJson,
+      if (summary != null) 'summary': summary,
+      if (aiGenerationSnapshotId != null)
+        'ai_generation_snapshot_id': aiGenerationSnapshotId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramRevisionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programId,
+    Value<int>? revisionNumber,
+    Value<String>? changeType,
+    Value<String?>? updateScope,
+    Value<String?>? affectedRefsJson,
+    Value<String>? summary,
+    Value<String?>? aiGenerationSnapshotId,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramRevisionsCompanion(
+      id: id ?? this.id,
+      programId: programId ?? this.programId,
+      revisionNumber: revisionNumber ?? this.revisionNumber,
+      changeType: changeType ?? this.changeType,
+      updateScope: updateScope ?? this.updateScope,
+      affectedRefsJson: affectedRefsJson ?? this.affectedRefsJson,
+      summary: summary ?? this.summary,
+      aiGenerationSnapshotId:
+          aiGenerationSnapshotId ?? this.aiGenerationSnapshotId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (revisionNumber.present) {
+      map['revision_number'] = Variable<int>(revisionNumber.value);
+    }
+    if (changeType.present) {
+      map['change_type'] = Variable<String>(changeType.value);
+    }
+    if (updateScope.present) {
+      map['update_scope'] = Variable<String>(updateScope.value);
+    }
+    if (affectedRefsJson.present) {
+      map['affected_refs_json'] = Variable<String>(affectedRefsJson.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (aiGenerationSnapshotId.present) {
+      map['ai_generation_snapshot_id'] = Variable<String>(
+        aiGenerationSnapshotId.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramRevisionsCompanion(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('revisionNumber: $revisionNumber, ')
+          ..write('changeType: $changeType, ')
+          ..write('updateScope: $updateScope, ')
+          ..write('affectedRefsJson: $affectedRefsJson, ')
+          ..write('summary: $summary, ')
+          ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10392,6 +26779,36 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $AiModelCapabilitiesTable(this);
   late final $AiProviderConfigsTable aiProviderConfigs =
       $AiProviderConfigsTable(this);
+  late final $ProgramsTable programs = $ProgramsTable(this);
+  late final $ProgramWorkoutTemplatesTable programWorkoutTemplates =
+      $ProgramWorkoutTemplatesTable(this);
+  late final $ProgramTemplateExercisesTable programTemplateExercises =
+      $ProgramTemplateExercisesTable(this);
+  late final $ProgramTemplateExerciseSetsTable programTemplateExerciseSets =
+      $ProgramTemplateExerciseSetsTable(this);
+  late final $ProgramWeeksTable programWeeks = $ProgramWeeksTable(this);
+  late final $ProgramWorkoutsTable programWorkouts = $ProgramWorkoutsTable(
+    this,
+  );
+  late final $ProgramExercisesTable programExercises = $ProgramExercisesTable(
+    this,
+  );
+  late final $ProgramExerciseSetsTable programExerciseSets =
+      $ProgramExerciseSetsTable(this);
+  late final $SavedWorkoutsTable savedWorkouts = $SavedWorkoutsTable(this);
+  late final $SavedWorkoutExercisesTable savedWorkoutExercises =
+      $SavedWorkoutExercisesTable(this);
+  late final $SavedWorkoutExerciseSetsTable savedWorkoutExerciseSets =
+      $SavedWorkoutExerciseSetsTable(this);
+  late final $WorkoutSessionsTable workoutSessions = $WorkoutSessionsTable(
+    this,
+  );
+  late final $WorkoutSessionExercisesTable workoutSessionExercises =
+      $WorkoutSessionExercisesTable(this);
+  late final $SetLogsTable setLogs = $SetLogsTable(this);
+  late final $ProgramRevisionsTable programRevisions = $ProgramRevisionsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10410,6 +26827,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appSettings,
     aiModelCapabilities,
     aiProviderConfigs,
+    programs,
+    programWorkoutTemplates,
+    programTemplateExercises,
+    programTemplateExerciseSets,
+    programWeeks,
+    programWorkouts,
+    programExercises,
+    programExerciseSets,
+    savedWorkouts,
+    savedWorkoutExercises,
+    savedWorkoutExerciseSets,
+    workoutSessions,
+    workoutSessionExercises,
+    setLogs,
+    programRevisions,
   ];
 }
 
@@ -15653,6 +32085,7169 @@ typedef $$AiProviderConfigsTableProcessedTableManager =
       AiProviderConfig,
       PrefetchHooks Function()
     >;
+typedef $$ProgramsTableCreateCompanionBuilder =
+    ProgramsCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> description,
+      required String source,
+      required String creationMethod,
+      Value<String?> importOrigin,
+      Value<String> status,
+      Value<bool> active,
+      Value<String?> startDateLocal,
+      Value<String?> endDateLocal,
+      Value<int?> weeksTotal,
+      Value<int?> daysPerWeek,
+      Value<int?> sessionLengthMinutes,
+      Value<String> goalTagsJson,
+      Value<String> equipmentJson,
+      Value<String?> experienceLevelAtCreation,
+      Value<String?> preferredUnitsAtCreation,
+      Value<String?> periodisationModel,
+      Value<String?> trainingStyle,
+      Value<String?> referenceStrategy,
+      Value<String?> blockType,
+      Value<String?> progressionRulesJson,
+      Value<String?> deloadRulesJson,
+      Value<String?> warmupPolicyJson,
+      Value<String?> fatigueManagementJson,
+      Value<String?> aiGenerationSnapshotId,
+      Value<int?> aiOutputSchemaVersion,
+      Value<bool> imported,
+      Value<DateTime?> importedAt,
+      Value<String?> importSourceFileType,
+      Value<String?> importReviewStatus,
+      Value<bool> sourceFileRetained,
+      Value<int?> shareSchemaVersion,
+      Value<String?> externalShareId,
+      Value<String?> exportPrivacyMode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> archivedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramsTableUpdateCompanionBuilder =
+    ProgramsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> description,
+      Value<String> source,
+      Value<String> creationMethod,
+      Value<String?> importOrigin,
+      Value<String> status,
+      Value<bool> active,
+      Value<String?> startDateLocal,
+      Value<String?> endDateLocal,
+      Value<int?> weeksTotal,
+      Value<int?> daysPerWeek,
+      Value<int?> sessionLengthMinutes,
+      Value<String> goalTagsJson,
+      Value<String> equipmentJson,
+      Value<String?> experienceLevelAtCreation,
+      Value<String?> preferredUnitsAtCreation,
+      Value<String?> periodisationModel,
+      Value<String?> trainingStyle,
+      Value<String?> referenceStrategy,
+      Value<String?> blockType,
+      Value<String?> progressionRulesJson,
+      Value<String?> deloadRulesJson,
+      Value<String?> warmupPolicyJson,
+      Value<String?> fatigueManagementJson,
+      Value<String?> aiGenerationSnapshotId,
+      Value<int?> aiOutputSchemaVersion,
+      Value<bool> imported,
+      Value<DateTime?> importedAt,
+      Value<String?> importSourceFileType,
+      Value<String?> importReviewStatus,
+      Value<bool> sourceFileRetained,
+      Value<int?> shareSchemaVersion,
+      Value<String?> externalShareId,
+      Value<String?> exportPrivacyMode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> archivedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startDateLocal => $composableBuilder(
+    column: $table.startDateLocal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get endDateLocal => $composableBuilder(
+    column: $table.endDateLocal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weeksTotal => $composableBuilder(
+    column: $table.weeksTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get daysPerWeek => $composableBuilder(
+    column: $table.daysPerWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sessionLengthMinutes => $composableBuilder(
+    column: $table.sessionLengthMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get experienceLevelAtCreation => $composableBuilder(
+    column: $table.experienceLevelAtCreation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredUnitsAtCreation => $composableBuilder(
+    column: $table.preferredUnitsAtCreation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get periodisationModel => $composableBuilder(
+    column: $table.periodisationModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trainingStyle => $composableBuilder(
+    column: $table.trainingStyle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceStrategy => $composableBuilder(
+    column: $table.referenceStrategy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get blockType => $composableBuilder(
+    column: $table.blockType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get progressionRulesJson => $composableBuilder(
+    column: $table.progressionRulesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deloadRulesJson => $composableBuilder(
+    column: $table.deloadRulesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get warmupPolicyJson => $composableBuilder(
+    column: $table.warmupPolicyJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fatigueManagementJson => $composableBuilder(
+    column: $table.fatigueManagementJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get imported => $composableBuilder(
+    column: $table.imported,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get sourceFileRetained => $composableBuilder(
+    column: $table.sourceFileRetained,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startDateLocal => $composableBuilder(
+    column: $table.startDateLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get endDateLocal => $composableBuilder(
+    column: $table.endDateLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weeksTotal => $composableBuilder(
+    column: $table.weeksTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get daysPerWeek => $composableBuilder(
+    column: $table.daysPerWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sessionLengthMinutes => $composableBuilder(
+    column: $table.sessionLengthMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get experienceLevelAtCreation => $composableBuilder(
+    column: $table.experienceLevelAtCreation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredUnitsAtCreation => $composableBuilder(
+    column: $table.preferredUnitsAtCreation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get periodisationModel => $composableBuilder(
+    column: $table.periodisationModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trainingStyle => $composableBuilder(
+    column: $table.trainingStyle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceStrategy => $composableBuilder(
+    column: $table.referenceStrategy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get blockType => $composableBuilder(
+    column: $table.blockType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get progressionRulesJson => $composableBuilder(
+    column: $table.progressionRulesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deloadRulesJson => $composableBuilder(
+    column: $table.deloadRulesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get warmupPolicyJson => $composableBuilder(
+    column: $table.warmupPolicyJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fatigueManagementJson => $composableBuilder(
+    column: $table.fatigueManagementJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get imported => $composableBuilder(
+    column: $table.imported,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get sourceFileRetained => $composableBuilder(
+    column: $table.sourceFileRetained,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+
+  GeneratedColumn<String> get startDateLocal => $composableBuilder(
+    column: $table.startDateLocal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get endDateLocal => $composableBuilder(
+    column: $table.endDateLocal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get weeksTotal => $composableBuilder(
+    column: $table.weeksTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get daysPerWeek => $composableBuilder(
+    column: $table.daysPerWeek,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sessionLengthMinutes => $composableBuilder(
+    column: $table.sessionLengthMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get experienceLevelAtCreation => $composableBuilder(
+    column: $table.experienceLevelAtCreation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get preferredUnitsAtCreation => $composableBuilder(
+    column: $table.preferredUnitsAtCreation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get periodisationModel => $composableBuilder(
+    column: $table.periodisationModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trainingStyle => $composableBuilder(
+    column: $table.trainingStyle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceStrategy => $composableBuilder(
+    column: $table.referenceStrategy,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get blockType =>
+      $composableBuilder(column: $table.blockType, builder: (column) => column);
+
+  GeneratedColumn<String> get progressionRulesJson => $composableBuilder(
+    column: $table.progressionRulesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get deloadRulesJson => $composableBuilder(
+    column: $table.deloadRulesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get warmupPolicyJson => $composableBuilder(
+    column: $table.warmupPolicyJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fatigueManagementJson => $composableBuilder(
+    column: $table.fatigueManagementJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get imported =>
+      $composableBuilder(column: $table.imported, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get sourceFileRetained => $composableBuilder(
+    column: $table.sourceFileRetained,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$ProgramsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramsTable,
+          Program,
+          $$ProgramsTableFilterComposer,
+          $$ProgramsTableOrderingComposer,
+          $$ProgramsTableAnnotationComposer,
+          $$ProgramsTableCreateCompanionBuilder,
+          $$ProgramsTableUpdateCompanionBuilder,
+          (Program, BaseReferences<_$AppDatabase, $ProgramsTable, Program>),
+          Program,
+          PrefetchHooks Function()
+        > {
+  $$ProgramsTableTableManager(_$AppDatabase db, $ProgramsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> creationMethod = const Value.absent(),
+                Value<String?> importOrigin = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<String?> startDateLocal = const Value.absent(),
+                Value<String?> endDateLocal = const Value.absent(),
+                Value<int?> weeksTotal = const Value.absent(),
+                Value<int?> daysPerWeek = const Value.absent(),
+                Value<int?> sessionLengthMinutes = const Value.absent(),
+                Value<String> goalTagsJson = const Value.absent(),
+                Value<String> equipmentJson = const Value.absent(),
+                Value<String?> experienceLevelAtCreation = const Value.absent(),
+                Value<String?> preferredUnitsAtCreation = const Value.absent(),
+                Value<String?> periodisationModel = const Value.absent(),
+                Value<String?> trainingStyle = const Value.absent(),
+                Value<String?> referenceStrategy = const Value.absent(),
+                Value<String?> blockType = const Value.absent(),
+                Value<String?> progressionRulesJson = const Value.absent(),
+                Value<String?> deloadRulesJson = const Value.absent(),
+                Value<String?> warmupPolicyJson = const Value.absent(),
+                Value<String?> fatigueManagementJson = const Value.absent(),
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                Value<int?> aiOutputSchemaVersion = const Value.absent(),
+                Value<bool> imported = const Value.absent(),
+                Value<DateTime?> importedAt = const Value.absent(),
+                Value<String?> importSourceFileType = const Value.absent(),
+                Value<String?> importReviewStatus = const Value.absent(),
+                Value<bool> sourceFileRetained = const Value.absent(),
+                Value<int?> shareSchemaVersion = const Value.absent(),
+                Value<String?> externalShareId = const Value.absent(),
+                Value<String?> exportPrivacyMode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> archivedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramsCompanion(
+                id: id,
+                name: name,
+                description: description,
+                source: source,
+                creationMethod: creationMethod,
+                importOrigin: importOrigin,
+                status: status,
+                active: active,
+                startDateLocal: startDateLocal,
+                endDateLocal: endDateLocal,
+                weeksTotal: weeksTotal,
+                daysPerWeek: daysPerWeek,
+                sessionLengthMinutes: sessionLengthMinutes,
+                goalTagsJson: goalTagsJson,
+                equipmentJson: equipmentJson,
+                experienceLevelAtCreation: experienceLevelAtCreation,
+                preferredUnitsAtCreation: preferredUnitsAtCreation,
+                periodisationModel: periodisationModel,
+                trainingStyle: trainingStyle,
+                referenceStrategy: referenceStrategy,
+                blockType: blockType,
+                progressionRulesJson: progressionRulesJson,
+                deloadRulesJson: deloadRulesJson,
+                warmupPolicyJson: warmupPolicyJson,
+                fatigueManagementJson: fatigueManagementJson,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                aiOutputSchemaVersion: aiOutputSchemaVersion,
+                imported: imported,
+                importedAt: importedAt,
+                importSourceFileType: importSourceFileType,
+                importReviewStatus: importReviewStatus,
+                sourceFileRetained: sourceFileRetained,
+                shareSchemaVersion: shareSchemaVersion,
+                externalShareId: externalShareId,
+                exportPrivacyMode: exportPrivacyMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                archivedAt: archivedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> description = const Value.absent(),
+                required String source,
+                required String creationMethod,
+                Value<String?> importOrigin = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<String?> startDateLocal = const Value.absent(),
+                Value<String?> endDateLocal = const Value.absent(),
+                Value<int?> weeksTotal = const Value.absent(),
+                Value<int?> daysPerWeek = const Value.absent(),
+                Value<int?> sessionLengthMinutes = const Value.absent(),
+                Value<String> goalTagsJson = const Value.absent(),
+                Value<String> equipmentJson = const Value.absent(),
+                Value<String?> experienceLevelAtCreation = const Value.absent(),
+                Value<String?> preferredUnitsAtCreation = const Value.absent(),
+                Value<String?> periodisationModel = const Value.absent(),
+                Value<String?> trainingStyle = const Value.absent(),
+                Value<String?> referenceStrategy = const Value.absent(),
+                Value<String?> blockType = const Value.absent(),
+                Value<String?> progressionRulesJson = const Value.absent(),
+                Value<String?> deloadRulesJson = const Value.absent(),
+                Value<String?> warmupPolicyJson = const Value.absent(),
+                Value<String?> fatigueManagementJson = const Value.absent(),
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                Value<int?> aiOutputSchemaVersion = const Value.absent(),
+                Value<bool> imported = const Value.absent(),
+                Value<DateTime?> importedAt = const Value.absent(),
+                Value<String?> importSourceFileType = const Value.absent(),
+                Value<String?> importReviewStatus = const Value.absent(),
+                Value<bool> sourceFileRetained = const Value.absent(),
+                Value<int?> shareSchemaVersion = const Value.absent(),
+                Value<String?> externalShareId = const Value.absent(),
+                Value<String?> exportPrivacyMode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> archivedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramsCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                source: source,
+                creationMethod: creationMethod,
+                importOrigin: importOrigin,
+                status: status,
+                active: active,
+                startDateLocal: startDateLocal,
+                endDateLocal: endDateLocal,
+                weeksTotal: weeksTotal,
+                daysPerWeek: daysPerWeek,
+                sessionLengthMinutes: sessionLengthMinutes,
+                goalTagsJson: goalTagsJson,
+                equipmentJson: equipmentJson,
+                experienceLevelAtCreation: experienceLevelAtCreation,
+                preferredUnitsAtCreation: preferredUnitsAtCreation,
+                periodisationModel: periodisationModel,
+                trainingStyle: trainingStyle,
+                referenceStrategy: referenceStrategy,
+                blockType: blockType,
+                progressionRulesJson: progressionRulesJson,
+                deloadRulesJson: deloadRulesJson,
+                warmupPolicyJson: warmupPolicyJson,
+                fatigueManagementJson: fatigueManagementJson,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                aiOutputSchemaVersion: aiOutputSchemaVersion,
+                imported: imported,
+                importedAt: importedAt,
+                importSourceFileType: importSourceFileType,
+                importReviewStatus: importReviewStatus,
+                sourceFileRetained: sourceFileRetained,
+                shareSchemaVersion: shareSchemaVersion,
+                externalShareId: externalShareId,
+                exportPrivacyMode: exportPrivacyMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                archivedAt: archivedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramsTable,
+      Program,
+      $$ProgramsTableFilterComposer,
+      $$ProgramsTableOrderingComposer,
+      $$ProgramsTableAnnotationComposer,
+      $$ProgramsTableCreateCompanionBuilder,
+      $$ProgramsTableUpdateCompanionBuilder,
+      (Program, BaseReferences<_$AppDatabase, $ProgramsTable, Program>),
+      Program,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramWorkoutTemplatesTableCreateCompanionBuilder =
+    ProgramWorkoutTemplatesCompanion Function({
+      required String id,
+      required String programId,
+      required String templateKey,
+      required String name,
+      Value<String?> description,
+      Value<String?> dayType,
+      Value<int?> estimatedDurationMinutes,
+      required int sortOrder,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramWorkoutTemplatesTableUpdateCompanionBuilder =
+    ProgramWorkoutTemplatesCompanion Function({
+      Value<String> id,
+      Value<String> programId,
+      Value<String> templateKey,
+      Value<String> name,
+      Value<String?> description,
+      Value<String?> dayType,
+      Value<int?> estimatedDurationMinutes,
+      Value<int> sortOrder,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramWorkoutTemplatesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutTemplatesTable> {
+  $$ProgramWorkoutTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get templateKey => $composableBuilder(
+    column: $table.templateKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dayType => $composableBuilder(
+    column: $table.dayType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramWorkoutTemplatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutTemplatesTable> {
+  $$ProgramWorkoutTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get templateKey => $composableBuilder(
+    column: $table.templateKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dayType => $composableBuilder(
+    column: $table.dayType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramWorkoutTemplatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutTemplatesTable> {
+  $$ProgramWorkoutTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<String> get templateKey => $composableBuilder(
+    column: $table.templateKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dayType =>
+      $composableBuilder(column: $table.dayType, builder: (column) => column);
+
+  GeneratedColumn<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProgramWorkoutTemplatesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramWorkoutTemplatesTable,
+          ProgramWorkoutTemplate,
+          $$ProgramWorkoutTemplatesTableFilterComposer,
+          $$ProgramWorkoutTemplatesTableOrderingComposer,
+          $$ProgramWorkoutTemplatesTableAnnotationComposer,
+          $$ProgramWorkoutTemplatesTableCreateCompanionBuilder,
+          $$ProgramWorkoutTemplatesTableUpdateCompanionBuilder,
+          (
+            ProgramWorkoutTemplate,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramWorkoutTemplatesTable,
+              ProgramWorkoutTemplate
+            >,
+          ),
+          ProgramWorkoutTemplate,
+          PrefetchHooks Function()
+        > {
+  $$ProgramWorkoutTemplatesTableTableManager(
+    _$AppDatabase db,
+    $ProgramWorkoutTemplatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramWorkoutTemplatesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgramWorkoutTemplatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgramWorkoutTemplatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<String> templateKey = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String?> dayType = const Value.absent(),
+                Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWorkoutTemplatesCompanion(
+                id: id,
+                programId: programId,
+                templateKey: templateKey,
+                name: name,
+                description: description,
+                dayType: dayType,
+                estimatedDurationMinutes: estimatedDurationMinutes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programId,
+                required String templateKey,
+                required String name,
+                Value<String?> description = const Value.absent(),
+                Value<String?> dayType = const Value.absent(),
+                Value<int?> estimatedDurationMinutes = const Value.absent(),
+                required int sortOrder,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWorkoutTemplatesCompanion.insert(
+                id: id,
+                programId: programId,
+                templateKey: templateKey,
+                name: name,
+                description: description,
+                dayType: dayType,
+                estimatedDurationMinutes: estimatedDurationMinutes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramWorkoutTemplatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramWorkoutTemplatesTable,
+      ProgramWorkoutTemplate,
+      $$ProgramWorkoutTemplatesTableFilterComposer,
+      $$ProgramWorkoutTemplatesTableOrderingComposer,
+      $$ProgramWorkoutTemplatesTableAnnotationComposer,
+      $$ProgramWorkoutTemplatesTableCreateCompanionBuilder,
+      $$ProgramWorkoutTemplatesTableUpdateCompanionBuilder,
+      (
+        ProgramWorkoutTemplate,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramWorkoutTemplatesTable,
+          ProgramWorkoutTemplate
+        >,
+      ),
+      ProgramWorkoutTemplate,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramTemplateExercisesTableCreateCompanionBuilder =
+    ProgramTemplateExercisesCompanion Function({
+      required String id,
+      required String workoutTemplateId,
+      required int exerciseId,
+      Value<String?> exerciseRef,
+      Value<String?> exerciseRole,
+      Value<String?> programmeRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      required int sortOrder,
+      Value<String?> notes,
+      Value<String?> cuesJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramTemplateExercisesTableUpdateCompanionBuilder =
+    ProgramTemplateExercisesCompanion Function({
+      Value<String> id,
+      Value<String> workoutTemplateId,
+      Value<int> exerciseId,
+      Value<String?> exerciseRef,
+      Value<String?> exerciseRole,
+      Value<String?> programmeRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      Value<int> sortOrder,
+      Value<String?> notes,
+      Value<String?> cuesJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramTemplateExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExercisesTable> {
+  $$ProgramTemplateExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programmeRole => $composableBuilder(
+    column: $table.programmeRole,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cuesJson => $composableBuilder(
+    column: $table.cuesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramTemplateExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExercisesTable> {
+  $$ProgramTemplateExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programmeRole => $composableBuilder(
+    column: $table.programmeRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cuesJson => $composableBuilder(
+    column: $table.cuesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramTemplateExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExercisesTable> {
+  $$ProgramTemplateExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get programmeRole => $composableBuilder(
+    column: $table.programmeRole,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get cuesJson =>
+      $composableBuilder(column: $table.cuesJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ProgramTemplateExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramTemplateExercisesTable,
+          ProgramTemplateExercise,
+          $$ProgramTemplateExercisesTableFilterComposer,
+          $$ProgramTemplateExercisesTableOrderingComposer,
+          $$ProgramTemplateExercisesTableAnnotationComposer,
+          $$ProgramTemplateExercisesTableCreateCompanionBuilder,
+          $$ProgramTemplateExercisesTableUpdateCompanionBuilder,
+          (
+            ProgramTemplateExercise,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramTemplateExercisesTable,
+              ProgramTemplateExercise
+            >,
+          ),
+          ProgramTemplateExercise,
+          PrefetchHooks Function()
+        > {
+  $$ProgramTemplateExercisesTableTableManager(
+    _$AppDatabase db,
+    $ProgramTemplateExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramTemplateExercisesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgramTemplateExercisesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgramTemplateExercisesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workoutTemplateId = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> programmeRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> cuesJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTemplateExercisesCompanion(
+                id: id,
+                workoutTemplateId: workoutTemplateId,
+                exerciseId: exerciseId,
+                exerciseRef: exerciseRef,
+                exerciseRole: exerciseRole,
+                programmeRole: programmeRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                cuesJson: cuesJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workoutTemplateId,
+                required int exerciseId,
+                Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> programmeRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                required int sortOrder,
+                Value<String?> notes = const Value.absent(),
+                Value<String?> cuesJson = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTemplateExercisesCompanion.insert(
+                id: id,
+                workoutTemplateId: workoutTemplateId,
+                exerciseId: exerciseId,
+                exerciseRef: exerciseRef,
+                exerciseRole: exerciseRole,
+                programmeRole: programmeRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                cuesJson: cuesJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramTemplateExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramTemplateExercisesTable,
+      ProgramTemplateExercise,
+      $$ProgramTemplateExercisesTableFilterComposer,
+      $$ProgramTemplateExercisesTableOrderingComposer,
+      $$ProgramTemplateExercisesTableAnnotationComposer,
+      $$ProgramTemplateExercisesTableCreateCompanionBuilder,
+      $$ProgramTemplateExercisesTableUpdateCompanionBuilder,
+      (
+        ProgramTemplateExercise,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramTemplateExercisesTable,
+          ProgramTemplateExercise
+        >,
+      ),
+      ProgramTemplateExercise,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramTemplateExerciseSetsTableCreateCompanionBuilder =
+    ProgramTemplateExerciseSetsCompanion Function({
+      required String id,
+      required String templateExerciseId,
+      required int setIndex,
+      required String setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramTemplateExerciseSetsTableUpdateCompanionBuilder =
+    ProgramTemplateExerciseSetsCompanion Function({
+      Value<String> id,
+      Value<String> templateExerciseId,
+      Value<int> setIndex,
+      Value<String> setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramTemplateExerciseSetsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExerciseSetsTable> {
+  $$ProgramTemplateExerciseSetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get templateExerciseId => $composableBuilder(
+    column: $table.templateExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramTemplateExerciseSetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExerciseSetsTable> {
+  $$ProgramTemplateExerciseSetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get templateExerciseId => $composableBuilder(
+    column: $table.templateExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramTemplateExerciseSetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramTemplateExerciseSetsTable> {
+  $$ProgramTemplateExerciseSetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get templateExerciseId => $composableBuilder(
+    column: $table.templateExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get setIndex =>
+      $composableBuilder(column: $table.setIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get setType =>
+      $composableBuilder(column: $table.setType, builder: (column) => column);
+
+  GeneratedColumn<String> get setIntent =>
+      $composableBuilder(column: $table.setIntent, builder: (column) => column);
+
+  GeneratedColumn<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rpeMin =>
+      $composableBuilder(column: $table.rpeMin, builder: (column) => column);
+
+  GeneratedColumn<double> get rpeMax =>
+      $composableBuilder(column: $table.rpeMax, builder: (column) => column);
+
+  GeneratedColumn<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ProgramTemplateExerciseSetsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramTemplateExerciseSetsTable,
+          ProgramTemplateExerciseSet,
+          $$ProgramTemplateExerciseSetsTableFilterComposer,
+          $$ProgramTemplateExerciseSetsTableOrderingComposer,
+          $$ProgramTemplateExerciseSetsTableAnnotationComposer,
+          $$ProgramTemplateExerciseSetsTableCreateCompanionBuilder,
+          $$ProgramTemplateExerciseSetsTableUpdateCompanionBuilder,
+          (
+            ProgramTemplateExerciseSet,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramTemplateExerciseSetsTable,
+              ProgramTemplateExerciseSet
+            >,
+          ),
+          ProgramTemplateExerciseSet,
+          PrefetchHooks Function()
+        > {
+  $$ProgramTemplateExerciseSetsTableTableManager(
+    _$AppDatabase db,
+    $ProgramTemplateExerciseSetsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramTemplateExerciseSetsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgramTemplateExerciseSetsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgramTemplateExerciseSetsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> templateExerciseId = const Value.absent(),
+                Value<int> setIndex = const Value.absent(),
+                Value<String> setType = const Value.absent(),
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTemplateExerciseSetsCompanion(
+                id: id,
+                templateExerciseId: templateExerciseId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String templateExerciseId,
+                required int setIndex,
+                required String setType,
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTemplateExerciseSetsCompanion.insert(
+                id: id,
+                templateExerciseId: templateExerciseId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramTemplateExerciseSetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramTemplateExerciseSetsTable,
+      ProgramTemplateExerciseSet,
+      $$ProgramTemplateExerciseSetsTableFilterComposer,
+      $$ProgramTemplateExerciseSetsTableOrderingComposer,
+      $$ProgramTemplateExerciseSetsTableAnnotationComposer,
+      $$ProgramTemplateExerciseSetsTableCreateCompanionBuilder,
+      $$ProgramTemplateExerciseSetsTableUpdateCompanionBuilder,
+      (
+        ProgramTemplateExerciseSet,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramTemplateExerciseSetsTable,
+          ProgramTemplateExerciseSet
+        >,
+      ),
+      ProgramTemplateExerciseSet,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramWeeksTableCreateCompanionBuilder =
+    ProgramWeeksCompanion Function({
+      required String id,
+      required String programId,
+      required int weekNumber,
+      Value<String?> weekType,
+      Value<String?> startsOnLocal,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$ProgramWeeksTableUpdateCompanionBuilder =
+    ProgramWeeksCompanion Function({
+      Value<String> id,
+      Value<String> programId,
+      Value<int> weekNumber,
+      Value<String?> weekType,
+      Value<String?> startsOnLocal,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$ProgramWeeksTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramWeeksTable> {
+  $$ProgramWeeksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weekNumber => $composableBuilder(
+    column: $table.weekNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weekType => $composableBuilder(
+    column: $table.weekType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startsOnLocal => $composableBuilder(
+    column: $table.startsOnLocal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramWeeksTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramWeeksTable> {
+  $$ProgramWeeksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weekNumber => $composableBuilder(
+    column: $table.weekNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weekType => $composableBuilder(
+    column: $table.weekType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startsOnLocal => $composableBuilder(
+    column: $table.startsOnLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramWeeksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramWeeksTable> {
+  $$ProgramWeeksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<int> get weekNumber => $composableBuilder(
+    column: $table.weekNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get weekType =>
+      $composableBuilder(column: $table.weekType, builder: (column) => column);
+
+  GeneratedColumn<String> get startsOnLocal => $composableBuilder(
+    column: $table.startsOnLocal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$ProgramWeeksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramWeeksTable,
+          ProgramWeek,
+          $$ProgramWeeksTableFilterComposer,
+          $$ProgramWeeksTableOrderingComposer,
+          $$ProgramWeeksTableAnnotationComposer,
+          $$ProgramWeeksTableCreateCompanionBuilder,
+          $$ProgramWeeksTableUpdateCompanionBuilder,
+          (
+            ProgramWeek,
+            BaseReferences<_$AppDatabase, $ProgramWeeksTable, ProgramWeek>,
+          ),
+          ProgramWeek,
+          PrefetchHooks Function()
+        > {
+  $$ProgramWeeksTableTableManager(_$AppDatabase db, $ProgramWeeksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramWeeksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramWeeksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramWeeksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<int> weekNumber = const Value.absent(),
+                Value<String?> weekType = const Value.absent(),
+                Value<String?> startsOnLocal = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWeeksCompanion(
+                id: id,
+                programId: programId,
+                weekNumber: weekNumber,
+                weekType: weekType,
+                startsOnLocal: startsOnLocal,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programId,
+                required int weekNumber,
+                Value<String?> weekType = const Value.absent(),
+                Value<String?> startsOnLocal = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWeeksCompanion.insert(
+                id: id,
+                programId: programId,
+                weekNumber: weekNumber,
+                weekType: weekType,
+                startsOnLocal: startsOnLocal,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramWeeksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramWeeksTable,
+      ProgramWeek,
+      $$ProgramWeeksTableFilterComposer,
+      $$ProgramWeeksTableOrderingComposer,
+      $$ProgramWeeksTableAnnotationComposer,
+      $$ProgramWeeksTableCreateCompanionBuilder,
+      $$ProgramWeeksTableUpdateCompanionBuilder,
+      (
+        ProgramWeek,
+        BaseReferences<_$AppDatabase, $ProgramWeeksTable, ProgramWeek>,
+      ),
+      ProgramWeek,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramWorkoutsTableCreateCompanionBuilder =
+    ProgramWorkoutsCompanion Function({
+      required String id,
+      required String programId,
+      Value<String?> programWeekId,
+      Value<String?> workoutTemplateId,
+      required String occurrenceRef,
+      required String name,
+      Value<String?> scheduledDateLocal,
+      Value<int?> scheduledDayIndex,
+      Value<String> status,
+      Value<String?> revisionId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramWorkoutsTableUpdateCompanionBuilder =
+    ProgramWorkoutsCompanion Function({
+      Value<String> id,
+      Value<String> programId,
+      Value<String?> programWeekId,
+      Value<String?> workoutTemplateId,
+      Value<String> occurrenceRef,
+      Value<String> name,
+      Value<String?> scheduledDateLocal,
+      Value<int?> scheduledDayIndex,
+      Value<String> status,
+      Value<String?> revisionId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramWorkoutsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutsTable> {
+  $$ProgramWorkoutsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programWeekId => $composableBuilder(
+    column: $table.programWeekId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get occurrenceRef => $composableBuilder(
+    column: $table.occurrenceRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scheduledDateLocal => $composableBuilder(
+    column: $table.scheduledDateLocal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get scheduledDayIndex => $composableBuilder(
+    column: $table.scheduledDayIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get revisionId => $composableBuilder(
+    column: $table.revisionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramWorkoutsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutsTable> {
+  $$ProgramWorkoutsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programWeekId => $composableBuilder(
+    column: $table.programWeekId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get occurrenceRef => $composableBuilder(
+    column: $table.occurrenceRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scheduledDateLocal => $composableBuilder(
+    column: $table.scheduledDateLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get scheduledDayIndex => $composableBuilder(
+    column: $table.scheduledDayIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get revisionId => $composableBuilder(
+    column: $table.revisionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramWorkoutsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramWorkoutsTable> {
+  $$ProgramWorkoutsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<String> get programWeekId => $composableBuilder(
+    column: $table.programWeekId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get workoutTemplateId => $composableBuilder(
+    column: $table.workoutTemplateId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get occurrenceRef => $composableBuilder(
+    column: $table.occurrenceRef,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get scheduledDateLocal => $composableBuilder(
+    column: $table.scheduledDateLocal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get scheduledDayIndex => $composableBuilder(
+    column: $table.scheduledDayIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get revisionId => $composableBuilder(
+    column: $table.revisionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProgramWorkoutsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramWorkoutsTable,
+          ProgramWorkout,
+          $$ProgramWorkoutsTableFilterComposer,
+          $$ProgramWorkoutsTableOrderingComposer,
+          $$ProgramWorkoutsTableAnnotationComposer,
+          $$ProgramWorkoutsTableCreateCompanionBuilder,
+          $$ProgramWorkoutsTableUpdateCompanionBuilder,
+          (
+            ProgramWorkout,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramWorkoutsTable,
+              ProgramWorkout
+            >,
+          ),
+          ProgramWorkout,
+          PrefetchHooks Function()
+        > {
+  $$ProgramWorkoutsTableTableManager(
+    _$AppDatabase db,
+    $ProgramWorkoutsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramWorkoutsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramWorkoutsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramWorkoutsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<String?> programWeekId = const Value.absent(),
+                Value<String?> workoutTemplateId = const Value.absent(),
+                Value<String> occurrenceRef = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> scheduledDateLocal = const Value.absent(),
+                Value<int?> scheduledDayIndex = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> revisionId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWorkoutsCompanion(
+                id: id,
+                programId: programId,
+                programWeekId: programWeekId,
+                workoutTemplateId: workoutTemplateId,
+                occurrenceRef: occurrenceRef,
+                name: name,
+                scheduledDateLocal: scheduledDateLocal,
+                scheduledDayIndex: scheduledDayIndex,
+                status: status,
+                revisionId: revisionId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programId,
+                Value<String?> programWeekId = const Value.absent(),
+                Value<String?> workoutTemplateId = const Value.absent(),
+                required String occurrenceRef,
+                required String name,
+                Value<String?> scheduledDateLocal = const Value.absent(),
+                Value<int?> scheduledDayIndex = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> revisionId = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramWorkoutsCompanion.insert(
+                id: id,
+                programId: programId,
+                programWeekId: programWeekId,
+                workoutTemplateId: workoutTemplateId,
+                occurrenceRef: occurrenceRef,
+                name: name,
+                scheduledDateLocal: scheduledDateLocal,
+                scheduledDayIndex: scheduledDayIndex,
+                status: status,
+                revisionId: revisionId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramWorkoutsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramWorkoutsTable,
+      ProgramWorkout,
+      $$ProgramWorkoutsTableFilterComposer,
+      $$ProgramWorkoutsTableOrderingComposer,
+      $$ProgramWorkoutsTableAnnotationComposer,
+      $$ProgramWorkoutsTableCreateCompanionBuilder,
+      $$ProgramWorkoutsTableUpdateCompanionBuilder,
+      (
+        ProgramWorkout,
+        BaseReferences<_$AppDatabase, $ProgramWorkoutsTable, ProgramWorkout>,
+      ),
+      ProgramWorkout,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramExercisesTableCreateCompanionBuilder =
+    ProgramExercisesCompanion Function({
+      required String id,
+      required String programWorkoutId,
+      Value<String?> sourceTemplateExerciseId,
+      required int exerciseId,
+      Value<String?> exerciseRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      required int sortOrder,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$ProgramExercisesTableUpdateCompanionBuilder =
+    ProgramExercisesCompanion Function({
+      Value<String> id,
+      Value<String> programWorkoutId,
+      Value<String?> sourceTemplateExerciseId,
+      Value<int> exerciseId,
+      Value<String?> exerciseRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      Value<int> sortOrder,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$ProgramExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramExercisesTable> {
+  $$ProgramExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceTemplateExerciseId => $composableBuilder(
+    column: $table.sourceTemplateExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramExercisesTable> {
+  $$ProgramExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceTemplateExerciseId => $composableBuilder(
+    column: $table.sourceTemplateExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramExercisesTable> {
+  $$ProgramExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceTemplateExerciseId => $composableBuilder(
+    column: $table.sourceTemplateExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$ProgramExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramExercisesTable,
+          ProgramExercise,
+          $$ProgramExercisesTableFilterComposer,
+          $$ProgramExercisesTableOrderingComposer,
+          $$ProgramExercisesTableAnnotationComposer,
+          $$ProgramExercisesTableCreateCompanionBuilder,
+          $$ProgramExercisesTableUpdateCompanionBuilder,
+          (
+            ProgramExercise,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramExercisesTable,
+              ProgramExercise
+            >,
+          ),
+          ProgramExercise,
+          PrefetchHooks Function()
+        > {
+  $$ProgramExercisesTableTableManager(
+    _$AppDatabase db,
+    $ProgramExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramExercisesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramExercisesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramExercisesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programWorkoutId = const Value.absent(),
+                Value<String?> sourceTemplateExerciseId = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramExercisesCompanion(
+                id: id,
+                programWorkoutId: programWorkoutId,
+                sourceTemplateExerciseId: sourceTemplateExerciseId,
+                exerciseId: exerciseId,
+                exerciseRole: exerciseRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programWorkoutId,
+                Value<String?> sourceTemplateExerciseId = const Value.absent(),
+                required int exerciseId,
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                required int sortOrder,
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramExercisesCompanion.insert(
+                id: id,
+                programWorkoutId: programWorkoutId,
+                sourceTemplateExerciseId: sourceTemplateExerciseId,
+                exerciseId: exerciseId,
+                exerciseRole: exerciseRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramExercisesTable,
+      ProgramExercise,
+      $$ProgramExercisesTableFilterComposer,
+      $$ProgramExercisesTableOrderingComposer,
+      $$ProgramExercisesTableAnnotationComposer,
+      $$ProgramExercisesTableCreateCompanionBuilder,
+      $$ProgramExercisesTableUpdateCompanionBuilder,
+      (
+        ProgramExercise,
+        BaseReferences<_$AppDatabase, $ProgramExercisesTable, ProgramExercise>,
+      ),
+      ProgramExercise,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramExerciseSetsTableCreateCompanionBuilder =
+    ProgramExerciseSetsCompanion Function({
+      required String id,
+      required String programExerciseId,
+      Value<String?> sourceTemplateSetId,
+      required int setIndex,
+      required String setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramExerciseSetsTableUpdateCompanionBuilder =
+    ProgramExerciseSetsCompanion Function({
+      Value<String> id,
+      Value<String> programExerciseId,
+      Value<String?> sourceTemplateSetId,
+      Value<int> setIndex,
+      Value<String> setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramExerciseSetsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramExerciseSetsTable> {
+  $$ProgramExerciseSetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programExerciseId => $composableBuilder(
+    column: $table.programExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceTemplateSetId => $composableBuilder(
+    column: $table.sourceTemplateSetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramExerciseSetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramExerciseSetsTable> {
+  $$ProgramExerciseSetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programExerciseId => $composableBuilder(
+    column: $table.programExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceTemplateSetId => $composableBuilder(
+    column: $table.sourceTemplateSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramExerciseSetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramExerciseSetsTable> {
+  $$ProgramExerciseSetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programExerciseId => $composableBuilder(
+    column: $table.programExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceTemplateSetId => $composableBuilder(
+    column: $table.sourceTemplateSetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get setIndex =>
+      $composableBuilder(column: $table.setIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get setType =>
+      $composableBuilder(column: $table.setType, builder: (column) => column);
+
+  GeneratedColumn<String> get setIntent =>
+      $composableBuilder(column: $table.setIntent, builder: (column) => column);
+
+  GeneratedColumn<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rpeMin =>
+      $composableBuilder(column: $table.rpeMin, builder: (column) => column);
+
+  GeneratedColumn<double> get rpeMax =>
+      $composableBuilder(column: $table.rpeMax, builder: (column) => column);
+
+  GeneratedColumn<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ProgramExerciseSetsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramExerciseSetsTable,
+          ProgramExerciseSet,
+          $$ProgramExerciseSetsTableFilterComposer,
+          $$ProgramExerciseSetsTableOrderingComposer,
+          $$ProgramExerciseSetsTableAnnotationComposer,
+          $$ProgramExerciseSetsTableCreateCompanionBuilder,
+          $$ProgramExerciseSetsTableUpdateCompanionBuilder,
+          (
+            ProgramExerciseSet,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramExerciseSetsTable,
+              ProgramExerciseSet
+            >,
+          ),
+          ProgramExerciseSet,
+          PrefetchHooks Function()
+        > {
+  $$ProgramExerciseSetsTableTableManager(
+    _$AppDatabase db,
+    $ProgramExerciseSetsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramExerciseSetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramExerciseSetsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgramExerciseSetsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programExerciseId = const Value.absent(),
+                Value<String?> sourceTemplateSetId = const Value.absent(),
+                Value<int> setIndex = const Value.absent(),
+                Value<String> setType = const Value.absent(),
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramExerciseSetsCompanion(
+                id: id,
+                programExerciseId: programExerciseId,
+                sourceTemplateSetId: sourceTemplateSetId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programExerciseId,
+                Value<String?> sourceTemplateSetId = const Value.absent(),
+                required int setIndex,
+                required String setType,
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramExerciseSetsCompanion.insert(
+                id: id,
+                programExerciseId: programExerciseId,
+                sourceTemplateSetId: sourceTemplateSetId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramExerciseSetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramExerciseSetsTable,
+      ProgramExerciseSet,
+      $$ProgramExerciseSetsTableFilterComposer,
+      $$ProgramExerciseSetsTableOrderingComposer,
+      $$ProgramExerciseSetsTableAnnotationComposer,
+      $$ProgramExerciseSetsTableCreateCompanionBuilder,
+      $$ProgramExerciseSetsTableUpdateCompanionBuilder,
+      (
+        ProgramExerciseSet,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramExerciseSetsTable,
+          ProgramExerciseSet
+        >,
+      ),
+      ProgramExerciseSet,
+      PrefetchHooks Function()
+    >;
+typedef $$SavedWorkoutsTableCreateCompanionBuilder =
+    SavedWorkoutsCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> description,
+      required String source,
+      required String creationMethod,
+      Value<String> status,
+      Value<int?> estimatedDurationMinutes,
+      Value<String> goalTagsJson,
+      Value<String> equipmentJson,
+      Value<String?> aiGenerationSnapshotId,
+      Value<int?> aiOutputSchemaVersion,
+      Value<bool> imported,
+      Value<DateTime?> importedAt,
+      Value<String?> importOrigin,
+      Value<String?> importSourceFileType,
+      Value<String?> importReviewStatus,
+      Value<int?> shareSchemaVersion,
+      Value<String?> externalShareId,
+      Value<String?> exportPrivacyMode,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> archivedAt,
+      Value<int> rowid,
+    });
+typedef $$SavedWorkoutsTableUpdateCompanionBuilder =
+    SavedWorkoutsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> description,
+      Value<String> source,
+      Value<String> creationMethod,
+      Value<String> status,
+      Value<int?> estimatedDurationMinutes,
+      Value<String> goalTagsJson,
+      Value<String> equipmentJson,
+      Value<String?> aiGenerationSnapshotId,
+      Value<int?> aiOutputSchemaVersion,
+      Value<bool> imported,
+      Value<DateTime?> importedAt,
+      Value<String?> importOrigin,
+      Value<String?> importSourceFileType,
+      Value<String?> importReviewStatus,
+      Value<int?> shareSchemaVersion,
+      Value<String?> externalShareId,
+      Value<String?> exportPrivacyMode,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> archivedAt,
+      Value<int> rowid,
+    });
+
+class $$SavedWorkoutsTableFilterComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutsTable> {
+  $$SavedWorkoutsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get imported => $composableBuilder(
+    column: $table.imported,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SavedWorkoutsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutsTable> {
+  $$SavedWorkoutsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get imported => $composableBuilder(
+    column: $table.imported,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SavedWorkoutsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutsTable> {
+  $$SavedWorkoutsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get creationMethod => $composableBuilder(
+    column: $table.creationMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get estimatedDurationMinutes => $composableBuilder(
+    column: $table.estimatedDurationMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get equipmentJson => $composableBuilder(
+    column: $table.equipmentJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get aiOutputSchemaVersion => $composableBuilder(
+    column: $table.aiOutputSchemaVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get imported =>
+      $composableBuilder(column: $table.imported, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importOrigin => $composableBuilder(
+    column: $table.importOrigin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importSourceFileType => $composableBuilder(
+    column: $table.importSourceFileType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get importReviewStatus => $composableBuilder(
+    column: $table.importReviewStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get shareSchemaVersion => $composableBuilder(
+    column: $table.shareSchemaVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get externalShareId => $composableBuilder(
+    column: $table.externalShareId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exportPrivacyMode => $composableBuilder(
+    column: $table.exportPrivacyMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get archivedAt => $composableBuilder(
+    column: $table.archivedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$SavedWorkoutsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SavedWorkoutsTable,
+          SavedWorkout,
+          $$SavedWorkoutsTableFilterComposer,
+          $$SavedWorkoutsTableOrderingComposer,
+          $$SavedWorkoutsTableAnnotationComposer,
+          $$SavedWorkoutsTableCreateCompanionBuilder,
+          $$SavedWorkoutsTableUpdateCompanionBuilder,
+          (
+            SavedWorkout,
+            BaseReferences<_$AppDatabase, $SavedWorkoutsTable, SavedWorkout>,
+          ),
+          SavedWorkout,
+          PrefetchHooks Function()
+        > {
+  $$SavedWorkoutsTableTableManager(_$AppDatabase db, $SavedWorkoutsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SavedWorkoutsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SavedWorkoutsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SavedWorkoutsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> creationMethod = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<String> goalTagsJson = const Value.absent(),
+                Value<String> equipmentJson = const Value.absent(),
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                Value<int?> aiOutputSchemaVersion = const Value.absent(),
+                Value<bool> imported = const Value.absent(),
+                Value<DateTime?> importedAt = const Value.absent(),
+                Value<String?> importOrigin = const Value.absent(),
+                Value<String?> importSourceFileType = const Value.absent(),
+                Value<String?> importReviewStatus = const Value.absent(),
+                Value<int?> shareSchemaVersion = const Value.absent(),
+                Value<String?> externalShareId = const Value.absent(),
+                Value<String?> exportPrivacyMode = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> archivedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutsCompanion(
+                id: id,
+                name: name,
+                description: description,
+                source: source,
+                creationMethod: creationMethod,
+                status: status,
+                estimatedDurationMinutes: estimatedDurationMinutes,
+                goalTagsJson: goalTagsJson,
+                equipmentJson: equipmentJson,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                aiOutputSchemaVersion: aiOutputSchemaVersion,
+                imported: imported,
+                importedAt: importedAt,
+                importOrigin: importOrigin,
+                importSourceFileType: importSourceFileType,
+                importReviewStatus: importReviewStatus,
+                shareSchemaVersion: shareSchemaVersion,
+                externalShareId: externalShareId,
+                exportPrivacyMode: exportPrivacyMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                archivedAt: archivedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> description = const Value.absent(),
+                required String source,
+                required String creationMethod,
+                Value<String> status = const Value.absent(),
+                Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<String> goalTagsJson = const Value.absent(),
+                Value<String> equipmentJson = const Value.absent(),
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                Value<int?> aiOutputSchemaVersion = const Value.absent(),
+                Value<bool> imported = const Value.absent(),
+                Value<DateTime?> importedAt = const Value.absent(),
+                Value<String?> importOrigin = const Value.absent(),
+                Value<String?> importSourceFileType = const Value.absent(),
+                Value<String?> importReviewStatus = const Value.absent(),
+                Value<int?> shareSchemaVersion = const Value.absent(),
+                Value<String?> externalShareId = const Value.absent(),
+                Value<String?> exportPrivacyMode = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> archivedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutsCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                source: source,
+                creationMethod: creationMethod,
+                status: status,
+                estimatedDurationMinutes: estimatedDurationMinutes,
+                goalTagsJson: goalTagsJson,
+                equipmentJson: equipmentJson,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                aiOutputSchemaVersion: aiOutputSchemaVersion,
+                imported: imported,
+                importedAt: importedAt,
+                importOrigin: importOrigin,
+                importSourceFileType: importSourceFileType,
+                importReviewStatus: importReviewStatus,
+                shareSchemaVersion: shareSchemaVersion,
+                externalShareId: externalShareId,
+                exportPrivacyMode: exportPrivacyMode,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                archivedAt: archivedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SavedWorkoutsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SavedWorkoutsTable,
+      SavedWorkout,
+      $$SavedWorkoutsTableFilterComposer,
+      $$SavedWorkoutsTableOrderingComposer,
+      $$SavedWorkoutsTableAnnotationComposer,
+      $$SavedWorkoutsTableCreateCompanionBuilder,
+      $$SavedWorkoutsTableUpdateCompanionBuilder,
+      (
+        SavedWorkout,
+        BaseReferences<_$AppDatabase, $SavedWorkoutsTable, SavedWorkout>,
+      ),
+      SavedWorkout,
+      PrefetchHooks Function()
+    >;
+typedef $$SavedWorkoutExercisesTableCreateCompanionBuilder =
+    SavedWorkoutExercisesCompanion Function({
+      required String id,
+      required String savedWorkoutId,
+      required int exerciseId,
+      Value<String?> exerciseRef,
+      Value<String?> exerciseRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      required int sortOrder,
+      Value<String?> notes,
+      Value<String?> cuesJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$SavedWorkoutExercisesTableUpdateCompanionBuilder =
+    SavedWorkoutExercisesCompanion Function({
+      Value<String> id,
+      Value<String> savedWorkoutId,
+      Value<int> exerciseId,
+      Value<String?> exerciseRef,
+      Value<String?> exerciseRole,
+      Value<String?> supersetGroupId,
+      Value<int?> supersetOrder,
+      Value<int> sortOrder,
+      Value<String?> notes,
+      Value<String?> cuesJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$SavedWorkoutExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExercisesTable> {
+  $$SavedWorkoutExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cuesJson => $composableBuilder(
+    column: $table.cuesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SavedWorkoutExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExercisesTable> {
+  $$SavedWorkoutExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cuesJson => $composableBuilder(
+    column: $table.cuesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SavedWorkoutExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExercisesTable> {
+  $$SavedWorkoutExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseRef => $composableBuilder(
+    column: $table.exerciseRef,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseRole => $composableBuilder(
+    column: $table.exerciseRole,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get supersetOrder => $composableBuilder(
+    column: $table.supersetOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get cuesJson =>
+      $composableBuilder(column: $table.cuesJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$SavedWorkoutExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SavedWorkoutExercisesTable,
+          SavedWorkoutExercise,
+          $$SavedWorkoutExercisesTableFilterComposer,
+          $$SavedWorkoutExercisesTableOrderingComposer,
+          $$SavedWorkoutExercisesTableAnnotationComposer,
+          $$SavedWorkoutExercisesTableCreateCompanionBuilder,
+          $$SavedWorkoutExercisesTableUpdateCompanionBuilder,
+          (
+            SavedWorkoutExercise,
+            BaseReferences<
+              _$AppDatabase,
+              $SavedWorkoutExercisesTable,
+              SavedWorkoutExercise
+            >,
+          ),
+          SavedWorkoutExercise,
+          PrefetchHooks Function()
+        > {
+  $$SavedWorkoutExercisesTableTableManager(
+    _$AppDatabase db,
+    $SavedWorkoutExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SavedWorkoutExercisesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SavedWorkoutExercisesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SavedWorkoutExercisesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> savedWorkoutId = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> cuesJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutExercisesCompanion(
+                id: id,
+                savedWorkoutId: savedWorkoutId,
+                exerciseId: exerciseId,
+                exerciseRef: exerciseRef,
+                exerciseRole: exerciseRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                cuesJson: cuesJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String savedWorkoutId,
+                required int exerciseId,
+                Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> exerciseRole = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<int?> supersetOrder = const Value.absent(),
+                required int sortOrder,
+                Value<String?> notes = const Value.absent(),
+                Value<String?> cuesJson = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutExercisesCompanion.insert(
+                id: id,
+                savedWorkoutId: savedWorkoutId,
+                exerciseId: exerciseId,
+                exerciseRef: exerciseRef,
+                exerciseRole: exerciseRole,
+                supersetGroupId: supersetGroupId,
+                supersetOrder: supersetOrder,
+                sortOrder: sortOrder,
+                notes: notes,
+                cuesJson: cuesJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SavedWorkoutExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SavedWorkoutExercisesTable,
+      SavedWorkoutExercise,
+      $$SavedWorkoutExercisesTableFilterComposer,
+      $$SavedWorkoutExercisesTableOrderingComposer,
+      $$SavedWorkoutExercisesTableAnnotationComposer,
+      $$SavedWorkoutExercisesTableCreateCompanionBuilder,
+      $$SavedWorkoutExercisesTableUpdateCompanionBuilder,
+      (
+        SavedWorkoutExercise,
+        BaseReferences<
+          _$AppDatabase,
+          $SavedWorkoutExercisesTable,
+          SavedWorkoutExercise
+        >,
+      ),
+      SavedWorkoutExercise,
+      PrefetchHooks Function()
+    >;
+typedef $$SavedWorkoutExerciseSetsTableCreateCompanionBuilder =
+    SavedWorkoutExerciseSetsCompanion Function({
+      required String id,
+      required String savedWorkoutExerciseId,
+      required int setIndex,
+      required String setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$SavedWorkoutExerciseSetsTableUpdateCompanionBuilder =
+    SavedWorkoutExerciseSetsCompanion Function({
+      Value<String> id,
+      Value<String> savedWorkoutExerciseId,
+      Value<int> setIndex,
+      Value<String> setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
+      Value<int?> durationSeconds,
+      Value<double?> distanceMeters,
+      Value<String?> weightPrescriptionType,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedWeightPct1rm,
+      Value<double?> prescribedWeightPctWorking,
+      Value<double?> bodyweightMultiplier,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> restSeconds,
+      Value<String?> loadingModel,
+      Value<double?> percent1rmMin,
+      Value<double?> percent1rmMax,
+      Value<double?> rpeMin,
+      Value<double?> rpeMax,
+      Value<String?> loadSelectionNote,
+      Value<bool> isCalibrationEstimate,
+      Value<int?> derivedFromWorkingSetIndex,
+      Value<String?> warmupWeightRuleJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$SavedWorkoutExerciseSetsTableFilterComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExerciseSetsTable> {
+  $$SavedWorkoutExerciseSetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get savedWorkoutExerciseId => $composableBuilder(
+    column: $table.savedWorkoutExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SavedWorkoutExerciseSetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExerciseSetsTable> {
+  $$SavedWorkoutExerciseSetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get savedWorkoutExerciseId => $composableBuilder(
+    column: $table.savedWorkoutExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMin => $composableBuilder(
+    column: $table.rpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rpeMax => $composableBuilder(
+    column: $table.rpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SavedWorkoutExerciseSetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SavedWorkoutExerciseSetsTable> {
+  $$SavedWorkoutExerciseSetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get savedWorkoutExerciseId => $composableBuilder(
+    column: $table.savedWorkoutExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get setIndex =>
+      $composableBuilder(column: $table.setIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get setType =>
+      $composableBuilder(column: $table.setType, builder: (column) => column);
+
+  GeneratedColumn<String> get setIntent =>
+      $composableBuilder(column: $table.setIntent, builder: (column) => column);
+
+  GeneratedColumn<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get distanceMeters => $composableBuilder(
+    column: $table.distanceMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get weightPrescriptionType => $composableBuilder(
+    column: $table.weightPrescriptionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPct1rm => $composableBuilder(
+    column: $table.prescribedWeightPct1rm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightPctWorking => $composableBuilder(
+    column: $table.prescribedWeightPctWorking,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightMultiplier => $composableBuilder(
+    column: $table.bodyweightMultiplier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get loadingModel => $composableBuilder(
+    column: $table.loadingModel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMin => $composableBuilder(
+    column: $table.percent1rmMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get percent1rmMax => $composableBuilder(
+    column: $table.percent1rmMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rpeMin =>
+      $composableBuilder(column: $table.rpeMin, builder: (column) => column);
+
+  GeneratedColumn<double> get rpeMax =>
+      $composableBuilder(column: $table.rpeMax, builder: (column) => column);
+
+  GeneratedColumn<String> get loadSelectionNote => $composableBuilder(
+    column: $table.loadSelectionNote,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCalibrationEstimate => $composableBuilder(
+    column: $table.isCalibrationEstimate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get derivedFromWorkingSetIndex => $composableBuilder(
+    column: $table.derivedFromWorkingSetIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get warmupWeightRuleJson => $composableBuilder(
+    column: $table.warmupWeightRuleJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$SavedWorkoutExerciseSetsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SavedWorkoutExerciseSetsTable,
+          SavedWorkoutExerciseSet,
+          $$SavedWorkoutExerciseSetsTableFilterComposer,
+          $$SavedWorkoutExerciseSetsTableOrderingComposer,
+          $$SavedWorkoutExerciseSetsTableAnnotationComposer,
+          $$SavedWorkoutExerciseSetsTableCreateCompanionBuilder,
+          $$SavedWorkoutExerciseSetsTableUpdateCompanionBuilder,
+          (
+            SavedWorkoutExerciseSet,
+            BaseReferences<
+              _$AppDatabase,
+              $SavedWorkoutExerciseSetsTable,
+              SavedWorkoutExerciseSet
+            >,
+          ),
+          SavedWorkoutExerciseSet,
+          PrefetchHooks Function()
+        > {
+  $$SavedWorkoutExerciseSetsTableTableManager(
+    _$AppDatabase db,
+    $SavedWorkoutExerciseSetsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SavedWorkoutExerciseSetsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SavedWorkoutExerciseSetsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SavedWorkoutExerciseSetsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> savedWorkoutExerciseId = const Value.absent(),
+                Value<int> setIndex = const Value.absent(),
+                Value<String> setType = const Value.absent(),
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutExerciseSetsCompanion(
+                id: id,
+                savedWorkoutExerciseId: savedWorkoutExerciseId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String savedWorkoutExerciseId,
+                required int setIndex,
+                required String setType,
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<double?> distanceMeters = const Value.absent(),
+                Value<String?> weightPrescriptionType = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedWeightPct1rm = const Value.absent(),
+                Value<double?> prescribedWeightPctWorking =
+                    const Value.absent(),
+                Value<double?> bodyweightMultiplier = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
+                Value<String?> loadingModel = const Value.absent(),
+                Value<double?> percent1rmMin = const Value.absent(),
+                Value<double?> percent1rmMax = const Value.absent(),
+                Value<double?> rpeMin = const Value.absent(),
+                Value<double?> rpeMax = const Value.absent(),
+                Value<String?> loadSelectionNote = const Value.absent(),
+                Value<bool> isCalibrationEstimate = const Value.absent(),
+                Value<int?> derivedFromWorkingSetIndex = const Value.absent(),
+                Value<String?> warmupWeightRuleJson = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SavedWorkoutExerciseSetsCompanion.insert(
+                id: id,
+                savedWorkoutExerciseId: savedWorkoutExerciseId,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
+                durationSeconds: durationSeconds,
+                distanceMeters: distanceMeters,
+                weightPrescriptionType: weightPrescriptionType,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedWeightPct1rm: prescribedWeightPct1rm,
+                prescribedWeightPctWorking: prescribedWeightPctWorking,
+                bodyweightMultiplier: bodyweightMultiplier,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                restSeconds: restSeconds,
+                loadingModel: loadingModel,
+                percent1rmMin: percent1rmMin,
+                percent1rmMax: percent1rmMax,
+                rpeMin: rpeMin,
+                rpeMax: rpeMax,
+                loadSelectionNote: loadSelectionNote,
+                isCalibrationEstimate: isCalibrationEstimate,
+                derivedFromWorkingSetIndex: derivedFromWorkingSetIndex,
+                warmupWeightRuleJson: warmupWeightRuleJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SavedWorkoutExerciseSetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SavedWorkoutExerciseSetsTable,
+      SavedWorkoutExerciseSet,
+      $$SavedWorkoutExerciseSetsTableFilterComposer,
+      $$SavedWorkoutExerciseSetsTableOrderingComposer,
+      $$SavedWorkoutExerciseSetsTableAnnotationComposer,
+      $$SavedWorkoutExerciseSetsTableCreateCompanionBuilder,
+      $$SavedWorkoutExerciseSetsTableUpdateCompanionBuilder,
+      (
+        SavedWorkoutExerciseSet,
+        BaseReferences<
+          _$AppDatabase,
+          $SavedWorkoutExerciseSetsTable,
+          SavedWorkoutExerciseSet
+        >,
+      ),
+      SavedWorkoutExerciseSet,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkoutSessionsTableCreateCompanionBuilder =
+    WorkoutSessionsCompanion Function({
+      required String id,
+      required String source,
+      Value<String?> programId,
+      Value<String?> programWorkoutId,
+      Value<String?> savedWorkoutId,
+      required String name,
+      required DateTime startedAt,
+      Value<DateTime?> completedAt,
+      Value<int?> durationSeconds,
+      required String status,
+      Value<double?> bodyweightKgAtSession,
+      Value<String?> notes,
+      Value<int?> energyLevel,
+      Value<int?> perceivedDifficulty,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$WorkoutSessionsTableUpdateCompanionBuilder =
+    WorkoutSessionsCompanion Function({
+      Value<String> id,
+      Value<String> source,
+      Value<String?> programId,
+      Value<String?> programWorkoutId,
+      Value<String?> savedWorkoutId,
+      Value<String> name,
+      Value<DateTime> startedAt,
+      Value<DateTime?> completedAt,
+      Value<int?> durationSeconds,
+      Value<String> status,
+      Value<double?> bodyweightKgAtSession,
+      Value<String?> notes,
+      Value<int?> energyLevel,
+      Value<int?> perceivedDifficulty,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$WorkoutSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionsTable> {
+  $$WorkoutSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKgAtSession => $composableBuilder(
+    column: $table.bodyweightKgAtSession,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get energyLevel => $composableBuilder(
+    column: $table.energyLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get perceivedDifficulty => $composableBuilder(
+    column: $table.perceivedDifficulty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkoutSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionsTable> {
+  $$WorkoutSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKgAtSession => $composableBuilder(
+    column: $table.bodyweightKgAtSession,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get energyLevel => $composableBuilder(
+    column: $table.energyLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get perceivedDifficulty => $composableBuilder(
+    column: $table.perceivedDifficulty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkoutSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionsTable> {
+  $$WorkoutSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<String> get programWorkoutId => $composableBuilder(
+    column: $table.programWorkoutId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get savedWorkoutId => $composableBuilder(
+    column: $table.savedWorkoutId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<double> get bodyweightKgAtSession => $composableBuilder(
+    column: $table.bodyweightKgAtSession,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get energyLevel => $composableBuilder(
+    column: $table.energyLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get perceivedDifficulty => $composableBuilder(
+    column: $table.perceivedDifficulty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$WorkoutSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkoutSessionsTable,
+          WorkoutSession,
+          $$WorkoutSessionsTableFilterComposer,
+          $$WorkoutSessionsTableOrderingComposer,
+          $$WorkoutSessionsTableAnnotationComposer,
+          $$WorkoutSessionsTableCreateCompanionBuilder,
+          $$WorkoutSessionsTableUpdateCompanionBuilder,
+          (
+            WorkoutSession,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkoutSessionsTable,
+              WorkoutSession
+            >,
+          ),
+          WorkoutSession,
+          PrefetchHooks Function()
+        > {
+  $$WorkoutSessionsTableTableManager(
+    _$AppDatabase db,
+    $WorkoutSessionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkoutSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkoutSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkoutSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> programId = const Value.absent(),
+                Value<String?> programWorkoutId = const Value.absent(),
+                Value<String?> savedWorkoutId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<double?> bodyweightKgAtSession = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int?> energyLevel = const Value.absent(),
+                Value<int?> perceivedDifficulty = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionsCompanion(
+                id: id,
+                source: source,
+                programId: programId,
+                programWorkoutId: programWorkoutId,
+                savedWorkoutId: savedWorkoutId,
+                name: name,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                durationSeconds: durationSeconds,
+                status: status,
+                bodyweightKgAtSession: bodyweightKgAtSession,
+                notes: notes,
+                energyLevel: energyLevel,
+                perceivedDifficulty: perceivedDifficulty,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String source,
+                Value<String?> programId = const Value.absent(),
+                Value<String?> programWorkoutId = const Value.absent(),
+                Value<String?> savedWorkoutId = const Value.absent(),
+                required String name,
+                required DateTime startedAt,
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                required String status,
+                Value<double?> bodyweightKgAtSession = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int?> energyLevel = const Value.absent(),
+                Value<int?> perceivedDifficulty = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionsCompanion.insert(
+                id: id,
+                source: source,
+                programId: programId,
+                programWorkoutId: programWorkoutId,
+                savedWorkoutId: savedWorkoutId,
+                name: name,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                durationSeconds: durationSeconds,
+                status: status,
+                bodyweightKgAtSession: bodyweightKgAtSession,
+                notes: notes,
+                energyLevel: energyLevel,
+                perceivedDifficulty: perceivedDifficulty,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkoutSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkoutSessionsTable,
+      WorkoutSession,
+      $$WorkoutSessionsTableFilterComposer,
+      $$WorkoutSessionsTableOrderingComposer,
+      $$WorkoutSessionsTableAnnotationComposer,
+      $$WorkoutSessionsTableCreateCompanionBuilder,
+      $$WorkoutSessionsTableUpdateCompanionBuilder,
+      (
+        WorkoutSession,
+        BaseReferences<_$AppDatabase, $WorkoutSessionsTable, WorkoutSession>,
+      ),
+      WorkoutSession,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkoutSessionExercisesTableCreateCompanionBuilder =
+    WorkoutSessionExercisesCompanion Function({
+      required String id,
+      required String workoutSessionId,
+      Value<String?> sourceProgramExerciseId,
+      Value<String?> sourceSavedWorkoutExerciseId,
+      required int exerciseId,
+      required String exerciseNameSnapshot,
+      required int sortOrder,
+      Value<String?> supersetGroupId,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$WorkoutSessionExercisesTableUpdateCompanionBuilder =
+    WorkoutSessionExercisesCompanion Function({
+      Value<String> id,
+      Value<String> workoutSessionId,
+      Value<String?> sourceProgramExerciseId,
+      Value<String?> sourceSavedWorkoutExerciseId,
+      Value<int> exerciseId,
+      Value<String> exerciseNameSnapshot,
+      Value<int> sortOrder,
+      Value<String?> supersetGroupId,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$WorkoutSessionExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionExercisesTable> {
+  $$WorkoutSessionExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workoutSessionId => $composableBuilder(
+    column: $table.workoutSessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceProgramExerciseId => $composableBuilder(
+    column: $table.sourceProgramExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceSavedWorkoutExerciseId => $composableBuilder(
+    column: $table.sourceSavedWorkoutExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseNameSnapshot => $composableBuilder(
+    column: $table.exerciseNameSnapshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkoutSessionExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionExercisesTable> {
+  $$WorkoutSessionExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workoutSessionId => $composableBuilder(
+    column: $table.workoutSessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceProgramExerciseId => $composableBuilder(
+    column: $table.sourceProgramExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceSavedWorkoutExerciseId =>
+      $composableBuilder(
+        column: $table.sourceSavedWorkoutExerciseId,
+        builder: (column) => ColumnOrderings(column),
+      );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseNameSnapshot => $composableBuilder(
+    column: $table.exerciseNameSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkoutSessionExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkoutSessionExercisesTable> {
+  $$WorkoutSessionExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workoutSessionId => $composableBuilder(
+    column: $table.workoutSessionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceProgramExerciseId => $composableBuilder(
+    column: $table.sourceProgramExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceSavedWorkoutExerciseId =>
+      $composableBuilder(
+        column: $table.sourceSavedWorkoutExerciseId,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get exerciseNameSnapshot => $composableBuilder(
+    column: $table.exerciseNameSnapshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get supersetGroupId => $composableBuilder(
+    column: $table.supersetGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$WorkoutSessionExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkoutSessionExercisesTable,
+          WorkoutSessionExercise,
+          $$WorkoutSessionExercisesTableFilterComposer,
+          $$WorkoutSessionExercisesTableOrderingComposer,
+          $$WorkoutSessionExercisesTableAnnotationComposer,
+          $$WorkoutSessionExercisesTableCreateCompanionBuilder,
+          $$WorkoutSessionExercisesTableUpdateCompanionBuilder,
+          (
+            WorkoutSessionExercise,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkoutSessionExercisesTable,
+              WorkoutSessionExercise
+            >,
+          ),
+          WorkoutSessionExercise,
+          PrefetchHooks Function()
+        > {
+  $$WorkoutSessionExercisesTableTableManager(
+    _$AppDatabase db,
+    $WorkoutSessionExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkoutSessionExercisesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$WorkoutSessionExercisesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WorkoutSessionExercisesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workoutSessionId = const Value.absent(),
+                Value<String?> sourceProgramExerciseId = const Value.absent(),
+                Value<String?> sourceSavedWorkoutExerciseId =
+                    const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String> exerciseNameSnapshot = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionExercisesCompanion(
+                id: id,
+                workoutSessionId: workoutSessionId,
+                sourceProgramExerciseId: sourceProgramExerciseId,
+                sourceSavedWorkoutExerciseId: sourceSavedWorkoutExerciseId,
+                exerciseId: exerciseId,
+                exerciseNameSnapshot: exerciseNameSnapshot,
+                sortOrder: sortOrder,
+                supersetGroupId: supersetGroupId,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workoutSessionId,
+                Value<String?> sourceProgramExerciseId = const Value.absent(),
+                Value<String?> sourceSavedWorkoutExerciseId =
+                    const Value.absent(),
+                required int exerciseId,
+                required String exerciseNameSnapshot,
+                required int sortOrder,
+                Value<String?> supersetGroupId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionExercisesCompanion.insert(
+                id: id,
+                workoutSessionId: workoutSessionId,
+                sourceProgramExerciseId: sourceProgramExerciseId,
+                sourceSavedWorkoutExerciseId: sourceSavedWorkoutExerciseId,
+                exerciseId: exerciseId,
+                exerciseNameSnapshot: exerciseNameSnapshot,
+                sortOrder: sortOrder,
+                supersetGroupId: supersetGroupId,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkoutSessionExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkoutSessionExercisesTable,
+      WorkoutSessionExercise,
+      $$WorkoutSessionExercisesTableFilterComposer,
+      $$WorkoutSessionExercisesTableOrderingComposer,
+      $$WorkoutSessionExercisesTableAnnotationComposer,
+      $$WorkoutSessionExercisesTableCreateCompanionBuilder,
+      $$WorkoutSessionExercisesTableUpdateCompanionBuilder,
+      (
+        WorkoutSessionExercise,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkoutSessionExercisesTable,
+          WorkoutSessionExercise
+        >,
+      ),
+      WorkoutSessionExercise,
+      PrefetchHooks Function()
+    >;
+typedef $$SetLogsTableCreateCompanionBuilder =
+    SetLogsCompanion Function({
+      required String id,
+      required String workoutSessionExerciseId,
+      required int exerciseId,
+      required DateTime performedAt,
+      required int setIndex,
+      Value<String> setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> actualReps,
+      Value<double?> actualWeightKg,
+      Value<int?> actualDurationSeconds,
+      Value<double?> actualDistanceMeters,
+      Value<double?> actualRpe,
+      Value<int?> actualRir,
+      Value<bool> completed,
+      Value<bool> skipped,
+      Value<bool> isPr,
+      Value<double?> estimated1rmKg,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SetLogsTableUpdateCompanionBuilder =
+    SetLogsCompanion Function({
+      Value<String> id,
+      Value<String> workoutSessionExerciseId,
+      Value<int> exerciseId,
+      Value<DateTime> performedAt,
+      Value<int> setIndex,
+      Value<String> setType,
+      Value<String?> setIntent,
+      Value<int?> prescribedRepsMin,
+      Value<int?> prescribedRepsMax,
+      Value<double?> prescribedWeightKg,
+      Value<double?> prescribedRpeMin,
+      Value<double?> prescribedRpeMax,
+      Value<int?> actualReps,
+      Value<double?> actualWeightKg,
+      Value<int?> actualDurationSeconds,
+      Value<double?> actualDistanceMeters,
+      Value<double?> actualRpe,
+      Value<int?> actualRir,
+      Value<bool> completed,
+      Value<bool> skipped,
+      Value<bool> isPr,
+      Value<double?> estimated1rmKg,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SetLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $SetLogsTable> {
+  $$SetLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workoutSessionExerciseId => $composableBuilder(
+    column: $table.workoutSessionExerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get performedAt => $composableBuilder(
+    column: $table.performedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get actualReps => $composableBuilder(
+    column: $table.actualReps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualWeightKg => $composableBuilder(
+    column: $table.actualWeightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get actualDurationSeconds => $composableBuilder(
+    column: $table.actualDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualDistanceMeters => $composableBuilder(
+    column: $table.actualDistanceMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualRpe => $composableBuilder(
+    column: $table.actualRpe,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get actualRir => $composableBuilder(
+    column: $table.actualRir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get skipped => $composableBuilder(
+    column: $table.skipped,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPr => $composableBuilder(
+    column: $table.isPr,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get estimated1rmKg => $composableBuilder(
+    column: $table.estimated1rmKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SetLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SetLogsTable> {
+  $$SetLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workoutSessionExerciseId => $composableBuilder(
+    column: $table.workoutSessionExerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get performedAt => $composableBuilder(
+    column: $table.performedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get setIndex => $composableBuilder(
+    column: $table.setIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setType => $composableBuilder(
+    column: $table.setType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get setIntent => $composableBuilder(
+    column: $table.setIntent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get actualReps => $composableBuilder(
+    column: $table.actualReps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualWeightKg => $composableBuilder(
+    column: $table.actualWeightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get actualDurationSeconds => $composableBuilder(
+    column: $table.actualDurationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualDistanceMeters => $composableBuilder(
+    column: $table.actualDistanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualRpe => $composableBuilder(
+    column: $table.actualRpe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get actualRir => $composableBuilder(
+    column: $table.actualRir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get skipped => $composableBuilder(
+    column: $table.skipped,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPr => $composableBuilder(
+    column: $table.isPr,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get estimated1rmKg => $composableBuilder(
+    column: $table.estimated1rmKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SetLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SetLogsTable> {
+  $$SetLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workoutSessionExerciseId => $composableBuilder(
+    column: $table.workoutSessionExerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get performedAt => $composableBuilder(
+    column: $table.performedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get setIndex =>
+      $composableBuilder(column: $table.setIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get setType =>
+      $composableBuilder(column: $table.setType, builder: (column) => column);
+
+  GeneratedColumn<String> get setIntent =>
+      $composableBuilder(column: $table.setIntent, builder: (column) => column);
+
+  GeneratedColumn<int> get prescribedRepsMin => $composableBuilder(
+    column: $table.prescribedRepsMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedRepsMax => $composableBuilder(
+    column: $table.prescribedRepsMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedWeightKg => $composableBuilder(
+    column: $table.prescribedWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMin => $composableBuilder(
+    column: $table.prescribedRpeMin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedRpeMax => $composableBuilder(
+    column: $table.prescribedRpeMax,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get actualReps => $composableBuilder(
+    column: $table.actualReps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get actualWeightKg => $composableBuilder(
+    column: $table.actualWeightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get actualDurationSeconds => $composableBuilder(
+    column: $table.actualDurationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get actualDistanceMeters => $composableBuilder(
+    column: $table.actualDistanceMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get actualRpe =>
+      $composableBuilder(column: $table.actualRpe, builder: (column) => column);
+
+  GeneratedColumn<int> get actualRir =>
+      $composableBuilder(column: $table.actualRir, builder: (column) => column);
+
+  GeneratedColumn<bool> get completed =>
+      $composableBuilder(column: $table.completed, builder: (column) => column);
+
+  GeneratedColumn<bool> get skipped =>
+      $composableBuilder(column: $table.skipped, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPr =>
+      $composableBuilder(column: $table.isPr, builder: (column) => column);
+
+  GeneratedColumn<double> get estimated1rmKg => $composableBuilder(
+    column: $table.estimated1rmKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SetLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SetLogsTable,
+          SetLog,
+          $$SetLogsTableFilterComposer,
+          $$SetLogsTableOrderingComposer,
+          $$SetLogsTableAnnotationComposer,
+          $$SetLogsTableCreateCompanionBuilder,
+          $$SetLogsTableUpdateCompanionBuilder,
+          (SetLog, BaseReferences<_$AppDatabase, $SetLogsTable, SetLog>),
+          SetLog,
+          PrefetchHooks Function()
+        > {
+  $$SetLogsTableTableManager(_$AppDatabase db, $SetLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SetLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SetLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SetLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workoutSessionExerciseId = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<DateTime> performedAt = const Value.absent(),
+                Value<int> setIndex = const Value.absent(),
+                Value<String> setType = const Value.absent(),
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> actualReps = const Value.absent(),
+                Value<double?> actualWeightKg = const Value.absent(),
+                Value<int?> actualDurationSeconds = const Value.absent(),
+                Value<double?> actualDistanceMeters = const Value.absent(),
+                Value<double?> actualRpe = const Value.absent(),
+                Value<int?> actualRir = const Value.absent(),
+                Value<bool> completed = const Value.absent(),
+                Value<bool> skipped = const Value.absent(),
+                Value<bool> isPr = const Value.absent(),
+                Value<double?> estimated1rmKg = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SetLogsCompanion(
+                id: id,
+                workoutSessionExerciseId: workoutSessionExerciseId,
+                exerciseId: exerciseId,
+                performedAt: performedAt,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                actualReps: actualReps,
+                actualWeightKg: actualWeightKg,
+                actualDurationSeconds: actualDurationSeconds,
+                actualDistanceMeters: actualDistanceMeters,
+                actualRpe: actualRpe,
+                actualRir: actualRir,
+                completed: completed,
+                skipped: skipped,
+                isPr: isPr,
+                estimated1rmKg: estimated1rmKg,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workoutSessionExerciseId,
+                required int exerciseId,
+                required DateTime performedAt,
+                required int setIndex,
+                Value<String> setType = const Value.absent(),
+                Value<String?> setIntent = const Value.absent(),
+                Value<int?> prescribedRepsMin = const Value.absent(),
+                Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<double?> prescribedWeightKg = const Value.absent(),
+                Value<double?> prescribedRpeMin = const Value.absent(),
+                Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> actualReps = const Value.absent(),
+                Value<double?> actualWeightKg = const Value.absent(),
+                Value<int?> actualDurationSeconds = const Value.absent(),
+                Value<double?> actualDistanceMeters = const Value.absent(),
+                Value<double?> actualRpe = const Value.absent(),
+                Value<int?> actualRir = const Value.absent(),
+                Value<bool> completed = const Value.absent(),
+                Value<bool> skipped = const Value.absent(),
+                Value<bool> isPr = const Value.absent(),
+                Value<double?> estimated1rmKg = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SetLogsCompanion.insert(
+                id: id,
+                workoutSessionExerciseId: workoutSessionExerciseId,
+                exerciseId: exerciseId,
+                performedAt: performedAt,
+                setIndex: setIndex,
+                setType: setType,
+                setIntent: setIntent,
+                prescribedRepsMin: prescribedRepsMin,
+                prescribedRepsMax: prescribedRepsMax,
+                prescribedWeightKg: prescribedWeightKg,
+                prescribedRpeMin: prescribedRpeMin,
+                prescribedRpeMax: prescribedRpeMax,
+                actualReps: actualReps,
+                actualWeightKg: actualWeightKg,
+                actualDurationSeconds: actualDurationSeconds,
+                actualDistanceMeters: actualDistanceMeters,
+                actualRpe: actualRpe,
+                actualRir: actualRir,
+                completed: completed,
+                skipped: skipped,
+                isPr: isPr,
+                estimated1rmKg: estimated1rmKg,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SetLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SetLogsTable,
+      SetLog,
+      $$SetLogsTableFilterComposer,
+      $$SetLogsTableOrderingComposer,
+      $$SetLogsTableAnnotationComposer,
+      $$SetLogsTableCreateCompanionBuilder,
+      $$SetLogsTableUpdateCompanionBuilder,
+      (SetLog, BaseReferences<_$AppDatabase, $SetLogsTable, SetLog>),
+      SetLog,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramRevisionsTableCreateCompanionBuilder =
+    ProgramRevisionsCompanion Function({
+      required String id,
+      required String programId,
+      required int revisionNumber,
+      required String changeType,
+      Value<String?> updateScope,
+      Value<String?> affectedRefsJson,
+      required String summary,
+      Value<String?> aiGenerationSnapshotId,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramRevisionsTableUpdateCompanionBuilder =
+    ProgramRevisionsCompanion Function({
+      Value<String> id,
+      Value<String> programId,
+      Value<int> revisionNumber,
+      Value<String> changeType,
+      Value<String?> updateScope,
+      Value<String?> affectedRefsJson,
+      Value<String> summary,
+      Value<String?> aiGenerationSnapshotId,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramRevisionsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramRevisionsTable> {
+  $$ProgramRevisionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revisionNumber => $composableBuilder(
+    column: $table.revisionNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updateScope => $composableBuilder(
+    column: $table.updateScope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get affectedRefsJson => $composableBuilder(
+    column: $table.affectedRefsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramRevisionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramRevisionsTable> {
+  $$ProgramRevisionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revisionNumber => $composableBuilder(
+    column: $table.revisionNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updateScope => $composableBuilder(
+    column: $table.updateScope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get affectedRefsJson => $composableBuilder(
+    column: $table.affectedRefsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramRevisionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramRevisionsTable> {
+  $$ProgramRevisionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<int> get revisionNumber => $composableBuilder(
+    column: $table.revisionNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get updateScope => $composableBuilder(
+    column: $table.updateScope,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get affectedRefsJson => $composableBuilder(
+    column: $table.affectedRefsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<String> get aiGenerationSnapshotId => $composableBuilder(
+    column: $table.aiGenerationSnapshotId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ProgramRevisionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramRevisionsTable,
+          ProgramRevision,
+          $$ProgramRevisionsTableFilterComposer,
+          $$ProgramRevisionsTableOrderingComposer,
+          $$ProgramRevisionsTableAnnotationComposer,
+          $$ProgramRevisionsTableCreateCompanionBuilder,
+          $$ProgramRevisionsTableUpdateCompanionBuilder,
+          (
+            ProgramRevision,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramRevisionsTable,
+              ProgramRevision
+            >,
+          ),
+          ProgramRevision,
+          PrefetchHooks Function()
+        > {
+  $$ProgramRevisionsTableTableManager(
+    _$AppDatabase db,
+    $ProgramRevisionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramRevisionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramRevisionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramRevisionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<int> revisionNumber = const Value.absent(),
+                Value<String> changeType = const Value.absent(),
+                Value<String?> updateScope = const Value.absent(),
+                Value<String?> affectedRefsJson = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramRevisionsCompanion(
+                id: id,
+                programId: programId,
+                revisionNumber: revisionNumber,
+                changeType: changeType,
+                updateScope: updateScope,
+                affectedRefsJson: affectedRefsJson,
+                summary: summary,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programId,
+                required int revisionNumber,
+                required String changeType,
+                Value<String?> updateScope = const Value.absent(),
+                Value<String?> affectedRefsJson = const Value.absent(),
+                required String summary,
+                Value<String?> aiGenerationSnapshotId = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramRevisionsCompanion.insert(
+                id: id,
+                programId: programId,
+                revisionNumber: revisionNumber,
+                changeType: changeType,
+                updateScope: updateScope,
+                affectedRefsJson: affectedRefsJson,
+                summary: summary,
+                aiGenerationSnapshotId: aiGenerationSnapshotId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramRevisionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramRevisionsTable,
+      ProgramRevision,
+      $$ProgramRevisionsTableFilterComposer,
+      $$ProgramRevisionsTableOrderingComposer,
+      $$ProgramRevisionsTableAnnotationComposer,
+      $$ProgramRevisionsTableCreateCompanionBuilder,
+      $$ProgramRevisionsTableUpdateCompanionBuilder,
+      (
+        ProgramRevision,
+        BaseReferences<_$AppDatabase, $ProgramRevisionsTable, ProgramRevision>,
+      ),
+      ProgramRevision,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15683,4 +39278,50 @@ class $AppDatabaseManager {
       $$AiModelCapabilitiesTableTableManager(_db, _db.aiModelCapabilities);
   $$AiProviderConfigsTableTableManager get aiProviderConfigs =>
       $$AiProviderConfigsTableTableManager(_db, _db.aiProviderConfigs);
+  $$ProgramsTableTableManager get programs =>
+      $$ProgramsTableTableManager(_db, _db.programs);
+  $$ProgramWorkoutTemplatesTableTableManager get programWorkoutTemplates =>
+      $$ProgramWorkoutTemplatesTableTableManager(
+        _db,
+        _db.programWorkoutTemplates,
+      );
+  $$ProgramTemplateExercisesTableTableManager get programTemplateExercises =>
+      $$ProgramTemplateExercisesTableTableManager(
+        _db,
+        _db.programTemplateExercises,
+      );
+  $$ProgramTemplateExerciseSetsTableTableManager
+  get programTemplateExerciseSets =>
+      $$ProgramTemplateExerciseSetsTableTableManager(
+        _db,
+        _db.programTemplateExerciseSets,
+      );
+  $$ProgramWeeksTableTableManager get programWeeks =>
+      $$ProgramWeeksTableTableManager(_db, _db.programWeeks);
+  $$ProgramWorkoutsTableTableManager get programWorkouts =>
+      $$ProgramWorkoutsTableTableManager(_db, _db.programWorkouts);
+  $$ProgramExercisesTableTableManager get programExercises =>
+      $$ProgramExercisesTableTableManager(_db, _db.programExercises);
+  $$ProgramExerciseSetsTableTableManager get programExerciseSets =>
+      $$ProgramExerciseSetsTableTableManager(_db, _db.programExerciseSets);
+  $$SavedWorkoutsTableTableManager get savedWorkouts =>
+      $$SavedWorkoutsTableTableManager(_db, _db.savedWorkouts);
+  $$SavedWorkoutExercisesTableTableManager get savedWorkoutExercises =>
+      $$SavedWorkoutExercisesTableTableManager(_db, _db.savedWorkoutExercises);
+  $$SavedWorkoutExerciseSetsTableTableManager get savedWorkoutExerciseSets =>
+      $$SavedWorkoutExerciseSetsTableTableManager(
+        _db,
+        _db.savedWorkoutExerciseSets,
+      );
+  $$WorkoutSessionsTableTableManager get workoutSessions =>
+      $$WorkoutSessionsTableTableManager(_db, _db.workoutSessions);
+  $$WorkoutSessionExercisesTableTableManager get workoutSessionExercises =>
+      $$WorkoutSessionExercisesTableTableManager(
+        _db,
+        _db.workoutSessionExercises,
+      );
+  $$SetLogsTableTableManager get setLogs =>
+      $$SetLogsTableTableManager(_db, _db.setLogs);
+  $$ProgramRevisionsTableTableManager get programRevisions =>
+      $$ProgramRevisionsTableTableManager(_db, _db.programRevisions);
 }

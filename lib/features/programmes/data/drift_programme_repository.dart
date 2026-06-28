@@ -1,0 +1,593 @@
+import 'package:drift/drift.dart';
+import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/program_dao.dart';
+import 'package:aedify/core/db/daos/program_workout_template_dao.dart';
+import 'package:aedify/core/db/daos/program_template_exercise_dao.dart';
+import 'package:aedify/core/db/daos/program_template_exercise_set_dao.dart';
+import 'package:aedify/core/db/daos/program_week_dao.dart';
+import 'package:aedify/core/db/daos/program_workout_dao.dart';
+import 'package:aedify/core/db/daos/program_exercise_dao.dart';
+import 'package:aedify/core/db/daos/program_exercise_set_dao.dart';
+import 'package:aedify/core/db/daos/program_revision_dao.dart';
+import 'package:aedify/features/programmes/data/programme_repository.dart';
+import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
+import 'package:aedify/features/programmes/domain/programme_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
+import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
+import 'package:uuid/uuid.dart';
+import 'dart:convert';
+
+class DriftProgrammeRepository implements ProgrammeRepository {
+  DriftProgrammeRepository({
+    required AppDatabase database,
+    required ProgramDao programDao,
+    required ProgramWorkoutTemplateDao programWorkoutTemplateDao,
+    required ProgramTemplateExerciseDao programTemplateExerciseDao,
+    required ProgramTemplateExerciseSetDao programTemplateExerciseSetDao,
+    required ProgramWeekDao programWeekDao,
+    required ProgramWorkoutDao programWorkoutDao,
+    required ProgramExerciseDao programExerciseDao,
+    required ProgramExerciseSetDao programExerciseSetDao,
+    required ProgramRevisionDao programRevisionDao,
+    Uuid? uuid,
+  }) : _database = database,
+       _programDao = programDao,
+       _programWorkoutTemplateDao = programWorkoutTemplateDao,
+       _programTemplateExerciseDao = programTemplateExerciseDao,
+       _programTemplateExerciseSetDao = programTemplateExerciseSetDao,
+       _programWeekDao = programWeekDao,
+       _programWorkoutDao = programWorkoutDao,
+       _programExerciseDao = programExerciseDao,
+       _programExerciseSetDao = programExerciseSetDao,
+       _programRevisionDao = programRevisionDao,
+       _uuid = uuid ?? const Uuid();
+
+  final AppDatabase _database;
+  final ProgramDao _programDao;
+  final ProgramWorkoutTemplateDao _programWorkoutTemplateDao;
+  final ProgramTemplateExerciseDao _programTemplateExerciseDao;
+  final ProgramTemplateExerciseSetDao _programTemplateExerciseSetDao;
+  final ProgramWeekDao _programWeekDao;
+  final ProgramWorkoutDao _programWorkoutDao;
+  final ProgramExerciseDao _programExerciseDao;
+  final ProgramExerciseSetDao _programExerciseSetDao;
+  final ProgramRevisionDao _programRevisionDao;
+  final Uuid _uuid;
+
+  @override
+  Future<ProgrammeAggregate?> getProgramme(String id) async {
+    final program = await _programDao.getById(id);
+    if (program == null) return null;
+    return _buildAggregate(program);
+  }
+
+  @override
+  Future<List<ProgrammeAggregate>> listProgrammes({
+    String? status,
+    bool activeOnly = false,
+  }) async {
+    final programs = status != null
+        ? await _programDao.getByStatus(status)
+        : await _programDao.getAll();
+
+    final results = <ProgrammeAggregate>[];
+    for (final p in programs) {
+      if (activeOnly && !p.active) continue;
+      results.add(await _buildAggregate(p));
+    }
+    return results;
+  }
+
+  @override
+  Future<String> saveProgramme(ProgrammeDraft draft) async {
+    return _database.inTransaction(() async {
+      final programId = draft.id;
+      final now = DateTime.now();
+      final existing = await _programDao.getById(programId);
+
+      await _writeProgramRoot(
+        draft: draft,
+        programId: programId,
+        now: now,
+        existingProgram: existing,
+      );
+
+      if (draft.active) {
+        await _programDao.clearActiveProgram(updatedAt: now);
+        await _programDao.setProgramActive(
+          id: programId,
+          active: true,
+          updatedAt: now,
+        );
+      }
+
+      await _deleteExpandedProgramHierarchy(programId);
+      await _deleteProgramTemplateHierarchy(programId);
+
+      for (final template in draft.templates) {
+        await _insertProgramTemplate(
+          programId: programId,
+          template: template,
+          now: now,
+        );
+      }
+
+      await _insertExpandedProgramRows(
+        programId: programId,
+        draft: draft,
+        now: now,
+      );
+
+      final latestRevision = await _programRevisionDao.getLatestRevisionNumber(
+        programId,
+      );
+      await _programRevisionDao.upsertRevision(
+        ProgramRevisionsCompanion.insert(
+          id: _newId(),
+          programId: programId,
+          revisionNumber: latestRevision + 1,
+          changeType: existing == null ? 'created' : 'manual_edit',
+          summary: existing == null ? 'Program created' : 'Program updated',
+          createdAt: now,
+        ),
+      );
+
+      return programId;
+    });
+  }
+
+  @override
+  Future<void> archiveProgramme(String id) async {
+    final now = DateTime.now();
+    await _programDao.archiveProgram(id: id, archivedAt: now, updatedAt: now);
+  }
+
+  @override
+  Future<void> deleteProgramme(String id) async {
+    final hasHistory = await _programDao.countSessionsReferencingProgram(id);
+    if (hasHistory > 0) {
+      final now = DateTime.now();
+      await _programDao.softDeleteProgram(
+        id: id,
+        deletedAt: now,
+        updatedAt: now,
+      );
+    } else {
+      // No history -- cascade delete everything
+      await _database.inTransaction(() async {
+        await _deleteExpandedProgramHierarchy(id);
+        await _deleteProgramTemplateHierarchy(id);
+        await _deleteProgramRevisions(id);
+        await _programDao.softDeleteProgram(
+          id: id,
+          deletedAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      });
+    }
+  }
+
+  Future<void> _deleteProgramRevisions(String programId) async {
+    // revisions don't cascade to session data
+    await _programRevisionDao.deleteByProgramId(programId);
+  }
+
+  @override
+  Future<void> activateProgramme(String id) async {
+    final now = DateTime.now();
+    await _database.inTransaction(() async {
+      await _programDao.clearActiveProgram(updatedAt: now);
+      await _programDao.setProgramActive(id: id, active: true, updatedAt: now);
+    });
+  }
+
+  @override
+  Future<void> deactivateProgramme(String id) async {
+    final now = DateTime.now();
+    await _programDao.setProgramActive(id: id, active: false, updatedAt: now);
+  }
+
+  Future<ProgrammeAggregate> _buildAggregate(Program program) async {
+    final templates = await _programWorkoutTemplateDao.getByProgramIdOrdered(
+      program.id,
+    );
+    final weeks = await _programWeekDao.getByProgramIdOrdered(program.id);
+    final workouts = await _programWorkoutDao.getByProgramId(program.id);
+
+    final allExercises = <ProgramExercise>[];
+    final allSets = <ProgramExerciseSet>[];
+    for (final w in workouts) {
+      final exercises = await _programExerciseDao.getByProgramWorkoutIdOrdered(
+        w.id,
+      );
+      for (final e in exercises) {
+        final sets = await _programExerciseSetDao.getByProgramExerciseIdOrdered(
+          e.id,
+        );
+        allExercises.add(e);
+        allSets.addAll(sets);
+      }
+    }
+
+    final revisions = await _programRevisionDao.getByProgramIdOrdered(
+      program.id,
+    );
+
+    return ProgrammeAggregate(
+      program: program,
+      templates: templates,
+      weeks: weeks,
+      workouts: workouts,
+      exercises: allExercises,
+      sets: allSets,
+      revisions: revisions,
+    );
+  }
+
+  Future<void> _writeProgramRoot({
+    required ProgrammeDraft draft,
+    required String programId,
+    required DateTime now,
+    required Program? existingProgram,
+  }) async {
+    final createdAt = existingProgram?.createdAt ?? now;
+    await _programDao.upsertProgram(
+      _buildProgramCompanion(
+        draft: draft,
+        programId: programId,
+        now: now,
+        createdAt: createdAt,
+      ),
+    );
+  }
+
+  Future<void> _deleteProgramTemplateHierarchy(String programId) async {
+    final templates = await _programWorkoutTemplateDao.getByProgramIdOrdered(
+      programId,
+    );
+    for (final t in templates) {
+      final exercises = await _programTemplateExerciseDao
+          .getByTemplateIdOrdered(t.id);
+      for (final e in exercises) {
+        await _programTemplateExerciseSetDao.deleteByTemplateExerciseId(e.id);
+      }
+      await _programTemplateExerciseDao.deleteByTemplateId(t.id);
+    }
+    await _programWorkoutTemplateDao.deleteByProgramId(programId);
+  }
+
+  Future<void> _deleteExpandedProgramHierarchy(String programId) async {
+    final workouts = await _programWorkoutDao.getByProgramId(programId);
+    for (final w in workouts) {
+      final exercises = await _programExerciseDao.getByProgramWorkoutIdOrdered(
+        w.id,
+      );
+      for (final e in exercises) {
+        await _programExerciseSetDao.deleteByProgramExerciseId(e.id);
+      }
+      await _programExerciseDao.deleteByProgramWorkoutId(w.id);
+    }
+    await _programWorkoutDao.deleteByProgramId(programId);
+    await _programWeekDao.deleteByProgramId(programId);
+  }
+
+  Future<void> _insertProgramTemplate({
+    required String programId,
+    required ProgrammeWorkoutTemplateDraft template,
+    required DateTime now,
+  }) async {
+    await _programWorkoutTemplateDao.upsertTemplate(
+      _buildProgramWorkoutTemplateCompanion(
+        programId: programId,
+        template: template,
+        now: now,
+      ),
+    );
+
+    for (final exercise in template.exercises) {
+      await _insertProgramTemplateExercise(
+        workoutTemplateId: template.id,
+        exercise: exercise,
+        now: now,
+      );
+    }
+  }
+
+  Future<void> _insertProgramTemplateExercise({
+    required String workoutTemplateId,
+    required ProgrammeExerciseDraft exercise,
+    required DateTime now,
+  }) async {
+    await _programTemplateExerciseDao.upsertExercise(
+      _buildProgramTemplateExerciseCompanion(
+        workoutTemplateId: workoutTemplateId,
+        exercise: exercise,
+        now: now,
+      ),
+    );
+
+    for (final set in exercise.sets) {
+      await _insertProgramTemplateExerciseSet(
+        templateExerciseId: exercise.id,
+        set: set,
+        now: now,
+      );
+    }
+  }
+
+  Future<void> _insertProgramTemplateExerciseSet({
+    required String templateExerciseId,
+    required SetPrescriptionDraft set,
+    required DateTime now,
+  }) async {
+    await _programTemplateExerciseSetDao.upsertSet(
+      _buildProgramTemplateExerciseSetCompanion(
+        templateExerciseId: templateExerciseId,
+        set: set,
+        now: now,
+      ),
+    );
+  }
+
+  Future<void> _insertExpandedProgramRows({
+    required String programId,
+    required ProgrammeDraft draft,
+    required DateTime now,
+  }) async {
+    if (draft.weeksTotal == null || draft.weeksTotal! < 1) return;
+
+    for (var weekNum = 1; weekNum <= draft.weeksTotal!; weekNum++) {
+      final weekId = _newId();
+      await _programWeekDao.upsertWeek(
+        _buildProgramWeekCompanion(
+          programId: programId,
+          weekId: weekId,
+          weekNumber: weekNum,
+          now: now,
+        ),
+      );
+
+      for (var dayIdx = 0; dayIdx < draft.daysPerWeek!; dayIdx++) {
+        if (dayIdx < draft.templates.length) {
+          final template = draft.templates[dayIdx];
+          final workoutId = _newId();
+          final occurrenceRef = 'w${weekNum}_d$dayIdx';
+
+          await _programWorkoutDao.upsertWorkout(
+            _buildProgramWorkoutCompanion(
+              programId: programId,
+              workoutId: workoutId,
+              occurrenceRef: occurrenceRef,
+              name: template.name,
+              now: now,
+              programWeekId: weekId,
+              workoutTemplateId: template.id,
+              scheduledDayIndex: dayIdx,
+            ),
+          );
+
+          final templateExercises = await _programTemplateExerciseDao
+              .getByTemplateIdOrdered(template.id);
+          for (final te in templateExercises) {
+            final exerciseId = _newId();
+            await _programExerciseDao.upsertExercise(
+              ProgramExercisesCompanion(
+                id: Value(exerciseId),
+                programWorkoutId: Value(workoutId),
+                sourceTemplateExerciseId: Value(te.id),
+                exerciseId: Value(te.exerciseId),
+                exerciseRole: Value(te.exerciseRole),
+                supersetGroupId: Value(te.supersetGroupId),
+                supersetOrder: Value(te.supersetOrder),
+                sortOrder: Value(te.sortOrder),
+                notes: Value(te.notes),
+              ),
+            );
+
+            final templateSets = await _programTemplateExerciseSetDao
+                .getByTemplateExerciseIdOrdered(te.id);
+            for (final ts in templateSets) {
+              await _programExerciseSetDao.upsertSet(
+                ProgramExerciseSetsCompanion(
+                  id: Value(_newId()),
+                  programExerciseId: Value(exerciseId),
+                  sourceTemplateSetId: Value(ts.id),
+                  setIndex: Value(ts.setIndex),
+                  setType: Value(ts.setType),
+                  setIntent: Value(ts.setIntent),
+                  prescribedRepsMin: Value(ts.prescribedRepsMin),
+                  prescribedRepsMax: Value(ts.prescribedRepsMax),
+                  prescribedRepsExact: Value(ts.prescribedRepsExact),
+                  durationSeconds: Value(ts.durationSeconds),
+                  distanceMeters: Value(ts.distanceMeters),
+                  weightPrescriptionType: Value(ts.weightPrescriptionType),
+                  prescribedWeightKg: Value(ts.prescribedWeightKg),
+                  prescribedWeightPct1rm: Value(ts.prescribedWeightPct1rm),
+                  prescribedWeightPctWorking: Value(
+                    ts.prescribedWeightPctWorking,
+                  ),
+                  bodyweightMultiplier: Value(ts.bodyweightMultiplier),
+                  prescribedRpeMin: Value(ts.prescribedRpeMin),
+                  prescribedRpeMax: Value(ts.prescribedRpeMax),
+                  prescribedRir: Value(ts.prescribedRir),
+                  restSeconds: Value(ts.restSeconds),
+                  loadingModel: Value(ts.loadingModel),
+                  percent1rmMin: Value(ts.percent1rmMin),
+                  percent1rmMax: Value(ts.percent1rmMax),
+                  rpeMin: Value(ts.rpeMin),
+                  rpeMax: Value(ts.rpeMax),
+                  loadSelectionNote: Value(ts.loadSelectionNote),
+                  isCalibrationEstimate: Value(ts.isCalibrationEstimate),
+                  derivedFromWorkingSetIndex: Value(
+                    ts.derivedFromWorkingSetIndex,
+                  ),
+                  warmupWeightRuleJson: Value(ts.warmupWeightRuleJson),
+                  createdAt: Value(now),
+                ),
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // --- Companion builders ---
+
+  ProgramsCompanion _buildProgramCompanion({
+    required ProgrammeDraft draft,
+    required String programId,
+    required DateTime now,
+    required DateTime createdAt,
+  }) {
+    return ProgramsCompanion(
+      id: Value(programId),
+      name: Value(draft.name),
+      description: Value(draft.description),
+      source: Value(draft.source),
+      creationMethod: Value(draft.creationMethod),
+      importOrigin: Value(draft.importOrigin),
+      status: Value(draft.status),
+      active: Value(draft.active),
+      startDateLocal: Value(draft.startDateLocal),
+      endDateLocal: Value(draft.endDateLocal),
+      weeksTotal: Value(draft.weeksTotal),
+      daysPerWeek: Value(draft.daysPerWeek),
+      sessionLengthMinutes: Value(draft.sessionLengthMinutes),
+      goalTagsJson: Value(jsonEncode(draft.goalTags)),
+      equipmentJson: Value(jsonEncode(draft.equipment)),
+      experienceLevelAtCreation: Value(draft.experienceLevelAtCreation),
+      preferredUnitsAtCreation: Value(draft.preferredUnitsAtCreation),
+      createdAt: Value(createdAt),
+      updatedAt: Value(now),
+    );
+  }
+
+  ProgramWorkoutTemplatesCompanion _buildProgramWorkoutTemplateCompanion({
+    required String programId,
+    required ProgrammeWorkoutTemplateDraft template,
+    required DateTime now,
+  }) {
+    return ProgramWorkoutTemplatesCompanion(
+      id: Value(template.id),
+      programId: Value(programId),
+      templateKey: Value(template.templateKey),
+      name: Value(template.name),
+      description: Value(template.description),
+      dayType: Value(template.dayType),
+      estimatedDurationMinutes: Value(template.estimatedDurationMinutes),
+      sortOrder: Value(template.sortOrder),
+      createdAt: Value(now),
+      updatedAt: Value(now),
+    );
+  }
+
+  ProgramTemplateExercisesCompanion _buildProgramTemplateExerciseCompanion({
+    required String workoutTemplateId,
+    required ProgrammeExerciseDraft exercise,
+    required DateTime now,
+  }) {
+    return ProgramTemplateExercisesCompanion(
+      id: Value(exercise.id),
+      workoutTemplateId: Value(workoutTemplateId),
+      exerciseId: Value(exercise.exerciseId),
+      exerciseRef: Value(exercise.exerciseRef),
+      exerciseRole: Value(exercise.exerciseRole),
+      programmeRole: Value(exercise.programmeRole),
+      supersetGroupId: Value(exercise.supersetGroupId),
+      supersetOrder: Value(exercise.supersetOrder),
+      sortOrder: Value(exercise.sortOrder),
+      notes: Value(exercise.notes),
+      cuesJson: Value(exercise.cuesJson),
+      createdAt: Value(now),
+    );
+  }
+
+  ProgramTemplateExerciseSetsCompanion
+  _buildProgramTemplateExerciseSetCompanion({
+    required String templateExerciseId,
+    required SetPrescriptionDraft set,
+    required DateTime now,
+  }) {
+    return ProgramTemplateExerciseSetsCompanion(
+      id: Value(set.id),
+      templateExerciseId: Value(templateExerciseId),
+      setIndex: Value(set.setIndex),
+      setType: Value(set.setType),
+      setIntent: Value(set.setIntent),
+      prescribedRepsMin: Value(set.prescribedRepsMin),
+      prescribedRepsMax: Value(set.prescribedRepsMax),
+      prescribedRepsExact: Value(set.prescribedRepsExact),
+      durationSeconds: Value(set.durationSeconds),
+      distanceMeters: Value(set.distanceMeters),
+      weightPrescriptionType: Value(set.weightPrescriptionType),
+      prescribedWeightKg: Value(set.prescribedWeightKg),
+      prescribedWeightPct1rm: Value(set.prescribedWeightPct1rm),
+      prescribedWeightPctWorking: Value(set.prescribedWeightPctWorking),
+      bodyweightMultiplier: Value(set.bodyweightMultiplier),
+      prescribedRpeMin: Value(set.prescribedRpeMin),
+      prescribedRpeMax: Value(set.prescribedRpeMax),
+      prescribedRir: Value(set.prescribedRir),
+      restSeconds: Value(set.restSeconds),
+      loadingModel: Value(set.loadingModel),
+      percent1rmMin: Value(set.percent1rmMin),
+      percent1rmMax: Value(set.percent1rmMax),
+      rpeMin: Value(set.rpeMin),
+      rpeMax: Value(set.rpeMax),
+      loadSelectionNote: Value(set.loadSelectionNote),
+      isCalibrationEstimate: Value(set.isCalibrationEstimate),
+      derivedFromWorkingSetIndex: Value(set.derivedFromWorkingSetIndex),
+      warmupWeightRuleJson: Value(set.warmupWeightRuleJson),
+      createdAt: Value(now),
+    );
+  }
+
+  ProgramWeeksCompanion _buildProgramWeekCompanion({
+    required String programId,
+    required String weekId,
+    required int weekNumber,
+    required DateTime now,
+    String? weekType,
+    String? startsOnLocal,
+    String? notes,
+  }) {
+    return ProgramWeeksCompanion(
+      id: Value(weekId),
+      programId: Value(programId),
+      weekNumber: Value(weekNumber),
+      weekType: Value(weekType),
+      startsOnLocal: Value(startsOnLocal),
+      notes: Value(notes),
+    );
+  }
+
+  ProgramWorkoutsCompanion _buildProgramWorkoutCompanion({
+    required String programId,
+    required String workoutId,
+    required String occurrenceRef,
+    required String name,
+    required DateTime now,
+    String? programWeekId,
+    String? workoutTemplateId,
+    String? scheduledDateLocal,
+    int? scheduledDayIndex,
+    String status = 'planned',
+  }) {
+    return ProgramWorkoutsCompanion(
+      id: Value(workoutId),
+      programId: Value(programId),
+      programWeekId: Value(programWeekId),
+      workoutTemplateId: Value(workoutTemplateId),
+      occurrenceRef: Value(occurrenceRef),
+      name: Value(name),
+      scheduledDateLocal: Value(scheduledDateLocal),
+      scheduledDayIndex: Value(scheduledDayIndex),
+      status: Value(status),
+      createdAt: Value(now),
+      updatedAt: Value(now),
+    );
+  }
+
+  String _newId() => _uuid.v4();
+}
