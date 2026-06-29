@@ -4,6 +4,7 @@ import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,7 @@ class _ValidatingFakeRepository extends DriftByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     return true;
@@ -34,7 +35,7 @@ class _FailingValidationRepository extends DriftByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     return false;

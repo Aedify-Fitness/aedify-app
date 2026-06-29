@@ -2,6 +2,8 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_video_vi
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -17,8 +19,8 @@ Widget createCard({
             video ??
             const ExerciseDetailVideoViewData(
               url: 'https://example.com/v.mp4',
-              angle: 'front',
-              gender: 'male',
+              angle: ExerciseVideoAngle.front,
+              gender: ExerciseVideoGender.male,
               ogImageUrl: 'https://example.com/thumb.jpg',
             ),
         playbackState: playbackState,
@@ -34,8 +36,8 @@ void main() {
       await tester.pumpWidget(createCard());
       await tester.pump();
 
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
     });
 
     testWidgets('renders fallback text when angle is null', (tester) async {
@@ -44,7 +46,7 @@ void main() {
           video: const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
             angle: null,
-            gender: 'male',
+            gender: ExerciseVideoGender.male,
             ogImageUrl: null,
           ),
         ),
@@ -91,8 +93,8 @@ void main() {
         createCard(
           video: const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
-            angle: 'front',
-            gender: 'male',
+            angle: ExerciseVideoAngle.front,
+            gender: ExerciseVideoGender.male,
             ogImageUrl: 'https://example.com/thumb.jpg',
           ),
         ),
@@ -100,8 +102,8 @@ void main() {
       await tester.pump();
 
       // Should still render metadata even with thumbnail loading
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
     });
 
     testWidgets('shows svg icon when hasThumbnail is false', (tester) async {
@@ -109,16 +111,16 @@ void main() {
         createCard(
           video: const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
-            angle: 'front',
-            gender: 'male',
+            angle: ExerciseVideoAngle.front,
+            gender: ExerciseVideoGender.male,
             ogImageUrl: null,
           ),
         ),
       );
       await tester.pump();
 
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
     });
   });
 }

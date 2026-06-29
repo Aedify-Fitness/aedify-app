@@ -2,6 +2,8 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_video_vi
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -27,8 +29,8 @@ void main() {
   group('ExerciseVideoSection', () {
     final testVideo = const ExerciseDetailVideoViewData(
       url: 'https://example.com/v1.mp4',
-      angle: 'front',
-      gender: 'male',
+      angle: ExerciseVideoAngle.front,
+      gender: ExerciseVideoGender.male,
       ogImageUrl: null,
     );
 
@@ -45,8 +47,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
     });
 
     testWidgets('renders multiple videos', (tester) async {
@@ -56,8 +58,8 @@ void main() {
             testVideo,
             const ExerciseDetailVideoViewData(
               url: 'https://example.com/v2.mp4',
-              angle: 'side',
-              gender: 'female',
+              angle: ExerciseVideoAngle.side,
+              gender: ExerciseVideoGender.female,
               ogImageUrl: null,
             ),
           ],
@@ -65,10 +67,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('side'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
-      expect(find.text('female'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Side'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
+      expect(find.text('Female'), findsOneWidget);
     });
 
     testWidgets('shows retry UI for failed video', (tester) async {

@@ -1,5 +1,10 @@
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_parser.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_validation_failure.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../support/exercise_library/exercise_library_fixture_loader.dart';
@@ -31,11 +36,11 @@ void main() {
         final ex1 = dataset.exercises[0];
         expect(ex1.id, 1);
         expect(ex1.name, 'Barbell Bench Press');
-        expect(ex1.difficulty, 'intermediate');
-        expect(ex1.modality, 'strength');
-        expect(ex1.equipment, 'barbell');
-        expect(ex1.mechanic, 'compound');
-        expect(ex1.force, 'push');
+        expect(ex1.difficulty, ExerciseDifficulty.intermediate);
+        expect(ex1.modality, ExerciseModality.strength);
+        expect(ex1.equipment, EquipmentTag.barbell);
+        expect(ex1.mechanic, ExerciseMechanic.compound);
+        expect(ex1.force, ExerciseForce.push);
         expect(ex1.videos.length, 2);
       });
 
@@ -67,7 +72,7 @@ void main() {
         );
 
         final running = dataset.exercises.firstWhere((e) => e.id == 4);
-        expect(running.modality, 'cardio');
+        expect(running.modality, ExerciseModality.cardio);
         expect(running.equipment, isNull);
       });
     });
@@ -638,7 +643,7 @@ void main() {
           );
 
           final running = dataset.exercises.firstWhere((e) => e.id == 4);
-          expect(running.modality, 'cardio');
+          expect(running.modality, ExerciseModality.cardio);
           expect(running.equipment, isNull);
         },
       );

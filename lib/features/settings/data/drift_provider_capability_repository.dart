@@ -2,6 +2,7 @@ import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/ai_model_capability_dao.dart';
 import 'package:aedify/features/settings/data/provider_capability_repository.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:drift/drift.dart';
 
 class DriftProviderCapabilityRepository
@@ -14,16 +15,16 @@ class DriftProviderCapabilityRepository
 
   @override
   Future<ProviderCapabilityViewData?> getCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {
     final row = await _capabilityDao.getCapability(
-      providerName: providerName,
+      providerName: providerName.dbValue,
       modelName: modelName,
     );
     if (row == null) return null;
     return ProviderCapabilityViewData(
-      providerName: row.providerName,
+      providerName: AiProviderName.fromDb(row.providerName),
       modelName: row.modelName,
       supportsTextInput: row.supportsTextInput,
       supportsImageInput: row.supportsImageInput,
@@ -42,7 +43,7 @@ class DriftProviderCapabilityRepository
     await _capabilityDao.upsertCapability(
       AiModelCapabilitiesCompanion(
         id: Value(_capabilityId(capability.providerName, capability.modelName)),
-        providerName: Value(capability.providerName),
+        providerName: Value(capability.providerName.dbValue),
         modelName: Value(capability.modelName),
         supportsTextInput: Value(capability.supportsTextInput),
         supportsImageInput: Value(capability.supportsImageInput),
@@ -59,16 +60,16 @@ class DriftProviderCapabilityRepository
 
   @override
   Future<void> clearCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {
     await _capabilityDao.deleteCapability(
-      providerName: providerName,
+      providerName: providerName.dbValue,
       modelName: modelName,
     );
   }
 
-  String _capabilityId(String providerName, String modelName) {
-    return '${providerName}_$modelName';
+  String _capabilityId(AiProviderName providerName, String modelName) {
+    return '${providerName.dbValue}_$modelName';
   }
 }

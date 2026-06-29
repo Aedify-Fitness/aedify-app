@@ -1,4 +1,5 @@
 import 'package:aedify/shared/constants/app_error_codes.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:dio/dio.dart';
 
 class KeyValidationResult {
@@ -12,7 +13,7 @@ class ProviderKeyValidator {
   ProviderKeyValidator._();
 
   static Future<KeyValidationResult> validate({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     final endpoint = _endpointFor(providerName);
@@ -61,19 +62,19 @@ class ProviderKeyValidator {
     }
   }
 
-  static _ValidationEndpoint? _endpointFor(String provider) {
+  static _ValidationEndpoint? _endpointFor(AiProviderName provider) {
     switch (provider) {
-      case 'openai':
+      case AiProviderName.openai:
         return const _ValidationEndpoint(
           url: 'https://api.openai.com/v1/models',
           authHeader: 'Authorization',
         );
-      case 'anthropic':
+      case AiProviderName.anthropic:
         return const _ValidationEndpoint(
           url: 'https://api.anthropic.com/v1/messages',
           authHeader: 'x-api-key',
         );
-      case 'google':
+      case AiProviderName.google:
         return const _ValidationEndpoint(
           url: 'https://generativelanguage.googleapis.com/v1/models',
           authHeader: 'x-goog-api-key',

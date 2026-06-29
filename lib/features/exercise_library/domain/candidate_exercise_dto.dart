@@ -1,3 +1,10 @@
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+
 class CandidateExerciseDto {
   const CandidateExerciseDto({
     required this.id,
@@ -13,11 +20,11 @@ class CandidateExerciseDto {
 
   final int id;
   final String name;
-  final String? difficulty;
-  final List<String> muscleGroups;
-  final String modality;
-  final String? equipment;
-  final String? mechanic;
-  final String? force;
+  final ExerciseDifficulty? difficulty;
+  final Set<BodymapBucket> muscleGroups;
+  final ExerciseModality modality;
+  final EquipmentTag? equipment;
+  final ExerciseMechanic? mechanic;
+  final ExerciseForce? force;
   final bool isCustom;
 }

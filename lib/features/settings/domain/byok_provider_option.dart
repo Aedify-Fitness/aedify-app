@@ -1,4 +1,5 @@
 import 'package:aedify/features/settings/domain/byok_model_option.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 
 class ByokProviderOption {
   const ByokProviderOption({
@@ -10,7 +11,7 @@ class ByokProviderOption {
   });
 
   final String id;
-  final String providerName;
+  final AiProviderName providerName;
   final String displayName;
   final String description;
   final List<ByokModelOption> models;

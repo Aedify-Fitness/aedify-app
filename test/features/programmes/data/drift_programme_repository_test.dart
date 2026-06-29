@@ -21,6 +21,8 @@ import 'package:aedify/shared/domain/set_type.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/domain/exercise_role.dart';
 import 'package:aedify/shared/domain/loading_model.dart';
@@ -71,8 +73,8 @@ void main() {
           creationMethod: CreationMethod.manual,
           status: ProgramStatus.active,
           active: true,
-          goalTags: ['Build muscle'],
-          equipment: ['Dumbbells'],
+          goalTags: {GoalTag.buildMuscle},
+          equipment: {EquipmentTag.dumbbell},
           weeksTotal: 1,
           daysPerWeek: 1,
           sessionLengthMinutes: 45,
@@ -158,8 +160,8 @@ void main() {
         creationMethod: CreationMethod.manual,
         status: ProgramStatus.active,
         active: false,
-        goalTags: ['Strength'],
-        equipment: ['Barbell'],
+        goalTags: {GoalTag.increaseStrength},
+        equipment: {EquipmentTag.barbell},
         weeksTotal: 1,
         daysPerWeek: 1,
         sessionLengthMinutes: 60,
@@ -204,8 +206,8 @@ void main() {
         creationMethod: CreationMethod.manual,
         status: ProgramStatus.active,
         active: false,
-        goalTags: ['Strength'],
-        equipment: ['Barbell'],
+        goalTags: {GoalTag.increaseStrength},
+        equipment: {EquipmentTag.barbell},
         weeksTotal: 1,
         daysPerWeek: 1,
         sessionLengthMinutes: 60,
@@ -269,8 +271,8 @@ void main() {
           creationMethod: CreationMethod.manual,
           status: ProgramStatus.active,
           active: false,
-          goalTags: [],
-          equipment: [],
+          goalTags: const <GoalTag>{},
+          equipment: const <EquipmentTag>{},
           templates: [],
         ),
       );
@@ -293,8 +295,8 @@ void main() {
           creationMethod: CreationMethod.manual,
           status: ProgramStatus.active,
           active: false,
-          goalTags: [],
-          equipment: [],
+          goalTags: const <GoalTag>{},
+          equipment: const <EquipmentTag>{},
           templates: [],
         ),
       );
@@ -319,8 +321,8 @@ void main() {
           creationMethod: CreationMethod.manual,
           status: ProgramStatus.active,
           active: true,
-          goalTags: [],
-          equipment: [],
+          goalTags: const <GoalTag>{},
+          equipment: const <EquipmentTag>{},
           templates: [],
         ),
       );
@@ -333,8 +335,8 @@ void main() {
           creationMethod: CreationMethod.manual,
           status: ProgramStatus.active,
           active: true,
-          goalTags: [],
-          equipment: [],
+          goalTags: const <GoalTag>{},
+          equipment: const <EquipmentTag>{},
           templates: [],
         ),
       );

@@ -107,17 +107,20 @@ class AddExerciseBottomSheet extends ConsumerWidget {
                     title: Text(item.name, style: AppTextStyles.bodyMd),
                     subtitle: item.equipment != null
                         ? Text(
-                            '${item.modality} · ${item.equipment}',
+                            '${item.modality.dbValue} · ${item.equipment!.dbValue}',
                             style: AppTextStyles.labelSm,
                           )
-                        : Text(item.modality, style: AppTextStyles.labelSm),
+                        : Text(
+                            item.modality.dbValue,
+                            style: AppTextStyles.labelSm,
+                          ),
                     onTap: () {
                       onSelectExercise(
                         ExerciseReference(
                           exerciseId: item.id,
                           name: item.name,
-                          modality: item.modality,
-                          equipment: item.equipment,
+                          modality: item.modality.dbValue,
+                          equipment: item.equipment?.dbValue,
                           isCustom: item.isCustom,
                         ),
                       );

@@ -2,10 +2,17 @@ import 'dart:convert';
 
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/candidate_exercise_query_service.dart';
 import 'package:aedify/features/exercise_library/domain/candidate_exercise_dto.dart';
 import 'package:aedify/features/exercise_library/domain/candidate_exercise_query.dart';
 import 'package:aedify/features/exercise_library/domain/candidate_exercise_ranked_result.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 
 class DriftCandidateExerciseQueryService
     implements CandidateExerciseQueryService {
@@ -96,22 +103,22 @@ class DriftCandidateExerciseQueryService
     int score = 0;
 
     for (final preferred in query.preferredMuscleGroups) {
-      if (exercise.muscleGroups.any(
-        (mg) => mg.toLowerCase() == preferred.toLowerCase(),
-      )) {
+      if (exercise.muscleGroups.contains(preferred)) {
         score += 3;
       }
     }
 
     for (final tag in query.goalTags) {
-      final lowerTag = tag.toLowerCase();
-      if (exercise.modality.toLowerCase() == lowerTag) {
+      if ((tag == GoalTag.loseWeight || tag == GoalTag.improveEndurance) &&
+          exercise.modality == ExerciseModality.cardio) {
         score += 2;
       }
-      if (exercise.mechanic?.toLowerCase() == lowerTag) {
+      if (tag == GoalTag.buildMuscle &&
+          exercise.mechanic == ExerciseMechanic.isolation) {
         score += 2;
       }
-      if (exercise.force?.toLowerCase() == lowerTag) {
+      if (tag == GoalTag.increaseStrength &&
+          exercise.force == ExerciseForce.push) {
         score += 2;
       }
     }
@@ -123,12 +130,24 @@ class DriftCandidateExerciseQueryService
     return CandidateExerciseDto(
       id: exercise.id,
       name: exercise.name,
-      difficulty: exercise.difficulty,
-      muscleGroups: _decodeJsonList(exercise.muscleGroupsJson),
-      modality: exercise.modality,
-      equipment: exercise.equipment,
-      mechanic: exercise.mechanic,
-      force: exercise.force,
+      difficulty: exercise.difficulty == null || exercise.difficulty!.isEmpty
+          ? null
+          : ExerciseDifficulty.fromDb(exercise.difficulty!),
+      muscleGroups: _decodeJsonList(exercise.muscleGroupsJson)
+          .map(
+            (label) => BodymapBucket.values.firstWhere((e) => e.label == label),
+          )
+          .toSet(),
+      modality: ExerciseModality.fromDb(exercise.modality),
+      equipment: exercise.equipment == null || exercise.equipment!.isEmpty
+          ? null
+          : EquipmentTag.fromDb(exercise.equipment!),
+      mechanic: exercise.mechanic == null || exercise.mechanic!.isEmpty
+          ? null
+          : ExerciseMechanic.fromDb(exercise.mechanic!.toLowerCase()),
+      force: exercise.force == null || exercise.force!.isEmpty
+          ? null
+          : ExerciseForce.fromDb(exercise.force!.toLowerCase()),
       isCustom: exercise.isCustom,
     );
   }

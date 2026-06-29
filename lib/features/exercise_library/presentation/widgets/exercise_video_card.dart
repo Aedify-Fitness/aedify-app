@@ -69,8 +69,14 @@ class ExerciseVideoCard extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-          title: Text(video.angle ?? AppStrings.videoUnavailable),
-          subtitle: Text(video.gender ?? ''),
+          title: Text(
+            video.angle != null
+                ? _formatLabel(video.angle!.dbValue)
+                : AppStrings.videoUnavailable,
+          ),
+          subtitle: Text(
+            video.gender != null ? _formatLabel(video.gender!.dbValue) : '',
+          ),
           trailing: playbackState == ExerciseVideoPlaybackState.loading
               ? SizedBox(
                   width: AppSpacing.lg,
@@ -104,7 +110,11 @@ class _FailedVideo extends StatelessWidget {
         height: AppSpacing.lg,
         colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
       ),
-      title: Text(video.angle ?? AppStrings.exerciseVideoLoadFailed),
+      title: Text(
+        video.angle != null
+            ? _formatLabel(video.angle!.dbValue)
+            : AppStrings.exerciseVideoLoadFailed,
+      ),
       subtitle: Text(AppStrings.exerciseVideoLoadFailed),
       trailing: FilledButton.tonalIcon(
         onPressed: onRetry,
@@ -117,4 +127,15 @@ class _FailedVideo extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatLabel(String value) {
+  return value
+      .replaceAll('_', ' ')
+      .split(' ')
+      .map(
+        (word) =>
+            word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1)}',
+      )
+      .join(' ');
 }

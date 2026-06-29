@@ -4,6 +4,10 @@ import 'package:aedify/features/profile/data/default_profile_candidate_preferenc
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,15 +40,22 @@ void main() {
   group('DefaultProfileCandidatePreferencesService', () {
     test('maps equipment access into allowedEquipment', () async {
       fakeRepo.profile = _profile(
-        equipmentAccess: ['Dumbbell', 'Barbell', 'Kettlebell'],
+        equipmentAccess: {
+          EquipmentTag.dumbbell,
+          EquipmentTag.barbell,
+          EquipmentTag.kettlebell,
+        },
       );
       final prefs = await service.buildPreferences();
-      expect(prefs.allowedEquipment, containsAll(['Dumbbell', 'Barbell']));
+      expect(
+        prefs.allowedEquipment,
+        containsAll({EquipmentTag.dumbbell, EquipmentTag.barbell}),
+      );
       expect(prefs.allowedEquipment.length, 3);
     });
 
     test('returns empty allowedEquipment when no equipment access', () async {
-      fakeRepo.profile = _profile(equipmentAccess: []);
+      fakeRepo.profile = _profile(equipmentAccess: const <EquipmentTag>{});
       final prefs = await service.buildPreferences();
       expect(prefs.allowedEquipment, isEmpty);
     });
@@ -52,9 +63,12 @@ void main() {
     test(
       'maps beginner experience into restricted allowedDifficulties',
       () async {
-        fakeRepo.profile = _profile(experienceLevel: 'Beginner (0–6 mo)');
+        fakeRepo.profile = _profile(experienceLevel: ExperienceLevel.beginner);
         final prefs = await service.buildPreferences();
-        expect(prefs.allowedDifficulties, {'novice', 'beginner'});
+        expect(prefs.allowedDifficulties, {
+          ExerciseDifficulty.novice,
+          ExerciseDifficulty.beginner,
+        });
       },
     );
 
@@ -62,81 +76,77 @@ void main() {
       'maps intermediate experience into restricted allowedDifficulties',
       () async {
         fakeRepo.profile = _profile(
-          experienceLevel: 'Intermediate (6 mo–2 yr)',
+          experienceLevel: ExperienceLevel.intermediate,
         );
         final prefs = await service.buildPreferences();
-        expect(prefs.allowedDifficulties, {'beginner', 'intermediate'});
+        expect(prefs.allowedDifficulties, {
+          ExerciseDifficulty.beginner,
+          ExerciseDifficulty.intermediate,
+        });
       },
     );
 
     test(
       'maps advanced experience into unrestricted allowedDifficulties',
       () async {
-        fakeRepo.profile = _profile(experienceLevel: 'Advanced (2+ yr)');
+        fakeRepo.profile = _profile(experienceLevel: ExperienceLevel.advanced);
+        final prefs = await service.buildPreferences();
+        expect(prefs.allowedDifficulties, ExerciseDifficulty.values.toSet());
+      },
+    );
+
+    test(
+      'maps novice experience into restricted allowedDifficulties',
+      () async {
+        fakeRepo.profile = _profile(experienceLevel: ExperienceLevel.novice);
         final prefs = await service.buildPreferences();
         expect(prefs.allowedDifficulties, {
-          'novice',
-          'beginner',
-          'intermediate',
-          'advanced',
+          ExerciseDifficulty.novice,
+          ExerciseDifficulty.beginner,
         });
       },
     );
 
-    test('returns all difficulties when experience level is null', () async {
-      fakeRepo.profile = _profile(experienceLevel: null);
-      final prefs = await service.buildPreferences();
-      expect(prefs.allowedDifficulties, {
-        'novice',
-        'beginner',
-        'intermediate',
-        'advanced',
-      });
-    });
-
-    test('returns all difficulties when experience level is unknown', () async {
-      fakeRepo.profile = _profile(experienceLevel: 'Unknown value');
-      final prefs = await service.buildPreferences();
-      expect(prefs.allowedDifficulties, {
-        'novice',
-        'beginner',
-        'intermediate',
-        'advanced',
-      });
-    });
-
     test('maps build muscle goal into hypertrophy goal tag', () async {
-      fakeRepo.profile = _profile(goals: ['Build muscle']);
+      fakeRepo.profile = _profile(goals: {GoalTag.buildMuscle});
       final prefs = await service.buildPreferences();
-      expect(prefs.goalTags, contains('hypertrophy'));
+      expect(prefs.goalTags, contains(GoalTag.buildMuscle));
     });
 
     test('maps lose weight goal into cardio goal tag', () async {
-      fakeRepo.profile = _profile(goals: ['Lose weight']);
+      fakeRepo.profile = _profile(goals: {GoalTag.loseWeight});
       final prefs = await service.buildPreferences();
-      expect(prefs.goalTags, contains('cardio'));
+      expect(prefs.goalTags, contains(GoalTag.loseWeight));
     });
 
     test('maps increase strength goal into strength goal tag', () async {
-      fakeRepo.profile = _profile(goals: ['Increase strength']);
+      fakeRepo.profile = _profile(goals: {GoalTag.increaseStrength});
       final prefs = await service.buildPreferences();
-      expect(prefs.goalTags, contains('strength'));
+      expect(prefs.goalTags, contains(GoalTag.increaseStrength));
     });
 
     test('maps improve endurance goal into cardio goal tag', () async {
-      fakeRepo.profile = _profile(goals: ['Improve endurance']);
+      fakeRepo.profile = _profile(goals: {GoalTag.improveEndurance});
       final prefs = await service.buildPreferences();
-      expect(prefs.goalTags, contains('cardio'));
+      expect(prefs.goalTags, contains(GoalTag.improveEndurance));
     });
 
     test('maps multiple goals into multiple goal tags', () async {
       fakeRepo.profile = _profile(
-        goals: ['Build muscle', 'Lose weight', 'Increase strength'],
+        goals: {
+          GoalTag.buildMuscle,
+          GoalTag.loseWeight,
+          GoalTag.increaseStrength,
+        },
       );
       final prefs = await service.buildPreferences();
       expect(
         prefs.goalTags,
-        containsAll(['hypertrophy', 'cardio', 'strength']),
+        containsAll({
+          GoalTag.buildMuscle,
+          GoalTag.loseWeight,
+          GoalTag.increaseStrength,
+        }),
       );
     });
 
@@ -186,7 +196,7 @@ void main() {
       'returns empty allowedModalities (no hard filter on modality)',
       () async {
         fakeRepo.profile = _profile(
-          goals: ['Build muscle', 'Improve endurance'],
+          goals: {GoalTag.buildMuscle, GoalTag.improveEndurance},
         );
         final prefs = await service.buildPreferences();
         expect(prefs.allowedModalities, isEmpty);
@@ -196,14 +206,17 @@ void main() {
 }
 
 ProfileViewData _profile({
-  String? experienceLevel = 'Intermediate (6 mo–2 yr)',
-  List<String> goals = const ['Build muscle'],
-  List<String> equipmentAccess = const ['Dumbbell', 'Barbell'],
+  ExperienceLevel? experienceLevel = ExperienceLevel.intermediate,
+  Set<GoalTag> goals = const {GoalTag.buildMuscle},
+  Set<EquipmentTag> equipmentAccess = const {
+    EquipmentTag.dumbbell,
+    EquipmentTag.barbell,
+  },
   List<int> substitutedExerciseIds = const [],
 }) {
   return ProfileViewData(
     displayName: null,
-    experienceLevel: experienceLevel ?? '',
+    experienceLevel: experienceLevel ?? ExperienceLevel.intermediate,
     goals: goals,
     equipmentAccess: equipmentAccess,
     trainingDaysPerWeek: null,

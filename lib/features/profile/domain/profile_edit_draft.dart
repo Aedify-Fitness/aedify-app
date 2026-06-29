@@ -1,12 +1,18 @@
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 class ProfileEditDraft {
   const ProfileEditDraft({
     this.displayName,
     this.experienceLevel,
-    this.goals = const <String>[],
-    this.equipmentAccess = const <String>[],
+    this.goals = const <GoalTag>{},
+    this.equipmentAccess = const <EquipmentTag>{},
     this.trainingDaysPerWeek,
+    this.trainingDays = const <TrainingDay>[],
     this.targetSessionLengthMinutes,
     this.preferredUnits = PreferredUnit.metric,
     this.heightCm,
@@ -23,10 +29,11 @@ class ProfileEditDraft {
   });
 
   final String? displayName;
-  final String? experienceLevel;
-  final List<String> goals;
-  final List<String> equipmentAccess;
+  final ExperienceLevel? experienceLevel;
+  final Set<GoalTag> goals;
+  final Set<EquipmentTag> equipmentAccess;
   final int? trainingDaysPerWeek;
+  final List<TrainingDay> trainingDays;
   final int? targetSessionLengthMinutes;
   final PreferredUnit preferredUnits;
   final double? heightCm;
@@ -35,7 +42,7 @@ class ProfileEditDraft {
   final List<int> substitutedExerciseIds;
   final List<String> injuriesLimitations;
   final String? otherNotes;
-  final String? sex;
+  final Sex? sex;
   final DateTime? dateOfBirth;
   final double? bench1RmKg;
   final double? squat1RmKg;
@@ -43,10 +50,11 @@ class ProfileEditDraft {
 
   ProfileEditDraft copyWith({
     String? displayName,
-    String? experienceLevel,
-    List<String>? goals,
-    List<String>? equipmentAccess,
+    ExperienceLevel? experienceLevel,
+    Set<GoalTag>? goals,
+    Set<EquipmentTag>? equipmentAccess,
     int? trainingDaysPerWeek,
+    List<TrainingDay>? trainingDays,
     int? targetSessionLengthMinutes,
     PreferredUnit? preferredUnits,
     double? heightCm,
@@ -55,7 +63,7 @@ class ProfileEditDraft {
     List<int>? substitutedExerciseIds,
     List<String>? injuriesLimitations,
     String? otherNotes,
-    String? sex,
+    Sex? sex,
     DateTime? dateOfBirth,
     double? bench1RmKg,
     double? squat1RmKg,
@@ -98,6 +106,7 @@ class ProfileEditDraft {
           : (deadlift1RmKg ?? this.deadlift1RmKg),
       goals: goals ?? this.goals,
       equipmentAccess: equipmentAccess ?? this.equipmentAccess,
+      trainingDays: trainingDays ?? this.trainingDays,
       favoriteExerciseIds: favoriteExerciseIds ?? this.favoriteExerciseIds,
       substitutedExerciseIds:
           substitutedExerciseIds ?? this.substitutedExerciseIds,

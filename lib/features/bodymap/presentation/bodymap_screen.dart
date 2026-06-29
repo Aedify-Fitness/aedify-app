@@ -97,7 +97,7 @@ class BodymapScreen extends ConsumerWidget {
                                 )
                                 .filters
                                 .copyWith(
-                                  muscleGroup: state.selectedBucket!.label,
+                                  muscleGroup: state.selectedBucket,
                                   clearMuscleGroup: false,
                                 ),
                           );

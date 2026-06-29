@@ -16,9 +16,8 @@ import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart'
 import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:convert';
-
 import 'package:aedify/shared/domain/change_type.dart';
+import 'package:aedify/shared/domain/enum_codec.dart';
 
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
@@ -459,10 +458,16 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       weeksTotal: Value(draft.weeksTotal),
       daysPerWeek: Value(draft.daysPerWeek),
       sessionLengthMinutes: Value(draft.sessionLengthMinutes),
-      goalTagsJson: Value(jsonEncode(draft.goalTags)),
-      equipmentJson: Value(jsonEncode(draft.equipment)),
-      experienceLevelAtCreation: Value(draft.experienceLevelAtCreation),
-      preferredUnitsAtCreation: Value(draft.preferredUnitsAtCreation),
+      goalTagsJson: Value(
+        EnumCodec.encodeSet(draft.goalTags, (value) => value.dbValue),
+      ),
+      equipmentJson: Value(
+        EnumCodec.encodeSet(draft.equipment, (value) => value.dbValue),
+      ),
+      experienceLevelAtCreation: Value(
+        draft.experienceLevelAtCreation?.dbValue,
+      ),
+      preferredUnitsAtCreation: Value(draft.preferredUnitsAtCreation?.dbValue),
       createdAt: Value(createdAt),
       updatedAt: Value(now),
     );

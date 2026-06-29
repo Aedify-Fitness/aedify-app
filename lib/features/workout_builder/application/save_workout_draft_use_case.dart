@@ -2,6 +2,8 @@ import 'package:aedify/features/workout_builder/data/saved_workout_repository.da
 import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_exercise_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_save_request.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart'
     as builder_set;
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart'
@@ -23,8 +25,8 @@ class SaveWorkoutDraftUseCase {
       source: builderDraft.source,
       creationMethod: builderDraft.creationMethod,
       status: builderDraft.status,
-      goalTags: builderDraft.goalTags,
-      equipment: builderDraft.equipment,
+      goalTags: builderDraft.goalTags.map(_goalTagFromString).toSet(),
+      equipment: builderDraft.equipment.map(_equipmentTagFromString).toSet(),
       description: builderDraft.description,
       estimatedDurationMinutes: builderDraft.estimatedDurationMinutes,
       exercises: builderDraft.exercises.map((e) {
@@ -66,5 +68,36 @@ class SaveWorkoutDraftUseCase {
       prescribedRir: s.prescribedRir,
       restSeconds: s.restSeconds,
     );
+  }
+
+  GoalTag _goalTagFromString(String value) {
+    return switch (value) {
+      'build_muscle' => GoalTag.buildMuscle,
+      'lose_weight' => GoalTag.loseWeight,
+      'increase_strength' => GoalTag.increaseStrength,
+      'improve_endurance' => GoalTag.improveEndurance,
+      'general_fitness' => GoalTag.generalFitness,
+      'flexibility' => GoalTag.flexibility,
+      _ => GoalTag.generalFitness,
+    };
+  }
+
+  EquipmentTag _equipmentTagFromString(String value) {
+    return switch (value) {
+      'bodyweight' => EquipmentTag.bodyweight,
+      'dumbbell' => EquipmentTag.dumbbell,
+      'barbell' => EquipmentTag.barbell,
+      'kettlebell' => EquipmentTag.kettlebell,
+      'bands' => EquipmentTag.bands,
+      'cable' => EquipmentTag.cable,
+      'machine' => EquipmentTag.machine,
+      'smith_machine' => EquipmentTag.smithMachine,
+      'pull_up_bar' => EquipmentTag.pullUpBar,
+      'bench' => EquipmentTag.bench,
+      'squat_rack' => EquipmentTag.squatRack,
+      'cardio_machine' => EquipmentTag.cardioMachine,
+      'ez_bar' => EquipmentTag.ezBar,
+      _ => EquipmentTag.other,
+    };
   }
 }

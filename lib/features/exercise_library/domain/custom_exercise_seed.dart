@@ -1,3 +1,8 @@
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+
 class CustomExerciseSeed {
   const CustomExerciseSeed({
     required this.name,
@@ -9,9 +14,9 @@ class CustomExerciseSeed {
   });
 
   final String name;
-  final List<String> muscleGroups;
-  final String modality;
-  final String? equipment;
-  final String? difficulty;
+  final Set<BodymapBucket> muscleGroups;
+  final ExerciseModality modality;
+  final EquipmentTag? equipment;
+  final ExerciseDifficulty? difficulty;
   final List<String> steps;
 }

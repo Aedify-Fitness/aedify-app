@@ -1,4 +1,4 @@
-import 'package:aedify/features/exercise_library/presentation/widgets/exercise_filter_sheet.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -21,7 +21,10 @@ void main() {
     ];
 
     test('muscle group options match 14 approved bodymap buckets', () {
-      expect(ExerciseFilterSheet.muscleGroupOptions, equals(approvedBuckets));
+      expect(
+        BodymapBucket.values.map((e) => e.label).toList(),
+        equals(approvedBuckets),
+      );
     });
   });
 }

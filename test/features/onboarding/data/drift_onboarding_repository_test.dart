@@ -3,6 +3,9 @@ import 'package:drift/native.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/drift_onboarding_repository.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,10 +25,10 @@ void main() {
     });
 
     OnboardingDraft makeDraft({
-      String? experienceLevel = 'Intermediate',
-      List<String> goals = const ['Build muscle'],
+      ExperienceLevel? experienceLevel = ExperienceLevel.intermediate,
+      Set<GoalTag> goals = const {GoalTag.buildMuscle},
       int? trainingDaysPerWeek = 4,
-      List<String> equipment = const ['Dumbbells'],
+      Set<EquipmentTag> equipment = const {EquipmentTag.dumbbell},
       PreferredUnit? preferredUnits = PreferredUnit.metric,
       double? heightCm = 175,
       double? bodyweightKg = 70,
@@ -57,10 +60,10 @@ void main() {
 
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded, isNotNull);
-      expect(loaded!.experienceLevel, 'Intermediate');
-      expect(loaded.goals, ['Build muscle']);
+      expect(loaded!.experienceLevel, ExperienceLevel.intermediate);
+      expect(loaded.goals, {GoalTag.buildMuscle});
       expect(loaded.trainingDaysPerWeek, 4);
-      expect(loaded.equipmentAccess, ['Dumbbells']);
+      expect(loaded.equipmentAccess, {EquipmentTag.dumbbell});
       expect(loaded.preferredUnits, PreferredUnit.metric);
       expect(loaded.heightCm, 175);
       expect(loaded.bodyweightKg, 70);
@@ -73,10 +76,10 @@ void main() {
 
     test('loadOnboardingDraft returns saved values', () async {
       final draft = makeDraft(
-        experienceLevel: 'Beginner',
-        goals: ['Lose weight', 'General fitness'],
+        experienceLevel: ExperienceLevel.beginner,
+        goals: {GoalTag.loseWeight, GoalTag.generalFitness},
         trainingDaysPerWeek: 3,
-        equipment: ['Resistance bands'],
+        equipment: {EquipmentTag.bands},
         preferredUnits: PreferredUnit.imperial,
         heightCm: null,
         bodyweightKg: null,
@@ -86,10 +89,10 @@ void main() {
       final loaded = await repository.loadOnboardingDraft();
 
       expect(loaded, isNotNull);
-      expect(loaded!.experienceLevel, 'Beginner');
-      expect(loaded.goals, ['Lose weight', 'General fitness']);
+      expect(loaded!.experienceLevel, ExperienceLevel.beginner);
+      expect(loaded.goals, {GoalTag.loseWeight, GoalTag.generalFitness});
       expect(loaded.trainingDaysPerWeek, 3);
-      expect(loaded.equipmentAccess, ['Resistance bands']);
+      expect(loaded.equipmentAccess, {EquipmentTag.bands});
       expect(loaded.preferredUnits, PreferredUnit.imperial);
       expect(loaded.heightCm, isNull);
       expect(loaded.bodyweightKg, isNull);
@@ -105,7 +108,7 @@ void main() {
 
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded, isNotNull);
-      expect(loaded!.experienceLevel, 'Intermediate');
+      expect(loaded!.experienceLevel, ExperienceLevel.intermediate);
 
       final profile = await db.select(db.userProfile).get();
       expect(profile.length, 1);
@@ -121,7 +124,7 @@ void main() {
 
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded, isNotNull);
-      expect(loaded!.experienceLevel, '');
+      expect(loaded!.experienceLevel, isNull);
       expect(loaded.goals, isEmpty);
       expect(loaded.trainingDaysPerWeek, isNull);
       expect(loaded.notes, isNull);
@@ -139,7 +142,7 @@ void main() {
 
     test('JSON list decode handles empty and valid data', () async {
       await repository.saveOnboardingDraft(
-        makeDraft(goals: [], limitations: []),
+        makeDraft(goals: const <GoalTag>{}, limitations: []),
       );
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded!.goals, isEmpty);
@@ -210,9 +213,9 @@ void main() {
           .insert(
             UserProfileCompanion(
               id: const Value('default'),
-              experienceLevel: const Value('Intermediate'),
+              experienceLevel: const Value('intermediate'),
               goalsJson: const Value('not valid json'),
-              equipmentAccessJson: const Value('["Dumbbells"]'),
+              equipmentAccessJson: const Value('["dumbbell"]'),
               injuriesLimitationsJson: const Value('[]'),
               createdAt: Value(now),
               updatedAt: Value(now),
@@ -222,7 +225,7 @@ void main() {
       final loaded = await repository.loadOnboardingDraft();
       expect(loaded, isNotNull);
       expect(loaded!.goals, isEmpty);
-      expect(loaded.equipmentAccess, ['Dumbbells']);
+      expect(loaded.equipmentAccess, {EquipmentTag.dumbbell});
     });
   });
 }

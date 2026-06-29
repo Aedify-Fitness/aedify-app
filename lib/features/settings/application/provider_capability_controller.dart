@@ -2,13 +2,14 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/provider_capability_state.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProviderCapabilityController
     extends AsyncNotifier<ProviderCapabilityState> {
   ProviderCapabilityController(this._providerName, this._modelName);
 
-  final String _providerName;
+  final AiProviderName _providerName;
   final String _modelName;
 
   @override

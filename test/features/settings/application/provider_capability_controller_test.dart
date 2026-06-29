@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/data/provider_capability_repository.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +14,7 @@ class _MockCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<ProviderCapabilityViewData?> getCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {
     if (shouldThrow) {
@@ -27,7 +28,7 @@ class _MockCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<void> clearCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {}
 }
@@ -36,7 +37,7 @@ void main() {
   group('ProviderCapabilityController', () {
     test('initial build loads cached capability', () async {
       final capability = ProviderCapabilityViewData(
-        providerName: 'openai',
+        providerName: AiProviderName.openai,
         modelName: 'gpt-4o',
         supportsTextInput: true,
         supportsImageInput: false,
@@ -58,7 +59,7 @@ void main() {
 
       final controller = container.read(
         AppProviders.providerCapabilityControllerProvider((
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
         )).notifier,
       );
@@ -67,7 +68,7 @@ void main() {
 
       expect(state.isLoading, isFalse);
       expect(state.capability, isNotNull);
-      expect(state.capability!.providerName, equals('openai'));
+      expect(state.capability!.providerName, equals(AiProviderName.openai));
       expect(state.capability!.modelName, equals('gpt-4o'));
       expect(state.capability!.supportsTextInput, isTrue);
       expect(state.capability!.supportsJsonSchemaMode, isTrue);
@@ -86,7 +87,7 @@ void main() {
 
       final controller = container.read(
         AppProviders.providerCapabilityControllerProvider((
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
         )).notifier,
       );
@@ -110,7 +111,7 @@ void main() {
 
       final controller = container.read(
         AppProviders.providerCapabilityControllerProvider((
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
         )).notifier,
       );
@@ -128,7 +129,7 @@ void main() {
 
     test('capability state does not expose provider secrets', () async {
       final capability = ProviderCapabilityViewData(
-        providerName: 'openai',
+        providerName: AiProviderName.openai,
         modelName: 'gpt-4o',
         supportsTextInput: true,
         supportsImageInput: false,
@@ -150,7 +151,7 @@ void main() {
 
       final controller = container.read(
         AppProviders.providerCapabilityControllerProvider((
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
         )).notifier,
       );
@@ -158,7 +159,7 @@ void main() {
       final state = await controller.future;
 
       expect(state.capability, isNotNull);
-      expect(state.capability!.providerName, equals('openai'));
+      expect(state.capability!.providerName, equals(AiProviderName.openai));
       expect(state.capability!.supportsTextInput, isTrue);
       expect(state.capability!.maxContextTokens, isNull);
       expect(
@@ -174,7 +175,7 @@ void main() {
     test('reload refreshes capability state', () async {
       final initial = _MockCapabilityRepository(
         capability: ProviderCapabilityViewData(
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
           supportsTextInput: true,
           supportsImageInput: false,
@@ -197,7 +198,7 @@ void main() {
 
       final controller = container.read(
         AppProviders.providerCapabilityControllerProvider((
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           modelName: 'gpt-4o',
         )).notifier,
       );

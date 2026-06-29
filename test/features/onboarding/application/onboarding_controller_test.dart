@@ -3,6 +3,9 @@ import 'package:aedify/features/onboarding/application/onboarding_controller.dar
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,10 +85,10 @@ void main() {
     test('build resumes at correct step from saved draft', () async {
       await repository.saveOnboardingDraft(
         const OnboardingDraft(
-          experienceLevel: 'Intermediate',
-          goals: ['Build muscle'],
+          experienceLevel: ExperienceLevel.intermediate,
+          goals: {GoalTag.buildMuscle},
           trainingDaysPerWeek: 4,
-          equipmentAccess: ['Dumbbells'],
+          equipmentAccess: {EquipmentTag.dumbbell},
           preferredUnits: PreferredUnit.metric,
           limitations: ['None'],
           byokSkipped: false,
@@ -100,7 +103,7 @@ void main() {
       'build resumes at experienceGoals when draft lacks experienceLevel',
       () async {
         await repository.saveOnboardingDraft(
-          const OnboardingDraft(goals: ['Build muscle']),
+          const OnboardingDraft(goals: {GoalTag.buildMuscle}),
         );
         container.invalidate(AppProviders.onboardingControllerProvider);
         await container.read(AppProviders.onboardingControllerProvider.future);
@@ -112,7 +115,7 @@ void main() {
       'build resumes at schedule when draft has experienceLevel but no days',
       () async {
         await repository.saveOnboardingDraft(
-          const OnboardingDraft(experienceLevel: 'Intermediate'),
+          const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
         );
         container.invalidate(AppProviders.onboardingControllerProvider);
         await container.read(AppProviders.onboardingControllerProvider.future);
@@ -149,7 +152,7 @@ void main() {
         await container.read(AppProviders.onboardingControllerProvider.future);
         await controller.nextStep();
         controller.updateDraft(
-          const OnboardingDraft(experienceLevel: 'Intermediate'),
+          const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
         );
         await controller.nextStep();
 
@@ -165,12 +168,12 @@ void main() {
         await container.read(AppProviders.onboardingControllerProvider.future);
         await controller.nextStep();
         controller.updateDraft(
-          const OnboardingDraft(experienceLevel: 'Intermediate'),
+          const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
         );
         await controller.nextStep();
         controller.updateDraft(
           const OnboardingDraft(
-            experienceLevel: 'Intermediate',
+            experienceLevel: ExperienceLevel.intermediate,
             trainingDaysPerWeek: 0,
           ),
         );
@@ -188,15 +191,15 @@ void main() {
       await controller.nextStep();
       controller.updateDraft(
         const OnboardingDraft(
-          experienceLevel: 'Intermediate',
-          goals: ['Build muscle'],
+          experienceLevel: ExperienceLevel.intermediate,
+          goals: {GoalTag.buildMuscle},
         ),
       );
       await controller.nextStep();
       controller.updateDraft(
         const OnboardingDraft(
-          experienceLevel: 'Intermediate',
-          goals: ['Build muscle'],
+          experienceLevel: ExperienceLevel.intermediate,
+          goals: {GoalTag.buildMuscle},
           trainingDaysPerWeek: 4,
         ),
       );
@@ -214,12 +217,12 @@ void main() {
 
       await controller.nextStep();
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Intermediate'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
       );
       await controller.nextStep();
       controller.updateDraft(
         const OnboardingDraft(
-          experienceLevel: 'Intermediate',
+          experienceLevel: ExperienceLevel.intermediate,
           trainingDaysPerWeek: 4,
         ),
       );
@@ -257,9 +260,9 @@ void main() {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Beginner'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.beginner),
       );
-      expect(readState().draft.experienceLevel, 'Beginner');
+      expect(readState().draft.experienceLevel, ExperienceLevel.beginner);
     });
 
     test(
@@ -269,7 +272,7 @@ void main() {
 
         expect(repository.saveCallCount, 0);
         controller.updateDraft(
-          const OnboardingDraft(experienceLevel: 'Beginner'),
+          const OnboardingDraft(experienceLevel: ExperienceLevel.beginner),
         );
         expect(repository.saveCallCount, 0);
       },
@@ -279,20 +282,20 @@ void main() {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Beginner'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.beginner),
       );
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Intermediate'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
       );
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Advanced'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.advanced),
       );
       await Future<void>.delayed(const Duration(milliseconds: 500));
       expect(repository.saveCallCount, 1);
       expect(await repository.loadOnboardingDraft(), isNotNull);
       expect(
         (await repository.loadOnboardingDraft())!.experienceLevel,
-        'Advanced',
+        ExperienceLevel.advanced,
       );
     });
 
@@ -301,7 +304,7 @@ void main() {
 
       await controller.nextStep();
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Intermediate'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
       );
       expect(repository.saveCallCount, 0);
       await controller.nextStep();
@@ -316,15 +319,15 @@ void main() {
         await controller.nextStep();
         controller.updateDraft(
           const OnboardingDraft(
-            experienceLevel: 'Advanced',
-            goals: ['Build muscle'],
+            experienceLevel: ExperienceLevel.advanced,
+            goals: {GoalTag.buildMuscle},
           ),
         );
         await controller.nextStep();
         controller.updateDraft(
           const OnboardingDraft(
-            experienceLevel: 'Advanced',
-            goals: ['Build muscle'],
+            experienceLevel: ExperienceLevel.advanced,
+            goals: {GoalTag.buildMuscle},
             trainingDaysPerWeek: 5,
           ),
         );
@@ -357,7 +360,7 @@ void main() {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
       controller.updateDraft(
-        const OnboardingDraft(experienceLevel: 'Intermediate'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
       );
       await controller.restartOnboarding();
 
@@ -370,13 +373,13 @@ void main() {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
       await repository.saveOnboardingDraft(
-        const OnboardingDraft(experienceLevel: 'Beginner'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.beginner),
       );
       await controller.loadExistingDraft();
 
       final state = readState();
       expect(state.currentStep, OnboardingStep.schedule);
-      expect(state.draft.experienceLevel, 'Beginner');
+      expect(state.draft.experienceLevel, ExperienceLevel.beginner);
     });
 
     test(
@@ -387,8 +390,8 @@ void main() {
 
         controller.updateDraft(
           OnboardingDraft(
-            experienceLevel: 'Intermediate',
-            goals: ['Build muscle'],
+            experienceLevel: ExperienceLevel.intermediate,
+            goals: {GoalTag.buildMuscle},
             notes: PrivacySentinelValues.fakeProfileNote,
           ),
         );
@@ -411,8 +414,7 @@ void main() {
         await container.read(AppProviders.onboardingControllerProvider.future);
 
         controller.updateDraft(
-          OnboardingDraft(
-            experienceLevel: '',
+          const OnboardingDraft(
             bodyweightKg: 98.7,
             notes: PrivacySentinelValues.fakeProfileNote,
           ),

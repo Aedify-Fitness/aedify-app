@@ -4,6 +4,9 @@ import 'package:aedify/features/exercise_library/presentation/widgets/exercise_v
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -135,15 +138,16 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   runSpacing: AppSpacing.sm,
                   children: [
                     if (loaded.difficulty != null)
-                      _MetaChip(label: loaded.difficulty!),
+                      _MetaChip(label: _formatDifficulty(loaded.difficulty!)),
                     _MetaChip(label: _formatModality(loaded.modality)),
                     if (loaded.equipment != null)
-                      _MetaChip(label: loaded.equipment!),
+                      _MetaChip(label: _formatEquipment(loaded.equipment!)),
                     if (loaded.category != null)
                       _MetaChip(label: loaded.category!),
-                    if (loaded.force != null) _MetaChip(label: loaded.force!),
+                    if (loaded.force != null)
+                      _MetaChip(label: _formatLabel(loaded.force!.dbValue)),
                     if (loaded.mechanic != null)
-                      _MetaChip(label: loaded.mechanic!),
+                      _MetaChip(label: _formatLabel(loaded.mechanic!.dbValue)),
                   ],
                 ),
                 if (loaded.muscleGroups.isNotEmpty) ...[
@@ -159,7 +163,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                     children: loaded.muscleGroups
                         .map(
                           (g) => Chip(
-                            label: Text(g, style: AppTextStyles.labelSm),
+                            label: Text(g.label, style: AppTextStyles.labelSm),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             visualDensity: VisualDensity.compact,
@@ -248,8 +252,20 @@ class ExerciseDetailScreen extends ConsumerWidget {
     );
   }
 
-  String _formatModality(String modality) {
-    return modality
+  String _formatDifficulty(ExerciseDifficulty difficulty) {
+    return _formatLabel(difficulty.dbValue);
+  }
+
+  String _formatModality(ExerciseModality modality) {
+    return _formatLabel(modality.dbValue);
+  }
+
+  String _formatEquipment(EquipmentTag equipment) {
+    return _formatLabel(equipment.dbValue);
+  }
+
+  String _formatLabel(String value) {
+    return value
         .replaceAll('_', ' ')
         .split(' ')
         .map(

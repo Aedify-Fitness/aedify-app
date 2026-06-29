@@ -6,6 +6,29 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-29
 
+### Settings and exercise-library test migration to enum-backed provider/exercise taxonomy
+
+- Updated the targeted settings, exercise-library, and M3 smoke tests plus shared fakes to use enum-backed `AiProviderName`, `ProviderValidationStatus`, `ExerciseDifficulty`, `ExerciseModality`, `EquipmentTag`, `BodymapBucket`, `ExerciseVideoAngle`, and `ExerciseVideoGender` APIs instead of legacy strings.
+- Adjusted repository/controller/widget expectations to assert enum values or formatted enum labels at the UI boundary, and refreshed the dataset parser/importer test fixture inputs to match the new closed vocabularies.
+- Verification: targeted `flutter test test/features/settings test/features/exercise_library test/app/m3` now passes.
+
+### Onboarding/profile test migration to enum-backed profile taxonomy
+
+- Updated onboarding and profile tests under `test/features/onboarding/**` and `test/features/profile/**` to use the new enum-backed `ExperienceLevel`, `GoalTag`, `EquipmentTag`, and `Sex` APIs instead of legacy strings/lists.
+- Adjusted fake repositories, test fixtures, and expectations to match typed `Set<GoalTag>` / `Set<EquipmentTag>` fields and nullable `experienceLevel` behavior.
+- Verification: `dart format` on updated tests completed. Targeted analysis/tests run after this entry.
+
+### Enum-backed taxonomy rollout for exercise, profile, onboarding, and provider models
+
+- Added 18 shared taxonomy/support files in `lib/shared/domain/` covering enum-backed parsing for experience level, sex, goals, equipment, training days, exercise difficulty/modality/source/force/mechanic/video metadata, strength anchors, AI provider names, and provider validation status plus a shared `EnumCodec` helper for JSON text enum arrays.
+- Converted implemented exercise-library domain models from raw taxonomy strings to enums/enum sets where the reference docs define closed vocabularies: filters, list/detail view data, candidate DTO/query, custom exercise seed, dataset exercise/video DTOs, and exercise repository/query-service mapping.
+- Tightened exercise filter UI to the documented exercise modality taxonomy (`strength`, `flexibility`, `cardio`, `recovery`) and wired filter selections/bodymap buckets through enum-backed state instead of raw strings.
+- Converted implemented profile and onboarding models to enum-backed constraints for `experienceLevel`, `sex`, `goals`, `equipmentAccess`, and `trainingDayNames`, while intentionally keeping `primaryMuscles`, notes, steps, and limitations as validated/freeform strings per the docs.
+- Converted implemented programme and saved-workout draft metadata to `Set<GoalTag>` / `Set<EquipmentTag>` and typed `experienceLevelAtCreation` / `preferredUnitsAtCreation` fields.
+- Replaced strength-anchor magic strings in `DriftProfileRepository` with typed `StrengthAnchorType` / `StrengthAnchorSource` values.
+- Converted BYOK/provider-facing implemented models and repositories to typed `AiProviderName` and `ProviderValidationStatus` values, including provider capability repository/controller and key validation routing.
+- Verification: `dart format` pending, `flutter analyze` pending, `flutter test` pending at the time of this entry.
+
 ### Codebase-wide enum conversion for ~20 string-typed fields + convention fixes
 
 - **18 new enum files** in `lib/shared/domain/`: `SetType`, `SetIntent`, `WeightPrescriptionType`, `LoadingModel`, `ExerciseRole`, `WorkoutSource`, `SessionSource`, `CreationMethod`, `ImportOrigin`, `ImportReviewStatus`, `ExportPrivacyMode`, `ProgramStatus`, `SavedWorkoutStatus`, `ProgramWorkoutStatus`, `WorkoutSessionStatus`, `DayType`, `WeekType`, `PeriodisationModel`, `TrainingStyle`, `ChangeType`, `UpdateScope`.

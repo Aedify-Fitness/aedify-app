@@ -4,6 +4,7 @@ import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ByokSetupState {
@@ -165,7 +166,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {
     final current = state.requireValue;

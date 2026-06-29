@@ -90,6 +90,7 @@ import 'package:aedify/features/workout_builder/application/load_workout_draft_u
 import 'package:aedify/features/workout_builder/application/save_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
 import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -412,7 +413,7 @@ class AppProviders {
       AsyncNotifierProvider.family<
         ProviderCapabilityController,
         ProviderCapabilityState,
-        ({String providerName, String modelName})
+        ({AiProviderName providerName, String modelName})
       >((arg) => ProviderCapabilityController(arg.providerName, arg.modelName));
 
   // M4 DAO providers

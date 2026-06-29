@@ -1,4 +1,8 @@
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 enum OnboardingStep {
   welcome,
@@ -15,10 +19,11 @@ class OnboardingDraft {
   const OnboardingDraft({
     this.displayName,
     this.experienceLevel,
-    this.goals = const <String>[],
+    this.goals = const <GoalTag>{},
     this.trainingDaysPerWeek,
+    this.trainingDays = const <TrainingDay>[],
     this.targetSessionLengthMinutes,
-    this.equipmentAccess = const <String>[],
+    this.equipmentAccess = const <EquipmentTag>{},
     this.preferredUnits,
     this.heightCm,
     this.bodyweightKg,
@@ -28,11 +33,12 @@ class OnboardingDraft {
   });
 
   final String? displayName;
-  final String? experienceLevel;
-  final List<String> goals;
+  final ExperienceLevel? experienceLevel;
+  final Set<GoalTag> goals;
   final int? trainingDaysPerWeek;
+  final List<TrainingDay> trainingDays;
   final int? targetSessionLengthMinutes;
-  final List<String> equipmentAccess;
+  final Set<EquipmentTag> equipmentAccess;
   final PreferredUnit? preferredUnits;
   final double? heightCm;
   final double? bodyweightKg;
@@ -42,11 +48,12 @@ class OnboardingDraft {
 
   OnboardingDraft copyWith({
     String? displayName,
-    String? experienceLevel,
-    List<String>? goals,
+    ExperienceLevel? experienceLevel,
+    Set<GoalTag>? goals,
     int? trainingDaysPerWeek,
+    List<TrainingDay>? trainingDays,
     int? targetSessionLengthMinutes,
-    List<String>? equipmentAccess,
+    Set<EquipmentTag>? equipmentAccess,
     PreferredUnit? preferredUnits,
     double? heightCm,
     double? bodyweightKg,
@@ -82,6 +89,7 @@ class OnboardingDraft {
           : (bodyweightKg ?? this.bodyweightKg),
       notes: clearNotes ? null : (notes ?? this.notes),
       goals: goals ?? this.goals,
+      trainingDays: trainingDays ?? this.trainingDays,
       equipmentAccess: equipmentAccess ?? this.equipmentAccess,
       limitations: limitations ?? this.limitations,
       byokSkipped: byokSkipped ?? this.byokSkipped,

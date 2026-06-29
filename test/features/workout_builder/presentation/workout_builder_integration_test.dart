@@ -4,11 +4,15 @@ import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dar
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,10 +47,10 @@ class _FakeExerciseRepository implements ExerciseRepository {
       const ExerciseListItem(
         id: 100,
         name: 'Bench Press',
-        modality: 'strength',
-        equipment: 'barbell',
-        difficulty: 'intermediate',
-        muscleGroups: ['chest'],
+        modality: ExerciseModality.strength,
+        equipment: EquipmentTag.barbell,
+        difficulty: ExerciseDifficulty.intermediate,
+        muscleGroups: {BodymapBucket.chest},
         isFavorite: false,
         isSubstitutedOut: false,
         isCustom: false,

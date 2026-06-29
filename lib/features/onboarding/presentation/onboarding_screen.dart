@@ -10,6 +10,10 @@ import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -510,9 +514,18 @@ class _ExperienceGoalsStep extends StatelessWidget {
                   title: level.$1,
                   description: level.$2,
                   iconAsset: level.$3,
-                  selected: draft.experienceLevel == level.$1,
+                  selected:
+                      _OnboardingTaxonomy.experienceLabel(
+                        draft.experienceLevel,
+                      ) ==
+                      level.$1,
                   onTap: () {
-                    onUpdateDraft(draft.copyWith(experienceLevel: level.$1));
+                    onUpdateDraft(
+                      draft.copyWith(
+                        experienceLevel:
+                            _OnboardingTaxonomy.experienceFromLabel(level.$1),
+                      ),
+                    );
                   },
                 ),
                 if (level != _experienceLevels.last) AppWhiteSpace.hSm,
@@ -531,14 +544,21 @@ class _ExperienceGoalsStep extends StatelessWidget {
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
                 children: _goalOptions.map((goal) {
-                  final selected = draft.goals.contains(goal);
+                  final selected = draft.goals.contains(
+                    _OnboardingTaxonomy.goalFromLabel(goal),
+                  );
                   return FilterChip(
                     label: Text(goal),
                     selected: selected,
                     onSelected: (isSelected) {
                       final updated = isSelected
-                          ? [...draft.goals, goal]
-                          : draft.goals.where((g) => g != goal).toList();
+                          ? {
+                              ...draft.goals,
+                              _OnboardingTaxonomy.goalFromLabel(goal),
+                            }
+                          : (Set<GoalTag>.from(
+                              draft.goals,
+                            )..remove(_OnboardingTaxonomy.goalFromLabel(goal)));
                       onUpdateDraft(draft.copyWith(goals: updated));
                     },
                   );
@@ -653,7 +673,9 @@ class _EquipmentStep extends StatelessWidget {
           title: AppStrings.onboardingEquipmentGroupFoundation,
           description: AppStrings.onboardingEquipmentGroupFoundationDescription,
           items: _foundationEquipment,
-          selectedItems: draft.equipmentAccess,
+          selectedItems: draft.equipmentAccess
+              .map(_OnboardingTaxonomy.equipmentLabel)
+              .toList(),
           onToggle: _toggleEquipment,
         ),
         AppWhiteSpace.hLg,
@@ -662,7 +684,9 @@ class _EquipmentStep extends StatelessWidget {
           description:
               AppStrings.onboardingEquipmentGroupAccessoriesDescription,
           items: _accessoryEquipment,
-          selectedItems: draft.equipmentAccess,
+          selectedItems: draft.equipmentAccess
+              .map(_OnboardingTaxonomy.equipmentLabel)
+              .toList(),
           onToggle: _toggleEquipment,
         ),
         AppWhiteSpace.hLg,
@@ -670,7 +694,9 @@ class _EquipmentStep extends StatelessWidget {
           title: AppStrings.onboardingEquipmentGroupMachines,
           description: AppStrings.onboardingEquipmentGroupMachinesDescription,
           items: _machineEquipment,
-          selectedItems: draft.equipmentAccess,
+          selectedItems: draft.equipmentAccess
+              .map(_OnboardingTaxonomy.equipmentLabel)
+              .toList(),
           onToggle: _toggleEquipment,
         ),
       ],
@@ -678,10 +704,96 @@ class _EquipmentStep extends StatelessWidget {
   }
 
   void _toggleEquipment(String equipment, bool isSelected) {
+    final equipmentTag = _OnboardingTaxonomy.equipmentFromLabel(equipment);
     final updated = isSelected
-        ? [...draft.equipmentAccess, equipment]
-        : draft.equipmentAccess.where((item) => item != equipment).toList();
+        ? {...draft.equipmentAccess, equipmentTag}
+        : ({...draft.equipmentAccess}..remove(equipmentTag));
     onUpdateDraft(draft.copyWith(equipmentAccess: updated));
+  }
+}
+
+class _OnboardingTaxonomy {
+  _OnboardingTaxonomy._();
+
+  static GoalTag goalFromLabel(String value) {
+    return switch (value) {
+      'Build muscle' => GoalTag.buildMuscle,
+      'Lose weight' => GoalTag.loseWeight,
+      'Increase strength' => GoalTag.increaseStrength,
+      'Improve endurance' => GoalTag.improveEndurance,
+      'General fitness' => GoalTag.generalFitness,
+      _ => GoalTag.flexibility,
+    };
+  }
+
+  static String goalLabel(GoalTag value) {
+    return switch (value) {
+      GoalTag.buildMuscle => 'Build muscle',
+      GoalTag.loseWeight => 'Lose weight',
+      GoalTag.increaseStrength => 'Increase strength',
+      GoalTag.improveEndurance => 'Improve endurance',
+      GoalTag.generalFitness => 'General fitness',
+      GoalTag.flexibility => 'Flexibility',
+    };
+  }
+
+  static String? experienceLabel(ExperienceLevel? value) {
+    return switch (value) {
+      ExperienceLevel.novice => AppStrings.onboardingExperienceBeginner,
+      ExperienceLevel.beginner => AppStrings.onboardingExperienceBeginner,
+      ExperienceLevel.intermediate =>
+        AppStrings.onboardingExperienceIntermediate,
+      ExperienceLevel.advanced => AppStrings.onboardingExperienceAdvanced,
+      null => null,
+    };
+  }
+
+  static ExperienceLevel experienceFromLabel(String value) {
+    return switch (value) {
+      AppStrings.onboardingExperienceBeginner => ExperienceLevel.beginner,
+      AppStrings.onboardingExperienceIntermediate =>
+        ExperienceLevel.intermediate,
+      AppStrings.onboardingExperienceAdvanced => ExperienceLevel.advanced,
+      _ => ExperienceLevel.beginner,
+    };
+  }
+
+  static String equipmentLabel(EquipmentTag value) {
+    return switch (value) {
+      EquipmentTag.bodyweight => AppStrings.onboardingEquipmentNone,
+      EquipmentTag.dumbbell => AppStrings.onboardingEquipmentDumbbells,
+      EquipmentTag.barbell => AppStrings.onboardingEquipmentBarbell,
+      EquipmentTag.bench => AppStrings.onboardingEquipmentBench,
+      EquipmentTag.squatRack => AppStrings.onboardingEquipmentSquatRack,
+      EquipmentTag.kettlebell => AppStrings.onboardingEquipmentKettlebell,
+      EquipmentTag.bands => AppStrings.onboardingEquipmentResistanceBands,
+      EquipmentTag.pullUpBar => AppStrings.onboardingEquipmentPullUpBar,
+      EquipmentTag.cable => AppStrings.onboardingEquipmentCableMachine,
+      EquipmentTag.smithMachine => AppStrings.onboardingEquipmentSmithMachine,
+      EquipmentTag.cardioMachine => AppStrings.onboardingEquipmentCardioMachine,
+      EquipmentTag.machine => 'Machine',
+      EquipmentTag.ezBar => 'EZ bar',
+      EquipmentTag.other => 'Other',
+    };
+  }
+
+  static EquipmentTag equipmentFromLabel(String value) {
+    return switch (value) {
+      AppStrings.onboardingEquipmentNone => EquipmentTag.bodyweight,
+      AppStrings.onboardingEquipmentDumbbells => EquipmentTag.dumbbell,
+      AppStrings.onboardingEquipmentBarbell => EquipmentTag.barbell,
+      AppStrings.onboardingEquipmentBench => EquipmentTag.bench,
+      AppStrings.onboardingEquipmentSquatRack => EquipmentTag.squatRack,
+      AppStrings.onboardingEquipmentKettlebell => EquipmentTag.kettlebell,
+      AppStrings.onboardingEquipmentResistanceBands => EquipmentTag.bands,
+      AppStrings.onboardingEquipmentPullUpBar => EquipmentTag.pullUpBar,
+      AppStrings.onboardingEquipmentCableMachine => EquipmentTag.cable,
+      AppStrings.onboardingEquipmentSmithMachine => EquipmentTag.smithMachine,
+      AppStrings.onboardingEquipmentCardioMachine => EquipmentTag.cardioMachine,
+      'Machine' => EquipmentTag.machine,
+      'EZ bar' => EquipmentTag.ezBar,
+      _ => EquipmentTag.other,
+    };
   }
 }
 
@@ -888,13 +1000,13 @@ class _ByokFormState {
     this.hasSaved = false,
   });
 
-  final String? selectedProvider;
+  final AiProviderName? selectedProvider;
   final String? selectedModel;
   final bool isSaving;
   final bool hasSaved;
 
   _ByokFormState copyWith({
-    String? selectedProvider,
+    AiProviderName? selectedProvider,
     String? selectedModel,
     bool? isSaving,
     bool? hasSaved,
@@ -916,7 +1028,10 @@ class _ByokFormNotifier extends Notifier<_ByokFormState> {
   @override
   _ByokFormState build() => const _ByokFormState();
 
-  void selectProvider(String providerName, List<ByokProviderOption> options) {
+  void selectProvider(
+    AiProviderName providerName,
+    List<ByokProviderOption> options,
+  ) {
     final option = options.firstWhere((o) => o.providerName == providerName);
     state = state.copyWith(
       selectedProvider: providerName,
@@ -1230,7 +1345,7 @@ class _OnboardingModelSelector extends StatelessWidget {
   });
 
   final List<ByokProviderOption> options;
-  final String providerName;
+  final AiProviderName providerName;
   final String? selectedModelId;
   final ValueChanged<String?> onChanged;
 
@@ -1275,7 +1390,7 @@ class _ReviewStep extends StatelessWidget {
             _ReviewRow(
               label: AppStrings.onboardingExperienceHint,
               value:
-                  draft.experienceLevel ??
+                  _OnboardingTaxonomy.experienceLabel(draft.experienceLevel) ??
                   AppStrings.onboardingReviewEmptyValue,
               onTap: () => onJumpToStep(OnboardingStep.experienceGoals),
             ),
@@ -1283,7 +1398,7 @@ class _ReviewStep extends StatelessWidget {
               label: AppStrings.onboardingGoalsHint,
               value: draft.goals.isEmpty
                   ? AppStrings.onboardingReviewEmptyValue
-                  : draft.goals.join(', '),
+                  : draft.goals.map(_OnboardingTaxonomy.goalLabel).join(', '),
               onTap: () => onJumpToStep(OnboardingStep.experienceGoals),
             ),
           ],
@@ -1304,7 +1419,9 @@ class _ReviewStep extends StatelessWidget {
               label: AppStrings.onboardingEquipmentHint,
               value: draft.equipmentAccess.isEmpty
                   ? AppStrings.onboardingReviewEmptyValue
-                  : draft.equipmentAccess.join(', '),
+                  : draft.equipmentAccess
+                        .map(_OnboardingTaxonomy.equipmentLabel)
+                        .join(', '),
               onTap: () => onJumpToStep(OnboardingStep.equipment),
             ),
             _ReviewRow(

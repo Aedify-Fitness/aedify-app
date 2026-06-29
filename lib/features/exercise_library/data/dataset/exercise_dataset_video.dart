@@ -1,3 +1,6 @@
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
+
 class ExerciseDatasetVideo {
   const ExerciseDatasetVideo({
     required this.url,
@@ -7,7 +10,7 @@ class ExerciseDatasetVideo {
   });
 
   final Uri url;
-  final String angle;
-  final String gender;
+  final ExerciseVideoAngle angle;
+  final ExerciseVideoGender gender;
   final String? ogImage;
 }

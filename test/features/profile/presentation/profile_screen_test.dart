@@ -5,6 +5,9 @@ import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
 import 'package:aedify/features/profile/presentation/profile_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +28,7 @@ class _FakeProfileRepository implements ProfileRepository {
       bench1RmKg: draft.bench1RmKg,
       squat1RmKg: draft.squat1RmKg,
       deadlift1RmKg: draft.deadlift1RmKg,
-      experienceLevel: draft.experienceLevel ?? '',
+      experienceLevel: draft.experienceLevel ?? ExperienceLevel.beginner,
       goals: draft.goals,
       equipmentAccess: draft.equipmentAccess,
       trainingDaysPerWeek: draft.trainingDaysPerWeek,
@@ -59,9 +62,9 @@ class _FakeProfileRepositoryWithImpact implements ProfileRepository {
         bench1RmKg: null,
         squat1RmKg: null,
         deadlift1RmKg: null,
-        experienceLevel: 'Beginner',
-        goals: [],
-        equipmentAccess: [],
+        experienceLevel: ExperienceLevel.beginner,
+        goals: <GoalTag>{},
+        equipmentAccess: <EquipmentTag>{},
         trainingDaysPerWeek: null,
         targetSessionLengthMinutes: null,
         preferredUnits: PreferredUnit.metric,
@@ -82,7 +85,7 @@ class _FakeProfileRepositoryWithImpact implements ProfileRepository {
       bench1RmKg: draft.bench1RmKg,
       squat1RmKg: draft.squat1RmKg,
       deadlift1RmKg: draft.deadlift1RmKg,
-      experienceLevel: draft.experienceLevel ?? '',
+      experienceLevel: draft.experienceLevel ?? ExperienceLevel.beginner,
       goals: draft.goals,
       equipmentAccess: draft.equipmentAccess,
       trainingDaysPerWeek: draft.trainingDaysPerWeek,
@@ -130,8 +133,8 @@ void main() {
     final repo = _FakeProfileRepository();
     await repo.saveProfile(
       const ProfileEditDraft(
-        experienceLevel: 'Intermediate',
-        goals: ['Build muscle'],
+        experienceLevel: ExperienceLevel.intermediate,
+        goals: {GoalTag.buildMuscle},
       ),
     );
 
@@ -146,7 +149,10 @@ void main() {
   testWidgets('renders display name field when profile loaded', (tester) async {
     final repo = _FakeProfileRepository();
     await repo.saveProfile(
-      const ProfileEditDraft(experienceLevel: 'Beginner', displayName: 'Alex'),
+      const ProfileEditDraft(
+        experienceLevel: ExperienceLevel.beginner,
+        displayName: 'Alex',
+      ),
     );
 
     await tester.pumpWidget(createTestApp(repo));
@@ -159,7 +165,9 @@ void main() {
 
   testWidgets('renders sex chips when profile loaded', (tester) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -175,7 +183,9 @@ void main() {
     tester,
   ) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -186,7 +196,9 @@ void main() {
 
   testWidgets('renders max lifts section when profile loaded', (tester) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -200,7 +212,9 @@ void main() {
 
   testWidgets('renders favorites and substitutions sections', (tester) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -212,7 +226,9 @@ void main() {
 
   testWidgets('save action triggers controller save', (tester) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -245,7 +261,9 @@ void main() {
     tester,
   ) async {
     final repo = _FakeProfileRepository();
-    await repo.saveProfile(const ProfileEditDraft(experienceLevel: 'Beginner'));
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
 
     await tester.pumpWidget(createTestApp(repo));
     await tester.pump();
@@ -258,7 +276,7 @@ void main() {
     final repo = _FakeProfileRepository();
     await repo.saveProfile(
       const ProfileEditDraft(
-        experienceLevel: 'Beginner',
+        experienceLevel: ExperienceLevel.beginner,
         preferredUnits: PreferredUnit.imperial,
       ),
     );
@@ -276,7 +294,7 @@ void main() {
     final repo = _FakeProfileRepository();
     await repo.saveProfile(
       const ProfileEditDraft(
-        experienceLevel: 'Beginner',
+        experienceLevel: ExperienceLevel.beginner,
         preferredUnits: PreferredUnit.metric,
         bodyweightKg: 70,
         heightCm: 175,

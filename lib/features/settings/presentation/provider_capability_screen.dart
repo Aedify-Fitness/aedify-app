@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -23,7 +24,7 @@ class ProviderCapabilityScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(
       AppProviders.providerCapabilityControllerProvider((
-        providerName: providerName,
+        providerName: AiProviderName.fromDb(providerName),
         modelName: modelName,
       )),
     );
@@ -41,7 +42,7 @@ class ProviderCapabilityScreen extends ConsumerWidget {
               onRetry: () {
                 ref.invalidate(
                   AppProviders.providerCapabilityControllerProvider((
-                    providerName: providerName,
+                    providerName: AiProviderName.fromDb(providerName),
                     modelName: modelName,
                   )),
                 );

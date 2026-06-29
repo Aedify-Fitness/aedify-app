@@ -5,6 +5,7 @@ import 'package:aedify/features/settings/presentation/byok_settings_screen.dart'
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -234,7 +235,7 @@ void main() {
       final configs = await harness.byokRepo.getConfigs();
       expect(configs.length, equals(1));
       expect(configs.first.hasKey, isTrue);
-      expect(configs.first.providerName, equals('openai'));
+      expect(configs.first.providerName, equals(AiProviderName.openai));
     });
 
     testWidgets('AI gating: missing key blocks chat route', (tester) async {

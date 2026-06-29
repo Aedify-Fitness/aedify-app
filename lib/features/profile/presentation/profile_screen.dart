@@ -5,7 +5,11 @@ import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
 import 'package:aedify/shared/formatters/measurement_formatter.dart';
 import 'package:aedify/shared/formatters/measurement_parser.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -144,9 +148,15 @@ class _ProfileContentView extends ConsumerWidget {
                 'Intermediate (6 mo–2 yr)',
                 'Advanced (2+ yr)',
               ],
-              selected: draft.experienceLevel,
+              selected: _ProfileTaxonomy.experienceLabel(draft.experienceLevel),
               onSelected: (value) {
-                controller.updateDraft(draft.copyWith(experienceLevel: value));
+                controller.updateDraft(
+                  draft.copyWith(
+                    experienceLevel: _ProfileTaxonomy.experienceFromLabel(
+                      value,
+                    ),
+                  ),
+                );
               },
             ),
           ),
@@ -161,9 +171,11 @@ class _ProfileContentView extends ConsumerWidget {
                 AppStrings.sexFemale,
                 AppStrings.sexNotSpecified,
               ],
-              selected: draft.sex,
+              selected: _ProfileTaxonomy.sexLabel(draft.sex),
               onSelected: (value) {
-                controller.updateDraft(draft.copyWith(sex: value));
+                controller.updateDraft(
+                  draft.copyWith(sex: _ProfileTaxonomy.sexFromLabel(value)),
+                );
               },
             ),
           ),
@@ -228,11 +240,12 @@ class _ProfileContentView extends ConsumerWidget {
                 'Flexibility',
               ],
               selected: null,
-              selectedSet: draft.goals.toSet(),
+              selectedSet: draft.goals.map(_ProfileTaxonomy.goalLabel).toSet(),
               onSelectedSet: (value) {
-                final updated = draft.goals.contains(value)
-                    ? draft.goals.where((g) => g != value).toList()
-                    : [...draft.goals, value];
+                final goal = _ProfileTaxonomy.goalFromLabel(value);
+                final updated = draft.goals.contains(goal)
+                    ? (Set<GoalTag>.from(draft.goals)..remove(goal))
+                    : {...draft.goals, goal};
                 controller.updateDraft(draft.copyWith(goals: updated));
               },
             ),
@@ -257,11 +270,15 @@ class _ProfileContentView extends ConsumerWidget {
                 'Cardio machine',
               ],
               selected: null,
-              selectedSet: draft.equipmentAccess.toSet(),
+              selectedSet: draft.equipmentAccess
+                  .map(_ProfileTaxonomy.equipmentLabel)
+                  .toSet(),
               onSelectedSet: (value) {
-                final updated = draft.equipmentAccess.contains(value)
-                    ? draft.equipmentAccess.where((e) => e != value).toList()
-                    : [...draft.equipmentAccess, value];
+                final equipment = _ProfileTaxonomy.equipmentFromLabel(value);
+                final updated = draft.equipmentAccess.contains(equipment)
+                    ? (Set<EquipmentTag>.from(draft.equipmentAccess)
+                        ..remove(equipment))
+                    : {...draft.equipmentAccess, equipment};
                 controller.updateDraft(
                   draft.copyWith(equipmentAccess: updated),
                 );
@@ -518,6 +535,106 @@ class _ProfileContentView extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class _ProfileTaxonomy {
+  _ProfileTaxonomy._();
+
+  static String? experienceLabel(ExperienceLevel? value) {
+    return switch (value) {
+      ExperienceLevel.beginner => 'Beginner (0–6 mo)',
+      ExperienceLevel.intermediate => 'Intermediate (6 mo–2 yr)',
+      ExperienceLevel.advanced => 'Advanced (2+ yr)',
+      ExperienceLevel.novice => 'Beginner (0–6 mo)',
+      null => null,
+    };
+  }
+
+  static ExperienceLevel experienceFromLabel(String value) {
+    return switch (value) {
+      'Beginner (0–6 mo)' => ExperienceLevel.beginner,
+      'Intermediate (6 mo–2 yr)' => ExperienceLevel.intermediate,
+      'Advanced (2+ yr)' => ExperienceLevel.advanced,
+      _ => ExperienceLevel.beginner,
+    };
+  }
+
+  static String? sexLabel(Sex? value) {
+    return switch (value) {
+      Sex.male => AppStrings.sexMale,
+      Sex.female => AppStrings.sexFemale,
+      Sex.notSpecified => AppStrings.sexNotSpecified,
+      null => null,
+    };
+  }
+
+  static Sex sexFromLabel(String value) {
+    return switch (value) {
+      AppStrings.sexMale => Sex.male,
+      AppStrings.sexFemale => Sex.female,
+      _ => Sex.notSpecified,
+    };
+  }
+
+  static String goalLabel(GoalTag value) {
+    return switch (value) {
+      GoalTag.buildMuscle => 'Build muscle',
+      GoalTag.loseWeight => 'Lose weight',
+      GoalTag.increaseStrength => 'Increase strength',
+      GoalTag.improveEndurance => 'Improve endurance',
+      GoalTag.generalFitness => 'General fitness',
+      GoalTag.flexibility => 'Flexibility',
+    };
+  }
+
+  static GoalTag goalFromLabel(String value) {
+    return switch (value) {
+      'Build muscle' => GoalTag.buildMuscle,
+      'Lose weight' => GoalTag.loseWeight,
+      'Increase strength' => GoalTag.increaseStrength,
+      'Improve endurance' => GoalTag.improveEndurance,
+      'General fitness' => GoalTag.generalFitness,
+      _ => GoalTag.flexibility,
+    };
+  }
+
+  static String equipmentLabel(EquipmentTag value) {
+    return switch (value) {
+      EquipmentTag.bodyweight => 'None / bodyweight',
+      EquipmentTag.dumbbell => 'Dumbbells',
+      EquipmentTag.barbell => 'Barbell',
+      EquipmentTag.kettlebell => 'Kettlebell',
+      EquipmentTag.bands => 'Resistance bands',
+      EquipmentTag.cable => 'Cable machine',
+      EquipmentTag.smithMachine => 'Smith machine',
+      EquipmentTag.pullUpBar => 'Pull-up bar',
+      EquipmentTag.bench => 'Bench',
+      EquipmentTag.squatRack => 'Squat rack',
+      EquipmentTag.cardioMachine => 'Cardio machine',
+      EquipmentTag.machine => 'Machine',
+      EquipmentTag.ezBar => 'EZ bar',
+      EquipmentTag.other => 'Other',
+    };
+  }
+
+  static EquipmentTag equipmentFromLabel(String value) {
+    return switch (value) {
+      'None / bodyweight' => EquipmentTag.bodyweight,
+      'Dumbbells' => EquipmentTag.dumbbell,
+      'Barbell' => EquipmentTag.barbell,
+      'Kettlebell' => EquipmentTag.kettlebell,
+      'Resistance bands' => EquipmentTag.bands,
+      'Cable machine' => EquipmentTag.cable,
+      'Smith machine' => EquipmentTag.smithMachine,
+      'Pull-up bar' => EquipmentTag.pullUpBar,
+      'Bench' => EquipmentTag.bench,
+      'Squat rack' => EquipmentTag.squatRack,
+      'Cardio machine' => EquipmentTag.cardioMachine,
+      'Machine' => EquipmentTag.machine,
+      'EZ bar' => EquipmentTag.ezBar,
+      _ => EquipmentTag.other,
+    };
   }
 }
 

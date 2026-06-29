@@ -8,6 +8,14 @@ import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart'
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -114,21 +122,21 @@ void main() {
       mockRepository.detail = ExerciseDetailViewData(
         id: 1,
         name: 'Bench Press',
-        difficulty: 'intermediate',
+        difficulty: ExerciseDifficulty.intermediate,
         primaryMuscles: ['Chest', 'Triceps'],
-        muscleGroups: ['Chest'],
+        muscleGroups: {BodymapBucket.chest},
         category: 'compound',
-        modality: 'strength',
-        equipment: 'barbell',
-        force: 'push',
-        mechanic: 'compound',
+        modality: ExerciseModality.strength,
+        equipment: EquipmentTag.barbell,
+        force: ExerciseForce.push,
+        mechanic: ExerciseMechanic.compound,
         grips: ['barbell'],
         steps: ['Step 1', 'Step 2'],
         videos: [
           const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
-            angle: 'front',
-            gender: 'male',
+            angle: ExerciseVideoAngle.front,
+            gender: ExerciseVideoGender.male,
             ogImageUrl: null,
           ),
         ],
@@ -143,10 +151,10 @@ void main() {
 
       // Name appears in AppBar title and body headline
       expect(find.text('Bench Press'), findsWidgets);
-      expect(find.text('intermediate'), findsOneWidget);
+      expect(find.text('Intermediate'), findsOneWidget);
       expect(find.text('Strength'), findsOneWidget);
-      expect(find.text('barbell'), findsOneWidget);
-      expect(find.text('push'), findsOneWidget);
+      expect(find.text('Barbell'), findsOneWidget);
+      expect(find.text('Push'), findsOneWidget);
     });
 
     testWidgets('renders steps in order', (tester) async {
@@ -161,12 +169,12 @@ void main() {
       mockRepository.detail = ExerciseDetailViewData(
         id: 1,
         name: 'Bench Press',
-        difficulty: 'intermediate',
+        difficulty: ExerciseDifficulty.intermediate,
         primaryMuscles: ['Chest'],
-        muscleGroups: ['Chest'],
+        muscleGroups: {BodymapBucket.chest},
         category: 'compound',
-        modality: 'strength',
-        equipment: 'barbell',
+        modality: ExerciseModality.strength,
+        equipment: EquipmentTag.barbell,
         force: null,
         mechanic: null,
         grips: [],
@@ -187,8 +195,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Videos'), findsOneWidget);
-      expect(find.text('front'), findsOneWidget);
-      expect(find.text('male'), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
     });
 
     testWidgets('favorite toggle is shown', (tester) async {
@@ -218,14 +226,14 @@ void main() {
       mockRepository.detail = ExerciseDetailViewData(
         id: 1,
         name: 'Bench Press',
-        difficulty: 'intermediate',
+        difficulty: ExerciseDifficulty.intermediate,
         primaryMuscles: ['Chest'],
-        muscleGroups: ['Chest'],
+        muscleGroups: {BodymapBucket.chest},
         category: 'compound',
-        modality: 'strength',
-        equipment: 'barbell',
-        force: 'push',
-        mechanic: 'compound',
+        modality: ExerciseModality.strength,
+        equipment: EquipmentTag.barbell,
+        force: ExerciseForce.push,
+        mechanic: ExerciseMechanic.compound,
         grips: ['barbell'],
         steps: ['Step 1'],
         videos: [],

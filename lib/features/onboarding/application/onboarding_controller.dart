@@ -190,7 +190,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   OnboardingStep _resumeStepForDraft(OnboardingDraft draft) {
-    if (draft.experienceLevel == null || draft.experienceLevel!.isEmpty) {
+    if (draft.experienceLevel == null) {
       return OnboardingStep.experienceGoals;
     }
     if (draft.trainingDaysPerWeek == null || draft.trainingDaysPerWeek! < 1) {
@@ -223,7 +223,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   String? _validateStep(OnboardingStep step, OnboardingDraft draft) {
     switch (step) {
       case OnboardingStep.experienceGoals:
-        if (draft.experienceLevel == null || draft.experienceLevel!.isEmpty) {
+        if (draft.experienceLevel == null) {
           return AppStrings.onboardingValidationRequired;
         }
         return null;

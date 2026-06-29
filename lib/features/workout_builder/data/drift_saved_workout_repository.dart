@@ -8,7 +8,7 @@ import 'package:aedify/features/workout_builder/data/saved_workout_repository.da
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_exercise_draft.dart';
-import 'dart:convert';
+import 'package:aedify/shared/domain/enum_codec.dart';
 
 class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
   DriftSavedWorkoutRepository({
@@ -209,8 +209,12 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       creationMethod: Value(draft.creationMethod.dbValue),
       status: Value(draft.status.dbValue),
       estimatedDurationMinutes: Value(draft.estimatedDurationMinutes),
-      goalTagsJson: Value(jsonEncode(draft.goalTags)),
-      equipmentJson: Value(jsonEncode(draft.equipment)),
+      goalTagsJson: Value(
+        EnumCodec.encodeSet(draft.goalTags, (value) => value.dbValue),
+      ),
+      equipmentJson: Value(
+        EnumCodec.encodeSet(draft.equipment, (value) => value.dbValue),
+      ),
       createdAt: Value(createdAt),
       updatedAt: Value(now),
     );

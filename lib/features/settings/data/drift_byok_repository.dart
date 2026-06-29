@@ -7,6 +7,8 @@ import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_model_option.dart';
 import 'package:aedify/features/settings/data/provider_key_validator.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/provider_validation_status.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +26,7 @@ class DriftByokRepository implements ByokRepository {
   static const _builtInProviders = [
     ByokProviderOption(
       id: 'openai',
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       displayName: 'OpenAI',
       description: AppStrings.byokProviderOpenAiDescription,
       models: [
@@ -56,7 +58,7 @@ class DriftByokRepository implements ByokRepository {
     ),
     ByokProviderOption(
       id: 'anthropic',
-      providerName: 'anthropic',
+      providerName: AiProviderName.anthropic,
       displayName: 'Anthropic',
       description: AppStrings.byokProviderAnthropicDescription,
       models: [
@@ -82,7 +84,7 @@ class DriftByokRepository implements ByokRepository {
     ),
     ByokProviderOption(
       id: 'google',
-      providerName: 'google',
+      providerName: AiProviderName.google,
       displayName: 'Google',
       description: AppStrings.byokProviderGoogleDescription,
       models: [
@@ -143,7 +145,7 @@ class DriftByokRepository implements ByokRepository {
     await _configDao.upsertConfig(
       AiProviderConfigsCompanion(
         id: Value(configId),
-        providerName: Value(draft.providerName!),
+        providerName: Value(draft.providerName!.dbValue),
         secureKeyAlias: Value(alias),
         selectedModel: Value(draft.selectedModel),
         createdAt: Value(now),
@@ -161,7 +163,7 @@ class DriftByokRepository implements ByokRepository {
   @override
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {
     final alias = configId;
@@ -170,7 +172,7 @@ class DriftByokRepository implements ByokRepository {
     await _configDao.upsertConfig(
       AiProviderConfigsCompanion(
         id: Value(configId),
-        providerName: Value(providerName),
+        providerName: Value(providerName.dbValue),
         secureKeyAlias: Value(alias),
         updatedAt: Value(now),
       ),
@@ -201,7 +203,7 @@ class DriftByokRepository implements ByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     final result = await ProviderKeyValidator.validate(
@@ -214,12 +216,14 @@ class DriftByokRepository implements ByokRepository {
   ByokConfigViewData _toViewData(AiProviderConfig row, bool hasKey) {
     return ByokConfigViewData(
       id: row.id,
-      providerName: row.providerName,
+      providerName: AiProviderName.fromDb(row.providerName),
       displayName: row.displayName,
       selectedModel: row.selectedModel,
       hasKey: hasKey,
       isActive: row.isActive,
-      lastValidationStatus: row.lastValidationStatus,
+      lastValidationStatus: row.lastValidationStatus == null
+          ? null
+          : ProviderValidationStatus.fromDb(row.lastValidationStatus!),
       lastErrorCode: row.lastErrorCode,
     );
   }

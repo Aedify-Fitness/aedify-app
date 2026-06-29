@@ -1,10 +1,16 @@
 import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/enum_codec.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 class DriftOnboardingRepository implements OnboardingRepository {
   DriftOnboardingRepository({required AppDatabase database})
@@ -33,11 +39,18 @@ class DriftOnboardingRepository implements OnboardingRepository {
       UserProfileCompanion(
         id: const Value('default'),
         name: Value(draft.displayName),
-        experienceLevel: Value(draft.experienceLevel ?? ''),
-        goalsJson: Value(jsonEncode(draft.goals)),
+        experienceLevel: Value(draft.experienceLevel?.dbValue ?? ''),
+        goalsJson: Value(
+          EnumCodec.encodeSet(draft.goals, (value) => value.dbValue),
+        ),
         trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
+        trainingDayNamesJson: Value(
+          EnumCodec.encodeList(draft.trainingDays, (value) => value.dbValue),
+        ),
         targetSessionLengthMinutes: Value(draft.targetSessionLengthMinutes),
-        equipmentAccessJson: Value(jsonEncode(draft.equipmentAccess)),
+        equipmentAccessJson: Value(
+          EnumCodec.encodeSet(draft.equipmentAccess, (value) => value.dbValue),
+        ),
         preferredUnits: Value(draft.preferredUnits?.dbValue ?? 'metric'),
         heightCm: Value(draft.heightCm),
         bodyweightKg: Value(draft.bodyweightKg),
@@ -93,11 +106,20 @@ class DriftOnboardingRepository implements OnboardingRepository {
   OnboardingDraft _profileToDraft(UserProfileData profile) {
     return OnboardingDraft(
       displayName: profile.name,
-      experienceLevel: profile.experienceLevel,
-      goals: _decodeJsonList(profile.goalsJson),
+      experienceLevel: profile.experienceLevel.isEmpty
+          ? null
+          : ExperienceLevel.fromDb(profile.experienceLevel),
+      goals: EnumCodec.decodeSet(profile.goalsJson, GoalTag.fromDb),
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
+      trainingDays: EnumCodec.decodeList(
+        profile.trainingDayNamesJson,
+        TrainingDay.fromDb,
+      ),
       targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
-      equipmentAccess: _decodeJsonList(profile.equipmentAccessJson),
+      equipmentAccess: EnumCodec.decodeSet(
+        profile.equipmentAccessJson,
+        EquipmentTag.fromDb,
+      ),
       preferredUnits: PreferredUnit.fromDb(profile.preferredUnits),
       heightCm: profile.heightCm,
       bodyweightKg: profile.bodyweightKg,

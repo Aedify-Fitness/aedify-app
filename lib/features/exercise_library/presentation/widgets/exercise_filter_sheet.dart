@@ -1,6 +1,10 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -12,53 +16,6 @@ class ExerciseFilterSheet extends ConsumerWidget {
   const ExerciseFilterSheet({super.key, required this.initialFilters});
 
   final ExerciseFilterState initialFilters;
-
-  static const List<String> difficultyOptions = [
-    'beginner',
-    'intermediate',
-    'advanced',
-  ];
-
-  static const List<String> modalityOptions = [
-    'strength',
-    'hypertrophy',
-    'endurance',
-    'power',
-    'olympic_weightlifting',
-    'cardio',
-    'flexibility',
-    'plyometrics',
-    'strongman',
-  ];
-
-  static const List<String> equipmentOptions = [
-    'barbell',
-    'dumbbell',
-    'cable',
-    'machine',
-    'bodyweight',
-    'kettlebell',
-    'bands',
-    'ez_bar',
-    'other',
-  ];
-
-  static const List<String> muscleGroupOptions = [
-    'Chest',
-    'Shoulders',
-    'Back',
-    'Biceps',
-    'Triceps',
-    'Forearms',
-    'Core',
-    'Glutes',
-    'Quads',
-    'Hamstrings',
-    'Calves',
-    'Adductors',
-    'Neck',
-    'Feet',
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,11 +50,15 @@ class ExerciseFilterSheet extends ConsumerWidget {
             SizedBox(height: AppSpacing.md),
             _FilterSection(
               title: AppStrings.filterMuscleGroup,
-              options: muscleGroupOptions,
-              selected: initialFilters.muscleGroup,
+              options: BodymapBucket.values.map((e) => e.label).toList(),
+              selected: initialFilters.muscleGroup?.label,
               onSelected: (value) {
                 final updated = initialFilters.copyWith(
-                  muscleGroup: value,
+                  muscleGroup: value == null
+                      ? null
+                      : BodymapBucket.values.firstWhere(
+                          (e) => e.label == value,
+                        ),
                   clearMuscleGroup: value == null,
                 );
                 ref
@@ -111,11 +72,20 @@ class ExerciseFilterSheet extends ConsumerWidget {
             SizedBox(height: AppSpacing.md),
             _FilterSection(
               title: AppStrings.filterDifficulty,
-              options: difficultyOptions,
-              selected: initialFilters.difficulty,
+              options: ExerciseDifficulty.values
+                  .where((e) => e != ExerciseDifficulty.novice)
+                  .map((e) => _formatLabel(e.dbValue))
+                  .toList(),
+              selected: initialFilters.difficulty == null
+                  ? null
+                  : _formatLabel(initialFilters.difficulty!.dbValue),
               onSelected: (value) {
                 final updated = initialFilters.copyWith(
-                  difficulty: value,
+                  difficulty: value == null
+                      ? null
+                      : ExerciseDifficulty.fromDb(
+                          value.toLowerCase().replaceAll(' ', '_'),
+                        ),
                   clearDifficulty: value == null,
                 );
                 ref
@@ -129,11 +99,19 @@ class ExerciseFilterSheet extends ConsumerWidget {
             SizedBox(height: AppSpacing.md),
             _FilterSection(
               title: AppStrings.filterModality,
-              options: modalityOptions,
-              selected: initialFilters.modality,
+              options: ExerciseModality.values
+                  .map((e) => _formatLabel(e.dbValue))
+                  .toList(),
+              selected: initialFilters.modality == null
+                  ? null
+                  : _formatLabel(initialFilters.modality!.dbValue),
               onSelected: (value) {
                 final updated = initialFilters.copyWith(
-                  modality: value,
+                  modality: value == null
+                      ? null
+                      : ExerciseModality.fromDb(
+                          value.toLowerCase().replaceAll(' ', '_'),
+                        ),
                   clearModality: value == null,
                 );
                 ref
@@ -147,11 +125,27 @@ class ExerciseFilterSheet extends ConsumerWidget {
             SizedBox(height: AppSpacing.md),
             _FilterSection(
               title: AppStrings.filterEquipment,
-              options: equipmentOptions,
-              selected: initialFilters.equipment,
+              options: const [
+                EquipmentTag.barbell,
+                EquipmentTag.dumbbell,
+                EquipmentTag.cable,
+                EquipmentTag.machine,
+                EquipmentTag.bodyweight,
+                EquipmentTag.kettlebell,
+                EquipmentTag.bands,
+                EquipmentTag.ezBar,
+                EquipmentTag.other,
+              ].map((e) => _formatLabel(e.dbValue)).toList(),
+              selected: initialFilters.equipment == null
+                  ? null
+                  : _formatLabel(initialFilters.equipment!.dbValue),
               onSelected: (value) {
                 final updated = initialFilters.copyWith(
-                  equipment: value,
+                  equipment: value == null
+                      ? null
+                      : EquipmentTag.fromDb(
+                          value.toLowerCase().replaceAll(' ', '_'),
+                        ),
                   clearEquipment: value == null,
                 );
                 ref
@@ -216,6 +210,18 @@ class ExerciseFilterSheet extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _formatLabel(String value) {
+    return value
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -141,10 +142,10 @@ class _ByokContentView extends ConsumerWidget {
           AppWhiteSpace.hSm,
           _ProviderSelector(
             options: state.providerOptions,
-            selectedId: draft.providerName,
+            selectedId: draft.providerName?.dbValue,
             onChanged: (value) {
               final option = state.providerOptions.firstWhere(
-                (o) => o.providerName == value,
+                (o) => o.providerName.dbValue == value,
               );
               controller.updateDraft(
                 draft.copyWith(
@@ -289,12 +290,13 @@ class _CostIndicator extends StatelessWidget {
   });
 
   final List<ByokProviderOption> options;
-  final String providerName;
+  final AiProviderName providerName;
   final String selectedModelId;
 
   @override
   Widget build(BuildContext context) {
     final option = options.firstWhere((o) => o.providerName == providerName);
+
     final models = option.models;
     final selectedModel = models
         .where((m) => m.id == selectedModelId)
@@ -333,7 +335,7 @@ class _MoreCapableHint extends StatelessWidget {
   });
 
   final List<ByokProviderOption> options;
-  final String providerName;
+  final AiProviderName providerName;
   final String selectedModelId;
 
   @override
@@ -498,7 +500,7 @@ class _ConfigCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  config.displayName ?? config.providerName,
+                  config.displayName ?? config.providerName.dbValue,
                   style: AppTextStyles.bodyMd.copyWith(
                     color: context.colorScheme.onSurface,
                   ),
@@ -584,11 +586,11 @@ class _ProviderSelector extends StatelessWidget {
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
       children: options.map((option) {
-        final isSelected = option.providerName == selectedId;
+        final isSelected = option.providerName.dbValue == selectedId;
         return ChoiceChip(
           label: Text(option.displayName),
           selected: isSelected,
-          onSelected: (_) => onChanged(option.providerName),
+          onSelected: (_) => onChanged(option.providerName.dbValue),
         );
       }).toList(),
     );
@@ -603,7 +605,7 @@ class _ModelSelector extends StatelessWidget {
     required this.onChanged,
   });
 
-  final String providerName;
+  final AiProviderName providerName;
   final List<ByokProviderOption> options;
   final String? selectedModelId;
   final ValueChanged<String?> onChanged;

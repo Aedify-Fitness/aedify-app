@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+
 class ByokEditDraft {
   const ByokEditDraft({
     this.configId,
@@ -8,14 +10,14 @@ class ByokEditDraft {
   });
 
   final String? configId;
-  final String? providerName;
+  final AiProviderName? providerName;
   final String? selectedModel;
   final String? apiKey;
   final bool makeActive;
 
   ByokEditDraft copyWith({
     String? configId,
-    String? providerName,
+    AiProviderName? providerName,
     String? selectedModel,
     String? apiKey,
     bool? makeActive,

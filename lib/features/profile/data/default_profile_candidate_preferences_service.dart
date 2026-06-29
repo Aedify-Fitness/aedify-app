@@ -1,8 +1,12 @@
 import 'package:aedify/features/profile/data/profile_candidate_preferences_service.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_candidate_preferences.dart';
-import 'package:aedify/shared/constants/app_strings.dart';
-import 'package:aedify/shared/constants/exercise_constants.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 
 class DefaultProfileCandidatePreferencesService
     implements ProfileCandidatePreferencesService {
@@ -16,19 +20,21 @@ class DefaultProfileCandidatePreferencesService
   Future<ProfileCandidatePreferences> buildPreferences() async {
     final profile = await _profileRepository.getProfile();
 
-    final allowedEquipment = _mapEquipment(profile?.equipmentAccess ?? []);
+    final allowedEquipment = _mapEquipment(
+      profile?.equipmentAccess ?? <EquipmentTag>{},
+    );
     final allowedDifficulties = _mapExperience(profile?.experienceLevel);
     final excludedExerciseIds = _mapExcludedExerciseIds(
       profile?.substitutedExerciseIds ?? [],
     );
-    final excludedMuscleGroups = <String>{};
-    final goalTags = _mapGoalTags(profile?.goals ?? []);
+    final excludedMuscleGroups = <BodymapBucket>{};
+    final goalTags = _mapGoalTags(profile?.goals ?? <GoalTag>{});
     const includeCustomExercises = true;
 
     return ProfileCandidatePreferences(
       allowedEquipment: allowedEquipment,
       allowedDifficulties: allowedDifficulties,
-      allowedModalities: {},
+      allowedModalities: <ExerciseModality>{},
       excludedExerciseIds: excludedExerciseIds,
       excludedMuscleGroups: excludedMuscleGroups,
       goalTags: goalTags,
@@ -37,20 +43,21 @@ class DefaultProfileCandidatePreferencesService
     );
   }
 
-  Set<String> _mapEquipment(List<String> equipmentAccess) {
-    return equipmentAccess.toSet();
+  Set<EquipmentTag> _mapEquipment(Set<EquipmentTag> equipmentAccess) {
+    return equipmentAccess;
   }
 
-  Set<String> _mapExperience(String? experienceLevel) {
+  Set<ExerciseDifficulty> _mapExperience(ExperienceLevel? experienceLevel) {
     switch (experienceLevel) {
-      case AppStrings.onboardingExperienceBeginner:
-        return ExerciseConstants.beginnerDifficulties;
-      case AppStrings.onboardingExperienceIntermediate:
-        return ExerciseConstants.intermediateDifficulties;
-      case AppStrings.onboardingExperienceAdvanced:
-        return ExerciseConstants.allDifficulties;
+      case ExperienceLevel.novice:
+      case ExperienceLevel.beginner:
+        return {ExerciseDifficulty.novice, ExerciseDifficulty.beginner};
+      case ExperienceLevel.intermediate:
+        return {ExerciseDifficulty.beginner, ExerciseDifficulty.intermediate};
+      case ExperienceLevel.advanced:
+        return ExerciseDifficulty.values.toSet();
       default:
-        return ExerciseConstants.allDifficulties;
+        return ExerciseDifficulty.values.toSet();
     }
   }
 
@@ -58,18 +65,10 @@ class DefaultProfileCandidatePreferencesService
     return substitutedIds.toSet();
   }
 
-  Set<String> _mapGoalTags(List<String> goals) {
-    final tags = <String>{};
+  Set<GoalTag> _mapGoalTags(Set<GoalTag> goals) {
+    final tags = <GoalTag>{};
     for (final goal in goals) {
-      if (goal == AppStrings.onboardingGoalBuildMuscle) {
-        tags.add(ExerciseConstants.goalTagHypertrophy);
-      } else if (goal == AppStrings.onboardingGoalLoseWeight) {
-        tags.add(ExerciseConstants.goalTagCardio);
-      } else if (goal == AppStrings.onboardingGoalIncreaseStrength) {
-        tags.add(ExerciseConstants.goalTagStrength);
-      } else if (goal == AppStrings.onboardingGoalImproveEndurance) {
-        tags.add(ExerciseConstants.goalTagCardio);
-      }
+      tags.add(goal);
     }
     return tags;
   }

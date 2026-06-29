@@ -7,6 +7,10 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -118,10 +122,10 @@ void main() {
         const ExerciseListItem(
           id: 1,
           name: 'Bench Press',
-          difficulty: 'intermediate',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
-          equipment: 'barbell',
+          difficulty: ExerciseDifficulty.intermediate,
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
+          equipment: EquipmentTag.barbell,
           isFavorite: false,
           isSubstitutedOut: false,
           isCustom: false,
@@ -138,10 +142,10 @@ void main() {
         const ExerciseListItem(
           id: 1,
           name: 'Bench Press',
-          difficulty: 'intermediate',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
-          equipment: 'barbell',
+          difficulty: ExerciseDifficulty.intermediate,
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
+          equipment: EquipmentTag.barbell,
           isFavorite: false,
           isSubstitutedOut: false,
           isCustom: false,
@@ -159,10 +163,10 @@ void main() {
         const ExerciseListItem(
           id: 1,
           name: 'Bench Press',
-          difficulty: 'intermediate',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
-          equipment: 'barbell',
+          difficulty: ExerciseDifficulty.intermediate,
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
+          equipment: EquipmentTag.barbell,
           isFavorite: false,
           isSubstitutedOut: false,
           isCustom: false,

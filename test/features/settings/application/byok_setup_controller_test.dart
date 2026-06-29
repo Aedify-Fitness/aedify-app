@@ -3,6 +3,7 @@ import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class _ValidatingFakeRepository extends DriftByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     return true;
@@ -37,7 +38,7 @@ class _ValidatingFakeRepository extends DriftByokRepository {
   @override
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {
     if (shouldThrowOnRotate) throw Exception('rotate failure');
@@ -95,7 +96,7 @@ void main() {
 
       controller.updateDraft(
         const ByokEditDraft(
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           selectedModel: 'gpt-4o',
           apiKey: 'sk-test',
         ),
@@ -105,7 +106,7 @@ void main() {
           .read(AppProviders.byokSetupControllerProvider)
           .requireValue;
       expect(state.editDraft, isNotNull);
-      expect(state.editDraft!.providerName, equals('openai'));
+      expect(state.editDraft!.providerName, equals(AiProviderName.openai));
       expect(state.editDraft!.apiKey, equals('sk-test'));
     });
 
@@ -118,7 +119,7 @@ void main() {
 
       controller.updateDraft(
         const ByokEditDraft(
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           selectedModel: 'gpt-4o',
           apiKey: 'sk-valid',
         ),
@@ -130,7 +131,7 @@ void main() {
           .read(AppProviders.byokSetupControllerProvider)
           .requireValue;
       expect(state.configs.length, equals(1));
-      expect(state.configs.first.providerName, equals('openai'));
+      expect(state.configs.first.providerName, equals(AiProviderName.openai));
       expect(state.isSaving, isFalse);
       expect(state.isTesting, isFalse);
       expect(state.hasError, isFalse);
@@ -144,7 +145,7 @@ void main() {
       await controller.future;
 
       controller.updateDraft(
-        const ByokEditDraft(providerName: 'openai', apiKey: ''),
+        const ByokEditDraft(providerName: AiProviderName.openai, apiKey: ''),
       );
 
       await controller.save();
@@ -166,7 +167,10 @@ void main() {
       await controller.future;
 
       controller.updateDraft(
-        const ByokEditDraft(providerName: 'openai', apiKey: 'sk-delete'),
+        const ByokEditDraft(
+          providerName: AiProviderName.openai,
+          apiKey: 'sk-delete',
+        ),
       );
       await controller.save();
       expect(
@@ -200,14 +204,17 @@ void main() {
       await controller.future;
 
       controller.updateDraft(
-        const ByokEditDraft(providerName: 'openai', apiKey: 'sk-1'),
+        const ByokEditDraft(
+          providerName: AiProviderName.openai,
+          apiKey: 'sk-1',
+        ),
       );
       await controller.save();
 
       controller.updateDraft(
         const ByokEditDraft(
           configId: null,
-          providerName: 'anthropic',
+          providerName: AiProviderName.anthropic,
           apiKey: 'sk-2',
         ),
       );
@@ -218,7 +225,7 @@ void main() {
           .requireValue
           .configs;
       final anthropicConfig = configs.firstWhere(
-        (c) => c.providerName == 'anthropic',
+        (c) => c.providerName == AiProviderName.anthropic,
       );
       await controller.setActiveConfig(anthropicConfig.id);
 
@@ -226,7 +233,7 @@ void main() {
           .read(AppProviders.byokSetupControllerProvider)
           .requireValue;
       final active = state.configs.firstWhere((c) => c.isActive);
-      expect(active.providerName, equals('anthropic'));
+      expect(active.providerName, equals(AiProviderName.anthropic));
     });
 
     test('empty key validation does not echo secret input', () async {
@@ -237,7 +244,7 @@ void main() {
       await controller.future;
 
       controller.updateDraft(
-        const ByokEditDraft(providerName: 'openai', apiKey: ''),
+        const ByokEditDraft(providerName: AiProviderName.openai, apiKey: ''),
       );
       await controller.save();
 
@@ -271,7 +278,7 @@ void main() {
 
       controller.updateDraft(
         ByokEditDraft(
-          providerName: 'openai',
+          providerName: AiProviderName.openai,
           selectedModel: 'gpt-4o',
           apiKey: PrivacySentinelValues.fakeApiKey,
         ),
@@ -310,7 +317,7 @@ void main() {
 
       await controller.rotateKey(
         configId: 'nonexistent-id',
-        providerName: 'openai',
+        providerName: AiProviderName.openai,
         newApiKey: PrivacySentinelValues.fakeApiKey,
       );
 
@@ -333,7 +340,10 @@ void main() {
       await controller.future;
 
       controller.updateDraft(
-        const ByokEditDraft(providerName: 'openai', apiKey: 'sk-test'),
+        const ByokEditDraft(
+          providerName: AiProviderName.openai,
+          apiKey: 'sk-test',
+        ),
       );
       await controller.save();
       expect(

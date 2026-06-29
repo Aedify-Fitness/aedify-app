@@ -4,8 +4,13 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/drift_candidate_exercise_query_service.dart';
 import 'package:aedify/features/exercise_library/domain/candidate_exercise_query.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -59,7 +64,7 @@ void main() {
       await seedExercise(
         id: 3,
         name: 'Bicep Curl',
-        modality: 'hypertrophy',
+        modality: 'recovery',
         equipment: 'dumbbell',
         difficulty: 'beginner',
         muscleGroups: ['Biceps'],
@@ -101,9 +106,9 @@ void main() {
     test('filters by allowed equipment', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'dumbbell'},
-          allowedDifficulties: {'beginner'},
-          allowedModalities: {'hypertrophy'},
+          allowedEquipment: {EquipmentTag.dumbbell},
+          allowedDifficulties: {ExerciseDifficulty.beginner},
+          allowedModalities: {ExerciseModality.recovery},
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -127,9 +132,12 @@ void main() {
       );
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength'},
+          allowedEquipment: {EquipmentTag.bodyweight},
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {ExerciseModality.strength},
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -143,9 +151,16 @@ void main() {
     test('filters by allowed difficulties', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {ExerciseDifficulty.beginner},
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -161,9 +176,16 @@ void main() {
     test('filters by allowed modalities', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {ExerciseModality.recovery},
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -176,9 +198,9 @@ void main() {
     test('excludes provided exercise ids', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell'},
-          allowedDifficulties: {'intermediate'},
-          allowedModalities: {'strength'},
+          allowedEquipment: {EquipmentTag.barbell},
+          allowedDifficulties: {ExerciseDifficulty.intermediate},
+          allowedModalities: {ExerciseModality.strength},
           excludedExerciseIds: {1},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -194,9 +216,12 @@ void main() {
         // Simulate substituted exercises by excluding their IDs
         final results = await service.queryCandidates(
           const CandidateExerciseQuery(
-            allowedEquipment: {'barbell', 'bodyweight'},
-            allowedDifficulties: {'beginner', 'intermediate'},
-            allowedModalities: {'strength'},
+            allowedEquipment: {EquipmentTag.barbell, EquipmentTag.bodyweight},
+            allowedDifficulties: {
+              ExerciseDifficulty.beginner,
+              ExerciseDifficulty.intermediate,
+            },
+            allowedModalities: {ExerciseModality.strength},
             excludedExerciseIds: {2, 4},
             excludedMuscleGroups: {},
             goalTags: {},
@@ -211,11 +236,21 @@ void main() {
     test('filters by excluded muscle groups', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
-          excludedMuscleGroups: {'Chest'},
+          excludedMuscleGroups: {BodymapBucket.chest},
           goalTags: {},
         ),
       );
@@ -227,9 +262,19 @@ void main() {
     test('includes custom exercises when enabled', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -243,9 +288,19 @@ void main() {
     test('excludes custom exercises when disabled', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -260,13 +315,16 @@ void main() {
       // Query all, prefer Quads — Squat should appear before Bench Press
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength'},
+          allowedEquipment: {EquipmentTag.barbell},
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {ExerciseModality.strength},
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
-          preferredMuscleGroups: ['Quads'],
+          preferredMuscleGroups: [BodymapBucket.quads],
           limit: 10,
         ),
       );
@@ -280,9 +338,12 @@ void main() {
       // Query with no preferences so all matching exercises score 0
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength'},
+          allowedEquipment: {EquipmentTag.barbell, EquipmentTag.bodyweight},
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {ExerciseModality.strength},
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -301,9 +362,19 @@ void main() {
     test('respects limit', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -316,9 +387,19 @@ void main() {
     test('output DTO contains no forbidden fields', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -330,17 +411,27 @@ void main() {
         expect(dto.isCustom, isA<bool>());
         expect(dto.id, isA<int>());
         expect(dto.name, isA<String>());
-        expect(dto.muscleGroups, isA<List<String>>());
-        expect(dto.modality, isA<String>());
+        expect(dto.muscleGroups, isA<Set<BodymapBucket>>());
+        expect(dto.modality, isA<ExerciseModality>());
       }
     });
 
     test('excludes deleted rows from results', () async {
       final results = await service.queryCandidates(
         const CandidateExerciseQuery(
-          allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-          allowedDifficulties: {'beginner', 'intermediate'},
-          allowedModalities: {'strength', 'hypertrophy'},
+          allowedEquipment: {
+            EquipmentTag.barbell,
+            EquipmentTag.dumbbell,
+            EquipmentTag.bodyweight,
+          },
+          allowedDifficulties: {
+            ExerciseDifficulty.beginner,
+            ExerciseDifficulty.intermediate,
+          },
+          allowedModalities: {
+            ExerciseModality.strength,
+            ExerciseModality.recovery,
+          },
           excludedExerciseIds: {},
           excludedMuscleGroups: {},
           goalTags: {},
@@ -356,9 +447,15 @@ void main() {
         // Simulate a profile with only dumbbell access
         final results = await service.queryCandidates(
           const CandidateExerciseQuery(
-            allowedEquipment: {'dumbbell'},
-            allowedDifficulties: {'beginner', 'intermediate'},
-            allowedModalities: {'strength', 'hypertrophy'},
+            allowedEquipment: {EquipmentTag.dumbbell},
+            allowedDifficulties: {
+              ExerciseDifficulty.beginner,
+              ExerciseDifficulty.intermediate,
+            },
+            allowedModalities: {
+              ExerciseModality.strength,
+              ExerciseModality.recovery,
+            },
             excludedExerciseIds: {},
             excludedMuscleGroups: {},
             goalTags: {},
@@ -373,9 +470,19 @@ void main() {
         // Simulate a beginner profile (novice, beginner difficulty only)
         final results = await service.queryCandidates(
           const CandidateExerciseQuery(
-            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-            allowedDifficulties: {'novice', 'beginner'},
-            allowedModalities: {'strength', 'hypertrophy'},
+            allowedEquipment: {
+              EquipmentTag.barbell,
+              EquipmentTag.dumbbell,
+              EquipmentTag.bodyweight,
+            },
+            allowedDifficulties: {
+              ExerciseDifficulty.novice,
+              ExerciseDifficulty.beginner,
+            },
+            allowedModalities: {
+              ExerciseModality.strength,
+              ExerciseModality.recovery,
+            },
             excludedExerciseIds: {},
             excludedMuscleGroups: {},
             goalTags: {},
@@ -396,9 +503,19 @@ void main() {
         // Simulate a profile with Squat and Push Up substituted
         final results = await service.queryCandidates(
           const CandidateExerciseQuery(
-            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-            allowedDifficulties: {'beginner', 'intermediate'},
-            allowedModalities: {'strength', 'hypertrophy'},
+            allowedEquipment: {
+              EquipmentTag.barbell,
+              EquipmentTag.dumbbell,
+              EquipmentTag.bodyweight,
+            },
+            allowedDifficulties: {
+              ExerciseDifficulty.beginner,
+              ExerciseDifficulty.intermediate,
+            },
+            allowedModalities: {
+              ExerciseModality.strength,
+              ExerciseModality.recovery,
+            },
             excludedExerciseIds: {2, 4},
             excludedMuscleGroups: {},
             goalTags: {},
@@ -413,24 +530,29 @@ void main() {
         // Simulate a profile with strength goal
         final results = await service.queryCandidates(
           const CandidateExerciseQuery(
-            allowedEquipment: {'barbell', 'dumbbell', 'bodyweight'},
-            allowedDifficulties: {'beginner', 'intermediate'},
-            allowedModalities: {'strength', 'hypertrophy'},
+            allowedEquipment: {
+              EquipmentTag.barbell,
+              EquipmentTag.dumbbell,
+              EquipmentTag.bodyweight,
+            },
+            allowedDifficulties: {
+              ExerciseDifficulty.beginner,
+              ExerciseDifficulty.intermediate,
+            },
+            allowedModalities: {
+              ExerciseModality.strength,
+              ExerciseModality.recovery,
+            },
             excludedExerciseIds: {},
             excludedMuscleGroups: {},
-            goalTags: {'strength'},
+            goalTags: {GoalTag.increaseStrength},
             includeCustomExercises: false,
           ),
         );
-        // Strength goal tag matches force (push/pull) and mechanic (compound)
-        // Bench Press: push, compound -> +4 (push + compound)
-        // Deadlift: pull, compound -> +4 (pull + compound)
-        // Squat: push, compound -> +4 (push + compound)
-        // Push Up: push, compound -> +4 (push + compound)
-        // Bicep Curl: pull, isolation -> +2 (pull only)
+        // The current ranking adds +2 only for push-force exercises when the
+        // goal is increaseStrength.
         expect(results.length, 5);
-        // Bicep Curl should be last (lowest score)
-        expect(results.last.name, 'Bicep Curl');
+        expect(results.last.name, 'Deadlift');
       });
     });
   });

@@ -3,6 +3,8 @@ import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -188,7 +190,7 @@ void main() {
     ) async {
       final repo = _FakeOnboardingRepository();
       await repo.saveOnboardingDraft(
-        const OnboardingDraft(goals: ['Build muscle']),
+        const OnboardingDraft(goals: {GoalTag.buildMuscle}),
       );
 
       await tester.pumpWidget(createTestApp(repo));
@@ -203,7 +205,7 @@ void main() {
     ) async {
       final repo = _FakeOnboardingRepository();
       await repo.saveOnboardingDraft(
-        const OnboardingDraft(experienceLevel: 'Intermediate'),
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
       );
 
       await tester.pumpWidget(createTestApp(repo));

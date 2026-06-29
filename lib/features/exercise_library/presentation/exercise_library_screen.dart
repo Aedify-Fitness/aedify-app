@@ -6,6 +6,9 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -243,16 +246,16 @@ class _ActiveFilterBar extends StatelessWidget {
     final chips = <Widget>[];
 
     if (filters.muscleGroup != null) {
-      chips.add(_filterChip(filters.muscleGroup!));
+      chips.add(_filterChip(filters.muscleGroup!.label));
     }
     if (filters.difficulty != null) {
-      chips.add(_filterChip(filters.difficulty!));
+      chips.add(_filterChip(_formatLabel(filters.difficulty!.dbValue)));
     }
     if (filters.modality != null) {
-      chips.add(_filterChip(filters.modality!));
+      chips.add(_filterChip(_formatLabel(filters.modality!.dbValue)));
     }
     if (filters.equipment != null) {
-      chips.add(_filterChip(filters.equipment!));
+      chips.add(_filterChip(_formatLabel(filters.equipment!.dbValue)));
     }
     if (filters.favoritesOnly) {
       chips.add(_filterChip(AppStrings.favorites));
@@ -295,6 +298,18 @@ class _ActiveFilterBar extends StatelessWidget {
       ),
     );
   }
+
+  String _formatLabel(String value) {
+    return value
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
+  }
 }
 
 class _ExerciseListTile extends StatelessWidget {
@@ -308,9 +323,9 @@ class _ExerciseListTile extends StatelessWidget {
   });
 
   final String name;
-  final String? difficulty;
-  final String modality;
-  final String? equipment;
+  final ExerciseDifficulty? difficulty;
+  final ExerciseModality modality;
+  final EquipmentTag? equipment;
   final bool isFavorite;
   final VoidCallback onTap;
 
@@ -323,13 +338,19 @@ class _ExerciseListTile extends StatelessWidget {
       subtitle: Row(
         children: [
           if (difficulty != null) ...[
-            Text(difficulty!, style: AppTextStyles.labelSm),
+            Text(
+              _formatLabel(difficulty!.dbValue),
+              style: AppTextStyles.labelSm,
+            ),
             AppWhiteSpace.wSm,
           ],
-          Text(modality, style: AppTextStyles.labelSm),
+          Text(_formatLabel(modality.dbValue), style: AppTextStyles.labelSm),
           if (equipment != null) ...[
             AppWhiteSpace.wSm,
-            Text(equipment!, style: AppTextStyles.labelSm),
+            Text(
+              _formatLabel(equipment!.dbValue),
+              style: AppTextStyles.labelSm,
+            ),
           ],
         ],
       ),
@@ -343,5 +364,17 @@ class _ExerciseListTile extends StatelessWidget {
           : null,
       onTap: onTap,
     );
+  }
+
+  String _formatLabel(String value) {
+    return value
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
   }
 }

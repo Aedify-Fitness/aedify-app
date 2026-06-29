@@ -1,3 +1,9 @@
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
+
 class CandidateExerciseQuery {
   const CandidateExerciseQuery({
     required this.allowedEquipment,
@@ -11,13 +17,13 @@ class CandidateExerciseQuery {
     this.limit = 25,
   });
 
-  final Set<String> allowedEquipment;
-  final Set<String> allowedDifficulties;
-  final Set<String> allowedModalities;
+  final Set<EquipmentTag> allowedEquipment;
+  final Set<ExerciseDifficulty> allowedDifficulties;
+  final Set<ExerciseModality> allowedModalities;
   final Set<int> excludedExerciseIds;
-  final Set<String> excludedMuscleGroups;
-  final Set<String> goalTags;
-  final List<String> preferredMuscleGroups;
+  final Set<BodymapBucket> excludedMuscleGroups;
+  final Set<GoalTag> goalTags;
+  final List<BodymapBucket> preferredMuscleGroups;
   final bool includeCustomExercises;
   final int limit;
 }

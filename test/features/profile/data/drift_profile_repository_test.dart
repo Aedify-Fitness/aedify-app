@@ -7,7 +7,11 @@ import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 
 void main() {
@@ -36,9 +40,9 @@ void main() {
     test('saveProfile persists and returns mapped view data', () async {
       await repository.saveProfile(
         const ProfileEditDraft(
-          experienceLevel: 'Intermediate',
-          goals: ['Build muscle'],
-          equipmentAccess: ['Dumbbells', 'Bench'],
+          experienceLevel: ExperienceLevel.intermediate,
+          goals: {GoalTag.buildMuscle},
+          equipmentAccess: {EquipmentTag.dumbbell, EquipmentTag.bench},
           trainingDaysPerWeek: 4,
           targetSessionLengthMinutes: 45,
           preferredUnits: PreferredUnit.metric,
@@ -51,9 +55,9 @@ void main() {
 
       final profile = await repository.getProfile();
       expect(profile, isNotNull);
-      expect(profile!.experienceLevel, equals('Intermediate'));
-      expect(profile.goals, contains('Build muscle'));
-      expect(profile.equipmentAccess, contains('Dumbbells'));
+      expect(profile!.experienceLevel, equals(ExperienceLevel.intermediate));
+      expect(profile.goals, contains(GoalTag.buildMuscle));
+      expect(profile.equipmentAccess, contains(EquipmentTag.dumbbell));
       expect(profile.trainingDaysPerWeek, equals(4));
       expect(profile.targetSessionLengthMinutes, equals(45));
       expect(profile.preferredUnits, equals(PreferredUnit.metric));
@@ -72,9 +76,9 @@ void main() {
     test('saveProfile persists sex, DOB, and 1RMs', () async {
       await repository.saveProfile(
         ProfileEditDraft(
-          experienceLevel: 'Intermediate',
+          experienceLevel: ExperienceLevel.intermediate,
           displayName: 'Alex',
-          sex: 'Male',
+          sex: Sex.male,
           dateOfBirth: DateTime(1990, 6, 15),
           bench1RmKg: 80.0,
           squat1RmKg: 120.0,
@@ -85,7 +89,7 @@ void main() {
       final profile = await repository.getProfile();
       expect(profile, isNotNull);
       expect(profile!.displayName, equals('Alex'));
-      expect(profile.sex, equals('Male'));
+      expect(profile.sex, equals(Sex.male));
       expect(profile.dateOfBirth, equals(DateTime(1990, 6, 15)));
       expect(profile.bench1RmKg, equals(80.0));
       expect(profile.squat1RmKg, equals(120.0));
@@ -94,7 +98,7 @@ void main() {
 
     test('preferred units default to metric', () async {
       await repository.saveProfile(
-        const ProfileEditDraft(experienceLevel: 'Beginner'),
+        const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
       );
 
       final profile = await repository.getProfile();
@@ -107,7 +111,7 @@ void main() {
       () async {
         await repository.saveProfile(
           const ProfileEditDraft(
-            experienceLevel: 'Beginner',
+            experienceLevel: ExperienceLevel.beginner,
             bodyweightKg: 98.7,
             heightCm: 175,
             otherNotes: PrivacySentinelValues.fakeProfileNote,
@@ -134,7 +138,7 @@ void main() {
       () async {
         await repository.saveProfile(
           const ProfileEditDraft(
-            experienceLevel: 'Beginner',
+            experienceLevel: ExperienceLevel.beginner,
             otherNotes: PrivacySentinelValues.fakeProfileNote,
             injuriesLimitations: [PrivacySentinelValues.fakeInjuryNote],
           ),
@@ -158,7 +162,7 @@ void main() {
       () async {
         await repository.saveProfile(
           const ProfileEditDraft(
-            experienceLevel: 'Beginner',
+            experienceLevel: ExperienceLevel.beginner,
             bodyweightKg: 80,
             preferredUnits: PreferredUnit.metric,
           ),
@@ -172,7 +176,7 @@ void main() {
 
     test('evaluateSaveImpact returns none when no active plan', () async {
       final impact = await repository.evaluateSaveImpact(
-        const ProfileEditDraft(experienceLevel: 'Advanced'),
+        const ProfileEditDraft(experienceLevel: ExperienceLevel.advanced),
       );
       expect(impact, equals(ProfileSaveImpact.none));
     });

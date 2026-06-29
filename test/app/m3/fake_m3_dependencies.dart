@@ -19,6 +19,8 @@ import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
 import 'package:aedify/features/settings/domain/provider_gate_decision.dart';
 import 'package:aedify/features/settings/domain/provider_operation_type.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
 
 class FakeOnboardingRepository implements OnboardingRepository {
   bool _completed = false;
@@ -91,8 +93,8 @@ class FakeByokRepository implements ByokRepository {
         draft.configId ?? DateTime.now().millisecondsSinceEpoch.toString();
     final config = ByokConfigViewData(
       id: id,
-      providerName: draft.providerName ?? '',
-      displayName: draft.providerName,
+      providerName: draft.providerName ?? AiProviderName.openai,
+      displayName: draft.providerName?.name,
       selectedModel: draft.selectedModel,
       hasKey: draft.apiKey != null && draft.apiKey!.isNotEmpty,
       isActive: draft.makeActive,
@@ -113,7 +115,7 @@ class FakeByokRepository implements ByokRepository {
   @override
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {
     _keys[configId] = newApiKey;
@@ -170,7 +172,7 @@ class FakeByokRepository implements ByokRepository {
   Future<List<ByokProviderOption>> getProviderOptions() async => [
     ByokProviderOption(
       id: 'openai',
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       displayName: 'OpenAI',
       description: '',
       models: [],
@@ -179,7 +181,7 @@ class FakeByokRepository implements ByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async => _shouldValidate;
 }
@@ -198,10 +200,11 @@ class FakeProfileRepository implements ProfileRepository {
   Future<void> saveProfile(ProfileEditDraft draft) async {
     _profile = ProfileViewData(
       displayName: draft.displayName,
-      experienceLevel: draft.experienceLevel ?? '',
+      experienceLevel: draft.experienceLevel ?? ExperienceLevel.beginner,
       goals: draft.goals,
       equipmentAccess: draft.equipmentAccess,
       trainingDaysPerWeek: draft.trainingDaysPerWeek,
+      trainingDays: draft.trainingDays,
       targetSessionLengthMinutes: draft.targetSessionLengthMinutes,
       preferredUnits: draft.preferredUnits,
       heightCm: draft.heightCm,
@@ -232,7 +235,7 @@ class FakeProviderCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<ProviderCapabilityViewData?> getCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async => _capability;
 
@@ -243,7 +246,7 @@ class FakeProviderCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<void> clearCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {
     _capability = null;

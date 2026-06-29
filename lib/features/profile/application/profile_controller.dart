@@ -212,7 +212,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
   }
 
   String? _validateDraft(ProfileEditDraft draft) {
-    if (draft.experienceLevel == null || draft.experienceLevel!.isEmpty) {
+    if (draft.experienceLevel == null) {
       return AppStrings.onboardingValidationRequired;
     }
     return null;

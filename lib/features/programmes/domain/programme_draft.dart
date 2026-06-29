@@ -1,5 +1,9 @@
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/domain/import_origin.dart';
 import 'programme_workout_template_draft.dart';
@@ -32,8 +36,8 @@ class ProgrammeDraft {
   final CreationMethod creationMethod;
   final ProgramStatus status;
   final bool active;
-  final List<String> goalTags;
-  final List<String> equipment;
+  final Set<GoalTag> goalTags;
+  final Set<EquipmentTag> equipment;
   final List<ProgrammeWorkoutTemplateDraft> templates;
   final String? description;
   final ImportOrigin? importOrigin;
@@ -42,6 +46,6 @@ class ProgrammeDraft {
   final int? weeksTotal;
   final int? daysPerWeek;
   final int? sessionLengthMinutes;
-  final String? experienceLevelAtCreation;
-  final String? preferredUnitsAtCreation;
+  final ExperienceLevel? experienceLevelAtCreation;
+  final PreferredUnit? preferredUnitsAtCreation;
 }

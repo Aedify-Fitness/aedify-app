@@ -4,6 +4,8 @@ import 'package:aedify/features/profile/data/drift_profile_repository.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:drift/native.dart';
@@ -67,14 +69,17 @@ void main() {
       await controller.build();
       await controller.updateDraft(
         const ProfileEditDraft(
-          experienceLevel: 'Advanced',
-          goals: ['Build muscle', 'Increase strength'],
+          experienceLevel: ExperienceLevel.advanced,
+          goals: {GoalTag.buildMuscle, GoalTag.increaseStrength},
         ),
       );
 
       final state = container.read(AppProviders.profileControllerProvider);
-      expect(state.requireValue.draft!.experienceLevel, equals('Advanced'));
-      expect(state.requireValue.draft!.goals, contains('Build muscle'));
+      expect(
+        state.requireValue.draft!.experienceLevel,
+        equals(ExperienceLevel.advanced),
+      );
+      expect(state.requireValue.draft!.goals, contains(GoalTag.buildMuscle));
     });
 
     test('save persists profile', () async {
@@ -87,7 +92,7 @@ void main() {
 
       await controller.updateDraft(
         const ProfileEditDraft(
-          experienceLevel: 'Intermediate',
+          experienceLevel: ExperienceLevel.intermediate,
           preferredUnits: PreferredUnit.imperial,
         ),
       );
@@ -100,23 +105,26 @@ void main() {
       expect(state.requireValue.profile, isNotNull);
     });
 
-    test('save surfaces validation error when experienceLevel empty', () async {
-      final container = createContainer();
-      final controller = container.read(
-        AppProviders.profileControllerProvider.notifier,
-      );
+    test(
+      'save surfaces validation error when experienceLevel missing',
+      () async {
+        final container = createContainer();
+        final controller = container.read(
+          AppProviders.profileControllerProvider.notifier,
+        );
 
-      await controller.build();
-      await controller.updateDraft(const ProfileEditDraft(experienceLevel: ''));
+        await controller.build();
+        await controller.updateDraft(const ProfileEditDraft());
 
-      await controller.save();
+        await controller.save();
 
-      final state = container.read(AppProviders.profileControllerProvider);
-      expect(
-        state.requireValue.validationMessage,
-        equals(AppStrings.onboardingValidationRequired),
-      );
-    });
+        final state = container.read(AppProviders.profileControllerProvider);
+        expect(
+          state.requireValue.validationMessage,
+          equals(AppStrings.onboardingValidationRequired),
+        );
+      },
+    );
 
     test('reload refreshes state', () async {
       final container = createContainer();
@@ -126,7 +134,7 @@ void main() {
 
       await controller.build();
       await controller.updateDraft(
-        const ProfileEditDraft(experienceLevel: 'Beginner'),
+        const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
       );
       await controller.save();
 
@@ -160,7 +168,7 @@ void main() {
       await controller.build();
       await controller.updateDraft(
         const ProfileEditDraft(
-          experienceLevel: 'Beginner',
+          experienceLevel: ExperienceLevel.beginner,
           preferredUnits: PreferredUnit.imperial,
         ),
       );
@@ -180,7 +188,7 @@ void main() {
       await controller.build();
       await controller.updateDraft(
         ProfileEditDraft(
-          experienceLevel: 'Intermediate',
+          experienceLevel: ExperienceLevel.intermediate,
           otherNotes: PrivacySentinelValues.fakeProfileNote,
         ),
       );
@@ -214,7 +222,7 @@ void main() {
         await controller.build();
         await controller.updateDraft(
           ProfileEditDraft(
-            experienceLevel: 'Beginner',
+            experienceLevel: ExperienceLevel.beginner,
             otherNotes: PrivacySentinelValues.fakeProfileNote,
           ),
         );
@@ -238,7 +246,7 @@ void main() {
       await controller.build();
       await controller.updateDraft(
         const ProfileEditDraft(
-          experienceLevel: 'Beginner',
+          experienceLevel: ExperienceLevel.beginner,
           preferredUnits: PreferredUnit.imperial,
         ),
       );
