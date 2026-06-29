@@ -4,9 +4,44 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-29
+
+### Codebase-wide enum conversion for ~20 string-typed fields + convention fixes
+
+- **18 new enum files** in `lib/shared/domain/`: `SetType`, `SetIntent`, `WeightPrescriptionType`, `LoadingModel`, `ExerciseRole`, `WorkoutSource`, `SessionSource`, `CreationMethod`, `ImportOrigin`, `ImportReviewStatus`, `ExportPrivacyMode`, `ProgramStatus`, `SavedWorkoutStatus`, `ProgramWorkoutStatus`, `WorkoutSessionStatus`, `DayType`, `WeekType`, `PeriodisationModel`, `TrainingStyle`, `ChangeType`, `UpdateScope`.
+- **Enum pattern**: `dbValue` getter + `fromDb()` static factory, conversion only at repository boundaries (Drift `text()` columns remain `String`).
+- **Domain models updated**: All draft classes in `workout_builder/`, `programmes/`, `workout_execution/` now use typed enums instead of `String`.
+- **Repository/use case boundaries**: `DriftSavedWorkoutRepository`, `DriftProgrammeRepository`, `DriftWorkoutSessionRepository`, `LoadWorkoutDraftUseCase` convert enum↔DB string at boundaries.
+- **`set` → `prescription` rename**: Reserved-word avoidance across all workout builder, programmes, and workout execution files (7 lib + 2 test).
+- **Raw sizing doubles fixed**: `strokeWidth: 2` → `AppSizing.strokeWidth` (6 files), field widths 80/72/64 → `fieldWidthLg/Md/Sm`, bodymap SVG 240×480 → `bodymapSvgWidth/Height`.
+- **Token-type mismatch fixes** (4): `fontSize: AppSpacing.lg` → `AppFontSizes.xxl`, `size: AppSpacing.xxxl` → `AppSizing.iconLg`, `strokeWidth: AppSpacing.xxs` → `AppSizing.strokeWidth`.
+- **Color modulation fix**: `withAlpha`/`withValues` runtime modulations replaced with 6 pre-baked alpha color tokens in `AedifyLightColors`/`AedifyDarkColors`.
+- **Relative imports → package imports**: All 33 `../` imports in workout_builder feature converted.
+- **Hardcoded strings → AppStrings**: 14 new constants + 1 static method for controller/validator/sync UI strings.
+- **Test enum migration**: `drift_programme_repository_test.dart` (28 matches), `workout_builder_validator_test.dart` (9 matches) updated to use enum values; `workout_builder_controller_test.dart` corrected — Drift data classes remain `String`.
+- **Unused import cleanup**: 14 warnings removed across 4 lib files.
+- **Hardcoded Exception → AppErrorStrings**: `LoadWorkoutDraftUseCase.loadForEdit()` hardcoded `Exception('Saved workout not found: $savedWorkoutId')` replaced with `AppErrorStrings.workoutNotFoundWithId(savedWorkoutId)` — a parameterized static method preserving the original message while keeping strings in the constants file.
+- **Verification**: `flutter analyze` — 0 issues. `flutter test` — 655/655 passed.
+
 ## 2026-06-28
 
-### Implemented (V1-M4-001 — M4 persistence foundation: schema v8, 15 tables, 15 DAOs, 3 repos, domain models, provider wiring)
+### V1-M4-002 — Workout builder: create/edit saved workouts with exercises/sets offline
+
+- **6 domain models**: `ExerciseReference`, `SetPrescriptionDraft` (with `copyWith`), `WorkoutBuilderExerciseDraft`, `WorkoutBuilderDraft`, `WorkoutBuilderValidationError`, `WorkoutBuilderSaveRequest`.
+- **5 application files**: `WorkoutBuilderState` (mode/phase/draft/errors/dirty), `WorkoutBuilderValidator` (10 rules), `LoadWorkoutDraftUseCase`, `SaveWorkoutDraftUseCase`, `WorkoutBuilderController` (all mutations: add/remove/reorder exercises, add/update/remove sets, save, discard, rename).
+- **Data layer**: `SavedWorkoutRepository` abstract interface + `DriftSavedWorkoutRepository` (child replacement, aggregate with flat sets).
+- **10 presentation files**: `WorkoutBuilderScreen` (create/edit ctors, PopScope, all UX states) + 9 widgets (header, name field, exercise list, exercise card, set list, set editor row, error banner, discard dialog, add-exercise bottom sheet).
+- **Infrastructure updates**: `AppStrings` (+28 builder strings), `AppRoutes` (+2 routes), `AppRouter` (+2 GoRoutes), `AppProviders` (+4 provider declarations).
+- **Exercise library wiring**: added `isCustom` to `ExerciseListItem`; `AddExerciseBottomSheet` now watches real `exerciseSearchControllerProvider`.
+- **Tests**: 17 validator tests + 12 controller tests (10 create-mode + 2 edit-mode: load aggregate, load-edit round-trip) + 13 widget tests + 1 integration test (create → name → add exercise → verify state).
+- **Lint fixes**: unused imports removed, `__` → `_` in widget test callbacks.
+- **Production bugfix**: `ReorderableListView` in `WorkoutExerciseList` given `shrinkWrap: true` + `NeverScrollableScrollPhysics()` to prevent layout crash when nested inside outer `ListView`.
+- **Verification**: `flutter analyze` — 0 issues, `flutter test` — 655/655 passed.
+- **Analyzer fixes**: Fixed Riverpod controller base class (uses `AsyncNotifier<State>` with constructor injection matching codebase pattern), fixed provider family declaration, fixed import paths, fixed text style names (`bodyMd`, `labelSm`, `headlineMd`), fixed `providers.dart` import, fixed flat set access in load use case.
+- **27 tests**: 17 validator tests (all 10 rules) + 10 controller tests (create mode: init, rename, add/remove exercise, add/remove set, duplicate, reorder, save validation, discard; edit mode: load failure).
+- `flutter analyze` — 0, `flutter test` — 639/639.
+
+### V1-M4-001 — M4 persistence foundation (all gaps closed): schema v8, 15 tables, 15 DAOs, 3 repos, domain models, provider wiring
 
 - **Schema v8**: Added 15 new Drift tables (`programs`, `program_workout_templates`, `program_template_exercises`, `program_template_exercise_sets`, `program_weeks`, `program_workouts`, `program_exercises`, `program_exercise_sets`, `program_revisions`, `saved_workouts`, `saved_workout_exercises`, `saved_workout_exercise_sets`, `workout_sessions`, `workout_session_exercises`, `set_logs`) with v7→v8 migration (parent-first creation order).
 - **15 DAOs**: Full CRUD methods for each table including upsert, delete-by-parent, ordered queries.

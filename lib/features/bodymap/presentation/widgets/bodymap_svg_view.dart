@@ -36,8 +36,8 @@ class BodymapSvgView extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.md),
           child: SizedBox(
-            width: 240,
-            height: 480,
+            width: AppSizing.bodymapSvgWidth,
+            height: AppSizing.bodymapSvgHeight,
             child: GestureDetector(
               onTapDown: (details) {
                 final renderBox = context.findRenderObject() as RenderBox?;
@@ -49,8 +49,8 @@ class BodymapSvgView extends StatelessWidget {
               },
               child: SvgPicture.asset(
                 BodymapAssetContract.assetPathForSide(side),
-                width: 240,
-                height: 480,
+                width: AppSizing.bodymapSvgWidth,
+                height: AppSizing.bodymapSvgHeight,
                 fit: BoxFit.contain,
                 colorFilter: ColorFilter.mode(
                   colorScheme.onSurfaceVariant,

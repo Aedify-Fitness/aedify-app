@@ -82,6 +82,7 @@ void main() {
           equipment: 'barbell',
           isFavorite: false,
           isSubstitutedOut: false,
+          isCustom: false,
         ),
         const ExerciseListItem(
           id: 2,
@@ -92,6 +93,7 @@ void main() {
           equipment: 'barbell',
           isFavorite: false,
           isSubstitutedOut: false,
+          isCustom: false,
         ),
       ];
 

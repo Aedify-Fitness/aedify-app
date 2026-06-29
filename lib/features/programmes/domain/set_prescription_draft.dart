@@ -1,3 +1,8 @@
+import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/domain/weight_prescription_type.dart';
+import 'package:aedify/shared/domain/loading_model.dart';
+
 class SetPrescriptionDraft {
   const SetPrescriptionDraft({
     required this.id,
@@ -31,14 +36,14 @@ class SetPrescriptionDraft {
 
   final String id;
   final int setIndex;
-  final String setType;
-  final String? setIntent;
+  final SetType setType;
+  final SetIntent? setIntent;
   final int? prescribedRepsMin;
   final int? prescribedRepsMax;
   final int? prescribedRepsExact;
   final int? durationSeconds;
   final double? distanceMeters;
-  final String? weightPrescriptionType;
+  final WeightPrescriptionType? weightPrescriptionType;
   final double? prescribedWeightKg;
   final double? prescribedWeightPct1rm;
   final double? prescribedWeightPctWorking;
@@ -47,7 +52,7 @@ class SetPrescriptionDraft {
   final double? prescribedRpeMax;
   final int? prescribedRir;
   final int? restSeconds;
-  final String? loadingModel;
+  final LoadingModel? loadingModel;
   final double? percent1rmMin;
   final double? percent1rmMax;
   final double? rpeMin;

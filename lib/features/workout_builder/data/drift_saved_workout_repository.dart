@@ -170,10 +170,10 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       ),
     );
 
-    for (final set in exercise.sets) {
+    for (final prescription in exercise.sets) {
       await _insertSavedWorkoutExerciseSet(
         savedWorkoutExerciseId: exercise.id,
-        set: set,
+        prescription: prescription,
         now: now,
       );
     }
@@ -181,13 +181,13 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   Future<void> _insertSavedWorkoutExerciseSet({
     required String savedWorkoutExerciseId,
-    required SetPrescriptionDraft set,
+    required SetPrescriptionDraft prescription,
     required DateTime now,
   }) async {
     await _savedWorkoutExerciseSetDao.upsertSet(
       _buildSavedWorkoutExerciseSetCompanion(
         savedWorkoutExerciseId: savedWorkoutExerciseId,
-        set: set,
+        prescription: prescription,
         now: now,
       ),
     );
@@ -205,9 +205,9 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       id: Value(savedWorkoutId),
       name: Value(draft.name),
       description: Value(draft.description),
-      source: Value(draft.source),
-      creationMethod: Value(draft.creationMethod),
-      status: Value(draft.status),
+      source: Value(draft.source.dbValue),
+      creationMethod: Value(draft.creationMethod.dbValue),
+      status: Value(draft.status.dbValue),
       estimatedDurationMinutes: Value(draft.estimatedDurationMinutes),
       goalTagsJson: Value(jsonEncode(draft.goalTags)),
       equipmentJson: Value(jsonEncode(draft.equipment)),
@@ -226,7 +226,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       savedWorkoutId: Value(savedWorkoutId),
       exerciseId: Value(exercise.exerciseId),
       exerciseRef: Value(exercise.exerciseRef),
-      exerciseRole: Value(exercise.exerciseRole),
+      exerciseRole: Value(exercise.exerciseRole?.dbValue),
       supersetGroupId: Value(exercise.supersetGroupId),
       supersetOrder: Value(exercise.supersetOrder),
       sortOrder: Value(exercise.sortOrder),
@@ -238,38 +238,44 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   SavedWorkoutExerciseSetsCompanion _buildSavedWorkoutExerciseSetCompanion({
     required String savedWorkoutExerciseId,
-    required SetPrescriptionDraft set,
+    required SetPrescriptionDraft prescription,
     required DateTime now,
   }) {
     return SavedWorkoutExerciseSetsCompanion(
-      id: Value(set.id),
+      id: Value(prescription.id),
       savedWorkoutExerciseId: Value(savedWorkoutExerciseId),
-      setIndex: Value(set.setIndex),
-      setType: Value(set.setType),
-      setIntent: Value(set.setIntent),
-      prescribedRepsMin: Value(set.prescribedRepsMin),
-      prescribedRepsMax: Value(set.prescribedRepsMax),
-      prescribedRepsExact: Value(set.prescribedRepsExact),
-      durationSeconds: Value(set.durationSeconds),
-      distanceMeters: Value(set.distanceMeters),
-      weightPrescriptionType: Value(set.weightPrescriptionType),
-      prescribedWeightKg: Value(set.prescribedWeightKg),
-      prescribedWeightPct1rm: Value(set.prescribedWeightPct1rm),
-      prescribedWeightPctWorking: Value(set.prescribedWeightPctWorking),
-      bodyweightMultiplier: Value(set.bodyweightMultiplier),
-      prescribedRpeMin: Value(set.prescribedRpeMin),
-      prescribedRpeMax: Value(set.prescribedRpeMax),
-      prescribedRir: Value(set.prescribedRir),
-      restSeconds: Value(set.restSeconds),
-      loadingModel: Value(set.loadingModel),
-      percent1rmMin: Value(set.percent1rmMin),
-      percent1rmMax: Value(set.percent1rmMax),
-      rpeMin: Value(set.rpeMin),
-      rpeMax: Value(set.rpeMax),
-      loadSelectionNote: Value(set.loadSelectionNote),
-      isCalibrationEstimate: Value(set.isCalibrationEstimate),
-      derivedFromWorkingSetIndex: Value(set.derivedFromWorkingSetIndex),
-      warmupWeightRuleJson: Value(set.warmupWeightRuleJson),
+      setIndex: Value(prescription.setIndex),
+      setType: Value(prescription.setType.dbValue),
+      setIntent: Value(prescription.setIntent?.dbValue),
+      prescribedRepsMin: Value(prescription.prescribedRepsMin),
+      prescribedRepsMax: Value(prescription.prescribedRepsMax),
+      prescribedRepsExact: Value(prescription.prescribedRepsExact),
+      durationSeconds: Value(prescription.durationSeconds),
+      distanceMeters: Value(prescription.distanceMeters),
+      weightPrescriptionType: Value(
+        prescription.weightPrescriptionType?.dbValue,
+      ),
+      prescribedWeightKg: Value(prescription.prescribedWeightKg),
+      prescribedWeightPct1rm: Value(prescription.prescribedWeightPct1rm),
+      prescribedWeightPctWorking: Value(
+        prescription.prescribedWeightPctWorking,
+      ),
+      bodyweightMultiplier: Value(prescription.bodyweightMultiplier),
+      prescribedRpeMin: Value(prescription.prescribedRpeMin),
+      prescribedRpeMax: Value(prescription.prescribedRpeMax),
+      prescribedRir: Value(prescription.prescribedRir),
+      restSeconds: Value(prescription.restSeconds),
+      loadingModel: Value(prescription.loadingModel?.dbValue),
+      percent1rmMin: Value(prescription.percent1rmMin),
+      percent1rmMax: Value(prescription.percent1rmMax),
+      rpeMin: Value(prescription.rpeMin),
+      rpeMax: Value(prescription.rpeMax),
+      loadSelectionNote: Value(prescription.loadSelectionNote),
+      isCalibrationEstimate: Value(prescription.isCalibrationEstimate),
+      derivedFromWorkingSetIndex: Value(
+        prescription.derivedFromWorkingSetIndex,
+      ),
+      warmupWeightRuleJson: Value(prescription.warmupWeightRuleJson),
       createdAt: Value(now),
     );
   }

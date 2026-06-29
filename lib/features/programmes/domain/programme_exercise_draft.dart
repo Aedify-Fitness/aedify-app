@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/exercise_role.dart';
 import 'set_prescription_draft.dart';
 
 class ProgrammeExerciseDraft {
@@ -20,7 +21,7 @@ class ProgrammeExerciseDraft {
   final int sortOrder;
   final List<SetPrescriptionDraft> sets;
   final String? exerciseRef;
-  final String? exerciseRole;
+  final ExerciseRole? exerciseRole;
   final String? programmeRole;
   final String? supersetGroupId;
   final int? supersetOrder;

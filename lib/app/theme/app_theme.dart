@@ -216,7 +216,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       backgroundColor: AedifyDarkColors.surfaceContainerHigh,
-      selectedColor: AedifyDarkColors.primaryContainer.withValues(alpha: 0.3),
+      selectedColor: AedifyDarkColors.primaryContainerSelected,
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStylesDark.headlineXl,

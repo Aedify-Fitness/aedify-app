@@ -1,3 +1,6 @@
+import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/set_type.dart';
+
 class SetLogDraft {
   const SetLogDraft({
     required this.id,
@@ -28,8 +31,8 @@ class SetLogDraft {
   final int exerciseId;
   final int setIndex;
   final DateTime performedAt;
-  final String setType;
-  final String? setIntent;
+  final SetType setType;
+  final SetIntent? setIntent;
   final int? prescribedRepsMin;
   final int? prescribedRepsMax;
   final double? prescribedWeightKg;

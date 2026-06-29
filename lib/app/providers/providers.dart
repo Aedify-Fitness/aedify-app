@@ -83,6 +83,11 @@ import 'package:aedify/features/programmes/data/programme_repository.dart';
 import 'package:aedify/features/programmes/data/drift_programme_repository.dart';
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/data/drift_saved_workout_repository.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_controller.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_validator.dart';
+import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
+import 'package:aedify/features/workout_builder/application/save_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
 import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -522,4 +527,30 @@ class AppProviders {
           setLogDao: ref.read(setLogDaoProvider),
         );
       });
+
+  static final workoutBuilderValidatorProvider =
+      Provider<WorkoutBuilderValidator>((ref) {
+        return const WorkoutBuilderValidator();
+      });
+
+  static final loadWorkoutDraftUseCaseProvider =
+      Provider<LoadWorkoutDraftUseCase>((ref) {
+        return LoadWorkoutDraftUseCase(
+          savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+        );
+      });
+
+  static final saveWorkoutDraftUseCaseProvider =
+      Provider<SaveWorkoutDraftUseCase>((ref) {
+        return SaveWorkoutDraftUseCase(
+          savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+        );
+      });
+
+  static final workoutBuilderControllerProvider =
+      AsyncNotifierProvider.family<
+        WorkoutBuilderController,
+        WorkoutBuilderState,
+        ({WorkoutBuilderMode mode, String? savedWorkoutId})
+      >((arg) => WorkoutBuilderController(arg.mode, arg.savedWorkoutId));
 }

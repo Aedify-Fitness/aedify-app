@@ -18,6 +18,8 @@ import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
+import 'package:aedify/shared/domain/change_type.dart';
+
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
     required AppDatabase database,
@@ -127,7 +129,9 @@ class DriftProgrammeRepository implements ProgrammeRepository {
           id: _newId(),
           programId: programId,
           revisionNumber: latestRevision + 1,
-          changeType: existing == null ? 'created' : 'manual_edit',
+          changeType: existing == null
+              ? ChangeType.created.dbValue
+              : ChangeType.manualEdit.dbValue,
           summary: existing == null ? 'Program created' : 'Program updated',
           createdAt: now,
         ),
@@ -307,10 +311,10 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       ),
     );
 
-    for (final set in exercise.sets) {
+    for (final prescription in exercise.sets) {
       await _insertProgramTemplateExerciseSet(
         templateExerciseId: exercise.id,
-        set: set,
+        prescription: prescription,
         now: now,
       );
     }
@@ -318,13 +322,13 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
   Future<void> _insertProgramTemplateExerciseSet({
     required String templateExerciseId,
-    required SetPrescriptionDraft set,
+    required SetPrescriptionDraft prescription,
     required DateTime now,
   }) async {
     await _programTemplateExerciseSetDao.upsertSet(
       _buildProgramTemplateExerciseSetCompanion(
         templateExerciseId: templateExerciseId,
-        set: set,
+        prescription: prescription,
         now: now,
       ),
     );
@@ -445,10 +449,10 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       id: Value(programId),
       name: Value(draft.name),
       description: Value(draft.description),
-      source: Value(draft.source),
-      creationMethod: Value(draft.creationMethod),
-      importOrigin: Value(draft.importOrigin),
-      status: Value(draft.status),
+      source: Value(draft.source.dbValue),
+      creationMethod: Value(draft.creationMethod.dbValue),
+      importOrigin: Value(draft.importOrigin?.dbValue),
+      status: Value(draft.status.dbValue),
       active: Value(draft.active),
       startDateLocal: Value(draft.startDateLocal),
       endDateLocal: Value(draft.endDateLocal),
@@ -475,7 +479,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       templateKey: Value(template.templateKey),
       name: Value(template.name),
       description: Value(template.description),
-      dayType: Value(template.dayType),
+      dayType: Value(template.dayType?.dbValue),
       estimatedDurationMinutes: Value(template.estimatedDurationMinutes),
       sortOrder: Value(template.sortOrder),
       createdAt: Value(now),
@@ -493,7 +497,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       workoutTemplateId: Value(workoutTemplateId),
       exerciseId: Value(exercise.exerciseId),
       exerciseRef: Value(exercise.exerciseRef),
-      exerciseRole: Value(exercise.exerciseRole),
+      exerciseRole: Value(exercise.exerciseRole?.dbValue),
       programmeRole: Value(exercise.programmeRole),
       supersetGroupId: Value(exercise.supersetGroupId),
       supersetOrder: Value(exercise.supersetOrder),
@@ -507,38 +511,44 @@ class DriftProgrammeRepository implements ProgrammeRepository {
   ProgramTemplateExerciseSetsCompanion
   _buildProgramTemplateExerciseSetCompanion({
     required String templateExerciseId,
-    required SetPrescriptionDraft set,
+    required SetPrescriptionDraft prescription,
     required DateTime now,
   }) {
     return ProgramTemplateExerciseSetsCompanion(
-      id: Value(set.id),
+      id: Value(prescription.id),
       templateExerciseId: Value(templateExerciseId),
-      setIndex: Value(set.setIndex),
-      setType: Value(set.setType),
-      setIntent: Value(set.setIntent),
-      prescribedRepsMin: Value(set.prescribedRepsMin),
-      prescribedRepsMax: Value(set.prescribedRepsMax),
-      prescribedRepsExact: Value(set.prescribedRepsExact),
-      durationSeconds: Value(set.durationSeconds),
-      distanceMeters: Value(set.distanceMeters),
-      weightPrescriptionType: Value(set.weightPrescriptionType),
-      prescribedWeightKg: Value(set.prescribedWeightKg),
-      prescribedWeightPct1rm: Value(set.prescribedWeightPct1rm),
-      prescribedWeightPctWorking: Value(set.prescribedWeightPctWorking),
-      bodyweightMultiplier: Value(set.bodyweightMultiplier),
-      prescribedRpeMin: Value(set.prescribedRpeMin),
-      prescribedRpeMax: Value(set.prescribedRpeMax),
-      prescribedRir: Value(set.prescribedRir),
-      restSeconds: Value(set.restSeconds),
-      loadingModel: Value(set.loadingModel),
-      percent1rmMin: Value(set.percent1rmMin),
-      percent1rmMax: Value(set.percent1rmMax),
-      rpeMin: Value(set.rpeMin),
-      rpeMax: Value(set.rpeMax),
-      loadSelectionNote: Value(set.loadSelectionNote),
-      isCalibrationEstimate: Value(set.isCalibrationEstimate),
-      derivedFromWorkingSetIndex: Value(set.derivedFromWorkingSetIndex),
-      warmupWeightRuleJson: Value(set.warmupWeightRuleJson),
+      setIndex: Value(prescription.setIndex),
+      setType: Value(prescription.setType.dbValue),
+      setIntent: Value(prescription.setIntent?.dbValue),
+      prescribedRepsMin: Value(prescription.prescribedRepsMin),
+      prescribedRepsMax: Value(prescription.prescribedRepsMax),
+      prescribedRepsExact: Value(prescription.prescribedRepsExact),
+      durationSeconds: Value(prescription.durationSeconds),
+      distanceMeters: Value(prescription.distanceMeters),
+      weightPrescriptionType: Value(
+        prescription.weightPrescriptionType?.dbValue,
+      ),
+      prescribedWeightKg: Value(prescription.prescribedWeightKg),
+      prescribedWeightPct1rm: Value(prescription.prescribedWeightPct1rm),
+      prescribedWeightPctWorking: Value(
+        prescription.prescribedWeightPctWorking,
+      ),
+      bodyweightMultiplier: Value(prescription.bodyweightMultiplier),
+      prescribedRpeMin: Value(prescription.prescribedRpeMin),
+      prescribedRpeMax: Value(prescription.prescribedRpeMax),
+      prescribedRir: Value(prescription.prescribedRir),
+      restSeconds: Value(prescription.restSeconds),
+      loadingModel: Value(prescription.loadingModel?.dbValue),
+      percent1rmMin: Value(prescription.percent1rmMin),
+      percent1rmMax: Value(prescription.percent1rmMax),
+      rpeMin: Value(prescription.rpeMin),
+      rpeMax: Value(prescription.rpeMax),
+      loadSelectionNote: Value(prescription.loadSelectionNote),
+      isCalibrationEstimate: Value(prescription.isCalibrationEstimate),
+      derivedFromWorkingSetIndex: Value(
+        prescription.derivedFromWorkingSetIndex,
+      ),
+      warmupWeightRuleJson: Value(prescription.warmupWeightRuleJson),
       createdAt: Value(now),
     );
   }

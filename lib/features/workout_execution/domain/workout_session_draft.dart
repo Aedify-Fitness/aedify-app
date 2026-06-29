@@ -1,3 +1,6 @@
+import 'package:aedify/shared/domain/session_source.dart';
+import 'package:aedify/shared/domain/workout_session_status.dart';
+
 import 'workout_session_exercise_draft.dart';
 
 class WorkoutSessionDraft {
@@ -18,10 +21,10 @@ class WorkoutSessionDraft {
   });
 
   final String id;
-  final String source;
+  final SessionSource source;
   final String name;
   final DateTime startedAt;
-  final String status;
+  final WorkoutSessionStatus status;
   final List<WorkoutSessionExerciseDraft> exercises;
   final String? programId;
   final String? programWorkoutId;

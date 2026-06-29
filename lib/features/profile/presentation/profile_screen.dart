@@ -507,7 +507,9 @@ class _ProfileContentView extends ConsumerWidget {
                   ? const SizedBox(
                       width: AppSizing.iconSm,
                       height: AppSizing.iconSm,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: AppSizing.strokeWidth,
+                      ),
                     )
                   : const Text(AppStrings.saveProfile),
             ),

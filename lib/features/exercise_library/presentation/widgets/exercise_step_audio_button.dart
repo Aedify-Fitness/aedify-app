@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,9 @@ class ExerciseStepAudioButton extends ConsumerWidget {
             width: AppSizing.iconSm,
             height: AppSizing.iconSm,
             colorFilter: ColorFilter.mode(
-              colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+              colorScheme.brightness == Brightness.light
+                  ? AedifyLightColors.surfaceVariantFaded
+                  : AedifyDarkColors.surfaceVariantFaded,
               BlendMode.srcIn,
             ),
           ),

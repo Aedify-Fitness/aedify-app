@@ -124,6 +124,7 @@ void main() {
           equipment: 'barbell',
           isFavorite: false,
           isSubstitutedOut: false,
+          isCustom: false,
         ),
       ];
       await tester.pumpWidget(createTestApp(mockRepository));
@@ -143,6 +144,7 @@ void main() {
           equipment: 'barbell',
           isFavorite: false,
           isSubstitutedOut: false,
+          isCustom: false,
         ),
       ];
       await tester.pumpWidget(createTestApp(mockRepository));
@@ -163,6 +165,7 @@ void main() {
           equipment: 'barbell',
           isFavorite: false,
           isSubstitutedOut: false,
+          isCustom: false,
         ),
       ];
       await tester.pumpWidget(createTestApp(mockRepository));

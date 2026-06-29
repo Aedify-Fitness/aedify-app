@@ -74,6 +74,7 @@ class DriftExerciseRepository implements ExerciseRepository {
             equipment: e.equipment,
             isFavorite: e.isFavorite,
             isSubstitutedOut: e.isSubstitutedOut,
+            isCustom: e.isCustom,
           ),
         )
         .toList();
@@ -150,6 +151,7 @@ class DriftExerciseRepository implements ExerciseRepository {
             equipment: e.equipment,
             isFavorite: e.isFavorite,
             isSubstitutedOut: e.isSubstitutedOut,
+            isCustom: e.isCustom,
           ),
         )
         .toList();

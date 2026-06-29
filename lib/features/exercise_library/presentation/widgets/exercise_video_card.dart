@@ -45,7 +45,7 @@ class ExerciseVideoCard extends StatelessWidget {
                       height: AppSpacing.lg,
                       child: Center(
                         child: CircularProgressIndicator(
-                          strokeWidth: AppSpacing.xxs,
+                          strokeWidth: AppSizing.strokeWidth,
                         ),
                       ),
                     ),

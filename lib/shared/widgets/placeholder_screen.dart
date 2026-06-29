@@ -29,7 +29,7 @@ class PlaceholderScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Icon(
                     icon,
-                    size: AppSpacing.xxxl,
+                    size: AppSizing.iconLg,
                     color: context.colorScheme.secondary,
                   ),
                 ),

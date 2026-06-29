@@ -51,6 +51,10 @@ abstract final class AedifyLightColors {
   static const background = Color(0xFFf8f9ff);
   static const onBackground = Color(0xFF0b1c30);
   static const surfaceVariant = Color(0xFFd3e4fe);
+  static const errorSurface = Color(0x19ba1a1a);
+  static const handleBarColor = Color(0x5044474c);
+  static const surfaceVariantFaded = Color(0x6644474c);
+  static const secondaryBorder = Color(0x3F0051d5);
 }
 
 abstract final class AedifyDarkColors {
@@ -103,4 +107,9 @@ abstract final class AedifyDarkColors {
   static const background = Color(0xFF11131b);
   static const onBackground = Color(0xFFe1e2ed);
   static const surfaceVariant = Color(0xFF32343d);
+  static const errorSurface = Color(0x19ffb4ab);
+  static const handleBarColor = Color(0x50c3c6d7);
+  static const surfaceVariantFaded = Color(0x66c3c6d7);
+  static const primaryContainerSelected = Color(0x4C2563eb);
+  static const secondaryBorder = Color(0x3Fb9c7e1);
 }

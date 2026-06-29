@@ -9,6 +9,8 @@ import 'package:aedify/features/workout_execution/domain/workout_session_draft.d
 import 'package:aedify/features/workout_execution/domain/workout_session_exercise_draft.dart';
 import 'package:aedify/features/workout_execution/domain/set_log_draft.dart';
 
+import 'package:aedify/shared/domain/workout_session_status.dart';
+
 class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   DriftWorkoutSessionRepository({
     required AppDatabase database,
@@ -72,7 +74,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       if (existing == null) {
         throw StateError('Session not found: ${draft.id}');
       }
-      if (existing.status != 'in_progress') {
+      if (existing.status != WorkoutSessionStatus.inProgress.dbValue) {
         throw StateError(
           'Cannot save progress: session ${draft.id} status is ${existing.status}',
         );
@@ -212,7 +214,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     await _workoutSessionDao.upsertSession(
       WorkoutSessionsCompanion(
         id: Value(draft.id),
-        source: Value(draft.source),
+        source: Value(draft.source.dbValue),
         programId: Value(draft.programId),
         programWorkoutId: Value(draft.programWorkoutId),
         savedWorkoutId: Value(draft.savedWorkoutId),
@@ -220,7 +222,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
         startedAt: Value(draft.startedAt),
         completedAt: Value(existing.completedAt),
         durationSeconds: Value(existing.durationSeconds),
-        status: Value('in_progress'),
+        status: Value(WorkoutSessionStatus.inProgress.dbValue),
         bodyweightKgAtSession: Value(draft.bodyweightKgAtSession),
         notes: Value(draft.notes),
         energyLevel: Value(draft.energyLevel),
@@ -240,7 +242,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   }) {
     return WorkoutSessionsCompanion(
       id: Value(sessionId),
-      source: Value(draft.source),
+      source: Value(draft.source.dbValue),
       programId: Value(draft.programId),
       programWorkoutId: Value(draft.programWorkoutId),
       savedWorkoutId: Value(draft.savedWorkoutId),
@@ -248,7 +250,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       startedAt: Value(draft.startedAt),
       completedAt: Value(null),
       durationSeconds: Value(null),
-      status: Value(draft.status),
+      status: Value(draft.status.dbValue),
       bodyweightKgAtSession: Value(draft.bodyweightKgAtSession),
       notes: Value(draft.notes),
       energyLevel: Value(draft.energyLevel),
@@ -268,8 +270,8 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       exerciseId: Value(setLog.exerciseId),
       performedAt: Value(setLog.performedAt),
       setIndex: Value(setLog.setIndex),
-      setType: Value(setLog.setType),
-      setIntent: Value(setLog.setIntent),
+      setType: Value(setLog.setType.dbValue),
+      setIntent: Value(setLog.setIntent?.dbValue),
       prescribedRepsMin: Value(setLog.prescribedRepsMin),
       prescribedRepsMax: Value(setLog.prescribedRepsMax),
       prescribedWeightKg: Value(setLog.prescribedWeightKg),

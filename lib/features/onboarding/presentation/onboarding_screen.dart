@@ -11,6 +11,7 @@ import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -398,7 +399,9 @@ class _WelcomeStep extends StatelessWidget {
         AppWhiteSpace.hLg,
         _SurfacePanel(
           backgroundColor: context.colorScheme.surfaceContainerLow,
-          borderColor: context.colorScheme.secondary.withValues(alpha: 0.25),
+          borderColor: context.theme.brightness == Brightness.light
+              ? AedifyLightColors.secondaryBorder
+              : AedifyDarkColors.secondaryBorder,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1123,7 +1126,9 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
                   ? const SizedBox(
                       width: AppSizing.iconSm,
                       height: AppSizing.iconSm,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: AppSizing.strokeWidth,
+                      ),
                     )
                   : const Text(AppStrings.saveKey),
             ),
@@ -1193,7 +1198,9 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
   Widget _infoPanel(BuildContext context) {
     return _SurfacePanel(
       backgroundColor: context.colorScheme.surfaceContainerLow,
-      borderColor: context.colorScheme.secondary.withValues(alpha: 0.25),
+      borderColor: context.theme.brightness == Brightness.light
+          ? AedifyLightColors.secondaryBorder
+          : AedifyDarkColors.secondaryBorder,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1454,7 +1461,9 @@ class _PanelHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: AppTextStyles.headlineMd.copyWith(fontSize: AppSpacing.lg),
+            style: AppTextStyles.headlineMd.copyWith(
+              fontSize: AppFontSizes.xxl,
+            ),
           ),
         ),
       ],

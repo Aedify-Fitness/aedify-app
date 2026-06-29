@@ -8,6 +8,7 @@ class ExerciseListItem {
     required this.equipment,
     required this.isFavorite,
     required this.isSubstitutedOut,
+    this.isCustom = false,
   });
 
   final int id;
@@ -18,4 +19,5 @@ class ExerciseListItem {
   final String? equipment;
   final bool isFavorite;
   final bool isSubstitutedOut;
+  final bool isCustom;
 }

@@ -16,7 +16,14 @@ import 'package:aedify/features/programmes/domain/programme_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
+import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/set_type.dart';
 import 'package:uuid/uuid.dart';
+import 'package:aedify/shared/domain/workout_source.dart';
+import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/domain/exercise_role.dart';
+import 'package:aedify/shared/domain/loading_model.dart';
 
 void main() {
   late AppDatabase db;
@@ -60,9 +67,9 @@ void main() {
         final draft = ProgrammeDraft(
           id: programmeId,
           name: 'Test Programme',
-          source: 'manual',
-          creationMethod: 'manual',
-          status: 'active',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.active,
           active: true,
           goalTags: ['Build muscle'],
           equipment: ['Dumbbells'],
@@ -81,19 +88,19 @@ void main() {
                   id: exerciseId,
                   exerciseId: 101,
                   sortOrder: 0,
-                  exerciseRole: 'primary',
+                  exerciseRole: ExerciseRole.primary,
                   notes: 'Go heavy',
                   sets: [
                     SetPrescriptionDraft(
                       id: setId,
                       setIndex: 0,
-                      setType: 'working',
-                      setIntent: 'hypertrophy',
+                      setType: SetType.working,
+                      setIntent: SetIntent.hypertrophy,
                       prescribedRepsMin: 8,
                       prescribedRepsMax: 12,
                       prescribedWeightKg: 80.0,
                       restSeconds: 90,
-                      loadingModel: 'linear',
+                      loadingModel: LoadingModel.linear,
                       isCalibrationEstimate: false,
                     ),
                   ],
@@ -147,9 +154,9 @@ void main() {
       final draft = ProgrammeDraft(
         id: programmeId,
         name: 'Replaced Programme',
-        source: 'manual',
-        creationMethod: 'manual',
-        status: 'active',
+        source: WorkoutSource.manual,
+        creationMethod: CreationMethod.manual,
+        status: ProgramStatus.active,
         active: false,
         goalTags: ['Strength'],
         equipment: ['Barbell'],
@@ -168,17 +175,17 @@ void main() {
                 id: exerciseId,
                 exerciseId: 201,
                 sortOrder: 0,
-                exerciseRole: 'primary',
+                exerciseRole: ExerciseRole.primary,
                 sets: [
                   SetPrescriptionDraft(
                     id: setId,
                     setIndex: 0,
-                    setType: 'working',
+                    setType: SetType.working,
                     prescribedRepsMin: 5,
                     prescribedRepsMax: 5,
                     prescribedWeightKg: 100.0,
                     restSeconds: 120,
-                    loadingModel: 'linear',
+                    loadingModel: LoadingModel.linear,
                   ),
                 ],
               ),
@@ -193,9 +200,9 @@ void main() {
       final updatedDraft = ProgrammeDraft(
         id: programmeId,
         name: 'Replaced Programme Updated',
-        source: 'manual',
-        creationMethod: 'manual',
-        status: 'active',
+        source: WorkoutSource.manual,
+        creationMethod: CreationMethod.manual,
+        status: ProgramStatus.active,
         active: false,
         goalTags: ['Strength'],
         equipment: ['Barbell'],
@@ -214,17 +221,17 @@ void main() {
                 id: exerciseId,
                 exerciseId: 202,
                 sortOrder: 0,
-                exerciseRole: 'primary',
+                exerciseRole: ExerciseRole.primary,
                 sets: [
                   SetPrescriptionDraft(
                     id: setId,
                     setIndex: 0,
-                    setType: 'working',
+                    setType: SetType.working,
                     prescribedRepsMin: 3,
                     prescribedRepsMax: 3,
                     prescribedWeightKg: 120.0,
                     restSeconds: 150,
-                    loadingModel: 'linear',
+                    loadingModel: LoadingModel.linear,
                   ),
                 ],
               ),
@@ -258,9 +265,9 @@ void main() {
         ProgrammeDraft(
           id: programmeId,
           name: 'To Archive',
-          source: 'manual',
-          creationMethod: 'manual',
-          status: 'active',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.active,
           active: false,
           goalTags: [],
           equipment: [],
@@ -282,9 +289,9 @@ void main() {
         ProgrammeDraft(
           id: programmeId,
           name: 'To Delete',
-          source: 'manual',
-          creationMethod: 'manual',
-          status: 'active',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.active,
           active: false,
           goalTags: [],
           equipment: [],
@@ -308,9 +315,9 @@ void main() {
         ProgrammeDraft(
           id: firstId,
           name: 'First',
-          source: 'manual',
-          creationMethod: 'manual',
-          status: 'active',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.active,
           active: true,
           goalTags: [],
           equipment: [],
@@ -322,9 +329,9 @@ void main() {
         ProgrammeDraft(
           id: secondId,
           name: 'Second',
-          source: 'manual',
-          creationMethod: 'manual',
-          status: 'active',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.active,
           active: true,
           goalTags: [],
           equipment: [],

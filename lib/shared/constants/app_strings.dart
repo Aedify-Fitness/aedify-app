@@ -144,6 +144,7 @@ class AppStrings {
   static const onboardingGoalLoseWeight = 'Lose weight';
   static const exercisesSelected = 'exercises selected';
   static const noExercisesFound = 'No exercises found.';
+  static const searchFailed = 'Search failed.';
   static const noExerciseVideos = 'No videos available.';
   static const onboardingGoalFlexibility = 'Flexibility';
   static const onboardingScheduleTitle = 'Your schedule';
@@ -368,6 +369,63 @@ class AppStrings {
   static const String capabilityMaxOutputTokens = 'Max Output Tokens';
   static const String capabilityMaxImagesPerRequest = 'Max Images Per Request';
   static const String capabilityLastChecked = 'Last Checked';
+
+  // Workout builder
+  static const workoutBuilder = 'Workout Builder';
+  static const createWorkout = 'Create workout';
+  static const editWorkout = 'Edit workout';
+  static const workoutName = 'Workout name';
+  static const workoutNameHint = 'Upper Body A';
+  static const addExercise = 'Add exercise';
+  static const addSet = 'Add set';
+  static const removeExercise = 'Remove exercise';
+  static const removeSet = 'Remove set';
+  static const saveWorkout = 'Save workout';
+  static const discardChanges = 'Discard changes';
+  static const unsavedChanges = 'Unsaved changes';
+  static const unsavedChangesMessage =
+      'Discard your changes and leave this workout?';
+  static const noExercisesAdded = 'No exercises added yet.';
+  static const noExercisesAddedHint =
+      'Add at least one exercise to build your workout.';
+  static const workoutSaved = 'Workout saved.';
+  static const workoutSaveFailed = 'Could not save the workout.';
+  static const workoutLoadFailed = 'Could not load the workout.';
+  static const invalidWorkout = 'Please fix the highlighted workout fields.';
+  static const missingExerciseReference =
+      'One or more exercises are no longer available.';
+  static const workingSet = 'Working';
+  static const warmupSet = 'Warm-up';
+  static const reps = 'Reps';
+  static const weight = 'Weight';
+  static const rest = 'Rest';
+  static const rpe = 'RPE';
+  static const rir = 'RIR';
+  static const duplicateExercise = 'Duplicate exercise';
+  static const reorderExercises = 'Reorder exercises';
+  static const setType = 'Set type';
+
+  // Workout builder — validation
+  static const workoutNameRequired = 'Workout name is required.';
+  static const addAtLeastOneExercise = 'Add at least one exercise.';
+  static const addAtLeastOneSet = 'Add at least one set.';
+  static const minRepsAtLeast1 = 'Min reps must be at least 1.';
+  static const maxRepsAtLeast1 = 'Max reps must be at least 1.';
+  static const repsAtLeast1 = 'Reps must be at least 1.';
+  static const enterValidWeight = 'Enter a valid weight.';
+  static const rpeMinBetween1And10 = 'RPE min must be between 1 and 10.';
+  static const rpeMaxBetween1And10 = 'RPE max must be between 1 and 10.';
+  static const rpeMinCannotExceedMax = 'RPE min cannot exceed RPE max.';
+  static const rirCannotBeNegative = 'RIR cannot be negative.';
+  static const restCannotBeNegative = 'Rest cannot be negative.';
+
+  // Workout builder — exercise card
+  static String exerciseNumberLabel(int number) => 'Exercise #$number';
+
+  // Exercise dataset sync
+  static const checkingForUpdates = 'Checking for updates...';
+  static const downloadingUpdate = 'Downloading...';
+  static const importingExercises = 'Importing exercises...';
 
   static const byokProviderOpenAiDescription =
       'Widely used, strong general-purpose models with broad tooling support.';

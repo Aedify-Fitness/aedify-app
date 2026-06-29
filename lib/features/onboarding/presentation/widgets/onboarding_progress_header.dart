@@ -43,13 +43,6 @@ class OnboardingProgressHeader extends StatelessWidget {
                 ImageAssets.appLogo(context),
                 height: AppSizing.iconLg,
               ),
-              // Text(
-              //   AppStrings.appTitle,
-              //   style: AppTextStyles.headlineMd.copyWith(
-              //     fontSize: AppSpacing.lg,
-              //     color: context.colorScheme.onSurface,
-              //   ),
-              // ),
               Text(
                 AppStrings.onboardingStepLabel(displayStep, totalSteps),
                 style: AppTextStyles.labelMd.copyWith(

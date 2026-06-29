@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,9 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 width: AppSizing.handleWidth,
                 height: AppSpacing.xs,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: colorScheme.brightness == Brightness.light
+                      ? AedifyLightColors.surfaceVariantFaded
+                      : AedifyDarkColors.surfaceVariantFaded,
                   borderRadius: BorderRadius.circular(AppRadius.xxs),
                 ),
               ),

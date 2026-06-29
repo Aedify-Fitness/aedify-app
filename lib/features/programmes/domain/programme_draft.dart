@@ -1,3 +1,7 @@
+import 'package:aedify/shared/domain/workout_source.dart';
+import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/domain/import_origin.dart';
 import 'programme_workout_template_draft.dart';
 
 class ProgrammeDraft {
@@ -24,15 +28,15 @@ class ProgrammeDraft {
 
   final String id;
   final String name;
-  final String source;
-  final String creationMethod;
-  final String status;
+  final WorkoutSource source;
+  final CreationMethod creationMethod;
+  final ProgramStatus status;
   final bool active;
   final List<String> goalTags;
   final List<String> equipment;
   final List<ProgrammeWorkoutTemplateDraft> templates;
   final String? description;
-  final String? importOrigin;
+  final ImportOrigin? importOrigin;
   final String? startDateLocal;
   final String? endDateLocal;
   final int? weeksTotal;

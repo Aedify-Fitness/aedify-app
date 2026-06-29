@@ -70,4 +70,8 @@ class AppErrorStrings {
       'Could not determine provider capabilities.';
   static const String providerCapabilityLoadFailedMessage =
       'Could not load provider capability information.';
+
+  // Workout builder
+  static String workoutNotFoundWithId(String savedWorkoutId) =>
+      'Saved workout not found: $savedWorkoutId';
 }

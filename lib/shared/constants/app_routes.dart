@@ -52,4 +52,8 @@ class AppRoutes {
       AppRoutes._(path: '/settings/ai-provider', name: 'aiProviderSettings');
   factory AppRoutes.byokSettings() =>
       AppRoutes._(path: '/settings/byok', name: 'byokSettings');
+  factory AppRoutes.workoutBuilderCreate() =>
+      AppRoutes._(path: '/workouts/new', name: 'workoutBuilderCreate');
+  factory AppRoutes.workoutBuilderEdit() =>
+      AppRoutes._(path: '/workouts/:id/edit', name: 'workoutBuilderEdit');
 }

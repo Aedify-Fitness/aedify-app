@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/day_type.dart';
 import 'programme_exercise_draft.dart';
 
 class ProgrammeWorkoutTemplateDraft {
@@ -18,6 +19,6 @@ class ProgrammeWorkoutTemplateDraft {
   final int sortOrder;
   final List<ProgrammeExerciseDraft> exercises;
   final String? description;
-  final String? dayType;
+  final DayType? dayType;
   final int? estimatedDurationMinutes;
 }
