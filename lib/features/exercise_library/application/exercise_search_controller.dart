@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ExerciseSearchState {
@@ -64,7 +65,7 @@ class ExerciseSearchController extends Notifier<ExerciseSearchState> {
         filters: const ExerciseFilterState(),
         items: [],
         isLoading: false,
-        errorCode: 'load_failed',
+        errorCode: AppErrorCodes.loadFailed,
         errorMessage: e.toString(),
       );
     }
@@ -103,7 +104,7 @@ class ExerciseSearchController extends Notifier<ExerciseSearchState> {
         filters: filters,
         items: state.items,
         isLoading: false,
-        errorCode: 'search_failed',
+        errorCode: AppErrorCodes.searchFailed,
         errorMessage: e.toString(),
       );
     }

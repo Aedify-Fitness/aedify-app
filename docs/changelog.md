@@ -21,6 +21,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Test enum migration**: `drift_programme_repository_test.dart` (28 matches), `workout_builder_validator_test.dart` (9 matches) updated to use enum values; `workout_builder_controller_test.dart` corrected — Drift data classes remain `String`.
 - **Unused import cleanup**: 14 warnings removed across 4 lib files.
 - **Hardcoded Exception → AppErrorStrings**: `LoadWorkoutDraftUseCase.loadForEdit()` hardcoded `Exception('Saved workout not found: $savedWorkoutId')` replaced with `AppErrorStrings.workoutNotFoundWithId(savedWorkoutId)` — a parameterized static method preserving the original message while keeping strings in the constants file.
+- **AppErrorCodes file created**: `lib/shared/constants/app_error_codes.dart` — central constant file for all 46 string-literal error codes previously scattered across 14 source files. Organized by domain (Validator, Network, Workout, Profile, Settings, BYOK, Onboarding, Audio, Key Validation). All 14 files updated to reference `AppErrorCodes.xxx` instead of inline string literals. Enum-based failure codes (`ExerciseDatasetDownloadFailureCode`, `ExerciseDatasetValidationFailureCode`, `ExerciseLibraryImportFailureCode`, `ProviderGateFailureReason`) left as typed enums.
 - **Verification**: `flutter analyze` — 0 issues. `flutter test` — 655/655 passed.
 
 ## 2026-06-28

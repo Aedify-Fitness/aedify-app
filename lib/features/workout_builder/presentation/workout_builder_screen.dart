@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
@@ -164,7 +165,7 @@ class _WorkoutBuilderBody extends ConsumerWidget {
             state.errorMessage != null)
           WorkoutBuilderErrorBanner(
             message: state.errorMessage!,
-            onRetry: state.errorCode == 'save_failed'
+            onRetry: state.errorCode == AppErrorCodes.saveFailed
                 ? () => _saveWorkout(ref)
                 : null,
           ),

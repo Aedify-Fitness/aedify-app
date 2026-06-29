@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -83,7 +84,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
         isLoading: false,
         providerOptions: [],
         configs: [],
-        errorCode: 'byok_load_failed',
+        errorCode: AppErrorCodes.byokLoadFailed,
         errorMessage: AppErrorStrings.byokLoadFailedMessage,
       );
     }
@@ -155,7 +156,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
         current.copyWith(
           isSaving: false,
           isTesting: false,
-          errorCode: 'byok_save_failed',
+          errorCode: AppErrorCodes.byokSaveFailed,
           errorMessage: AppErrorStrings.byokSaveFailedMessage,
         ),
       );
@@ -183,7 +184,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'byok_rotate_failed',
+          errorCode: AppErrorCodes.byokRotateFailed,
           errorMessage: AppErrorStrings.byokKeyRotationFailed,
         ),
       );
@@ -200,7 +201,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     } catch (e) {
       state = AsyncData(
         current.copyWith(
-          errorCode: 'byok_delete_failed',
+          errorCode: AppErrorCodes.byokDeleteFailed,
           errorMessage: AppErrorStrings.byokDeleteFailedMessage,
         ),
       );
@@ -217,7 +218,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     } catch (e) {
       state = AsyncData(
         current.copyWith(
-          errorCode: 'byok_set_active_failed',
+          errorCode: AppErrorCodes.byokSetActiveFailed,
           errorMessage: AppErrorStrings.byokSaveFailedMessage,
         ),
       );
@@ -243,7 +244,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
           isLoading: false,
           providerOptions: [],
           configs: [],
-          errorCode: 'byok_load_failed',
+          errorCode: AppErrorCodes.byokLoadFailed,
           errorMessage: AppErrorStrings.byokLoadFailedMessage,
         ),
       );

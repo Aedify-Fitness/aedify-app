@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:dio/dio.dart';
 
 class KeyValidationResult {
@@ -18,7 +19,7 @@ class ProviderKeyValidator {
     if (endpoint == null) {
       return const KeyValidationResult(
         isValid: false,
-        errorCode: 'unsupported_provider',
+        errorCode: AppErrorCodes.unsupportedProvider,
       );
     }
 
@@ -45,14 +46,17 @@ class ProviderKeyValidator {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       if (statusCode == 401 || statusCode == 403) {
-        return KeyValidationResult(isValid: false, errorCode: 'invalid_key');
+        return KeyValidationResult(
+          isValid: false,
+          errorCode: AppErrorCodes.invalidKey,
+        );
       }
       if (statusCode == 200 || statusCode == 201 || statusCode == 202) {
         return const KeyValidationResult(isValid: true);
       }
       return KeyValidationResult(
         isValid: false,
-        errorCode: 'validation_failed',
+        errorCode: AppErrorCodes.validationFailed,
       );
     }
   }

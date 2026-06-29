@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -25,7 +26,7 @@ class FirebaseStorageClient {
       final data = await ref.getData();
       if (data == null) {
         throw FirebaseStorageFailure(
-          code: 'not_found',
+          code: AppErrorCodes.notFound,
           message: 'No data at $remotePath',
         );
       }

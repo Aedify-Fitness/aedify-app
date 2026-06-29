@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
@@ -66,12 +67,12 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         validationErrors: [
           WorkoutBuilderValidationError(
             scope: WorkoutBuilderValidationScope.workout,
-            code: 'load_failed',
+            code: AppErrorCodes.loadFailed,
             message: AppStrings.workoutLoadFailed,
           ),
         ],
         isDirty: false,
-        errorCode: 'load_failed',
+        errorCode: AppErrorCodes.loadFailed,
         errorMessage: AppStrings.workoutLoadFailed,
       );
     }
@@ -289,7 +290,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       state = AsyncData(
         current.copyWith(
           phase: WorkoutBuilderPhase.failure,
-          errorCode: 'save_failed',
+          errorCode: AppErrorCodes.saveFailed,
           errorMessage: AppStrings.workoutSaveFailed,
         ),
       );

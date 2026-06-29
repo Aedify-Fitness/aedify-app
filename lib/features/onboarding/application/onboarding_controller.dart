@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
@@ -109,7 +110,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'onboarding_save_failed',
+          errorCode: AppErrorCodes.onboardingSaveFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );
@@ -126,7 +127,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     } catch (e) {
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_clear_failed',
+          errorCode: AppErrorCodes.onboardingClearFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );
@@ -149,7 +150,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     } catch (e) {
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_load_failed',
+          errorCode: AppErrorCodes.onboardingLoadFailed,
           errorMessage: AppErrorStrings.onboardingLoadFailedMessage,
         ),
       );
@@ -181,7 +182,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     } catch (e) {
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_save_failed',
+          errorCode: AppErrorCodes.onboardingSaveFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );

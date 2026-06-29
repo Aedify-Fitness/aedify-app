@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/settings_edit_draft.dart';
 import 'package:aedify/features/settings/domain/settings_view_data.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,7 +70,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     } catch (e) {
       return SettingsState(
         isLoading: false,
-        errorCode: 'settings_load_failed',
+        errorCode: AppErrorCodes.settingsLoadFailed,
         errorMessage: AppErrorStrings.settingsLoadFailedMessage,
       );
     }
@@ -110,7 +111,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'settings_save_failed',
+          errorCode: AppErrorCodes.settingsSaveFailed,
           errorMessage: AppErrorStrings.settingsSaveFailedMessage,
         ),
       );
@@ -141,7 +142,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
       state = AsyncData(
         SettingsState(
           isLoading: false,
-          errorCode: 'settings_load_failed',
+          errorCode: AppErrorCodes.settingsLoadFailed,
           errorMessage: AppErrorStrings.settingsLoadFailedMessage,
         ),
       );

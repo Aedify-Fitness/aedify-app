@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/provider_capability_state.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,7 +25,7 @@ class ProviderCapabilityController
     } catch (e) {
       return ProviderCapabilityState(
         isLoading: false,
-        errorCode: 'capability_load_failed',
+        errorCode: AppErrorCodes.capabilityLoadFailed,
         errorMessage: AppErrorStrings.providerCapabilityLoadFailedMessage,
       );
     }

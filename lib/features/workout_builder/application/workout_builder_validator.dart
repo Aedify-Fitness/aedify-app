@@ -2,6 +2,7 @@ import 'package:aedify/features/workout_builder/domain/set_prescription_draft.da
 import 'package:aedify/features/workout_builder/domain/workout_builder_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_validation_error.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 
@@ -22,7 +23,7 @@ class WorkoutBuilderValidator {
       errors.add(
         const WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.workout,
-          code: 'missing_name',
+          code: AppErrorCodes.missingName,
           message: AppStrings.workoutNameRequired,
         ),
       );
@@ -32,7 +33,7 @@ class WorkoutBuilderValidator {
       errors.add(
         const WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.workout,
-          code: 'no_exercises',
+          code: AppErrorCodes.noExercises,
           message: AppStrings.addAtLeastOneExercise,
         ),
       );
@@ -54,7 +55,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.exercise,
-          code: 'no_sets',
+          code: AppErrorCodes.noSets,
           message: AppStrings.addAtLeastOneSet,
           exerciseId: exercise.id,
         ),
@@ -82,7 +83,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_reps_min',
+          code: AppErrorCodes.invalidRepsMin,
           message: AppStrings.minRepsAtLeast1,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -94,7 +95,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_reps_max',
+          code: AppErrorCodes.invalidRepsMax,
           message: AppStrings.maxRepsAtLeast1,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -106,7 +107,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_reps_exact',
+          code: AppErrorCodes.invalidRepsExact,
           message: AppStrings.repsAtLeast1,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -120,7 +121,7 @@ class WorkoutBuilderValidator {
         errors.add(
           WorkoutBuilderValidationError(
             scope: WorkoutBuilderValidationScope.set,
-            code: 'invalid_weight',
+            code: AppErrorCodes.invalidWeight,
             message: AppStrings.enterValidWeight,
             exerciseId: exercise.id,
             setId: prescription.id,
@@ -136,7 +137,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_rpe_min',
+          code: AppErrorCodes.invalidRpeMin,
           message: AppStrings.rpeMinBetween1And10,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -148,7 +149,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_rpe_max',
+          code: AppErrorCodes.invalidRpeMax,
           message: AppStrings.rpeMaxBetween1And10,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -160,7 +161,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'rpe_range',
+          code: AppErrorCodes.rpeRange,
           message: AppStrings.rpeMinCannotExceedMax,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -174,7 +175,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_rir',
+          code: AppErrorCodes.invalidRir,
           message: AppStrings.rirCannotBeNegative,
           exerciseId: exercise.id,
           setId: prescription.id,
@@ -188,7 +189,7 @@ class WorkoutBuilderValidator {
       errors.add(
         WorkoutBuilderValidationError(
           scope: WorkoutBuilderValidationScope.set,
-          code: 'invalid_rest',
+          code: AppErrorCodes.invalidRest,
           message: AppStrings.restCannotBeNegative,
           exerciseId: exercise.id,
           setId: prescription.id,

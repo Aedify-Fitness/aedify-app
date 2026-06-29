@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 
 enum StartupPhase { initializing, success, failure }
 
@@ -63,7 +64,7 @@ class BootstrapController extends Notifier<BootstrapState> {
     } catch (e) {
       state = BootstrapState.failure(
         BootstrapFailure(
-          code: 'startup_error',
+          code: AppErrorCodes.startupError,
           message: e.toString(),
           retryable: true,
         ),

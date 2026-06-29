@@ -438,6 +438,7 @@
 - **Relative→package imports**: 33 `../` imports in workout_builder feature converted to `package:aedify/`.
 - **Hardcoded strings → AppStrings**: 14 new constants + `exerciseNumberLabel()` method. Controller/validator/sync UI error messages moved.
 - **Hardcoded Exception → AppErrorStrings** (`lib/features/workout_builder/application/load_workout_draft_use_case.dart:45`): `Exception('Saved workout not found: $savedWorkoutId')` replaced with `AppErrorStrings.workoutNotFoundWithId(savedWorkoutId)` — parameterized static method keeping the original message in the constants boundary.
+- **AppErrorCodes file** (`lib/shared/constants/app_error_codes.dart`): Central constant file for all 46 unique string-literal error codes, organized by domain. All 14 source files updated to reference `AppErrorCodes.xxx` instead of inline strings. 4 enum-based failure code types left unchanged.
 - **Test updates**: `drift_programme_repository_test.dart`, `workout_builder_validator_test.dart` use enum values for domain model constructors. `workout_builder_controller_test.dart` corrected — Drift data classes remain `String`. Unused imports cleaned up.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 655/655 passed.
 

@@ -6,6 +6,7 @@ import 'package:aedify/core/db/enums/library_sync_status.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_download_failure.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_parser.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 
 class ExerciseDatasetSyncController
     extends AsyncNotifier<ExerciseDatasetSyncState> {
@@ -198,7 +199,7 @@ class ExerciseDatasetSyncController
     } catch (e) {
       await dao.setSyncStatus(
         syncStatus: LibrarySyncStatus.failed,
-        errorCode: 'unknown',
+        errorCode: AppErrorCodes.unknown,
         errorMessage: e.toString(),
       );
 
@@ -206,7 +207,7 @@ class ExerciseDatasetSyncController
         ExerciseDatasetSyncState(
           phase: ExerciseDatasetSyncPhase.failed,
           failure: ExerciseDatasetSyncFailure(
-            code: 'unknown',
+            code: AppErrorCodes.unknown,
             message: e.toString(),
             retryable: true,
           ),

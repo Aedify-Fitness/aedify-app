@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
 import 'package:aedify/features/profile/domain/profile_view_data.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
@@ -104,7 +105,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
     } catch (e) {
       return ProfileState(
         isLoading: false,
-        errorCode: 'profile_load_failed',
+        errorCode: AppErrorCodes.profileLoadFailed,
         errorMessage: AppErrorStrings.profileLoadFailedMessage,
       );
     }
@@ -160,7 +161,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'profile_save_failed',
+          errorCode: AppErrorCodes.profileSaveFailed,
           errorMessage: AppErrorStrings.profileSaveFailedMessage,
         ),
       );
@@ -177,7 +178,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
       state = AsyncData(
         ProfileState(
           isLoading: false,
-          errorCode: 'profile_load_failed',
+          errorCode: AppErrorCodes.profileLoadFailed,
           errorMessage: AppErrorStrings.profileLoadFailedMessage,
         ),
       );
