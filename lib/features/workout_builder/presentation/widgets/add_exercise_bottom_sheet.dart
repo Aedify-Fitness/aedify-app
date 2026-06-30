@@ -1,5 +1,9 @@
+import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
@@ -84,24 +88,35 @@ class AddExerciseBottomSheet extends ConsumerWidget {
                 ),
               ),
             )
-          else if (searchState.items.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Center(
-                child: Text(
-                  AppStrings.noExercisesFound,
-                  style: AppTextStyles.labelSm,
-                ),
-              ),
-            )
           else
             Flexible(
               child: ListView.separated(
                 shrinkWrap: true,
-                itemCount: searchState.items.length,
+                itemCount: searchState.items.length + 1,
                 separatorBuilder: (_, _) =>
                     const Divider(height: AppSizing.divider),
                 itemBuilder: (context, index) {
+                  if (index == searchState.items.length) {
+                    return ListTile(
+                      leading: SvgPicture.asset(
+                        OutlinedSvgAssets.plus,
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                      ),
+                      title: Text(
+                        AppStrings.createCustomExercise,
+                        style: AppTextStyles.bodyMd,
+                      ),
+                      onTap: () async {
+                        final result = await context.pushNamed(
+                          AppRoutes.customExerciseCreate().name,
+                        );
+                        if (result == true && context.mounted) {
+                          searchController.reload();
+                        }
+                      },
+                    );
+                  }
                   final item = searchState.items[index];
                   return ListTile(
                     title: Text(item.name, style: AppTextStyles.bodyMd),
@@ -128,6 +143,16 @@ class AddExerciseBottomSheet extends ConsumerWidget {
                     },
                   );
                 },
+              ),
+            ),
+          if (searchState.items.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Center(
+                child: Text(
+                  AppStrings.noExercisesFound,
+                  style: AppTextStyles.labelSm,
+                ),
               ),
             ),
         ],

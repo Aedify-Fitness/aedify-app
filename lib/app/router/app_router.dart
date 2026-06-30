@@ -13,6 +13,7 @@ import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/features/profile/presentation/profile_screen.dart';
 import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
+import 'package:aedify/features/exercise_library/presentation/custom_exercise_editor_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
@@ -175,6 +176,20 @@ class AppRouter {
               builder: (context, state) {
                 final id = int.parse(state.pathParameters['id']!);
                 return ExerciseDetailScreen(exerciseId: id);
+              },
+            ),
+            GoRoute(
+              path: 'custom/new',
+              name: AppRoutes.customExerciseCreate().name,
+              builder: (context, state) =>
+                  const CustomExerciseEditorScreen.create(),
+            ),
+            GoRoute(
+              path: 'custom/:id/edit',
+              name: AppRoutes.customExerciseEdit().name,
+              builder: (context, state) {
+                final id = int.parse(state.pathParameters['id']!);
+                return CustomExerciseEditorScreen.edit(exerciseId: id);
               },
             ),
           ],

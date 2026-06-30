@@ -80,4 +80,13 @@ class AppRoutes {
     path: '/programmes/:programId/workouts/:workoutId/run',
     name: 'workoutRunnerProgramWorkout',
   );
+
+  // Custom exercise editor
+  factory AppRoutes.customExerciseCreate() =>
+      AppRoutes._(path: '/exercises/custom/new', name: 'customExerciseCreate');
+
+  factory AppRoutes.customExerciseEdit() => AppRoutes._(
+    path: '/exercises/custom/:id/edit',
+    name: 'customExerciseEdit',
+  );
 }

@@ -389,6 +389,49 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-30
 
+### V1-M4-006 — Custom Exercise Editor (complete)
+
+- **Domain layer** (`lib/features/exercise_library/domain/`):
+  - `CustomExerciseDraft` — writable draft model with `copyWith()`/`toSeed()`
+  - `CustomExerciseValidationError` — typed error with scope/code/message/stepIndex
+  - `CustomExerciseEditorMode` — create / edit enum
+- **Application layer** (`lib/features/exercise_library/application/`):
+  - `CustomExerciseEditorPhase` — 8-phase state machine (loading/editing/saving/saved/deleting/deleted/failure/blocked)
+  - `CustomExerciseEditorState` — immutable state with `isLoading`/`isSaving`/`hasValidationErrors`/`copyWith()`/`initial()`
+  - `CustomExerciseValidator` — 3 validation rules: name required, muscle groups required, no empty steps
+  - `LoadCustomExerciseDraftUseCase` — `createEmptyDraft()` and `loadForEdit()` via existing `ExerciseRepository`
+  - `SaveCustomExerciseUseCase` — `create()` and `update()` via existing `ExerciseRepository`
+  - `DeleteCustomExerciseUseCase` — `delete()` via existing `ExerciseRepository`
+  - `CustomExerciseEditorController` — `AsyncNotifier<CustomExerciseEditorState>` with constructor args (mode, exerciseId). 14 mutation methods: rename, setModality, setEquipment, setDifficulty, toggleMuscleGroup, addStep, updateStep, removeStep, save, delete, clearValidationErrors, discardChanges
+- **Presentation layer** (`lib/features/exercise_library/presentation/`):
+  - `CustomExerciseEditorScreen` — create/edit factory constructors, loading/error/saved/deleted/editing states, PopScope for unsaved changes
+  - 7 widgets: `CustomExerciseNameField`, `CustomExerciseModalitySection` (SegmentedButton + equipment/difficulty dropdowns), `CustomExerciseMuscleGroupPicker` (14 FilterChips), `CustomExerciseStepsEditor` (dynamic add/remove/update), `CustomExerciseErrorBanner`, `DeleteCustomExerciseDialog`, `DiscardCustomExerciseChangesDialog`
+- **Infrastructure updates**:
+  - `AppRoutes`: +2 — `customExerciseCreate()` (`/exercises/custom/new`), `customExerciseEdit()` (`/exercises/custom/:id/edit`)
+  - `AppRouter`: +2 GoRoute entries as sub-routes of `/exercises`
+  - `AppStrings`: +23 custom-exercise strings (labels, hints, confirmations)
+  - `AppErrorCodes`: +3 custom-exercise error codes
+  - `AppProviders`: +5 providers (validator, 3 use cases, controller family)
+  - `AddExerciseBottomSheet`: added "Create custom exercise" entry at end of list; navigates to editor, refreshes search on return
+- **Critical architecture decisions**:
+  - Reuses `ExerciseRepository` — no new persistence, table, or ID generation
+  - Keeps all custom exercise editing inside `features/exercise_library/` — closest to persistence
+  - Controller uses `AsyncNotifier` with constructor args + `AsyncNotifierProvider.family` (matching codebase family pattern)
+  - Integrates into manual flows via `AddExerciseBottomSheet` "Create custom exercise" action
+- **Tests**: 55 new — 8 validator, 24 controller, 6 load use case, 4 save use case, 4 name field widget, 6 muscle group picker widget, 3 delete dialog widget
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 863/863 passed.
+
+### V1-M4-006 gap closure — 7 fixes (pop(true), delete/discard labels, SVGs, controllers, tests)
+
+- **Saved phase pop(true)**: `CustomExerciseEditorScreen` saved phase now calls `Navigator.pop(true)` so `AddExerciseBottomSheet` detects the result and refreshes search on return.
+- **Delete dialog button label**: Changed from `AppStrings.customExerciseDeleted` (status message) to `AppStrings.customExerciseDelete` ("Delete exercise").
+- **Discard dialog button label**: Changed from `AppStrings.done` to `AppStrings.customExerciseDiscard` ("Discard").
+- **Material Icons → SVGs**: Replaced `Icons.delete_outline`/`check_circle_outline`/`remove_circle_outline`/`Icons.add` with `OutlinedSvgAssets.trash`/`checkBadge`/`minusCircle`/`plus`.
+- **Steps editor tooltip**: Changed from hardcoded `'Remove step'` to `AppStrings.customExerciseRemoveStep`.
+- **Inline TextEditingController → StatefulWidget**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` now use `StatefulWidget` with controllers created in `initState` and synced in `didUpdateWidget`, preserving cursor position during typing.
+- **3 widget test files added**: `custom_exercise_steps_editor_test` (5 tests), `custom_exercise_error_banner_test` (4 tests), `discard_custom_exercise_changes_dialog_test` (3 tests). Delete dialog test updated for new string constant.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
+
 ### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
 
 ### Added (V1-M4-005 — Workout History & Programme Library)

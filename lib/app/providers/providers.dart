@@ -43,11 +43,18 @@ import 'package:aedify/core/storage/preferences_service.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
 import 'package:aedify/core/tts/exercise_tts_service.dart';
 import 'package:aedify/core/tts/flutter_exercise_tts_service.dart';
+import 'package:aedify/features/exercise_library/application/custom_exercise_editor_controller.dart';
+import 'package:aedify/features/exercise_library/application/custom_exercise_editor_state.dart';
+import 'package:aedify/features/exercise_library/application/custom_exercise_validator.dart';
+import 'package:aedify/features/exercise_library/application/delete_custom_exercise_use_case.dart';
+import 'package:aedify/features/exercise_library/application/load_custom_exercise_draft_use_case.dart';
+import 'package:aedify/features/exercise_library/application/save_custom_exercise_use_case.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_step_audio_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_video_state_controller.dart';
+import 'package:aedify/features/exercise_library/domain/custom_exercise_editor_mode.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
@@ -741,4 +748,43 @@ class AppProviders {
         WorkoutHistoryDetailState,
         String
       >((arg) => WorkoutHistoryDetailController(arg));
+
+  // V1-M4-006 — custom exercise editor
+  static final customExerciseValidatorProvider =
+      Provider<CustomExerciseValidator>((ref) {
+        return const CustomExerciseValidator();
+      });
+
+  static final loadCustomExerciseDraftUseCaseProvider =
+      Provider<LoadCustomExerciseDraftUseCase>((ref) {
+        return LoadCustomExerciseDraftUseCase(
+          exerciseRepository: ref.read(exerciseRepositoryProvider),
+        );
+      });
+
+  static final saveCustomExerciseUseCaseProvider =
+      Provider<SaveCustomExerciseUseCase>((ref) {
+        return SaveCustomExerciseUseCase(
+          exerciseRepository: ref.read(exerciseRepositoryProvider),
+        );
+      });
+
+  static final deleteCustomExerciseUseCaseProvider =
+      Provider<DeleteCustomExerciseUseCase>((ref) {
+        return DeleteCustomExerciseUseCase(
+          exerciseRepository: ref.read(exerciseRepositoryProvider),
+        );
+      });
+
+  static final customExerciseEditorControllerProvider =
+      AsyncNotifierProvider.family<
+        CustomExerciseEditorController,
+        CustomExerciseEditorState,
+        ({CustomExerciseEditorMode mode, int? exerciseId})
+      >(
+        (arg) => CustomExerciseEditorController(
+          mode: arg.mode,
+          exerciseId: arg.exerciseId,
+        ),
+      );
 }

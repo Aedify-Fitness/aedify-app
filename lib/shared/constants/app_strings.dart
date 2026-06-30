@@ -4,6 +4,7 @@ class AppStrings {
   static String onboardingStepLabel(int currentStep, int totalSteps) =>
       'Step $currentStep of $totalSteps';
 
+  static const save = 'Save';
   static const appTitle = 'Aedify';
   static const sex = 'Sex';
   static const done = 'Done';
@@ -578,4 +579,40 @@ class AppStrings {
   static const planned = 'Planned';
   static const actual = 'Actual';
   static const missingSession = 'Workout session not found.';
+
+  // V1-M4-006 — custom exercise editor
+  static const customExercise = 'Custom exercise';
+  static const customExercises = 'Custom exercises';
+  static const createCustomExercise = 'Create custom exercise';
+  static const editCustomExercise = 'Edit custom exercise';
+  static const customExerciseName = 'Exercise name';
+  static const customExerciseNameHint = 'Single-arm landmine press';
+  static const customExerciseSaved = 'Custom exercise saved.';
+  static const customExerciseDeleted = 'Custom exercise deleted.';
+  static const customExerciseSaveFailed = 'Could not save the custom exercise.';
+  static const customExerciseLoadFailed = 'Could not load the custom exercise.';
+  static const customExerciseDeleteFailed =
+      'Could not delete the custom exercise.';
+  static const customExerciseDeleteConfirm =
+      'Delete this custom exercise? Existing history must remain understandable.';
+  static const customExerciseMissingFields =
+      'Please complete the required custom exercise fields.';
+  static const customExerciseMuscleGroups = 'Muscle groups';
+  static const customExerciseModality = 'Modality';
+  static const customExerciseEquipment = 'Equipment';
+  static const customExerciseDifficulty = 'Difficulty';
+  static const customExerciseSteps = 'Instructions';
+  static const customExerciseAddStep = 'Add instruction';
+  static const customExerciseNoSteps = 'No instructions added.';
+  static const customExerciseUseInWorkout = 'Use in workout';
+  static const customExerciseUseInProgramme = 'Use in programme';
+  static const noCustomExercisesYet = 'No custom exercises yet.';
+  static const noCustomExercisesYetHint =
+      'Create a custom exercise when the built-in library does not match your setup.';
+  static const customExerciseUnsavedChanges = 'Unsaved changes';
+  static const customExerciseUnsavedChangesMessage =
+      'Discard your changes and leave this custom exercise?';
+  static const customExerciseDelete = 'Delete exercise';
+  static const customExerciseDiscard = 'Discard';
+  static const customExerciseRemoveStep = 'Remove step';
 }

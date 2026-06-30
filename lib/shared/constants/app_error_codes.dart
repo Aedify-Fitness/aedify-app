@@ -79,4 +79,11 @@ class AppErrorCodes {
   static const String unsupportedProvider = 'unsupported_provider';
   static const String invalidKey = 'invalid_key';
   static const String validationFailed = 'validation_failed';
+
+  // Custom Exercise
+  static const String customExerciseNameRequired =
+      'custom_exercise_name_required';
+  static const String customExerciseMuscleGroupsRequired =
+      'custom_exercise_muscle_groups_required';
+  static const String customExerciseStepEmpty = 'custom_exercise_step_empty';
 }

@@ -2,12 +2,12 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library)                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete** — multi-week builder with 6 domain models, 8 application files, 12 presentation files, 34 new tests (validator + controller + widget). **V1-M4-004 (workout session runner) complete** — 6 domain models, 9 application files, 10 presentation files, 58 new tests. **V1-M4-005 (workout history & programme library) complete** — domain models, drift repository, 4 controllers, 4 screens, 8 widgets, 29 new tests. **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                    |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete**. **V1-M4-004 (workout session runner) complete**. **V1-M4-005 (workout history & programme library) complete**. **V1-M4-006 (custom exercise editor) complete** — 3 domain, 7 application, 8 presentation files, 55 new tests. **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                               |
 
 ## Completed Work
 
@@ -120,6 +120,57 @@
   - SavedWorkoutLibraryScreen archive: passes `confirmLabel: AppStrings.archiveWorkout`
   - Test fakes: removed orphaned `shouldThrow` field/guards from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository`
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+### 2026-06-30 — V1-M4-006 — Custom Exercise Editor (complete)
+
+- **3 domain models** (`lib/features/exercise_library/domain/`):
+  - `CustomExerciseDraft` — mutable draft with `copyWith()`, `toSeed()`, all fields from `CustomExerciseSeed`
+  - `CustomExerciseValidationError` — `CustomExerciseValidationScope` enum (name/muscleGroups/modality/steps), code, message, optional stepIndex
+  - `CustomExerciseEditorMode` — create / edit
+- **7 application files** (`lib/features/exercise_library/application/`):
+  - `CustomExerciseEditorPhase` — 8-phase enum (loading/editing/saving/saved/deleting/deleted/failure/blocked)
+  - `CustomExerciseEditorState` — immutable with `isLoading`/`isSaving`/`hasValidationErrors`/`copyWith()`/`initial()`
+  - `CustomExerciseValidator` — 3 rules: name required, at least 1 muscle group required, no empty step strings after normalization
+  - `LoadCustomExerciseDraftUseCase` — `createEmptyDraft()`, `loadForEdit(exerciseId)` via `ExerciseRepository.getCustomExerciseDetail()`
+  - `SaveCustomExerciseUseCase` — `create(draft)`/`update(exerciseId, draft)` via `ExerciseRepository.createCustomExercise()`/`updateCustomExercise()`
+  - `DeleteCustomExerciseUseCase` — `delete(exerciseId)` via `ExerciseRepository.deleteCustomExercise()`
+  - `CustomExerciseEditorController` — `AsyncNotifier<CustomExerciseEditorState>` with constructor args `(mode, exerciseId)`, 14 methods (rename, setModality, setEquipment, setDifficulty, toggleMuscleGroup, addStep, updateStep, removeStep, save, delete, clearValidationErrors, discardChanges)
+- **8 presentation files** (`lib/features/exercise_library/presentation/`):
+  - `CustomExerciseEditorScreen` — create/edit factory constructors, loading/saved/deleted/editing/failure/validation-error states, PopScope for unsaved changes
+  - `CustomExerciseNameField` — `TextField` with label/hint/error
+  - `CustomExerciseModalitySection` — `SegmentedButton<ExerciseModality>` + `DropdownButtonFormField<EquipmentTag>` + `DropdownButtonFormField<ExerciseDifficulty>`
+  - `CustomExerciseMuscleGroupPicker` — 14 `FilterChip` chips (all `BodymapBucket` values)
+  - `CustomExerciseStepsEditor` — dynamic add/remove/update step rows, empty state, add button
+  - `CustomExerciseErrorBanner` — error container with optional retry button
+  - `DeleteCustomExerciseDialog` — `AlertDialog` with cancel/confirm
+  - `DiscardCustomExerciseChangesDialog` — `AlertDialog` with cancel/discard
+- **Infrastructure updates**:
+  - `AppRoutes`: +2 (`customExerciseCreate`, `customExerciseEdit` + paths/names)
+  - `AppRouter`: +2 GoRoute entries as sub-routes under `/exercises`
+  - `AppStrings`: +23 custom-exercise strings
+  - `AppErrorCodes`: +3 (`customExerciseNameRequired`, `customExerciseMuscleGroupsRequired`, `customExerciseStepEmpty`)
+  - `AppProviders`: +5 (validator, 3 use cases, controller family)
+  - `AddExerciseBottomSheet`: Added "Create custom exercise" `ListTile` at end of exercise list; navigates to `customExerciseCreate`, refreshes search on return
+- **Tests**: 55 new:
+  - `custom_exercise_validator_test.dart` — 8 tests (valid, empty name, whitespace, no muscle groups, empty steps, non-empty steps pass, multiple errors, optional fields)
+  - `custom_exercise_editor_controller_test.dart` — 24 tests (create mode build/load-failure/rename/setModality/setEquipment/setDifficulty/toggleMuscleGroup/addStep/updateStep/removeStep/save/create-save/save-failure/edit-mode build/edit-save/delete/null-id/delete-failure/clearValidationErrors)
+  - `load_custom_exercise_draft_use_case_test.dart` — 6 tests (empty draft defaults, loadForEdit mapping, null detail throws, repository error throws, nullable fields)
+  - `save_custom_exercise_use_case_test.dart` — 4 tests (create returns id, toSeed conversion, update args, update preserves fields)
+  - `custom_exercise_name_field_test.dart` — 4 widget tests (initial value, error text, onChanged, empty)
+  - `custom_exercise_muscle_group_picker_test.dart` — 6 widget tests (title, all 14 chips, selection state, error text, null error, onToggle)
+  - `delete_custom_exercise_dialog_test.dart` — 3 widget tests (title/buttons, onConfirm, cancel)
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 863/863 passed.
+
+### Gap closure — pop(true), delete/discard labels, SVGs, controllers, tests
+
+- **Saved phase pop(true)**: `CustomExerciseEditorScreen` saved phase now calls `Navigator.pop(true)` so `AddExerciseBottomSheet` detects result and refreshes search.
+- **Delete dialog**: Button label changed from `AppStrings.customExerciseDeleted` to `AppStrings.customExerciseDelete`.
+- **Discard dialog**: Confirm label changed from `AppStrings.done` to `AppStrings.customExerciseDiscard`.
+- **Material Icons → SVGs**: 4 icons replaced (`trash`, `checkBadge`, `minusCircle`, `plus`) using existing `OutlinedSvgAssets` constants.
+- **Steps editor tooltip**: Hardcoded `'Remove step'` → `AppStrings.customExerciseRemoveStep`.
+- **TextEditingController fix**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` converted to `StatefulWidget` — controllers created in `initState`, synced in `didUpdateWidget`, preserving cursor during typing.
+- **+12 widget tests**: 5 steps editor, 4 error banner, 3 discard dialog. Delete dialog test updated for label change.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
 
 ### 2026-06-29 — V1-M4-003 — Manual multi-week programme builder
 
@@ -625,7 +676,7 @@ On a fresh install, `ExerciseDatasetSyncController._runSync()` crashed during `_
 
 - `dart format` — all files formatted
 - `flutter analyze lib/` — 0 errors
-- `flutter test` — 808/808 passed
+- `flutter test` — 863/863 passed
 - `dart run build_runner build` — not needed (no schema changes)
 
 ## Codebase Convention Enforcement Status
