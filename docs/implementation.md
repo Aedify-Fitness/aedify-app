@@ -545,13 +545,41 @@
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 527/527 passed (18 new).
 - **Compliance closeout**: Privacy audit confirmed `DefaultProfileCandidatePreferencesService` is pure read-transform-return — no logging, no Crashlytics calls, no storage writes, no raw profile data in the `ProfileCandidatePreferences` DTO output. Backlog ticket (`references/aedify-v1-build-ticket-backlog-v1.0/05-...`) and data model plan (`references/aedify-v1-data-model-implementation-plan-v1.0/04-...`, `13-...`) cross-referenced. `dart run build_runner build` ran successfully. No rules violations remain.
 
+## 2026-06-30 — Exercise Sync Bootstrap + Parser Crash Fixes
+
+### Problem
+
+On a fresh install, `ExerciseDatasetSyncController._runSync()` crashed during `_parseAndImportExercises()` with `Bad state: No element` because `EquipmentTag.fromDb` used `firstWhere` without `orElse` for unrecognized dataset values like `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`. Additionally, the parser threw `invalidSteps`/`invalidPrimaryMuscles` for valid exercises with empty arrays.
+
+### Fixes Applied
+
+| Fix                                     | File                                                                          | Detail                                                                          |
+| --------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `fromDb` normalization + fallback       | `lib/shared/domain/equipment_tag.dart:28`                                     | Lowercase input, hyphen→underscore, try raw & singular; fallback to `other`     |
+| 5 missing equipment enum entries        | `lib/shared/domain/equipment_tag.dart`                                        | `bosuBall`, `medicineBall`, `plate`, `trx`, `vitruvian` with `dbValue` mappings |
+| Remove empty steps validation           | `lib/features/exercise_library/data/dataset/exercise_dataset_parser.dart:207` | Was throw `invalidSteps` for `steps: []`                                        |
+| Remove empty primary_muscles validation | `lib/features/exercise_library/data/dataset/exercise_dataset_parser.dart:173` | Was throw `invalidPrimaryMuscles` for `primary_muscles: []`                     |
+| Sync into bootstrap                     | `lib/app/bootstrap/controllers/bootstrap_controller.dart`                     | `await .initialize()` before `success` state                                    |
+| Exhaustive switch updates               | `onboarding_screen.dart`, `profile_screen.dart`                               | All 5 new tags in `equipmentLabel`/`equipmentFromLabel` + chip selector         |
+
+### Current State
+
+- **779 tests pass** (13 test files).
+- Exercise count confirmed: **1,902 exercises** imported successfully with correct equipment tags.
+- Bootstrap waits for sync before redirecting to onboarding.
+- Debug prints (`[SyncCtrl]`, `[Bootstrap]`, `[Onboarding]`) removed after green light.
+
+### Remaining Concerns
+
+- Pre-existing deprecated `onReorder` callback warning in `workout_exercise_list.dart:55`.
+- Sync from Firebase Storage requires real Firebase project + anonymous auth — dev environments without resources hit `failed` and show snackbar.
+
 ## Verification Notes
 
 - `dart format` — all files formatted
-- `flutter analyze lib/` — 0 issues (workout_execution feature clean)
-- `flutter test test/features/workout_execution/` — 58/58 passed
-- `flutter test` — all existing tests pass minus 14 pre-existing failures (exercise_library/bodymap)
-- `dart run build_runner build` — passed
+- `flutter analyze lib/` — 0 errors
+- `flutter test` — 779/779 passed
+- `dart run build_runner build` — not needed (no schema changes)
 
 ## Codebase Convention Enforcement Status
 

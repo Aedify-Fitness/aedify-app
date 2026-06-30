@@ -170,14 +170,6 @@ class ExerciseDatasetParser {
       'primary_muscles',
       exerciseId: id,
     );
-    if (primaryMuscles.isEmpty) {
-      throw ExerciseDatasetValidationFailure(
-        code: ExerciseDatasetValidationFailureCode.invalidPrimaryMuscles,
-        message: 'primary_muscles must not be empty',
-        field: 'primary_muscles',
-        exerciseId: id,
-      );
-    }
 
     final muscleGroupValues = _requireStringList(
       json,
@@ -204,14 +196,6 @@ class ExerciseDatasetParser {
     final grips = _requireStringList(json, 'grips', exerciseId: id);
 
     final steps = _requireStringList(json, 'steps', exerciseId: id);
-    if (steps.isEmpty) {
-      throw ExerciseDatasetValidationFailure(
-        code: ExerciseDatasetValidationFailureCode.invalidSteps,
-        message: 'steps must not be empty',
-        field: 'steps',
-        exerciseId: id,
-      );
-    }
 
     final videosJson = _requireList(json, 'videos', exerciseId: id);
     final videos = <ExerciseDatasetVideo>[];

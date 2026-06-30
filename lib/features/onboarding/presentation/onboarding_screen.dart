@@ -15,6 +15,7 @@ import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/experience_level.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -180,7 +181,10 @@ class _StepContent extends StatelessWidget {
       children: [
         _ValidationMessage(state: state),
         switch (state.currentStep) {
-          OnboardingStep.welcome => const _WelcomeStep(),
+          OnboardingStep.welcome => _WelcomeStep(
+            draft: state.draft,
+            onUpdateDraft: onUpdateDraft,
+          ),
           OnboardingStep.experienceGoals => _ExperienceGoalsStep(
             draft: state.draft,
             onUpdateDraft: onUpdateDraft,
@@ -368,7 +372,10 @@ class _WelcomeHero extends StatelessWidget {
 }
 
 class _WelcomeStep extends StatelessWidget {
-  const _WelcomeStep();
+  const _WelcomeStep({required this.draft, required this.onUpdateDraft});
+
+  final OnboardingDraft draft;
+  final void Function(OnboardingDraft) onUpdateDraft;
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +385,18 @@ class _WelcomeStep extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _InputLabel(title: AppStrings.displayName),
+              AppWhiteSpace.hSm,
+              _FormField(
+                initialValue: draft.displayName ?? '',
+                hintText: AppStrings.displayName,
+                onChanged: (value) {
+                  onUpdateDraft(
+                    draft.copyWith(displayName: value.isEmpty ? null : value),
+                  );
+                },
+              ),
+              AppWhiteSpace.hLg,
               _PanelHeader(
                 iconAsset: OutlinedSvgAssets.shieldCheck,
                 title: AppStrings.onboardingWelcomePrivacyTitle,
@@ -773,6 +792,11 @@ class _OnboardingTaxonomy {
       EquipmentTag.cardioMachine => AppStrings.onboardingEquipmentCardioMachine,
       EquipmentTag.machine => 'Machine',
       EquipmentTag.ezBar => 'EZ bar',
+      EquipmentTag.bosuBall => 'Bosu ball',
+      EquipmentTag.medicineBall => 'Medicine ball',
+      EquipmentTag.plate => 'Plate',
+      EquipmentTag.trx => 'TRX',
+      EquipmentTag.vitruvian => 'Vitruvian',
       EquipmentTag.other => 'Other',
     };
   }
@@ -792,6 +816,11 @@ class _OnboardingTaxonomy {
       AppStrings.onboardingEquipmentCardioMachine => EquipmentTag.cardioMachine,
       'Machine' => EquipmentTag.machine,
       'EZ bar' => EquipmentTag.ezBar,
+      'Bosu ball' => EquipmentTag.bosuBall,
+      'Medicine ball' => EquipmentTag.medicineBall,
+      'Plate' => EquipmentTag.plate,
+      'TRX' => EquipmentTag.trx,
+      'Vitruvian' => EquipmentTag.vitruvian,
       _ => EquipmentTag.other,
     };
   }
@@ -858,6 +887,79 @@ class _UnitsMetricsStep extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const _SectionTitle(
+                title: AppStrings.onboardingPersonalDetailsTitle,
+              ),
+              AppWhiteSpace.hMd,
+              _InputLabel(title: AppStrings.sex),
+              AppWhiteSpace.hSm,
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: Sex.values.map((s) {
+                  final label = switch (s) {
+                    Sex.male => AppStrings.sexMale,
+                    Sex.female => AppStrings.sexFemale,
+                    Sex.notSpecified => AppStrings.sexNotSpecified,
+                  };
+                  return ChoiceChip(
+                    label: Text(label),
+                    selected: draft.sex == s,
+                    onSelected: (_) {
+                      onUpdateDraft(draft.copyWith(sex: s));
+                    },
+                  );
+                }).toList(),
+              ),
+              AppWhiteSpace.hLg,
+              _InputLabel(title: AppStrings.dateOfBirth),
+              AppWhiteSpace.hSm,
+              GestureDetector(
+                onTap: () async {
+                  final now = DateTime.now();
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: draft.dateOfBirth ?? now,
+                    firstDate: DateTime(1925),
+                    lastDate: now,
+                  );
+                  if (picked != null) {
+                    onUpdateDraft(draft.copyWith(dateOfBirth: picked));
+                  }
+                },
+                child: Container(
+                  width: AppSizing.fieldWidth,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    border: Border.all(
+                      color: context.colorScheme.outlineVariant,
+                    ),
+                  ),
+                  child: Text(
+                    draft.dateOfBirth != null
+                        ? '${draft.dateOfBirth!.day}/${draft.dateOfBirth!.month}/${draft.dateOfBirth!.year}'
+                        : AppStrings.dateOfBirth,
+                    style: draft.dateOfBirth != null
+                        ? context.textTheme.bodyMedium
+                        : context.textTheme.bodyMedium?.copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        AppWhiteSpace.hLg,
+        _SurfacePanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               const _SectionTitle(title: AppStrings.onboardingBodyMetricsTitle),
               AppWhiteSpace.hMd,
               _InputLabel(title: preferredUnit.heightLabel),
@@ -905,6 +1007,102 @@ class _UnitsMetricsStep extends StatelessWidget {
                       ? preferredUnit.toMetricWeight(parsed)
                       : parsed;
                   onUpdateDraft(draft.copyWith(bodyweightKg: bodyweightKg));
+                },
+              ),
+            ],
+          ),
+        ),
+        AppWhiteSpace.hLg,
+        _SurfacePanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _SectionTitle(title: AppStrings.onboardingMaxLiftsTitle),
+              AppWhiteSpace.hMd,
+              _InputLabel(title: AppStrings.bench1Rm),
+              AppWhiteSpace.hSm,
+              _FormField(
+                width: AppSizing.fieldWidth,
+                initialValue: draft.bench1RmKg != null
+                    ? preferredUnit.isImperial
+                          ? PreferredUnit.imperial
+                                .toImperialWeight(draft.bench1RmKg!)
+                                .toStringAsFixed(1)
+                          : draft.bench1RmKg!.toStringAsFixed(1)
+                    : '',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                hintText: '60',
+                suffixText: preferredUnit.weightUnit,
+                onChanged: (value) {
+                  final parsed = double.tryParse(value);
+                  if (parsed != null) {
+                    final canonical = preferredUnit.isImperial
+                        ? PreferredUnit.imperial.toMetricWeight(parsed)
+                        : parsed;
+                    onUpdateDraft(draft.copyWith(bench1RmKg: canonical));
+                  } else {
+                    onUpdateDraft(draft.copyWith(clearBench1RmKg: true));
+                  }
+                },
+              ),
+              AppWhiteSpace.hLg,
+              _InputLabel(title: AppStrings.squat1Rm),
+              AppWhiteSpace.hSm,
+              _FormField(
+                width: AppSizing.fieldWidth,
+                initialValue: draft.squat1RmKg != null
+                    ? preferredUnit.isImperial
+                          ? PreferredUnit.imperial
+                                .toImperialWeight(draft.squat1RmKg!)
+                                .toStringAsFixed(1)
+                          : draft.squat1RmKg!.toStringAsFixed(1)
+                    : '',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                hintText: '60',
+                suffixText: preferredUnit.weightUnit,
+                onChanged: (value) {
+                  final parsed = double.tryParse(value);
+                  if (parsed != null) {
+                    final canonical = preferredUnit.isImperial
+                        ? PreferredUnit.imperial.toMetricWeight(parsed)
+                        : parsed;
+                    onUpdateDraft(draft.copyWith(squat1RmKg: canonical));
+                  } else {
+                    onUpdateDraft(draft.copyWith(clearSquat1RmKg: true));
+                  }
+                },
+              ),
+              AppWhiteSpace.hLg,
+              _InputLabel(title: AppStrings.deadlift1Rm),
+              AppWhiteSpace.hSm,
+              _FormField(
+                width: AppSizing.fieldWidth,
+                initialValue: draft.deadlift1RmKg != null
+                    ? preferredUnit.isImperial
+                          ? PreferredUnit.imperial
+                                .toImperialWeight(draft.deadlift1RmKg!)
+                                .toStringAsFixed(1)
+                          : draft.deadlift1RmKg!.toStringAsFixed(1)
+                    : '',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                hintText: '60',
+                suffixText: preferredUnit.weightUnit,
+                onChanged: (value) {
+                  final parsed = double.tryParse(value);
+                  if (parsed != null) {
+                    final canonical = preferredUnit.isImperial
+                        ? PreferredUnit.imperial.toMetricWeight(parsed)
+                        : parsed;
+                    onUpdateDraft(draft.copyWith(deadlift1RmKg: canonical));
+                  } else {
+                    onUpdateDraft(draft.copyWith(clearDeadlift1RmKg: true));
+                  }
                 },
               ),
             ],
@@ -984,6 +1182,40 @@ class _LimitationsStep extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        AppWhiteSpace.hLg,
+        Consumer(
+          builder: (context, ref, child) {
+            return _ExercisePanel(
+              title: AppStrings.favoriteExercises,
+              selectedIds: draft.favoriteExerciseIds,
+              onTap: () => _showExerciseMultiSelect(
+                context: context,
+                ref: ref,
+                currentIds: draft.favoriteExerciseIds,
+                onDone: (ids) {
+                  onUpdateDraft(draft.copyWith(favoriteExerciseIds: ids));
+                },
+              ),
+            );
+          },
+        ),
+        AppWhiteSpace.hLg,
+        Consumer(
+          builder: (context, ref, child) {
+            return _ExercisePanel(
+              title: AppStrings.substitutions,
+              selectedIds: draft.substitutedExerciseIds,
+              onTap: () => _showExerciseMultiSelect(
+                context: context,
+                ref: ref,
+                currentIds: draft.substitutedExerciseIds,
+                onDone: (ids) {
+                  onUpdateDraft(draft.copyWith(substitutedExerciseIds: ids));
+                },
+              ),
+            );
+          },
         ),
       ],
     );
@@ -1387,6 +1619,12 @@ class _ReviewStep extends StatelessWidget {
           title: AppStrings.onboardingReviewProfileTitle,
           iconAsset: OutlinedSvgAssets.chartBar,
           children: [
+            if (draft.displayName != null && draft.displayName!.isNotEmpty)
+              _ReviewRow(
+                label: AppStrings.displayName,
+                value: draft.displayName!,
+                onTap: () => onJumpToStep(OnboardingStep.welcome),
+              ),
             _ReviewRow(
               label: AppStrings.onboardingExperienceHint,
               value:
@@ -1430,6 +1668,23 @@ class _ReviewStep extends StatelessWidget {
                   draft.preferredUnits?.displayLabel ?? AppStrings.metricUnits,
               onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
             ),
+            if (draft.sex != null)
+              _ReviewRow(
+                label: AppStrings.sex,
+                value: switch (draft.sex!) {
+                  Sex.male => AppStrings.sexMale,
+                  Sex.female => AppStrings.sexFemale,
+                  Sex.notSpecified => AppStrings.sexNotSpecified,
+                },
+                onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
+              ),
+            if (draft.dateOfBirth != null)
+              _ReviewRow(
+                label: AppStrings.dateOfBirth,
+                value:
+                    '${draft.dateOfBirth!.day}/${draft.dateOfBirth!.month}/${draft.dateOfBirth!.year}',
+                onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
+              ),
             if (draft.heightCm != null)
               _ReviewRow(
                 label: preferredUnit.heightLabel,
@@ -1446,6 +1701,30 @@ class _ReviewStep extends StatelessWidget {
                     : '${draft.bodyweightKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
                 onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
               ),
+            if (draft.bench1RmKg != null)
+              _ReviewRow(
+                label: AppStrings.bench1Rm,
+                value: preferredUnit.isImperial
+                    ? '${PreferredUnit.imperial.toImperialWeight(draft.bench1RmKg!).toStringAsFixed(1)} ${AppStrings.imperialWeightUnit}'
+                    : '${draft.bench1RmKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
+                onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
+              ),
+            if (draft.squat1RmKg != null)
+              _ReviewRow(
+                label: AppStrings.squat1Rm,
+                value: preferredUnit.isImperial
+                    ? '${PreferredUnit.imperial.toImperialWeight(draft.squat1RmKg!).toStringAsFixed(1)} ${AppStrings.imperialWeightUnit}'
+                    : '${draft.squat1RmKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
+                onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
+              ),
+            if (draft.deadlift1RmKg != null)
+              _ReviewRow(
+                label: AppStrings.deadlift1Rm,
+                value: preferredUnit.isImperial
+                    ? '${PreferredUnit.imperial.toImperialWeight(draft.deadlift1RmKg!).toStringAsFixed(1)} ${AppStrings.imperialWeightUnit}'
+                    : '${draft.deadlift1RmKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
+                onTap: () => onJumpToStep(OnboardingStep.unitsMetrics),
+              ),
           ],
         ),
         AppWhiteSpace.hLg,
@@ -1460,6 +1739,20 @@ class _ReviewStep extends StatelessWidget {
                   : draft.limitations.join(', '),
               onTap: () => onJumpToStep(OnboardingStep.limitations),
             ),
+            if (draft.favoriteExerciseIds.isNotEmpty)
+              _ReviewRow(
+                label: AppStrings.favoriteExercises,
+                value:
+                    '${draft.favoriteExerciseIds.length} ${AppStrings.onboardingReviewExercisesSelected}',
+                onTap: () => onJumpToStep(OnboardingStep.limitations),
+              ),
+            if (draft.substitutedExerciseIds.isNotEmpty)
+              _ReviewRow(
+                label: AppStrings.substitutions,
+                value:
+                    '${draft.substitutedExerciseIds.length} ${AppStrings.onboardingReviewExercisesSelected}',
+                onTap: () => onJumpToStep(OnboardingStep.limitations),
+              ),
             if (draft.notes != null && draft.notes!.isNotEmpty)
               _ReviewRow(
                 label: AppStrings.onboardingNotesHint,
@@ -1999,4 +2292,151 @@ class _ReviewRow extends StatelessWidget {
       child: row,
     );
   }
+}
+
+class _ExercisePanel extends StatelessWidget {
+  const _ExercisePanel({
+    required this.title,
+    required this.selectedIds,
+    required this.onTap,
+  });
+
+  final String title;
+  final List<int> selectedIds;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SurfacePanel(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: context.textTheme.bodyMedium),
+                    AppWhiteSpace.hXs,
+                    Text(
+                      selectedIds.isEmpty
+                          ? AppStrings.onboardingReviewEmptyValue
+                          : '${selectedIds.length} ${AppStrings.onboardingReviewExercisesSelected}',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SvgPicture.asset(
+                OutlinedSvgAssets.chevronRight,
+                width: AppSizing.iconMd,
+                height: AppSizing.iconMd,
+                colorFilter: ColorFilter.mode(
+                  context.colorScheme.outline,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _showExerciseMultiSelect({
+  required BuildContext context,
+  required WidgetRef ref,
+  required List<int> currentIds,
+  required void Function(List<int> ids) onDone,
+}) async {
+  if (!context.mounted) return;
+  final exercises = await ref
+      .read(AppProviders.exerciseDaoProvider)
+      .getAllExercises();
+
+  if (!context.mounted) return;
+  if (exercises.isEmpty) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppStrings.exerciseLibrarySyncUnavailableOffline),
+        ),
+      );
+    }
+    return;
+  }
+  final tempIds = Set<int>.from(currentIds);
+
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    builder: (ctx) {
+      return StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          return DraggableScrollableSheet(
+            initialChildSize: 0.8,
+            minChildSize: 0.5,
+            maxChildSize: 0.95,
+            builder: (_, scrollController) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.favoriteExercises,
+                          style: AppTextStyles.headlineMd,
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            onDone(tempIds.toList());
+                            Navigator.of(ctx).pop();
+                          },
+                          child: const Text(AppStrings.onboardingDoneLabel),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: exercises.length,
+                      itemBuilder: (_, index) {
+                        final exercise = exercises[index];
+                        return CheckboxListTile(
+                          title: Text(exercise.name),
+                          value: tempIds.contains(exercise.id),
+                          onChanged: (checked) {
+                            setSheetState(() {
+                              if (checked == true) {
+                                tempIds.add(exercise.id);
+                              } else {
+                                tempIds.remove(exercise.id);
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    },
+  );
 }

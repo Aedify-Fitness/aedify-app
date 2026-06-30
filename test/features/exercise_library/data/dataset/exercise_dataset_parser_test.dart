@@ -492,7 +492,7 @@ void main() {
         );
       });
 
-      test('rejects empty steps', () {
+      test('allows empty steps', () {
         final json =
             '{'
             '"schema_version": 1,'
@@ -514,23 +514,16 @@ void main() {
             '}'
             ']'
             '}';
-        expect(
-          () => parser.parse(
-            rawJson: json,
-            supportedSchemaVersion: 1,
-            minimumSupportedAppSchemaVersion: 1,
-          ),
-          throwsA(
-            isA<ExerciseDatasetValidationFailure>().having(
-              (f) => f.code,
-              'code',
-              ExerciseDatasetValidationFailureCode.invalidSteps,
-            ),
-          ),
+        final dataset = parser.parse(
+          rawJson: json,
+          supportedSchemaVersion: 1,
+          minimumSupportedAppSchemaVersion: 1,
         );
+        expect(dataset.exercises, hasLength(1));
+        expect(dataset.exercises.first.steps, isEmpty);
       });
 
-      test('rejects empty primary_muscles', () {
+      test('allows empty primary_muscles', () {
         final json =
             '{'
             '"schema_version": 1,'
@@ -552,20 +545,13 @@ void main() {
             '}'
             ']'
             '}';
-        expect(
-          () => parser.parse(
-            rawJson: json,
-            supportedSchemaVersion: 1,
-            minimumSupportedAppSchemaVersion: 1,
-          ),
-          throwsA(
-            isA<ExerciseDatasetValidationFailure>().having(
-              (f) => f.code,
-              'code',
-              ExerciseDatasetValidationFailureCode.invalidPrimaryMuscles,
-            ),
-          ),
+        final dataset = parser.parse(
+          rawJson: json,
+          supportedSchemaVersion: 1,
+          minimumSupportedAppSchemaVersion: 1,
         );
+        expect(dataset.exercises, hasLength(1));
+        expect(dataset.exercises.first.primaryMuscles, isEmpty);
       });
     });
 

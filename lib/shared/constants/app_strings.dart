@@ -91,6 +91,11 @@ class AppStrings {
   static const onboardingHintSessionMin = '45';
   static const onboardingLimitationHip = 'Hip';
   static const substitutions = 'Substitutions';
+  static const favoriteExercises = 'Favorite exercises';
+  static const onboardingPersonalDetailsTitle = 'Personal details';
+  static const onboardingMaxLiftsTitle = 'Max lifts (optional)';
+  static const onboardingDoneLabel = 'Done';
+  static const onboardingReviewExercisesSelected = 'selected';
   static const pageNotFound = 'Page Not Found';
   static const progressMedia = 'Progress Media';
   static const featureStatus = 'Feature status';

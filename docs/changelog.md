@@ -387,6 +387,18 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests updated**: Controller tests cover debounce, flush-on-next, resume-step, and collapse behavior. Router tests cover complete→home, incomplete→onboarding, and unresolved→startup. Widget tests cover BYOK skip and partial-draft resume.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
+## 2026-06-30
+
+### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
+
+- **`EquipmentTag.fromDb` normalizes input** (`lib/shared/domain/equipment_tag.dart`): Instead of exact `dbValue` match, lowercases input, replaces hyphens/underscores, and tries both raw and singular forms. Fallback to `EquipmentTag.other` for unrecognized values. This fixes `Bad state: No element` for `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`, etc.
+- **5 new `EquipmentTag` entries**: `bosuBall` (`bosu_ball`), `medicineBall` (`medicine_ball`), `plate`, `trx`, `vitruvian` — all with `dbValue` mappings and exhaustive switch coverage in onboarding/profile taxonomy.
+- **Removed strict parser validation**: `exercise_dataset_parser.dart` no longer throws on empty `steps` or empty `primary_muscles` arrays — dataset has valid exercises with these fields missing.
+- **Sync integrated into bootstrap**: `BootstrapController.start()` now calls `await ref.read(exerciseDatasetSyncControllerProvider.notifier).initialize()` before setting `BootstrapState.success()`. The router only redirects to onboarding after sync reaches a terminal state (synced/unavailableOffline/failed).
+- **Onboarding/profile exhaustive switches**: `_OnboardingTaxonomy` and `_ProfileTaxonomy` `equipmentLabel()`/`equipmentFromLabel()` updated for all 5 new tags. Profile equipment chip selector list extended.
+- **Test updates**: Parser tests updated (`"rejects empty steps"` → `"allows empty steps"`, same for primary_muscles). `_FakeSyncController` added to bootstrap test overrides.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 779/779 passed (across all 13 test files).
+
 ## 2026-06-22
 
 ### Added (V1-M2 TTS/audio-cache slice — TTS service, audio cache DAO, step audio controller, per-step playback UI)

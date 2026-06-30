@@ -40,8 +40,8 @@ class ExerciseDatasetSyncController
   }
 
   Future<void> initialize() async {
-    final state = await future;
-    if (state.isSynced) return;
+    final buildResult = await future;
+    if (buildResult.isSynced) return;
     await _runSync();
   }
 

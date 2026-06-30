@@ -58,6 +58,10 @@ class BootstrapController extends Notifier<BootstrapState> {
         offline = true;
       }
 
+      await ref
+          .read(AppProviders.exerciseDatasetSyncControllerProvider.notifier)
+          .initialize();
+
       state = BootstrapState.success(isOffline: offline);
     } on BootstrapFailure catch (f) {
       state = BootstrapState.failure(f);

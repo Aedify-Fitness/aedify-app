@@ -99,6 +99,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
       await _flushPendingDraftSave();
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.completeOnboarding(current.draft);
+      ref.invalidate(AppProviders.onboardingStatusProvider);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -200,18 +201,32 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         draft.preferredUnits == null &&
         draft.heightCm == null &&
         draft.bodyweightKg == null &&
+        draft.sex == null &&
+        draft.dateOfBirth == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null &&
         draft.limitations.isEmpty &&
         draft.notes == null &&
+        draft.favoriteExerciseIds.isEmpty &&
+        draft.substitutedExerciseIds.isEmpty &&
         draft.byokSkipped) {
       return OnboardingStep.equipment;
     }
     if (draft.preferredUnits == null &&
         draft.heightCm == null &&
-        draft.bodyweightKg == null) {
+        draft.bodyweightKg == null &&
+        draft.sex == null &&
+        draft.dateOfBirth == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null) {
       return OnboardingStep.unitsMetrics;
     }
     if (draft.limitations.isEmpty &&
-        (draft.notes == null || draft.notes!.isEmpty)) {
+        (draft.notes == null || draft.notes!.isEmpty) &&
+        draft.favoriteExerciseIds.isEmpty &&
+        draft.substitutedExerciseIds.isEmpty) {
       return OnboardingStep.limitations;
     }
     if (!draft.byokSkipped) {

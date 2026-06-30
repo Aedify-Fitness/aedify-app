@@ -268,6 +268,11 @@ class _ProfileContentView extends ConsumerWidget {
                 'Bench',
                 'Squat rack',
                 'Cardio machine',
+                'Bosu ball',
+                'Medicine ball',
+                'Plate',
+                'TRX',
+                'Vitruvian',
               ],
               selected: null,
               selectedSet: draft.equipmentAccess
@@ -614,6 +619,11 @@ class _ProfileTaxonomy {
       EquipmentTag.cardioMachine => 'Cardio machine',
       EquipmentTag.machine => 'Machine',
       EquipmentTag.ezBar => 'EZ bar',
+      EquipmentTag.bosuBall => 'Bosu ball',
+      EquipmentTag.medicineBall => 'Medicine ball',
+      EquipmentTag.plate => 'Plate',
+      EquipmentTag.trx => 'TRX',
+      EquipmentTag.vitruvian => 'Vitruvian',
       EquipmentTag.other => 'Other',
     };
   }
@@ -633,6 +643,11 @@ class _ProfileTaxonomy {
       'Cardio machine' => EquipmentTag.cardioMachine,
       'Machine' => EquipmentTag.machine,
       'EZ bar' => EquipmentTag.ezBar,
+      'Bosu ball' => EquipmentTag.bosuBall,
+      'Medicine ball' => EquipmentTag.medicineBall,
+      'Plate' => EquipmentTag.plate,
+      'TRX' => EquipmentTag.trx,
+      'Vitruvian' => EquipmentTag.vitruvian,
       _ => EquipmentTag.other,
     };
   }
