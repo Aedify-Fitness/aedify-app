@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
+import 'package:aedify/features/programmes/presentation/widgets/programme_save_bar.dart';
+import 'package:aedify/features/programmes/application/programme_builder_state.dart';
+import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
+import 'package:aedify/features/programmes/application/programme_builder_phase.dart';
+import 'package:aedify/shared/domain/workout_source.dart';
+import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
+
+ProviderScope _wrap(Widget widget) {
+  return ProviderScope(
+    child: MaterialApp(home: Scaffold(body: widget)),
+  );
+}
+
+ProgrammeBuilderState _state({
+  bool isDirty = false,
+  bool isSaving = false,
+  String name = 'Test',
+}) {
+  return ProgrammeBuilderState(
+    mode: ProgrammeBuilderMode.create,
+    phase: isSaving
+        ? ProgrammeBuilderPhase.saving
+        : ProgrammeBuilderPhase.editing,
+    draft: ProgrammeBuilderDraft(
+      id: 'test-id',
+      name: name,
+      source: WorkoutSource.manual,
+      creationMethod: CreationMethod.manual,
+      status: ProgramStatus.draft,
+    ),
+    validationErrors: [],
+    isDirty: isDirty,
+  );
+}
+
+void main() {
+  group('ProgrammeSaveBar', () {
+    testWidgets('shows dirty indicator when isDirty is true', (tester) async {
+      await tester.pumpWidget(
+        _wrap(ProgrammeSaveBar(state: _state(isDirty: true), onSave: () {})),
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration as BoxDecoration).shape == BoxShape.circle,
+        ),
+        findsOneWidget,
+      );
+      expect(find.text(AppStrings.unsavedProgrammeChanges), findsOneWidget);
+    });
+
+    testWidgets('hides dirty indicator when isDirty is false', (tester) async {
+      await tester.pumpWidget(
+        _wrap(ProgrammeSaveBar(state: _state(isDirty: false), onSave: () {})),
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration as BoxDecoration).shape == BoxShape.circle,
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+      'save button is enabled when name is non-empty and not saving',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            ProgrammeSaveBar(
+              state: _state(name: 'Valid', isDirty: true),
+              onSave: () {},
+            ),
+          ),
+        );
+
+        final button = tester.widget<FilledButton>(find.byType(FilledButton));
+        expect(button.onPressed, isNotNull);
+      },
+    );
+
+    testWidgets('save button is disabled when name is empty', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(name: '', isDirty: true),
+            onSave: () {},
+          ),
+        ),
+      );
+
+      final button = tester.widget<FilledButton>(find.byType(FilledButton));
+      expect(button.onPressed, isNull);
+    });
+
+    testWidgets('save button shows spinner when saving', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(isDirty: true, isSaving: true),
+            onSave: () {},
+          ),
+        ),
+      );
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text(AppStrings.saveProgramme), findsNothing);
+    });
+
+    testWidgets('calls onSave when save button is tapped', (tester) async {
+      bool saved = false;
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(isDirty: true),
+            onSave: () => saved = true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(FilledButton));
+      expect(saved, isTrue);
+    });
+  });
+}

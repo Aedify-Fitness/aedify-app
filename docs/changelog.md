@@ -4,7 +4,28 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-06-30
+
+### Rule-violation gap closure pass (M4-003)
+
+- **Icons.\* → SvgPicture.asset**: Replaced all 18 `Icons.*` across 7 programme
+  feature files with `SvgPicture.asset` using heroicon-style SVG constants.
+  Updated `programme_save_bar_test.dart` to match new non-Icon dirty indicator.
+- Pre-existing compilation errors (`ProgrammeAggregate`, `AppRoutes` missing
+  imports in `programmes_screen.dart`) remain — not part of this pass.
+
 ## 2026-06-29
+
+### V1-M4-003 — Manual multi-week programme builder (complete)
+
+- **6 domain models**: `ProgrammeBuilderDraft` (18 fields with typed enums), `ProgrammeBuilderWeekDraft`, `ProgrammeBuilderWorkoutSlotDraft`, `ProgrammeBuilderTemplateDraft` (dayType enum, id, name), `ProgrammeBuilderValidationError` (scope enum, optional weekIndex/slotIndex/templateKey), `ProgrammeBuilderSaveRequest`.
+- **8 application files**: `ProgrammeBuilderMode` (create/edit/duplicate), `ProgrammeBuilderPhase` (6 states), `ProgrammeBuilderState` (copyWith/initial), `ProgrammeBuilderValidator` (10 rules: name, at least one week, week numbers sequential, at least one slot per week, at least one template, every slot references template, + composite), `LoadProgrammeBuilderDraftUseCase` (createEmpty/loadForEdit/loadDuplicate), `SaveProgrammeBuilderDraftUseCase` (maps ProgrammeBuilderDraft → ProgrammeDraft), `ProgrammeBuilderController` (all mutations: add/remove/duplicate week, add/remove slot, assign template, save, discard, updateName, clearValidation).
+- **Infrastructure updates**: `AppRoutes` (+3 programme builder routes), `AppStrings` (+45 builder constants), `AppErrorCodes` (+7 programme builder error codes), `AppRouter` (+3 GoRoute entries as sub-routes of `/programmes`), `AppProviders` (+4 provider declarations).
+- **12 presentation files**: `ProgrammeBuilderScreen` (create/edit/duplicate factory constructors, PopScope for unsaved changes, validation banner, error banner, template sheet placeholder), `ProgrammesScreen` (overhauled: list view with programme cards, empty/error state, FAB linking to builder), `ProgrammeDetailsSection`, `ProgrammeWeeksOverview` (empty state + week list + add button), `ProgrammeWeekCard` (week header with duplicate/remove, slot list, add slot), `ProgrammeWorkoutSlotCard` (template display, assign/remove), `ProgrammeSaveBar` (dirty indicator, save button), `ProgrammeBuilderErrorBanner`, `DiscardProgrammeChangesDialog`, `ActiveProgrammeWarningDialog`, `AddWeekDialog`, `TemplateReassignmentBottomSheet`.
+- **Compilation fixes**: Riverpod `AsyncNotifier<State>` constructor injection, `asData?.value` pattern, explicit generics for all draft list operations, const router entries, missing `CreationMethod.duplicate` fallback → `CreationMethod.manual`, null-check safety, missing imports, icon token fallback (no `iconXl`), unused parameter cleanup.
+- **Gap closure pass**: Wired `TemplateReassignmentBottomSheet` (was `Placeholder`), added save-confirmation snackbar, moved 4 hardcoded strings to `AppStrings`, replaced 3 deprecated `withAlpha` calls with pre-baked `errorSurface` color tokens.
+- **Tests**: 34 new — 12 validator tests (all 10 validation rules + composite/multi-week scenarios) + 22 controller tests (create mode: build/rename/addWeek/removeWeek/duplicateWeek/addSlot/removeSlot/assignTemplate/save/validation/clearErrors; edit mode: load/initial dirty; duplicate mode: load; edge cases: out-of-range indices) + 25 widget tests (week card display/callbacks, slot card display/callbacks, save bar dirty/disabled/spinner/save, 4 dialog confirm/cancel).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 713/713 passed.
 
 ### Settings and exercise-library test migration to enum-backed provider/exercise taxonomy
 

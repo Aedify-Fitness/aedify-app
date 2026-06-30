@@ -59,6 +59,7 @@ class AppSizing {
   static const double iconSm = 20;
   static const double iconMd = 24;
   static const double iconLg = 28;
+  static const double iconXxl = 48;
   static const double divider = 1;
   static const double iconXxs = 16;
   static const double strokeWidth = 2;

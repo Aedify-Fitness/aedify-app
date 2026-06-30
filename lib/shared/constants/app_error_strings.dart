@@ -74,4 +74,8 @@ class AppErrorStrings {
   // Workout builder
   static String workoutNotFoundWithId(String savedWorkoutId) =>
       'Saved workout not found: $savedWorkoutId';
+
+  // Programme builder
+  static String programmeNotFoundWithId(String programmeId) =>
+      'Programme not found: $programmeId';
 }

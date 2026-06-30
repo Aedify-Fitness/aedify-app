@@ -19,6 +19,7 @@ import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
+import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
 import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
 import 'package:aedify/features/analytics/presentation/analytics_screen.dart';
 import 'package:aedify/features/ai_trainer_chat/presentation/ai_chat_screen.dart';
@@ -202,6 +203,29 @@ class AppRouter {
           path: AppRoutes.programmes().path,
           name: AppRoutes.programmes().name,
           builder: (context, state) => const ProgrammesScreen(),
+          routes: [
+            GoRoute(
+              path: 'new',
+              name: AppRoutes.programmeBuilderCreate().name,
+              builder: (context, state) => ProgrammeBuilderScreen.create(),
+            ),
+            GoRoute(
+              path: ':id/edit',
+              name: AppRoutes.programmeBuilderEdit().name,
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                return ProgrammeBuilderScreen.edit(programmeId: id);
+              },
+            ),
+            GoRoute(
+              path: ':id/duplicate',
+              name: AppRoutes.programmeBuilderDuplicate().name,
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                return ProgrammeBuilderScreen.duplicate(programmeId: id);
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: AppRoutes.liftLog().path,

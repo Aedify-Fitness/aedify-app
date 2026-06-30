@@ -2,15 +2,40 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M4 — Persistence Foundation + Workout Builder (Programmes, Saved Workouts, Workout Builder)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete** — builder domain models, validation (10 rules), load/save use cases, controller with all mutations, 10-presentation-file screen+widget set, `DriftSavedWorkoutRepository`, `ExerciseListItem.isCustom` field, real `AddExerciseBottomSheet` search wiring, 43 tests (17 validator + 12 controller + 13 widget + 1 integration). **Post-M4 taxonomy hardening in progress** — implemented models are being migrated from raw string taxonomies to shared enums/enum sets across exercise library, profile, onboarding, programme/workout draft metadata, and BYOK/provider flows to match the locked data-model guidance. Verification for this pass is still running. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder (Programmes, Saved Workouts, Workout Builder, Programme Builder)                                                                                                                                                                                                                                                                             |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete** — multi-week builder with 6 domain models, 8 application files, 12 presentation files, 34 new tests (validator + controller + widget). **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Completed Work
 
-### 2026-06-29 — Post-M4 taxonomy hardening (in progress)
+### 2026-06-30 — Icons rule-violation gap closure (M4-003)
+
+- Replaced all 18 `Icons.*` with `SvgPicture.asset` across 7 programme feature
+  files: `programme_week_card.dart` (4), `programme_save_bar.dart` (2),
+  `programme_weeks_overview.dart` (2), `programme_builder_error_banner.dart` (1),
+  `programme_builder_screen.dart` (2), `programmes_screen.dart` (4),
+  `programme_workout_slot_card.dart` (3).
+- Replaced `Icons.circle` dirty indicator with `Container` + `BoxDecoration`.
+- Added `AppSizing.iconXxl` (48) for large error-state icon.
+- Updated widget test to match non-Icon dirty indicator.
+- Verification: `dart format` — passed (0 changed). 65 programme tests — all
+  passed. Pre-existing compilation errors (`AppRoutes`/`ProgrammeAggregate`
+  missing imports in `programmes_screen.dart`) remain.
+
+### 2026-06-29 — V1-M4-003 — Manual multi-week programme builder
+
+- **Domain** (6 files): `ProgrammeBuilderDraft` (18 fields with typed enums for source/creationMethod/status/goalTags/equipment/importOrigin), `ProgrammeBuilderWeekDraft` (copyWith), `ProgrammeBuilderWorkoutSlotDraft` (copyWith), `ProgrammeBuilderTemplateDraft` (dayType enum, id, name), `ProgrammeBuilderValidationError` (scope enum with optional weekIndex/slotIndex/templateKey), `ProgrammeBuilderSaveRequest`.
+- **Application** (8 files): `ProgrammeBuilderMode` (create/edit/duplicate), `ProgrammeBuilderPhase` (6 states), `ProgrammeBuilderState` (copyWith, initial factory, isLoading/isSaving/hasValidationErrors getters), `ProgrammeBuilderValidator` (10 rules: name required, at least one week, week numbers sequential, at least one slot per week, at least one template, every slot references template), `LoadProgrammeBuilderDraftUseCase` (3 methods), `SaveProgrammeBuilderDraftUseCase` (maps to `ProgrammeDraft` with template dedup), `ProgrammeBuilderController` (all mutations with bounds checks).
+- **Infrastructure**: `AppRoutes` (+3), `AppStrings` (+45), `AppErrorCodes` (+7), `AppRouter` (+3 GoRoutes as /programmes sub-routes), `AppProviders` (+4: validator, load use case, save use case, controller family).
+- **Presentation** (12 files): `ProgrammeBuilderScreen` (create/edit/duplicate factory constructors, PopScope, validation/error banners, wired template sheet); `ProgrammesScreen` overhauled (list view, empty/error states, FAB); widgets: `ProgrammeDetailsSection`, `ProgrammeWeeksOverview`, `ProgrammeWeekCard`, `ProgrammeWorkoutSlotCard`, `ProgrammeSaveBar` (ConsumerWidget, dirty indicator, save button with spinner), `ProgrammeBuilderErrorBanner`, 3 dialogs, `TemplateReassignmentBottomSheet`.
+- **Tests**: 59 total — 12 validator (all 10 rules + composite/multi-week), 22 controller (create/edit/duplicate modes, all mutations, save/validation/clearErrors, out-of-range edge cases), 25 widget (week card display/callbacks, slot card display/callbacks, save bar dirty/disabled/spinner/save, dialog confirm/cancel).
+- **Fixes**: `List<dynamic>` inference in 6 controller methods → explicit `List<ProgrammeBuilderWeekDraft>.of()` / `List<ProgrammeBuilderWorkoutSlotDraft>.of()`; missing bounds check in `removeWeek`; test adjustments for copyWith nullable field semantics.
+- **Gap closure**: Wired `TemplateReassignmentBottomSheet` (was `Placeholder`), added save-confirmation snackbar, moved 4 hardcoded strings to `AppStrings`, replaced 3 deprecated `withAlpha` calls with `AedifyLightColors.errorSurface` / `AedifyDarkColors.errorSurface`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 713/713 passed.
+
+### 2026-06-29 — Post-M4 taxonomy hardening
 
 - Added shared enum taxonomy files and `EnumCodec` support in `lib/shared/domain/` for closed-vocabulary profile, exercise-library, strength-anchor, and provider fields.
 - Converted implemented exercise-library models, parser mappings, filter state, candidate query/DTOs, and repository mappings to enum-backed taxonomies while keeping `primaryMuscles`, `steps`, `grips`, and notes string-based.
@@ -473,7 +498,7 @@
 ## Verification Notes
 
 - `flutter analyze` — 0 issues
-- `flutter test` — 655/655 passed
+- `flutter test` — 713/713 passed
 - `dart run build_runner build` — passed
 - `dart format` — all files formatted
 

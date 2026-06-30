@@ -66,6 +66,15 @@ class AppErrorCodes {
   static const String ttsUnavailable = 'tts_unavailable';
   static const String audioPlaybackFailed = 'audio_playback_failed';
 
+  // Programme Builder
+  static const String programmeSaveFailed = 'programme_save_failed';
+  static const String programmeLoadFailed = 'programme_load_failed';
+  static const String noWeeks = 'no_weeks';
+  static const String noSlots = 'no_slots';
+  static const String noTemplates = 'no_templates';
+  static const String missingTemplate = 'missing_template';
+  static const String nonSequentialWeek = 'non_sequential_week';
+
   // Key Validation
   static const String unsupportedProvider = 'unsupported_provider';
   static const String invalidKey = 'invalid_key';

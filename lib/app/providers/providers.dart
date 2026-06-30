@@ -89,6 +89,12 @@ import 'package:aedify/features/workout_builder/application/workout_builder_vali
 import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_builder/application/save_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
+import 'package:aedify/features/programmes/application/programme_builder_controller.dart';
+import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
+import 'package:aedify/features/programmes/application/programme_builder_state.dart';
+import 'package:aedify/features/programmes/application/programme_builder_validator.dart';
+import 'package:aedify/features/programmes/application/load_programme_builder_draft_use_case.dart';
+import 'package:aedify/features/programmes/application/save_programme_builder_draft_use_case.dart';
 import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -554,4 +560,31 @@ class AppProviders {
         WorkoutBuilderState,
         ({WorkoutBuilderMode mode, String? savedWorkoutId})
       >((arg) => WorkoutBuilderController(arg.mode, arg.savedWorkoutId));
+
+  // Programme builder
+  static final programmeBuilderValidatorProvider =
+      Provider<ProgrammeBuilderValidator>((ref) {
+        return const ProgrammeBuilderValidator();
+      });
+
+  static final loadProgrammeBuilderDraftUseCaseProvider =
+      Provider<LoadProgrammeBuilderDraftUseCase>((ref) {
+        return LoadProgrammeBuilderDraftUseCase(
+          programmeRepository: ref.read(programmeRepositoryProvider),
+        );
+      });
+
+  static final saveProgrammeBuilderDraftUseCaseProvider =
+      Provider<SaveProgrammeBuilderDraftUseCase>((ref) {
+        return SaveProgrammeBuilderDraftUseCase(
+          programmeRepository: ref.read(programmeRepositoryProvider),
+        );
+      });
+
+  static final programmeBuilderControllerProvider =
+      AsyncNotifierProvider.family<
+        ProgrammeBuilderController,
+        ProgrammeBuilderState,
+        ({ProgrammeBuilderMode mode, String? programmeId})
+      >((arg) => ProgrammeBuilderController(arg.mode, arg.programmeId));
 }

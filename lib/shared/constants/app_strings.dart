@@ -427,6 +427,63 @@ class AppStrings {
   static const downloadingUpdate = 'Downloading...';
   static const importingExercises = 'Importing exercises...';
 
+  // Programme builder
+  static const programmeBuilder = 'Programme Builder';
+  static const createProgramme = 'Create programme';
+  static const editProgramme = 'Edit programme';
+  static const programmeName = 'Programme name';
+  static const programmeNameHint = 'My 12-Week Programme';
+  static const addWeek = 'Add week';
+  static const removeWeek = 'Remove week';
+  static const duplicateWeek = 'Duplicate week';
+  static const addWorkoutSlot = 'Add workout';
+  static const removeSlot = 'Remove workout';
+  static const assignTemplate = 'Assign workout';
+  static const saveProgramme = 'Save programme';
+  static const discardProgrammeChanges = 'Discard changes';
+  static const unsavedProgrammeChanges = 'Unsaved changes';
+  static const unsavedProgrammeChangesMessage =
+      'Discard your changes and leave this programme?';
+  static const noWeeksAdded = 'No weeks added yet.';
+  static const noWeeksAddedHint =
+      'Add at least one week to build your programme.';
+  static const weekLabelPrefix = 'Week';
+  static const programmeSaved = 'Programme saved.';
+  static const programmeSaveFailed = 'Could not save the programme.';
+  static const programmeLoadFailed = 'Could not load the programme.';
+  static const programmeInvalid =
+      'Please fix the highlighted programme fields.';
+  static const weekNameRequired = 'Week name is required.';
+  static const programmeNameRequired = 'Programme name is required.';
+  static const addAtLeastOneWeek = 'Add at least one week.';
+  static const addAtLeastOneSlot = 'Add at least one workout slot per week.';
+  static const addAtLeastOneTemplate = 'Add at least one workout template.';
+  static const selectTemplateForSlot = 'Select a workout for this slot.';
+  static const weekSequenceMismatch = 'Week numbers must be sequential.';
+  static const activeProgrammeWarning =
+      'This programme is currently active. Changing weeks or workouts may affect ongoing sessions.';
+  static const programmeDetailsSectionTitle = 'Programme Details';
+  static const programmeWeeksSectionTitle = 'Weeks';
+  static const programmeWorkoutSlotsTitle = 'Workouts';
+  static const weekTemplateEmpty = 'No template assigned';
+  static const slotDayLabel = 'Day';
+  static const noProgrammesYet = 'No programmes yet.';
+  static const noProgrammesYetHint =
+      'Create your first programme to start tracking your training plan.';
+  static const loadingProgrammes = 'Loading programmes...';
+  static const programmesLoadFailed = 'Could not load programmes.';
+  static const duplicateProgramme = 'Duplicate programme';
+  static const archiveProgramme = 'Archive programme';
+  static const deleteProgramme = 'Delete programme';
+  static const activateProgramme = 'Activate programme';
+  static const deactivateProgramme = 'Deactivate programme';
+  static const programmeActive = 'Active';
+  static const programmeArchived = 'Archived';
+  static const noWorkoutTemplatesAvailable = 'No workout templates available.';
+  static const dayTypeLabel = 'Day type';
+  static const optionalDescription = 'Optional description';
+  static const addWeekContent = 'Add a new week to your programme.';
+
   static const byokProviderOpenAiDescription =
       'Widely used, strong general-purpose models with broad tooling support.';
   static const byokProviderAnthropicDescription =
