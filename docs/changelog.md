@@ -391,6 +391,30 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
 
+### Added (V1-M4-005 — Workout History & Programme Library)
+
+- **Saved workout library**: `SavedWorkoutLibraryScreen` with list, archive, delete via `SavedWorkoutLibraryController`.
+- **Programme library refactored**: `ProgrammesScreen` now uses `ProgrammeLibraryController` instead of local `FutureProvider`, with archive/delete popup menus.
+- **Workout history list**: `LiftLogScreen` replaced placeholder with real controller-driven list, source labels, empty/retry states.
+- **Workout history detail**: `WorkoutHistoryDetailScreen` shows session info (name, source, notes, duration) plus read-only exercise/set cards.
+- **Domain models**: `SavedWorkoutListItem`, `ProgrammeListItem`, `WorkoutHistoryListItem`, `WorkoutHistoryExerciseItem`, `WorkoutHistorySetItem`, `WorkoutHistoryDetailViewData`.
+- **Data layer**: `WorkoutHistoryRepository` (abstract) + `DriftWorkoutHistoryRepository` using existing session/exercise/set DAOs with snapshot-based rendering.
+- **Application layer**: 4 controllers, 4 states, 4 use cases all wired into `AppProviders`.
+- **Presentation widgets**: `SavedWorkoutListTile`, `ProgrammeListTile`, `WorkoutHistoryListTile`, `WorkoutHistoryExerciseCard`, `WorkoutHistorySetRow`, `ArchiveItemDialog`, `DeleteItemDialog`, `HistoryErrorBanner`.
+- **Routes**: `AppRoutes.workoutHistoryDetail()` (`/lift-log/:sessionId`), `AppRoutes.savedWorkoutLibrary()` (`/workouts`).
+- **Strings**: 20+ new `AppStrings` for history/library UI and confirmation dialogs.
+- **Tests**: 29 new — 1 drift repository (4 tests), 4 controller tests (14 tests), 4 widget tests (7 tests), 2 screen tests (2 tests), 2 widget tests for tiles/cards (4 tests).
+- **Architecture**: History detail uses snapshot fields, not live source joins. `WorkoutHistoryRepository` is read-focused, separate from runner repositories. Archive/delete preserves history semantics.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+### Post-V1-M4-005 gap closure — dialog confirm labels, test fake cleanup
+
+- **`ArchiveItemDialog` / `DeleteItemDialog`**: Added optional `confirmLabel` parameter. Previously both used hardcoded labels (`AppStrings.archiveProgramme` / `AppStrings.deleteWorkout`) regardless of context.
+- **ProgrammesScreen delete**: Now passes `confirmLabel: AppStrings.deleteProgramme` to `DeleteItemDialog` (was silently showing "Delete workout" for programmes).
+- **SavedWorkoutLibraryScreen archive**: Now passes `confirmLabel: AppStrings.archiveWorkout` to `ArchiveItemDialog` (was silently showing "Archive programme" for saved workouts).
+- **Test fake cleanup**: Removed `shouldThrow` field/constructor param from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository` — both still had `if (shouldThrow)` guards referencing the removed field. Removed throw guards. Removed unused `shouldThrow` import.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
 - **`EquipmentTag.fromDb` normalizes input** (`lib/shared/domain/equipment_tag.dart`): Instead of exact `dbValue` match, lowercases input, replaces hyphens/underscores, and tries both raw and singular forms. Fallback to `EquipmentTag.other` for unrecognized values. This fixes `Bad state: No element` for `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`, etc.
 - **5 new `EquipmentTag` entries**: `bosuBall` (`bosu_ball`), `medicineBall` (`medicine_ball`), `plate`, `trx`, `vitruvian` — all with `dbValue` mappings and exhaustive switch coverage in onboarding/profile taxonomy.
 - **Removed strict parser validation**: `exercise_dataset_parser.dart` no longer throws on empty `steps` or empty `primary_muscles` arrays — dataset has valid exercises with these fields missing.

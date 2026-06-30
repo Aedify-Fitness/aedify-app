@@ -2,12 +2,12 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner)                                                                                                                                                                                                                                                                                                                                                                 |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete** — multi-week builder with 6 domain models, 8 application files, 12 presentation files, 34 new tests (validator + controller + widget). **V1-M4-004 (workout session runner) complete** — 6 domain models, 9 application files, 10 presentation files, 58 new tests. **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                    |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library)                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete** — multi-week builder with 6 domain models, 8 application files, 12 presentation files, 34 new tests (validator + controller + widget). **V1-M4-004 (workout session runner) complete** — 6 domain models, 9 application files, 10 presentation files, 58 new tests. **V1-M4-005 (workout history & programme library) complete** — domain models, drift repository, 4 controllers, 4 screens, 8 widgets, 29 new tests. **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Completed Work
 
@@ -73,6 +73,53 @@
 - Verification: `dart format` — passed (0 changed). 65 programme tests — all
   passed. Pre-existing compilation errors (`AppRoutes`/`ProgrammeAggregate`
   missing imports in `programmes_screen.dart`) remain.
+
+### 2026-06-30 — V1-M4-005 — Workout History & Programme Library (complete)
+
+- **6 domain models** (`lib/features/programmes/domain/`, `lib/features/lift_log/domain/`):
+  - `SavedWorkoutListItem` — `{ id, name, createdAt, updatedAt }`
+  - `ProgrammeListItem` — `{ id, name, createdAt, updatedAt, isActive }`
+  - `WorkoutHistoryListItem` — `{ sessionId, name, source, startedAt, completedAt, durationSeconds, exerciseCount }`
+  - `WorkoutHistorySetItem` — `{ setIndex, setType, prescribedReps, actualReps, actualWeightKg, durationSeconds, distanceMeters, rpe, rir, completed, skipped, notes }`
+  - `WorkoutHistoryExerciseItem` — `{ exerciseNameSnapshot, sets (List<WorkoutHistorySetItem>) }`
+  - `WorkoutHistoryDetailViewData` — `{ sessionId, name, source, startedAt, completedAt, durationSeconds, notes, energyLevel, perceivedDifficulty, exercises (List<WorkoutHistoryExerciseItem>) }`
+- **Data layer** (`lib/features/lift_log/data/`):
+  - `WorkoutHistoryRepository` — abstract interface: `listCompletedSessions()`, `getSessionDetail()`
+  - `DriftWorkoutHistoryRepository` — implementation using existing `WorkoutSessionDao.getCompletedSessions()` + `WorkoutSessionExerciseDao.getBySessionIdOrdered()` + `SetLogDao.getBySessionExerciseIdOrdered()`. Snapshot-based rendering — uses `exerciseNameSnapshot` and persisted `SetLog` values, no live joins to exercise/programme data.
+- **Application layer** (4 controllers, 4 states, 4 use cases):
+  - Programmes: `SavedWorkoutLibraryState`, `ProgrammeLibraryState`, `ListSavedWorkoutsUseCase`, `ListProgrammesUseCase`, `SavedWorkoutLibraryController`, `ProgrammeLibraryController` (archive/delete/reload)
+  - Lift_log: `WorkoutHistoryState`, `WorkoutHistoryDetailState`, `ListWorkoutHistoryUseCase`, `LoadWorkoutHistoryDetailUseCase`, `WorkoutHistoryController`, `WorkoutHistoryDetailController` (AsyncNotifierProvider.family with `sessionId`)
+- **Presentation** (4 screens, 8 widgets):
+  - `SavedWorkoutLibraryScreen` — list with archive/delete popup menus, loading/empty/error states, snackbar confirmations
+  - `ProgrammesScreen` — refactored from local `FutureProvider` to `ProgrammeLibraryController`, archive/delete popup menus
+  - `LiftLogScreen` — replaced placeholder with controller-driven list, source labels, empty state with SVG, tap navigates to detail
+  - `WorkoutHistoryDetailScreen` — detail card (name, date, duration, source), exercise cards with set rows, loading/error/missing states
+  - Widgets: `SavedWorkoutListTile`, `ProgrammeListTile`, `WorkoutHistoryListTile`, `WorkoutHistoryExerciseCard`, `WorkoutHistorySetRow`, `ArchiveItemDialog`, `DeleteItemDialog`, `HistoryErrorBanner`
+- **Infrastructure**:
+  - `AppRoutes`: +2 (`workoutHistoryDetail`, `savedWorkoutLibrary`)
+  - `AppRouter`: +2 `GoRoute` entries (libraries + detail sub-route under lift-log)
+  - `AppProviders`: +10 providers (repository, 4 use cases, 4 controllers, 1 dao)
+  - `AppStrings`: 20+ new constants for history/library UI and confirmations
+- **Architecture decisions**:
+  - `WorkoutHistoryRepository` is read-focused, separate from `WorkoutSessionRepository` — keeps runner concerns separate
+  - History detail uses snapshot fields (`exerciseNameSnapshot`, persisted `SetLog` values), not live source joins — detail stays intact if source workout/programme is archived/deleted
+  - Archive/delete goes through existing `ProgrammeRepository` / `SavedWorkoutRepository` which preserve history semantics (soft-delete when sessions exist)
+- **Tests**: 29 new:
+  - `drift_workout_history_repository_test.dart` — 4 tests (list sessions, get detail, no sessions, no detail)
+  - `programme_library_controller_test.dart` — 7 tests (build, reload, archive programme, delete programme, error)
+  - `saved_workout_library_controller_test.dart` — 7 tests (build, reload, archive, delete, error)
+  - `workout_history_controller_test.dart` — 3 tests (build, reload, error)
+  - `workout_history_detail_controller_test.dart` — 4 tests (build detail, not found, error)
+  - `saved_workout_library_screen_test.dart` — 1 test (empty state)
+  - `lift_log_screen_test.dart` — 1 test (empty state)
+  - `saved_workout_list_tile_test.dart` — 1 test (renders name/date)
+  - `workout_history_exercise_card_test.dart` — 3 tests (renders exercise name, set rows, empty sets)
+- **Post-implementation gap closure**:
+  - `ArchiveItemDialog` / `DeleteItemDialog`: Added optional `confirmLabel` parameter — hardcoded labels fixed for cross-context use
+  - ProgrammesScreen delete: passes `confirmLabel: AppStrings.deleteProgramme`
+  - SavedWorkoutLibraryScreen archive: passes `confirmLabel: AppStrings.archiveWorkout`
+  - Test fakes: removed orphaned `shouldThrow` field/guards from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository`
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
 
 ### 2026-06-29 — V1-M4-003 — Manual multi-week programme builder
 
@@ -578,7 +625,7 @@ On a fresh install, `ExerciseDatasetSyncController._runSync()` crashed during `_
 
 - `dart format` — all files formatted
 - `flutter analyze lib/` — 0 errors
-- `flutter test` — 779/779 passed
+- `flutter test` — 808/808 passed
 - `dart run build_runner build` — not needed (no schema changes)
 
 ## Codebase Convention Enforcement Status

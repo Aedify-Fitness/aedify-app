@@ -1,43 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/presentation/widgets/archive_item_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/delete_item_dialog.dart';
-import 'package:aedify/features/programmes/presentation/widgets/programme_list_tile.dart';
-import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/features/programmes/presentation/widgets/saved_workout_list_tile.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
-class ProgrammesScreen extends ConsumerWidget {
-  const ProgrammesScreen({super.key});
+class SavedWorkoutLibraryScreen extends ConsumerWidget {
+  const SavedWorkoutLibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(
-      AppProviders.programmeLibraryControllerProvider,
+      AppProviders.savedWorkoutLibraryControllerProvider,
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.programmes)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            context.pushNamed(AppRoutes.programmeBuilderCreate().name),
-        child: SvgPicture.asset(
-          OutlinedSvgAssets.plus,
-          width: AppSizing.iconMd,
-          height: AppSizing.iconMd,
-        ),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.savedWorkouts)),
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _ErrorView(
-          message: AppStrings.programmesLoadFailed,
+          message: AppStrings.workoutLibraryLoadFailed,
           onRetry: () => ref
-              .read(AppProviders.programmeLibraryControllerProvider.notifier)
+              .read(AppProviders.savedWorkoutLibraryControllerProvider.notifier)
               .reload(),
         ),
         data: (state) {
@@ -46,10 +35,11 @@ class ProgrammesScreen extends ConsumerWidget {
           }
           if (state.errorCode != null) {
             return _ErrorView(
-              message: state.errorMessage ?? AppStrings.programmesLoadFailed,
+              message:
+                  state.errorMessage ?? AppStrings.workoutLibraryLoadFailed,
               onRetry: () => ref
                   .read(
-                    AppProviders.programmeLibraryControllerProvider.notifier,
+                    AppProviders.savedWorkoutLibraryControllerProvider.notifier,
                   )
                   .reload(),
             );
@@ -57,25 +47,26 @@ class ProgrammesScreen extends ConsumerWidget {
           if (state.isEmpty) {
             return const _EmptyView();
           }
-          return _ProgrammeListView(
+          return _ListView(
             items: state.items,
             onArchive: (id) {
               showDialog(
                 context: context,
                 builder: (_) => ArchiveItemDialog(
-                  title: AppStrings.archiveProgrammeConfirm,
+                  title: AppStrings.archiveSavedWorkoutConfirm,
                   message: '',
+                  confirmLabel: AppStrings.archiveWorkout,
                   onConfirm: () {
                     ref
                         .read(
                           AppProviders
-                              .programmeLibraryControllerProvider
+                              .savedWorkoutLibraryControllerProvider
                               .notifier,
                         )
-                        .archiveProgramme(id);
+                        .archiveWorkout(id);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(AppStrings.programmeArchived),
+                        content: Text(AppStrings.savedWorkoutArchived),
                       ),
                     );
                   },
@@ -86,30 +77,23 @@ class ProgrammesScreen extends ConsumerWidget {
               showDialog(
                 context: context,
                 builder: (_) => DeleteItemDialog(
-                  title: AppStrings.deleteProgrammeConfirm,
+                  title: AppStrings.deleteSavedWorkoutConfirm,
                   message: '',
-                  confirmLabel: AppStrings.deleteProgramme,
                   onConfirm: () {
                     ref
                         .read(
                           AppProviders
-                              .programmeLibraryControllerProvider
+                              .savedWorkoutLibraryControllerProvider
                               .notifier,
                         )
-                        .deleteProgramme(id);
+                        .deleteWorkout(id);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(AppStrings.programmeDeleted),
-                      ),
+                      const SnackBar(content: Text(AppStrings.workoutDeleted)),
                     );
                   },
                 ),
               );
             },
-            onTap: (id) => context.pushNamed(
-              AppRoutes.programmeBuilderEdit().name,
-              pathParameters: {'id': id},
-            ),
           );
         },
       ),
@@ -173,12 +157,12 @@ class _EmptyView extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            AppStrings.noProgrammesYet,
+            AppStrings.noSavedWorkoutsYet,
             style: context.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            AppStrings.noProgrammesYetHint,
+            AppStrings.noSavedWorkoutsYetHint,
             style: context.textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
@@ -188,16 +172,14 @@ class _EmptyView extends StatelessWidget {
   }
 }
 
-class _ProgrammeListView extends StatelessWidget {
-  const _ProgrammeListView({
+class _ListView extends StatelessWidget {
+  const _ListView({
     required this.items,
-    required this.onTap,
     required this.onArchive,
     required this.onDelete,
   });
 
   final List items;
-  final void Function(String id) onTap;
   final void Function(String id) onArchive;
   final void Function(String id) onDelete;
 
@@ -208,9 +190,9 @@ class _ProgrammeListView extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return ProgrammeListTile(
+        return SavedWorkoutListTile(
           item: item,
-          onTap: () => onTap(item.id),
+          onTap: () {},
           onArchive: () => onArchive(item.id),
           onDelete: () => onDelete(item.id),
         );

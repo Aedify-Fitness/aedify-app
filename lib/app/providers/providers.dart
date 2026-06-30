@@ -105,6 +105,20 @@ import 'package:aedify/features/workout_execution/application/workout_runner_map
 import 'package:aedify/features/workout_execution/application/workout_runner_state.dart';
 import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_mode.dart';
+import 'package:aedify/features/lift_log/application/list_workout_history_use_case.dart';
+import 'package:aedify/features/lift_log/application/load_workout_history_detail_use_case.dart';
+import 'package:aedify/features/lift_log/application/workout_history_controller.dart';
+import 'package:aedify/features/lift_log/application/workout_history_detail_controller.dart';
+import 'package:aedify/features/lift_log/application/workout_history_detail_state.dart';
+import 'package:aedify/features/lift_log/application/workout_history_state.dart';
+import 'package:aedify/features/lift_log/data/drift_workout_history_repository.dart';
+import 'package:aedify/features/lift_log/data/workout_history_repository.dart';
+import 'package:aedify/features/programmes/application/list_programmes_use_case.dart';
+import 'package:aedify/features/programmes/application/list_saved_workouts_use_case.dart';
+import 'package:aedify/features/programmes/application/programme_library_controller.dart';
+import 'package:aedify/features/programmes/application/programme_library_state.dart';
+import 'package:aedify/features/programmes/application/saved_workout_library_controller.dart';
+import 'package:aedify/features/programmes/application/saved_workout_library_state.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -663,4 +677,68 @@ class AppProviders {
         ProgrammeBuilderState,
         ({ProgrammeBuilderMode mode, String? programmeId})
       >((arg) => ProgrammeBuilderController(arg.mode, arg.programmeId));
+
+  // V1-M4-005 — history & library providers
+  static final workoutHistoryRepositoryProvider =
+      Provider<WorkoutHistoryRepository>((ref) {
+        return DriftWorkoutHistoryRepository(
+          workoutSessionDao: ref.read(workoutSessionDaoProvider),
+          workoutSessionExerciseDao: ref.read(
+            workoutSessionExerciseDaoProvider,
+          ),
+          setLogDao: ref.read(setLogDaoProvider),
+        );
+      });
+
+  static final listSavedWorkoutsUseCaseProvider =
+      Provider<ListSavedWorkoutsUseCase>((ref) {
+        return ListSavedWorkoutsUseCase(
+          savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+        );
+      });
+
+  static final listProgrammesUseCaseProvider = Provider<ListProgrammesUseCase>((
+    ref,
+  ) {
+    return ListProgrammesUseCase(
+      programmeRepository: ref.read(programmeRepositoryProvider),
+    );
+  });
+
+  static final listWorkoutHistoryUseCaseProvider =
+      Provider<ListWorkoutHistoryUseCase>((ref) {
+        return ListWorkoutHistoryUseCase(
+          workoutHistoryRepository: ref.read(workoutHistoryRepositoryProvider),
+        );
+      });
+
+  static final loadWorkoutHistoryDetailUseCaseProvider =
+      Provider<LoadWorkoutHistoryDetailUseCase>((ref) {
+        return LoadWorkoutHistoryDetailUseCase(
+          workoutHistoryRepository: ref.read(workoutHistoryRepositoryProvider),
+        );
+      });
+
+  static final savedWorkoutLibraryControllerProvider =
+      AsyncNotifierProvider<
+        SavedWorkoutLibraryController,
+        SavedWorkoutLibraryState
+      >(SavedWorkoutLibraryController.new);
+
+  static final programmeLibraryControllerProvider =
+      AsyncNotifierProvider<ProgrammeLibraryController, ProgrammeLibraryState>(
+        ProgrammeLibraryController.new,
+      );
+
+  static final workoutHistoryControllerProvider =
+      AsyncNotifierProvider<WorkoutHistoryController, WorkoutHistoryState>(
+        WorkoutHistoryController.new,
+      );
+
+  static final workoutHistoryDetailControllerProvider =
+      AsyncNotifierProvider.family<
+        WorkoutHistoryDetailController,
+        WorkoutHistoryDetailState,
+        String
+      >((arg) => WorkoutHistoryDetailController(arg));
 }

@@ -22,6 +22,8 @@ import 'package:aedify/features/workout_builder/presentation/workout_builder_scr
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
 import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
+import 'package:aedify/features/lift_log/presentation/workout_history_detail_screen.dart';
+import 'package:aedify/features/programmes/presentation/saved_workout_library_screen.dart';
 import 'package:aedify/features/analytics/presentation/analytics_screen.dart';
 import 'package:aedify/features/ai_trainer_chat/presentation/ai_chat_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_media_screen.dart';
@@ -257,6 +259,21 @@ class AppRouter {
           path: AppRoutes.liftLog().path,
           name: AppRoutes.liftLog().name,
           builder: (context, state) => const LiftLogScreen(),
+          routes: [
+            GoRoute(
+              path: ':sessionId',
+              name: AppRoutes.workoutHistoryDetail().name,
+              builder: (context, state) {
+                final sessionId = state.pathParameters['sessionId']!;
+                return WorkoutHistoryDetailScreen(sessionId: sessionId);
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: AppRoutes.savedWorkoutLibrary().path,
+          name: AppRoutes.savedWorkoutLibrary().name,
+          builder: (context, state) => const SavedWorkoutLibraryScreen(),
         ),
         GoRoute(
           path: AppRoutes.analytics().path,

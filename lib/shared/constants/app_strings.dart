@@ -540,4 +540,42 @@ class AppStrings {
       'Best-in-class reasoning and safety, excellent for complex workout analysis.';
   static const byokProviderGoogleDescription =
       'Fast, capable models with very large context windows and competitive pricing.';
+
+  // V1-M4-005 — history & library
+  static const savedWorkouts = 'Saved Workouts';
+  static const workoutHistory = 'Workout History';
+  static const completedWorkouts = 'Completed workouts';
+  static const noSavedWorkoutsYet = 'No saved workouts yet.';
+  static const noSavedWorkoutsYetHint =
+      'Create a workout template to reuse it later.';
+  static const noWorkoutHistoryYet = 'No workout history yet.';
+  static const noWorkoutHistoryYetHint =
+      'Completed workouts will appear here after you finish a session.';
+  static const savedWorkoutArchived = 'Workout archived.';
+  static const workoutDeleted = 'Workout deleted.';
+  static const programmeDeleted = 'Programme deleted.';
+  static const archiveWorkout = 'Archive workout';
+  static const deleteWorkout = 'Delete workout';
+  static const workoutLibraryLoadFailed = 'Could not load saved workouts.';
+  static const workoutHistoryLoadFailed = 'Could not load workout history.';
+  static const workoutHistoryDetailLoadFailed =
+      'Could not load workout details.';
+  static const sourceSavedWorkout = 'Saved workout';
+  static const sourceProgramme = 'Programme';
+  static const sourceStandalone = 'Standalone';
+  static const completedOn = 'Completed on';
+  static const sessionDuration = 'Duration';
+  static const sessionSource = 'Source';
+  static const workoutHistoryDetails = 'Workout details';
+  static const archiveSavedWorkoutConfirm = 'Archive this workout?';
+  static const deleteSavedWorkoutConfirm =
+      'Delete this workout? Completed workout history must be preserved.';
+  static const archiveProgrammeConfirm = 'Archive this programme?';
+  static const deleteProgrammeConfirm =
+      'Delete this programme? Completed workout history must be preserved.';
+  static const historyExerciseList = 'Exercises';
+  static const historySetList = 'Sets';
+  static const planned = 'Planned';
+  static const actual = 'Actual';
+  static const missingSession = 'Workout session not found.';
 }

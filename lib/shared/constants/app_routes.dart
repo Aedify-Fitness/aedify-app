@@ -15,6 +15,10 @@ class AppRoutes {
   factory AppRoutes.bodymap() => AppRoutes._(path: '/bodymap', name: 'bodymap');
   factory AppRoutes.liftLog() =>
       AppRoutes._(path: '/lift-log', name: 'liftLog');
+  factory AppRoutes.workoutHistoryDetail() =>
+      AppRoutes._(path: '/lift-log/:sessionId', name: 'workoutHistoryDetail');
+  factory AppRoutes.savedWorkoutLibrary() =>
+      AppRoutes._(path: '/workouts', name: 'savedWorkoutLibrary');
   factory AppRoutes.settings() =>
       AppRoutes._(path: '/settings', name: 'settings');
   factory AppRoutes.progress() =>
