@@ -4,6 +4,34 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-01
+
+### V1-M4-007 — Compliance closure pass
+
+- Replaced remaining `Icons.*` in the touched workout-builder 007 surface with `SvgPicture.asset` + `OutlinedSvgAssets` (`WorkoutBuilderScreen`, `WorkoutExerciseCard`, `SetPrescriptionEditorRow`).
+- Removed remaining raw layout values in the touched 007 widgets by extending `AppSpacing` / `AppSizing` with reusable tokens (`xxxs`, `inputHorizontal`, `fieldWidthXs`, `fieldWidthXl`) and applying them in `SetTypeChip`, `SetPrescriptionEditorRow`, and `WorkoutRunnerSetRow`.
+- Moved remaining touched-surface hardcoded strings into `AppStrings` (`skipped`, `setNumberLabel`) and updated runner/history rendering to use them.
+- Refactored `SetPrescriptionEditorRow` from recreating `TextEditingController.fromValue(...)` inside `build()` to a `StatefulWidget` with controller lifecycle managed in `initState` / `didUpdateWidget` / `dispose`.
+- Updated widget tests to match SVG/tooltip-based interactions and shared string usage.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 894/894 passed.
+
+### V1-M4-007 — Warmup vs working set behavior (complete)
+
+- **Shared domain** (`lib/shared/domain/`): `WarmupSetPolicy` (isWarmup/isWorking/shouldBeExcludedFromFutureAnalytics), `SetTypeOption` (type/label/description model for dropdowns).
+- **Set type options use case** (`lib/features/workout_builder/application/set_type_options_use_case.dart`): Returns warmup + working `SetTypeOption`s with labels and descriptions.
+- **Extension helpers**: `SetPrescriptionDraftX`, `WorkoutRunnerSetItemX`, `WorkoutHistorySetItemX` — `isWarmup`/`isWorking` getters and `withSetType()` mutation.
+- **Shared UI helper**: `SetTypeChip` provides the reusable warmup/working chip used by builder/runner/history surfaces.
+- **Builder controller** (`workout_builder_controller.dart`): Added `addWarmupSet()`, `updateSetType()`. `addSet()` now accepts optional `SetType` (defaults to `SetType.working`).
+- **SetPrescriptionEditorRow**: Now shows a `DropdownButtonFormField<SetType>` between the set number and fields — user can toggle warmup/working. Requires `setTypeOptions` parameter. Prop-drilled through `SetPrescriptionList` → `WorkoutExerciseCard` → `WorkoutExerciseList` → `WorkoutBuilderScreen`.
+- **WorkoutRunnerSetRow**: Warmup sets get a distinct `tertiaryContainer` background + chip label with `onTertiaryContainer` text. Working sets get `secondaryContainer` chip. Set type is read-only in runner (matches plan — fixed from template).
+- **WorkoutHistorySetRow**: Now shows a warmup chip (`tertiaryContainer` tint) when `setType == SetType.warmup`. Working sets appear without a chip (cleaner look).
+- **AppStrings**: Added `setTypeWarmup`, `setTypeWorking`, `setTypeWarmupDescription`, `setTypeWorkingDescription`, `addWarmupSet`, `addWorkingSet`, `warmupExcludedFromAnalytics`, `warmupSetDescription`, `setTypeRequired`.
+- **AppProviders**: Added `warmupSetPolicyProvider`, `setTypeOptionsUseCaseProvider`.
+- **ProgrammeBuilderController**: Skipped — programme templates are assigned from builder, not edited inline. No set-level UI exists in programme builder.
+- **WorkoutRunnerController**: Skipped — set type is read-only during active session (matches plan's conditional guidance).
+- **Tests**: 9 new unit tests — 6 `warmup_set_policy`, 3 `set_type_options_use_case`; expanded `workout_builder_controller_test.dart`; expanded `workout_builder_widgets_test.dart` for set type dropdown behavior; new `workout_history_set_row_test.dart` for warmup label rendering.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 894/894 passed.
+
 ## 2026-06-30
 
 ### Fix — Onboarding imperial unit conversion

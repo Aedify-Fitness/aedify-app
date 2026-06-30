@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
 import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/domain/set_type_option.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -139,6 +140,18 @@ void main() {
               restSeconds: 60,
             ),
             modality: 'strength',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onChanged: (_) {},
             onRemove: () {},
           ),
@@ -158,6 +171,18 @@ void main() {
               setType: SetType.working,
             ),
             modality: 'strength',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onChanged: (s) => updated = s,
             onRemove: () {},
           ),
@@ -180,13 +205,97 @@ void main() {
               setType: SetType.working,
             ),
             modality: 'strength',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onChanged: (_) {},
             onRemove: () => removed = true,
           ),
         ),
       );
-      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.tap(find.byTooltip(AppStrings.removeSet));
       expect(removed, isTrue);
+    });
+
+    testWidgets('renders set type dropdown', (tester) async {
+      await tester.pumpWidget(
+        wrapApp(
+          SetPrescriptionEditorRow(
+            prescription: SetPrescriptionDraft(
+              id: 's1',
+              setIndex: 0,
+              setType: SetType.working,
+              prescribedRepsMin: 10,
+              prescribedWeightKg: 50.0,
+              restSeconds: 60,
+            ),
+            modality: 'strength',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
+            onChanged: (_) {},
+            onRemove: () {},
+          ),
+        ),
+      );
+      expect(find.text('Working'), findsOneWidget);
+    });
+
+    testWidgets('set type dropdown changes value', (tester) async {
+      SetPrescriptionDraft? updated;
+      await tester.pumpWidget(
+        wrapApp(
+          SetPrescriptionEditorRow(
+            prescription: SetPrescriptionDraft(
+              id: 's1',
+              setIndex: 0,
+              setType: SetType.working,
+              prescribedRepsMin: 10,
+              prescribedWeightKg: 50.0,
+              restSeconds: 60,
+            ),
+            modality: 'strength',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
+            onChanged: (s) => updated = s,
+            onRemove: () {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Working'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Warm-up').last);
+      await tester.pumpAndSettle();
+      expect(updated?.setType, equals(SetType.warmup));
     });
   });
 
@@ -196,6 +305,18 @@ void main() {
         wrapApp(
           SetPrescriptionList(
             exerciseDraftId: 'ex1',
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             sets: [
               SetPrescriptionDraft(
                 id: 's1',
@@ -225,6 +346,18 @@ void main() {
         wrapApp(
           WorkoutExerciseCard(
             exercise: _placeholderExercise,
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onRemove: () {},
             onDuplicate: () {},
             onAddSet: () {},
@@ -244,6 +377,18 @@ void main() {
         wrapApp(
           WorkoutExerciseList(
             exercises: const [],
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onReorder: (_, _) {},
             onRemove: (_) {},
             onDuplicate: (_) {},
@@ -262,6 +407,18 @@ void main() {
         wrapApp(
           WorkoutExerciseList(
             exercises: [_placeholderExercise],
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
             onReorder: (_, _) {},
             onRemove: (_) {},
             onDuplicate: (_) {},

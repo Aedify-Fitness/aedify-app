@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/workout_name_field.dart';
@@ -79,7 +81,11 @@ class WorkoutBuilderScreen extends ConsumerWidget {
             controller.asData?.value.phase == WorkoutBuilderPhase.editing
             ? FloatingActionButton.extended(
                 onPressed: () => _showAddExerciseSheet(context, ref),
-                icon: const Icon(Icons.add),
+                icon: SvgPicture.asset(
+                  OutlinedSvgAssets.plus,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                ),
                 label: Text(AppStrings.addExercise),
               )
             : null,
@@ -196,6 +202,9 @@ class _WorkoutBuilderBody extends ConsumerWidget {
               const SizedBox(height: AppSpacing.md),
               WorkoutExerciseList(
                 exercises: state.draft.exercises,
+                setTypeOptions: ref
+                    .watch(AppProviders.setTypeOptionsUseCaseProvider)
+                    .execute(),
                 onReorder: (oldIndex, newIndex) {
                   ref
                       .read(

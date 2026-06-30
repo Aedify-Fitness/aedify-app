@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aedify/shared/domain/set_type_option.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_validation_error.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/set_prescription_editor_row.dart';
@@ -12,6 +13,7 @@ class SetPrescriptionList extends StatelessWidget {
     required this.onUpdateSet,
     required this.onRemoveSet,
     required this.validationErrors,
+    required this.setTypeOptions,
   });
 
   final String exerciseDraftId;
@@ -20,6 +22,7 @@ class SetPrescriptionList extends StatelessWidget {
   onUpdateSet;
   final void Function(String setId) onRemoveSet;
   final List<WorkoutBuilderValidationError> validationErrors;
+  final List<SetTypeOption> setTypeOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,7 @@ class SetPrescriptionList extends StatelessWidget {
             key: ValueKey(prescription.id),
             prescription: prescription,
             modality: '',
+            setTypeOptions: setTypeOptions,
             onChanged: (updated) => onUpdateSet(prescription.id, updated),
             onRemove: () => onRemoveSet(prescription.id),
             errorText: validationErrors

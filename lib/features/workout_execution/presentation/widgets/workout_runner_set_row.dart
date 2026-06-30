@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -114,9 +115,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
   @override
   Widget build(BuildContext context) {
     final s = widget.set;
-    final setLabel = s.setType == SetType.warmup
-        ? AppStrings.warmupSet
-        : AppStrings.workingSet;
+    final isWarmup = s.setType == SetType.warmup;
     final prescribedLabel = _buildPrescribedLabel(s);
     final isCompleted = s.completed;
     final isSkipped = s.skipped;
@@ -131,6 +130,8 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
             ? context.colorScheme.primaryContainer
             : isSkipped
             ? context.colorScheme.surfaceContainerHighest
+            : isWarmup
+            ? context.colorScheme.surfaceContainerLow
             : null,
         borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
@@ -164,14 +165,12 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                       ),
               ),
               const SizedBox(width: AppSpacing.xs),
-              Text('Set ${s.setIndex + 1}', style: context.textTheme.bodySmall),
-              const SizedBox(width: AppSpacing.xs),
               Text(
-                setLabel,
-                style: context.textTheme.labelSmall?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
+                AppStrings.setNumberLabel(s.setIndex + 1),
+                style: context.textTheme.bodySmall,
               ),
+              const SizedBox(width: AppSpacing.xs),
+              SetTypeChip(setType: s.setType),
               if (prescribedLabel != null) ...[
                 const SizedBox(width: AppSpacing.xs),
                 Text(
@@ -184,7 +183,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
               const Spacer(),
               if (isSkipped)
                 Text(
-                  AppStrings.markSkipped,
+                  AppStrings.skipped,
                   style: context.textTheme.bodySmall?.copyWith(
                     color: context.colorScheme.onSurfaceVariant,
                   ),
@@ -196,15 +195,15 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
             Row(
               children: [
                 SizedBox(
-                  width: 72,
+                  width: AppSizing.fieldWidthMd,
                   child: TextFormField(
                     controller: _weightController,
                     decoration: const InputDecoration(
                       labelText: AppStrings.weightLabel,
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 8,
+                        horizontal: AppSpacing.inputHorizontal,
+                        vertical: AppSpacing.sm,
                       ),
                     ),
                     keyboardType: TextInputType.numberWithOptions(
@@ -214,15 +213,15 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 ),
                 const SizedBox(width: AppSpacing.xxs),
                 SizedBox(
-                  width: 60,
+                  width: AppSizing.fieldWidthSm,
                   child: TextFormField(
                     controller: _repsController,
                     decoration: const InputDecoration(
                       labelText: AppStrings.repsLabel,
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 8,
+                        horizontal: AppSpacing.inputHorizontal,
+                        vertical: AppSpacing.sm,
                       ),
                     ),
                     keyboardType: TextInputType.number,
@@ -230,7 +229,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 ),
                 const SizedBox(width: AppSpacing.xxs),
                 SizedBox(
-                  width: 56,
+                  width: AppSizing.fieldWidthXs,
                   child: DropdownButtonFormField<double?>(
                     key: const ValueKey('rpe_dropdown'),
                     initialValue: _rpe,
@@ -239,8 +238,8 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                       labelText: AppStrings.actualRpe,
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 8,
+                        horizontal: AppSpacing.inputHorizontal,
+                        vertical: AppSpacing.sm,
                       ),
                     ),
                     items: [
@@ -258,7 +257,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 ),
                 const SizedBox(width: AppSpacing.xxs),
                 SizedBox(
-                  width: 56,
+                  width: AppSizing.fieldWidthXs,
                   child: DropdownButtonFormField<int?>(
                     key: const ValueKey('rir_dropdown'),
                     initialValue: _rir,
@@ -267,8 +266,8 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                       labelText: AppStrings.actualRir,
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 8,
+                        horizontal: AppSpacing.inputHorizontal,
+                        vertical: AppSpacing.sm,
                       ),
                     ),
                     items: [
@@ -290,8 +289,8 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 labelText: AppStrings.setNotes,
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 8,
+                  horizontal: AppSpacing.inputHorizontal,
+                  vertical: AppSpacing.sm,
                 ),
               ),
               maxLines: 1,

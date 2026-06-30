@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/set_type_option.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
@@ -17,6 +20,7 @@ class WorkoutExerciseCard extends StatelessWidget {
     required this.onUpdateSet,
     required this.onRemoveSet,
     required this.validationErrors,
+    required this.setTypeOptions,
   });
 
   final WorkoutBuilderExerciseDraft exercise;
@@ -27,6 +31,7 @@ class WorkoutExerciseCard extends StatelessWidget {
   onUpdateSet;
   final void Function(String setId) onRemoveSet;
   final List<WorkoutBuilderValidationError> validationErrors;
+  final List<SetTypeOption> setTypeOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,11 @@ class WorkoutExerciseCard extends StatelessWidget {
               children: [
                 ReorderableDragStartListener(
                   index: exercise.sortOrder,
-                  child: const Icon(Icons.drag_handle),
+                  child: SvgPicture.asset(
+                    OutlinedSvgAssets.bars3,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -58,12 +67,20 @@ class WorkoutExerciseCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.copy, size: AppSpacing.md),
+                  icon: SvgPicture.asset(
+                    OutlinedSvgAssets.documentDuplicate,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                  ),
                   onPressed: onDuplicate,
                   tooltip: AppStrings.duplicateExercise,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, size: AppSpacing.md),
+                  icon: SvgPicture.asset(
+                    OutlinedSvgAssets.trash,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                  ),
                   onPressed: onRemove,
                   tooltip: AppStrings.removeExercise,
                 ),
@@ -73,6 +90,7 @@ class WorkoutExerciseCard extends StatelessWidget {
             SetPrescriptionList(
               exerciseDraftId: exercise.id,
               sets: exercise.sets,
+              setTypeOptions: setTypeOptions,
               onUpdateSet: onUpdateSet,
               onRemoveSet: onRemoveSet,
               validationErrors: validationErrors,
@@ -80,7 +98,11 @@ class WorkoutExerciseCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             TextButton.icon(
               onPressed: onAddSet,
-              icon: const Icon(Icons.add, size: AppSpacing.md),
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.plus,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+              ),
               label: Text(AppStrings.addSet),
             ),
           ],

@@ -39,7 +39,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Set 1'), findsOneWidget);
+      expect(find.text(AppStrings.setNumberLabel(1)), findsOneWidget);
       expect(find.text(AppStrings.workingSet), findsOneWidget);
     });
 
@@ -90,7 +90,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Set 1'), findsOneWidget);
+      expect(find.text(AppStrings.setNumberLabel(1)), findsOneWidget);
     });
 
     testWidgets('warmup set shows warmup label', (tester) async {
@@ -123,7 +123,7 @@ void main() {
         ),
       );
 
-      expect(find.text(AppStrings.markSkipped), findsOneWidget);
+      expect(find.text(AppStrings.skipped), findsOneWidget);
     });
 
     testWidgets('equal min/max reps shows single value', (tester) async {

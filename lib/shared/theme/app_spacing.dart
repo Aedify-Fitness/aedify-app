@@ -4,6 +4,7 @@ class AppSpacing {
   AppSpacing._();
 
   static const double baseUnit = 4;
+  static const double xxxs = 1;
   static const double xxs = 2;
   static const double xs = 4;
   static const double sm = 8;
@@ -13,6 +14,7 @@ class AppSpacing {
   static const double xxl = 48;
   static const double xxxl = 64;
   static const double buttonVertical = 12;
+  static const double inputHorizontal = 6;
   static const double inputVertical = 14;
 }
 
@@ -70,9 +72,11 @@ class AppSizing {
   static const double optionCardMinHeight = 104;
   static const double metricTileMinWidth = 88;
   static const double metricTileHeight = 72;
+  static const double fieldWidthXs = 56;
   static const double fieldWidthSm = 64;
   static const double fieldWidthMd = 72;
   static const double fieldWidthLg = 80;
+  static const double fieldWidthXl = 96;
   static const double reviewCardIcon = 36;
   static const double bodymapSvgWidth = 240;
   static const double bodymapSvgHeight = 480;

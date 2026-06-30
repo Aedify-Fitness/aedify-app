@@ -2,14 +2,24 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                    |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete**. **V1-M4-004 (workout session runner) complete**. **V1-M4-005 (workout history & programme library) complete**. **V1-M4-006 (custom exercise editor) complete** — 3 domain, 7 application, 8 presentation files, 55 new tests. **Post-M4 taxonomy hardening** completed — all implemented models migrated to shared enums. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                               |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                                                      |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete**. **V1-M4-004 (workout session runner) complete**. **V1-M4-005 (workout history & programme library) complete**. **V1-M4-006 (custom exercise editor) complete**. **V1-M4-007 (warmup vs working set behavior) complete** — shared warmup policy/options/chip added, builder/runner/history updated, controller and widget coverage expanded, 894/894 passed. |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                 |
 
 ## Completed Work
+
+### 2026-07-01 — V1-M4-007 compliance closure pass
+
+- **Conventions fixes**: Removed remaining Aedify rule violations in the touched 007 surface.
+- **Icons/SVGs**: `WorkoutBuilderScreen`, `WorkoutExerciseCard`, and `SetPrescriptionEditorRow` now use `SvgPicture.asset` + `OutlinedSvgAssets` instead of `Icons.*`.
+- **Tokens**: Added `AppSpacing.xxxs`, `AppSpacing.inputHorizontal`, `AppSizing.fieldWidthXs`, and `AppSizing.fieldWidthXl`; replaced remaining raw layout values in `SetTypeChip`, `SetPrescriptionEditorRow`, and `WorkoutRunnerSetRow`.
+- **Strings**: Added `AppStrings.skipped` and `AppStrings.setNumberLabel(int)`; runner/history rows now use constants instead of hardcoded text.
+- **Controller lifecycle**: `SetPrescriptionEditorRow` is now `StatefulWidget`-based so text controllers are no longer recreated inside `build()`.
+- **Tests**: Updated widget tests for tooltip/SVG interactions and shared labels. No product-scope changes.
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 894/894 passed.
 
 ### 2026-06-30 — Fix — Onboarding imperial unit conversion
 
@@ -180,6 +190,22 @@
 - **TextEditingController fix**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` converted to `StatefulWidget` — controllers created in `initState`, synced in `didUpdateWidget`, preserving cursor during typing.
 - **+12 widget tests**: 5 steps editor, 4 error banner, 3 discard dialog. Delete dialog test updated for label change.
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
+
+### 2026-07-01 — V1-M4-007 — Warmup vs working set behavior (complete)
+
+- **Shared domain** (2 new files): `WarmupSetPolicy` (isWarmup/isWorking/shouldBeExcludedFromFutureAnalytics), `SetTypeOption` (type/label/description model).
+- **Application** (1 new): `SetTypeOptionsUseCase` — returns `[working, warmup]` options with labels from `AppStrings`.
+- **Shared UI** (1 new): `SetTypeChip` — reusable warmup/working chip used by runner/history presentation.
+- **Extensions** (3 new): `SetPrescriptionDraftX`, `WorkoutRunnerSetItemX`, `WorkoutHistorySetItemX` — `isWarmup`/`isWorking` getters, `withSetType()`.
+- **WorkoutBuilderController** (+3 methods): `addSet()` now accepts optional `SetType` param. Added `addWarmupSet()`, `updateSetType()`.
+- **SetPrescriptionEditorRow**: Widened signature — now has `DropdownButtonFormField<SetType>` between set number and fields. Prop-drilled via `SetPrescriptionList` → `WorkoutExerciseCard` → `WorkoutExerciseList` → `WorkoutBuilderScreen`.
+- **WorkoutRunnerSetRow**: Warmup sets get `tertiaryContainer` background + chip. Working sets get `secondaryContainer` chip. Set type read-only in runner.
+- **WorkoutHistorySetRow**: Warmup chip (`tertiaryContainer` tint) shown when `setType == SetType.warmup`.
+- **AppStrings** (+9): `setTypeWarmup`, `setTypeWorking`, `setTypeWarmupDescription`, `setTypeWorkingDescription`, `addWarmupSet`, `addWorkingSet`, `warmupExcludedFromAnalytics`, `warmupSetDescription`, `setTypeRequired`.
+- **AppProviders** (+2): `warmupSetPolicyProvider`, `setTypeOptionsUseCaseProvider`.
+- **Skipped**: `ProgrammeBuilderController` (no inline set UI in programme builder), `WorkoutRunnerController` (set type read-only in runner).
+- **Tests**: 9 new unit tests — 6 `warmup_set_policy`, 3 `set_type_options_use_case`; expanded `workout_builder_controller_test.dart` for warmup add/update/save coverage; expanded `workout_builder_widgets_test.dart` for set type dropdown rendering and mutation; new `workout_history_set_row_test.dart` for warmup/working history rendering.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 894/894 passed.
 
 ### 2026-06-29 — V1-M4-003 — Manual multi-week programme builder
 
@@ -685,7 +711,7 @@ On a fresh install, `ExerciseDatasetSyncController._runSync()` crashed during `_
 
 - `dart format` — all files formatted
 - `flutter analyze lib/` — 0 errors
-- `flutter test` — 863/863 passed
+- `flutter test` — 884/884 passed
 - `dart run build_runner build` — not needed (no schema changes)
 
 ## Codebase Convention Enforcement Status

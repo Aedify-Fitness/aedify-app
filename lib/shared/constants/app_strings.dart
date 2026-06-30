@@ -410,6 +410,20 @@ class AppStrings {
   static const duplicateExercise = 'Duplicate exercise';
   static const reorderExercises = 'Reorder exercises';
   static const setType = 'Set type';
+  static const setTypeWarmup = 'Warm-up';
+  static const setTypeWorking = 'Working';
+  static const setTypeWarmupDescription =
+      'Use warm-up sets to prepare before working sets.';
+  static const setTypeWorkingDescription =
+      'Working sets are your primary effort sets.';
+  static const addWarmupSet = 'Add warm-up set';
+  static const addWorkingSet = 'Add working set';
+  static const warmupExcludedFromAnalytics =
+      'Warm-up sets are logged and shown in history, but excluded from analytics later.';
+  static const warmupSetDescription =
+      'Use warm-up sets to prepare before working sets.';
+  static const setTypeRequired = 'Please choose a valid set type.';
+  static const skipped = 'Skipped';
 
   // Workout builder — validation
   static const workoutNameRequired = 'Workout name is required.';
@@ -427,6 +441,7 @@ class AppStrings {
 
   // Workout builder — exercise card
   static String exerciseNumberLabel(int number) => 'Exercise #$number';
+  static String setNumberLabel(int number) => 'Set $number';
 
   // Exercise dataset sync
   static const checkingForUpdates = 'Checking for updates...';

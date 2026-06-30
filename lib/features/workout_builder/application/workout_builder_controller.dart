@@ -186,7 +186,10 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     );
   }
 
-  Future<void> addSet(String exerciseDraftId) async {
+  Future<void> addSet(
+    String exerciseDraftId, {
+    SetType setType = SetType.working,
+  }) async {
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises.map((e) {
@@ -196,10 +199,39 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         SetPrescriptionDraft(
           id: _newId(),
           setIndex: e.sets.length,
-          setType: SetType.working,
+          setType: setType,
         ),
       ];
       return e.copyWith(sets: _reindexSets(sets));
+    }).toList();
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> addWarmupSet(String exerciseDraftId) async {
+    await addSet(exerciseDraftId, setType: SetType.warmup);
+  }
+
+  Future<void> updateSetType({
+    required String exerciseDraftId,
+    required String setId,
+    required SetType setType,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final exercises = current.draft.exercises.map((e) {
+      if (e.id != exerciseDraftId) return e;
+      return e.copyWith(
+        sets: e.sets.map((s) {
+          if (s.id != setId) return s;
+          return s.copyWith(setType: setType);
+        }).toList(),
+      );
     }).toList();
     state = AsyncData(
       current.copyWith(

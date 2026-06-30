@@ -95,6 +95,8 @@ import 'package:aedify/features/workout_builder/application/workout_builder_stat
 import 'package:aedify/features/workout_builder/application/workout_builder_validator.dart';
 import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_builder/application/save_workout_draft_use_case.dart';
+import 'package:aedify/features/workout_builder/application/set_type_options_use_case.dart';
+import 'package:aedify/shared/domain/warmup_set_policy.dart';
 import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
 import 'package:aedify/features/programmes/application/programme_builder_controller.dart';
 import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
@@ -787,4 +789,15 @@ class AppProviders {
           exerciseId: arg.exerciseId,
         ),
       );
+
+  // V1-M4-007 — warmup/working set behavior
+  static final warmupSetPolicyProvider = Provider<WarmupSetPolicy>((ref) {
+    return const WarmupSetPolicy();
+  });
+
+  static final setTypeOptionsUseCaseProvider = Provider<SetTypeOptionsUseCase>((
+    ref,
+  ) {
+    return const SetTypeOptionsUseCase();
+  });
 }

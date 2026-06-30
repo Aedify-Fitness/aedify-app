@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/set_type_option.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
@@ -18,6 +19,7 @@ class WorkoutExerciseList extends StatelessWidget {
     required this.onUpdateSet,
     required this.onRemoveSet,
     required this.validationErrors,
+    required this.setTypeOptions,
   });
 
   final List<WorkoutBuilderExerciseDraft> exercises;
@@ -33,6 +35,7 @@ class WorkoutExerciseList extends StatelessWidget {
   onUpdateSet;
   final void Function(String exerciseDraftId, String setId) onRemoveSet;
   final List<WorkoutBuilderValidationError> validationErrors;
+  final List<SetTypeOption> setTypeOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +67,7 @@ class WorkoutExerciseList extends StatelessWidget {
         return WorkoutExerciseCard(
           key: ValueKey(exercise.id),
           exercise: exercise,
+          setTypeOptions: setTypeOptions,
           onRemove: () => onRemove(exercise.id),
           onDuplicate: () => onDuplicate(exercise.id),
           onAddSet: () => onAddSet(exercise.id),

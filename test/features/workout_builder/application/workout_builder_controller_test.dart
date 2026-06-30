@@ -353,6 +353,196 @@ void main() {
       expect(state.asData!.value.draft.exercises[0].exercise.name, equals('B'));
       expect(state.asData!.value.draft.exercises[1].exercise.name, equals('A'));
     });
+
+    test('addWarmupSet adds a set with SetType.warmup', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench Press',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      expect(state.asData!.value.draft.exercises.first.sets.length, equals(1));
+
+      await controller.addWarmupSet(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final sets = state.asData!.value.draft.exercises.first.sets;
+      expect(sets.length, equals(2));
+      expect(sets.last.setType, equals(SetType.warmup));
+      expect(sets.first.setType, equals(SetType.working));
+    });
+
+    test('updateSetType changes set type of a set', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Squat',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+      final setId = state.asData!.value.draft.exercises.first.sets.first.id;
+
+      expect(
+        state.asData!.value.draft.exercises.first.sets.first.setType,
+        equals(SetType.working),
+      );
+
+      await controller.updateSetType(
+        exerciseDraftId: exerciseId,
+        setId: setId,
+        setType: SetType.warmup,
+      );
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(
+        state.asData!.value.draft.exercises.first.sets.first.setType,
+        equals(SetType.warmup),
+      );
+    });
+
+    test('addSet with SetType.warmup creates warmup set', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'DL',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      await controller.addSet(exerciseId, setType: SetType.warmup);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final sets = state.asData!.value.draft.exercises.first.sets;
+      expect(sets.length, equals(2));
+      expect(sets.last.setType, equals(SetType.warmup));
+    });
+
+    test('warmup set survives save mapping (roundtrip)', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.renameWorkout('Test Warmup');
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Press',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+      await controller.addWarmupSet(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final updatedSets = state.asData!.value.draft.exercises.first.sets;
+
+      await controller.updateSet(
+        exerciseDraftId: exerciseId,
+        setId: updatedSets.first.id,
+        prescription: updatedSets.first.copyWith(prescribedWeightKg: 40),
+      );
+      await controller.updateSet(
+        exerciseDraftId: exerciseId,
+        setId: updatedSets.last.id,
+        prescription: updatedSets.last.copyWith(prescribedWeightKg: 20),
+      );
+
+      await controller.saveWorkout();
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(state.asData?.value.isDirty, isFalse);
+      expect(state.asData?.value.savedWorkoutId, isNotNull);
+    });
   });
 
   group('WorkoutBuilderController (edit mode)', () {

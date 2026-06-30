@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -11,6 +13,7 @@ class WorkoutHistorySetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isWarmup = item.setType == SetType.warmup;
     final color = item.skipped
         ? context.colorScheme.onSurfaceVariant
         : item.completed
@@ -31,10 +34,15 @@ class WorkoutHistorySetRow extends StatelessWidget {
               style: context.textTheme.bodySmall?.copyWith(color: color),
             ),
           ),
+          if (isWarmup)
+            Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.xs),
+              child: SetTypeChip(setType: item.setType),
+            ),
           if (item.skipped)
             Expanded(
               child: Text(
-                'Skipped',
+                AppStrings.skipped,
                 style: context.textTheme.bodySmall?.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
                   fontStyle: FontStyle.italic,
