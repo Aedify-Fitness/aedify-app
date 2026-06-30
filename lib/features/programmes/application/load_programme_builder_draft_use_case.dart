@@ -36,14 +36,21 @@ class LoadProgrammeBuilderDraftUseCase {
 
     final program = aggregate.program;
 
-    final templateList = aggregate.templates.map((t) {
-      return ProgrammeBuilderTemplateDraft(
-        id: t.id,
-        templateKey: t.templateKey,
-        name: t.name,
-        dayType: null,
+    final templateList = <ProgrammeBuilderTemplateDraft>[];
+    for (final t in aggregate.templates) {
+      final exercises = await _programmeRepository.getTemplateExercises(t.id);
+      templateList.add(
+        ProgrammeBuilderTemplateDraft(
+          id: t.id,
+          templateKey: t.templateKey,
+          name: t.name,
+          dayType: null,
+          exercises: exercises,
+        ),
       );
-    }).toList();
+    }
+
+    final templateMap = {for (final t in templateList) t.id: t};
 
     final weeks = aggregate.weeks.map((w) {
       final weekWorkouts = aggregate.workouts
@@ -56,11 +63,7 @@ class LoadProgrammeBuilderDraftUseCase {
           scheduledDayIndex: wo.scheduledDayIndex ?? 0,
           name: wo.name,
           template: wo.workoutTemplateId != null
-              ? ProgrammeBuilderTemplateDraft(
-                  id: wo.workoutTemplateId!,
-                  templateKey: wo.workoutTemplateId!,
-                  name: wo.name,
-                )
+              ? templateMap[wo.workoutTemplateId]
               : null,
         );
       }).toList();

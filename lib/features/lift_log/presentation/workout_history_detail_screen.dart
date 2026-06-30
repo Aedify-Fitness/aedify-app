@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_detail_view_data.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/history_error_banner.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/workout_history_superset_group_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/session_source.dart';
+import 'package:aedify/shared/domain/superset_group_summary.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -63,7 +66,7 @@ class WorkoutHistoryDetailScreen extends ConsumerWidget {
   }
 }
 
-class _DetailContent extends StatelessWidget {
+class _DetailContent extends ConsumerWidget {
   const _DetailContent({required this.detail});
 
   final WorkoutHistoryDetailViewData detail;
@@ -85,8 +88,48 @@ class _DetailContent extends StatelessWidget {
     return '${minutes}m';
   }
 
+  List<Widget> _buildExerciseWidgets(
+    List<WorkoutHistoryExerciseItem> exercises,
+    List<SupersetGroupSummary> groups,
+  ) {
+    final groupedIds = <String>{};
+    for (final g in groups) {
+      groupedIds.addAll(g.memberIds);
+    }
+
+    final widgets = <Widget>[];
+    final seenGroups = <String>{};
+
+    for (final exercise in exercises) {
+      if (groupedIds.contains(exercise.id)) {
+        final gid = exercise.supersetGroupId!;
+        if (!seenGroups.contains(gid)) {
+          seenGroups.add(gid);
+          final group = groups.firstWhere((g) => g.groupId == gid);
+          final groupExercises = group.memberIds
+              .map((mid) => exercises.firstWhere((e) => e.id == mid))
+              .toList();
+          widgets.add(
+            WorkoutHistorySupersetGroupCard(
+              group: group,
+              exercises: groupExercises,
+            ),
+          );
+        }
+      } else {
+        widgets.add(WorkoutHistoryExerciseCard(item: exercise));
+      }
+    }
+
+    return widgets;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final groups = ref
+        .watch(AppProviders.workoutHistoryGroupingMapperProvider)
+        .buildGroups(detail.exercises);
+
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
@@ -129,7 +172,7 @@ class _DetailContent extends StatelessWidget {
           style: context.textTheme.titleSmall,
         ),
         const SizedBox(height: AppSpacing.sm),
-        ...detail.exercises.map((e) => WorkoutHistoryExerciseCard(item: e)),
+        ..._buildExerciseWidgets(detail.exercises, groups),
       ],
     );
   }

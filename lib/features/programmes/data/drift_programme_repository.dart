@@ -18,6 +18,11 @@ import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/shared/domain/change_type.dart';
 import 'package:aedify/shared/domain/enum_codec.dart';
+import 'package:aedify/shared/domain/exercise_role.dart';
+import 'package:aedify/shared/domain/loading_model.dart';
+import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/domain/weight_prescription_type.dart';
 
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
@@ -605,4 +610,68 @@ class DriftProgrammeRepository implements ProgrammeRepository {
   }
 
   String _newId() => _uuid.v4();
+
+  @override
+  Future<List<ProgrammeExerciseDraft>> getTemplateExercises(
+    String templateId,
+  ) async {
+    final rows = await _programTemplateExerciseDao.getByTemplateIdOrdered(
+      templateId,
+    );
+    final results = <ProgrammeExerciseDraft>[];
+    for (final row in rows) {
+      final sets = await _programTemplateExerciseSetDao
+          .getByTemplateExerciseIdOrdered(row.id);
+      results.add(
+        ProgrammeExerciseDraft(
+          id: row.id,
+          exerciseId: row.exerciseId,
+          sortOrder: row.sortOrder,
+          sets: sets.map(_mapTemplateSetToDraft).toList(),
+          exerciseRef: row.exerciseRef,
+          exerciseRole: ExerciseRole.fromDb(row.exerciseRole),
+          programmeRole: row.programmeRole,
+          supersetGroupId: row.supersetGroupId,
+          supersetOrder: row.supersetOrder,
+          notes: row.notes,
+          cuesJson: row.cuesJson,
+        ),
+      );
+    }
+    return results;
+  }
+
+  SetPrescriptionDraft _mapTemplateSetToDraft(ProgramTemplateExerciseSet s) {
+    return SetPrescriptionDraft(
+      id: s.id,
+      setIndex: s.setIndex,
+      setType: SetType.fromDb(s.setType),
+      setIntent: SetIntent.fromDb(s.setIntent),
+      prescribedRepsMin: s.prescribedRepsMin,
+      prescribedRepsMax: s.prescribedRepsMax,
+      prescribedRepsExact: s.prescribedRepsExact,
+      durationSeconds: s.durationSeconds,
+      distanceMeters: s.distanceMeters,
+      weightPrescriptionType: WeightPrescriptionType.fromDb(
+        s.weightPrescriptionType,
+      ),
+      prescribedWeightKg: s.prescribedWeightKg,
+      prescribedWeightPct1rm: s.prescribedWeightPct1rm,
+      prescribedWeightPctWorking: s.prescribedWeightPctWorking,
+      bodyweightMultiplier: s.bodyweightMultiplier,
+      prescribedRpeMin: s.prescribedRpeMin,
+      prescribedRpeMax: s.prescribedRpeMax,
+      prescribedRir: s.prescribedRir,
+      restSeconds: s.restSeconds,
+      loadingModel: LoadingModel.fromDb(s.loadingModel),
+      percent1rmMin: s.percent1rmMin,
+      percent1rmMax: s.percent1rmMax,
+      rpeMin: s.rpeMin,
+      rpeMax: s.rpeMax,
+      loadSelectionNote: s.loadSelectionNote,
+      isCalibrationEstimate: s.isCalibrationEstimate,
+      derivedFromWorkingSetIndex: s.derivedFromWorkingSetIndex,
+      warmupWeightRuleJson: s.warmupWeightRuleJson,
+    );
+  }
 }

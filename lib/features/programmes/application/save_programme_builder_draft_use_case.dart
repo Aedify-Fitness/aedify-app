@@ -57,7 +57,7 @@ class SaveProgrammeBuilderDraftUseCase {
               templateKey: t.templateKey,
               name: t.name,
               sortOrder: result.length,
-              exercises: [],
+              exercises: t.exercises,
               description: t.description,
               dayType: t.dayType,
               estimatedDurationMinutes: t.estimatedDurationMinutes,

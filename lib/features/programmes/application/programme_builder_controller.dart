@@ -6,6 +6,7 @@ import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_workout_slot_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
 import 'package:aedify/features/programmes/application/programme_builder_state.dart';
 import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
 import 'package:aedify/features/programmes/application/programme_builder_phase.dart';
@@ -291,6 +292,143 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
     final current = state.asData?.value;
     if (current == null) return;
     state = AsyncData(current.copyWith(validationErrors: []));
+  }
+
+  // V1-M4-008 — superset / execution groups
+
+  Future<void> createTemplateSuperset({
+    required String templateId,
+    required List<String> selectedExerciseIds,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null || selectedExerciseIds.length < 2) return;
+
+    final service = ref.read(
+      AppProviders.programmeBuilderSupersetServiceProvider,
+    );
+    final updated = _updateTemplateExercises(
+      current,
+      templateId,
+      (exercises) => service.createSuperset(
+        exercises: exercises,
+        selectedExerciseIds: selectedExerciseIds,
+        groupId: _newId(),
+      ),
+    );
+    if (updated == null) return;
+    state = AsyncData(updated);
+  }
+
+  Future<void> removeTemplateExerciseFromSuperset({
+    required String templateId,
+    required String exerciseId,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+
+    final service = ref.read(
+      AppProviders.programmeBuilderSupersetServiceProvider,
+    );
+    final updated = _updateTemplateExercises(
+      current,
+      templateId,
+      (exercises) => service.removeExerciseFromSuperset(
+        exercises: exercises,
+        exerciseId: exerciseId,
+      ),
+    );
+    if (updated == null) return;
+    state = AsyncData(updated);
+  }
+
+  Future<void> deleteTemplateSuperset({
+    required String templateId,
+    required String groupId,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+
+    final service = ref.read(
+      AppProviders.programmeBuilderSupersetServiceProvider,
+    );
+    final updated = _updateTemplateExercises(
+      current,
+      templateId,
+      (exercises) =>
+          service.deleteSupersetGroup(exercises: exercises, groupId: groupId),
+    );
+    if (updated == null) return;
+    state = AsyncData(updated);
+  }
+
+  Future<void> reorderTemplateSupersetMember({
+    required String templateId,
+    required String exerciseId,
+    required int newOrder,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+
+    final service = ref.read(
+      AppProviders.programmeBuilderSupersetServiceProvider,
+    );
+    final updated = _updateTemplateExercises(current, templateId, (exercises) {
+      final target = exercises.firstWhere(
+        (e) => e.id == exerciseId,
+        orElse: () => exercises.first,
+      );
+      final groupId = target.supersetGroupId;
+      if (groupId == null) return exercises;
+      return service.reorderWithinSuperset(
+        exercises: exercises,
+        groupId: groupId,
+        exerciseId: exerciseId,
+        newOrder: newOrder,
+      );
+    });
+    if (updated == null) return;
+    state = AsyncData(updated);
+  }
+
+  ProgrammeBuilderState? _updateTemplateExercises(
+    ProgrammeBuilderState current,
+    String templateId,
+    List<ProgrammeExerciseDraft> Function(List<ProgrammeExerciseDraft>)
+    transform,
+  ) {
+    final weeks = current.draft.weeks != null
+        ? List<ProgrammeBuilderWeekDraft>.of(current.draft.weeks!)
+        : <ProgrammeBuilderWeekDraft>[];
+    var found = false;
+
+    final updatedWeeks = weeks.map((week) {
+      final slots = week.slots != null
+          ? List<ProgrammeBuilderWorkoutSlotDraft>.of(week.slots!)
+          : <ProgrammeBuilderWorkoutSlotDraft>[];
+      for (var i = 0; i < slots.length; i++) {
+        final slot = slots[i];
+        if (slot.template?.id == templateId) {
+          found = true;
+          final template = slot.template!;
+          final newExercises = transform(
+            List<ProgrammeExerciseDraft>.of(template.exercises),
+          );
+          slots[i] = slot.copyWith(
+            template: template.copyWith(exercises: newExercises),
+          );
+          break;
+        }
+      }
+      return week.copyWith(slots: slots);
+    }).toList();
+
+    if (!found) return null;
+
+    return current.copyWith(
+      draft: current.draft.copyWith(weeks: updatedWeeks),
+      isDirty: true,
+      validationErrors: [],
+    );
   }
 
   String _newId() => const Uuid().v4();

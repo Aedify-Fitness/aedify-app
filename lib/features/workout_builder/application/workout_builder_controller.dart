@@ -329,6 +329,105 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     }
   }
 
+  // V1-M4-008 — superset / execution groups
+
+  Future<void> createSuperset(List<String> selectedExerciseIds) async {
+    final current = state.asData?.value;
+    if (current == null || selectedExerciseIds.length < 2) return;
+
+    final service = ref.read(
+      AppProviders.workoutBuilderSupersetServiceProvider,
+    );
+    final groupId = _newId();
+    final exercises = service.createSuperset(
+      exercises: current.draft.exercises,
+      selectedExerciseIds: selectedExerciseIds,
+      groupId: groupId,
+    );
+
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> removeExerciseFromSuperset(String exerciseDraftId) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+
+    final service = ref.read(
+      AppProviders.workoutBuilderSupersetServiceProvider,
+    );
+    final exercises = service.removeExerciseFromSuperset(
+      exercises: current.draft.exercises,
+      exerciseId: exerciseDraftId,
+    );
+
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> deleteSupersetGroup(String groupId) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+
+    final service = ref.read(
+      AppProviders.workoutBuilderSupersetServiceProvider,
+    );
+    final exercises = service.deleteSupersetGroup(
+      exercises: current.draft.exercises,
+      groupId: groupId,
+    );
+
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> reorderWithinSuperset({
+    required String exerciseDraftId,
+    required int newOrder,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final exercise = current.draft.exercises.firstWhere(
+      (e) => e.id == exerciseDraftId,
+      orElse: () => current.draft.exercises.first,
+    );
+    final groupId = exercise.supersetGroupId;
+    if (groupId == null) return;
+
+    final service = ref.read(
+      AppProviders.workoutBuilderSupersetServiceProvider,
+    );
+    final exercises = service.reorderWithinSuperset(
+      exercises: current.draft.exercises,
+      groupId: groupId,
+      exerciseId: exerciseDraftId,
+      newOrder: newOrder,
+    );
+
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
   Future<void> discardChanges() async {
     final current = state.asData?.value;
     if (current == null) return;

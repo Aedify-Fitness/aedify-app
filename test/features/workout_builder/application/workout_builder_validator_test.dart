@@ -7,6 +7,8 @@ import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_validation_adapter.dart';
+import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -14,7 +16,10 @@ void main() {
     late WorkoutBuilderValidator validator;
 
     setUp(() {
-      validator = const WorkoutBuilderValidator();
+      validator = WorkoutBuilderValidator(
+        validationService: const DefaultDraftValidationService(),
+        adapter: const WorkoutBuilderValidationAdapter(),
+      );
     });
 
     WorkoutBuilderExerciseDraft exercise({

@@ -14,6 +14,7 @@ import 'package:aedify/features/programmes/presentation/widgets/programme_save_b
 import 'package:aedify/features/programmes/presentation/widgets/programme_builder_error_banner.dart';
 import 'package:aedify/features/programmes/presentation/widgets/discard_programme_changes_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/template_reassignment_bottom_sheet.dart';
+import 'package:aedify/features/programmes/presentation/widgets/programme_superset_editor_sheet.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
@@ -171,6 +172,9 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                       onAssignTemplate: (weekIndex, slotIndex) {
                         _showTemplateSheet(weekIndex, slotIndex);
                       },
+                      onOpenSupersetEditor: (weekIndex, slotIndex) {
+                        _showSupersetSheet(weekIndex, slotIndex);
+                      },
                     ),
                   ],
                 ),
@@ -219,6 +223,83 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
           );
         },
       ),
+    );
+  }
+
+  void _showSupersetSheet(int weekIndex, int slotIndex) {
+    final weeks = widget.state.draft.weeks ?? [];
+    if (weekIndex >= weeks.length) return;
+    final slots = weeks[weekIndex].slots ?? [];
+    if (slotIndex >= slots.length) return;
+    final template = slots[slotIndex].template;
+    if (template == null || template.exercises.isEmpty) return;
+
+    final exercises = template.exercises;
+    final selected = <String>{
+      ...template.exercises
+          .where((e) => e.supersetGroupId != null)
+          .map((e) => e.id),
+    };
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return ProgrammeSupersetEditorSheet(
+              exercises: exercises,
+              selectedExerciseIds: selected,
+              activeGroupId: exercises.any((e) => e.supersetGroupId != null)
+                  ? exercises
+                        .firstWhere(
+                          (e) => e.supersetGroupId != null,
+                          orElse: () => exercises.first,
+                        )
+                        .supersetGroupId
+                  : null,
+              onToggleSelection: (id) {
+                setSheetState(() {
+                  selected.contains(id)
+                      ? selected.remove(id)
+                      : selected.add(id);
+                });
+              },
+              onCreateSuperset: () {
+                if (selected.length >= 2) {
+                  _controller.createTemplateSuperset(
+                    templateId: template.id,
+                    selectedExerciseIds: selected.toList(),
+                  );
+                  Navigator.pop(ctx);
+                }
+              },
+              onRemoveMember: (exerciseId) {
+                _controller.removeTemplateExerciseFromSuperset(
+                  templateId: template.id,
+                  exerciseId: exerciseId,
+                );
+                Navigator.pop(ctx);
+              },
+              onDeleteGroup: () {
+                final groupId = exercises
+                    .firstWhere(
+                      (e) => e.supersetGroupId != null,
+                      orElse: () => exercises.first,
+                    )
+                    .supersetGroupId;
+                if (groupId != null) {
+                  _controller.deleteTemplateSuperset(
+                    templateId: template.id,
+                    groupId: groupId,
+                  );
+                }
+                Navigator.pop(ctx);
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

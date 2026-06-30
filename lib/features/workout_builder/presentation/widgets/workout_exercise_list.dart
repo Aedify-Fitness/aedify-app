@@ -20,6 +20,9 @@ class WorkoutExerciseList extends StatelessWidget {
     required this.onRemoveSet,
     required this.validationErrors,
     required this.setTypeOptions,
+    this.onOpenSupersetEditor,
+    this.onRemoveFromSuperset,
+    this.onDeleteSuperset,
   });
 
   final List<WorkoutBuilderExerciseDraft> exercises;
@@ -36,6 +39,9 @@ class WorkoutExerciseList extends StatelessWidget {
   final void Function(String exerciseDraftId, String setId) onRemoveSet;
   final List<WorkoutBuilderValidationError> validationErrors;
   final List<SetTypeOption> setTypeOptions;
+  final VoidCallback? onOpenSupersetEditor;
+  final ValueChanged<String>? onRemoveFromSuperset;
+  final ValueChanged<String>? onDeleteSuperset;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +81,14 @@ class WorkoutExerciseList extends StatelessWidget {
               onUpdateSet(exercise.id, setId, prescription),
           onRemoveSet: (setId) => onRemoveSet(exercise.id, setId),
           validationErrors: exerciseErrors,
+          onOpenSupersetEditor: onOpenSupersetEditor,
+          onRemoveFromSuperset: onRemoveFromSuperset != null
+              ? () => onRemoveFromSuperset!(exercise.id)
+              : null,
+          onDeleteSuperset:
+              exercise.supersetGroupId != null && onDeleteSuperset != null
+              ? () => onDeleteSuperset!(exercise.supersetGroupId!)
+              : null,
         );
       },
     );

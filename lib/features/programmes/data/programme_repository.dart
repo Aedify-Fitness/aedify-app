@@ -1,5 +1,6 @@
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/programmes/domain/programme_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
 
 abstract class ProgrammeRepository {
   Future<ProgrammeAggregate?> getProgramme(String id);
@@ -18,4 +19,6 @@ abstract class ProgrammeRepository {
   Future<void> activateProgramme(String id);
 
   Future<void> deactivateProgramme(String id);
+
+  Future<List<ProgrammeExerciseDraft>> getTemplateExercises(String templateId);
 }

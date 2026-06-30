@@ -425,6 +425,32 @@ class AppStrings {
   static const setTypeRequired = 'Please choose a valid set type.';
   static const skipped = 'Skipped';
 
+  // V1-M4-008 — superset / execution groups
+  static const supersets = 'Supersets';
+  static const superset = 'Superset';
+  static const createSuperset = 'Create superset';
+  static const editSuperset = 'Edit superset';
+  static const addToSuperset = 'Add to superset';
+  static const removeFromSuperset = 'Remove from superset';
+  static const deleteSuperset = 'Delete superset';
+  static const supersetGroup = 'Superset group';
+  static const groupedExercises = 'Grouped exercises';
+  static const noSuperset = 'No superset';
+  static const executionOrder = 'Execution order';
+  static const moveUpInSuperset = 'Move up in superset';
+  static const moveDownInSuperset = 'Move down in superset';
+  static const supersetCreated = 'Superset created.';
+  static const supersetUpdated = 'Superset updated.';
+  static const supersetRemoved = 'Superset removed.';
+  static const supersetInvalidSelection =
+      'Select at least two exercises to create a superset.';
+  static const supersetCrossWorkoutInvalid =
+      'Superset members must belong to the same workout.';
+  static const supersetOrderLabel = 'Order';
+  static const supersetRunnerHint =
+      'Complete these exercises back-to-back before resting.';
+  static const supersetHistoryLabel = 'Superset';
+
   // Workout builder — validation
   static const workoutNameRequired = 'Workout name is required.';
   static const addAtLeastOneExercise = 'Add at least one exercise.';

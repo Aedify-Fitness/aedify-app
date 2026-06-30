@@ -17,6 +17,7 @@ class ProgrammeWeekCard extends StatelessWidget {
     required this.onAssignTemplate,
     required this.onDuplicate,
     required this.onRemove,
+    this.onOpenSupersetEditor,
   });
 
   final ProgrammeBuilderWeekDraft week;
@@ -26,6 +27,7 @@ class ProgrammeWeekCard extends StatelessWidget {
   final void Function(int slotIndex) onAssignTemplate;
   final VoidCallback onDuplicate;
   final VoidCallback onRemove;
+  final void Function(int slotIndex)? onOpenSupersetEditor;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,9 @@ class ProgrammeWeekCard extends StatelessWidget {
                 slotIndex: entry.key,
                 onAssignTemplate: () => onAssignTemplate(entry.key),
                 onRemove: () => onRemoveSlot(entry.key),
+                onOpenSupersetEditor: onOpenSupersetEditor != null
+                    ? () => onOpenSupersetEditor!(entry.key)
+                    : null,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),

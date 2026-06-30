@@ -17,6 +17,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
     required this.onAddSlot,
     required this.onRemoveSlot,
     required this.onAssignTemplate,
+    this.onOpenSupersetEditor,
   });
 
   final List<ProgrammeBuilderWeekDraft> weeks;
@@ -26,6 +27,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
   final void Function(int weekIndex) onAddSlot;
   final void Function(int weekIndex, int slotIndex) onRemoveSlot;
   final void Function(int weekIndex, int slotIndex) onAssignTemplate;
+  final void Function(int weekIndex, int slotIndex)? onOpenSupersetEditor;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,9 @@ class ProgrammeWeeksOverview extends StatelessWidget {
                 onAssignTemplate(entry.key, slotIndex),
             onDuplicate: () => onDuplicateWeek(entry.key),
             onRemove: () => onRemoveWeek(entry.key),
+            onOpenSupersetEditor: onOpenSupersetEditor != null
+                ? (slotIndex) => onOpenSupersetEditor!(entry.key, slotIndex)
+                : null,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),

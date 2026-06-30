@@ -1,4 +1,5 @@
 import 'package:aedify/shared/domain/day_type.dart';
+import 'programme_exercise_draft.dart';
 
 class ProgrammeBuilderTemplateDraft {
   const ProgrammeBuilderTemplateDraft({
@@ -8,6 +9,7 @@ class ProgrammeBuilderTemplateDraft {
     this.dayType,
     this.description,
     this.estimatedDurationMinutes,
+    this.exercises = const [],
   });
 
   final String id;
@@ -16,6 +18,7 @@ class ProgrammeBuilderTemplateDraft {
   final DayType? dayType;
   final String? description;
   final int? estimatedDurationMinutes;
+  final List<ProgrammeExerciseDraft> exercises;
 
   ProgrammeBuilderTemplateDraft copyWith({
     String? id,
@@ -24,6 +27,7 @@ class ProgrammeBuilderTemplateDraft {
     DayType? dayType,
     String? description,
     int? estimatedDurationMinutes,
+    List<ProgrammeExerciseDraft>? exercises,
   }) {
     return ProgrammeBuilderTemplateDraft(
       id: id ?? this.id,
@@ -33,6 +37,7 @@ class ProgrammeBuilderTemplateDraft {
       description: description ?? this.description,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      exercises: exercises ?? this.exercises,
     );
   }
 }

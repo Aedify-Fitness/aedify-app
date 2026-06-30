@@ -5,6 +5,8 @@ import 'package:aedify/features/programmes/domain/programme_builder_workout_slot
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_validation_error.dart';
 import 'package:aedify/features/programmes/application/programme_builder_validator.dart';
+import 'package:aedify/features/programmes/application/programme_builder_validation_adapter.dart';
+import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/program_status.dart';
@@ -39,7 +41,10 @@ ProgrammeBuilderDraft _baseDraft() {
 }
 
 void main() {
-  const validator = ProgrammeBuilderValidator();
+  final validator = ProgrammeBuilderValidator(
+    validationService: const DefaultDraftValidationService(),
+    adapter: const ProgrammeBuilderValidationAdapter(),
+  );
 
   group('ProgrammeBuilderValidator', () {
     test('returns no errors for a valid draft', () {
@@ -221,7 +226,22 @@ void main() {
       });
 
       test('returns noTemplates error when templates is empty', () {
-        final draft = _baseDraft().copyWith(templates: []);
+        final draft = _baseDraft().copyWith(
+          templates: [],
+          weeks: [
+            ProgrammeBuilderWeekDraft(
+              id: 'week-1',
+              weekNumber: 1,
+              slots: [
+                ProgrammeBuilderWorkoutSlotDraft(
+                  slotIndex: 0,
+                  scheduledDayIndex: 0,
+                  template: null,
+                ),
+              ],
+            ),
+          ],
+        );
         final errors = validator.validate(draft);
         expect(errors.any((e) => e.code == AppErrorCodes.noTemplates), isTrue);
       });

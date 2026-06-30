@@ -128,6 +128,17 @@ import 'package:aedify/features/programmes/application/programme_library_control
 import 'package:aedify/features/programmes/application/programme_library_state.dart';
 import 'package:aedify/features/programmes/application/saved_workout_library_controller.dart';
 import 'package:aedify/features/programmes/application/saved_workout_library_state.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_superset_service.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_superset_validator.dart';
+import 'package:aedify/features/programmes/application/programme_builder_superset_service.dart';
+import 'package:aedify/features/programmes/application/programme_builder_superset_validator.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_grouping_mapper.dart';
+import 'package:aedify/features/lift_log/application/workout_history_grouping_mapper.dart';
+import 'package:aedify/features/programmes/application/programme_builder_validation_adapter.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_validation_adapter.dart';
+import 'package:aedify/core/validation/default_draft_validation_service.dart';
+import 'package:aedify/core/validation/draft_validation_service.dart';
+import 'package:aedify/shared/domain/superset_grouping_policy.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -569,7 +580,10 @@ class AppProviders {
 
   static final workoutBuilderValidatorProvider =
       Provider<WorkoutBuilderValidator>((ref) {
-        return const WorkoutBuilderValidator();
+        return WorkoutBuilderValidator(
+          validationService: ref.read(draftValidationServiceProvider),
+          adapter: ref.read(workoutBuilderValidationAdapterProvider),
+        );
       });
 
   static final loadWorkoutDraftUseCaseProvider =
@@ -663,7 +677,10 @@ class AppProviders {
   // Programme builder
   static final programmeBuilderValidatorProvider =
       Provider<ProgrammeBuilderValidator>((ref) {
-        return const ProgrammeBuilderValidator();
+        return ProgrammeBuilderValidator(
+          validationService: ref.read(draftValidationServiceProvider),
+          adapter: ref.read(programmeBuilderValidationAdapterProvider),
+        );
       });
 
   static final loadProgrammeBuilderDraftUseCaseProvider =
@@ -800,4 +817,56 @@ class AppProviders {
   ) {
     return const SetTypeOptionsUseCase();
   });
+
+  // V1-M4-009 — shared validation
+  static final draftValidationServiceProvider =
+      Provider<DraftValidationService>((ref) {
+        return const DefaultDraftValidationService();
+      });
+
+  static final workoutBuilderValidationAdapterProvider =
+      Provider<WorkoutBuilderValidationAdapter>((ref) {
+        return const WorkoutBuilderValidationAdapter();
+      });
+
+  static final programmeBuilderValidationAdapterProvider =
+      Provider<ProgrammeBuilderValidationAdapter>((ref) {
+        return const ProgrammeBuilderValidationAdapter();
+      });
+
+  // V1-M4-008 — superset / execution groups
+  static final supersetGroupingPolicyProvider =
+      Provider<SupersetGroupingPolicy>((ref) {
+        return const SupersetGroupingPolicy();
+      });
+
+  static final workoutBuilderSupersetServiceProvider =
+      Provider<WorkoutBuilderSupersetService>((ref) {
+        return const WorkoutBuilderSupersetService();
+      });
+
+  static final workoutBuilderSupersetValidatorProvider =
+      Provider<WorkoutBuilderSupersetValidator>((ref) {
+        return const WorkoutBuilderSupersetValidator();
+      });
+
+  static final programmeBuilderSupersetServiceProvider =
+      Provider<ProgrammeBuilderSupersetService>((ref) {
+        return const ProgrammeBuilderSupersetService();
+      });
+
+  static final programmeBuilderSupersetValidatorProvider =
+      Provider<ProgrammeBuilderSupersetValidator>((ref) {
+        return const ProgrammeBuilderSupersetValidator();
+      });
+
+  static final workoutRunnerGroupingMapperProvider =
+      Provider<WorkoutRunnerGroupingMapper>((ref) {
+        return const WorkoutRunnerGroupingMapper();
+      });
+
+  static final workoutHistoryGroupingMapperProvider =
+      Provider<WorkoutHistoryGroupingMapper>((ref) {
+        return const WorkoutHistoryGroupingMapper();
+      });
 }

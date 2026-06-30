@@ -5,7 +5,10 @@ import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_workout_slot_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
+import 'package:aedify/features/programmes/application/programme_builder_validation_adapter.dart';
 import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
+import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:aedify/features/programmes/application/programme_builder_phase.dart';
 import 'package:aedify/features/programmes/application/programme_builder_validator.dart';
 import 'package:aedify/features/programmes/application/load_programme_builder_draft_use_case.dart';
@@ -45,6 +48,53 @@ ProgrammeBuilderDraft _draftWithSlots() {
         ],
       ),
     ],
+  );
+}
+
+ProgrammeBuilderDraft _draftWithTemplateExercises() {
+  return _defaultDraft().copyWith(
+    name: 'Test Programme',
+    weeks: [
+      ProgrammeBuilderWeekDraft(
+        id: 'week-1',
+        weekNumber: 1,
+        slots: [
+          ProgrammeBuilderWorkoutSlotDraft(
+            slotIndex: 0,
+            scheduledDayIndex: 0,
+            template: ProgrammeBuilderTemplateDraft(
+              id: 't-1',
+              templateKey: 't-1',
+              name: 'Push Day',
+              exercises: [
+                ProgrammeExerciseDraft(
+                  id: 'e1',
+                  exerciseId: 1,
+                  sortOrder: 0,
+                  sets: [],
+                  exerciseRef: 'Bench Press',
+                ),
+                ProgrammeExerciseDraft(
+                  id: 'e2',
+                  exerciseId: 2,
+                  sortOrder: 1,
+                  sets: [],
+                  exerciseRef: 'Fly',
+                ),
+                ProgrammeExerciseDraft(
+                  id: 'e3',
+                  exerciseId: 3,
+                  sortOrder: 2,
+                  sets: [],
+                  exerciseRef: 'Press',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ],
+    templates: ['t-1'],
   );
 }
 
@@ -123,7 +173,10 @@ class _FakeSaveUseCase implements SaveProgrammeBuilderDraftUseCase {
 void main() {
   late _FakeLoadUseCase fakeLoadUseCase;
   late _FakeSaveUseCase fakeSaveUseCase;
-  const validator = ProgrammeBuilderValidator();
+  final validator = ProgrammeBuilderValidator(
+    validationService: const DefaultDraftValidationService(),
+    adapter: const ProgrammeBuilderValidationAdapter(),
+  );
 
   ProviderContainer createContainer() {
     return ProviderContainer(
@@ -675,6 +728,120 @@ void main() {
           )
           .requireValue;
       expect(state.draft.weeks, isEmpty);
+    });
+
+    test('createTemplateSuperset groups template exercises', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        )).notifier,
+      );
+      await controller.future;
+
+      await controller.createTemplateSuperset(
+        templateId: 't-1',
+        selectedExerciseIds: ['e1', 'e2'],
+      );
+
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      final slot = state.draft.weeks![0].slots![0];
+      final exercises = slot.template!.exercises;
+
+      final e1 = exercises.firstWhere((e) => e.id == 'e1');
+      final e2 = exercises.firstWhere((e) => e.id == 'e2');
+      final e3 = exercises.firstWhere((e) => e.id == 'e3');
+
+      expect(e1.supersetGroupId, isNotNull);
+      expect(e1.supersetOrder, 0);
+      expect(e2.supersetGroupId, isNotNull);
+      expect(e2.supersetOrder, 1);
+      expect(e3.supersetGroupId, isNull);
+      expect(e3.supersetOrder, isNull);
+      expect(state.isDirty, isTrue);
+    });
+
+    test('createTemplateSuperset ignores fewer than 2', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        )).notifier,
+      );
+      await controller.future;
+
+      await controller.createTemplateSuperset(
+        templateId: 't-1',
+        selectedExerciseIds: ['e1'],
+      );
+
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      final exercises = state.draft.weeks![0].slots![0].template!.exercises;
+      expect(exercises.every((e) => e.supersetGroupId == null), isTrue);
+    });
+
+    test('deleteTemplateSuperset clears group fields', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        )).notifier,
+      );
+      await controller.future;
+
+      await controller.createTemplateSuperset(
+        templateId: 't-1',
+        selectedExerciseIds: ['e1', 'e2'],
+      );
+
+      var state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      final groupId = state.draft.weeks![0].slots![0].template!.exercises
+          .firstWhere((e) => e.id == 'e1')
+          .supersetGroupId!;
+
+      await controller.deleteTemplateSuperset(
+        templateId: 't-1',
+        groupId: groupId,
+      );
+
+      state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      final exercises = state.draft.weeks![0].slots![0].template!.exercises;
+      expect(exercises.every((e) => e.supersetGroupId == null), isTrue);
+      expect(exercises.every((e) => e.supersetOrder == null), isTrue);
     });
   });
 }

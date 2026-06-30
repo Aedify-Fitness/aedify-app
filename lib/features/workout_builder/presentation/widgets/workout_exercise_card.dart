@@ -9,6 +9,8 @@ import 'package:aedify/features/workout_builder/domain/set_prescription_draft.da
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_validation_error.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/set_prescription_list.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/superset_actions_menu.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/superset_group_badge.dart';
 
 class WorkoutExerciseCard extends StatelessWidget {
   const WorkoutExerciseCard({
@@ -21,6 +23,9 @@ class WorkoutExerciseCard extends StatelessWidget {
     required this.onRemoveSet,
     required this.validationErrors,
     required this.setTypeOptions,
+    this.onOpenSupersetEditor,
+    this.onRemoveFromSuperset,
+    this.onDeleteSuperset,
   });
 
   final WorkoutBuilderExerciseDraft exercise;
@@ -32,9 +37,14 @@ class WorkoutExerciseCard extends StatelessWidget {
   final void Function(String setId) onRemoveSet;
   final List<WorkoutBuilderValidationError> validationErrors;
   final List<SetTypeOption> setTypeOptions;
+  final VoidCallback? onOpenSupersetEditor;
+  final VoidCallback? onRemoveFromSuperset;
+  final VoidCallback? onDeleteSuperset;
 
   @override
   Widget build(BuildContext context) {
+    final isGrouped = exercise.supersetGroupId != null;
+
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -56,6 +66,13 @@ class WorkoutExerciseCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
+                if (isGrouped && exercise.supersetOrder != null) ...[
+                  SupersetGroupBadge(
+                    groupId: exercise.supersetGroupId!,
+                    order: exercise.supersetOrder,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                ],
                 Expanded(
                   child: Text(
                     exercise.exercise.name.isNotEmpty
@@ -66,6 +83,15 @@ class WorkoutExerciseCard extends StatelessWidget {
                     style: AppTextStyles.bodyMd,
                   ),
                 ),
+                if (onOpenSupersetEditor != null ||
+                    onRemoveFromSuperset != null ||
+                    onDeleteSuperset != null)
+                  SupersetActionsMenu(
+                    isGrouped: isGrouped,
+                    onCreateSuperset: onOpenSupersetEditor ?? () {},
+                    onRemoveFromSuperset: onRemoveFromSuperset ?? () {},
+                    onDeleteSuperset: onDeleteSuperset ?? () {},
+                  ),
                 IconButton(
                   icon: SvgPicture.asset(
                     OutlinedSvgAssets.documentDuplicate,

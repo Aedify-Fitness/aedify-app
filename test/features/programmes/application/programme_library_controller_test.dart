@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/programmes/data/programme_repository.dart';
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
+import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -27,6 +28,13 @@ class _FakeProgrammeRepository implements ProgrammeRepository {
 
   @override
   Future<String> saveProgramme(dynamic draft) async => '';
+
+  @override
+  Future<List<ProgrammeExerciseDraft>> getTemplateExercises(
+    String templateId,
+  ) async {
+    return [];
+  }
 
   @override
   Future<void> archiveProgramme(String id) async {

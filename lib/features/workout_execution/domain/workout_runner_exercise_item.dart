@@ -8,6 +8,7 @@ class WorkoutRunnerExerciseItem {
     required this.sortOrder,
     required this.sets,
     this.supersetGroupId,
+    this.supersetOrder,
     this.sourceProgramExerciseId,
     this.sourceSavedWorkoutExerciseId,
     this.notes,
@@ -19,6 +20,7 @@ class WorkoutRunnerExerciseItem {
   final int sortOrder;
   final List<WorkoutRunnerSetItem> sets;
   final String? supersetGroupId;
+  final int? supersetOrder;
   final String? sourceProgramExerciseId;
   final String? sourceSavedWorkoutExerciseId;
   final String? notes;
@@ -30,6 +32,7 @@ class WorkoutRunnerExerciseItem {
     int? sortOrder,
     List<WorkoutRunnerSetItem>? sets,
     String? supersetGroupId,
+    int? supersetOrder,
     String? sourceProgramExerciseId,
     String? sourceSavedWorkoutExerciseId,
     String? notes,
@@ -41,6 +44,7 @@ class WorkoutRunnerExerciseItem {
       sortOrder: sortOrder ?? this.sortOrder,
       sets: sets ?? this.sets,
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      supersetOrder: supersetOrder ?? this.supersetOrder,
       sourceProgramExerciseId:
           sourceProgramExerciseId ?? this.sourceProgramExerciseId,
       sourceSavedWorkoutExerciseId:

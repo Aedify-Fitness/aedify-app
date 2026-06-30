@@ -12,6 +12,7 @@ import 'package:aedify/features/workout_builder/presentation/widgets/workout_exe
 import 'package:aedify/features/workout_builder/presentation/widgets/workout_builder_error_banner.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/discard_changes_dialog.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/superset_editor_sheet.dart';
 
 class WorkoutBuilderScreen extends ConsumerWidget {
   const WorkoutBuilderScreen.create({super.key})
@@ -75,7 +76,11 @@ class WorkoutBuilderScreen extends ConsumerWidget {
               )),
             ),
           ),
-          data: (state) => _WorkoutBuilderBody(state: state),
+          data: (state) => _WorkoutBuilderBody(
+            state: state,
+            mode: mode,
+            savedWorkoutId: savedWorkoutId,
+          ),
         ),
         floatingActionButton:
             controller.asData?.value.phase == WorkoutBuilderPhase.editing
@@ -147,37 +152,92 @@ class WorkoutBuilderScreen extends ConsumerWidget {
   }
 }
 
-class _WorkoutBuilderBody extends ConsumerWidget {
-  const _WorkoutBuilderBody({required this.state});
+class _WorkoutBuilderBody extends ConsumerStatefulWidget {
+  const _WorkoutBuilderBody({
+    required this.state,
+    required this.mode,
+    required this.savedWorkoutId,
+  });
 
   final WorkoutBuilderState state;
+  final WorkoutBuilderMode mode;
+  final String? savedWorkoutId;
 
-  void _saveWorkout(WidgetRef ref) {
+  @override
+  ConsumerState<_WorkoutBuilderBody> createState() =>
+      _WorkoutBuilderBodyState();
+}
+
+class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
+  final _supersetSelection = <String>{};
+
+  void _saveWorkout() {
     ref
         .read(
           AppProviders.workoutBuilderControllerProvider((
-            mode: state.mode,
-            savedWorkoutId: state.savedWorkoutId,
+            mode: widget.mode,
+            savedWorkoutId: widget.savedWorkoutId,
           )).notifier,
         )
         .saveWorkout();
   }
 
+  void _showSupersetSheet() {
+    final exercises = widget.state.draft.exercises;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final selected = {..._supersetSelection};
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return SupersetEditorSheet(
+              exercises: exercises,
+              selectedExerciseIds: selected,
+              onToggleSelection: (id) {
+                setSheetState(() {
+                  if (selected.contains(id)) {
+                    selected.remove(id);
+                  } else {
+                    selected.add(id);
+                  }
+                });
+              },
+              onCreateSuperset: () {
+                if (selected.length >= 2) {
+                  ref
+                      .read(
+                        AppProviders.workoutBuilderControllerProvider((
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
+                        )).notifier,
+                      )
+                      .createSuperset(selected.toList());
+                  Navigator.pop(ctx);
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        if (state.phase == WorkoutBuilderPhase.failure &&
-            state.errorMessage != null)
+        if (widget.state.phase == WorkoutBuilderPhase.failure &&
+            widget.state.errorMessage != null)
           WorkoutBuilderErrorBanner(
-            message: state.errorMessage!,
-            onRetry: state.errorCode == AppErrorCodes.saveFailed
-                ? () => _saveWorkout(ref)
+            message: widget.state.errorMessage!,
+            onRetry: widget.state.errorCode == AppErrorCodes.saveFailed
+                ? () => _saveWorkout()
                 : null,
           ),
-        if (state.phase == WorkoutBuilderPhase.saved)
+        if (widget.state.phase == WorkoutBuilderPhase.saved)
           WorkoutBuilderErrorBanner(message: AppStrings.workoutSaved),
-        if (state.hasValidationErrors)
+        if (widget.state.hasValidationErrors)
           WorkoutBuilderErrorBanner(message: AppStrings.invalidWorkout),
         Expanded(
           child: ListView(
@@ -186,13 +246,13 @@ class _WorkoutBuilderBody extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: WorkoutNameField(
-                  initialValue: state.draft.name,
+                  initialValue: widget.state.draft.name,
                   onChanged: (value) {
                     ref
                         .read(
                           AppProviders.workoutBuilderControllerProvider((
-                            mode: state.mode,
-                            savedWorkoutId: state.savedWorkoutId,
+                            mode: widget.mode,
+                            savedWorkoutId: widget.savedWorkoutId,
                           )).notifier,
                         )
                         .renameWorkout(value);
@@ -201,7 +261,7 @@ class _WorkoutBuilderBody extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               WorkoutExerciseList(
-                exercises: state.draft.exercises,
+                exercises: widget.state.draft.exercises,
                 setTypeOptions: ref
                     .watch(AppProviders.setTypeOptionsUseCaseProvider)
                     .execute(),
@@ -209,8 +269,8 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .reorderExercises(oldIndex, newIndex);
@@ -219,8 +279,8 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .removeExercise(id);
@@ -229,8 +289,8 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .duplicateExercise(id);
@@ -239,8 +299,8 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .addSet(id);
@@ -249,8 +309,8 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .updateSet(
@@ -263,13 +323,34 @@ class _WorkoutBuilderBody extends ConsumerWidget {
                   ref
                       .read(
                         AppProviders.workoutBuilderControllerProvider((
-                          mode: state.mode,
-                          savedWorkoutId: state.savedWorkoutId,
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
                         )).notifier,
                       )
                       .removeSet(exerciseDraftId: exerciseId, setId: setId);
                 },
-                validationErrors: state.validationErrors,
+                validationErrors: widget.state.validationErrors,
+                onOpenSupersetEditor: _showSupersetSheet,
+                onRemoveFromSuperset: (id) {
+                  ref
+                      .read(
+                        AppProviders.workoutBuilderControllerProvider((
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
+                        )).notifier,
+                      )
+                      .removeExerciseFromSuperset(id);
+                },
+                onDeleteSuperset: (groupId) {
+                  ref
+                      .read(
+                        AppProviders.workoutBuilderControllerProvider((
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
+                        )).notifier,
+                      )
+                      .deleteSupersetGroup(groupId);
+                },
               ),
             ],
           ),

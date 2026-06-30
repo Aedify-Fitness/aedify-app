@@ -194,6 +194,9 @@ class WorkoutRunnerScreen extends ConsumerWidget {
         Expanded(
           child: WorkoutRunnerExerciseList(
             exercises: session.exercises,
+            groups: ref
+                .watch(AppProviders.workoutRunnerGroupingMapperProvider)
+                .buildGroups(session.exercises),
             onUpdateSet: (exerciseId, setId, set) => controller.updateSet(
               exerciseId: exerciseId,
               setId: setId,

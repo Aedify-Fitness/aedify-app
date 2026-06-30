@@ -6,6 +6,38 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-01
 
+### V1-M4-009 — Reusable draft validation service (complete)
+
+- **Core validation models** (13 files in `lib/core/validation/`): `DraftValidationScope`, `DraftValidationCode`, `DraftValidationPath`, `DraftValidationIssue`, `DraftValidationResult`, and 7 validated draft types (`ValidatedSetDraft`, `ValidatedExerciseDraft`, `ValidatedWorkoutDraft`, `ValidatedProgrammeTemplateDraft`, `ValidatedProgrammeSlotDraft`, `ValidatedProgrammeWeekDraft`, `ValidatedProgrammeDraft`).
+- **Service**: `DraftValidationService` (abstract) + `DefaultDraftValidationService` — validates workout drafts (10 rules: name, exercises, sets, reps, weight, RPE, RIR, rest, set type, superset) and programme drafts (6 rules: name, weeks, templates, week sequence, slot templates, template exercises).
+- **Feature adapters**: `WorkoutBuilderValidationAdapter` (maps `WorkoutBuilderDraft` → `ValidatedWorkoutDraft`; maps shared issues → `WorkoutBuilderValidationError`). `ProgrammeBuilderValidationAdapter` (maps `ProgrammeBuilderDraft` → `ValidatedProgrammeDraft`; maps shared issues → `ProgrammeBuilderValidationError`).
+- **Validator refactor**: `WorkoutBuilderValidator` and `ProgrammeBuilderValidator` now thin façades over shared `DraftValidationService` + adapters. No signature change needed in controllers.
+- **Providers**: `draftValidationServiceProvider`, `workoutBuilderValidationAdapterProvider`, `programmeBuilderValidationAdapterProvider`. Updated `workoutBuilderValidatorProvider` and `programmeBuilderValidatorProvider` to wire shared service.
+- **Tests**: 42 new — 20 workout service, 12 programme service, 5 workout adapter, 5 programme adapter. Existing validator/controller tests updated to use shared service.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 994/994 passed.
+
+### V1-M4-008 — Manual superset / execution group support (complete)
+
+- **Shared domain** (3 files): `ExecutionGroup`, `SupersetGroupSummary`, `SupersetGroupingPolicy`.
+- **Domain enums/models**: `WorkoutBuilderSupersetAction`, `ProgrammeTemplateSupersetAction`, `SupersetSelectionState`.
+- **Application layer** (6 files): builder + programme superset services and validators, runner + history grouping mappers.
+- **Model fixes**: Extended `ProgrammeBuilderTemplateDraft` with `exercises: List<ProgrammeExerciseDraft>`; added `supersetOrder` + `copyWith` to `WorkoutRunnerExerciseItem` and `WorkoutHistoryExerciseItem`; added `copyWith` to `ProgrammeExerciseDraft`.
+- **Load/save wiring**: `LoadProgrammeBuilderDraftUseCase` now loads template exercises via `ProgrammeRepository.getTemplateExercises()`. `SaveProgrammeBuilderDraftUseCase` preserves template exercises from builder draft. `DriftProgrammeRepository` maps template exercise/set rows to domain drafts.
+- **WorkoutBuilderController** (+4 methods): `createSuperset`, `removeExerciseFromSuperset`, `deleteSupersetGroup`, `reorderWithinSuperset`.
+- **ProgrammeBuilderController** (+4 methods): `createTemplateSuperset`, `removeTemplateExerciseFromSuperset`, `deleteTemplateSuperset`, `reorderTemplateSupersetMember`.
+- **ProgrammeRepository**: Added `getTemplateExercises(String templateId)` to abstract interface.
+- **Presentation widgets** (6 files):
+  - `SupersetEditorSheet` — multi-select exercise sheet for creating supersets.
+  - `SupersetGroupBadge` — primaryContainer badge showing order.
+  - `SupersetActionsMenu` — PopupMenuButton with create/remove/delete.
+  - `WorkoutRunnerSupersetGroupCard` — grouped display in runner.
+  - `WorkoutHistorySupersetGroupCard` — grouped display in history.
+  - `ProgrammeSupersetEditorSheet` — programme template exercise superset sheet.
+- **Screen wiring**: `WorkoutBuilderScreen` → ConsumerStatefulWidget with sheet. `WorkoutExerciseCard`/`WorkoutExerciseList` extended. `WorkoutRunnerScreen` passes groups. `WorkoutHistoryDetailScreen` renders groups. `ProgrammeWorkoutSlotCard` extended with superset actions + exercise list.
+- **AppStrings** (+21), **AppProviders** (+7).
+- **Tests**: 48 total — 4 policy, 10 services, 10 validators, 7 mappers, 4 builder controller, 3 programme controller, 4 widget (editor sheet, group badge, runner card, history card), expanded history detail + repository tests.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 945/945 passed.
+
 ### V1-M4-007 — Compliance closure pass
 
 - Replaced remaining `Icons.*` in the touched workout-builder 007 surface with `SvgPicture.asset` + `OutlinedSvgAssets` (`WorkoutBuilderScreen`, `WorkoutExerciseCard`, `SetPrescriptionEditorRow`).

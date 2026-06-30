@@ -543,6 +543,198 @@ void main() {
       expect(state.asData?.value.isDirty, isFalse);
       expect(state.asData?.value.savedWorkoutId, isNotNull);
     });
+
+    test('createSuperset groups two exercises', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+
+      await controller.createSuperset(ids);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.every((e) => e.supersetGroupId != null), isTrue);
+      expect(exercises.first.supersetOrder, 0);
+      expect(exercises.last.supersetOrder, 1);
+      expect(state.asData!.value.isDirty, isTrue);
+    });
+
+    test('createSuperset ignores fewer than 2 selections', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final id = state.asData!.value.draft.exercises.first.id;
+
+      await controller.createSuperset([id]);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(state.asData!.value.draft.exercises.first.supersetGroupId, isNull);
+    });
+
+    test('removeExerciseFromSuperset ungroups one exercise', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+      await controller.createSuperset(ids);
+
+      await controller.removeExerciseFromSuperset(ids.first);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.first.supersetGroupId, isNull);
+      expect(exercises.first.supersetOrder, isNull);
+      expect(exercises.last.supersetGroupId, isNull);
+      expect(exercises.last.supersetOrder, isNull);
+    });
+
+    test('deleteSupersetGroup clears all group fields', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+      await controller.createSuperset(ids);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final groupId =
+          state.asData!.value.draft.exercises.first.supersetGroupId!;
+      await controller.deleteSupersetGroup(groupId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.every((e) => e.supersetGroupId == null), isTrue);
+      expect(exercises.every((e) => e.supersetOrder == null), isTrue);
+    });
   });
 
   group('WorkoutBuilderController (edit mode)', () {

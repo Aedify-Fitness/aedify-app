@@ -27,4 +27,32 @@ class ProgrammeExerciseDraft {
   final int? supersetOrder;
   final String? notes;
   final String? cuesJson;
+
+  ProgrammeExerciseDraft copyWith({
+    String? id,
+    int? exerciseId,
+    int? sortOrder,
+    List<SetPrescriptionDraft>? sets,
+    String? exerciseRef,
+    ExerciseRole? exerciseRole,
+    String? programmeRole,
+    String? supersetGroupId,
+    int? supersetOrder,
+    String? notes,
+    String? cuesJson,
+  }) {
+    return ProgrammeExerciseDraft(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      sets: sets ?? this.sets,
+      exerciseRef: exerciseRef ?? this.exerciseRef,
+      exerciseRole: exerciseRole ?? this.exerciseRole,
+      programmeRole: programmeRole ?? this.programmeRole,
+      supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      supersetOrder: supersetOrder ?? this.supersetOrder,
+      notes: notes ?? this.notes,
+      cuesJson: cuesJson ?? this.cuesJson,
+    );
+  }
 }
