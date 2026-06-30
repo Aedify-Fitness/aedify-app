@@ -17,6 +17,7 @@ import 'package:aedify/features/exercise_library/presentation/exercise_library_s
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
@@ -185,6 +186,31 @@ class AppRouter {
           path: AppRoutes.workout().path,
           name: AppRoutes.workout().name,
           builder: (context, state) => const WorkoutExecutionScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerActive().path,
+          name: AppRoutes.workoutRunnerActive().name,
+          builder: (context, state) => const WorkoutRunnerScreen.resume(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerSavedWorkout().path,
+          name: AppRoutes.workoutRunnerSavedWorkout().name,
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return WorkoutRunnerScreen.savedWorkout(savedWorkoutId: id);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerProgramWorkout().path,
+          name: AppRoutes.workoutRunnerProgramWorkout().name,
+          builder: (context, state) {
+            final programId = state.pathParameters['programId']!;
+            final workoutId = state.pathParameters['workoutId']!;
+            return WorkoutRunnerScreen.programWorkout(
+              programId: programId,
+              programWorkoutId: workoutId,
+            );
+          },
         ),
         GoRoute(
           path: AppRoutes.workoutBuilderCreate().path,

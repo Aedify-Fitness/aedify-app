@@ -52,7 +52,7 @@ class WorkoutExerciseList extends StatelessWidget {
 
     return ReorderableListView.builder(
       itemCount: exercises.length,
-      onReorder: onReorder,
+      onReorderItem: onReorder,
       buildDefaultDragHandles: false,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

@@ -484,6 +484,51 @@ class AppStrings {
   static const optionalDescription = 'Optional description';
   static const addWeekContent = 'Add a new week to your programme.';
 
+  // Workout runner
+  static const resumeWorkout = 'Resume workout';
+  static const startWorkout = 'Start workout';
+  static const completeWorkout = 'Complete workout';
+  static const cancelWorkout = 'Cancel workout';
+  static const cancelWorkoutMessage =
+      'Cancel this workout? No completed workout will be created.';
+  static const recoverWorkout = 'Recover workout';
+  static const recoverWorkoutMessage =
+      'A workout was still in progress. Resume where you left off?';
+  static const workoutRecovered = 'Workout recovered.';
+  static const workoutCompleted = 'Workout completed.';
+  static const workoutCancelled = 'Workout cancelled.';
+  static const workoutRunnerLoadFailed = 'Could not load the workout session.';
+  static const workoutRunnerSaveFailed = 'Could not save workout progress.';
+  static const workoutRunnerCompleteFailed = 'Could not complete the workout.';
+  static const noActiveWorkout = 'No active workout.';
+  static const noSetsYet = 'No sets yet.';
+  static const markCompleted = 'Mark completed';
+  static const markSkipped = 'Mark skipped';
+  static const sessionNotes = 'Session notes';
+  static const setNotes = 'Set notes';
+  static const actualReps = 'Actual reps';
+  static const actualWeight = 'Actual weight';
+  static const actualRpe = 'Actual RPE';
+  static const actualRir = 'Actual RIR';
+  static const actualDuration = 'Actual duration';
+  static const actualDistance = 'Actual distance';
+  static const pauseWorkout = 'Pause workout';
+  static const continueWorkout = 'Continue workout';
+  static const inProgressWorkout = 'Workout in progress';
+  static const setCompleted = 'Set completed';
+  static const workoutInterrupted = 'Workout interrupted';
+  static const workoutInterruptedMessage =
+      'Your progress is safe. Resume when you are ready.';
+  static const finishWorkoutSummary = 'Finish workout';
+  static const finishWorkoutSummaryMessage =
+      'Review your session details before completing.';
+  static const duration = 'Duration';
+  static const totalVolume = 'Total volume';
+  static const setsCompleted = 'Sets';
+  static const exercisesCompleted = 'Exercises';
+  static const weightLabel = 'Weight';
+  static const repsLabel = 'Reps';
+
   static const byokProviderOpenAiDescription =
       'Widely used, strong general-purpose models with broad tooling support.';
   static const byokProviderAnthropicDescription =

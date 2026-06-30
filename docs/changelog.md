@@ -6,6 +6,18 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-30
 
+### V1-M4-004 — Active Workout Session Runner (complete)
+
+- **6 domain models**: `WorkoutRunnerMode` (savedWorkout/programWorkout/resume), `WorkoutRunnerSetItem`, `WorkoutRunnerExerciseItem`, `WorkoutRunnerSessionViewData`, `WorkoutRunnerCompletionDraft`, `WorkoutRunnerResumeDecision`.
+- **9 application files**: `WorkoutRunnerPhase` (6 states), `WorkoutRunnerState` (loading/ready/blocked/paused/failure/completed), `StartWorkoutSessionUseCase`, `LoadActiveWorkoutSessionUseCase`, `SaveWorkoutSessionProgressUseCase`, `CompleteWorkoutSessionUseCase`, `AbandonWorkoutSessionUseCase`, `WorkoutRunnerMapper` (toViewData/toDraft round-trip), `WorkoutRunnerController` (AsyncNotifier with constructor injection — 19 mutation methods: build all 3 modes, resume/discard recovery, updateSet, toggleSetCompleted/Skipped, pauseWorkout, continueWorkout, saveProgress, completeWorkout, cancelWorkout, updateSessionNotes/EnergyLevel/PerceivedDifficulty).
+- **10 presentation files**: `WorkoutRunnerScreen` (3 named constructors), `WorkoutRunnerHeader`, `WorkoutRunnerExerciseList`, `WorkoutRunnerExerciseCard`, `WorkoutRunnerSetRow`, `WorkoutRunnerResumeBanner`, `CompleteWorkoutSheet`, `CancelWorkoutDialog`, `WorkoutRunnerErrorBanner`.
+- **Infrastructure updates**: `AppRoutes` (+3 route factories), `AppStrings` (+26 runtime strings), `AppRouter` (+3 GoRoute entries), `AppProviders` (+7 runner providers).
+- **AppSizing**: Added `iconXxl = 48`.
+- **Fixes**: Controller mutation methods use `state.asData?.value` / `AsyncData(...)` pattern matching `ProgrammeBuilderController`. Pre-existing issues fixed: duplicate import in `providers.dart`, unnecessary braces in `complete_workout_sheet.dart`, non-exhaustive `DioExceptionType.transformTimeout` switch in `error_mapper.dart`.
+- **Tests**: 58 new — 24 controller, 8 mapper, 4 screen, 8 set row, 4 complete sheet, 3 cancel dialog.
+- **Flutter SDK note**: Widget tests for `FilledButton` use `NoSplash.splashFactory` to work around Flutter 3.44.4 `ink_sparkle.frag` shader version mismatch bug (also affects pre-existing tests).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 58/58 workout_execution tests pass (pre-existing 14 failures in exercise_library/bodymap unchanged).
+
 ### Rule-violation gap closure pass (M4-003)
 
 - **Icons.\* → SvgPicture.asset**: Replaced all 18 `Icons.*` across 7 programme

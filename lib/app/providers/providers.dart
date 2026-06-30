@@ -95,7 +95,16 @@ import 'package:aedify/features/programmes/application/programme_builder_state.d
 import 'package:aedify/features/programmes/application/programme_builder_validator.dart';
 import 'package:aedify/features/programmes/application/load_programme_builder_draft_use_case.dart';
 import 'package:aedify/features/programmes/application/save_programme_builder_draft_use_case.dart';
+import 'package:aedify/features/workout_execution/application/abandon_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/application/complete_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/application/load_active_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/application/save_workout_session_progress_use_case.dart';
+import 'package:aedify/features/workout_execution/application/start_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_controller.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_mapper.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_state.dart';
 import 'package:aedify/features/workout_execution/data/drift_workout_session_repository.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_mode.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -560,6 +569,73 @@ class AppProviders {
         WorkoutBuilderState,
         ({WorkoutBuilderMode mode, String? savedWorkoutId})
       >((arg) => WorkoutBuilderController(arg.mode, arg.savedWorkoutId));
+
+  // Workout runner
+  static final workoutRunnerMapperProvider = Provider<WorkoutRunnerMapper>((
+    ref,
+  ) {
+    return const WorkoutRunnerMapper();
+  });
+
+  static final startWorkoutSessionUseCaseProvider =
+      Provider<StartWorkoutSessionUseCase>((ref) {
+        return StartWorkoutSessionUseCase(
+          workoutSessionRepository: ref.read(workoutSessionRepositoryProvider),
+          savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+          programmeRepository: ref.read(programmeRepositoryProvider),
+          exerciseRepository: ref.read(exerciseRepositoryProvider),
+          mapper: ref.read(workoutRunnerMapperProvider),
+        );
+      });
+
+  static final loadActiveWorkoutSessionUseCaseProvider =
+      Provider<LoadActiveWorkoutSessionUseCase>((ref) {
+        return LoadActiveWorkoutSessionUseCase(
+          workoutSessionRepository: ref.read(workoutSessionRepositoryProvider),
+          mapper: ref.read(workoutRunnerMapperProvider),
+        );
+      });
+
+  static final saveWorkoutSessionProgressUseCaseProvider =
+      Provider<SaveWorkoutSessionProgressUseCase>((ref) {
+        return SaveWorkoutSessionProgressUseCase(
+          workoutSessionRepository: ref.read(workoutSessionRepositoryProvider),
+          mapper: ref.read(workoutRunnerMapperProvider),
+        );
+      });
+
+  static final completeWorkoutSessionUseCaseProvider =
+      Provider<CompleteWorkoutSessionUseCase>((ref) {
+        return CompleteWorkoutSessionUseCase(
+          workoutSessionRepository: ref.read(workoutSessionRepositoryProvider),
+        );
+      });
+
+  static final abandonWorkoutSessionUseCaseProvider =
+      Provider<AbandonWorkoutSessionUseCase>((ref) {
+        return AbandonWorkoutSessionUseCase(
+          workoutSessionRepository: ref.read(workoutSessionRepositoryProvider),
+        );
+      });
+
+  static final workoutRunnerControllerProvider =
+      AsyncNotifierProvider.family<
+        WorkoutRunnerController,
+        WorkoutRunnerState,
+        ({
+          WorkoutRunnerMode mode,
+          String? savedWorkoutId,
+          String? programId,
+          String? programWorkoutId,
+        })
+      >(
+        (arg) => WorkoutRunnerController(
+          mode: arg.mode,
+          savedWorkoutId: arg.savedWorkoutId,
+          programId: arg.programId,
+          programWorkoutId: arg.programWorkoutId,
+        ),
+      );
 
   // Programme builder
   static final programmeBuilderValidatorProvider =

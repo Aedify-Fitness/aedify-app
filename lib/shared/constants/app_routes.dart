@@ -66,4 +66,14 @@ class AppRoutes {
     path: '/programmes/:id/duplicate',
     name: 'programmeBuilderDuplicate',
   );
+
+  // Workout runner
+  factory AppRoutes.workoutRunnerActive() =>
+      AppRoutes._(path: '/workout/active', name: 'workoutRunnerActive');
+  factory AppRoutes.workoutRunnerSavedWorkout() =>
+      AppRoutes._(path: '/workouts/:id/run', name: 'workoutRunnerSavedWorkout');
+  factory AppRoutes.workoutRunnerProgramWorkout() => AppRoutes._(
+    path: '/programmes/:programId/workouts/:workoutId/run',
+    name: 'workoutRunnerProgramWorkout',
+  );
 }

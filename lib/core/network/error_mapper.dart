@@ -11,6 +11,7 @@ class ErrorMapper {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
+      case DioExceptionType.transformTimeout:
         return AppError(
           code: AppErrorCodes.networkTimeout,
           message: 'Request timed out',
