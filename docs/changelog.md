@@ -6,6 +6,14 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-06-30
 
+### Fix — Onboarding imperial unit conversion
+
+- **Root cause**: `toImperialHeight`/`toImperialWeight` in `PreferredUnit` had inverted conditionals — when `isImperial` was true, they returned canonical values (cm/kg) instead of converting to imperial (in/lbs). Unit choice chip `onSelected` also corrupted canonical fields by storing converted display values back into `heightCm`/`bodyweightKg`.
+- **Fix 1** (`lib/shared/domain/preferred_unit.dart`): Flipped if/else bodies in `toImperialHeight` and `toImperialWeight` so imperial mode properly converts cm→in and kg→lbs.
+- **Fix 2** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Removed conversion logic from unit choice chip `onSelected` — now only updates `preferredUnits`. Canonical values are always stored in metric; display adapts on-read.
+- **Fix 3** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Added `ValueKey` keyed on `preferredUnits` to bench/squat/deadlift `_FormField` widgets so they re-create their controller on unit switch, matching the pattern already used by height/weight fields.
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 new issues. `flutter test` — 863/863 pass (all 47 onboarding tests pass).
+
 ### V1-M4-004 — Active Workout Session Runner (complete)
 
 - **6 domain models**: `WorkoutRunnerMode` (savedWorkout/programWorkout/resume), `WorkoutRunnerSetItem`, `WorkoutRunnerExerciseItem`, `WorkoutRunnerSessionViewData`, `WorkoutRunnerCompletionDraft`, `WorkoutRunnerResumeDecision`.

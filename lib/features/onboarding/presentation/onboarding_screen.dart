@@ -853,27 +853,7 @@ class _UnitsMetricsStep extends StatelessWidget {
                         label: Text(e.displayLabel),
                         selected: preferredUnit == e,
                         onSelected: (_) {
-                          final convertedHeight = draft.heightCm != null
-                              ? double.parse(
-                                  e
-                                      .toImperialHeight(draft.heightCm!)
-                                      .toStringAsFixed(1),
-                                )
-                              : null;
-                          final convertedWeight = draft.bodyweightKg != null
-                              ? double.parse(
-                                  e
-                                      .toImperialWeight(draft.bodyweightKg!)
-                                      .toStringAsFixed(1),
-                                )
-                              : null;
-                          onUpdateDraft(
-                            draft.copyWith(
-                              preferredUnits: e,
-                              heightCm: convertedHeight,
-                              bodyweightKg: convertedWeight,
-                            ),
-                          );
+                          onUpdateDraft(draft.copyWith(preferredUnits: e));
                         },
                       ),
                     )
@@ -1022,6 +1002,7 @@ class _UnitsMetricsStep extends StatelessWidget {
               _InputLabel(title: AppStrings.bench1Rm),
               AppWhiteSpace.hSm,
               _FormField(
+                key: ValueKey('bench1rm_${draft.preferredUnits}'),
                 width: AppSizing.fieldWidth,
                 initialValue: draft.bench1RmKg != null
                     ? preferredUnit.isImperial
@@ -1051,6 +1032,7 @@ class _UnitsMetricsStep extends StatelessWidget {
               _InputLabel(title: AppStrings.squat1Rm),
               AppWhiteSpace.hSm,
               _FormField(
+                key: ValueKey('squat1rm_${draft.preferredUnits}'),
                 width: AppSizing.fieldWidth,
                 initialValue: draft.squat1RmKg != null
                     ? preferredUnit.isImperial
@@ -1080,6 +1062,7 @@ class _UnitsMetricsStep extends StatelessWidget {
               _InputLabel(title: AppStrings.deadlift1Rm),
               AppWhiteSpace.hSm,
               _FormField(
+                key: ValueKey('deadlift1rm_${draft.preferredUnits}'),
                 width: AppSizing.fieldWidth,
                 initialValue: draft.deadlift1RmKg != null
                     ? preferredUnit.isImperial

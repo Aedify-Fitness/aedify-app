@@ -68,15 +68,15 @@ enum PreferredUnit {
   }
 
   double toImperialHeight(double cm) {
-    if (isImperial) return cm;
+    if (isImperial) return UnitConversion.centimetresToInches(cm);
 
-    return UnitConversion.centimetresToInches(cm);
+    return cm;
   }
 
   double toImperialWeight(double kg) {
-    if (isImperial) return kg;
+    if (isImperial) return UnitConversion.kilogramsToPounds(kg);
 
-    return UnitConversion.kilogramsToPounds(kg);
+    return kg;
   }
 
   double toMetricHeight(double inches) {
