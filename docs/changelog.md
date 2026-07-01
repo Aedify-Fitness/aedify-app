@@ -6,6 +6,15 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-01
 
+### V1-M4-011 — M4 manual tracker acceptance suite (complete)
+
+- **Test harness** (`test/app/m4/m4_test_harness.dart`): App-level pump helper with provider overrides for savedWorkoutRepository, programmeRepository, workoutSessionRepository, exerciseRepository, workoutHistoryRepository, and networkStatus. Mirrors the M3 harness pattern.
+- **Fake dependencies** (`test/app/m4/fake_m4_dependencies.dart`): `FakeSavedWorkoutRepository`, `FakeProgrammeRepository`, `FakeWorkoutSessionRepository`, `FakeWorkoutHistoryRepository`, `FakeExerciseRepository`, `FakeNetworkStatus`.
+- **Acceptance tests** (`test/app/m4/m4_manual_tracker_acceptance_test.dart` — 8 tests): create custom exercise, create workout, create multi-week programme, start active session + complete, recover active workout, complete + view history, warmup sets visible in history, superset grouping survives.
+- **Privacy integrity blocker tests** (`test/app/m4/m4_privacy_integrity_blockers_test.dart` — 4 tests): full offline flow, completion failure leaves session recoverable, history readable after source delete, no sentinel data leaks.
+- **Helpers**: `m4_route_driver.dart`, `m4_expectations.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1013/1013 passed.
+
 ### V1-M4-010 — Transactional save and rollback service (complete)
 
 - **Core transaction infrastructure** (`lib/core/db/transactions/` — 7 files): `TransactionOperation`, `TransactionFailureInjection`, `NoOpTransactionFailureInjection`, `TransactionExecutionFailure`, `TransactionStep`, `TransactionExecutor` (abstract), `DriftTransactionExecutor`.
