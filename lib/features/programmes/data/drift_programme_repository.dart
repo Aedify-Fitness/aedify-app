@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide TransactionExecutor;
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/program_dao.dart';
 import 'package:aedify/core/db/daos/program_workout_template_dao.dart';
@@ -16,6 +16,9 @@ import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart'
 import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:uuid/uuid.dart';
+import 'package:aedify/core/db/transactions/transaction_executor.dart';
+import 'package:aedify/core/db/transactions/transaction_operation.dart';
+import 'package:aedify/core/db/transactions/transaction_step.dart';
 import 'package:aedify/shared/domain/change_type.dart';
 import 'package:aedify/shared/domain/enum_codec.dart';
 import 'package:aedify/shared/domain/exercise_role.dart';
@@ -26,7 +29,6 @@ import 'package:aedify/shared/domain/weight_prescription_type.dart';
 
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
-    required AppDatabase database,
     required ProgramDao programDao,
     required ProgramWorkoutTemplateDao programWorkoutTemplateDao,
     required ProgramTemplateExerciseDao programTemplateExerciseDao,
@@ -36,9 +38,9 @@ class DriftProgrammeRepository implements ProgrammeRepository {
     required ProgramExerciseDao programExerciseDao,
     required ProgramExerciseSetDao programExerciseSetDao,
     required ProgramRevisionDao programRevisionDao,
+    required TransactionExecutor transactionExecutor,
     Uuid? uuid,
-  }) : _database = database,
-       _programDao = programDao,
+  }) : _programDao = programDao,
        _programWorkoutTemplateDao = programWorkoutTemplateDao,
        _programTemplateExerciseDao = programTemplateExerciseDao,
        _programTemplateExerciseSetDao = programTemplateExerciseSetDao,
@@ -47,9 +49,9 @@ class DriftProgrammeRepository implements ProgrammeRepository {
        _programExerciseDao = programExerciseDao,
        _programExerciseSetDao = programExerciseSetDao,
        _programRevisionDao = programRevisionDao,
+       _transactionExecutor = transactionExecutor,
        _uuid = uuid ?? const Uuid();
 
-  final AppDatabase _database;
   final ProgramDao _programDao;
   final ProgramWorkoutTemplateDao _programWorkoutTemplateDao;
   final ProgramTemplateExerciseDao _programTemplateExerciseDao;
@@ -59,6 +61,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
   final ProgramExerciseDao _programExerciseDao;
   final ProgramExerciseSetDao _programExerciseSetDao;
   final ProgramRevisionDao _programRevisionDao;
+  final TransactionExecutor _transactionExecutor;
   final Uuid _uuid;
 
   @override
@@ -87,62 +90,21 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
   @override
   Future<String> saveProgramme(ProgrammeDraft draft) async {
-    return _database.inTransaction(() async {
-      final programId = draft.id;
-      final now = DateTime.now();
-      final existing = await _programDao.getById(programId);
+    final programId = draft.id;
+    final now = DateTime.now();
+    final existing = await _programDao.getById(programId);
 
-      await _writeProgramRoot(
+    await _transactionExecutor.execute(
+      operationName: 'programme.save',
+      steps: _buildSaveProgrammeSteps(
         draft: draft,
         programId: programId,
         now: now,
-        existingProgram: existing,
-      );
+        existing: existing,
+      ),
+    );
 
-      if (draft.active) {
-        await _programDao.clearActiveProgram(updatedAt: now);
-        await _programDao.setProgramActive(
-          id: programId,
-          active: true,
-          updatedAt: now,
-        );
-      }
-
-      await _deleteExpandedProgramHierarchy(programId);
-      await _deleteProgramTemplateHierarchy(programId);
-
-      for (final template in draft.templates) {
-        await _insertProgramTemplate(
-          programId: programId,
-          template: template,
-          now: now,
-        );
-      }
-
-      await _insertExpandedProgramRows(
-        programId: programId,
-        draft: draft,
-        now: now,
-      );
-
-      final latestRevision = await _programRevisionDao.getLatestRevisionNumber(
-        programId,
-      );
-      await _programRevisionDao.upsertRevision(
-        ProgramRevisionsCompanion.insert(
-          id: _newId(),
-          programId: programId,
-          revisionNumber: latestRevision + 1,
-          changeType: existing == null
-              ? ChangeType.created.dbValue
-              : ChangeType.manualEdit.dbValue,
-          summary: existing == null ? 'Program created' : 'Program updated',
-          createdAt: now,
-        ),
-      );
-
-      return programId;
-    });
+    return programId;
   }
 
   @override
@@ -162,32 +124,160 @@ class DriftProgrammeRepository implements ProgrammeRepository {
         updatedAt: now,
       );
     } else {
-      // No history -- cascade delete everything
-      await _database.inTransaction(() async {
-        await _deleteExpandedProgramHierarchy(id);
-        await _deleteProgramTemplateHierarchy(id);
-        await _deleteProgramRevisions(id);
-        await _programDao.softDeleteProgram(
-          id: id,
-          deletedAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-      });
+      await _transactionExecutor.execute(
+        operationName: 'programme.delete',
+        steps: _buildDeleteProgrammeSteps(id: id),
+      );
     }
   }
 
   Future<void> _deleteProgramRevisions(String programId) async {
-    // revisions don't cascade to session data
     await _programRevisionDao.deleteByProgramId(programId);
+  }
+
+  List<TransactionStep> _buildSaveProgrammeSteps({
+    required ProgrammeDraft draft,
+    required String programId,
+    required DateTime now,
+    required Program? existing,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'programme.write_root'),
+        run: () => _writeProgramRoot(
+          draft: draft,
+          programId: programId,
+          now: now,
+          existingProgram: existing,
+        ),
+      ),
+      if (draft.active)
+        TransactionStep(
+          operation: const TransactionOperation(name: 'programme.clear_active'),
+          run: () async {
+            await _programDao.clearActiveProgram(updatedAt: now);
+            await _programDao.setProgramActive(
+              id: programId,
+              active: true,
+              updatedAt: now,
+            );
+          },
+        ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.delete_expanded',
+        ),
+        run: () async {
+          await _deleteExpandedProgramHierarchy(programId);
+          await _deleteProgramTemplateHierarchy(programId);
+        },
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.insert_templates',
+        ),
+        run: () async {
+          for (final template in draft.templates) {
+            await _insertProgramTemplate(
+              programId: programId,
+              template: template,
+              now: now,
+            );
+          }
+        },
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.insert_expanded',
+        ),
+        run: () => _insertExpandedProgramRows(
+          programId: programId,
+          draft: draft,
+          now: now,
+        ),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.insert_revision',
+        ),
+        run: () async {
+          final latestRevision = await _programRevisionDao
+              .getLatestRevisionNumber(programId);
+          await _programRevisionDao.upsertRevision(
+            ProgramRevisionsCompanion.insert(
+              id: _newId(),
+              programId: programId,
+              revisionNumber: latestRevision + 1,
+              changeType: existing == null
+                  ? ChangeType.created.dbValue
+                  : ChangeType.manualEdit.dbValue,
+              summary: existing == null ? 'Program created' : 'Program updated',
+              createdAt: now,
+            ),
+          );
+        },
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildDeleteProgrammeSteps({required String id}) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.delete_expanded',
+        ),
+        run: () async {
+          await _deleteExpandedProgramHierarchy(id);
+          await _deleteProgramTemplateHierarchy(id);
+        },
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'programme.delete_revisions',
+        ),
+        run: () => _deleteProgramRevisions(id),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'programme.soft_delete'),
+        run: () {
+          final now = DateTime.now();
+          return _programDao.softDeleteProgram(
+            id: id,
+            deletedAt: now,
+            updatedAt: now,
+          );
+        },
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildActivateProgrammeSteps({
+    required String programId,
+    required DateTime now,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'programme.clear_active'),
+        run: () => _programDao.clearActiveProgram(updatedAt: now),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'programme.set_active'),
+        run: () => _programDao.setProgramActive(
+          id: programId,
+          active: true,
+          updatedAt: now,
+        ),
+      ),
+    ];
   }
 
   @override
   Future<void> activateProgramme(String id) async {
     final now = DateTime.now();
-    await _database.inTransaction(() async {
-      await _programDao.clearActiveProgram(updatedAt: now);
-      await _programDao.setProgramActive(id: id, active: true, updatedAt: now);
-    });
+    await _transactionExecutor.execute(
+      operationName: 'programme.activate',
+      steps: _buildActivateProgrammeSteps(programId: id, now: now),
+    );
   }
 
   @override

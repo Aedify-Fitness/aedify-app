@@ -12,6 +12,10 @@ import 'package:aedify/core/db/daos/program_exercise_set_dao.dart';
 import 'package:aedify/core/db/daos/program_revision_dao.dart';
 import 'package:aedify/features/programmes/data/drift_programme_repository.dart';
 import 'package:aedify/features/programmes/data/programme_repository.dart';
+import 'package:aedify/core/db/transactions/drift_transaction_executor.dart';
+import 'package:aedify/core/db/transactions/no_op_transaction_failure_injection.dart';
+import 'package:aedify/core/db/transactions/transaction_execution_failure.dart';
+import '../../../support/transactions/throwing_transaction_failure_injection.dart';
 import 'package:aedify/features/programmes/domain/programme_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
@@ -34,7 +38,6 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     final uuid = const Uuid();
     repository = DriftProgrammeRepository(
-      database: db,
       programDao: ProgramDao(db),
       programWorkoutTemplateDao: ProgramWorkoutTemplateDao(db),
       programTemplateExerciseDao: ProgramTemplateExerciseDao(db),
@@ -44,6 +47,10 @@ void main() {
       programExerciseDao: ProgramExerciseDao(db),
       programExerciseSetDao: ProgramExerciseSetDao(db),
       programRevisionDao: ProgramRevisionDao(db),
+      transactionExecutor: DriftTransactionExecutor(
+        database: db,
+        failureInjection: const NoOpTransactionFailureInjection(),
+      ),
       uuid: uuid,
     );
   });
@@ -349,6 +356,197 @@ void main() {
 
       expect(first!.program.active, isTrue);
       expect(second!.program.active, isFalse);
+    });
+  });
+
+  group('transaction rollback', () {
+    test(
+      'injected failure during template insertion leaves no partial programme',
+      () async {
+        final injection = ThrowingTransactionFailureInjection(
+          failOnOperationName: 'programme.insert_templates',
+          failBefore: true,
+        );
+        final rollbackDb = AppDatabase(NativeDatabase.memory());
+        final uuid = const Uuid();
+        final rollbackRepo = DriftProgrammeRepository(
+          programDao: ProgramDao(rollbackDb),
+          programWorkoutTemplateDao: ProgramWorkoutTemplateDao(rollbackDb),
+          programTemplateExerciseDao: ProgramTemplateExerciseDao(rollbackDb),
+          programTemplateExerciseSetDao: ProgramTemplateExerciseSetDao(
+            rollbackDb,
+          ),
+          programWeekDao: ProgramWeekDao(rollbackDb),
+          programWorkoutDao: ProgramWorkoutDao(rollbackDb),
+          programExerciseDao: ProgramExerciseDao(rollbackDb),
+          programExerciseSetDao: ProgramExerciseSetDao(rollbackDb),
+          programRevisionDao: ProgramRevisionDao(rollbackDb),
+          transactionExecutor: DriftTransactionExecutor(
+            database: rollbackDb,
+            failureInjection: injection,
+          ),
+          uuid: uuid,
+        );
+
+        try {
+          await rollbackRepo.saveProgramme(
+            ProgrammeDraft(
+              id: 'rollback-test-1',
+              name: 'Rollback Test',
+              source: WorkoutSource.manual,
+              creationMethod: CreationMethod.manual,
+              status: ProgramStatus.draft,
+              active: false,
+              goalTags: const <GoalTag>{},
+              equipment: const <EquipmentTag>{},
+              templates: [
+                ProgrammeWorkoutTemplateDraft(
+                  id: 't1',
+                  templateKey: 't1',
+                  name: 'Push Day',
+                  sortOrder: 0,
+                  exercises: [
+                    ProgrammeExerciseDraft(
+                      id: 'e1',
+                      exerciseId: 1,
+                      sortOrder: 0,
+                      sets: [
+                        SetPrescriptionDraft(
+                          id: 's1',
+                          setIndex: 0,
+                          setType: SetType.working,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+          fail('Expected exception');
+        } on TransactionExecutionFailure {
+          // expected — rollback should have occurred
+        }
+
+        final programme = await rollbackRepo.getProgramme('rollback-test-1');
+        expect(programme, isNull);
+
+        await rollbackDb.close();
+      },
+    );
+
+    test(
+      'injected failure during expanded row insertion leaves no partial expanded hierarchy',
+      () async {
+        final injection = ThrowingTransactionFailureInjection(
+          failOnOperationName: 'programme.insert_expanded',
+          failBefore: true,
+        );
+        final rollbackDb = AppDatabase(NativeDatabase.memory());
+        final uuid = const Uuid();
+        final rollbackRepo = DriftProgrammeRepository(
+          programDao: ProgramDao(rollbackDb),
+          programWorkoutTemplateDao: ProgramWorkoutTemplateDao(rollbackDb),
+          programTemplateExerciseDao: ProgramTemplateExerciseDao(rollbackDb),
+          programTemplateExerciseSetDao: ProgramTemplateExerciseSetDao(
+            rollbackDb,
+          ),
+          programWeekDao: ProgramWeekDao(rollbackDb),
+          programWorkoutDao: ProgramWorkoutDao(rollbackDb),
+          programExerciseDao: ProgramExerciseDao(rollbackDb),
+          programExerciseSetDao: ProgramExerciseSetDao(rollbackDb),
+          programRevisionDao: ProgramRevisionDao(rollbackDb),
+          transactionExecutor: DriftTransactionExecutor(
+            database: rollbackDb,
+            failureInjection: injection,
+          ),
+          uuid: uuid,
+        );
+
+        try {
+          await rollbackRepo.saveProgramme(
+            ProgrammeDraft(
+              id: 'rollback-test-2',
+              name: 'Rollback Test 2',
+              source: WorkoutSource.manual,
+              creationMethod: CreationMethod.manual,
+              status: ProgramStatus.draft,
+              active: false,
+              goalTags: const <GoalTag>{},
+              equipment: const <EquipmentTag>{},
+              templates: [],
+            ),
+          );
+          fail('Expected exception');
+        } on TransactionExecutionFailure {
+          // expected
+        }
+
+        final programme = await rollbackRepo.getProgramme('rollback-test-2');
+        expect(programme, isNull);
+
+        await rollbackDb.close();
+      },
+    );
+
+    test('injected failure after root write rolls back root', () async {
+      final injection = ThrowingTransactionFailureInjection(
+        failOnOperationName: 'programme.insert_templates',
+        failBefore: true,
+      );
+      final rollbackDb = AppDatabase(NativeDatabase.memory());
+      final uuid = const Uuid();
+      final rollbackRepo = DriftProgrammeRepository(
+        programDao: ProgramDao(rollbackDb),
+        programWorkoutTemplateDao: ProgramWorkoutTemplateDao(rollbackDb),
+        programTemplateExerciseDao: ProgramTemplateExerciseDao(rollbackDb),
+        programTemplateExerciseSetDao: ProgramTemplateExerciseSetDao(
+          rollbackDb,
+        ),
+        programWeekDao: ProgramWeekDao(rollbackDb),
+        programWorkoutDao: ProgramWorkoutDao(rollbackDb),
+        programExerciseDao: ProgramExerciseDao(rollbackDb),
+        programExerciseSetDao: ProgramExerciseSetDao(rollbackDb),
+        programRevisionDao: ProgramRevisionDao(rollbackDb),
+        transactionExecutor: DriftTransactionExecutor(
+          database: rollbackDb,
+          failureInjection: injection,
+        ),
+        uuid: uuid,
+      );
+
+      try {
+        await rollbackRepo.saveProgramme(
+          ProgrammeDraft(
+            id: 'rollback-test-3',
+            name: 'Rollback Root',
+            source: WorkoutSource.manual,
+            creationMethod: CreationMethod.manual,
+            status: ProgramStatus.draft,
+            active: false,
+            goalTags: const <GoalTag>{},
+            equipment: const <EquipmentTag>{},
+            templates: [
+              ProgrammeWorkoutTemplateDraft(
+                id: 't1',
+                templateKey: 't1',
+                name: 'Push Day',
+                sortOrder: 0,
+                exercises: [],
+              ),
+            ],
+          ),
+        );
+        fail('Expected exception');
+      } on TransactionExecutionFailure {
+        // expected
+      }
+
+      // Root should also be rolled back
+      final programme = await rollbackRepo.getProgramme('rollback-test-3');
+      expect(programme, isNull);
+
+      await rollbackDb.close();
     });
   });
 }

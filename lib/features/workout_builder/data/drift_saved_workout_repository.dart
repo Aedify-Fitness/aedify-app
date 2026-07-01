@@ -1,8 +1,11 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/saved_workout_dao.dart';
 import 'package:aedify/core/db/daos/saved_workout_exercise_dao.dart';
 import 'package:aedify/core/db/daos/saved_workout_exercise_set_dao.dart';
+import 'package:aedify/core/db/transactions/transaction_executor.dart';
+import 'package:aedify/core/db/transactions/transaction_operation.dart';
+import 'package:aedify/core/db/transactions/transaction_step.dart';
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
@@ -12,19 +15,19 @@ import 'package:aedify/shared/domain/enum_codec.dart';
 
 class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
   DriftSavedWorkoutRepository({
-    required AppDatabase database,
     required SavedWorkoutDao savedWorkoutDao,
     required SavedWorkoutExerciseDao savedWorkoutExerciseDao,
     required SavedWorkoutExerciseSetDao savedWorkoutExerciseSetDao,
-  }) : _database = database,
-       _savedWorkoutDao = savedWorkoutDao,
+    required TransactionExecutor transactionExecutor,
+  }) : _savedWorkoutDao = savedWorkoutDao,
        _savedWorkoutExerciseDao = savedWorkoutExerciseDao,
-       _savedWorkoutExerciseSetDao = savedWorkoutExerciseSetDao;
+       _savedWorkoutExerciseSetDao = savedWorkoutExerciseSetDao,
+       _transactionExecutor = transactionExecutor;
 
-  final AppDatabase _database;
   final SavedWorkoutDao _savedWorkoutDao;
   final SavedWorkoutExerciseDao _savedWorkoutExerciseDao;
   final SavedWorkoutExerciseSetDao _savedWorkoutExerciseSetDao;
+  final TransactionExecutor _transactionExecutor;
 
   @override
   Future<SavedWorkoutAggregate?> getSavedWorkout(String id) async {
@@ -50,30 +53,21 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   @override
   Future<String> saveSavedWorkout(SavedWorkoutDraft draft) async {
-    return _database.inTransaction(() async {
-      final savedWorkoutId = draft.id;
-      final now = DateTime.now();
-      final existing = await _savedWorkoutDao.getById(savedWorkoutId);
+    final savedWorkoutId = draft.id;
+    final now = DateTime.now();
+    final existing = await _savedWorkoutDao.getById(savedWorkoutId);
 
-      await _writeSavedWorkoutRoot(
+    await _transactionExecutor.execute(
+      operationName: 'saved_workout.save',
+      steps: _buildSaveSavedWorkoutSteps(
         draft: draft,
         savedWorkoutId: savedWorkoutId,
         now: now,
         existing: existing,
-      );
+      ),
+    );
 
-      await _deleteSavedWorkoutHierarchy(savedWorkoutId);
-
-      for (final exercise in draft.exercises) {
-        await _insertSavedWorkoutExercise(
-          savedWorkoutId: savedWorkoutId,
-          exercise: exercise,
-          now: now,
-        );
-      }
-
-      return savedWorkoutId;
-    });
+    return savedWorkoutId;
   }
 
   @override
@@ -98,15 +92,73 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
         updatedAt: now,
       );
     } else {
-      await _database.inTransaction(() async {
-        await _deleteSavedWorkoutHierarchy(id);
-        await _savedWorkoutDao.archiveSavedWorkout(
-          id: id,
-          archivedAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-      });
+      final now = DateTime.now();
+      await _transactionExecutor.execute(
+        operationName: 'saved_workout.delete',
+        steps: _buildDeleteSavedWorkoutSteps(savedWorkoutId: id, now: now),
+      );
     }
+  }
+
+  List<TransactionStep> _buildSaveSavedWorkoutSteps({
+    required SavedWorkoutDraft draft,
+    required String savedWorkoutId,
+    required DateTime now,
+    required SavedWorkout? existing,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'saved_workout.write_root'),
+        run: () => _writeSavedWorkoutRoot(
+          draft: draft,
+          savedWorkoutId: savedWorkoutId,
+          now: now,
+          existing: existing,
+        ),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'saved_workout.delete_hierarchy',
+        ),
+        run: () => _deleteSavedWorkoutHierarchy(savedWorkoutId),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'saved_workout.insert_exercises',
+        ),
+        run: () async {
+          for (final exercise in draft.exercises) {
+            await _insertSavedWorkoutExercise(
+              savedWorkoutId: savedWorkoutId,
+              exercise: exercise,
+              now: now,
+            );
+          }
+        },
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildDeleteSavedWorkoutSteps({
+    required String savedWorkoutId,
+    required DateTime now,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'saved_workout.delete_hierarchy',
+        ),
+        run: () => _deleteSavedWorkoutHierarchy(savedWorkoutId),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'saved_workout.archive'),
+        run: () => _savedWorkoutDao.archiveSavedWorkout(
+          id: savedWorkoutId,
+          archivedAt: now,
+          updatedAt: now,
+        ),
+      ),
+    ];
   }
 
   Future<SavedWorkoutAggregate> _buildAggregate(
@@ -192,8 +244,6 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       ),
     );
   }
-
-  // --- Companion builders ---
 
   SavedWorkoutsCompanion _buildSavedWorkoutCompanion({
     required SavedWorkoutDraft draft,

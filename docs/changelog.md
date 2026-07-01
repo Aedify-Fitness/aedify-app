@@ -6,6 +6,16 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-01
 
+### V1-M4-010 — Transactional save and rollback service (complete)
+
+- **Core transaction infrastructure** (`lib/core/db/transactions/` — 7 files): `TransactionOperation`, `TransactionFailureInjection`, `NoOpTransactionFailureInjection`, `TransactionExecutionFailure`, `TransactionStep`, `TransactionExecutor` (abstract), `DriftTransactionExecutor`.
+- **Test support** (2 files): `ThrowingTransactionFailureInjection` (injects failures before/after named operations), `CapturingTransactionFailureInjection` (records operation sequence).
+- **Repository refactor**: `DriftProgrammeRepository`, `DriftSavedWorkoutRepository`, and `DriftWorkoutSessionRepository` now use `TransactionExecutor` instead of raw `_database.inTransaction()`. Each repository exposes step-builder methods with stable operation names.
+- **Provider wiring**: Added `transactionFailureInjectionProvider` and `transactionExecutorProvider`. Updated all 3 repository providers to inject `TransactionExecutor`.
+- **Removed `_database` field** from all three repositories — the executor now owns the transaction boundary.
+- **Tests**: 7 new — 4 core executor tests (step ordering, rollback before, rollback after, error wrapping) + 3 programme repository rollback tests (template insertion, expanded row insertion, root write rollback).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1001/1001 passed.
+
 ### V1-M4-009 — Reusable draft validation service (complete)
 
 - **Core validation models** (13 files in `lib/core/validation/`): `DraftValidationScope`, `DraftValidationCode`, `DraftValidationPath`, `DraftValidationIssue`, `DraftValidationResult`, and 7 validated draft types (`ValidatedSetDraft`, `ValidatedExerciseDraft`, `ValidatedWorkoutDraft`, `ValidatedProgrammeTemplateDraft`, `ValidatedProgrammeSlotDraft`, `ValidatedProgrammeWeekDraft`, `ValidatedProgrammeDraft`).

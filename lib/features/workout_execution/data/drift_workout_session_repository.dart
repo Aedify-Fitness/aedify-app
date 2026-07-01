@@ -1,31 +1,33 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/workout_session_dao.dart';
 import 'package:aedify/core/db/daos/workout_session_exercise_dao.dart';
 import 'package:aedify/core/db/daos/set_log_dao.dart';
+import 'package:aedify/core/db/transactions/transaction_executor.dart';
+import 'package:aedify/core/db/transactions/transaction_operation.dart';
+import 'package:aedify/core/db/transactions/transaction_step.dart';
 import 'package:aedify/features/workout_execution/data/workout_session_repository.dart';
 import 'package:aedify/features/workout_execution/domain/workout_session_aggregate.dart';
 import 'package:aedify/features/workout_execution/domain/workout_session_draft.dart';
 import 'package:aedify/features/workout_execution/domain/workout_session_exercise_draft.dart';
 import 'package:aedify/features/workout_execution/domain/set_log_draft.dart';
-
 import 'package:aedify/shared/domain/workout_session_status.dart';
 
 class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   DriftWorkoutSessionRepository({
-    required AppDatabase database,
     required WorkoutSessionDao workoutSessionDao,
     required WorkoutSessionExerciseDao workoutSessionExerciseDao,
     required SetLogDao setLogDao,
-  }) : _database = database,
-       _workoutSessionDao = workoutSessionDao,
+    required TransactionExecutor transactionExecutor,
+  }) : _workoutSessionDao = workoutSessionDao,
        _workoutSessionExerciseDao = workoutSessionExerciseDao,
-       _setLogDao = setLogDao;
+       _setLogDao = setLogDao,
+       _transactionExecutor = transactionExecutor;
 
-  final AppDatabase _database;
   final WorkoutSessionDao _workoutSessionDao;
   final WorkoutSessionExerciseDao _workoutSessionExerciseDao;
   final SetLogDao _setLogDao;
+  final TransactionExecutor _transactionExecutor;
 
   @override
   Future<WorkoutSessionAggregate?> getActiveSession() async {
@@ -43,56 +45,36 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<String> startSession(WorkoutSessionDraft draft) async {
-    return _database.inTransaction(() async {
-      final inProgressCount = await _workoutSessionDao
-          .countInProgressSessions();
-      if (inProgressCount > 0) {
-        throw StateError(
-          'Cannot start session: another session is already in progress',
-        );
-      }
+    final sessionId = draft.id;
+    final now = DateTime.now();
+    final inProgressCount = await _workoutSessionDao.countInProgressSessions();
 
-      final sessionId = draft.id;
-      final now = DateTime.now();
+    await _transactionExecutor.execute(
+      operationName: 'session.start',
+      steps: _buildStartSessionSteps(
+        draft: draft,
+        sessionId: sessionId,
+        now: now,
+        inProgressCount: inProgressCount,
+      ),
+    );
 
-      await _writeSessionRoot(draft: draft, sessionId: sessionId, now: now);
-
-      await _deleteSessionHierarchy(sessionId);
-
-      for (final exercise in draft.exercises) {
-        await _insertSessionExercise(sessionId: sessionId, exercise: exercise);
-      }
-
-      return sessionId;
-    });
+    return sessionId;
   }
 
   @override
   Future<void> saveSessionProgress(WorkoutSessionDraft draft) async {
-    await _database.inTransaction(() async {
-      final existing = await _workoutSessionDao.getById(draft.id);
-      if (existing == null) {
-        throw StateError('Session not found: ${draft.id}');
-      }
-      if (existing.status != WorkoutSessionStatus.inProgress.dbValue) {
-        throw StateError(
-          'Cannot save progress: session ${draft.id} status is ${existing.status}',
-        );
-      }
+    final existing = await _workoutSessionDao.getById(draft.id);
+    final now = DateTime.now();
 
-      await _updateSessionRootFromDraft(
+    await _transactionExecutor.execute(
+      operationName: 'session.save_progress',
+      steps: _buildSaveSessionProgressSteps(
         draft: draft,
         existing: existing,
-        now: DateTime.now(),
-      );
-
-      final sessionId = draft.id;
-      await _deleteSessionHierarchy(sessionId);
-
-      for (final exercise in draft.exercises) {
-        await _insertSessionExercise(sessionId: sessionId, exercise: exercise);
-      }
-    });
+        now: now,
+      ),
+    );
   }
 
   @override
@@ -101,11 +83,13 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     required DateTime completedAt,
     required int durationSeconds,
   }) async {
-    await _workoutSessionDao.markCompleted(
-      id: id,
-      completedAt: completedAt,
-      durationSeconds: durationSeconds,
-      updatedAt: DateTime.now(),
+    await _transactionExecutor.execute(
+      operationName: 'session.complete',
+      steps: _buildCompleteSessionSteps(
+        sessionId: id,
+        completedAt: completedAt,
+        durationSeconds: durationSeconds,
+      ),
     );
   }
 
@@ -116,10 +100,128 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<void> deleteInProgressSession(String id) async {
-    await _database.inTransaction(() async {
-      await _deleteSessionHierarchy(id);
-      await _workoutSessionDao.deleteSession(id);
-    });
+    await _transactionExecutor.execute(
+      operationName: 'session.delete',
+      steps: _buildDeleteInProgressSessionSteps(id),
+    );
+  }
+
+  List<TransactionStep> _buildStartSessionSteps({
+    required WorkoutSessionDraft draft,
+    required String sessionId,
+    required DateTime now,
+    required int inProgressCount,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.ensure_no_active'),
+        run: () async {
+          if (inProgressCount > 0) {
+            throw StateError(
+              'Cannot start session: another session is already in progress',
+            );
+          }
+        },
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.write_root'),
+        run: () =>
+            _writeSessionRoot(draft: draft, sessionId: sessionId, now: now),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.delete_hierarchy'),
+        run: () => _deleteSessionHierarchy(sessionId),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.insert_exercises'),
+        run: () async {
+          for (final exercise in draft.exercises) {
+            await _insertSessionExercise(
+              sessionId: sessionId,
+              exercise: exercise,
+            );
+          }
+        },
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildSaveSessionProgressSteps({
+    required WorkoutSessionDraft draft,
+    required WorkoutSession? existing,
+    required DateTime now,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(
+          name: 'session.validate_existing',
+        ),
+        run: () async {
+          if (existing == null) {
+            throw StateError('Session not found: ${draft.id}');
+          }
+          if (existing.status != WorkoutSessionStatus.inProgress.dbValue) {
+            throw StateError(
+              'Cannot save progress: session ${draft.id} status is ${existing.status}',
+            );
+          }
+        },
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.write_root'),
+        run: () => _updateSessionRootFromDraft(
+          draft: draft,
+          existing: existing!,
+          now: now,
+        ),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.delete_hierarchy'),
+        run: () => _deleteSessionHierarchy(draft.id),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.insert_exercises'),
+        run: () async {
+          for (final exercise in draft.exercises) {
+            await _insertSessionExercise(
+              sessionId: draft.id,
+              exercise: exercise,
+            );
+          }
+        },
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildCompleteSessionSteps({
+    required String sessionId,
+    required DateTime completedAt,
+    required int durationSeconds,
+  }) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.complete'),
+        run: () => _workoutSessionDao.markCompleted(
+          id: sessionId,
+          completedAt: completedAt,
+          durationSeconds: durationSeconds,
+          updatedAt: DateTime.now(),
+        ),
+      ),
+    ];
+  }
+
+  List<TransactionStep> _buildDeleteInProgressSessionSteps(String sessionId) {
+    return [
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.delete_hierarchy'),
+        run: () => _deleteSessionHierarchy(sessionId),
+      ),
+      TransactionStep(
+        operation: const TransactionOperation(name: 'session.delete_root'),
+        run: () => _workoutSessionDao.deleteSession(sessionId),
+      ),
+    ];
   }
 
   Future<WorkoutSessionAggregate> _buildAggregate(
@@ -232,8 +334,6 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       ),
     );
   }
-
-  // --- Companion builders ---
 
   WorkoutSessionsCompanion _buildWorkoutSessionCompanion({
     required WorkoutSessionDraft draft,

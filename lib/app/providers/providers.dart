@@ -138,6 +138,10 @@ import 'package:aedify/features/programmes/application/programme_builder_validat
 import 'package:aedify/features/workout_builder/application/workout_builder_validation_adapter.dart';
 import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:aedify/core/validation/draft_validation_service.dart';
+import 'package:aedify/core/db/transactions/drift_transaction_executor.dart';
+import 'package:aedify/core/db/transactions/no_op_transaction_failure_injection.dart';
+import 'package:aedify/core/db/transactions/transaction_executor.dart';
+import 'package:aedify/core/db/transactions/transaction_failure_injection.dart';
 import 'package:aedify/shared/domain/superset_grouping_policy.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -539,7 +543,6 @@ class AppProviders {
     ref,
   ) {
     return DriftProgrammeRepository(
-      database: ref.read(appDatabaseProvider),
       programDao: ref.read(programDaoProvider),
       programWorkoutTemplateDao: ref.read(programWorkoutTemplateDaoProvider),
       programTemplateExerciseDao: ref.read(programTemplateExerciseDaoProvider),
@@ -551,30 +554,31 @@ class AppProviders {
       programExerciseDao: ref.read(programExerciseDaoProvider),
       programExerciseSetDao: ref.read(programExerciseSetDaoProvider),
       programRevisionDao: ref.read(programRevisionDaoProvider),
+      transactionExecutor: ref.read(transactionExecutorProvider),
     );
   });
 
   static final savedWorkoutRepositoryProvider =
       Provider<SavedWorkoutRepository>((ref) {
         return DriftSavedWorkoutRepository(
-          database: ref.read(appDatabaseProvider),
           savedWorkoutDao: ref.read(savedWorkoutDaoProvider),
           savedWorkoutExerciseDao: ref.read(savedWorkoutExerciseDaoProvider),
           savedWorkoutExerciseSetDao: ref.read(
             savedWorkoutExerciseSetDaoProvider,
           ),
+          transactionExecutor: ref.read(transactionExecutorProvider),
         );
       });
 
   static final workoutSessionRepositoryProvider =
       Provider<WorkoutSessionRepository>((ref) {
         return DriftWorkoutSessionRepository(
-          database: ref.read(appDatabaseProvider),
           workoutSessionDao: ref.read(workoutSessionDaoProvider),
           workoutSessionExerciseDao: ref.read(
             workoutSessionExerciseDaoProvider,
           ),
           setLogDao: ref.read(setLogDaoProvider),
+          transactionExecutor: ref.read(transactionExecutorProvider),
         );
       });
 
@@ -816,6 +820,21 @@ class AppProviders {
     ref,
   ) {
     return const SetTypeOptionsUseCase();
+  });
+
+  // V1-M4-010 — transaction executor
+  static final transactionFailureInjectionProvider =
+      Provider<TransactionFailureInjection>((ref) {
+        return const NoOpTransactionFailureInjection();
+      });
+
+  static final transactionExecutorProvider = Provider<TransactionExecutor>((
+    ref,
+  ) {
+    return DriftTransactionExecutor(
+      database: ref.read(appDatabaseProvider),
+      failureInjection: ref.read(transactionFailureInjectionProvider),
+    );
   });
 
   // V1-M4-009 — shared validation
