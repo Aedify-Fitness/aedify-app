@@ -124,6 +124,8 @@ import 'package:aedify/features/lift_log/data/drift_workout_history_repository.d
 import 'package:aedify/features/lift_log/data/workout_history_repository.dart';
 import 'package:aedify/features/programmes/application/list_programmes_use_case.dart';
 import 'package:aedify/features/programmes/application/list_saved_workouts_use_case.dart';
+import 'package:aedify/features/programmes/application/programme_calendar_controller.dart';
+import 'package:aedify/features/programmes/application/programme_calendar_state.dart';
 import 'package:aedify/features/programmes/application/programme_library_controller.dart';
 import 'package:aedify/features/programmes/application/programme_library_state.dart';
 import 'package:aedify/features/programmes/application/saved_workout_library_controller.dart';
@@ -707,6 +709,14 @@ class AppProviders {
         ProgrammeBuilderState,
         ({ProgrammeBuilderMode mode, String? programmeId})
       >((arg) => ProgrammeBuilderController(arg.mode, arg.programmeId));
+
+  // Programme calendar
+  static final programmeCalendarControllerProvider =
+      AsyncNotifierProvider.family<
+        ProgrammeCalendarController,
+        ProgrammeCalendarState,
+        String
+      >((arg) => ProgrammeCalendarController(arg));
 
   // V1-M4-005 — history & library providers
   static final workoutHistoryRepositoryProvider =
