@@ -541,7 +541,8 @@ void main() {
         )),
       );
       expect(state.asData?.value.isDirty, isFalse);
-      expect(state.asData?.value.savedWorkoutId, isNotNull);
+      expect(state.asData?.value.draft.name, isEmpty);
+      expect(state.asData?.value.draft.exercises, isEmpty);
     });
 
     test('createSuperset groups two exercises', () async {

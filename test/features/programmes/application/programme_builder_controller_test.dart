@@ -11,11 +11,14 @@ import 'package:aedify/features/programmes/application/programme_builder_mode.da
 import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:aedify/features/programmes/application/programme_builder_phase.dart';
 import 'package:aedify/features/programmes/application/programme_builder_validator.dart';
+import 'package:aedify/features/programmes/application/programme_builder_controller.dart';
 import 'package:aedify/features/programmes/application/load_programme_builder_draft_use_case.dart';
 import 'package:aedify/features/programmes/application/save_programme_builder_draft_use_case.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 
 ProgrammeBuilderDraft _defaultDraft() {
   return ProgrammeBuilderDraft(
@@ -24,6 +27,7 @@ ProgrammeBuilderDraft _defaultDraft() {
     source: WorkoutSource.manual,
     creationMethod: CreationMethod.manual,
     status: ProgramStatus.draft,
+    goalTags: const {GoalTag.buildMuscle},
     weeks: [],
     templates: [],
   );
@@ -483,7 +487,7 @@ void main() {
             )
             .requireValue;
         expect(state.phase, ProgrammeBuilderPhase.editing);
-        expect(state.programmeId, 'saved-id');
+        expect(state.programmeId, isNull);
         expect(state.isDirty, isFalse);
         expect(fakeSaveUseCase.lastSavedDraft, isNotNull);
       });
@@ -500,6 +504,7 @@ void main() {
           );
           await controller.future;
 
+          fakeLoadUseCase.draftToReturn = _defaultDraft();
           await controller.saveProgramme();
 
           final state = container
@@ -579,6 +584,150 @@ void main() {
             .validationErrors,
         isEmpty,
       );
+    });
+  });
+
+  group('Validation error clearing on mutations', () {
+    late ProviderContainer container;
+    late ProgrammeBuilderController controller;
+
+    Future<void> setupAndTriggerErrors({ProgrammeBuilderDraft? draft}) async {
+      container = createContainer();
+      controller = container.read(
+        AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        )).notifier,
+      );
+      await controller.future;
+      await controller.saveProgramme();
+      final stateAfterSave = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(stateAfterSave.validationErrors, isNotEmpty);
+    }
+
+    test('updateName clears validation errors', () async {
+      await setupAndTriggerErrors();
+
+      await controller.updateName('New Name');
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('addWeek clears validation errors', () async {
+      await setupAndTriggerErrors();
+
+      await controller.addWeek();
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('removeWeek clears validation errors', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithOneWeek();
+      await setupAndTriggerErrors();
+
+      await controller.removeWeek(0);
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('duplicateWeek clears validation errors', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithOneWeek();
+      await setupAndTriggerErrors();
+
+      await controller.duplicateWeek(0);
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('addSlot clears validation errors', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithOneWeek();
+      await setupAndTriggerErrors();
+
+      await controller.addSlot(weekIndex: 0, scheduledDayIndex: 0);
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('removeSlot clears validation errors', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithSlots();
+      await setupAndTriggerErrors();
+
+      await controller.removeSlot(0, 0);
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('assignTemplateToSlot clears validation errors', () async {
+      fakeLoadUseCase.draftToReturn = _draftWithSlots();
+      await setupAndTriggerErrors();
+
+      await controller.assignTemplateToSlot(
+        weekIndex: 0,
+        slotIndex: 0,
+        template: ProgrammeBuilderTemplateDraft(
+          id: 't-new',
+          templateKey: 't-new',
+          name: 'Push Day',
+        ),
+      );
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.validationErrors, isEmpty);
     });
   });
 
@@ -842,6 +991,35 @@ void main() {
       final exercises = state.draft.weeks![0].slots![0].template!.exercises;
       expect(exercises.every((e) => e.supersetGroupId == null), isTrue);
       expect(exercises.every((e) => e.supersetOrder == null), isTrue);
+    });
+
+    test('setWeekType updates week type', () async {
+      fakeLoadUseCase.draftToReturn = _defaultDraft().copyWith(
+        weeks: [
+          ProgrammeBuilderWeekDraft(id: 'week-1', weekNumber: 1, slots: []),
+        ],
+      );
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        )).notifier,
+      );
+      await controller.future;
+
+      await controller.setWeekType(weekIndex: 0, type: WeekType.deload);
+
+      final state = container
+          .read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )),
+          )
+          .requireValue;
+      expect(state.draft.weeks![0].weekType, WeekType.deload);
+      expect(state.isDirty, isTrue);
     });
   });
 }

@@ -80,7 +80,13 @@ void main() {
 
       // Schedule step
       expect(find.text(AppStrings.onboardingScheduleTitle), findsOneWidget);
-      await tester.tap(find.text('4'));
+      await tester.tap(find.text('Mon'));
+      await tester.pump();
+      await tester.tap(find.text('Tue'));
+      await tester.pump();
+      await tester.tap(find.text('Wed'));
+      await tester.pump();
+      await tester.tap(find.text('Thu'));
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();

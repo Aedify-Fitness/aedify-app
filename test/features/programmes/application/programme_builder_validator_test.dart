@@ -9,6 +9,7 @@ import 'package:aedify/features/programmes/application/programme_builder_validat
 import 'package:aedify/core/validation/default_draft_validation_service.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 
@@ -19,6 +20,7 @@ ProgrammeBuilderDraft _baseDraft() {
     source: WorkoutSource.manual,
     creationMethod: CreationMethod.manual,
     status: ProgramStatus.draft,
+    goalTags: const {GoalTag.buildMuscle},
     weeks: [
       ProgrammeBuilderWeekDraft(
         id: 'week-1',
@@ -247,6 +249,35 @@ void main() {
       });
     });
 
+    group('goals validation', () {
+      test('returns noGoals error when goalTags is empty', () {
+        final draft = _baseDraft().copyWith(goalTags: const {});
+        final errors = validator.validate(draft);
+        expect(errors.any((e) => e.code == AppErrorCodes.noGoals), isTrue);
+      });
+
+      test('returns noGoals error when goalTags is null', () {
+        final draft = ProgrammeBuilderDraft(
+          id: 'test-id',
+          name: 'My Programme',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.draft,
+          goalTags: null,
+          weeks: _baseDraft().weeks,
+          templates: _baseDraft().templates,
+        );
+        final errors = validator.validate(draft);
+        expect(errors.any((e) => e.code == AppErrorCodes.noGoals), isTrue);
+      });
+
+      test('valid draft with goals passes goal check', () {
+        final draft = _baseDraft();
+        final errors = validator.validate(draft);
+        expect(errors.any((e) => e.code == AppErrorCodes.noGoals), isFalse);
+      });
+    });
+
     group('multiple errors', () {
       test('returns all validation errors for a completely empty draft', () {
         final draft = ProgrammeBuilderDraft(
@@ -263,7 +294,8 @@ void main() {
         expect(codes, contains(AppErrorCodes.missingName));
         expect(codes, contains(AppErrorCodes.noWeeks));
         expect(codes, contains(AppErrorCodes.noTemplates));
-        expect(errors.length, greaterThanOrEqualTo(3));
+        expect(codes, contains(AppErrorCodes.noGoals));
+        expect(errors.length, greaterThanOrEqualTo(4));
       });
 
       test('returns errors for multiple weeks with issues', () {

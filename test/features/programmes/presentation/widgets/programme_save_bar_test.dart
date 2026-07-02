@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_save_bar.dart';
 import 'package:aedify/features/programmes/application/programme_builder_state.dart';
 import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
@@ -21,6 +22,7 @@ ProgrammeBuilderState _state({
   bool isDirty = false,
   bool isSaving = false,
   String name = 'Test',
+  bool hasWeeks = false,
 }) {
   return ProgrammeBuilderState(
     mode: ProgrammeBuilderMode.create,
@@ -33,6 +35,9 @@ ProgrammeBuilderState _state({
       source: WorkoutSource.manual,
       creationMethod: CreationMethod.manual,
       status: ProgramStatus.draft,
+      weeks: hasWeeks
+          ? [const ProgrammeBuilderWeekDraft(id: 'w1', weekNumber: 1)]
+          : null,
     ),
     validationErrors: [],
     isDirty: isDirty,
@@ -43,7 +48,13 @@ void main() {
   group('ProgrammeSaveBar', () {
     testWidgets('shows dirty indicator when isDirty is true', (tester) async {
       await tester.pumpWidget(
-        _wrap(ProgrammeSaveBar(state: _state(isDirty: true), onSave: () {})),
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(isDirty: true),
+            onSave: () {},
+            onToggleActive: () {},
+          ),
+        ),
       );
 
       expect(
@@ -60,7 +71,13 @@ void main() {
 
     testWidgets('hides dirty indicator when isDirty is false', (tester) async {
       await tester.pumpWidget(
-        _wrap(ProgrammeSaveBar(state: _state(isDirty: false), onSave: () {})),
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(isDirty: false),
+            onSave: () {},
+            onToggleActive: () {},
+          ),
+        ),
       );
 
       expect(
@@ -80,8 +97,9 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             ProgrammeSaveBar(
-              state: _state(name: 'Valid', isDirty: true),
+              state: _state(name: 'Valid', isDirty: true, hasWeeks: true),
               onSave: () {},
+              onToggleActive: () {},
             ),
           ),
         );
@@ -97,6 +115,7 @@ void main() {
           ProgrammeSaveBar(
             state: _state(name: '', isDirty: true),
             onSave: () {},
+            onToggleActive: () {},
           ),
         ),
       );
@@ -111,6 +130,7 @@ void main() {
           ProgrammeSaveBar(
             state: _state(isDirty: true, isSaving: true),
             onSave: () {},
+            onToggleActive: () {},
           ),
         ),
       );
@@ -124,8 +144,9 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           ProgrammeSaveBar(
-            state: _state(isDirty: true),
+            state: _state(isDirty: true, hasWeeks: true),
             onSave: () => saved = true,
+            onToggleActive: () {},
           ),
         ),
       );

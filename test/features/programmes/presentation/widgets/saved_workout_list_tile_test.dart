@@ -24,6 +24,7 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
+          onStart: () {},
           onArchive: () {},
           onDelete: () {},
         ),
@@ -48,13 +49,13 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
+          onStart: () {},
           onArchive: () {},
           onDelete: () {},
         ),
       ),
     );
 
-    // Tap the popup menu button
     await tester.tap(find.byType(PopupMenuButton<String>));
     await tester.pumpAndSettle();
 
@@ -77,6 +78,7 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
+          onStart: () {},
           onArchive: () => archived = true,
           onDelete: () {},
         ),
