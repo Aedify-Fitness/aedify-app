@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/workout_session_dao.dart';
 import 'package:aedify/core/db/daos/workout_session_exercise_dao.dart';
@@ -24,6 +25,8 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
        _setLogDao = setLogDao,
        _transactionExecutor = transactionExecutor;
 
+  static final _logger = AppLogger(name: 'DriftWorkoutSessionRepository');
+
   final WorkoutSessionDao _workoutSessionDao;
   final WorkoutSessionExerciseDao _workoutSessionExerciseDao;
   final SetLogDao _setLogDao;
@@ -31,6 +34,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<WorkoutSessionAggregate?> getActiveSession() async {
+    _logger.debug('getActive');
     final session = await _workoutSessionDao.getActiveSession();
     if (session == null) return null;
     return _buildAggregate(session);
@@ -45,6 +49,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<String> startSession(WorkoutSessionDraft draft) async {
+    _logger.info('start — sessionId: ${draft.id}');
     final sessionId = draft.id;
     final now = DateTime.now();
     final inProgressCount = await _workoutSessionDao.countInProgressSessions();
@@ -64,6 +69,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<void> saveSessionProgress(WorkoutSessionDraft draft) async {
+    _logger.debug('saveProgress — sessionId: ${draft.id}');
     final existing = await _workoutSessionDao.getById(draft.id);
     final now = DateTime.now();
 
@@ -83,6 +89,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     required DateTime completedAt,
     required int durationSeconds,
   }) async {
+    _logger.info('complete — sessionId: $id');
     await _transactionExecutor.execute(
       operationName: 'session.complete',
       steps: _buildCompleteSessionSteps(
@@ -95,6 +102,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   @override
   Future<void> abandonSession(String id) async {
+    _logger.info('abandon — sessionId: $id');
     await _workoutSessionDao.markAbandoned(id: id, updatedAt: DateTime.now());
   }
 

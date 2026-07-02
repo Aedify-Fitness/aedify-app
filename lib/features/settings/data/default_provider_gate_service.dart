@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/network_status.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/data/provider_capability_repository.dart';
@@ -16,6 +17,8 @@ class DefaultProviderGateService implements ProviderGateService {
        _capabilityRepository = capabilityRepository,
        _networkStatus = networkStatus;
 
+  static final _logger = AppLogger(name: 'DefaultProviderGateService');
+
   final ByokRepository _byokRepository;
   final ProviderCapabilityRepository _capabilityRepository;
   final NetworkStatus _networkStatus;
@@ -26,6 +29,9 @@ class DefaultProviderGateService implements ProviderGateService {
   }) async {
     final activeConfig = await _byokRepository.getActiveConfig();
     if (activeConfig == null) {
+      _logger.debug(
+        'evaluate — provider: null, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: ProviderGateFailureReason.missingProviderConfig,
@@ -35,6 +41,9 @@ class DefaultProviderGateService implements ProviderGateService {
 
     final hasKey = await _byokRepository.hasKey(activeConfig.id);
     if (!hasKey) {
+      _logger.debug(
+        'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: ProviderGateFailureReason.missingKey,
@@ -43,6 +52,9 @@ class DefaultProviderGateService implements ProviderGateService {
     }
 
     if (activeConfig.selectedModel == null) {
+      _logger.debug(
+        'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: ProviderGateFailureReason.unsupportedModel,
@@ -52,6 +64,9 @@ class DefaultProviderGateService implements ProviderGateService {
 
     final isOnline = await _networkStatus.check();
     if (!isOnline) {
+      _logger.debug(
+        'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: ProviderGateFailureReason.offline,
@@ -65,6 +80,9 @@ class DefaultProviderGateService implements ProviderGateService {
     );
 
     if (capability == null) {
+      _logger.debug(
+        'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: ProviderGateFailureReason.capabilityUnknown,
@@ -74,6 +92,9 @@ class DefaultProviderGateService implements ProviderGateService {
 
     final missingCapability = _checkRequiredCapability(operation, capability);
     if (missingCapability != null) {
+      _logger.debug(
+        'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
+      );
       return ProviderGateDecision.blocked(
         operation: operation,
         reason: missingCapability,
@@ -81,6 +102,9 @@ class DefaultProviderGateService implements ProviderGateService {
       );
     }
 
+    _logger.debug(
+      'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: true',
+    );
     return ProviderGateDecision.allowed(operation: operation);
   }
 

@@ -1,13 +1,19 @@
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class WorkoutBuilderSupersetService {
   const WorkoutBuilderSupersetService();
+
+  static final _logger = AppLogger(name: 'WorkoutBuilderSupersetService');
 
   List<WorkoutBuilderExerciseDraft> createSuperset({
     required List<WorkoutBuilderExerciseDraft> exercises,
     required List<String> selectedExerciseIds,
     required String groupId,
   }) {
+    _logger.debug(
+      'createSuperset — groupId: $groupId, members: ${selectedExerciseIds.length}',
+    );
     if (selectedExerciseIds.length < 2) return exercises;
 
     final selectedSet = selectedExerciseIds.toSet();

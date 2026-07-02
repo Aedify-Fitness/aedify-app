@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/ai_provider_config_dao.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
@@ -19,6 +20,8 @@ class DriftByokRepository implements ByokRepository {
     required SecureStorageService secureStorageService,
   }) : _configDao = configDao,
        _secureStorageService = secureStorageService;
+
+  static final _logger = AppLogger(name: 'DriftByokRepository');
 
   final AiProviderConfigDao _configDao;
   final SecureStorageService _secureStorageService;
@@ -134,6 +137,7 @@ class DriftByokRepository implements ByokRepository {
 
   @override
   Future<String> saveConfig(ByokEditDraft draft) async {
+    _logger.info('saveConfig — provider: ${draft.providerName?.name}');
     final now = DateTime.now();
     final configId = draft.configId ?? const Uuid().v4();
     final alias = configId;
@@ -166,6 +170,7 @@ class DriftByokRepository implements ByokRepository {
     required AiProviderName providerName,
     required String newApiKey,
   }) async {
+    _logger.info('rotateKey — configId: $configId');
     final alias = configId;
     await _secureStorageService.rotateProviderApiKey(alias, newApiKey);
     final now = DateTime.now();
@@ -181,6 +186,7 @@ class DriftByokRepository implements ByokRepository {
 
   @override
   Future<void> deleteConfig(String configId) async {
+    _logger.info('deleteConfig — configId: $configId');
     final alias = configId;
     await _secureStorageService.deleteProviderApiKey(alias);
     await _configDao.deleteConfig(configId);
@@ -206,11 +212,17 @@ class DriftByokRepository implements ByokRepository {
     required AiProviderName providerName,
     required String apiKey,
   }) async {
-    final result = await ProviderKeyValidator.validate(
-      providerName: providerName,
-      apiKey: apiKey,
-    );
-    return result.isValid;
+    _logger.info('validateKey — provider: ${providerName.name}');
+    try {
+      final result = await ProviderKeyValidator.validate(
+        providerName: providerName,
+        apiKey: apiKey,
+      );
+      return result.isValid;
+    } catch (e) {
+      _logger.error('validateKey — failed: ${providerName.name}', error: e);
+      rethrow;
+    }
   }
 
   ByokConfigViewData _toViewData(AiProviderConfig row, bool hasKey) {

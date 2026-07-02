@@ -1,4 +1,5 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/application/custom_exercise_editor_phase.dart';
 import 'package:aedify/features/exercise_library/application/custom_exercise_editor_state.dart';
@@ -15,6 +16,8 @@ typedef CustomExerciseEditorArgs = ({
 
 class CustomExerciseEditorController
     extends AsyncNotifier<CustomExerciseEditorState> {
+  static final _logger = AppLogger(name: 'CustomExerciseEditorController');
+
   CustomExerciseEditorController({required this.mode, this.exerciseId});
 
   final CustomExerciseEditorMode mode;
@@ -22,6 +25,7 @@ class CustomExerciseEditorController
 
   @override
   Future<CustomExerciseEditorState> build() async {
+    _logger.info('build — mode: ${mode.name}');
     if (mode == CustomExerciseEditorMode.create) {
       final draft = await ref
           .read(AppProviders.loadCustomExerciseDraftUseCaseProvider)
@@ -152,10 +156,15 @@ class CustomExerciseEditorController
     final errors = validator.validate(current.draft);
 
     if (errors.isNotEmpty) {
+      _logger.info(
+        'save — validation errors',
+        metadata: {'count': errors.length},
+      );
       state = AsyncData(current.copyWith(validationErrors: errors));
       return;
     }
 
+    _logger.info('save');
     state = AsyncData(
       current.copyWith(
         phase: CustomExerciseEditorPhase.saving,
@@ -168,6 +177,7 @@ class CustomExerciseEditorController
         final id = await ref
             .read(AppProviders.saveCustomExerciseUseCaseProvider)
             .create(current.draft);
+        _logger.info('save — success (create)', metadata: {'exerciseId': id});
         state = AsyncData(
           current.copyWith(
             phase: CustomExerciseEditorPhase.saved,
@@ -179,6 +189,10 @@ class CustomExerciseEditorController
         await ref
             .read(AppProviders.saveCustomExerciseUseCaseProvider)
             .update(exerciseId: current.exerciseId!, draft: current.draft);
+        _logger.info(
+          'save — success (update)',
+          metadata: {'exerciseId': current.exerciseId},
+        );
         state = AsyncData(
           current.copyWith(
             phase: CustomExerciseEditorPhase.saved,
@@ -187,6 +201,7 @@ class CustomExerciseEditorController
         );
       }
     } catch (e) {
+      _logger.error('save — failure', error: e);
       state = AsyncData(
         current.copyWith(
           phase: CustomExerciseEditorPhase.failure,

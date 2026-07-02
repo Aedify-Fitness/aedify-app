@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/programmes/data/programme_repository.dart';
@@ -28,6 +29,8 @@ class StartWorkoutSessionUseCase {
        _mapper = mapper,
        _uuid = uuid ?? const Uuid();
 
+  static final _logger = AppLogger(name: 'StartWorkoutSessionUseCase');
+
   final WorkoutSessionRepository _workoutSessionRepository;
   final SavedWorkoutRepository _savedWorkoutRepository;
   final ProgrammeRepository _programmeRepository;
@@ -38,6 +41,7 @@ class StartWorkoutSessionUseCase {
   Future<WorkoutRunnerSessionViewData> startFromSavedWorkout(
     String savedWorkoutId,
   ) async {
+    _logger.info('startFromSavedWorkout — id: $savedWorkoutId');
     final aggregate = await _savedWorkoutRepository.getSavedWorkout(
       savedWorkoutId,
     );
@@ -99,6 +103,7 @@ class StartWorkoutSessionUseCase {
     final aggregateResult = await _workoutSessionRepository.getSession(
       sessionId,
     );
+    _logger.info('startFromSavedWorkout — success: $sessionId');
     return _mapper.toViewData(aggregateResult!);
   }
 
@@ -106,6 +111,9 @@ class StartWorkoutSessionUseCase {
     required String programId,
     required String programWorkoutId,
   }) async {
+    _logger.info(
+      'startFromProgramWorkout — programId: $programId, workoutId: $programWorkoutId',
+    );
     final aggregate = await _programmeRepository.getProgramme(programId);
     if (aggregate == null) {
       throw StateError('Programme not found: $programId');
@@ -176,6 +184,7 @@ class StartWorkoutSessionUseCase {
     final aggregateResult = await _workoutSessionRepository.getSession(
       sessionId,
     );
+    _logger.info('startFromProgramWorkout — success: $sessionId');
     return _mapper.toViewData(aggregateResult!);
   }
 

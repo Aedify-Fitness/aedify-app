@@ -6,11 +6,15 @@ import 'package:aedify/core/validation/validated_workout_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_validation_error.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class WorkoutBuilderValidationAdapter {
   const WorkoutBuilderValidationAdapter();
 
+  static final _logger = AppLogger(name: 'WorkoutBuilderValidationAdapter');
+
   ValidatedWorkoutDraft toValidatedDraft(WorkoutBuilderDraft draft) {
+    _logger.debug('toValidatedDraft — exercises: ${draft.exercises.length}');
     return ValidatedWorkoutDraft(
       name: draft.name,
       exercises: draft.exercises

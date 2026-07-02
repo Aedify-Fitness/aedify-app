@@ -12,6 +12,7 @@ import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.d
 import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_exercise_draft.dart';
 import 'package:aedify/shared/domain/enum_codec.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
   DriftSavedWorkoutRepository({
@@ -24,6 +25,8 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
        _savedWorkoutExerciseSetDao = savedWorkoutExerciseSetDao,
        _transactionExecutor = transactionExecutor;
 
+  static final _logger = AppLogger(name: 'DriftSavedWorkoutRepository');
+
   final SavedWorkoutDao _savedWorkoutDao;
   final SavedWorkoutExerciseDao _savedWorkoutExerciseDao;
   final SavedWorkoutExerciseSetDao _savedWorkoutExerciseSetDao;
@@ -31,6 +34,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   @override
   Future<SavedWorkoutAggregate?> getSavedWorkout(String id) async {
+    _logger.info('getSavedWorkout — id: $id');
     final savedWorkout = await _savedWorkoutDao.getById(id);
     if (savedWorkout == null) return null;
     return _buildAggregate(savedWorkout);
@@ -40,6 +44,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
   Future<List<SavedWorkoutAggregate>> listSavedWorkouts({
     String? status,
   }) async {
+    _logger.info('listSavedWorkouts — status: $status');
     final workouts = status != null
         ? await _savedWorkoutDao.getByStatus(status)
         : await _savedWorkoutDao.getAll();
@@ -53,10 +58,14 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   @override
   Future<String> saveSavedWorkout(SavedWorkoutDraft draft) async {
+    _logger.info(
+      'saveSavedWorkout — name: ${draft.name}, exercises: ${draft.exercises.length}',
+    );
     final savedWorkoutId = draft.id;
     final now = DateTime.now();
     final existing = await _savedWorkoutDao.getById(savedWorkoutId);
 
+    _logger.info('saveSavedWorkout — starting transaction');
     await _transactionExecutor.execute(
       operationName: 'saved_workout.save',
       steps: _buildSaveSavedWorkoutSteps(
@@ -67,6 +76,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       ),
     );
 
+    _logger.info('saveSavedWorkout — success: $savedWorkoutId');
     return savedWorkoutId;
   }
 

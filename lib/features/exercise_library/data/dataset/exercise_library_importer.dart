@@ -5,6 +5,7 @@ import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/enums/library_sync_status.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_exercise.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_manifest.dart';
@@ -14,6 +15,8 @@ import 'package:aedify/shared/constants/db_constants.dart';
 import 'package:uuid/uuid.dart';
 
 class ExerciseLibraryImporter {
+  static final _logger = AppLogger(name: 'ExerciseLibraryImporter');
+
   ExerciseLibraryImporter({
     required AppDatabase database,
     required ExerciseDao exerciseDao,
@@ -34,6 +37,10 @@ class ExerciseLibraryImporter {
     required ExerciseDatasetManifest manifest,
     required DateTime downloadedAt,
   }) async {
+    _logger.info(
+      'importDataset — start',
+      metadata: {'exerciseCount': dataset.exercises.length},
+    );
     try {
       return await _database.inTransaction(() async {
         final preservedState = await _preserveUserState(dataset);
@@ -42,6 +49,10 @@ class ExerciseLibraryImporter {
           dataset.exercises.map((e) => e.id).toList(),
         );
         await _exerciseDao.deleteSourceExercises();
+        _logger.info(
+          'importDataset — old source exercises deleted',
+          metadata: {'deleteCount': dataset.exercises.length},
+        );
 
         final now = DateTime.now();
         final exerciseCompanions = dataset.exercises
@@ -61,10 +72,14 @@ class ExerciseLibraryImporter {
         }
 
         await _exerciseDao.insertExercisesBulk(exerciseCompanions);
+        _logger.info(
+          'importDataset — exercises inserted',
+          metadata: {'insertCount': exerciseCompanions.length},
+        );
         if (videoCompanions.isNotEmpty) {
           await _exerciseVideoDao.insertVideosBulk(videoCompanions);
         }
-
+        _logger.info('importDataset — restoring user state');
         await _restoreUserState(preservedState);
 
         final metaCompanion = _toLibraryMetaCompanion(
@@ -75,6 +90,10 @@ class ExerciseLibraryImporter {
         );
         await _libraryMetaDao.upsertLibraryMeta(metaCompanion);
 
+        _logger.info(
+          'importDataset — complete',
+          metadata: {'importedExerciseCount': dataset.exercises.length},
+        );
         return ExerciseLibraryImportResult(
           importedExerciseCount: dataset.exercises.length,
           importedVideoCount: videoCompanions.length,
@@ -84,6 +103,7 @@ class ExerciseLibraryImporter {
     } on ExerciseLibraryImportFailure {
       rethrow;
     } catch (e) {
+      _logger.error('importDataset — transaction failed', error: e);
       throw ExerciseLibraryImportFailure(
         code: ExerciseLibraryImportFailureCode.transactionFailed,
         message: e.toString(),

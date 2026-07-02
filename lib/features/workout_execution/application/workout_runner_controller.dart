@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/workout_execution/application/workout_runner_phase.dart';
@@ -18,6 +19,8 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     this.programWorkoutId,
   });
 
+  static final _logger = AppLogger(name: 'WorkoutRunnerController');
+
   final WorkoutRunnerMode mode;
   final String? savedWorkoutId;
   final String? programId;
@@ -26,6 +29,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
 
   @override
   Future<WorkoutRunnerState> build() async {
+    _logger.info('build — mode: ${mode.name}');
     ref.onDispose(() => _autoSaveTimer?.cancel());
     final startUseCase = ref.read(
       AppProviders.startWorkoutSessionUseCaseProvider,
@@ -54,6 +58,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       case WorkoutRunnerMode.savedWorkout:
         final id = savedWorkoutId;
         if (id == null) {
+          _logger.error('build — savedWorkout: missing ID');
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.savedWorkout,
             phase: WorkoutRunnerPhase.blocked,
@@ -68,6 +73,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
             session: session,
           );
         } catch (e) {
+          _logger.error('build — savedWorkout failed: $id', error: e);
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.savedWorkout,
             phase: WorkoutRunnerPhase.failure,
@@ -79,6 +85,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         final pId = programId;
         final pwId = programWorkoutId;
         if (pId == null || pwId == null) {
+          _logger.error('build — programWorkout: missing IDs');
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.programWorkout,
             phase: WorkoutRunnerPhase.blocked,
@@ -96,6 +103,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
             session: session,
           );
         } catch (e) {
+          _logger.error('build — programWorkout failed: $pId/$pwId', error: e);
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.programWorkout,
             phase: WorkoutRunnerPhase.failure,
@@ -106,6 +114,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   }
 
   Future<void> resumeRecoveredSession() async {
+    _logger.info('resumeRecoveredSession');
     final current = state.asData?.value;
     if (current == null || !current.hasRecoveredSession) return;
 
@@ -118,6 +127,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   }
 
   Future<void> discardRecoveredSession() async {
+    _logger.info('discardRecoveredSession');
     final current = state.asData?.value;
     if (current == null || !current.hasRecoveredSession) return;
 
@@ -143,6 +153,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     required String setId,
     required WorkoutRunnerSetItem updatedSet,
   }) async {
+    _logger.debug('updateSet — exerciseId: $exerciseId, setId: $setId');
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -164,6 +175,9 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     required String setId,
     required bool completed,
   }) async {
+    _logger.debug(
+      'toggleSetCompleted — exerciseId: $exerciseId, setId: $setId, completed: $completed',
+    );
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -270,6 +284,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     final session = current.session;
     if (session == null) return;
 
+    _logger.debug('autoSave — sessionId: ${session.sessionId}');
     state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.saving));
 
     try {
@@ -279,6 +294,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       await saveUseCase.save(session);
       state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.ready));
     } catch (e) {
+      _logger.error('saveProgress — failed', error: e);
       state = AsyncData(
         current.copyWith(
           phase: WorkoutRunnerPhase.failure,
@@ -289,6 +305,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   }
 
   Future<void> completeWorkout() async {
+    _logger.info('completeWorkout');
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -339,6 +356,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         ),
       );
     } catch (e) {
+      _logger.error('completeWorkout — failed', error: e);
       final catchState = state.asData?.value;
       if (catchState == null) return;
       state = AsyncData(
@@ -351,6 +369,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   }
 
   Future<void> cancelWorkout() async {
+    _logger.info('abandonWorkout');
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -365,6 +384,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       await abandonUseCase.abandon(session.sessionId);
       state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.completed));
     } catch (e) {
+      _logger.error('abandonWorkout — failed', error: e);
       state = AsyncData(
         current.copyWith(
           phase: WorkoutRunnerPhase.failure,

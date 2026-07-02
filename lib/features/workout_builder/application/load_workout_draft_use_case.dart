@@ -15,15 +15,19 @@ import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
 import 'package:aedify/shared/domain/exercise_role.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class LoadWorkoutDraftUseCase {
   const LoadWorkoutDraftUseCase({
     required SavedWorkoutRepository savedWorkoutRepository,
   }) : _savedWorkoutRepository = savedWorkoutRepository;
 
+  static final _logger = AppLogger(name: 'LoadWorkoutDraftUseCase');
+
   final SavedWorkoutRepository _savedWorkoutRepository;
 
   Future<WorkoutBuilderDraft> createEmptyDraft() async {
+    _logger.debug('createEmptyDraft');
     return WorkoutBuilderDraft(
       id: const Uuid().v4(),
       name: '',
@@ -37,10 +41,12 @@ class LoadWorkoutDraftUseCase {
   }
 
   Future<WorkoutBuilderDraft> loadForEdit(String savedWorkoutId) async {
+    _logger.debug('loadForEdit — id: $savedWorkoutId');
     final aggregate = await _savedWorkoutRepository.getSavedWorkout(
       savedWorkoutId,
     );
     if (aggregate == null) {
+      _logger.error('loadForEdit — workout not found: $savedWorkoutId');
       throw Exception(AppErrorStrings.workoutNotFoundWithId(savedWorkoutId));
     }
 

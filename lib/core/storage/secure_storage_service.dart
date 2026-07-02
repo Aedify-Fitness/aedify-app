@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -12,6 +13,8 @@ class SecureStorageFailure implements Exception {
 }
 
 class SecureStorageService {
+  static final _logger = AppLogger(name: 'SecureStorageService');
+
   SecureStorageService({FlutterSecureStorage? storage})
     : _storage = storage ?? const FlutterSecureStorage();
 
@@ -24,7 +27,8 @@ class SecureStorageService {
   Future<T> _run<T>(String code, Future<T> Function() action) async {
     try {
       return await action();
-    } catch (_) {
+    } catch (e) {
+      _logger.error('_run failed — code: $code', error: e);
       throw SecureStorageFailure(
         code: code,
         message: AppErrorStrings.secureStorageUnavailableMessage,
@@ -32,10 +36,14 @@ class SecureStorageService {
     }
   }
 
-  Future<void> saveProviderApiKey(String alias, String value) => _run(
-    'secure_storage_write_failed',
-    () => _storage.write(key: _aliasKey(alias), value: value),
-  );
+  Future<void> saveProviderApiKey(String alias, String value) {
+    final key = _aliasKey(alias);
+    _logger.info('save — key: $key');
+    return _run(
+      'secure_storage_write_failed',
+      () => _storage.write(key: key, value: value),
+    );
+  }
 
   Future<String?> readProviderApiKey(String alias) => _run(
     'secure_storage_read_failed',

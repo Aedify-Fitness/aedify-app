@@ -14,15 +14,19 @@ import 'package:aedify/features/workout_builder/application/workout_builder_stat
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   WorkoutBuilderController(this.mode, this.savedWorkoutId);
+
+  static final _logger = AppLogger(name: 'WorkoutBuilderController');
 
   final WorkoutBuilderMode mode;
   final String? savedWorkoutId;
 
   @override
   Future<WorkoutBuilderState> build() async {
+    _logger.info('build — mode: $mode');
     final loadUseCase = ref.read(AppProviders.loadWorkoutDraftUseCaseProvider);
 
     if (mode == WorkoutBuilderMode.create) {
@@ -79,6 +83,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   }
 
   Future<void> renameWorkout(String value) async {
+    _logger.debug('renameWorkout — $value');
     final current = state.asData?.value;
     if (current == null) return;
     state = AsyncData(
@@ -104,6 +109,9 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises;
+    _logger.debug(
+      'addExercise — ${exercise.name}, count: ${exercises.length + 1}',
+    );
     final newExercise = WorkoutBuilderExerciseDraft(
       id: _newId(),
       exercise: exercise,
@@ -126,6 +134,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   }
 
   Future<void> removeExercise(String exerciseDraftId) async {
+    _logger.debug('removeExercise — $exerciseDraftId');
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises
@@ -190,6 +199,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     String exerciseDraftId, {
     SetType setType = SetType.working,
   }) async {
+    _logger.debug('addSet — exercise: $exerciseDraftId, setType: $setType');
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises.map((e) {
@@ -247,6 +257,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     required String setId,
     required SetPrescriptionDraft prescription,
   }) async {
+    _logger.debug('updateSet — exercise: $exerciseDraftId, set: $setId');
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises.map((e) {
@@ -268,6 +279,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     required String exerciseDraftId,
     required String setId,
   }) async {
+    _logger.debug('removeSet — exercise: $exerciseDraftId, set: $setId');
     final current = state.asData?.value;
     if (current == null) return;
     final exercises = current.draft.exercises.map((e) {
@@ -286,11 +298,16 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   }
 
   Future<void> saveWorkout() async {
+    _logger.info('saveWorkout — start');
     final current = state.asData?.value;
     if (current == null) return;
 
     final validator = ref.read(AppProviders.workoutBuilderValidatorProvider);
     final errors = validator.validate(current.draft);
+
+    _logger.info(
+      'saveWorkout — validation: ${errors.isEmpty ? "pass" : "fail"}, errors: ${errors.length}',
+    );
 
     if (errors.isNotEmpty) {
       state = AsyncData(
@@ -319,6 +336,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         ),
       );
     } catch (e) {
+      _logger.error('saveWorkout — failure', error: e);
       state = AsyncData(
         current.copyWith(
           phase: WorkoutBuilderPhase.failure,
@@ -332,6 +350,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   // V1-M4-008 — superset / execution groups
 
   Future<void> createSuperset(List<String> selectedExerciseIds) async {
+    _logger.debug('createSuperset — members: ${selectedExerciseIds.length}');
     final current = state.asData?.value;
     if (current == null || selectedExerciseIds.length < 2) return;
 

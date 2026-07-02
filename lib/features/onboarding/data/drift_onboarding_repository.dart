@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
@@ -21,6 +22,8 @@ class DriftOnboardingRepository implements OnboardingRepository {
     : _dao = UserProfileDao(database),
       _strengthAnchorDao = StrengthAnchorDao(database);
 
+  static final _logger = AppLogger(name: 'DriftOnboardingRepository');
+
   final UserProfileDao _dao;
   final StrengthAnchorDao _strengthAnchorDao;
 
@@ -39,6 +42,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
 
   @override
   Future<void> saveOnboardingDraft(OnboardingDraft draft) async {
+    _logger.info('save');
     final now = DateTime.now();
     final existing = await _dao.getProfile();
     await _dao.upsertProfile(
@@ -76,6 +80,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
 
   @override
   Future<void> completeOnboarding(OnboardingDraft draft) async {
+    _logger.info('complete');
     final now = DateTime.now();
     await saveOnboardingDraft(draft);
 

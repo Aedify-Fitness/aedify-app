@@ -30,7 +30,9 @@ class ExerciseDatasetDownloadService {
 
   Future<ExerciseDatasetManifest> fetchManifest() async {
     try {
+      _logger.info('Auth — ensureAnonymousSignIn');
       await _authService.ensureAnonymousSignIn();
+      _logger.info('Auth — success');
     } on FirebaseAuthFailure catch (e) {
       _logger.error('Manifest fetch failed: auth error', error: e);
       throw ExerciseDatasetDownloadFailure(
@@ -42,7 +44,9 @@ class ExerciseDatasetDownloadService {
 
     late String rawJson;
     try {
+      _logger.info('Manifest fetch — start');
       rawJson = await _storageClient.getText(manifestRemotePath);
+      _logger.info('Manifest fetch — success');
     } on FirebaseStorageFailure catch (e) {
       _logger.error('Manifest fetch failed: storage error', error: e);
       throw ExerciseDatasetDownloadFailure(
@@ -68,6 +72,7 @@ class ExerciseDatasetDownloadService {
   }
 
   Future<ExerciseDatasetDownloadResult> downloadActiveDataset() async {
+    _logger.info('Download active dataset — start');
     final manifest = await fetchManifest();
 
     final compatible = hasCompatibleMinimumAppSchema(manifest);
@@ -85,6 +90,10 @@ class ExerciseDatasetDownloadService {
     final tempFile = File('${tempDir.path}/${manifest.datasetVersion}.json');
 
     try {
+      _logger.info(
+        'Dataset file download — start',
+        metadata: {'remotePath': manifest.active.path},
+      );
       await _storageClient.downloadToFile(
         remotePath: manifest.active.path,
         localPath: tempFile.path,
@@ -110,6 +119,11 @@ class ExerciseDatasetDownloadService {
     await _verifyDownloadedFile(file: tempFile, active: manifest.active);
 
     final relativePath = await _fileStore.toRelativePath(tempFile.path);
+
+    _logger.info(
+      'Download active dataset — success',
+      metadata: {'localRelativePath': relativePath},
+    );
 
     return ExerciseDatasetDownloadResult(
       manifest: manifest,

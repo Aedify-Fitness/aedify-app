@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class NetworkStatus {
+  static final _logger = AppLogger(name: 'NetworkStatus');
   static const connectivityCheckHost = 'google.com';
   NetworkStatus() {
     _monitor();
@@ -35,6 +37,7 @@ class NetworkStatus {
     } on SocketException {
       _isOnline = false;
     }
+    _logger.info('check — result: $_isOnline');
     return _isOnline;
   }
 

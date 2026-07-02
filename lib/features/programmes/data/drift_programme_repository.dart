@@ -26,6 +26,7 @@ import 'package:aedify/shared/domain/loading_model.dart';
 import 'package:aedify/shared/domain/set_intent.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/weight_prescription_type.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
@@ -52,6 +53,8 @@ class DriftProgrammeRepository implements ProgrammeRepository {
        _transactionExecutor = transactionExecutor,
        _uuid = uuid ?? const Uuid();
 
+  static final _logger = AppLogger(name: 'DriftProgrammeRepository');
+
   final ProgramDao _programDao;
   final ProgramWorkoutTemplateDao _programWorkoutTemplateDao;
   final ProgramTemplateExerciseDao _programTemplateExerciseDao;
@@ -66,6 +69,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
   @override
   Future<ProgrammeAggregate?> getProgramme(String id) async {
+    _logger.info('getProgramme — id: $id');
     final program = await _programDao.getById(id);
     if (program == null) return null;
     return _buildAggregate(program);
@@ -76,6 +80,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
     String? status,
     bool activeOnly = false,
   }) async {
+    _logger.info('listProgrammes — status: $status, activeOnly: $activeOnly');
     final programs = status != null
         ? await _programDao.getByStatus(status)
         : await _programDao.getAll();
@@ -90,10 +95,12 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
   @override
   Future<String> saveProgramme(ProgrammeDraft draft) async {
+    _logger.info('saveProgramme — name: ${draft.name}');
     final programId = draft.id;
     final now = DateTime.now();
     final existing = await _programDao.getById(programId);
 
+    _logger.info('saveProgramme — starting transaction');
     await _transactionExecutor.execute(
       operationName: 'programme.save',
       steps: _buildSaveProgrammeSteps(
@@ -104,6 +111,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       ),
     );
 
+    _logger.info('saveProgramme — success: $programId');
     return programId;
   }
 

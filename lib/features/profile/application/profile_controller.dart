@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
@@ -64,8 +65,11 @@ class ProfileState {
 }
 
 class ProfileController extends AsyncNotifier<ProfileState> {
+  static final _logger = AppLogger(name: 'ProfileController');
+
   @override
   Future<ProfileState> build() async {
+    _logger.info('build');
     final repository = ref.read(AppProviders.profileRepositoryProvider);
     try {
       final profile = await repository.getProfile();
@@ -103,6 +107,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
         impact: impact,
       );
     } catch (e) {
+      _logger.error('build — failed', error: e);
       return ProfileState(
         isLoading: false,
         errorCode: AppErrorCodes.profileLoadFailed,
@@ -136,8 +141,10 @@ class ProfileController extends AsyncNotifier<ProfileState> {
     final current = state.requireValue;
     if (current.draft == null) return;
 
+    _logger.info('saveProfile');
     final validationMessage = _validateDraft(current.draft!);
     if (validationMessage != null) {
+      _logger.info('saveProfile — validation failed: $validationMessage');
       state = AsyncData(current.copyWith(validationMessage: validationMessage));
       return;
     }
@@ -148,6 +155,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
       final repository = ref.read(AppProviders.profileRepositoryProvider);
       await repository.saveProfile(current.draft!);
       final updatedProfile = await repository.getProfile();
+      _logger.info('saveProfile — success');
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -158,6 +166,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
         ),
       );
     } catch (e) {
+      _logger.error('saveProfile — failed', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,

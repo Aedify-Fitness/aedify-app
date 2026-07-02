@@ -8,29 +8,35 @@ import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class LoadProgrammeBuilderDraftUseCase {
   const LoadProgrammeBuilderDraftUseCase({
     required ProgrammeRepository programmeRepository,
   }) : _programmeRepository = programmeRepository;
 
+  static final _logger = AppLogger(name: 'LoadProgrammeBuilderDraftUseCase');
+
   final ProgrammeRepository _programmeRepository;
 
   Future<ProgrammeBuilderDraft> createEmptyDraft() async {
+    _logger.debug('createEmptyDraft');
     return ProgrammeBuilderDraft(
       id: const Uuid().v4(),
       name: '',
       source: WorkoutSource.manual,
       creationMethod: CreationMethod.manual,
-      status: ProgramStatus.draft,
+      status: ProgramStatus.inactive,
       weeks: [],
       templates: [],
     );
   }
 
   Future<ProgrammeBuilderDraft> loadForEdit(String programmeId) async {
+    _logger.debug('loadForEdit — id: $programmeId');
     final aggregate = await _programmeRepository.getProgramme(programmeId);
     if (aggregate == null) {
+      _logger.error('loadForEdit — programme not found: $programmeId');
       throw Exception(AppErrorStrings.programmeNotFoundWithId(programmeId));
     }
 

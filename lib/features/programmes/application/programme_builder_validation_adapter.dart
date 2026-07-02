@@ -8,11 +8,15 @@ import 'package:aedify/core/validation/validated_programme_week_draft.dart';
 import 'package:aedify/core/validation/validated_set_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_validation_error.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class ProgrammeBuilderValidationAdapter {
   const ProgrammeBuilderValidationAdapter();
 
+  static final _logger = AppLogger(name: 'ProgrammeBuilderValidationAdapter');
+
   ValidatedProgrammeDraft toValidatedDraft(ProgrammeBuilderDraft draft) {
+    _logger.debug('toValidatedDraft — weeks: ${draft.weeks?.length ?? 0}');
     return ValidatedProgrammeDraft(
       name: draft.name,
       templates: draft.templates != null ? _buildTemplateDrafts(draft) : [],

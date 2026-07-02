@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
@@ -10,10 +11,12 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   Timer? _draftSaveDebounceTimer;
   OnboardingDraft? _pendingDraftSave;
 
+  static final _logger = AppLogger(name: 'OnboardingController');
   static const _debounceDuration = Duration(milliseconds: 400);
 
   @override
   Future<OnboardingState> build() async {
+    _logger.info('build');
     ref.onDispose(() {
       _draftSaveDebounceTimer?.cancel();
     });
@@ -50,6 +53,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     final next = _nextStepFor(current.currentStep);
     if (next == null) return;
 
+    _logger.info('nextStep — ${current.currentStep.name} -> ${next.name}');
     state = AsyncData(
       current.copyWith(
         currentStep: next,
@@ -64,6 +68,9 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     final previous = _previousStepFor(current.currentStep);
     if (previous == null) return;
 
+    _logger.info(
+      'previousStep — ${current.currentStep.name} -> ${previous.name}',
+    );
     state = AsyncData(
       current.copyWith(
         currentStep: previous,
@@ -74,6 +81,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   void jumpToStep(OnboardingStep step) {
+    _logger.info('jumpToStep — ${step.name}');
     state = AsyncData(
       state.requireValue.copyWith(
         currentStep: step,
@@ -85,6 +93,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
 
   Future<void> completeOnboarding() async {
     final current = state.requireValue;
+    _logger.info('complete');
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));
 
     final validationMessage = _validateStep(current.currentStep, current.draft);
@@ -108,6 +117,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         ),
       );
     } catch (e) {
+      _logger.error('complete — failed', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -121,11 +131,13 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   Future<void> restartOnboarding() async {
     _draftSaveDebounceTimer?.cancel();
     _pendingDraftSave = null;
+    _logger.info('restart');
     try {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.clearOnboardingDraft();
       state = AsyncData(const OnboardingState.initial());
     } catch (e) {
+      _logger.error('restart — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
           errorCode: AppErrorCodes.onboardingClearFailed,
@@ -136,6 +148,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   Future<void> loadExistingDraft() async {
+    _logger.info('loadExistingDraft');
     try {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       final existing = await repository.loadOnboardingDraft();
@@ -149,6 +162,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         );
       }
     } catch (e) {
+      _logger.error('loadExistingDraft — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
           errorCode: AppErrorCodes.onboardingLoadFailed,
@@ -181,6 +195,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.saveOnboardingDraft(draft);
     } catch (e) {
+      _logger.error('_executePendingSave — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
           errorCode: AppErrorCodes.onboardingSaveFailed,

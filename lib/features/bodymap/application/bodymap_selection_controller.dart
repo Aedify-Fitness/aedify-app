@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_view_side.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,8 @@ class BodymapSelectionState {
 }
 
 class BodymapSelectionController extends Notifier<BodymapSelectionState> {
+  static final _logger = AppLogger(name: 'BodymapSelectionController');
+
   @override
   BodymapSelectionState build() {
     return const BodymapSelectionState(
@@ -32,6 +35,7 @@ class BodymapSelectionController extends Notifier<BodymapSelectionState> {
   }
 
   void selectBucket(BodymapBucket bucket) {
+    _logger.debug('selectMuscle — group: ${bucket.name}');
     state = state.copyWith(selectedBucket: bucket);
   }
 

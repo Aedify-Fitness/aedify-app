@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/validation/draft_validation_code.dart';
 import 'package:aedify/core/validation/draft_validation_issue.dart';
 import 'package:aedify/core/validation/draft_validation_path.dart';
@@ -15,6 +16,8 @@ import 'package:aedify/shared/domain/set_type.dart';
 
 class DefaultDraftValidationService implements DraftValidationService {
   const DefaultDraftValidationService();
+
+  static final _logger = AppLogger(name: 'DefaultDraftValidationService');
 
   static const _modalitiesWithoutWeight = {
     'bodyweight',
@@ -53,7 +56,9 @@ class DefaultDraftValidationService implements DraftValidationService {
 
     issues.addAll(_validateSupersets(draft.exercises));
 
-    return DraftValidationResult(issues: issues);
+    final result = DraftValidationResult(issues: issues);
+    _logger.debug('validateWorkoutDraft — issues: ${result.issues.length}');
+    return result;
   }
 
   @override
@@ -93,7 +98,9 @@ class DefaultDraftValidationService implements DraftValidationService {
     issues.addAll(_validateProgrammeWeeks(draft.weeks, draft.templates));
     issues.addAll(_validateProgrammeTemplates(draft.templates));
 
-    return DraftValidationResult(issues: issues);
+    final result = DraftValidationResult(issues: issues);
+    _logger.debug('validateProgrammeDraft — issues: ${result.issues.length}');
+    return result;
   }
 
   List<DraftValidationIssue> _validateExercise(

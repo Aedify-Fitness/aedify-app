@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/workout_execution/domain/set_log_draft.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/workout_execution/domain/workout_session_aggregate.dart';
@@ -14,7 +15,10 @@ import 'package:aedify/shared/domain/workout_session_status.dart';
 class WorkoutRunnerMapper {
   const WorkoutRunnerMapper();
 
+  static final _logger = AppLogger(name: 'WorkoutRunnerMapper');
+
   WorkoutRunnerSessionViewData toViewData(WorkoutSessionAggregate aggregate) {
+    _logger.debug('mapToViewData');
     final setLogsByExercise = <String, List<SetLog>>{};
     for (final log in aggregate.setLogs) {
       setLogsByExercise.putIfAbsent(log.workoutSessionExerciseId, () => []);

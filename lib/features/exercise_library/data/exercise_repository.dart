@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -47,6 +48,8 @@ abstract class ExerciseRepository {
 }
 
 class DriftExerciseRepository implements ExerciseRepository {
+  static final _logger = AppLogger(name: 'DriftExerciseRepository');
+
   DriftExerciseRepository({
     required AppDatabase database,
     CustomExerciseIdentityService? identityService,
@@ -63,6 +66,7 @@ class DriftExerciseRepository implements ExerciseRepository {
   Future<List<ExerciseListItem>> searchExercises(
     ExerciseFilterState filters,
   ) async {
+    _logger.debug('searchExercises');
     final exercises = await _exerciseDao.searchExercises(
       query: filters.searchQuery.isNotEmpty ? filters.searchQuery : null,
       muscleGroup: filters.muscleGroup?.label,
@@ -195,41 +199,47 @@ class DriftExerciseRepository implements ExerciseRepository {
 
   @override
   Future<int> createCustomExercise(CustomExerciseSeed seed) async {
-    final allIds = (await _exerciseDao.getAllExercises())
-        .map((e) => e.id)
-        .toSet();
-    final id = _identityService.nextCustomExerciseId(existingIds: allIds);
-    final uuid = _identityService.newCustomExerciseUuid();
-    final now = DateTime.now();
+    _logger.debug('createCustomExercise');
+    try {
+      final allIds = (await _exerciseDao.getAllExercises())
+          .map((e) => e.id)
+          .toSet();
+      final id = _identityService.nextCustomExerciseId(existingIds: allIds);
+      final uuid = _identityService.newCustomExerciseUuid();
+      final now = DateTime.now();
 
-    await _exerciseDao.insertCustomExercise(
-      ExercisesCompanion(
-        id: Value(id),
-        isCustom: const Value(true),
-        customExerciseUuid: Value(uuid),
-        source: Value(ExerciseSource.custom.dbValue),
-        name: Value(seed.name),
-        nameNormalized: Value(seed.name.toLowerCase()),
-        primaryMusclesJson: Value(
-          json.encode(seed.muscleGroups.map((e) => e.label).toList()),
+      await _exerciseDao.insertCustomExercise(
+        ExercisesCompanion(
+          id: Value(id),
+          isCustom: const Value(true),
+          customExerciseUuid: Value(uuid),
+          source: Value(ExerciseSource.custom.dbValue),
+          name: Value(seed.name),
+          nameNormalized: Value(seed.name.toLowerCase()),
+          primaryMusclesJson: Value(
+            json.encode(seed.muscleGroups.map((e) => e.label).toList()),
+          ),
+          muscleGroupsJson: Value(
+            json.encode(seed.muscleGroups.map((e) => e.label).toList()),
+          ),
+          modality: Value(seed.modality.dbValue),
+          equipment: seed.equipment != null
+              ? Value(seed.equipment!.dbValue)
+              : const Value(null),
+          difficulty: seed.difficulty != null
+              ? Value(seed.difficulty!.dbValue)
+              : const Value(null),
+          gripsJson: const Value('[]'),
+          stepsJson: Value(json.encode(seed.steps)),
+          createdAt: Value(now),
+          updatedAt: Value(now),
         ),
-        muscleGroupsJson: Value(
-          json.encode(seed.muscleGroups.map((e) => e.label).toList()),
-        ),
-        modality: Value(seed.modality.dbValue),
-        equipment: seed.equipment != null
-            ? Value(seed.equipment!.dbValue)
-            : const Value(null),
-        difficulty: seed.difficulty != null
-            ? Value(seed.difficulty!.dbValue)
-            : const Value(null),
-        gripsJson: const Value('[]'),
-        stepsJson: Value(json.encode(seed.steps)),
-        createdAt: Value(now),
-        updatedAt: Value(now),
-      ),
-    );
-    return id;
+      );
+      return id;
+    } catch (e) {
+      _logger.error('createCustomExercise — failure', error: e);
+      rethrow;
+    }
   }
 
   @override

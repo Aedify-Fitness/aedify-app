@@ -8,15 +8,21 @@ import 'package:aedify/features/workout_builder/domain/set_prescription_draft.da
     as builder_set;
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart'
     as repo_set;
+import 'package:aedify/core/logging/app_logger.dart';
 
 class SaveWorkoutDraftUseCase {
   const SaveWorkoutDraftUseCase({
     required SavedWorkoutRepository savedWorkoutRepository,
   }) : _savedWorkoutRepository = savedWorkoutRepository;
 
+  static final _logger = AppLogger(name: 'SaveWorkoutDraftUseCase');
+
   final SavedWorkoutRepository _savedWorkoutRepository;
 
   Future<String> save(WorkoutBuilderSaveRequest request) async {
+    _logger.info(
+      'save — name: ${request.draft.name}, exercises: ${request.draft.exercises.length}',
+    );
     final builderDraft = request.draft;
 
     final repoDraft = SavedWorkoutDraft(

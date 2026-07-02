@@ -3,15 +3,22 @@ import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_template_draft.dart';
+import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class SaveProgrammeBuilderDraftUseCase {
   const SaveProgrammeBuilderDraftUseCase({
     required ProgrammeRepository programmeRepository,
   }) : _programmeRepository = programmeRepository;
 
+  static final _logger = AppLogger(name: 'SaveProgrammeBuilderDraftUseCase');
+
   final ProgrammeRepository _programmeRepository;
 
   Future<String> save(ProgrammeBuilderDraft builderDraft) async {
+    _logger.info(
+      'save — name: ${builderDraft.name}, weeks: ${builderDraft.weeks?.length ?? 0}',
+    );
     final programmeDraft = _mapToProgrammeDraft(builderDraft);
     return _programmeRepository.saveProgramme(programmeDraft);
   }
@@ -23,7 +30,7 @@ class SaveProgrammeBuilderDraftUseCase {
       source: builderDraft.source,
       creationMethod: builderDraft.creationMethod,
       status: builderDraft.status,
-      active: builderDraft.active,
+      active: builderDraft.status == ProgramStatus.active,
       goalTags: builderDraft.goalTags ?? {},
       equipment: builderDraft.equipment ?? {},
       templates: builderDraft.templates != null

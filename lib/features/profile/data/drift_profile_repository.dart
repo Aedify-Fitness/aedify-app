@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
@@ -27,12 +28,15 @@ class DriftProfileRepository implements ProfileRepository {
        _userProfileDao = userProfileDao,
        _strengthAnchorDao = strengthAnchorDao;
 
+  static final _logger = AppLogger(name: 'DriftProfileRepository');
+
   final AppDatabase _database;
   final UserProfileDao _userProfileDao;
   final StrengthAnchorDao _strengthAnchorDao;
 
   @override
   Future<ProfileViewData?> getProfile() async {
+    _logger.debug('get');
     final profile = await _userProfileDao.getProfile();
     if (profile == null) return null;
 
@@ -83,6 +87,7 @@ class DriftProfileRepository implements ProfileRepository {
 
   @override
   Future<void> saveProfile(ProfileEditDraft draft) async {
+    _logger.info('save');
     final now = DateTime.now();
     await _database.inTransaction(() async {
       final existing = await _userProfileDao.getProfile();

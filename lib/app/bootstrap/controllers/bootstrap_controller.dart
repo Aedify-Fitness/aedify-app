@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 
 enum StartupPhase { initializing, success, failure }
@@ -37,8 +38,14 @@ class BootstrapState {
 }
 
 class BootstrapController extends Notifier<BootstrapState> {
+  static final _logger = AppLogger(name: 'BootstrapController');
+
   @override
   BootstrapState build() {
+    _logger.info(
+      'build — phase transition',
+      metadata: {'phase': 'initializing'},
+    );
     return const BootstrapState.initializing();
   }
 
@@ -65,7 +72,8 @@ class BootstrapController extends Notifier<BootstrapState> {
       state = BootstrapState.success(isOffline: offline);
     } on BootstrapFailure catch (f) {
       state = BootstrapState.failure(f);
-    } catch (e) {
+    } catch (e, s) {
+      _logger.error('build failed', error: e, stackTrace: s);
       state = BootstrapState.failure(
         BootstrapFailure(
           code: AppErrorCodes.startupError,

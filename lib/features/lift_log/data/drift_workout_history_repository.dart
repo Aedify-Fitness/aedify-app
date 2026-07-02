@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/db/daos/set_log_dao.dart';
 import 'package:aedify/core/db/daos/workout_session_dao.dart';
 import 'package:aedify/core/db/daos/workout_session_exercise_dao.dart';
@@ -17,12 +18,16 @@ class DriftWorkoutHistoryRepository implements WorkoutHistoryRepository {
   }) : _workoutSessionDao = workoutSessionDao,
        _workoutSessionExerciseDao = workoutSessionExerciseDao,
        _setLogDao = setLogDao;
+
+  static final _logger = AppLogger(name: 'DriftWorkoutHistoryRepository');
+
   final WorkoutSessionDao _workoutSessionDao;
   final WorkoutSessionExerciseDao _workoutSessionExerciseDao;
   final SetLogDao _setLogDao;
 
   @override
   Future<List<WorkoutHistoryListItem>> listCompletedSessions() async {
+    _logger.debug('listCompleted');
     final sessions = await _workoutSessionDao.getCompletedSessions();
     return sessions.map((s) {
       final source = SessionSource.fromDb(s.source) ?? SessionSource.standalone;
@@ -42,6 +47,7 @@ class DriftWorkoutHistoryRepository implements WorkoutHistoryRepository {
   Future<WorkoutHistoryDetailViewData?> getSessionDetail(
     String sessionId,
   ) async {
+    _logger.debug('getDetail — sessionId: $sessionId');
     final session = await _workoutSessionDao.getById(sessionId);
     if (session == null) return null;
 

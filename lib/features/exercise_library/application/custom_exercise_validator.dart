@@ -1,8 +1,11 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_draft.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_validation_error.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 
 class CustomExerciseValidator {
+  static final _logger = AppLogger(name: 'CustomExerciseValidator');
+
   const CustomExerciseValidator();
 
   List<CustomExerciseValidationError> validate(CustomExerciseDraft draft) {
@@ -41,6 +44,7 @@ class CustomExerciseValidator {
       }
     }
 
+    _logger.debug('validate — issues: ${errors.length}');
     return errors;
   }
 }

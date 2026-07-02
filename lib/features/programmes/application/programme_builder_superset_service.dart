@@ -1,13 +1,17 @@
 import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class ProgrammeBuilderSupersetService {
   const ProgrammeBuilderSupersetService();
+
+  static final _logger = AppLogger(name: 'ProgrammeBuilderSupersetService');
 
   List<ProgrammeExerciseDraft> createSuperset({
     required List<ProgrammeExerciseDraft> exercises,
     required List<String> selectedExerciseIds,
     required String groupId,
   }) {
+    _logger.debug('createSuperset — groupId: $groupId');
     if (selectedExerciseIds.length < 2) return exercises;
 
     final selectedSet = selectedExerciseIds.toSet();

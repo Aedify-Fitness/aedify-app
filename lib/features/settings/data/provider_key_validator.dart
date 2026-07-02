@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:dio/dio.dart';
@@ -12,12 +13,16 @@ class KeyValidationResult {
 class ProviderKeyValidator {
   ProviderKeyValidator._();
 
+  static final _logger = AppLogger(name: 'ProviderKeyValidator');
+
   static Future<KeyValidationResult> validate({
     required AiProviderName providerName,
     required String apiKey,
   }) async {
+    _logger.info('validate — provider: ${providerName.name}');
     final endpoint = _endpointFor(providerName);
     if (endpoint == null) {
+      _logger.info('validate — provider unsupported: ${providerName.name}');
       return const KeyValidationResult(
         isValid: false,
         errorCode: AppErrorCodes.unsupportedProvider,
@@ -43,18 +48,22 @@ class ProviderKeyValidator {
           },
         ),
       );
+      _logger.info('validate — valid: ${providerName.name}');
       return const KeyValidationResult(isValid: true);
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       if (statusCode == 401 || statusCode == 403) {
+        _logger.info('validate — invalid key: ${providerName.name}');
         return KeyValidationResult(
           isValid: false,
           errorCode: AppErrorCodes.invalidKey,
         );
       }
       if (statusCode == 200 || statusCode == 201 || statusCode == 202) {
+        _logger.info('validate — valid: ${providerName.name}');
         return const KeyValidationResult(isValid: true);
       }
+      _logger.error('validate — failed: ${providerName.name}', error: e);
       return KeyValidationResult(
         isValid: false,
         errorCode: AppErrorCodes.validationFailed,

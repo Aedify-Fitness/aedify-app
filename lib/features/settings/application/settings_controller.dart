@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/settings_edit_draft.dart';
 import 'package:aedify/features/settings/domain/settings_view_data.dart';
@@ -49,8 +50,11 @@ class SettingsState {
 }
 
 class SettingsController extends AsyncNotifier<SettingsState> {
+  static final _logger = AppLogger(name: 'SettingsController');
+
   @override
   Future<SettingsState> build() async {
+    _logger.info('build');
     final repository = ref.read(AppProviders.settingsRepositoryProvider);
     try {
       final viewData = await repository.getSettings();
@@ -68,6 +72,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
         ),
       );
     } catch (e) {
+      _logger.error('build — failed', error: e);
       return SettingsState(
         isLoading: false,
         errorCode: AppErrorCodes.settingsLoadFailed,
@@ -85,12 +90,14 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     final current = state.requireValue;
     if (current.editDraft == null) return;
 
+    _logger.info('saveSettings');
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));
 
     try {
       final repository = ref.read(AppProviders.settingsRepositoryProvider);
       await repository.saveSettings(current.editDraft!);
       final updated = await repository.getSettings();
+      _logger.info('saveSettings — success');
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -108,6 +115,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
         ),
       );
     } catch (e) {
+      _logger.error('saveSettings — failed', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,

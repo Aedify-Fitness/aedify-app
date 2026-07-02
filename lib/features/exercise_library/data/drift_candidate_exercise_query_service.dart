@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/candidate_exercise_query_service.dart';
 import 'package:aedify/features/exercise_library/domain/candidate_exercise_dto.dart';
@@ -16,6 +17,8 @@ import 'package:aedify/shared/domain/goal_tag.dart';
 
 class DriftCandidateExerciseQueryService
     implements CandidateExerciseQueryService {
+  static final _logger = AppLogger(name: 'DriftCandidateExerciseQueryService');
+
   DriftCandidateExerciseQueryService({required AppDatabase database})
     : _dao = ExerciseDao(database);
 
@@ -25,6 +28,7 @@ class DriftCandidateExerciseQueryService
   Future<List<CandidateExerciseDto>> queryCandidates(
     CandidateExerciseQuery query,
   ) async {
+    _logger.debug('queryCandidates');
     final rows = await _dao.getExercisesForCandidateEngine(
       includeCustomExercises: query.includeCustomExercises,
     );

@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
@@ -69,8 +70,11 @@ class ByokSetupState {
 }
 
 class ByokSetupController extends AsyncNotifier<ByokSetupState> {
+  static final _logger = AppLogger(name: 'ByokSetupController');
+
   @override
   Future<ByokSetupState> build() async {
+    _logger.info('build');
     final repository = ref.read(AppProviders.byokRepositoryProvider);
     try {
       final providerOptions = await repository.getProviderOptions();
@@ -81,6 +85,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
         configs: configs,
       );
     } catch (e) {
+      _logger.error('build — failed', error: e);
       return ByokSetupState(
         isLoading: false,
         providerOptions: [],
@@ -126,6 +131,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       return;
     }
 
+    _logger.info('saveConfig — provider: ${draft.providerName!.name}');
     state = AsyncData(current.copyWith(isTesting: true, clearError: true));
 
     try {
@@ -136,6 +142,9 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       );
 
       if (!isValid) {
+        _logger.info(
+          'saveConfig — key validation failed: ${draft.providerName!.name}',
+        );
         state = AsyncData(
           current.copyWith(
             isTesting: false,
@@ -149,10 +158,15 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
       await repository.saveConfig(draft);
       final configs = await repository.getConfigs();
+      _logger.info('saveConfig — success: ${draft.providerName!.name}');
       state = AsyncData(
         current.copyWith(isSaving: false, configs: configs, clearDraft: true),
       );
     } catch (e) {
+      _logger.error(
+        'saveConfig — failed: ${draft.providerName!.name}',
+        error: e,
+      );
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -170,6 +184,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     required String newApiKey,
   }) async {
     final current = state.requireValue;
+    _logger.info('rotateKey — configId: $configId');
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));
 
     try {
@@ -182,6 +197,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       final configs = await repository.getConfigs();
       state = AsyncData(current.copyWith(isSaving: false, configs: configs));
     } catch (e) {
+      _logger.error('rotateKey — failed: $configId', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -194,12 +210,14 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
   Future<void> deleteConfig(String configId) async {
     final current = state.requireValue;
+    _logger.info('deleteConfig — configId: $configId');
     try {
       final repository = ref.read(AppProviders.byokRepositoryProvider);
       await repository.deleteConfig(configId);
       final configs = await repository.getConfigs();
       state = AsyncData(current.copyWith(configs: configs));
     } catch (e) {
+      _logger.error('deleteConfig — failed: $configId', error: e);
       state = AsyncData(
         current.copyWith(
           errorCode: AppErrorCodes.byokDeleteFailed,
