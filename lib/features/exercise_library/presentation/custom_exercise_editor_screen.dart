@@ -124,7 +124,15 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     FilledButton(
-                      onPressed: () => Navigator.of(context).pop(true),
+                      onPressed: () {
+                        ref.invalidate(
+                          AppProviders.customExerciseEditorControllerProvider((
+                            mode: CustomExerciseEditorMode.create,
+                            exerciseId: null,
+                          )),
+                        );
+                        Navigator.of(context).pop(true);
+                      },
                       child: const Text(AppStrings.done),
                     ),
                   ],
