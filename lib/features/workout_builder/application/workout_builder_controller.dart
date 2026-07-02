@@ -82,6 +82,25 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     }
   }
 
+  Future<void> updateExerciseRest(
+    String exerciseDraftId,
+    int? restSeconds,
+  ) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final exercises = current.draft.exercises.map((e) {
+      if (e.id != exerciseDraftId) return e;
+      return e.copyWith(restBetweenExercisesSeconds: restSeconds);
+    }).toList();
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
+        isDirty: true,
+      ),
+    );
+  }
+
   Future<void> renameWorkout(String value) async {
     _logger.debug('renameWorkout — $value');
     final current = state.asData?.value;
@@ -89,6 +108,17 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     state = AsyncData(
       current.copyWith(
         draft: current.draft.copyWith(name: value),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> updateRestBetweenExercises(int? restSeconds) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(restBetweenExercisesSeconds: restSeconds),
         isDirty: true,
       ),
     );
@@ -328,13 +358,29 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       final savedId = await saveUseCase.save(
         WorkoutBuilderSaveRequest(draft: current.draft),
       );
-      state = AsyncData(
-        current.copyWith(
-          phase: WorkoutBuilderPhase.editing,
-          savedWorkoutId: savedId,
-          isDirty: false,
-        ),
-      );
+      _logger.info('saveWorkout — success: $savedId');
+      if (mode == WorkoutBuilderMode.create) {
+        final loadUseCase = ref.read(
+          AppProviders.loadWorkoutDraftUseCaseProvider,
+        );
+        final freshDraft = await loadUseCase.createEmptyDraft();
+        state = AsyncData(
+          current.copyWith(
+            phase: WorkoutBuilderPhase.editing,
+            draft: freshDraft,
+            savedWorkoutId: null,
+            isDirty: false,
+          ),
+        );
+      } else {
+        state = AsyncData(
+          current.copyWith(
+            phase: WorkoutBuilderPhase.editing,
+            savedWorkoutId: savedId,
+            isDirty: false,
+          ),
+        );
+      }
     } catch (e) {
       _logger.error('saveWorkout — failure', error: e);
       state = AsyncData(

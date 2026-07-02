@@ -25,6 +25,7 @@ class ProgramDao extends DatabaseAccessor<AppDatabase> with _$ProgramDaoMixin {
     await (update(programs)..where((t) => t.active.equals(true))).write(
       ProgramsCompanion(
         active: const Value(false),
+        status: const Value('inactive'),
         updatedAt: Value(updatedAt),
       ),
     );
@@ -36,7 +37,11 @@ class ProgramDao extends DatabaseAccessor<AppDatabase> with _$ProgramDaoMixin {
     required DateTime updatedAt,
   }) async {
     await (update(programs)..where((t) => t.id.equals(id))).write(
-      ProgramsCompanion(active: Value(active), updatedAt: Value(updatedAt)),
+      ProgramsCompanion(
+        active: Value(active),
+        status: Value(active ? 'active' : 'inactive'),
+        updatedAt: Value(updatedAt),
+      ),
     );
   }
 

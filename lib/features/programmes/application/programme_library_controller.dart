@@ -57,4 +57,26 @@ class ProgrammeLibraryController extends AsyncNotifier<ProgrammeLibraryState> {
       _logger.error('deleteProgramme — failure', error: e);
     }
   }
+
+  Future<void> activateProgramme(String id) async {
+    _logger.info('activateProgramme — id: $id');
+    try {
+      final repo = ref.read(AppProviders.programmeRepositoryProvider);
+      await repo.activateProgramme(id);
+      await reload();
+    } catch (e) {
+      _logger.error('activateProgramme — failure', error: e);
+    }
+  }
+
+  Future<void> deactivateProgramme(String id) async {
+    _logger.info('deactivateProgramme — id: $id');
+    try {
+      final repo = ref.read(AppProviders.programmeRepositoryProvider);
+      await repo.deactivateProgramme(id);
+      await reload();
+    } catch (e) {
+      _logger.error('deactivateProgramme — failure', error: e);
+    }
+  }
 }

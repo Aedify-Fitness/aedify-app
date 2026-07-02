@@ -113,6 +113,14 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     }
   }
 
+  Future<void> startSession() async {
+    _logger.info('startSession');
+    final current = state.asData?.value;
+    if (current == null) return;
+    if (current.phase == WorkoutRunnerPhase.ready) return;
+    state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.ready));
+  }
+
   Future<void> resumeRecoveredSession() async {
     _logger.info('resumeRecoveredSession');
     final current = state.asData?.value;

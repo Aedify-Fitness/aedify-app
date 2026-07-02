@@ -10,9 +10,7 @@ class ListProgrammesUseCase {
   final ProgrammeRepository _programmeRepository;
 
   Future<List<ProgrammeListItem>> execute() async {
-    final aggregates = await _programmeRepository.listProgrammes(
-      status: 'active',
-    );
+    final aggregates = await _programmeRepository.listProgrammes();
     return aggregates.map((a) {
       final p = a.program;
       return ProgrammeListItem(
@@ -24,6 +22,8 @@ class ListProgrammesUseCase {
         daysPerWeek: p.daysPerWeek,
         updatedAt: p.updatedAt,
         description: p.description,
+        source: p.source,
+        imported: p.imported,
       );
     }).toList();
   }

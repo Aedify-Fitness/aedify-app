@@ -13,16 +13,23 @@ import 'package:aedify/features/programmes/application/programme_builder_phase.d
 import 'package:uuid/uuid.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/domain/training_day.dart';
+import 'package:aedify/shared/domain/week_type.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
   ProgrammeBuilderController(this.mode, this.programmeId);
+
+  static final _logger = AppLogger(name: 'ProgrammeBuilderController');
 
   final ProgrammeBuilderMode mode;
   final String? programmeId;
 
   @override
   Future<ProgrammeBuilderState> build() async {
+    _logger.info('build — mode: $mode');
     final loadUseCase = ref.read(
       AppProviders.loadProgrammeBuilderDraftUseCaseProvider,
     );
@@ -72,6 +79,22 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(name: value),
         isDirty: true,
+        validationErrors: [],
+      ),
+    );
+  }
+
+  Future<void> setProgrammeStatus(ProgramStatus value) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(
+          status: value,
+          active: value == ProgramStatus.active,
+        ),
+        isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -83,6 +106,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
         ? List<ProgrammeBuilderWeekDraft>.of(current.draft.weeks!)
         : <ProgrammeBuilderWeekDraft>[];
     final weekNumber = weeks.length + 1;
+    _logger.info('addWeek — count: $weekNumber');
     weeks.add(
       ProgrammeBuilderWeekDraft(
         id: _newId(),
@@ -94,6 +118,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: weeks),
         isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -113,6 +138,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: reindexed),
         isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -146,6 +172,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: reindexed),
         isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -153,7 +180,9 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
   Future<void> addSlot({
     required int weekIndex,
     required int scheduledDayIndex,
+    TrainingDay? scheduledDay,
   }) async {
+    _logger.info('addSlot — weekIndex: $weekIndex');
     final current = state.asData?.value;
     if (current == null) return;
     final weeks = List<ProgrammeBuilderWeekDraft>.from(
@@ -166,6 +195,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       ProgrammeBuilderWorkoutSlotDraft(
         slotIndex: slots.length,
         scheduledDayIndex: scheduledDayIndex,
+        scheduledDay: scheduledDay,
       ),
     );
     weeks[weekIndex] = week.copyWith(slots: slots);
@@ -173,6 +203,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: weeks),
         isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -197,6 +228,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: weeks),
         isDirty: true,
+        validationErrors: [],
       ),
     );
   }
@@ -206,6 +238,9 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
     required int slotIndex,
     required ProgrammeBuilderTemplateDraft template,
   }) async {
+    _logger.info(
+      'assignTemplateToSlot — weekIndex: $weekIndex, slotIndex: $slotIndex, template: ${template.templateKey}',
+    );
     final current = state.asData?.value;
     if (current == null) return;
     final weeks = current.draft.weeks != null
@@ -223,11 +258,57 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(weeks: weeks),
         isDirty: true,
+        validationErrors: [],
+      ),
+    );
+  }
+
+  Future<void> setWeekType({
+    required int weekIndex,
+    required WeekType type,
+  }) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final weeks = current.draft.weeks != null
+        ? List<ProgrammeBuilderWeekDraft>.of(current.draft.weeks!)
+        : <ProgrammeBuilderWeekDraft>[];
+    if (weekIndex >= weeks.length) return;
+    weeks[weekIndex] = weeks[weekIndex].copyWith(weekType: type);
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(weeks: weeks),
+        isDirty: true,
+        validationErrors: [],
+      ),
+    );
+  }
+
+  Future<void> updateTemplateRestBetweenExercises(int? restSeconds) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(restBetweenExercisesSeconds: restSeconds),
+        isDirty: true,
+        validationErrors: [],
+      ),
+    );
+  }
+
+  Future<void> setGoalTags(Set<GoalTag> tags) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(goalTags: tags),
+        isDirty: true,
+        validationErrors: [],
       ),
     );
   }
 
   Future<void> saveProgramme() async {
+    _logger.info('saveProgramme — start');
     final current = state.asData?.value;
     if (current == null) return;
 
@@ -235,6 +316,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
     final errors = validator.validate(current.draft);
 
     if (errors.isNotEmpty) {
+      _logger.info('saveProgramme — validation fail, ${errors.length} errors');
       state = AsyncData(
         current.copyWith(
           phase: ProgrammeBuilderPhase.editing,
@@ -251,14 +333,31 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
         AppProviders.saveProgrammeBuilderDraftUseCaseProvider,
       );
       final savedId = await saveUseCase.save(current.draft);
-      state = AsyncData(
-        current.copyWith(
-          phase: ProgrammeBuilderPhase.editing,
-          programmeId: savedId,
-          isDirty: false,
-        ),
-      );
+      _logger.info('saveProgramme — success: $savedId');
+      if (mode == ProgrammeBuilderMode.create) {
+        final loadUseCase = ref.read(
+          AppProviders.loadProgrammeBuilderDraftUseCaseProvider,
+        );
+        final freshDraft = await loadUseCase.createEmptyDraft();
+        state = AsyncData(
+          current.copyWith(
+            phase: ProgrammeBuilderPhase.editing,
+            draft: freshDraft,
+            programmeId: null,
+            isDirty: false,
+          ),
+        );
+      } else {
+        state = AsyncData(
+          current.copyWith(
+            phase: ProgrammeBuilderPhase.editing,
+            programmeId: savedId,
+            isDirty: false,
+          ),
+        );
+      }
     } catch (e) {
+      _logger.error('saveProgramme — failure', error: e);
       state = AsyncData(
         current.copyWith(
           phase: ProgrammeBuilderPhase.failure,
@@ -300,6 +399,9 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
     required String templateId,
     required List<String> selectedExerciseIds,
   }) async {
+    _logger.debug(
+      'createTemplateSuperset — templateId: $templateId, members: ${selectedExerciseIds.length}',
+    );
     final current = state.asData?.value;
     if (current == null || selectedExerciseIds.length < 2) return;
 

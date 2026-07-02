@@ -10,9 +10,7 @@ class ListSavedWorkoutsUseCase {
   final SavedWorkoutRepository _savedWorkoutRepository;
 
   Future<List<SavedWorkoutListItem>> execute() async {
-    final aggregates = await _savedWorkoutRepository.listSavedWorkouts(
-      status: 'active',
-    );
+    final aggregates = await _savedWorkoutRepository.listSavedWorkouts();
     return aggregates.map((a) {
       return SavedWorkoutListItem(
         id: a.savedWorkout.id,
