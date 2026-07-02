@@ -16,6 +16,7 @@ import 'package:aedify/shared/domain/experience_level.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/domain/sex.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -610,19 +611,30 @@ class _ScheduleStep extends StatelessWidget {
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
-                children: List.generate(7, (index) {
-                  final day = index + 1;
+                children: TrainingDay.values.map((day) {
+                  final isSelected = draft.trainingDays.contains(day);
                   return _MetricTile(
-                    value: '$day',
-                    label: day == 1
-                        ? AppStrings.onboardingDaySingle
-                        : AppStrings.onboardingDayPlural,
-                    selected: draft.trainingDaysPerWeek == day,
+                    value: day.displayLabel,
+                    label: '',
+                    selected: isSelected,
                     onTap: () {
-                      onUpdateDraft(draft.copyWith(trainingDaysPerWeek: day));
+                      final updated = List<TrainingDay>.from(
+                        draft.trainingDays,
+                      );
+                      if (isSelected) {
+                        updated.remove(day);
+                      } else {
+                        updated.add(day);
+                      }
+                      onUpdateDraft(
+                        draft.copyWith(
+                          trainingDays: updated,
+                          trainingDaysPerWeek: updated.length,
+                        ),
+                      );
                     },
                   );
-                }),
+                }).toList(),
               ),
             ],
           ),
@@ -1631,8 +1643,8 @@ class _ReviewStep extends StatelessWidget {
           children: [
             _ReviewRow(
               label: AppStrings.onboardingScheduleHint,
-              value: draft.trainingDaysPerWeek != null
-                  ? '${draft.trainingDaysPerWeek} ${AppStrings.onboardingReviewDaysPerWeek}'
+              value: draft.trainingDays.isNotEmpty
+                  ? draft.trainingDays.map((d) => d.displayLabel).join(', ')
                   : AppStrings.onboardingReviewEmptyValue,
               onTap: () => onJumpToStep(OnboardingStep.schedule),
             ),

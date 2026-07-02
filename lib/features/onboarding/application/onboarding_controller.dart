@@ -209,7 +209,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     if (draft.experienceLevel == null) {
       return OnboardingStep.experienceGoals;
     }
-    if (draft.trainingDaysPerWeek == null || draft.trainingDaysPerWeek! < 1) {
+    if (draft.trainingDays.isEmpty) {
       return OnboardingStep.schedule;
     }
     if (draft.equipmentAccess.isEmpty &&
@@ -258,8 +258,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         }
         return null;
       case OnboardingStep.schedule:
-        if (draft.trainingDaysPerWeek == null ||
-            draft.trainingDaysPerWeek! < 1) {
+        if (draft.trainingDays.isEmpty) {
           return AppStrings.onboardingValidationRequired;
         }
         return null;

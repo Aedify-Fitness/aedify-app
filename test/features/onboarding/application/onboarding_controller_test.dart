@@ -7,6 +7,7 @@ import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/experience_level.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -88,6 +89,12 @@ void main() {
           experienceLevel: ExperienceLevel.intermediate,
           goals: {GoalTag.buildMuscle},
           trainingDaysPerWeek: 4,
+          trainingDays: [
+            TrainingDay.monday,
+            TrainingDay.tuesday,
+            TrainingDay.wednesday,
+            TrainingDay.thursday,
+          ],
           equipmentAccess: {EquipmentTag.dumbbell},
           preferredUnits: PreferredUnit.metric,
           limitations: ['None'],
@@ -162,28 +169,26 @@ void main() {
       },
     );
 
-    test(
-      'nextStep blocks at schedule when trainingDaysPerWeek is missing',
-      () async {
-        await container.read(AppProviders.onboardingControllerProvider.future);
-        await controller.nextStep();
-        controller.updateDraft(
-          const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
-        );
-        await controller.nextStep();
-        controller.updateDraft(
-          const OnboardingDraft(
-            experienceLevel: ExperienceLevel.intermediate,
-            trainingDaysPerWeek: 0,
-          ),
-        );
-        await controller.nextStep();
+    test('nextStep blocks at schedule when trainingDays is empty', () async {
+      await container.read(AppProviders.onboardingControllerProvider.future);
+      await controller.nextStep();
+      controller.updateDraft(
+        const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
+      );
+      await controller.nextStep();
+      controller.updateDraft(
+        const OnboardingDraft(
+          experienceLevel: ExperienceLevel.intermediate,
+          trainingDaysPerWeek: 0,
+          trainingDays: [],
+        ),
+      );
+      await controller.nextStep();
 
-        final state = readState();
-        expect(state.currentStep, OnboardingStep.schedule);
-        expect(state.hasValidationMessage, isTrue);
-      },
-    );
+      final state = readState();
+      expect(state.currentStep, OnboardingStep.schedule);
+      expect(state.hasValidationMessage, isTrue);
+    });
 
     test('nextStep advances through all steps to review', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);
@@ -201,6 +206,12 @@ void main() {
           experienceLevel: ExperienceLevel.intermediate,
           goals: {GoalTag.buildMuscle},
           trainingDaysPerWeek: 4,
+          trainingDays: [
+            TrainingDay.monday,
+            TrainingDay.tuesday,
+            TrainingDay.wednesday,
+            TrainingDay.thursday,
+          ],
         ),
       );
       await controller.nextStep();
@@ -224,6 +235,12 @@ void main() {
         const OnboardingDraft(
           experienceLevel: ExperienceLevel.intermediate,
           trainingDaysPerWeek: 4,
+          trainingDays: [
+            TrainingDay.monday,
+            TrainingDay.tuesday,
+            TrainingDay.wednesday,
+            TrainingDay.thursday,
+          ],
         ),
       );
       await controller.nextStep();
@@ -329,6 +346,13 @@ void main() {
             experienceLevel: ExperienceLevel.advanced,
             goals: {GoalTag.buildMuscle},
             trainingDaysPerWeek: 5,
+            trainingDays: [
+              TrainingDay.monday,
+              TrainingDay.tuesday,
+              TrainingDay.wednesday,
+              TrainingDay.thursday,
+              TrainingDay.friday,
+            ],
           ),
         );
         await controller.nextStep();

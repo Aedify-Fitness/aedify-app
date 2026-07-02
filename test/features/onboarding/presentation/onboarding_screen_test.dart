@@ -105,7 +105,13 @@ void main() {
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
-      await tester.tap(find.text('4'));
+      await tester.tap(find.text('Mon'));
+      await tester.pump();
+      await tester.tap(find.text('Tue'));
+      await tester.pump();
+      await tester.tap(find.text('Wed'));
+      await tester.pump();
+      await tester.tap(find.text('Thu'));
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
@@ -130,7 +136,13 @@ void main() {
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
-      await tester.tap(find.text('4'));
+      await tester.tap(find.text('Mon'));
+      await tester.pump();
+      await tester.tap(find.text('Tue'));
+      await tester.pump();
+      await tester.tap(find.text('Wed'));
+      await tester.pump();
+      await tester.tap(find.text('Thu'));
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
@@ -228,7 +240,13 @@ void main() {
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
-      await tester.tap(find.text('4'));
+      await tester.tap(find.text('Mon'));
+      await tester.pump();
+      await tester.tap(find.text('Tue'));
+      await tester.pump();
+      await tester.tap(find.text('Wed'));
+      await tester.pump();
+      await tester.tap(find.text('Thu'));
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
@@ -274,7 +292,13 @@ void main() {
       await tester.pump();
 
       // Schedule
-      await tester.tap(find.text('4'));
+      await tester.tap(find.text('Mon'));
+      await tester.pump();
+      await tester.tap(find.text('Tue'));
+      await tester.pump();
+      await tester.tap(find.text('Wed'));
+      await tester.pump();
+      await tester.tap(find.text('Thu'));
       await tester.pump();
       await tester.tap(find.text(AppStrings.continueLabel));
       await tester.pump();
