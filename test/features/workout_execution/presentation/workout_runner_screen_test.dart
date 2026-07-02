@@ -17,6 +17,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
 import 'package:aedify/shared/domain/set_type.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 
 WorkoutRunnerSessionViewData _sampleSession() {
   final now = DateTime(2025, 6, 1, 10, 0, 0);
@@ -116,6 +117,8 @@ Widget _createTestApp(Widget child) {
 }
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
   testWidgets('loading state renders CircularProgressIndicator', (
     tester,
   ) async {
@@ -142,8 +145,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Morning Push'), findsOneWidget);
-    expect(find.text('Bench Press'), findsOneWidget);
-    expect(find.text(AppStrings.completeWorkout), findsOneWidget);
+    expect(find.text(AppStrings.finishEarly), findsOneWidget);
+    expect(find.textContaining(AppStrings.logSet), findsOneWidget);
   });
 
   testWidgets('error state renders retry button', (tester) async {

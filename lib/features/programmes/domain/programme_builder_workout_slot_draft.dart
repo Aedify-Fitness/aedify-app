@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/training_day.dart';
 import 'programme_builder_template_draft.dart';
 
 class ProgrammeBuilderWorkoutSlotDraft {
@@ -7,6 +8,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
     this.template,
     this.name,
     this.sortOrder,
+    this.scheduledDay,
   });
 
   final int slotIndex;
@@ -14,6 +16,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
   final ProgrammeBuilderTemplateDraft? template;
   final String? name;
   final int? sortOrder;
+  final TrainingDay? scheduledDay;
 
   ProgrammeBuilderWorkoutSlotDraft copyWith({
     int? slotIndex,
@@ -21,6 +24,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
     ProgrammeBuilderTemplateDraft? template,
     String? name,
     int? sortOrder,
+    TrainingDay? scheduledDay,
   }) {
     return ProgrammeBuilderWorkoutSlotDraft(
       slotIndex: slotIndex ?? this.slotIndex,
@@ -28,6 +32,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
       template: template ?? this.template,
       name: name ?? this.name,
       sortOrder: sortOrder ?? this.sortOrder,
+      scheduledDay: scheduledDay ?? this.scheduledDay,
     );
   }
 }

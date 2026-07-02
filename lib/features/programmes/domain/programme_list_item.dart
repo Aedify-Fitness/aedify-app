@@ -10,6 +10,8 @@ class ProgrammeListItem {
     required this.daysPerWeek,
     required this.updatedAt,
     this.description,
+    this.source,
+    this.imported = false,
   });
 
   final String id;
@@ -20,4 +22,6 @@ class ProgrammeListItem {
   final int? daysPerWeek;
   final DateTime updatedAt;
   final String? description;
+  final String? source;
+  final bool imported;
 }

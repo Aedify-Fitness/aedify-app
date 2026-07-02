@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/week_type.dart';
 import 'programme_builder_workout_slot_draft.dart';
 
 class ProgrammeBuilderWeekDraft {
@@ -7,6 +8,7 @@ class ProgrammeBuilderWeekDraft {
     this.slots,
     this.name,
     this.notes,
+    this.weekType,
   });
 
   final String id;
@@ -14,6 +16,7 @@ class ProgrammeBuilderWeekDraft {
   final List<ProgrammeBuilderWorkoutSlotDraft>? slots;
   final String? name;
   final String? notes;
+  final WeekType? weekType;
 
   ProgrammeBuilderWeekDraft copyWith({
     String? id,
@@ -21,6 +24,7 @@ class ProgrammeBuilderWeekDraft {
     List<ProgrammeBuilderWorkoutSlotDraft>? slots,
     String? name,
     String? notes,
+    WeekType? weekType,
   }) {
     return ProgrammeBuilderWeekDraft(
       id: id ?? this.id,
@@ -28,6 +32,7 @@ class ProgrammeBuilderWeekDraft {
       slots: slots ?? this.slots,
       name: name ?? this.name,
       notes: notes ?? this.notes,
+      weekType: weekType ?? this.weekType,
     );
   }
 }
