@@ -5,7 +5,7 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Day-of-week selection + deload week flag + three-tier rest model (60s default), programme goals required, inactive-by-default programme creation, and active/inactive list visibility are implemented. **Zero top-level declaration violations remaining outside `main()` in `lib/`**. **Zero widget-builder helper methods (`Widget _build`) remaining in `lib/`**. 1053/1053 passed. |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. HomeScreen with greeting/active programme/today's workout, rest timer widget in workout runner, and exercise detail screen StatefulWidget migration are implemented. Logging instrumented across 59 M4-module files. **Zero top-level declaration violations remaining outside `main()` in `lib/`**. **Zero widget-builder helper methods (`Widget _build`) remaining in `lib/`**. 1053/1053 passed. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                   |
 
@@ -26,6 +26,51 @@
 - **`const _items` → `_BottomNavItemData.items`** in `lib/app/router/bottom_nav_shell.dart`: Moved top-level `const _items = [...]` into `_BottomNavItemData` as a `static const` member. Updated all references.
 - **`_findFirstIncomplete` → `WorkoutRunnerScreen._findFirstIncomplete`** in `lib/features/workout_execution/presentation/workout_runner_screen.dart`: Moved top-level helper function into `WorkoutRunnerScreen` as a `static` method.
 - **Exhaustive grep verification**: Zero top-level declarations remain outside `main()` in `main.dart` across all `lib/`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — HomeScreen with greeting, active programme, today's workout (complete)
+
+- **New screen** (`lib/features/home/presentation/home_screen.dart`): 688-line `ConsumerWidget` implementing the home dashboard — time-of-day greeting (`_GreetingRow` with morning/afternoon/evening logic), user display name from `profileControllerProvider`, active programme card (`_ActiveProgramCard` with programme name, status, tap-to-navigate), today's scheduled workout card (`_TodayWorkoutCard` with start/resume/begin states), volume metric card (`_VolumeMetricCard`), and quick action grid (`_QuickActionGrid` with SVG icon buttons).
+- **Architecture**: Composed entirely of private `StatelessWidget` sub-widgets — zero `Widget _build` helper methods (verified during compliance sweep). Uses existing `AppStrings` constants (goodMorning, goodAfternoon, goodEvening, readyForSession, etc.) — no new strings added.
+- **Provider wiring**: Wired through existing providers — no new providers created. `profileControllerProvider` for user name, `programmeLibraryControllerProvider` for active programme discovery, and `workoutRunnerControllerProvider` for session flow.
+- **Home route activation**: Home route already existed in router — `HomeScreen` was previously a placeholder; now fully functional with data from repositories.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Rest timer widget + workout runner metrics refactor (complete)
+
+- **New `RestTimerWidget`** (`lib/features/workout_execution/presentation/widgets/rest_timer_widget.dart`): `StatefulWidget` with `SingleTickerProviderStateMixin` — `AnimationController` drives circular progress while `Timer.periodic` (1s) decrements remaining seconds. Displays formatted MM:SS countdown, add-30-seconds button (+30s), and skip/dismiss button. Auto-dismisses when timer reaches zero.
+- **Runner integration**: `WorkoutRunnerScreen` now renders `RestTimerWidget` over exercise content after a set is completed. `WorkoutRunnerHeader` shows elapsed session time computed from start timestamp. `WorkoutRunnerExerciseCard` displays the effective rest time (from `RestResolver`) for each exercise — users see how long to rest before starting the next set.
+- **Metrics refactor**: `_CompleteWorkoutMetrics` extracted from `CompleteWorkoutSheet` — standalone class computing total volume (sum of weight × reps across completed sets), completed set count, and completed exercise count. Sheet now delegates to this class.
+- **Files changed**: 13 files, 1676 insertions, 262 deletions — primarily in `workout_execution/presentation/` plus updates to `workout_builder/` and `programmes/` for supporting widget alignment.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Exercise detail screen — StatefulWidget migration + error handling (complete)
+
+- **Migration**: `ExerciseDetailScreen` converted from `ConsumerWidget` to `ConsumerStatefulWidget` — `initState`/`dispose` lifecycle for `ExerciseVideoStateController` subscriptions and step audio controller resources. `TextEditingController` for notes managed via stateful lifecycle instead of recreated in `build()`.
+- **Error handling**: New `_ExerciseDetailState` enum (`loading`, `ready`, `error`, `notFound`) with explicit render paths. Load failure renders `ErrorWidget` with retry `IconButton` that invalidates the detail provider. Not-found case renders tappable back navigation.
+- **Supporting widgets updated** (4 files): `ExerciseVideoCard` — error state propagates from controller rather than swallowing; `ExerciseDatasetStatusTile` — synchronization with detail state; `ExerciseStepAudioButton` — lifecycle alignment (no duplicate `dispose` calls); `ExerciseLibraryScreen` — navigation to detail now uses state-aware push.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Exercise multi-select refactor + onboarding provider structure (complete)
+
+- **Multi-select extraction**: Common chip-selection patterns (exercise list multi-select, equipment multi-select, goal tag selection, limitation selection) refactored across `OnboardingScreen` (350 insertions), `ProfileScreen` (189 insertions), and `ProgrammeWorkoutDetailController` (26 insertions) — extracted `_ChipSelector` and `_MultiSelectGroup` patterns reduce duplication and improve readability.
+- **Provider restructuring**: `onboarding_screen.dart` local provider declarations reorganized — grouped by responsibility (form state, validation, draft mutations), removed orphaned providers, aligned naming with `AppProviders` conventions.
+- **Slot day assignment** (`lib/features/programmes/application/slot_day_assignment.dart`): Extended with improved training-day anchor resolution logic for edge cases (empty training days, single-day schedules).
+- **Profile repository** (`drift_profile_repository.dart`): Removed unused `_appSettingsDao` and `_bodyMeasurementDao` references.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Logging sweep — 59 files instrumented (complete)
+
+- **Scope**: All M4-feature modules instrumented with `AppLogger` — 59 files modified across controllers (BYOK setup, settings, workout builder, workout runner, programme builder, custom exercise editor, exercise library sync/search/audio, onboarding, profile, history), repositories (Drift implementations for BYOK, settings, saved-workout, session, programme, history), use cases (all load/save/complete/abandon/start in workout builder, workout execution, programme builder, custom exercise), validators and adapters (workout builder, programme builder, draft validation service, superset services), and core infrastructure (bootstrap controller, Firebase auth/storage/bootstrap, network status, file store, secure storage, TTS, transactions).
+- **Pattern**: Each public method logs entry with key parameters (never secrets, prompts, or health data) and exit with result summary. Severity: `info` for state transitions, `warning` for recoverable failures, `severe` for unrecoverable errors. No sensor or private data in log payloads.
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Minor refactors and fixes (complete)
+
+- **Validation scope rename** (5 files): `DraftValidationScope.set` → `DraftValidationScope.exerciseSet` in `draft_validation_scope.dart`, `default_draft_validation_service.dart`, `workout_builder_validation_adapter.dart`, `programme_builder_validation_adapter.dart`, and `workout_builder_validation_adapter_test.dart`. No behavior change — naming consistency only.
+- **Custom exercise editor invalidation** (`custom_exercise_editor_screen.dart`): `CustomExerciseEditorController` now invalidates its provider on "Done" button press via `ref.invalidate(customExerciseEditorControllerProvider(...))`. Ensures subsequent re-entry to the editor loads a fresh state instead of stale cached data.
+- **_InfoRow widget extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow(BuildContext, String, String)` helper method extracted to standalone `_InfoRow` StatelessWidget — `const`-constructable, cleaner composition, enables future reuse in other detail screens. 23 lines added, 14 removed.
+- **VSCode launch configuration** (`.vscode/launch.json`): Added Flutter debug and run launch configurations — enables F5 debugging from VSCode without manual `flutter run` commands.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
 
 ### Rule-compliance cleanup + failing test repair

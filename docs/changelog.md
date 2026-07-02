@@ -23,6 +23,47 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Exhaustive verification**: Grep-confirmed zero top-level declarations remain outside `main()` in `main.dart` across all of `lib/`.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
 
+### HomeScreen — greeting, active programme, today's workout
+
+- **New `HomeScreen`** (`lib/features/home/presentation/home_screen.dart`): 688-line `ConsumerWidget` with time-of-day greeting (good morning/afternoon/evening), user display name from profile, active programme card with tap-to-navigate, today's scheduled workout card with start/resume actions, volume metric card, and quick action grid.
+- **Provider wiring**: Wired through `profileControllerProvider` for name, `programmeLibraryControllerProvider` for active programme, `workoutRunnerControllerProvider.family` for session start/resume.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Rest timer widget + workout runner metrics refactor
+
+- **New `RestTimerWidget`** (`lib/features/workout_execution/presentation/widgets/rest_timer_widget.dart`): Animated countdown timer with circular progress, remaining time display, add-30-seconds button, and dismiss action. Uses `AnimationController` + `Timer.periodic` for 1s tick updates.
+- **Runner integration**: `WorkoutRunnerScreen` and `WorkoutRunnerHeader` manage rest timer visibility — appears after completing a set, auto-dismisses when elapsed or user taps skip. `WorkoutRunnerExerciseCard` shows effective rest time per exercise.
+- **Metrics extraction**: `_CompleteWorkoutMetrics` class extracted from `CompleteWorkoutSheet` — centralizes total volume, completed sets, and completed exercise calculations.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Exercise detail screen — StatefulWidget migration + error handling
+
+- **Converted `ExerciseDetailScreen`** from `ConsumerWidget` to `ConsumerStatefulWidget` — proper lifecycle for video state, audio playback, and async reloads.
+- **Improved error states**: Retry button on failure, explicit loading/error/missing states via `_ExerciseDetailState` enum, `ErrorWidget` with CTA.
+- **Supporting widgets updated**: `ExerciseVideoCard`, `ExerciseDatasetStatusTile`, `ExerciseStepAudioButton` — error propagation alignment.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Exercise multi-select refactor + onboarding provider structure
+
+- **Multi-select extraction**: Reusable chip patterns extracted from `OnboardingScreen`, `ProfileScreen`, and `AddExerciseBottomSheet` — reduced duplication in exercise/equipment/goal selection.
+- **Onboarding providers**: Refactored local provider declarations in `onboarding_screen.dart` — grouped by concern, removed unused providers.
+- **Slot day assignment**: Extended `slot_day_assignment.dart` with improved training-day anchor resolution.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Logging sweep — 59 files instrumented across M4 modules
+
+- **Systematic logging**: `AppLogger` integrated into 59 files — all controllers (BYOK, settings, workout builder/runner, programme builder, onboarding, profile, exercise library, sync), all repositories (Drift BYOK/settings/saved-workout/session/programme/history), all use cases (load/save/complete/abandon/start), validators/adapters/services, and core infrastructure (bootstrap, Firebase, network, TTS, transactions, secure storage, file store).
+- **Pattern**: Every public method logs entry/exit at appropriate severity — `info` for state transitions, `warning` for recoverable failures, `severe` for unrecoverable errors. No sensitive data included.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Minor refactors and fixes
+
+- **Validation scope rename** (`lib/core/validation/`): `DraftValidationScope.set` → `DraftValidationScope.exerciseSet` across 5 files (service, adapters, tests).
+- **Custom exercise editor invalidation** (`custom_exercise_editor_screen.dart`): Controller invalidates provider state on "Done" — ensures fresh state on re-entry.
+- **_InfoRow extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow` helper → standalone `_InfoRow` StatelessWidget.
+- **VSCode launch config** (`.vscode/launch.json`): Flutter debug/run configuration for IDE development.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
 ## 2026-07-01
 
 ### Rule-compliance cleanup + failing test repair
