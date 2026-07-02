@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
 
 class PatternDeloadPainter extends CustomPainter {
   const PatternDeloadPainter({required this.color});
@@ -9,10 +10,10 @@ class PatternDeloadPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 1.0
+      ..strokeWidth = AppSizing.deloadLineStrokeWidth
       ..style = PaintingStyle.stroke;
 
-    const spacing = 20.0;
+    const spacing = AppSizing.deloadLineSpacing;
     final maxDim = size.width + size.height;
 
     for (var i = -maxDim; i < maxDim; i += spacing) {

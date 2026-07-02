@@ -200,7 +200,7 @@ class _WorkoutSetRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 32,
+            width: AppSizing.setNumberColumnWidth,
             child: Text(
               '${set.setIndex + 1}',
               style: context.textTheme.labelMedium?.copyWith(

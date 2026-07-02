@@ -55,7 +55,7 @@ class ProgrammeListTile extends StatelessWidget {
         children: [
           if (isActive)
             Container(
-              height: 4,
+              height: AppSizing.activeIndicatorHeight,
               width: double.infinity,
               color: context.colorScheme.secondary,
             ),

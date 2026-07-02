@@ -163,7 +163,7 @@ class _VideoHero extends StatelessWidget {
     final hasVideo = videos.isNotEmpty;
     return Container(
       width: double.infinity,
-      height: 220,
+      height: AppSizing.videoCardHeight,
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -200,8 +200,8 @@ class _VideoHero extends StatelessWidget {
             ),
           Center(
             child: Container(
-              width: 64,
-              height: 64,
+              width: AppSpacing.xxxl,
+              height: AppSpacing.xxxl,
               decoration: BoxDecoration(
                 color: context.colorScheme.surface.withAlpha(230),
                 shape: BoxShape.circle,
@@ -240,7 +240,7 @@ class _SegmentedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -543,7 +543,7 @@ class _PerformanceTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: 300,
+        height: AppSizing.emptyStateHeight,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

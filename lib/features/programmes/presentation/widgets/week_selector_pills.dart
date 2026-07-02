@@ -20,7 +20,7 @@ class WeekSelectorPills extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: AppSpacing.xxl,
       child: Stack(
         children: [
           ListView.builder(
@@ -102,7 +102,7 @@ class WeekSelectorPills extends StatelessWidget {
             bottom: 0,
             child: IgnorePointer(
               child: Container(
-                width: 48,
+                width: AppSpacing.xxl,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerRight,

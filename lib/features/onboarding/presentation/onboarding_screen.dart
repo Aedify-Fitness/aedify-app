@@ -749,23 +749,23 @@ class _OnboardingTaxonomy {
 
   static GoalTag goalFromLabel(String value) {
     return switch (value) {
-      'Build muscle' => GoalTag.buildMuscle,
-      'Lose weight' => GoalTag.loseWeight,
-      'Increase strength' => GoalTag.increaseStrength,
-      'Improve endurance' => GoalTag.improveEndurance,
-      'General fitness' => GoalTag.generalFitness,
+      AppStrings.onboardingGoalBuildMuscle => GoalTag.buildMuscle,
+      AppStrings.onboardingGoalLoseWeight => GoalTag.loseWeight,
+      AppStrings.onboardingGoalIncreaseStrength => GoalTag.increaseStrength,
+      AppStrings.onboardingGoalImproveEndurance => GoalTag.improveEndurance,
+      AppStrings.onboardingGoalGeneralFitness => GoalTag.generalFitness,
       _ => GoalTag.flexibility,
     };
   }
 
   static String goalLabel(GoalTag value) {
     return switch (value) {
-      GoalTag.buildMuscle => 'Build muscle',
-      GoalTag.loseWeight => 'Lose weight',
-      GoalTag.increaseStrength => 'Increase strength',
-      GoalTag.improveEndurance => 'Improve endurance',
-      GoalTag.generalFitness => 'General fitness',
-      GoalTag.flexibility => 'Flexibility',
+      GoalTag.buildMuscle => AppStrings.onboardingGoalBuildMuscle,
+      GoalTag.loseWeight => AppStrings.onboardingGoalLoseWeight,
+      GoalTag.increaseStrength => AppStrings.onboardingGoalIncreaseStrength,
+      GoalTag.improveEndurance => AppStrings.onboardingGoalImproveEndurance,
+      GoalTag.generalFitness => AppStrings.onboardingGoalGeneralFitness,
+      GoalTag.flexibility => AppStrings.onboardingGoalFlexibility,
     };
   }
 
@@ -803,14 +803,14 @@ class _OnboardingTaxonomy {
       EquipmentTag.cable => AppStrings.onboardingEquipmentCableMachine,
       EquipmentTag.smithMachine => AppStrings.onboardingEquipmentSmithMachine,
       EquipmentTag.cardioMachine => AppStrings.onboardingEquipmentCardioMachine,
-      EquipmentTag.machine => 'Machine',
-      EquipmentTag.ezBar => 'EZ bar',
-      EquipmentTag.bosuBall => 'Bosu ball',
-      EquipmentTag.medicineBall => 'Medicine ball',
-      EquipmentTag.plate => 'Plate',
-      EquipmentTag.trx => 'TRX',
-      EquipmentTag.vitruvian => 'Vitruvian',
-      EquipmentTag.other => 'Other',
+      EquipmentTag.machine => AppStrings.onboardingEquipmentMachine,
+      EquipmentTag.ezBar => AppStrings.onboardingEquipmentEzBar,
+      EquipmentTag.bosuBall => AppStrings.onboardingEquipmentBosuBall,
+      EquipmentTag.medicineBall => AppStrings.onboardingEquipmentMedicineBall,
+      EquipmentTag.plate => AppStrings.onboardingEquipmentPlate,
+      EquipmentTag.trx => AppStrings.onboardingEquipmentTrx,
+      EquipmentTag.vitruvian => AppStrings.onboardingEquipmentVitruvian,
+      EquipmentTag.other => AppStrings.onboardingEquipmentOther,
     };
   }
 
@@ -827,13 +827,13 @@ class _OnboardingTaxonomy {
       AppStrings.onboardingEquipmentCableMachine => EquipmentTag.cable,
       AppStrings.onboardingEquipmentSmithMachine => EquipmentTag.smithMachine,
       AppStrings.onboardingEquipmentCardioMachine => EquipmentTag.cardioMachine,
-      'Machine' => EquipmentTag.machine,
-      'EZ bar' => EquipmentTag.ezBar,
-      'Bosu ball' => EquipmentTag.bosuBall,
-      'Medicine ball' => EquipmentTag.medicineBall,
-      'Plate' => EquipmentTag.plate,
-      'TRX' => EquipmentTag.trx,
-      'Vitruvian' => EquipmentTag.vitruvian,
+      AppStrings.onboardingEquipmentMachine => EquipmentTag.machine,
+      AppStrings.onboardingEquipmentEzBar => EquipmentTag.ezBar,
+      AppStrings.onboardingEquipmentBosuBall => EquipmentTag.bosuBall,
+      AppStrings.onboardingEquipmentMedicineBall => EquipmentTag.medicineBall,
+      AppStrings.onboardingEquipmentPlate => EquipmentTag.plate,
+      AppStrings.onboardingEquipmentTrx => EquipmentTag.trx,
+      AppStrings.onboardingEquipmentVitruvian => EquipmentTag.vitruvian,
       _ => EquipmentTag.other,
     };
   }
@@ -2433,7 +2433,7 @@ class _OnboardingExerciseMultiSelect {
                         ],
                       ),
                     ),
-                    const Divider(height: 1),
+                    const Divider(height: AppSizing.hairlineStrokeWidth),
                     Expanded(
                       child: ListView.builder(
                         controller: scrollController,

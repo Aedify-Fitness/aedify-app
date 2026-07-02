@@ -21,7 +21,7 @@ class CompleteWorkoutSheet extends StatelessWidget {
     final duration =
         session.durationSeconds ?? now.difference(session.startedAt).inSeconds;
     final minutes = duration ~/ 60;
-    final durationLabel = '$minutes min';
+    final durationLabel = '$minutes ${AppStrings.onboardingReviewMinutes}';
 
     return Padding(
       padding: EdgeInsets.only(

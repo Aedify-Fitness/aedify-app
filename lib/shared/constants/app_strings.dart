@@ -755,4 +755,43 @@ class AppStrings {
   static const noHistoryHint =
       'Complete this exercise in a workout to start tracking your performance metrics.';
   static const askAiCoach = 'Ask AI Coach';
+
+  // Missing equipment labels
+  static const onboardingEquipmentMachine = 'Machine';
+  static const onboardingEquipmentEzBar = 'EZ bar';
+  static const onboardingEquipmentBosuBall = 'Bosu ball';
+  static const onboardingEquipmentMedicineBall = 'Medicine ball';
+  static const onboardingEquipmentPlate = 'Plate';
+  static const onboardingEquipmentTrx = 'TRX';
+  static const onboardingEquipmentVitruvian = 'Vitruvian';
+  static const onboardingEquipmentOther = 'Other';
+
+  // BYOK provider and model display names
+  static const byokProviderNameOpenAi = 'OpenAI';
+  static const byokModelGpt4o = 'GPT-4o';
+  static const byokModelGpt4oMini = 'GPT-4o mini';
+  static const byokModelO1 = 'o1';
+  static const byokModelO1Mini = 'o1-mini';
+  static const byokProviderNameAnthropic = 'Anthropic';
+  static const byokModelClaudeSonnet46 = 'Claude Sonnet 4.6';
+  static const byokModelClaudeHaiku45 = 'Claude Haiku 4.5';
+  static const byokModelClaudeOpus47 = 'Claude Opus 4.7';
+  static const byokProviderNameGoogle = 'Google';
+  static const byokModelGemini25Pro = 'Gemini 2.5 Pro';
+  static const byokModelGemini25Flash = 'Gemini 2.5 Flash';
+
+  // Custom exercise validation
+  static const customExerciseNameRequired = 'Name is required.';
+  static const customExerciseMuscleGroupRequired =
+      'At least one muscle group is required.';
+  static String customExerciseStepEmpty(int step) =>
+      'Step $step cannot be empty.';
+
+  // Rest timer
+  static const restMinus15 = '-15s';
+  static const restPlus15 = '+15s';
+
+  // Duration abbreviations
+  static const durationHoursAbbreviation = 'h';
+  static const durationMinutesAbbreviation = 'm';
 }

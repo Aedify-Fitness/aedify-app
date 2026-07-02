@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/logging/app_logger.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/application/custom_exercise_editor_phase.dart';
 import 'package:aedify/features/exercise_library/application/custom_exercise_editor_state.dart';
@@ -206,7 +207,7 @@ class CustomExerciseEditorController
         current.copyWith(
           phase: CustomExerciseEditorPhase.failure,
           errorCode: 'save_failed',
-          errorMessage: 'Could not save the custom exercise.',
+          errorMessage: AppStrings.customExerciseSaveFailed,
         ),
       );
     }
@@ -232,7 +233,7 @@ class CustomExerciseEditorController
         current.copyWith(
           phase: CustomExerciseEditorPhase.failure,
           errorCode: 'delete_failed',
-          errorMessage: 'Could not delete the custom exercise.',
+          errorMessage: AppStrings.customExerciseDeleteFailed,
         ),
       );
     }

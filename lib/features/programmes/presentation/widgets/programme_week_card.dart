@@ -62,7 +62,7 @@ class ProgrammeWeekCard extends StatelessWidget {
                 ),
                 if (onSetWeekType != null)
                   SizedBox(
-                    width: 130,
+                    width: AppSizing.weekTypeDropdownWidth,
                     child: DropdownButtonFormField<WeekType>(
                       initialValue: week.weekType ?? WeekType.normal,
                       isExpanded: true,

@@ -30,30 +30,30 @@ class DriftByokRepository implements ByokRepository {
     ByokProviderOption(
       id: 'openai',
       providerName: AiProviderName.openai,
-      displayName: 'OpenAI',
+      displayName: AppStrings.byokProviderNameOpenAi,
       description: AppStrings.byokProviderOpenAiDescription,
       models: [
         ByokModelOption(
           id: 'gpt-4o',
-          displayName: 'GPT-4o',
+          displayName: AppStrings.byokModelGpt4o,
           inputCostPer1kTokens: 0.0025,
           outputCostPer1kTokens: 0.01,
         ),
         ByokModelOption(
           id: 'gpt-4o-mini',
-          displayName: 'GPT-4o mini',
+          displayName: AppStrings.byokModelGpt4oMini,
           inputCostPer1kTokens: 0.00015,
           outputCostPer1kTokens: 0.0006,
         ),
         ByokModelOption(
           id: 'o1',
-          displayName: 'o1',
+          displayName: AppStrings.byokModelO1,
           inputCostPer1kTokens: 0.015,
           outputCostPer1kTokens: 0.06,
         ),
         ByokModelOption(
           id: 'o1-mini',
-          displayName: 'o1-mini',
+          displayName: AppStrings.byokModelO1Mini,
           inputCostPer1kTokens: 0.003,
           outputCostPer1kTokens: 0.012,
         ),
@@ -62,24 +62,24 @@ class DriftByokRepository implements ByokRepository {
     ByokProviderOption(
       id: 'anthropic',
       providerName: AiProviderName.anthropic,
-      displayName: 'Anthropic',
+      displayName: AppStrings.byokProviderNameAnthropic,
       description: AppStrings.byokProviderAnthropicDescription,
       models: [
         ByokModelOption(
           id: 'claude-sonnet-4-20250514',
-          displayName: 'Claude Sonnet 4.6',
+          displayName: AppStrings.byokModelClaudeSonnet46,
           inputCostPer1kTokens: 0.003,
           outputCostPer1kTokens: 0.015,
         ),
         ByokModelOption(
           id: 'claude-3-5-haiku-20241022',
-          displayName: 'Claude Haiku 4.5',
+          displayName: AppStrings.byokModelClaudeHaiku45,
           inputCostPer1kTokens: 0.0008,
           outputCostPer1kTokens: 0.004,
         ),
         ByokModelOption(
           id: 'claude-opus-4-20250514',
-          displayName: 'Claude Opus 4.7',
+          displayName: AppStrings.byokModelClaudeOpus47,
           inputCostPer1kTokens: 0.015,
           outputCostPer1kTokens: 0.075,
         ),
@@ -88,18 +88,18 @@ class DriftByokRepository implements ByokRepository {
     ByokProviderOption(
       id: 'google',
       providerName: AiProviderName.google,
-      displayName: 'Google',
+      displayName: AppStrings.byokProviderNameGoogle,
       description: AppStrings.byokProviderGoogleDescription,
       models: [
         ByokModelOption(
           id: 'gemini-2.5-pro',
-          displayName: 'Gemini 2.5 Pro',
+          displayName: AppStrings.byokModelGemini25Pro,
           inputCostPer1kTokens: 0.00125,
           outputCostPer1kTokens: 0.005,
         ),
         ByokModelOption(
           id: 'gemini-2.5-flash',
-          displayName: 'Gemini 2.5 Flash',
+          displayName: AppStrings.byokModelGemini25Flash,
           inputCostPer1kTokens: 0.000075,
           outputCostPer1kTokens: 0.0003,
         ),

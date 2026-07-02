@@ -84,8 +84,10 @@ class _DetailContent extends ConsumerWidget {
     final minutes = totalSeconds ~/ 60;
     final hours = minutes ~/ 60;
     final remainingMinutes = minutes % 60;
-    if (hours > 0) return '${hours}h ${remainingMinutes}m';
-    return '${minutes}m';
+    if (hours > 0) {
+      return '$hours${AppStrings.durationHoursAbbreviation} $remainingMinutes${AppStrings.durationMinutesAbbreviation}';
+    }
+    return '$minutes${AppStrings.durationMinutesAbbreviation}';
   }
 
   List<Widget> _buildExerciseWidgets(
@@ -196,7 +198,7 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 100,
+            width: AppSizing.dataFieldWidthMd,
             child: Text(
               label,
               style: context.textTheme.bodySmall?.copyWith(

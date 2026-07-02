@@ -6,6 +6,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-02
 
+### Convention compliance sweep — hardcoded strings + raw layout values
+
+- **30 new `AppStrings` constants** added — 8 missing equipment labels, 12 BYOK provider/model display names, 3 custom exercise validation messages, 2 rest timer labels, 2 duration abbreviations.
+- **`profile_screen.dart` taxonomy** (26 strings): Replaced all hardcoded experience/goal/equipment labels in `_ProfileTaxonomy` and chip `options:` lists with `AppStrings` constants. Also replaced `suffixText: 'min'` with `AppStrings.onboardingReviewMinutes`.
+- **`onboarding_screen.dart` taxonomy** (14 strings): Replaced hardcoded goal labels and 8 remaining equipment labels in `_OnboardingTaxonomy` with `AppStrings` constants.
+- **`drift_byok_repository.dart`** (12 strings): Replaced all provider `displayName:` and model `displayName:` values with `AppStrings` constants.
+- **`custom_exercise_validator.dart`** (3 strings): Replaced validation messages with `AppStrings` constants.
+- **`custom_exercise_editor_controller.dart`** (2 strings): Replaced error messages with existing `AppStrings.customExerciseSaveFailed` / `customExerciseDeleteFailed`.
+- **`custom_exercise_error_banner.dart`** (1 string): Replaced `'Retry'` with `AppStrings.retry`.
+- **`programme_calendar_controller.dart`** (1 string): Replaced `'Active Recovery'` with `AppStrings.activeRecovery`.
+- **`rest_timer_widget.dart`** (2 strings): Replaced `'-15s'` / `'+15s'` with `AppStrings.restMinus15` / `restPlus15`.
+- **`complete_workout_sheet.dart`** (1 string): Replaced `'$minutes min'` to use `AppStrings.onboardingReviewMinutes`.
+- **`workout_history_detail_screen.dart`** (2 strings): Replaced `'h'` / `'m'` duration abbreviations with `AppStrings.durationHoursAbbreviation` / `durationMinutesAbbreviation`.
+- **Raw layout values → tokens**: Added 20 new `AppSizing` tokens (`videoCardHeight`, `videoPreviewHeight`, `emptyStateHeight`, `restTimerSize`, `weekTypeDropdownWidth`, `dataFieldWidthSm/Md`, `timerStrokeWidth`, `hairlineStrokeWidth`, `activeIndicatorHeight`, `deloadLineStrokeWidth/Spacing`, `exerciseNumberCircle`, `setNumberColumnWidth`). Replaced 30+ raw values across 10 files — `exercise_detail_screen.dart`, `workout_runner_screen.dart`, `rest_timer_widget.dart`, `week_selector_pills.dart`, `programme_list_tile.dart`, `programme_week_card.dart`, `programme_workout_detail_screen.dart`, `onboarding_screen.dart`, `custom_exercise_editor_screen.dart`, `workout_history_detail_screen.dart`, `pattern_deload_painter.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues.
+
 ### Convention compliance sweep — Navigator.pop, EdgeInsets.fromLTRB, TextStyle, Theme.of(context)
 
 - **`Navigator.of(context).pop()` → `context.pop()`** (22 files): Replaced all remaining `Navigator.of(context).pop()`, `Navigator.of(context).pop(true/false)`, and `Navigator.pop(ctx)` with go_router's `context.pop()` / `ctx.pop()`. Added missing `go_router` imports. Affected files: `custom_exercise_editor_screen`, `exercise_detail_screen`, `delete_custom_exercise_dialog`, `discard_custom_exercise_changes_dialog`, `home_screen`, `onboarding_screen`, `profile_screen`, `programme_builder_screen`, `programmes_screen`, `active_programme_warning_dialog`, `add_week_dialog`, `archive_item_dialog`, `delete_item_dialog`, `discard_programme_changes_dialog`, `programme_template_quick_create_sheet`, `template_reassignment_bottom_sheet`, `byok_settings_screen`, `add_exercise_bottom_sheet`, `discard_changes_dialog`, `workout_builder_header`, `workout_builder_screen`, `cancel_workout_dialog`, `workout_runner_screen`.

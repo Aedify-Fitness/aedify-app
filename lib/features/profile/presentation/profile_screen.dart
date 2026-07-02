@@ -145,9 +145,9 @@ class _ProfileContentView extends ConsumerWidget {
             title: AppStrings.experienceLevel,
             child: _ChipSelector(
               options: const [
-                'Beginner (0–6 mo)',
-                'Intermediate (6 mo–2 yr)',
-                'Advanced (2+ yr)',
+                AppStrings.onboardingExperienceBeginner,
+                AppStrings.onboardingExperienceIntermediate,
+                AppStrings.onboardingExperienceAdvanced,
               ],
               selected: _ProfileTaxonomy.experienceLabel(draft.experienceLevel),
               onSelected: (value) {
@@ -233,12 +233,12 @@ class _ProfileContentView extends ConsumerWidget {
             title: AppStrings.goals,
             child: _ChipSelector(
               options: const [
-                'Build muscle',
-                'Lose weight',
-                'Increase strength',
-                'Improve endurance',
-                'General fitness',
-                'Flexibility',
+                AppStrings.onboardingGoalBuildMuscle,
+                AppStrings.onboardingGoalLoseWeight,
+                AppStrings.onboardingGoalIncreaseStrength,
+                AppStrings.onboardingGoalImproveEndurance,
+                AppStrings.onboardingGoalGeneralFitness,
+                AppStrings.onboardingGoalFlexibility,
               ],
               selected: null,
               selectedSet: draft.goals.map(_ProfileTaxonomy.goalLabel).toSet(),
@@ -258,22 +258,22 @@ class _ProfileContentView extends ConsumerWidget {
             title: AppStrings.equipment,
             child: _ChipSelector(
               options: const [
-                'None / bodyweight',
-                'Dumbbells',
-                'Barbell',
-                'Kettlebell',
-                'Resistance bands',
-                'Cable machine',
-                'Smith machine',
-                'Pull-up bar',
-                'Bench',
-                'Squat rack',
-                'Cardio machine',
-                'Bosu ball',
-                'Medicine ball',
-                'Plate',
-                'TRX',
-                'Vitruvian',
+                AppStrings.onboardingEquipmentNone,
+                AppStrings.onboardingEquipmentDumbbells,
+                AppStrings.onboardingEquipmentBarbell,
+                AppStrings.onboardingEquipmentKettlebell,
+                AppStrings.onboardingEquipmentResistanceBands,
+                AppStrings.onboardingEquipmentCableMachine,
+                AppStrings.onboardingEquipmentSmithMachine,
+                AppStrings.onboardingEquipmentPullUpBar,
+                AppStrings.onboardingEquipmentBench,
+                AppStrings.onboardingEquipmentSquatRack,
+                AppStrings.onboardingEquipmentCardioMachine,
+                AppStrings.onboardingEquipmentBosuBall,
+                AppStrings.onboardingEquipmentMedicineBall,
+                AppStrings.onboardingEquipmentPlate,
+                AppStrings.onboardingEquipmentTrx,
+                AppStrings.onboardingEquipmentVitruvian,
               ],
               selected: null,
               selectedSet: draft.equipmentAccess
@@ -311,7 +311,7 @@ class _ProfileContentView extends ConsumerWidget {
             label: AppStrings.sessionLength,
             initialValue: draft.targetSessionLengthMinutes?.toString() ?? '',
             hintText: '45',
-            suffixText: 'min',
+            suffixText: AppStrings.onboardingReviewMinutes,
             keyboardType: TextInputType.number,
             onChanged: (value) {
               final parsed = int.tryParse(value);
@@ -549,19 +549,21 @@ class _ProfileTaxonomy {
 
   static String? experienceLabel(ExperienceLevel? value) {
     return switch (value) {
-      ExperienceLevel.beginner => 'Beginner (0–6 mo)',
-      ExperienceLevel.intermediate => 'Intermediate (6 mo–2 yr)',
-      ExperienceLevel.advanced => 'Advanced (2+ yr)',
-      ExperienceLevel.novice => 'Beginner (0–6 mo)',
+      ExperienceLevel.beginner => AppStrings.onboardingExperienceBeginner,
+      ExperienceLevel.intermediate =>
+        AppStrings.onboardingExperienceIntermediate,
+      ExperienceLevel.advanced => AppStrings.onboardingExperienceAdvanced,
+      ExperienceLevel.novice => AppStrings.onboardingExperienceBeginner,
       null => null,
     };
   }
 
   static ExperienceLevel experienceFromLabel(String value) {
     return switch (value) {
-      'Beginner (0–6 mo)' => ExperienceLevel.beginner,
-      'Intermediate (6 mo–2 yr)' => ExperienceLevel.intermediate,
-      'Advanced (2+ yr)' => ExperienceLevel.advanced,
+      AppStrings.onboardingExperienceBeginner => ExperienceLevel.beginner,
+      AppStrings.onboardingExperienceIntermediate =>
+        ExperienceLevel.intermediate,
+      AppStrings.onboardingExperienceAdvanced => ExperienceLevel.advanced,
       _ => ExperienceLevel.beginner,
     };
   }
@@ -585,70 +587,70 @@ class _ProfileTaxonomy {
 
   static String goalLabel(GoalTag value) {
     return switch (value) {
-      GoalTag.buildMuscle => 'Build muscle',
-      GoalTag.loseWeight => 'Lose weight',
-      GoalTag.increaseStrength => 'Increase strength',
-      GoalTag.improveEndurance => 'Improve endurance',
-      GoalTag.generalFitness => 'General fitness',
-      GoalTag.flexibility => 'Flexibility',
+      GoalTag.buildMuscle => AppStrings.onboardingGoalBuildMuscle,
+      GoalTag.loseWeight => AppStrings.onboardingGoalLoseWeight,
+      GoalTag.increaseStrength => AppStrings.onboardingGoalIncreaseStrength,
+      GoalTag.improveEndurance => AppStrings.onboardingGoalImproveEndurance,
+      GoalTag.generalFitness => AppStrings.onboardingGoalGeneralFitness,
+      GoalTag.flexibility => AppStrings.onboardingGoalFlexibility,
     };
   }
 
   static GoalTag goalFromLabel(String value) {
     return switch (value) {
-      'Build muscle' => GoalTag.buildMuscle,
-      'Lose weight' => GoalTag.loseWeight,
-      'Increase strength' => GoalTag.increaseStrength,
-      'Improve endurance' => GoalTag.improveEndurance,
-      'General fitness' => GoalTag.generalFitness,
+      AppStrings.onboardingGoalBuildMuscle => GoalTag.buildMuscle,
+      AppStrings.onboardingGoalLoseWeight => GoalTag.loseWeight,
+      AppStrings.onboardingGoalIncreaseStrength => GoalTag.increaseStrength,
+      AppStrings.onboardingGoalImproveEndurance => GoalTag.improveEndurance,
+      AppStrings.onboardingGoalGeneralFitness => GoalTag.generalFitness,
       _ => GoalTag.flexibility,
     };
   }
 
   static String equipmentLabel(EquipmentTag value) {
     return switch (value) {
-      EquipmentTag.bodyweight => 'None / bodyweight',
-      EquipmentTag.dumbbell => 'Dumbbells',
-      EquipmentTag.barbell => 'Barbell',
-      EquipmentTag.kettlebell => 'Kettlebell',
-      EquipmentTag.bands => 'Resistance bands',
-      EquipmentTag.cable => 'Cable machine',
-      EquipmentTag.smithMachine => 'Smith machine',
-      EquipmentTag.pullUpBar => 'Pull-up bar',
-      EquipmentTag.bench => 'Bench',
-      EquipmentTag.squatRack => 'Squat rack',
-      EquipmentTag.cardioMachine => 'Cardio machine',
-      EquipmentTag.machine => 'Machine',
-      EquipmentTag.ezBar => 'EZ bar',
-      EquipmentTag.bosuBall => 'Bosu ball',
-      EquipmentTag.medicineBall => 'Medicine ball',
-      EquipmentTag.plate => 'Plate',
-      EquipmentTag.trx => 'TRX',
-      EquipmentTag.vitruvian => 'Vitruvian',
-      EquipmentTag.other => 'Other',
+      EquipmentTag.bodyweight => AppStrings.onboardingEquipmentNone,
+      EquipmentTag.dumbbell => AppStrings.onboardingEquipmentDumbbells,
+      EquipmentTag.barbell => AppStrings.onboardingEquipmentBarbell,
+      EquipmentTag.kettlebell => AppStrings.onboardingEquipmentKettlebell,
+      EquipmentTag.bands => AppStrings.onboardingEquipmentResistanceBands,
+      EquipmentTag.cable => AppStrings.onboardingEquipmentCableMachine,
+      EquipmentTag.smithMachine => AppStrings.onboardingEquipmentSmithMachine,
+      EquipmentTag.pullUpBar => AppStrings.onboardingEquipmentPullUpBar,
+      EquipmentTag.bench => AppStrings.onboardingEquipmentBench,
+      EquipmentTag.squatRack => AppStrings.onboardingEquipmentSquatRack,
+      EquipmentTag.cardioMachine => AppStrings.onboardingEquipmentCardioMachine,
+      EquipmentTag.machine => AppStrings.onboardingEquipmentMachine,
+      EquipmentTag.ezBar => AppStrings.onboardingEquipmentEzBar,
+      EquipmentTag.bosuBall => AppStrings.onboardingEquipmentBosuBall,
+      EquipmentTag.medicineBall => AppStrings.onboardingEquipmentMedicineBall,
+      EquipmentTag.plate => AppStrings.onboardingEquipmentPlate,
+      EquipmentTag.trx => AppStrings.onboardingEquipmentTrx,
+      EquipmentTag.vitruvian => AppStrings.onboardingEquipmentVitruvian,
+      EquipmentTag.other => AppStrings.onboardingEquipmentOther,
     };
   }
 
   static EquipmentTag equipmentFromLabel(String value) {
     return switch (value) {
-      'None / bodyweight' => EquipmentTag.bodyweight,
-      'Dumbbells' => EquipmentTag.dumbbell,
-      'Barbell' => EquipmentTag.barbell,
-      'Kettlebell' => EquipmentTag.kettlebell,
-      'Resistance bands' => EquipmentTag.bands,
-      'Cable machine' => EquipmentTag.cable,
-      'Smith machine' => EquipmentTag.smithMachine,
-      'Pull-up bar' => EquipmentTag.pullUpBar,
-      'Bench' => EquipmentTag.bench,
-      'Squat rack' => EquipmentTag.squatRack,
-      'Cardio machine' => EquipmentTag.cardioMachine,
-      'Machine' => EquipmentTag.machine,
-      'EZ bar' => EquipmentTag.ezBar,
-      'Bosu ball' => EquipmentTag.bosuBall,
-      'Medicine ball' => EquipmentTag.medicineBall,
-      'Plate' => EquipmentTag.plate,
-      'TRX' => EquipmentTag.trx,
-      'Vitruvian' => EquipmentTag.vitruvian,
+      AppStrings.onboardingEquipmentNone => EquipmentTag.bodyweight,
+      AppStrings.onboardingEquipmentDumbbells => EquipmentTag.dumbbell,
+      AppStrings.onboardingEquipmentBarbell => EquipmentTag.barbell,
+      AppStrings.onboardingEquipmentKettlebell => EquipmentTag.kettlebell,
+      AppStrings.onboardingEquipmentResistanceBands => EquipmentTag.bands,
+      AppStrings.onboardingEquipmentCableMachine => EquipmentTag.cable,
+      AppStrings.onboardingEquipmentSmithMachine => EquipmentTag.smithMachine,
+      AppStrings.onboardingEquipmentPullUpBar => EquipmentTag.pullUpBar,
+      AppStrings.onboardingEquipmentBench => EquipmentTag.bench,
+      AppStrings.onboardingEquipmentSquatRack => EquipmentTag.squatRack,
+      AppStrings.onboardingEquipmentCardioMachine => EquipmentTag.cardioMachine,
+      AppStrings.onboardingEquipmentMachine => EquipmentTag.machine,
+      AppStrings.onboardingEquipmentEzBar => EquipmentTag.ezBar,
+      AppStrings.onboardingEquipmentBosuBall => EquipmentTag.bosuBall,
+      AppStrings.onboardingEquipmentMedicineBall => EquipmentTag.medicineBall,
+      AppStrings.onboardingEquipmentPlate => EquipmentTag.plate,
+      AppStrings.onboardingEquipmentTrx => EquipmentTag.trx,
+      AppStrings.onboardingEquipmentVitruvian => EquipmentTag.vitruvian,
       _ => EquipmentTag.other,
     };
   }

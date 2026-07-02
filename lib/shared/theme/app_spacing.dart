@@ -80,6 +80,20 @@ class AppSizing {
   static const double reviewCardIcon = 36;
   static const double bodymapSvgWidth = 240;
   static const double bodymapSvgHeight = 480;
+  static const double videoCardHeight = 220;
+  static const double videoPreviewHeight = 200;
+  static const double emptyStateHeight = 300;
+  static const double restTimerSize = 200;
+  static const double weekTypeDropdownWidth = 130;
+  static const double dataFieldWidthSm = 60;
+  static const double dataFieldWidthMd = 100;
+  static const double timerStrokeWidth = 8;
+  static const double hairlineStrokeWidth = 1;
+  static const double activeIndicatorHeight = 4;
+  static const double deloadLineStrokeWidth = 1;
+  static const double deloadLineSpacing = 20;
+  static const double exerciseNumberCircle = 56;
+  static const double setNumberColumnWidth = 32;
 }
 
 class AppFontSizes {

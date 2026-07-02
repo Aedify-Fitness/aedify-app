@@ -244,7 +244,9 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                           ? const SizedBox(
                               width: AppSpacing.lg,
                               height: AppSpacing.lg,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(
+                                strokeWidth: AppSizing.strokeWidth,
+                              ),
                             )
                           : Text(AppStrings.save),
                     ),

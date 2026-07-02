@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/programmes/application/programme_calendar_state.dart';
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/programmes/domain/programme_calendar_view_data.dart';
@@ -90,7 +91,7 @@ class ProgrammeCalendarController
             DayViewData(
               scheduledDayIndex: dayIdx,
               dayLabel: dayLabel,
-              title: 'Active Recovery',
+              title: AppStrings.activeRecovery,
               exerciseCount: 0,
               durationMinutes: 0,
               status: ProgramWorkoutStatus.planned,

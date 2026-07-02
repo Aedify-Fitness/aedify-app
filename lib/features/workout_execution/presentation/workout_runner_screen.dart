@@ -416,7 +416,7 @@ class _VideoHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasVideo = videos.isNotEmpty;
     return Container(
-      height: 200,
+      height: AppSizing.videoPreviewHeight,
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceDim,
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -454,8 +454,8 @@ class _VideoHero extends StatelessWidget {
               ),
             ),
           Container(
-            width: 56,
-            height: 56,
+            width: AppSizing.exerciseNumberCircle,
+            height: AppSizing.exerciseNumberCircle,
             decoration: BoxDecoration(
               color: context.colorScheme.surface.withAlpha(230),
               shape: BoxShape.circle,
@@ -631,10 +631,19 @@ class _SetTableState extends ConsumerState<_SetTable> {
             ),
             child: Row(
               children: [
-                SizedBox(width: 32, child: Center(child: Text('#'))),
+                SizedBox(
+                  width: AppSizing.setNumberColumnWidth,
+                  child: Center(child: Text('#')),
+                ),
                 Expanded(child: Text(AppStrings.previous)),
-                SizedBox(width: 80, child: Text(AppStrings.weightKg)),
-                SizedBox(width: 60, child: Text(AppStrings.reps)),
+                SizedBox(
+                  width: AppSizing.fieldWidthLg,
+                  child: Text(AppStrings.weightKg),
+                ),
+                SizedBox(
+                  width: AppSizing.dataFieldWidthSm,
+                  child: Text(AppStrings.reps),
+                ),
               ],
             ),
           ),
@@ -664,7 +673,10 @@ class _SetTableState extends ConsumerState<_SetTable> {
                     ? context.colorScheme.surfaceContainerHighest.withAlpha(128)
                     : null,
                 border: isActive
-                    ? Border.all(color: context.colorScheme.secondary, width: 2)
+                    ? Border.all(
+                        color: context.colorScheme.secondary,
+                        width: AppSizing.strokeWidth,
+                      )
                     : null,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
@@ -675,12 +687,12 @@ class _SetTableState extends ConsumerState<_SetTable> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 32,
+                    width: AppSizing.setNumberColumnWidth,
                     child: Center(
                       child: isActive
                           ? Container(
-                              width: 28,
-                              height: 28,
+                              width: AppSizing.iconLg,
+                              height: AppSizing.iconLg,
                               decoration: BoxDecoration(
                                 color: context.colorScheme.secondary,
                                 shape: BoxShape.circle,
@@ -716,7 +728,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                     ),
                   ),
                   SizedBox(
-                    width: 80,
+                    width: AppSizing.fieldWidthLg,
                     child: isActive
                         ? _EditableField(
                             initialValue: actualWeight != null
@@ -749,7 +761,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   SizedBox(
-                    width: 60,
+                    width: AppSizing.dataFieldWidthSm,
                     child: isActive
                         ? _EditableField(
                             initialValue: actualReps?.toString() ?? '',

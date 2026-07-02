@@ -78,11 +78,11 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 200,
-                height: 200,
+                width: AppSizing.restTimerSize,
+                height: AppSizing.restTimerSize,
                 child: CircularProgressIndicator(
                   value: progress,
-                  strokeWidth: 8,
+                  strokeWidth: AppSizing.timerStrokeWidth,
                   backgroundColor: context.colorScheme.surfaceContainer,
                   color: context.colorScheme.secondary,
                 ),
@@ -111,12 +111,12 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
             children: [
               FilledButton.tonal(
                 onPressed: () => _adjust(-15),
-                child: const Text('-15s'),
+                child: const Text(AppStrings.restMinus15),
               ),
               const SizedBox(width: AppSpacing.md),
               FilledButton.tonal(
                 onPressed: () => _adjust(15),
-                child: const Text('+15s'),
+                child: const Text(AppStrings.restPlus15),
               ),
             ],
           ),
