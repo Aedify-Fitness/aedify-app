@@ -5,11 +5,55 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 (persistence foundation) complete**. **V1-M4-002 (workout builder) complete**. **V1-M4-003 (programme builder) complete**. **V1-M4-004 (workout session runner) complete**. **V1-M4-005 (workout history & programme library) complete**. **V1-M4-006 (custom exercise editor) complete**. **V1-M4-007 (warmup vs working set behavior) complete**. **V1-M4-008 (superset / execution groups) complete**. **V1-M4-009 (reusable draft validation service) complete**. **V1-M4-010 (transactional save and rollback service) complete**. **V1-M4-011 (M4 acceptance suite) complete** — 12 acceptance/blocker tests covering offline M4 flows, 1013/1013 passed. |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Day-of-week selection + deload week flag + three-tier rest model (60s default), programme goals required, inactive-by-default programme creation, and active/inactive list visibility are implemented. **Zero top-level declaration violations remaining outside `main()` in `lib/`**. **Zero widget-builder helper methods (`Widget _build`) remaining in `lib/`**. 1053/1053 passed. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                   |
 
 ## Completed Work
+
+### 2026-07-02 — Final widget-builder helper method sweep — zero violations remaining
+
+- **11 files already converted** in prior sessions: `exercise_dataset_status_tile`, `exercise_step_audio_button`, `workout_history_detail_screen`, `exercise_detail_screen`, `exercise_library_screen`, `programme_calendar_header`, `programme_week_section`, `programme_day_card`, `programme_workout_detail_screen`, `onboarding_screen` (initial batch), `home_screen` (initial batch).
+- **Final 5 deferred helpers converted**:
+  - `lib/features/home/presentation/home_screen.dart`: `_buildScheduled` → `_ScheduledView`, `_buildEmpty` → `_EmptyView`.
+  - `lib/features/onboarding/presentation/onboarding_screen.dart`: `_infoPanel` → `_ByokInfoPanel`, `_buildForm` + `_saveKey` + `_keyController`/`_obscured` fields → `_ByokForm` (ConsumerStatefulWidget) with `_ByokFormWidgetState`.
+  - `lib/features/workout_execution/presentation/workout_runner_screen.dart`: `_buildBody` + `_showCompleteSheet` + `_showCancelDialog` → `_WorkoutRunnerBody` (ConsumerWidget). `_findFirstIncomplete` moved to static method on `WorkoutRunnerScreen`.
+- **Verification**: grep-confirmed zero `Widget _build` or non-build widget-returning methods across all of `lib/`. The only exceptions are `AppWhiteSpace.both`/`custom` static factories (intentional design tokens).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### 2026-07-02 — Final top-level declaration sweep — zero violations remaining
+
+- **`const _items` → `_BottomNavItemData.items`** in `lib/app/router/bottom_nav_shell.dart`: Moved top-level `const _items = [...]` into `_BottomNavItemData` as a `static const` member. Updated all references.
+- **`_findFirstIncomplete` → `WorkoutRunnerScreen._findFirstIncomplete`** in `lib/features/workout_execution/presentation/workout_runner_screen.dart`: Moved top-level helper function into `WorkoutRunnerScreen` as a `static` method.
+- **Exhaustive grep verification**: Zero top-level declarations remain outside `main()` in `main.dart` across all `lib/`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Rule-compliance cleanup + failing test repair
+
+- Consolidated a touched-surface cleanup for remaining top-level helper/provider violations so the affected M4-adjacent feature files comply with the project rule that top-level declarations must be encapsulated.
+- Repaired three failing widget tests by restoring exercise-detail metadata/substitution affordances, aligning one workout-runner test with the current runner UI contract, and fixing the malformed `ProgrammesScreen` implementation discovered during verification.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Programme goals UI + programme status/list consistency
+
+- **Programme goals UI**: `ProgrammeDetailsSection` now renders goal chips for all `GoalTag` values and `ProgrammeBuilderScreen` wires `selectedGoals` + `onGoalsChanged` to `ProgrammeBuilderController.setGoalTags(...)`.
+- **Validation**: Programmes now require at least one goal before save. Added `noGoals` validation path across `DraftValidationCode`, `AppErrorCodes`, `AppStrings`, and `ProgrammeBuilderValidator`.
+- **Status consistency fix**: Fixed mismatch between `ProgramStatus` and `active` boolean — controller toggles now update both fields, save use case derives `active` from `status`, and DAO activation/deactivation methods update both stored fields together.
+- **Programme visibility fix**: New programmes now default to `inactive` instead of `draft`. `ListProgrammesUseCase` and `ListSavedWorkoutsUseCase` now return all items, not only active ones.
+- **Outcome**: Inactive programmes are visible on `ProgrammesScreen`, and the active/inactive chip reflects the true persisted state after save or toggle.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Day-of-week selection — onboarding + programme defaults
+
+- **Onboarding**: Schedule step now shows Mon-Sun day toggle instead of 1-7 number picker. Controller validates `trainingDays.isNotEmpty`.
+- **`TrainingDay.displayLabel`**: Short day names (Mon/Tue/...) for UI.
+- **`ProgrammeBuilderWorkoutSlotDraft.scheduledDay`**: New nullable field storing the assigned `TrainingDay`.
+- **Slot day assignment algorithm**: Maps training day anchors to calendar-ordered slot days. Pulls rightmost anchors left when slot count is small.
+- **Programme builder**: Reads profile `trainingDays` to default slot days. `addSlot` accepts `scheduledDay`.
+- **Slot card**: Shows day label or fallback.
+- **Validator**: Enforces `scheduledDayRequired` when week has >7 slots without explicit day assignment.
+- **Tests**: Onboarding controller/screen tests updated for day toggle. All 1043 tests pass.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1043/1043 passed.
 
 ### 2026-07-01 — V1-M4-011 — M4 manual tracker acceptance suite (complete)
 

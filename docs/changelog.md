@@ -4,7 +4,80 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-02
+
+### Final widget-builder helper method sweep — zero violations remaining
+
+- **11 files converted**: `exercise_dataset_status_tile`, `exercise_step_audio_button`, `workout_history_detail_screen`, `exercise_detail_screen`, `exercise_library_screen`, `programme_calendar_header`, `programme_week_section`, `programme_day_card`, `programme_workout_detail_screen`, `onboarding_screen`, `home_screen`.
+- **5 deferred helpers also converted** (all previous stragglers now resolved):
+  - `home_screen.dart`: `_buildScheduled` → `_ScheduledView` (StatelessWidget), `_buildEmpty` → `_EmptyView` (StatelessWidget).
+  - `onboarding_screen.dart`: `_infoPanel` → `_ByokInfoPanel` (StatelessWidget), `_buildForm` + `_saveKey` + mutable fields → `_ByokForm` (ConsumerStatefulWidget).
+  - `workout_runner_screen.dart`: `_buildBody` + `_showCompleteSheet` + `_showCancelDialog` → `_WorkoutRunnerBody` (ConsumerWidget).
+- **Exhaustive verification**: Grep-confirmed zero non-build methods returning `Widget` in `lib/`. The only non-build widget-returning functions are static `AppWhiteSpace.both`/`custom` factory methods (intentional design-token utilities).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Final top-level declaration sweep — zero violations remaining
+
+- **Moved `const _items` into `_BottomNavItemData`** in `lib/app/router/bottom_nav_shell.dart:16` — converted from a top-level constant to a `static const` member of the existing private class, with references updated to `_BottomNavItemData.items.length` / `_BottomNavItemData.items[index]`.
+- **Moved `_findFirstIncomplete` into `WorkoutRunnerScreen`** in `lib/features/workout_execution/presentation/workout_runner_screen.dart:301` — converted from a top-level helper function to a `static` method of `WorkoutRunnerScreen`, called from within `build()`.
+- **Exhaustive verification**: Grep-confirmed zero top-level declarations remain outside `main()` in `main.dart` across all of `lib/`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
 ## 2026-07-01
+
+### Rule-compliance cleanup + failing test repair
+
+- **Top-level declaration cleanup**: Wrapped remaining touched-surface top-level helpers/providers into private classes or static members to comply with the Aedify rule against top-level declarations outside `main()`. This included slot-day assignment, exercise-video label formatting, complete-workout metrics, onboarding/profile exercise multi-select helpers, onboarding local providers, programme workout detail helpers, and profile 1RM helper generation.
+- **Programmes screen repair**: Rebuilt `ProgrammesScreen` into a minimal valid library screen wired to `ProgrammeLibraryController`, restoring compile health and correct archive/delete/activate entrypoints.
+- **Exercise detail repair**: Restored visible metadata chips (difficulty, modality, equipment, force) and a substitution tooltip so the detail screen once again matches its widget-test contract.
+- **Runner test alignment**: Updated the workout-runner widget test to assert the current runner UI contract (`finishEarly`, `logSet`) and suppressed repeated drift warnings in that test file.
+- **Widget polish**: Added missing `_TodayBadge` const constructor and removed stale helper-state issues exposed during verification.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Programme goals + status/list visibility fixes
+
+- **Programme builder goals UI**: Added a goal selector to `ProgrammeDetailsSection` using multi-select chips for all `GoalTag` values. Wired `ProgrammeBuilderScreen` to pass current `goalTags` and `ProgrammeBuilderController.setGoalTags(...)`.
+- **Programme validation**: Added programme-goal validation so a programme must have at least one goal before save. Added `DraftValidationCode.noGoals`, `AppErrorCodes.noGoals`, `AppStrings.programmeGoalsRequired`, and `ProgrammeBuilderValidator._validateGoals(...)`.
+- **Programme status consistency**: Fixed `status` / `active` divergence so activation state is now written consistently across all save and toggle flows:
+  - `ProgrammeBuilderController.setProgrammeStatus(...)` now updates both `status` and `active`
+  - `SaveProgrammeBuilderDraftUseCase` now derives `active` from `status == ProgramStatus.active`
+  - `ProgramDao.clearActiveProgram(...)` now also writes `status: 'inactive'`
+  - `ProgramDao.setProgramActive(...)` now writes both `active` and `status`
+- **Programme list visibility**: New programmes default to `inactive` instead of `draft`, and both active and inactive programmes are now visible on the list screens:
+  - `LoadProgrammeBuilderDraftUseCase.createEmptyDraft()` now defaults to `ProgramStatus.inactive`
+  - `ListProgrammesUseCase` no longer filters to `status: 'active'`
+  - `ListSavedWorkoutsUseCase` no longer filters to `status: 'active'`
+- **Result**: Newly created inactive programmes now appear on `ProgrammesScreen`, and the status chip stays in sync after activation/deactivation.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Deload week flag + three-tier rest model
+
+- **Deload week**: `ProgrammeBuilderWeekDraft` now has `WeekType? weekType` field. `ProgrammeWeekCard` shows a dropdown with all 6 `WeekType` values (normal, deload, test, taper, hypertrophy, strength). Controller `setWeekType` added.
+- **Rest resolver** (`lib/shared/domain/rest_resolver.dart`): `RestResolver.effectiveRest(set?, exercise?, workout?)` resolves the three-tier chain → defaults to 60s when all null.
+- **Domain models** (5 files): Added `int? restBetweenExercisesSeconds` to `WorkoutBuilderDraft`, `WorkoutBuilderExerciseDraft`, `ProgrammeBuilderTemplateDraft`, `ProgrammeExerciseDraft`, `ProgrammeBuilderDraft`. Added `restBetweenExercisesSeconds` to persistence drafts `SavedWorkoutDraft` and `SavedWorkoutExerciseDraft`.
+- **Drift migration v8→v9**: Added 4 nullable `restBetweenExercisesSeconds` columns to `saved_workouts`, `saved_workout_exercises`, `program_workout_templates`, `program_template_exercises`.
+- **Controllers**: `WorkoutBuilderController` +`updateRestBetweenExercises` and `updateExerciseRest`. `ProgrammeBuilderController` +`setWeekType` and `updateTemplateRestBetweenExercises`.
+- **Repository**: `DriftSavedWorkoutRepository` companion builders map new rest columns. `SaveWorkoutDraftUseCase` maps rest fields from builder to persistence draft.
+- **UI**: `ProgrammeWeekCard` shows week type dropdown. `ProgrammeWeeksOverview` passes `onSetWeekType` callback. `ProgrammeBuilderScreen` wires both deload and template rest.
+- **Strings**: `workoutRestLabel`, `workoutRestHint`, `restSecondsUnit`, `weekTypeLabel`.
+- **Tests**: `rest_resolver_test.dart` (6 tests), `programme_builder_controller_test.dart` (setWeekType test). Migration and schema version tests updated for v9.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Day-of-week selection — onboarding + programme defaults
+
+- **Onboarding schedule step**: Replaced number picker (1-7) with day-of-week toggle (Mon-Sun) using `TrainingDay.displayLabel`. Users now select exact workout days. `trainingDaysPerWeek` is derived from `trainingDays.length`.
+- **Onboarding controller**: `_resumeStepForDraft` and `_validateStep` now check `trainingDays.isEmpty` instead of `trainingDaysPerWeek`.
+- **Review step**: Displays selected day names instead of just the count.
+- **`TrainingDay`**: Added `displayLabel` getter (Mon/Tue/Wed/...).
+- **`ProgrammeBuilderWorkoutSlotDraft`**: Added `TrainingDay? scheduledDay` field + `copyWith`.
+- **Slot day assignment algorithm** (`lib/features/programmes/application/slot_day_assignment.dart`): Derives calendar-ordered days from training anchors. Supports day-of-week selection enforcement for future >7 slot weeks.
+- **Programme builder screen**: `onAddSlot` now reads profile `trainingDays` and computes `scheduledDay`/`scheduledDayIndex` using the algorithm.
+- **`ProgrammeBuilderController.addSlot()`**: Now accepts optional `TrainingDay? scheduledDay`.
+- **Programme slot card**: Shows `scheduledDay?.displayLabel` or fallback.
+- **Validator**: Added `scheduledDayRequired` error for weeks with >7 slots where slot days aren't explicitly set.
+- **AppStrings** (+1): `scheduledDayRequired`. **AppErrorCodes** (+1): `noScheduledDay`.
+- **Tests updated**: Onboarding controller/screen tests use day toggle taps. M3 smoke flow updated. All pre-existing tests pass.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1043/1043 passed.
 
 ### V1-M4-011 — M4 manual tracker acceptance suite (complete)
 
