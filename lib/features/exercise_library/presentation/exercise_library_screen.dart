@@ -246,22 +246,28 @@ class _ActiveFilterBar extends StatelessWidget {
     final chips = <Widget>[];
 
     if (filters.muscleGroup != null) {
-      chips.add(_filterChip(filters.muscleGroup!.label));
+      chips.add(_FilterChipWidget(label: filters.muscleGroup!.label));
     }
     if (filters.difficulty != null) {
-      chips.add(_filterChip(_formatLabel(filters.difficulty!.dbValue)));
+      chips.add(
+        _FilterChipWidget(label: _formatLabel(filters.difficulty!.dbValue)),
+      );
     }
     if (filters.modality != null) {
-      chips.add(_filterChip(_formatLabel(filters.modality!.dbValue)));
+      chips.add(
+        _FilterChipWidget(label: _formatLabel(filters.modality!.dbValue)),
+      );
     }
     if (filters.equipment != null) {
-      chips.add(_filterChip(_formatLabel(filters.equipment!.dbValue)));
+      chips.add(
+        _FilterChipWidget(label: _formatLabel(filters.equipment!.dbValue)),
+      );
     }
     if (filters.favoritesOnly) {
-      chips.add(_filterChip(AppStrings.favorites));
+      chips.add(_FilterChipWidget(label: AppStrings.favorites));
     }
     if (filters.excludeSubstituted) {
-      chips.add(_filterChip(AppStrings.noSubstituted));
+      chips.add(_FilterChipWidget(label: AppStrings.noSubstituted));
     }
 
     return Padding(
@@ -284,17 +290,6 @@ class _ActiveFilterBar extends StatelessWidget {
             tooltip: AppStrings.clearFilters,
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _filterChip(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(right: AppSpacing.xs),
-      child: Chip(
-        label: Text(label, style: AppTextStyles.labelSm),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }
@@ -376,5 +371,23 @@ class _ExerciseListTile extends StatelessWidget {
               : '${word[0].toUpperCase()}${word.substring(1)}',
         )
         .join(' ');
+  }
+}
+
+class _FilterChipWidget extends StatelessWidget {
+  const _FilterChipWidget({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSpacing.xs),
+      child: Chip(
+        label: Text(label, style: AppTextStyles.labelSm),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
+    );
   }
 }

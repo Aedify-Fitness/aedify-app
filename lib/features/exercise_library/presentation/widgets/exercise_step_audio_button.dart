@@ -29,14 +29,6 @@ class ExerciseStepAudioButton extends ConsumerWidget {
     );
     final stepState = stateMap[key] ?? const ExerciseStepAudioState.idle();
 
-    return _buildButton(context, ref, stepState);
-  }
-
-  Widget _buildButton(
-    BuildContext context,
-    WidgetRef ref,
-    ExerciseStepAudioState stepState,
-  ) {
     final colorScheme = context.colorScheme;
 
     switch (stepState.phase) {

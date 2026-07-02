@@ -71,11 +71,17 @@ class ExerciseVideoCard extends StatelessWidget {
                 ),
           title: Text(
             video.angle != null
-                ? _formatLabel(video.angle!.dbValue)
+                ? _ExerciseVideoCardLabelFormatter.formatLabel(
+                    video.angle!.dbValue,
+                  )
                 : AppStrings.videoUnavailable,
           ),
           subtitle: Text(
-            video.gender != null ? _formatLabel(video.gender!.dbValue) : '',
+            video.gender != null
+                ? _ExerciseVideoCardLabelFormatter.formatLabel(
+                    video.gender!.dbValue,
+                  )
+                : '',
           ),
           trailing: playbackState == ExerciseVideoPlaybackState.loading
               ? SizedBox(
@@ -112,7 +118,7 @@ class _FailedVideo extends StatelessWidget {
       ),
       title: Text(
         video.angle != null
-            ? _formatLabel(video.angle!.dbValue)
+            ? _ExerciseVideoCardLabelFormatter.formatLabel(video.angle!.dbValue)
             : AppStrings.exerciseVideoLoadFailed,
       ),
       subtitle: Text(AppStrings.exerciseVideoLoadFailed),
@@ -129,13 +135,18 @@ class _FailedVideo extends StatelessWidget {
   }
 }
 
-String _formatLabel(String value) {
-  return value
-      .replaceAll('_', ' ')
-      .split(' ')
-      .map(
-        (word) =>
-            word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1)}',
-      )
-      .join(' ');
+class _ExerciseVideoCardLabelFormatter {
+  _ExerciseVideoCardLabelFormatter._();
+
+  static String formatLabel(String value) {
+    return value
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
+  }
 }
