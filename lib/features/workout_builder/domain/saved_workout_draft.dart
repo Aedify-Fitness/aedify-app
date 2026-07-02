@@ -20,6 +20,7 @@ class SavedWorkoutDraft {
     required this.exercises,
     this.description,
     this.estimatedDurationMinutes,
+    this.restBetweenExercisesSeconds,
     this.importOrigin,
     this.importReviewStatus,
     this.exportPrivacyMode,
@@ -35,6 +36,7 @@ class SavedWorkoutDraft {
   final List<SavedWorkoutExerciseDraft> exercises;
   final String? description;
   final int? estimatedDurationMinutes;
+  final int? restBetweenExercisesSeconds;
   final ImportOrigin? importOrigin;
   final ImportReviewStatus? importReviewStatus;
   final ExportPrivacyMode? exportPrivacyMode;

@@ -12,6 +12,7 @@ class WorkoutBuilderExerciseDraft {
     this.supersetGroupId,
     this.supersetOrder,
     this.notes,
+    this.restBetweenExercisesSeconds,
   });
 
   final String id;
@@ -22,6 +23,7 @@ class WorkoutBuilderExerciseDraft {
   final String? supersetGroupId;
   final int? supersetOrder;
   final String? notes;
+  final int? restBetweenExercisesSeconds;
 
   WorkoutBuilderExerciseDraft copyWith({
     String? id,
@@ -32,6 +34,7 @@ class WorkoutBuilderExerciseDraft {
     String? supersetGroupId,
     int? supersetOrder,
     String? notes,
+    int? restBetweenExercisesSeconds,
   }) {
     return WorkoutBuilderExerciseDraft(
       id: id ?? this.id,
@@ -42,6 +45,8 @@ class WorkoutBuilderExerciseDraft {
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
       supersetOrder: supersetOrder ?? this.supersetOrder,
       notes: notes ?? this.notes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
     );
   }
 }

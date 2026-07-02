@@ -15,6 +15,7 @@ class WorkoutBuilderDraft {
     required this.exercises,
     this.description,
     this.estimatedDurationMinutes,
+    this.restBetweenExercisesSeconds,
   });
 
   final String id;
@@ -27,6 +28,7 @@ class WorkoutBuilderDraft {
   final List<WorkoutBuilderExerciseDraft> exercises;
   final String? description;
   final int? estimatedDurationMinutes;
+  final int? restBetweenExercisesSeconds;
 
   WorkoutBuilderDraft copyWith({
     String? id,
@@ -39,6 +41,7 @@ class WorkoutBuilderDraft {
     List<WorkoutBuilderExerciseDraft>? exercises,
     String? description,
     int? estimatedDurationMinutes,
+    int? restBetweenExercisesSeconds,
   }) {
     return WorkoutBuilderDraft(
       id: id ?? this.id,
@@ -52,6 +55,8 @@ class WorkoutBuilderDraft {
       description: description ?? this.description,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
     );
   }
 }

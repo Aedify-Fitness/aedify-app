@@ -9,6 +9,7 @@ class ProgrammeBuilderTemplateDraft {
     this.dayType,
     this.description,
     this.estimatedDurationMinutes,
+    this.restBetweenExercisesSeconds,
     this.exercises = const [],
   });
 
@@ -18,6 +19,7 @@ class ProgrammeBuilderTemplateDraft {
   final DayType? dayType;
   final String? description;
   final int? estimatedDurationMinutes;
+  final int? restBetweenExercisesSeconds;
   final List<ProgrammeExerciseDraft> exercises;
 
   ProgrammeBuilderTemplateDraft copyWith({
@@ -27,6 +29,7 @@ class ProgrammeBuilderTemplateDraft {
     DayType? dayType,
     String? description,
     int? estimatedDurationMinutes,
+    int? restBetweenExercisesSeconds,
     List<ProgrammeExerciseDraft>? exercises,
   }) {
     return ProgrammeBuilderTemplateDraft(
@@ -37,6 +40,8 @@ class ProgrammeBuilderTemplateDraft {
       description: description ?? this.description,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       exercises: exercises ?? this.exercises,
     );
   }

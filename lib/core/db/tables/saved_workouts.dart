@@ -8,6 +8,7 @@ class SavedWorkouts extends Table {
   TextColumn get creationMethod => text()();
   TextColumn get status => text().withDefault(const Constant('active'))();
   IntColumn get estimatedDurationMinutes => integer().nullable()();
+  IntColumn get restBetweenExercisesSeconds => integer().nullable()();
   TextColumn get goalTagsJson => text().withDefault(const Constant('[]'))();
   TextColumn get equipmentJson => text().withDefault(const Constant('[]'))();
   TextColumn get aiGenerationSnapshotId => text().nullable()();

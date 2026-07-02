@@ -12699,6 +12699,17 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _restBetweenExercisesSecondsMeta =
+      const VerificationMeta('restBetweenExercisesSeconds');
+  @override
+  late final GeneratedColumn<int> restBetweenExercisesSeconds =
+      GeneratedColumn<int>(
+        'rest_between_exercises_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _sortOrderMeta = const VerificationMeta(
     'sortOrder',
   );
@@ -12741,6 +12752,7 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
     description,
     dayType,
     estimatedDurationMinutes,
+    restBetweenExercisesSeconds,
     sortOrder,
     createdAt,
     updatedAt,
@@ -12813,6 +12825,15 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
         ),
       );
     }
+    if (data.containsKey('rest_between_exercises_seconds')) {
+      context.handle(
+        _restBetweenExercisesSecondsMeta,
+        restBetweenExercisesSeconds.isAcceptableOrUnknown(
+          data['rest_between_exercises_seconds']!,
+          _restBetweenExercisesSecondsMeta,
+        ),
+      );
+    }
     if (data.containsKey('sort_order')) {
       context.handle(
         _sortOrderMeta,
@@ -12874,6 +12895,10 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
         DriftSqlType.int,
         data['${effectivePrefix}estimated_duration_minutes'],
       ),
+      restBetweenExercisesSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_between_exercises_seconds'],
+      ),
       sortOrder: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
@@ -12904,6 +12929,7 @@ class ProgramWorkoutTemplate extends DataClass
   final String? description;
   final String? dayType;
   final int? estimatedDurationMinutes;
+  final int? restBetweenExercisesSeconds;
   final int sortOrder;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -12915,6 +12941,7 @@ class ProgramWorkoutTemplate extends DataClass
     this.description,
     this.dayType,
     this.estimatedDurationMinutes,
+    this.restBetweenExercisesSeconds,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -12935,6 +12962,11 @@ class ProgramWorkoutTemplate extends DataClass
     if (!nullToAbsent || estimatedDurationMinutes != null) {
       map['estimated_duration_minutes'] = Variable<int>(
         estimatedDurationMinutes,
+      );
+    }
+    if (!nullToAbsent || restBetweenExercisesSeconds != null) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds,
       );
     }
     map['sort_order'] = Variable<int>(sortOrder);
@@ -12958,6 +12990,10 @@ class ProgramWorkoutTemplate extends DataClass
       estimatedDurationMinutes: estimatedDurationMinutes == null && nullToAbsent
           ? const Value.absent()
           : Value(estimatedDurationMinutes),
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restBetweenExercisesSeconds),
       sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -12979,6 +13015,9 @@ class ProgramWorkoutTemplate extends DataClass
       estimatedDurationMinutes: serializer.fromJson<int?>(
         json['estimatedDurationMinutes'],
       ),
+      restBetweenExercisesSeconds: serializer.fromJson<int?>(
+        json['restBetweenExercisesSeconds'],
+      ),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -12997,6 +13036,9 @@ class ProgramWorkoutTemplate extends DataClass
       'estimatedDurationMinutes': serializer.toJson<int?>(
         estimatedDurationMinutes,
       ),
+      'restBetweenExercisesSeconds': serializer.toJson<int?>(
+        restBetweenExercisesSeconds,
+      ),
       'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -13011,6 +13053,7 @@ class ProgramWorkoutTemplate extends DataClass
     Value<String?> description = const Value.absent(),
     Value<String?> dayType = const Value.absent(),
     Value<int?> estimatedDurationMinutes = const Value.absent(),
+    Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -13024,6 +13067,9 @@ class ProgramWorkoutTemplate extends DataClass
     estimatedDurationMinutes: estimatedDurationMinutes.present
         ? estimatedDurationMinutes.value
         : this.estimatedDurationMinutes,
+    restBetweenExercisesSeconds: restBetweenExercisesSeconds.present
+        ? restBetweenExercisesSeconds.value
+        : this.restBetweenExercisesSeconds,
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -13045,6 +13091,9 @@ class ProgramWorkoutTemplate extends DataClass
       estimatedDurationMinutes: data.estimatedDurationMinutes.present
           ? data.estimatedDurationMinutes.value
           : this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds: data.restBetweenExercisesSeconds.present
+          ? data.restBetweenExercisesSeconds.value
+          : this.restBetweenExercisesSeconds,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -13061,6 +13110,7 @@ class ProgramWorkoutTemplate extends DataClass
           ..write('description: $description, ')
           ..write('dayType: $dayType, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -13077,6 +13127,7 @@ class ProgramWorkoutTemplate extends DataClass
     description,
     dayType,
     estimatedDurationMinutes,
+    restBetweenExercisesSeconds,
     sortOrder,
     createdAt,
     updatedAt,
@@ -13092,6 +13143,8 @@ class ProgramWorkoutTemplate extends DataClass
           other.description == this.description &&
           other.dayType == this.dayType &&
           other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.restBetweenExercisesSeconds ==
+              this.restBetweenExercisesSeconds &&
           other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -13106,6 +13159,7 @@ class ProgramWorkoutTemplatesCompanion
   final Value<String?> description;
   final Value<String?> dayType;
   final Value<int?> estimatedDurationMinutes;
+  final Value<int?> restBetweenExercisesSeconds;
   final Value<int> sortOrder;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -13118,6 +13172,7 @@ class ProgramWorkoutTemplatesCompanion
     this.description = const Value.absent(),
     this.dayType = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -13131,6 +13186,7 @@ class ProgramWorkoutTemplatesCompanion
     this.description = const Value.absent(),
     this.dayType = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     required int sortOrder,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -13150,6 +13206,7 @@ class ProgramWorkoutTemplatesCompanion
     Expression<String>? description,
     Expression<String>? dayType,
     Expression<int>? estimatedDurationMinutes,
+    Expression<int>? restBetweenExercisesSeconds,
     Expression<int>? sortOrder,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -13164,6 +13221,8 @@ class ProgramWorkoutTemplatesCompanion
       if (dayType != null) 'day_type': dayType,
       if (estimatedDurationMinutes != null)
         'estimated_duration_minutes': estimatedDurationMinutes,
+      if (restBetweenExercisesSeconds != null)
+        'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -13179,6 +13238,7 @@ class ProgramWorkoutTemplatesCompanion
     Value<String?>? description,
     Value<String?>? dayType,
     Value<int?>? estimatedDurationMinutes,
+    Value<int?>? restBetweenExercisesSeconds,
     Value<int>? sortOrder,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -13193,6 +13253,8 @@ class ProgramWorkoutTemplatesCompanion
       dayType: dayType ?? this.dayType,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -13226,6 +13288,11 @@ class ProgramWorkoutTemplatesCompanion
         estimatedDurationMinutes.value,
       );
     }
+    if (restBetweenExercisesSeconds.present) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds.value,
+      );
+    }
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
@@ -13251,6 +13318,7 @@ class ProgramWorkoutTemplatesCompanion
           ..write('description: $description, ')
           ..write('dayType: $dayType, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -13364,6 +13432,17 @@ class $ProgramTemplateExercisesTable extends ProgramTemplateExercises
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _restBetweenExercisesSecondsMeta =
+      const VerificationMeta('restBetweenExercisesSeconds');
+  @override
+  late final GeneratedColumn<int> restBetweenExercisesSeconds =
+      GeneratedColumn<int>(
+        'rest_between_exercises_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -13406,6 +13485,7 @@ class $ProgramTemplateExercisesTable extends ProgramTemplateExercises
     supersetGroupId,
     supersetOrder,
     sortOrder,
+    restBetweenExercisesSeconds,
     notes,
     cuesJson,
     createdAt,
@@ -13499,6 +13579,15 @@ class $ProgramTemplateExercisesTable extends ProgramTemplateExercises
     } else if (isInserting) {
       context.missing(_sortOrderMeta);
     }
+    if (data.containsKey('rest_between_exercises_seconds')) {
+      context.handle(
+        _restBetweenExercisesSecondsMeta,
+        restBetweenExercisesSeconds.isAcceptableOrUnknown(
+          data['rest_between_exercises_seconds']!,
+          _restBetweenExercisesSecondsMeta,
+        ),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -13567,6 +13656,10 @@ class $ProgramTemplateExercisesTable extends ProgramTemplateExercises
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      restBetweenExercisesSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_between_exercises_seconds'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -13599,6 +13692,7 @@ class ProgramTemplateExercise extends DataClass
   final String? supersetGroupId;
   final int? supersetOrder;
   final int sortOrder;
+  final int? restBetweenExercisesSeconds;
   final String? notes;
   final String? cuesJson;
   final DateTime createdAt;
@@ -13612,6 +13706,7 @@ class ProgramTemplateExercise extends DataClass
     this.supersetGroupId,
     this.supersetOrder,
     required this.sortOrder,
+    this.restBetweenExercisesSeconds,
     this.notes,
     this.cuesJson,
     required this.createdAt,
@@ -13638,6 +13733,11 @@ class ProgramTemplateExercise extends DataClass
       map['superset_order'] = Variable<int>(supersetOrder);
     }
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || restBetweenExercisesSeconds != null) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds,
+      );
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -13669,6 +13769,10 @@ class ProgramTemplateExercise extends DataClass
           ? const Value.absent()
           : Value(supersetOrder),
       sortOrder: Value(sortOrder),
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restBetweenExercisesSeconds),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -13694,6 +13798,9 @@ class ProgramTemplateExercise extends DataClass
       supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
       supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      restBetweenExercisesSeconds: serializer.fromJson<int?>(
+        json['restBetweenExercisesSeconds'],
+      ),
       notes: serializer.fromJson<String?>(json['notes']),
       cuesJson: serializer.fromJson<String?>(json['cuesJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -13712,6 +13819,9 @@ class ProgramTemplateExercise extends DataClass
       'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
       'supersetOrder': serializer.toJson<int?>(supersetOrder),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'restBetweenExercisesSeconds': serializer.toJson<int?>(
+        restBetweenExercisesSeconds,
+      ),
       'notes': serializer.toJson<String?>(notes),
       'cuesJson': serializer.toJson<String?>(cuesJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -13728,6 +13838,7 @@ class ProgramTemplateExercise extends DataClass
     Value<String?> supersetGroupId = const Value.absent(),
     Value<int?> supersetOrder = const Value.absent(),
     int? sortOrder,
+    Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     Value<String?> cuesJson = const Value.absent(),
     DateTime? createdAt,
@@ -13747,6 +13858,9 @@ class ProgramTemplateExercise extends DataClass
         ? supersetOrder.value
         : this.supersetOrder,
     sortOrder: sortOrder ?? this.sortOrder,
+    restBetweenExercisesSeconds: restBetweenExercisesSeconds.present
+        ? restBetweenExercisesSeconds.value
+        : this.restBetweenExercisesSeconds,
     notes: notes.present ? notes.value : this.notes,
     cuesJson: cuesJson.present ? cuesJson.value : this.cuesJson,
     createdAt: createdAt ?? this.createdAt,
@@ -13778,6 +13892,9 @@ class ProgramTemplateExercise extends DataClass
           ? data.supersetOrder.value
           : this.supersetOrder,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      restBetweenExercisesSeconds: data.restBetweenExercisesSeconds.present
+          ? data.restBetweenExercisesSeconds.value
+          : this.restBetweenExercisesSeconds,
       notes: data.notes.present ? data.notes.value : this.notes,
       cuesJson: data.cuesJson.present ? data.cuesJson.value : this.cuesJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -13796,6 +13913,7 @@ class ProgramTemplateExercise extends DataClass
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('notes: $notes, ')
           ..write('cuesJson: $cuesJson, ')
           ..write('createdAt: $createdAt')
@@ -13814,6 +13932,7 @@ class ProgramTemplateExercise extends DataClass
     supersetGroupId,
     supersetOrder,
     sortOrder,
+    restBetweenExercisesSeconds,
     notes,
     cuesJson,
     createdAt,
@@ -13831,6 +13950,8 @@ class ProgramTemplateExercise extends DataClass
           other.supersetGroupId == this.supersetGroupId &&
           other.supersetOrder == this.supersetOrder &&
           other.sortOrder == this.sortOrder &&
+          other.restBetweenExercisesSeconds ==
+              this.restBetweenExercisesSeconds &&
           other.notes == this.notes &&
           other.cuesJson == this.cuesJson &&
           other.createdAt == this.createdAt);
@@ -13847,6 +13968,7 @@ class ProgramTemplateExercisesCompanion
   final Value<String?> supersetGroupId;
   final Value<int?> supersetOrder;
   final Value<int> sortOrder;
+  final Value<int?> restBetweenExercisesSeconds;
   final Value<String?> notes;
   final Value<String?> cuesJson;
   final Value<DateTime> createdAt;
@@ -13861,6 +13983,7 @@ class ProgramTemplateExercisesCompanion
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.notes = const Value.absent(),
     this.cuesJson = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -13876,6 +13999,7 @@ class ProgramTemplateExercisesCompanion
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
     required int sortOrder,
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.notes = const Value.absent(),
     this.cuesJson = const Value.absent(),
     required DateTime createdAt,
@@ -13895,6 +14019,7 @@ class ProgramTemplateExercisesCompanion
     Expression<String>? supersetGroupId,
     Expression<int>? supersetOrder,
     Expression<int>? sortOrder,
+    Expression<int>? restBetweenExercisesSeconds,
     Expression<String>? notes,
     Expression<String>? cuesJson,
     Expression<DateTime>? createdAt,
@@ -13910,6 +14035,8 @@ class ProgramTemplateExercisesCompanion
       if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
       if (supersetOrder != null) 'superset_order': supersetOrder,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (restBetweenExercisesSeconds != null)
+        'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (notes != null) 'notes': notes,
       if (cuesJson != null) 'cues_json': cuesJson,
       if (createdAt != null) 'created_at': createdAt,
@@ -13927,6 +14054,7 @@ class ProgramTemplateExercisesCompanion
     Value<String?>? supersetGroupId,
     Value<int?>? supersetOrder,
     Value<int>? sortOrder,
+    Value<int?>? restBetweenExercisesSeconds,
     Value<String?>? notes,
     Value<String?>? cuesJson,
     Value<DateTime>? createdAt,
@@ -13942,6 +14070,8 @@ class ProgramTemplateExercisesCompanion
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
       supersetOrder: supersetOrder ?? this.supersetOrder,
       sortOrder: sortOrder ?? this.sortOrder,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       notes: notes ?? this.notes,
       cuesJson: cuesJson ?? this.cuesJson,
       createdAt: createdAt ?? this.createdAt,
@@ -13979,6 +14109,11 @@ class ProgramTemplateExercisesCompanion
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (restBetweenExercisesSeconds.present) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds.value,
+      );
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -14006,6 +14141,7 @@ class ProgramTemplateExercisesCompanion
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('notes: $notes, ')
           ..write('cuesJson: $cuesJson, ')
           ..write('createdAt: $createdAt, ')
@@ -19442,6 +19578,17 @@ class $SavedWorkoutsTable extends SavedWorkouts
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _restBetweenExercisesSecondsMeta =
+      const VerificationMeta('restBetweenExercisesSeconds');
+  @override
+  late final GeneratedColumn<int> restBetweenExercisesSeconds =
+      GeneratedColumn<int>(
+        'rest_between_exercises_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _goalTagsJsonMeta = const VerificationMeta(
     'goalTagsJson',
   );
@@ -19621,6 +19768,7 @@ class $SavedWorkoutsTable extends SavedWorkouts
     creationMethod,
     status,
     estimatedDurationMinutes,
+    restBetweenExercisesSeconds,
     goalTagsJson,
     equipmentJson,
     aiGenerationSnapshotId,
@@ -19702,6 +19850,15 @@ class $SavedWorkoutsTable extends SavedWorkouts
         estimatedDurationMinutes.isAcceptableOrUnknown(
           data['estimated_duration_minutes']!,
           _estimatedDurationMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rest_between_exercises_seconds')) {
+      context.handle(
+        _restBetweenExercisesSecondsMeta,
+        restBetweenExercisesSeconds.isAcceptableOrUnknown(
+          data['rest_between_exercises_seconds']!,
+          _restBetweenExercisesSecondsMeta,
         ),
       );
     }
@@ -19866,6 +20023,10 @@ class $SavedWorkoutsTable extends SavedWorkouts
         DriftSqlType.int,
         data['${effectivePrefix}estimated_duration_minutes'],
       ),
+      restBetweenExercisesSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_between_exercises_seconds'],
+      ),
       goalTagsJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}goal_tags_json'],
@@ -19943,6 +20104,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
   final String creationMethod;
   final String status;
   final int? estimatedDurationMinutes;
+  final int? restBetweenExercisesSeconds;
   final String goalTagsJson;
   final String equipmentJson;
   final String? aiGenerationSnapshotId;
@@ -19966,6 +20128,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     required this.creationMethod,
     required this.status,
     this.estimatedDurationMinutes,
+    this.restBetweenExercisesSeconds,
     required this.goalTagsJson,
     required this.equipmentJson,
     this.aiGenerationSnapshotId,
@@ -19996,6 +20159,11 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     if (!nullToAbsent || estimatedDurationMinutes != null) {
       map['estimated_duration_minutes'] = Variable<int>(
         estimatedDurationMinutes,
+      );
+    }
+    if (!nullToAbsent || restBetweenExercisesSeconds != null) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds,
       );
     }
     map['goal_tags_json'] = Variable<String>(goalTagsJson);
@@ -20051,6 +20219,10 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       estimatedDurationMinutes: estimatedDurationMinutes == null && nullToAbsent
           ? const Value.absent()
           : Value(estimatedDurationMinutes),
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restBetweenExercisesSeconds),
       goalTagsJson: Value(goalTagsJson),
       equipmentJson: Value(equipmentJson),
       aiGenerationSnapshotId: aiGenerationSnapshotId == null && nullToAbsent
@@ -20104,6 +20276,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       estimatedDurationMinutes: serializer.fromJson<int?>(
         json['estimatedDurationMinutes'],
       ),
+      restBetweenExercisesSeconds: serializer.fromJson<int?>(
+        json['restBetweenExercisesSeconds'],
+      ),
       goalTagsJson: serializer.fromJson<String>(json['goalTagsJson']),
       equipmentJson: serializer.fromJson<String>(json['equipmentJson']),
       aiGenerationSnapshotId: serializer.fromJson<String?>(
@@ -20144,6 +20319,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       'estimatedDurationMinutes': serializer.toJson<int?>(
         estimatedDurationMinutes,
       ),
+      'restBetweenExercisesSeconds': serializer.toJson<int?>(
+        restBetweenExercisesSeconds,
+      ),
       'goalTagsJson': serializer.toJson<String>(goalTagsJson),
       'equipmentJson': serializer.toJson<String>(equipmentJson),
       'aiGenerationSnapshotId': serializer.toJson<String?>(
@@ -20172,6 +20350,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     String? creationMethod,
     String? status,
     Value<int?> estimatedDurationMinutes = const Value.absent(),
+    Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     String? goalTagsJson,
     String? equipmentJson,
     Value<String?> aiGenerationSnapshotId = const Value.absent(),
@@ -20197,6 +20376,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     estimatedDurationMinutes: estimatedDurationMinutes.present
         ? estimatedDurationMinutes.value
         : this.estimatedDurationMinutes,
+    restBetweenExercisesSeconds: restBetweenExercisesSeconds.present
+        ? restBetweenExercisesSeconds.value
+        : this.restBetweenExercisesSeconds,
     goalTagsJson: goalTagsJson ?? this.goalTagsJson,
     equipmentJson: equipmentJson ?? this.equipmentJson,
     aiGenerationSnapshotId: aiGenerationSnapshotId.present
@@ -20242,6 +20424,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       estimatedDurationMinutes: data.estimatedDurationMinutes.present
           ? data.estimatedDurationMinutes.value
           : this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds: data.restBetweenExercisesSeconds.present
+          ? data.restBetweenExercisesSeconds.value
+          : this.restBetweenExercisesSeconds,
       goalTagsJson: data.goalTagsJson.present
           ? data.goalTagsJson.value
           : this.goalTagsJson,
@@ -20294,6 +20479,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
           ..write('creationMethod: $creationMethod, ')
           ..write('status: $status, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('goalTagsJson: $goalTagsJson, ')
           ..write('equipmentJson: $equipmentJson, ')
           ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
@@ -20322,6 +20508,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     creationMethod,
     status,
     estimatedDurationMinutes,
+    restBetweenExercisesSeconds,
     goalTagsJson,
     equipmentJson,
     aiGenerationSnapshotId,
@@ -20349,6 +20536,8 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
           other.creationMethod == this.creationMethod &&
           other.status == this.status &&
           other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.restBetweenExercisesSeconds ==
+              this.restBetweenExercisesSeconds &&
           other.goalTagsJson == this.goalTagsJson &&
           other.equipmentJson == this.equipmentJson &&
           other.aiGenerationSnapshotId == this.aiGenerationSnapshotId &&
@@ -20374,6 +20563,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
   final Value<String> creationMethod;
   final Value<String> status;
   final Value<int?> estimatedDurationMinutes;
+  final Value<int?> restBetweenExercisesSeconds;
   final Value<String> goalTagsJson;
   final Value<String> equipmentJson;
   final Value<String?> aiGenerationSnapshotId;
@@ -20398,6 +20588,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     this.creationMethod = const Value.absent(),
     this.status = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.goalTagsJson = const Value.absent(),
     this.equipmentJson = const Value.absent(),
     this.aiGenerationSnapshotId = const Value.absent(),
@@ -20423,6 +20614,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     required String creationMethod,
     this.status = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.goalTagsJson = const Value.absent(),
     this.equipmentJson = const Value.absent(),
     this.aiGenerationSnapshotId = const Value.absent(),
@@ -20453,6 +20645,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     Expression<String>? creationMethod,
     Expression<String>? status,
     Expression<int>? estimatedDurationMinutes,
+    Expression<int>? restBetweenExercisesSeconds,
     Expression<String>? goalTagsJson,
     Expression<String>? equipmentJson,
     Expression<String>? aiGenerationSnapshotId,
@@ -20479,6 +20672,8 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
       if (status != null) 'status': status,
       if (estimatedDurationMinutes != null)
         'estimated_duration_minutes': estimatedDurationMinutes,
+      if (restBetweenExercisesSeconds != null)
+        'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (goalTagsJson != null) 'goal_tags_json': goalTagsJson,
       if (equipmentJson != null) 'equipment_json': equipmentJson,
       if (aiGenerationSnapshotId != null)
@@ -20511,6 +20706,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     Value<String>? creationMethod,
     Value<String>? status,
     Value<int?>? estimatedDurationMinutes,
+    Value<int?>? restBetweenExercisesSeconds,
     Value<String>? goalTagsJson,
     Value<String>? equipmentJson,
     Value<String?>? aiGenerationSnapshotId,
@@ -20537,6 +20733,8 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
       status: status ?? this.status,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       goalTagsJson: goalTagsJson ?? this.goalTagsJson,
       equipmentJson: equipmentJson ?? this.equipmentJson,
       aiGenerationSnapshotId:
@@ -20582,6 +20780,11 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     if (estimatedDurationMinutes.present) {
       map['estimated_duration_minutes'] = Variable<int>(
         estimatedDurationMinutes.value,
+      );
+    }
+    if (restBetweenExercisesSeconds.present) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds.value,
       );
     }
     if (goalTagsJson.present) {
@@ -20651,6 +20854,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
           ..write('creationMethod: $creationMethod, ')
           ..write('status: $status, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('goalTagsJson: $goalTagsJson, ')
           ..write('equipmentJson: $equipmentJson, ')
           ..write('aiGenerationSnapshotId: $aiGenerationSnapshotId, ')
@@ -20764,6 +20968,17 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _restBetweenExercisesSecondsMeta =
+      const VerificationMeta('restBetweenExercisesSeconds');
+  @override
+  late final GeneratedColumn<int> restBetweenExercisesSeconds =
+      GeneratedColumn<int>(
+        'rest_between_exercises_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -20805,6 +21020,7 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
     supersetGroupId,
     supersetOrder,
     sortOrder,
+    restBetweenExercisesSeconds,
     notes,
     cuesJson,
     createdAt,
@@ -20889,6 +21105,15 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
     } else if (isInserting) {
       context.missing(_sortOrderMeta);
     }
+    if (data.containsKey('rest_between_exercises_seconds')) {
+      context.handle(
+        _restBetweenExercisesSecondsMeta,
+        restBetweenExercisesSeconds.isAcceptableOrUnknown(
+          data['rest_between_exercises_seconds']!,
+          _restBetweenExercisesSecondsMeta,
+        ),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -20950,6 +21175,10 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      restBetweenExercisesSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_between_exercises_seconds'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -20981,6 +21210,7 @@ class SavedWorkoutExercise extends DataClass
   final String? supersetGroupId;
   final int? supersetOrder;
   final int sortOrder;
+  final int? restBetweenExercisesSeconds;
   final String? notes;
   final String? cuesJson;
   final DateTime createdAt;
@@ -20993,6 +21223,7 @@ class SavedWorkoutExercise extends DataClass
     this.supersetGroupId,
     this.supersetOrder,
     required this.sortOrder,
+    this.restBetweenExercisesSeconds,
     this.notes,
     this.cuesJson,
     required this.createdAt,
@@ -21016,6 +21247,11 @@ class SavedWorkoutExercise extends DataClass
       map['superset_order'] = Variable<int>(supersetOrder);
     }
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || restBetweenExercisesSeconds != null) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds,
+      );
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -21044,6 +21280,10 @@ class SavedWorkoutExercise extends DataClass
           ? const Value.absent()
           : Value(supersetOrder),
       sortOrder: Value(sortOrder),
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restBetweenExercisesSeconds),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -21068,6 +21308,9 @@ class SavedWorkoutExercise extends DataClass
       supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
       supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      restBetweenExercisesSeconds: serializer.fromJson<int?>(
+        json['restBetweenExercisesSeconds'],
+      ),
       notes: serializer.fromJson<String?>(json['notes']),
       cuesJson: serializer.fromJson<String?>(json['cuesJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -21085,6 +21328,9 @@ class SavedWorkoutExercise extends DataClass
       'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
       'supersetOrder': serializer.toJson<int?>(supersetOrder),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'restBetweenExercisesSeconds': serializer.toJson<int?>(
+        restBetweenExercisesSeconds,
+      ),
       'notes': serializer.toJson<String?>(notes),
       'cuesJson': serializer.toJson<String?>(cuesJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -21100,6 +21346,7 @@ class SavedWorkoutExercise extends DataClass
     Value<String?> supersetGroupId = const Value.absent(),
     Value<int?> supersetOrder = const Value.absent(),
     int? sortOrder,
+    Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     Value<String?> cuesJson = const Value.absent(),
     DateTime? createdAt,
@@ -21116,6 +21363,9 @@ class SavedWorkoutExercise extends DataClass
         ? supersetOrder.value
         : this.supersetOrder,
     sortOrder: sortOrder ?? this.sortOrder,
+    restBetweenExercisesSeconds: restBetweenExercisesSeconds.present
+        ? restBetweenExercisesSeconds.value
+        : this.restBetweenExercisesSeconds,
     notes: notes.present ? notes.value : this.notes,
     cuesJson: cuesJson.present ? cuesJson.value : this.cuesJson,
     createdAt: createdAt ?? this.createdAt,
@@ -21142,6 +21392,9 @@ class SavedWorkoutExercise extends DataClass
           ? data.supersetOrder.value
           : this.supersetOrder,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      restBetweenExercisesSeconds: data.restBetweenExercisesSeconds.present
+          ? data.restBetweenExercisesSeconds.value
+          : this.restBetweenExercisesSeconds,
       notes: data.notes.present ? data.notes.value : this.notes,
       cuesJson: data.cuesJson.present ? data.cuesJson.value : this.cuesJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -21159,6 +21412,7 @@ class SavedWorkoutExercise extends DataClass
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('notes: $notes, ')
           ..write('cuesJson: $cuesJson, ')
           ..write('createdAt: $createdAt')
@@ -21176,6 +21430,7 @@ class SavedWorkoutExercise extends DataClass
     supersetGroupId,
     supersetOrder,
     sortOrder,
+    restBetweenExercisesSeconds,
     notes,
     cuesJson,
     createdAt,
@@ -21192,6 +21447,8 @@ class SavedWorkoutExercise extends DataClass
           other.supersetGroupId == this.supersetGroupId &&
           other.supersetOrder == this.supersetOrder &&
           other.sortOrder == this.sortOrder &&
+          other.restBetweenExercisesSeconds ==
+              this.restBetweenExercisesSeconds &&
           other.notes == this.notes &&
           other.cuesJson == this.cuesJson &&
           other.createdAt == this.createdAt);
@@ -21207,6 +21464,7 @@ class SavedWorkoutExercisesCompanion
   final Value<String?> supersetGroupId;
   final Value<int?> supersetOrder;
   final Value<int> sortOrder;
+  final Value<int?> restBetweenExercisesSeconds;
   final Value<String?> notes;
   final Value<String?> cuesJson;
   final Value<DateTime> createdAt;
@@ -21220,6 +21478,7 @@ class SavedWorkoutExercisesCompanion
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.notes = const Value.absent(),
     this.cuesJson = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -21234,6 +21493,7 @@ class SavedWorkoutExercisesCompanion
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
     required int sortOrder,
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.notes = const Value.absent(),
     this.cuesJson = const Value.absent(),
     required DateTime createdAt,
@@ -21252,6 +21512,7 @@ class SavedWorkoutExercisesCompanion
     Expression<String>? supersetGroupId,
     Expression<int>? supersetOrder,
     Expression<int>? sortOrder,
+    Expression<int>? restBetweenExercisesSeconds,
     Expression<String>? notes,
     Expression<String>? cuesJson,
     Expression<DateTime>? createdAt,
@@ -21266,6 +21527,8 @@ class SavedWorkoutExercisesCompanion
       if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
       if (supersetOrder != null) 'superset_order': supersetOrder,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (restBetweenExercisesSeconds != null)
+        'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (notes != null) 'notes': notes,
       if (cuesJson != null) 'cues_json': cuesJson,
       if (createdAt != null) 'created_at': createdAt,
@@ -21282,6 +21545,7 @@ class SavedWorkoutExercisesCompanion
     Value<String?>? supersetGroupId,
     Value<int?>? supersetOrder,
     Value<int>? sortOrder,
+    Value<int?>? restBetweenExercisesSeconds,
     Value<String?>? notes,
     Value<String?>? cuesJson,
     Value<DateTime>? createdAt,
@@ -21296,6 +21560,8 @@ class SavedWorkoutExercisesCompanion
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
       supersetOrder: supersetOrder ?? this.supersetOrder,
       sortOrder: sortOrder ?? this.sortOrder,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       notes: notes ?? this.notes,
       cuesJson: cuesJson ?? this.cuesJson,
       createdAt: createdAt ?? this.createdAt,
@@ -21330,6 +21596,11 @@ class SavedWorkoutExercisesCompanion
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (restBetweenExercisesSeconds.present) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds.value,
+      );
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -21356,6 +21627,7 @@ class SavedWorkoutExercisesCompanion
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('notes: $notes, ')
           ..write('cuesJson: $cuesJson, ')
           ..write('createdAt: $createdAt, ')
@@ -32992,6 +33264,7 @@ typedef $$ProgramWorkoutTemplatesTableCreateCompanionBuilder =
       Value<String?> description,
       Value<String?> dayType,
       Value<int?> estimatedDurationMinutes,
+      Value<int?> restBetweenExercisesSeconds,
       required int sortOrder,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -33006,6 +33279,7 @@ typedef $$ProgramWorkoutTemplatesTableUpdateCompanionBuilder =
       Value<String?> description,
       Value<String?> dayType,
       Value<int?> estimatedDurationMinutes,
+      Value<int?> restBetweenExercisesSeconds,
       Value<int> sortOrder,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -33053,6 +33327,11 @@ class $$ProgramWorkoutTemplatesTableFilterComposer
 
   ColumnFilters<int> get estimatedDurationMinutes => $composableBuilder(
     column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -33116,6 +33395,11 @@ class $$ProgramWorkoutTemplatesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
     builder: (column) => ColumnOrderings(column),
@@ -33165,6 +33449,11 @@ class $$ProgramWorkoutTemplatesTableAnnotationComposer
 
   GeneratedColumn<int> get estimatedDurationMinutes => $composableBuilder(
     column: $table.estimatedDurationMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => column,
   );
 
@@ -33231,6 +33520,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<String?> dayType = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -33243,6 +33533,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 description: description,
                 dayType: dayType,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -33257,6 +33548,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<String?> dayType = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 required int sortOrder,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -33269,6 +33561,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 description: description,
                 dayType: dayType,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -33314,6 +33607,7 @@ typedef $$ProgramTemplateExercisesTableCreateCompanionBuilder =
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
       required int sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> notes,
       Value<String?> cuesJson,
       required DateTime createdAt,
@@ -33330,6 +33624,7 @@ typedef $$ProgramTemplateExercisesTableUpdateCompanionBuilder =
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
       Value<int> sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> notes,
       Value<String?> cuesJson,
       Value<DateTime> createdAt,
@@ -33387,6 +33682,11 @@ class $$ProgramTemplateExercisesTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -33460,6 +33760,11 @@ class $$ProgramTemplateExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -33526,6 +33831,11 @@ class $$ProgramTemplateExercisesTableAnnotationComposer
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
+  GeneratedColumn<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
@@ -33591,6 +33901,7 @@ class $$ProgramTemplateExercisesTableTableManager
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> cuesJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -33605,6 +33916,7 @@ class $$ProgramTemplateExercisesTableTableManager
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 notes: notes,
                 cuesJson: cuesJson,
                 createdAt: createdAt,
@@ -33621,6 +33933,7 @@ class $$ProgramTemplateExercisesTableTableManager
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
                 required int sortOrder,
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> cuesJson = const Value.absent(),
                 required DateTime createdAt,
@@ -33635,6 +33948,7 @@ class $$ProgramTemplateExercisesTableTableManager
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 notes: notes,
                 cuesJson: cuesJson,
                 createdAt: createdAt,
@@ -36006,6 +36320,7 @@ typedef $$SavedWorkoutsTableCreateCompanionBuilder =
       required String creationMethod,
       Value<String> status,
       Value<int?> estimatedDurationMinutes,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String> goalTagsJson,
       Value<String> equipmentJson,
       Value<String?> aiGenerationSnapshotId,
@@ -36032,6 +36347,7 @@ typedef $$SavedWorkoutsTableUpdateCompanionBuilder =
       Value<String> creationMethod,
       Value<String> status,
       Value<int?> estimatedDurationMinutes,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String> goalTagsJson,
       Value<String> equipmentJson,
       Value<String?> aiGenerationSnapshotId,
@@ -36091,6 +36407,11 @@ class $$SavedWorkoutsTableFilterComposer
 
   ColumnFilters<int> get estimatedDurationMinutes => $composableBuilder(
     column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -36214,6 +36535,11 @@ class $$SavedWorkoutsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get goalTagsJson => $composableBuilder(
     column: $table.goalTagsJson,
     builder: (column) => ColumnOrderings(column),
@@ -36326,6 +36652,11 @@ class $$SavedWorkoutsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get goalTagsJson => $composableBuilder(
     column: $table.goalTagsJson,
     builder: (column) => column,
@@ -36434,6 +36765,7 @@ class $$SavedWorkoutsTableTableManager
                 Value<String> creationMethod = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String> goalTagsJson = const Value.absent(),
                 Value<String> equipmentJson = const Value.absent(),
                 Value<String?> aiGenerationSnapshotId = const Value.absent(),
@@ -36458,6 +36790,7 @@ class $$SavedWorkoutsTableTableManager
                 creationMethod: creationMethod,
                 status: status,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 goalTagsJson: goalTagsJson,
                 equipmentJson: equipmentJson,
                 aiGenerationSnapshotId: aiGenerationSnapshotId,
@@ -36484,6 +36817,7 @@ class $$SavedWorkoutsTableTableManager
                 required String creationMethod,
                 Value<String> status = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String> goalTagsJson = const Value.absent(),
                 Value<String> equipmentJson = const Value.absent(),
                 Value<String?> aiGenerationSnapshotId = const Value.absent(),
@@ -36508,6 +36842,7 @@ class $$SavedWorkoutsTableTableManager
                 creationMethod: creationMethod,
                 status: status,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 goalTagsJson: goalTagsJson,
                 equipmentJson: equipmentJson,
                 aiGenerationSnapshotId: aiGenerationSnapshotId,
@@ -36560,6 +36895,7 @@ typedef $$SavedWorkoutExercisesTableCreateCompanionBuilder =
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
       required int sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> notes,
       Value<String?> cuesJson,
       required DateTime createdAt,
@@ -36575,6 +36911,7 @@ typedef $$SavedWorkoutExercisesTableUpdateCompanionBuilder =
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
       Value<int> sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> notes,
       Value<String?> cuesJson,
       Value<DateTime> createdAt,
@@ -36627,6 +36964,11 @@ class $$SavedWorkoutExercisesTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -36695,6 +37037,11 @@ class $$SavedWorkoutExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -36755,6 +37102,11 @@ class $$SavedWorkoutExercisesTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -36820,6 +37172,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> cuesJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -36833,6 +37186,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 notes: notes,
                 cuesJson: cuesJson,
                 createdAt: createdAt,
@@ -36848,6 +37202,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
                 required int sortOrder,
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> cuesJson = const Value.absent(),
                 required DateTime createdAt,
@@ -36861,6 +37216,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 notes: notes,
                 cuesJson: cuesJson,
                 createdAt: createdAt,

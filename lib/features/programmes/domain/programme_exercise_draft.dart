@@ -14,6 +14,7 @@ class ProgrammeExerciseDraft {
     this.supersetOrder,
     this.notes,
     this.cuesJson,
+    this.restBetweenExercisesSeconds,
   });
 
   final String id;
@@ -27,6 +28,7 @@ class ProgrammeExerciseDraft {
   final int? supersetOrder;
   final String? notes;
   final String? cuesJson;
+  final int? restBetweenExercisesSeconds;
 
   ProgrammeExerciseDraft copyWith({
     String? id,
@@ -40,6 +42,7 @@ class ProgrammeExerciseDraft {
     int? supersetOrder,
     String? notes,
     String? cuesJson,
+    int? restBetweenExercisesSeconds,
   }) {
     return ProgrammeExerciseDraft(
       id: id ?? this.id,
@@ -53,6 +56,8 @@ class ProgrammeExerciseDraft {
       supersetOrder: supersetOrder ?? this.supersetOrder,
       notes: notes ?? this.notes,
       cuesJson: cuesJson ?? this.cuesJson,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
     );
   }
 }

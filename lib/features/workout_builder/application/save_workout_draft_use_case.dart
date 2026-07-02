@@ -35,6 +35,7 @@ class SaveWorkoutDraftUseCase {
       equipment: builderDraft.equipment.map(_equipmentTagFromString).toSet(),
       description: builderDraft.description,
       estimatedDurationMinutes: builderDraft.estimatedDurationMinutes,
+      restBetweenExercisesSeconds: builderDraft.restBetweenExercisesSeconds,
       exercises: builderDraft.exercises.map((e) {
         return SavedWorkoutExerciseDraft(
           id: e.id,
@@ -46,6 +47,7 @@ class SaveWorkoutDraftUseCase {
           supersetOrder: e.supersetOrder,
           notes: e.notes,
           cuesJson: null,
+          restBetweenExercisesSeconds: e.restBetweenExercisesSeconds,
           sets: e.sets.map(_toRepoSets).toList(),
         );
       }).toList(),

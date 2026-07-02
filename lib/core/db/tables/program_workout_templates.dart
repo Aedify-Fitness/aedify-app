@@ -8,6 +8,7 @@ class ProgramWorkoutTemplates extends Table {
   TextColumn get description => text().nullable()();
   TextColumn get dayType => text().nullable()();
   IntColumn get estimatedDurationMinutes => integer().nullable()();
+  IntColumn get restBetweenExercisesSeconds => integer().nullable()();
   IntColumn get sortOrder => integer()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

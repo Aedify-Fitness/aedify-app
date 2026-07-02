@@ -12,6 +12,7 @@ class WorkoutRunnerExerciseItem {
     this.sourceProgramExerciseId,
     this.sourceSavedWorkoutExerciseId,
     this.notes,
+    this.restBetweenExercisesSeconds,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class WorkoutRunnerExerciseItem {
   final String? sourceProgramExerciseId;
   final String? sourceSavedWorkoutExerciseId;
   final String? notes;
+  final int? restBetweenExercisesSeconds;
 
   WorkoutRunnerExerciseItem copyWith({
     String? id,
@@ -36,6 +38,7 @@ class WorkoutRunnerExerciseItem {
     String? sourceProgramExerciseId,
     String? sourceSavedWorkoutExerciseId,
     String? notes,
+    int? restBetweenExercisesSeconds,
   }) {
     return WorkoutRunnerExerciseItem(
       id: id ?? this.id,
@@ -50,6 +53,8 @@ class WorkoutRunnerExerciseItem {
       sourceSavedWorkoutExerciseId:
           sourceSavedWorkoutExerciseId ?? this.sourceSavedWorkoutExerciseId,
       notes: notes ?? this.notes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
     );
   }
 }

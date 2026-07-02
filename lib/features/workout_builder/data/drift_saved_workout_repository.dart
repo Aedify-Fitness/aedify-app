@@ -269,6 +269,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       creationMethod: Value(draft.creationMethod.dbValue),
       status: Value(draft.status.dbValue),
       estimatedDurationMinutes: Value(draft.estimatedDurationMinutes),
+      restBetweenExercisesSeconds: Value(draft.restBetweenExercisesSeconds),
       goalTagsJson: Value(
         EnumCodec.encodeSet(draft.goalTags, (value) => value.dbValue),
       ),
@@ -294,6 +295,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       supersetGroupId: Value(exercise.supersetGroupId),
       supersetOrder: Value(exercise.supersetOrder),
       sortOrder: Value(exercise.sortOrder),
+      restBetweenExercisesSeconds: Value(exercise.restBetweenExercisesSeconds),
       notes: Value(exercise.notes),
       cuesJson: Value(exercise.cuesJson),
       createdAt: Value(now),

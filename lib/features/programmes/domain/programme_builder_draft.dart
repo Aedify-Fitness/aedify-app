@@ -24,6 +24,7 @@ class ProgrammeBuilderDraft {
     this.weeksTotal,
     this.daysPerWeek,
     this.sessionLengthMinutes,
+    this.restBetweenExercisesSeconds,
     this.experienceLevelAtCreation,
     this.preferredUnitsAtCreation,
     this.importOrigin,
@@ -45,6 +46,7 @@ class ProgrammeBuilderDraft {
   final int? weeksTotal;
   final int? daysPerWeek;
   final int? sessionLengthMinutes;
+  final int? restBetweenExercisesSeconds;
   final ExperienceLevel? experienceLevelAtCreation;
   final PreferredUnit? preferredUnitsAtCreation;
   final ImportOrigin? importOrigin;
@@ -66,6 +68,7 @@ class ProgrammeBuilderDraft {
     int? weeksTotal,
     int? daysPerWeek,
     int? sessionLengthMinutes,
+    int? restBetweenExercisesSeconds,
     ExperienceLevel? experienceLevelAtCreation,
     PreferredUnit? preferredUnitsAtCreation,
     ImportOrigin? importOrigin,
@@ -87,6 +90,8 @@ class ProgrammeBuilderDraft {
       weeksTotal: weeksTotal ?? this.weeksTotal,
       daysPerWeek: daysPerWeek ?? this.daysPerWeek,
       sessionLengthMinutes: sessionLengthMinutes ?? this.sessionLengthMinutes,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       experienceLevelAtCreation:
           experienceLevelAtCreation ?? this.experienceLevelAtCreation,
       preferredUnitsAtCreation:

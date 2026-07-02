@@ -10,6 +10,7 @@ class ProgramTemplateExercises extends Table {
   TextColumn get supersetGroupId => text().nullable()();
   IntColumn get supersetOrder => integer().nullable()();
   IntColumn get sortOrder => integer()();
+  IntColumn get restBetweenExercisesSeconds => integer().nullable()();
   TextColumn get notes => text().nullable()();
   TextColumn get cuesJson => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();

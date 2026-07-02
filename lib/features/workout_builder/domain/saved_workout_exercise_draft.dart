@@ -13,6 +13,7 @@ class SavedWorkoutExerciseDraft {
     this.supersetOrder,
     this.notes,
     this.cuesJson,
+    this.restBetweenExercisesSeconds,
   });
 
   final String id;
@@ -25,4 +26,5 @@ class SavedWorkoutExerciseDraft {
   final int? supersetOrder;
   final String? notes;
   final String? cuesJson;
+  final int? restBetweenExercisesSeconds;
 }
