@@ -6,6 +6,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -440,7 +441,7 @@ class _MuscleFocusCard extends StatelessWidget {
                     (m) => Chip(
                       label: Text(m),
                       backgroundColor: context.colorScheme.secondaryContainer,
-                      labelStyle: TextStyle(
+                      labelStyle: context.textTheme.labelSmall?.copyWith(
                         color: context.colorScheme.onSecondaryContainer,
                       ),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -505,9 +506,8 @@ class _StepsCard extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '${entry.key + 1}',
-                          style: TextStyle(
+                          style: AppTextStyles.labelSm.copyWith(
                             color: context.colorScheme.onSecondary,
-                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

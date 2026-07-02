@@ -6,6 +6,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:go_router/go_router.dart';
 
 class TemplateReassignmentBottomSheet extends StatelessWidget {
   const TemplateReassignmentBottomSheet({
@@ -51,7 +52,7 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
                 ),
                 onTap: () {
                   onSelectSavedWorkout?.call(item);
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
             ),
@@ -76,7 +77,7 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
                     : null,
                 onTap: () {
                   onSelected?.call(template);
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
             ),
@@ -110,7 +111,7 @@ class _CreateNewSection extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Navigator.of(context).pop(true);
+        context.pop(true);
       },
     );
   }

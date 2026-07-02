@@ -6,6 +6,14 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-02
 
+### Convention compliance sweep — Navigator.pop, EdgeInsets.fromLTRB, TextStyle, Theme.of(context)
+
+- **`Navigator.of(context).pop()` → `context.pop()`** (22 files): Replaced all remaining `Navigator.of(context).pop()`, `Navigator.of(context).pop(true/false)`, and `Navigator.pop(ctx)` with go_router's `context.pop()` / `ctx.pop()`. Added missing `go_router` imports. Affected files: `custom_exercise_editor_screen`, `exercise_detail_screen`, `delete_custom_exercise_dialog`, `discard_custom_exercise_changes_dialog`, `home_screen`, `onboarding_screen`, `profile_screen`, `programme_builder_screen`, `programmes_screen`, `active_programme_warning_dialog`, `add_week_dialog`, `archive_item_dialog`, `delete_item_dialog`, `discard_programme_changes_dialog`, `programme_template_quick_create_sheet`, `template_reassignment_bottom_sheet`, `byok_settings_screen`, `add_exercise_bottom_sheet`, `discard_changes_dialog`, `workout_builder_header`, `workout_builder_screen`, `cancel_workout_dialog`, `workout_runner_screen`.
+- **`EdgeInsets.fromLTRB()` → `EdgeInsets.only()`** (4 locations, 3 files): `programme_calendar_header.dart`, `programme_week_section.dart` (×2), `workout_runner_screen.dart`.
+- **`TextStyle(...)` → `AppTextStyles.*.copyWith()` / `context.textTheme.*.copyWith()`** (10 locations, 8 files): `exercise_detail_screen.dart` (×2), `home_screen.dart` (×2), `active_programme_warning_dialog.dart`, `add_week_dialog.dart`, `discard_programme_changes_dialog.dart`, `programme_list_tile.dart`, `saved_workout_list_tile.dart`, `workout_runner_screen.dart` (×3).
+- **`Theme.of(context).colorScheme` → `context.colorScheme`** (2 files): `delete_custom_exercise_dialog.dart`, `delete_item_dialog.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
 ### Final widget-builder helper method sweep — zero violations remaining
 
 - **11 files converted**: `exercise_dataset_status_tile`, `exercise_step_audio_button`, `workout_history_detail_screen`, `exercise_detail_screen`, `exercise_library_screen`, `programme_calendar_header`, `programme_week_section`, `programme_day_card`, `programme_workout_detail_screen`, `onboarding_screen`, `home_screen`.

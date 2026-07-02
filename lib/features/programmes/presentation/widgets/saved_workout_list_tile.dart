@@ -98,7 +98,9 @@ class SavedWorkoutListTile extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     AppStrings.deleteWorkout,
-                    style: TextStyle(color: context.colorScheme.error),
+                    style: context.textTheme.labelLarge?.copyWith(
+                      color: context.colorScheme.error,
+                    ),
                   ),
                 ],
               ),

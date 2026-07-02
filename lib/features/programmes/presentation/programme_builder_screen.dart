@@ -147,7 +147,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
             builder: (_) => const DiscardProgrammeChangesDialog(),
           );
           if (discard == true && context.mounted) {
-            Navigator.of(context).pop();
+            context.pop();
           }
         }
       },
@@ -448,7 +448,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                     templateId: template.id,
                     selectedExerciseIds: selected.toList(),
                   );
-                  Navigator.pop(ctx);
+                  ctx.pop();
                 }
               },
               onRemoveMember: (exerciseId) {
@@ -456,7 +456,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                   templateId: template.id,
                   exerciseId: exerciseId,
                 );
-                Navigator.pop(ctx);
+                ctx.pop();
               },
               onDeleteGroup: () {
                 final groupId = exercises
@@ -471,7 +471,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                     groupId: groupId,
                   );
                 }
-                Navigator.pop(ctx);
+                ctx.pop();
               },
             );
           },

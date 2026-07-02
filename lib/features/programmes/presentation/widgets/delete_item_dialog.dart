@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:go_router/go_router.dart';
 
 class DeleteItemDialog extends StatelessWidget {
   const DeleteItemDialog({
@@ -23,17 +25,17 @@ class DeleteItemDialog extends StatelessWidget {
       content: Text(message),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: const Text(AppStrings.cancel),
         ),
         const SizedBox(width: AppSpacing.sm),
         FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
           ),
           onPressed: () {
             onConfirm();
-            Navigator.of(context).pop();
+            context.pop();
           },
           child: Text(confirmLabel ?? AppStrings.deleteWorkout),
         ),

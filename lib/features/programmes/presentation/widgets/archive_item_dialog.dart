@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:go_router/go_router.dart';
 
 class ArchiveItemDialog extends StatelessWidget {
   const ArchiveItemDialog({
@@ -23,14 +24,14 @@ class ArchiveItemDialog extends StatelessWidget {
       content: Text(message),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: const Text(AppStrings.cancel),
         ),
         const SizedBox(width: AppSpacing.sm),
         FilledButton(
           onPressed: () {
             onConfirm();
-            Navigator.of(context).pop();
+            context.pop();
           },
           child: Text(confirmLabel ?? AppStrings.archiveProgramme),
         ),

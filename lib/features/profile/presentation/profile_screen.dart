@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/profile/application/profile_controller.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
@@ -1138,7 +1139,7 @@ class _ProfileExerciseMultiSelect {
                                     ),
                                 })
                                 .then((_) {
-                                  if (ctx.mounted) Navigator.of(ctx).pop();
+                                  if (ctx.mounted) ctx.pop();
                                 });
                           },
                           child: const Text(AppStrings.done),

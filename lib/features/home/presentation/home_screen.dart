@@ -8,6 +8,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -411,7 +412,9 @@ class _ScheduledView extends StatelessWidget {
               },
               child: Text(
                 AppStrings.viewDetails,
-                style: TextStyle(color: context.colorScheme.onPrimary),
+                style: context.textTheme.labelLarge?.copyWith(
+                  color: context.colorScheme.onPrimary,
+                ),
               ),
             ),
           ],
@@ -540,10 +543,7 @@ class _VolumeMetricCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  const Text(
-                    '—',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                  ),
+                  const Text('—', style: AppTextStyles.headlineMd),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     AppStrings.volumeTrackingComingSoon,

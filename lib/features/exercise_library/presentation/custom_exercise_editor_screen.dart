@@ -13,6 +13,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -131,7 +132,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             exerciseId: null,
                           )),
                         );
-                        Navigator.of(context).pop(true);
+                        context.pop(true);
                       },
                       child: const Text(AppStrings.done),
                     ),
@@ -144,7 +145,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
           if (state.phase == CustomExerciseEditorPhase.deleted) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (context.mounted) {
-                Navigator.of(context).pop(true);
+                context.pop(true);
               }
             });
             return const SizedBox.shrink();
@@ -260,8 +261,8 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                       builder: (_) => DiscardCustomExerciseChangesDialog(
                         onDiscard: () {
                           controller.discardChanges();
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          context.pop();
+                          context.pop();
                         },
                       ),
                     );

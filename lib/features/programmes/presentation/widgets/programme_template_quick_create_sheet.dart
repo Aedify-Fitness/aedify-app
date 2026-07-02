@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart';
@@ -97,7 +98,7 @@ class _ProgrammeTemplateQuickCreateSheetState
       exercises: exercises,
     );
 
-    Navigator.of(context).pop(template);
+    context.pop(template);
   }
 
   @override

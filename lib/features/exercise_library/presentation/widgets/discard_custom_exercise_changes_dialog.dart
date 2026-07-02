@@ -1,6 +1,7 @@
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DiscardCustomExerciseChangesDialog extends StatelessWidget {
   const DiscardCustomExerciseChangesDialog({
@@ -17,14 +18,14 @@ class DiscardCustomExerciseChangesDialog extends StatelessWidget {
       content: const Text(AppStrings.customExerciseUnsavedChangesMessage),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: const Text(AppStrings.cancel),
         ),
         const SizedBox(width: AppSpacing.sm),
         FilledButton(
           onPressed: () {
             onDiscard();
-            Navigator.of(context).pop();
+            context.pop();
           },
           child: const Text(AppStrings.customExerciseDiscard),
         ),

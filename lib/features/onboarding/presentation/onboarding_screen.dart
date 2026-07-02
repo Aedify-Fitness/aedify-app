@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding_progress_header.dart';
@@ -2425,7 +2426,7 @@ class _OnboardingExerciseMultiSelect {
                           FilledButton(
                             onPressed: () {
                               onDone(tempIds.toList());
-                              Navigator.of(ctx).pop();
+                              ctx.pop();
                             },
                             child: const Text(AppStrings.onboardingDoneLabel),
                           ),

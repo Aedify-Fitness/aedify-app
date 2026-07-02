@@ -277,7 +277,7 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
                         )).notifier,
                       )
                       .createSuperset(selected.toList());
-                  Navigator.pop(ctx);
+                  ctx.pop();
                 }
               },
             );

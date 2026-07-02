@@ -21,6 +21,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
 class WorkoutRunnerScreen extends ConsumerStatefulWidget {
@@ -268,7 +269,7 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       builder: (_) => CompleteWorkoutSheet(
         session: session,
         onComplete: (draft) async {
-          Navigator.of(context).pop();
+          context.pop();
           await controller.completeWorkout();
           ref.invalidate(
             AppProviders.workoutRunnerControllerProvider((
@@ -506,7 +507,7 @@ class _MuscleFocusSection extends StatelessWidget {
                     (m) => Chip(
                       label: Text(m),
                       backgroundColor: context.colorScheme.secondaryContainer,
-                      labelStyle: TextStyle(
+                      labelStyle: context.textTheme.labelSmall?.copyWith(
                         color: context.colorScheme.onSecondaryContainer,
                       ),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -556,9 +557,8 @@ class _StepsSection extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '${entry.key + 1}',
-                          style: TextStyle(
+                          style: AppTextStyles.labelSm.copyWith(
                             color: context.colorScheme.onSecondary,
-                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -623,11 +623,11 @@ class _SetTableState extends ConsumerState<_SetTable> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.md,
-              AppSpacing.md,
-              AppSpacing.sm,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              top: AppSpacing.md,
+              bottom: AppSpacing.sm,
             ),
             child: Row(
               children: [
@@ -688,10 +688,9 @@ class _SetTableState extends ConsumerState<_SetTable> {
                               child: Center(
                                 child: Text(
                                   '${index + 1}',
-                                  style: TextStyle(
+                                  style: AppTextStyles.labelSm.copyWith(
                                     color: context.colorScheme.onSecondary,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 12,
                                   ),
                                 ),
                               ),

@@ -100,7 +100,9 @@ class ProgrammeListTile extends StatelessWidget {
                           value: 'delete',
                           child: Text(
                             AppStrings.deleteProgramme,
-                            style: TextStyle(color: context.colorScheme.error),
+                            style: context.textTheme.labelLarge?.copyWith(
+                              color: context.colorScheme.error,
+                            ),
                           ),
                         ),
                       ],

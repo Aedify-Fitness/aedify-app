@@ -160,11 +160,11 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
+              onPressed: () => ctx.pop(false),
               child: const Text(AppStrings.cancel),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
+              onPressed: () => ctx.pop(true),
               child: const Text(AppStrings.activateProgramme),
             ),
           ],

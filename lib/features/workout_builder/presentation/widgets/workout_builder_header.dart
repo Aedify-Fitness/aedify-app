@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:go_router/go_router.dart';
 
 class WorkoutBuilderHeader extends StatelessWidget {
   const WorkoutBuilderHeader({
@@ -21,7 +22,7 @@ class WorkoutBuilderHeader extends StatelessWidget {
       children: [
         IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(child: Text(title, style: AppTextStyles.headlineMd)),

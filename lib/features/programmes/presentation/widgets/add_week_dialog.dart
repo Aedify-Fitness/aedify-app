@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:go_router/go_router.dart';
 
 class AddWeekDialog extends StatelessWidget {
   const AddWeekDialog({super.key});
@@ -12,14 +13,16 @@ class AddWeekDialog extends StatelessWidget {
       content: const Text(AppStrings.addWeekContent),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => context.pop(false),
           child: Text(
             AppStrings.cancel,
-            style: TextStyle(color: context.colorScheme.onSurfaceVariant),
+            style: context.textTheme.labelLarge?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () => context.pop(true),
           child: const Text(AppStrings.addWeek),
         ),
       ],

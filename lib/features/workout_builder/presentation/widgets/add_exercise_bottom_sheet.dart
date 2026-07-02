@@ -116,7 +116,7 @@ class _AddExerciseBottomSheetState
                 onPressed: _selected.isNotEmpty
                     ? () {
                         widget.onSelectExercises(_selected.toList());
-                        Navigator.of(context).pop();
+                        context.pop();
                       }
                     : null,
                 child: Text(doneLabel),

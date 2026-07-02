@@ -12,6 +12,7 @@ import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class ByokSettingsScreen extends ConsumerWidget {
   const ByokSettingsScreen({super.key});
@@ -244,7 +245,7 @@ class _ByokContentView extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text(AppStrings.skipAiForNow),
             ),
           ),
@@ -266,12 +267,12 @@ class _ByokContentView extends ConsumerWidget {
         content: const Text(AppStrings.deleteKeyConfirmation),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
+            onPressed: () => ctx.pop(),
             child: const Text(AppStrings.cancel),
           ),
           FilledButton(
             onPressed: () {
-              Navigator.of(ctx).pop();
+              ctx.pop();
               controller.deleteConfig(configId);
             },
             child: const Text(AppStrings.deleteKey),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:go_router/go_router.dart';
 
 class DiscardChangesDialog extends StatelessWidget {
   const DiscardChangesDialog({super.key, required this.onDiscard});
@@ -13,13 +14,13 @@ class DiscardChangesDialog extends StatelessWidget {
       content: Text(AppStrings.unsavedChangesMessage),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: Text(AppStrings.cancel),
         ),
         TextButton(
           onPressed: () {
             onDiscard();
-            Navigator.of(context).pop();
+            context.pop();
           },
           child: Text(AppStrings.discardChanges),
         ),

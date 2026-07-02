@@ -237,11 +237,10 @@ class _WeekExpandedContent extends StatelessWidget {
   Widget build(BuildContext context) {
     if (week.days.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          0,
-          AppSpacing.lg,
-          AppSpacing.lg,
+        padding: const EdgeInsets.only(
+          left: AppSpacing.lg,
+          right: AppSpacing.lg,
+          bottom: AppSpacing.lg,
         ),
         child: Text(
           AppStrings.noWorkoutsInWeek,
@@ -253,11 +252,10 @@ class _WeekExpandedContent extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        0,
-        AppSpacing.lg,
-        AppSpacing.lg,
+      padding: const EdgeInsets.only(
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        bottom: AppSpacing.lg,
       ),
       child: Column(
         children: week.days.map((day) {
