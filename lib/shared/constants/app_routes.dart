@@ -27,6 +27,7 @@ class AppRoutes {
       AppRoutes._(path: '/exercises', name: 'exercises');
   factory AppRoutes.analytics() =>
       AppRoutes._(path: '/analytics', name: 'analytics');
+  factory AppRoutes.library() => AppRoutes._(path: '/library', name: 'library');
   factory AppRoutes.onboarding() =>
       AppRoutes._(path: '/onboarding', name: 'onboarding');
   factory AppRoutes.programmes() =>
@@ -79,6 +80,14 @@ class AppRoutes {
   factory AppRoutes.workoutRunnerProgramWorkout() => AppRoutes._(
     path: '/programmes/:programId/workouts/:workoutId/run',
     name: 'workoutRunnerProgramWorkout',
+  );
+
+  // Programme calendar (read-only)
+  factory AppRoutes.programmeCalendar() =>
+      AppRoutes._(path: '/programmes/:id', name: 'programmeCalendar');
+  factory AppRoutes.programmeWorkoutDetail() => AppRoutes._(
+    path: '/programmes/:programId/workouts/:workoutId',
+    name: 'programmeWorkoutDetail',
   );
 
   // Custom exercise editor

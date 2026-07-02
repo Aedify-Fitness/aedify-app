@@ -2,6 +2,9 @@ import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/diagnostics/developer_diagnostics_screen.dart';
 import 'package:aedify/app/feature_flags/feature_flags.dart';
+import 'package:aedify/app/router/bottom_nav_shell.dart';
+import 'package:aedify/features/home/presentation/home_screen.dart';
+import 'package:aedify/features/library/presentation/library_hub_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +25,8 @@ import 'package:aedify/features/workout_execution/presentation/workout_runner_sc
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
+import 'package:aedify/features/programmes/presentation/programme_calendar_screen.dart';
+import 'package:aedify/features/programmes/presentation/programme_workout_detail_screen.dart';
 import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
 import 'package:aedify/features/lift_log/presentation/workout_history_detail_screen.dart';
 import 'package:aedify/features/programmes/presentation/saved_workout_library_screen.dart';
@@ -80,14 +85,12 @@ class AppRouter {
         final location = state.matchedLocation;
         final isOnStartup = location == AppRoutes.startup().path;
 
-        // 1. Bootstrap guard — always first
         if (bootstrapState.phase == StartupPhase.initializing ||
             bootstrapState.phase == StartupPhase.failure) {
           if (!isOnStartup) return AppRoutes.startup().path;
           return null;
         }
 
-        // 1.5 Unresolved onboarding status — keep on startup
         if (onboardingStatusAsync.isLoading || onboardingStatusAsync.hasError) {
           if (!isOnStartup) return AppRoutes.startup().path;
           return null;
@@ -95,7 +98,6 @@ class AppRouter {
 
         final onboardingStatus = onboardingStatusAsync.asData?.value;
 
-        // 2. Onboarding guard
         if (onboardingStatus == OnboardingStatus.complete) {
           if (isOnStartup || location == AppRoutes.onboarding().path) {
             return AppRoutes.home().path;
@@ -106,7 +108,6 @@ class AppRouter {
           if (!isOnOnboarding) return AppRoutes.onboarding().path;
         }
 
-        // 2.5 Feature-flag guard
         if (AppRouter._isFlagDisabledRoute(location, featureFlags)) {
           if (!featureFlags.aiEnabled && location == AppRoutes.chat().path) {
             return AppRoutes.aiDisabled().path;
@@ -126,7 +127,6 @@ class AppRouter {
           }
         }
 
-        // 3. AI availability guard (chat only)
         if (aiAvailability == AiAvailability.missingKey &&
             location == AppRoutes.chat().path) {
           return AppRoutes.aiUnavailable().path;
@@ -136,7 +136,6 @@ class AppRouter {
           return AppRoutes.aiUnsupported().path;
         }
 
-        // 4. Unsaved draft guard (broad strict blocking)
         if (draftGuard == DraftGuard.blockedByUnsavedDraft &&
             AppRouter._draftGuardedRoutes.contains(location)) {
           return AppRoutes.draftBlocked().path;
@@ -160,10 +159,156 @@ class AppRouter {
           name: AppRoutes.onboarding().name,
           builder: (context, state) => const OnboardingScreen(),
         ),
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) =>
+              BottomNavShell(navigationShell: navigationShell),
+          branches: [
+            // Tab 0 — HOME
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.home().path,
+                  name: AppRoutes.home().name,
+                  builder: (context, state) => const HomeScreen(),
+                ),
+              ],
+            ),
+            // Tab 1 — LIB (library hub)
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.library().path,
+                  name: AppRoutes.library().name,
+                  builder: (context, state) => const LibraryHubScreen(),
+                ),
+              ],
+            ),
+            // Tab 2 — PLAN (programmes)
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.programmes().path,
+                  name: AppRoutes.programmes().name,
+                  builder: (context, state) => const ProgrammesScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'new',
+                      name: AppRoutes.programmeBuilderCreate().name,
+                      builder: (context, state) =>
+                          ProgrammeBuilderScreen.create(),
+                    ),
+                    GoRoute(
+                      path: ':id/edit',
+                      name: AppRoutes.programmeBuilderEdit().name,
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        return ProgrammeBuilderScreen.edit(programmeId: id);
+                      },
+                    ),
+                    GoRoute(
+                      path: ':id/duplicate',
+                      name: AppRoutes.programmeBuilderDuplicate().name,
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        return ProgrammeBuilderScreen.duplicate(
+                          programmeId: id,
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: ':id',
+                      name: AppRoutes.programmeCalendar().name,
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        return ProgrammeCalendarScreen(programmeId: id);
+                      },
+                    ),
+                    GoRoute(
+                      path: ':programId/workouts/:workoutId',
+                      name: AppRoutes.programmeWorkoutDetail().name,
+                      builder: (context, state) {
+                        final programId = state.pathParameters['programId']!;
+                        final workoutId = state.pathParameters['workoutId']!;
+                        return ProgrammeWorkoutDetailScreen(
+                          programId: programId,
+                          workoutId: workoutId,
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: ':programId/workouts/:workoutId/run',
+                      name: AppRoutes.workoutRunnerProgramWorkout().name,
+                      builder: (context, state) {
+                        final programId = state.pathParameters['programId']!;
+                        final workoutId = state.pathParameters['workoutId']!;
+                        return WorkoutRunnerScreen.programWorkout(
+                          programId: programId,
+                          programWorkoutId: workoutId,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            // Tab 3 — AI
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.chat().path,
+                  name: AppRoutes.chat().name,
+                  builder: (context, state) => const AiChatScreen(),
+                ),
+              ],
+            ),
+            // Tab 4 — STATS (analytics)
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.analytics().path,
+                  name: AppRoutes.analytics().name,
+                  builder: (context, state) => const AnalyticsScreen(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Non-shell routes (no bottom nav)
         GoRoute(
-          path: AppRoutes.home().path,
-          name: AppRoutes.home().name,
-          builder: (context, state) => const ProgrammesScreen(),
+          path: AppRoutes.workout().path,
+          name: AppRoutes.workout().name,
+          builder: (context, state) => const WorkoutExecutionScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerActive().path,
+          name: AppRoutes.workoutRunnerActive().name,
+          builder: (context, state) => const WorkoutRunnerScreen.resume(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerSavedWorkout().path,
+          name: AppRoutes.workoutRunnerSavedWorkout().name,
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return WorkoutRunnerScreen.savedWorkout(savedWorkoutId: id);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.savedWorkoutLibrary().path,
+          name: AppRoutes.savedWorkoutLibrary().name,
+          builder: (context, state) => const SavedWorkoutLibraryScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutBuilderCreate().path,
+          name: AppRoutes.workoutBuilderCreate().name,
+          builder: (context, state) => const WorkoutBuilderScreen.create(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutBuilderEdit().path,
+          name: AppRoutes.workoutBuilderEdit().name,
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return WorkoutBuilderScreen.edit(savedWorkoutId: id);
+          },
         ),
         GoRoute(
           path: AppRoutes.exercises().path,
@@ -195,82 +340,6 @@ class AppRouter {
           ],
         ),
         GoRoute(
-          path: AppRoutes.bodymap().path,
-          name: AppRoutes.bodymap().name,
-          builder: (context, state) => const BodymapScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.workout().path,
-          name: AppRoutes.workout().name,
-          builder: (context, state) => const WorkoutExecutionScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.workoutRunnerActive().path,
-          name: AppRoutes.workoutRunnerActive().name,
-          builder: (context, state) => const WorkoutRunnerScreen.resume(),
-        ),
-        GoRoute(
-          path: AppRoutes.workoutRunnerSavedWorkout().path,
-          name: AppRoutes.workoutRunnerSavedWorkout().name,
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return WorkoutRunnerScreen.savedWorkout(savedWorkoutId: id);
-          },
-        ),
-        GoRoute(
-          path: AppRoutes.workoutRunnerProgramWorkout().path,
-          name: AppRoutes.workoutRunnerProgramWorkout().name,
-          builder: (context, state) {
-            final programId = state.pathParameters['programId']!;
-            final workoutId = state.pathParameters['workoutId']!;
-            return WorkoutRunnerScreen.programWorkout(
-              programId: programId,
-              programWorkoutId: workoutId,
-            );
-          },
-        ),
-        GoRoute(
-          path: AppRoutes.workoutBuilderCreate().path,
-          name: AppRoutes.workoutBuilderCreate().name,
-          builder: (context, state) => const WorkoutBuilderScreen.create(),
-        ),
-        GoRoute(
-          path: AppRoutes.workoutBuilderEdit().path,
-          name: AppRoutes.workoutBuilderEdit().name,
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return WorkoutBuilderScreen.edit(savedWorkoutId: id);
-          },
-        ),
-        GoRoute(
-          path: AppRoutes.programmes().path,
-          name: AppRoutes.programmes().name,
-          builder: (context, state) => const ProgrammesScreen(),
-          routes: [
-            GoRoute(
-              path: 'new',
-              name: AppRoutes.programmeBuilderCreate().name,
-              builder: (context, state) => ProgrammeBuilderScreen.create(),
-            ),
-            GoRoute(
-              path: ':id/edit',
-              name: AppRoutes.programmeBuilderEdit().name,
-              builder: (context, state) {
-                final id = state.pathParameters['id']!;
-                return ProgrammeBuilderScreen.edit(programmeId: id);
-              },
-            ),
-            GoRoute(
-              path: ':id/duplicate',
-              name: AppRoutes.programmeBuilderDuplicate().name,
-              builder: (context, state) {
-                final id = state.pathParameters['id']!;
-                return ProgrammeBuilderScreen.duplicate(programmeId: id);
-              },
-            ),
-          ],
-        ),
-        GoRoute(
           path: AppRoutes.liftLog().path,
           name: AppRoutes.liftLog().name,
           builder: (context, state) => const LiftLogScreen(),
@@ -286,19 +355,9 @@ class AppRouter {
           ],
         ),
         GoRoute(
-          path: AppRoutes.savedWorkoutLibrary().path,
-          name: AppRoutes.savedWorkoutLibrary().name,
-          builder: (context, state) => const SavedWorkoutLibraryScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.analytics().path,
-          name: AppRoutes.analytics().name,
-          builder: (context, state) => const AnalyticsScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.chat().path,
-          name: AppRoutes.chat().name,
-          builder: (context, state) => const AiChatScreen(),
+          path: AppRoutes.bodymap().path,
+          name: AppRoutes.bodymap().name,
+          builder: (context, state) => const BodymapScreen(),
         ),
         GoRoute(
           path: AppRoutes.diagnostics().path,
