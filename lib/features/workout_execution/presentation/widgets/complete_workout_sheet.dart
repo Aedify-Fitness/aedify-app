@@ -50,18 +50,20 @@ class CompleteWorkoutSheet extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           _SummaryRow(
             label: AppStrings.totalVolume,
-            value: '${_totalVolume(session)} ${AppStrings.metricWeightUnit}',
+            value:
+                '${_CompleteWorkoutMetrics.totalVolume(session)} ${AppStrings.metricWeightUnit}',
           ),
           const SizedBox(height: AppSpacing.xs),
           _SummaryRow(
             label: AppStrings.setsCompleted,
-            value: '${_completedSets(session)} / ${_totalSets(session)}',
+            value:
+                '${_CompleteWorkoutMetrics.completedSets(session)} / ${_CompleteWorkoutMetrics.totalSets(session)}',
           ),
           const SizedBox(height: AppSpacing.xs),
           _SummaryRow(
             label: AppStrings.exercisesCompleted,
             value:
-                '${_completedExercises(session)} / ${session.exercises.length}',
+                '${_CompleteWorkoutMetrics.completedExercises(session)} / ${session.exercises.length}',
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
@@ -88,49 +90,53 @@ class CompleteWorkoutSheet extends StatelessWidget {
   }
 }
 
-int _totalVolume(WorkoutRunnerSessionViewData session) {
-  var volume = 0.0;
-  for (final exercise in session.exercises) {
-    for (final set in exercise.sets) {
-      if (set.completed &&
-          set.actualWeightKg != null &&
-          set.actualReps != null) {
-        volume += set.actualWeightKg! * set.actualReps!;
+class _CompleteWorkoutMetrics {
+  _CompleteWorkoutMetrics._();
+
+  static int totalVolume(WorkoutRunnerSessionViewData session) {
+    var volume = 0.0;
+    for (final exercise in session.exercises) {
+      for (final set in exercise.sets) {
+        if (set.completed &&
+            set.actualWeightKg != null &&
+            set.actualReps != null) {
+          volume += set.actualWeightKg! * set.actualReps!;
+        }
       }
     }
+    return volume.round();
   }
-  return volume.round();
-}
 
-int _completedSets(WorkoutRunnerSessionViewData session) {
-  var count = 0;
-  for (final exercise in session.exercises) {
-    for (final set in exercise.sets) {
-      if (set.completed) count++;
-    }
-  }
-  return count;
-}
-
-int _totalSets(WorkoutRunnerSessionViewData session) {
-  var count = 0;
-  for (final exercise in session.exercises) {
-    count += exercise.sets.length;
-  }
-  return count;
-}
-
-int _completedExercises(WorkoutRunnerSessionViewData session) {
-  var count = 0;
-  for (final exercise in session.exercises) {
-    for (final set in exercise.sets) {
-      if (set.completed) {
-        count++;
-        break;
+  static int completedSets(WorkoutRunnerSessionViewData session) {
+    var count = 0;
+    for (final exercise in session.exercises) {
+      for (final set in exercise.sets) {
+        if (set.completed) count++;
       }
     }
+    return count;
   }
-  return count;
+
+  static int totalSets(WorkoutRunnerSessionViewData session) {
+    var count = 0;
+    for (final exercise in session.exercises) {
+      count += exercise.sets.length;
+    }
+    return count;
+  }
+
+  static int completedExercises(WorkoutRunnerSessionViewData session) {
+    var count = 0;
+    for (final exercise in session.exercises) {
+      for (final set in exercise.sets) {
+        if (set.completed) {
+          count++;
+          break;
+        }
+      }
+    }
+    return count;
+  }
 }
 
 class _SummaryRow extends StatelessWidget {

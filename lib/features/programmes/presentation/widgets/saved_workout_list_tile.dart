@@ -11,12 +11,14 @@ class SavedWorkoutListTile extends StatelessWidget {
     super.key,
     required this.item,
     required this.onTap,
+    required this.onStart,
     required this.onArchive,
     required this.onDelete,
   });
 
   final SavedWorkoutListItem item;
   final VoidCallback onTap;
+  final VoidCallback onStart;
   final VoidCallback onArchive;
   final VoidCallback onDelete;
 
@@ -27,9 +29,24 @@ class SavedWorkoutListTile extends StatelessWidget {
       child: ListTile(
         title: Text(item.name),
         subtitle: Text('${item.exerciseCount} ${AppStrings.exercisesSelected}'),
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            OutlinedSvgAssets.playCircle,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.primary,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: onStart,
+          tooltip: AppStrings.startWorkout,
+        ),
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
             switch (value) {
+              case 'start':
+                onStart();
               case 'archive':
                 onArchive();
               case 'delete':
@@ -37,6 +54,20 @@ class SavedWorkoutListTile extends StatelessWidget {
             }
           },
           itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'start',
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    OutlinedSvgAssets.playCircle,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(AppStrings.startWorkout),
+                ],
+              ),
+            ),
             PopupMenuItem(
               value: 'archive',
               child: Row(

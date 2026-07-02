@@ -26,6 +26,7 @@ class WorkoutExerciseCard extends StatelessWidget {
     this.onOpenSupersetEditor,
     this.onRemoveFromSuperset,
     this.onDeleteSuperset,
+    this.onRestChanged,
   });
 
   final WorkoutBuilderExerciseDraft exercise;
@@ -40,6 +41,7 @@ class WorkoutExerciseCard extends StatelessWidget {
   final VoidCallback? onOpenSupersetEditor;
   final VoidCallback? onRemoveFromSuperset;
   final VoidCallback? onDeleteSuperset;
+  final void Function(int? restSeconds)? onRestChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +94,29 @@ class WorkoutExerciseCard extends StatelessWidget {
                     onRemoveFromSuperset: onRemoveFromSuperset ?? () {},
                     onDeleteSuperset: onDeleteSuperset ?? () {},
                   ),
+                if (onRestChanged != null)
+                  SizedBox(
+                    width: AppSizing.fieldWidthSm,
+                    child: TextField(
+                      controller: TextEditingController.fromValue(
+                        TextEditingValue(
+                          text:
+                              exercise.restBetweenExercisesSeconds
+                                  ?.toString() ??
+                              '',
+                        ),
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: AppStrings.rest,
+                        isDense: true,
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (v) {
+                        onRestChanged!(int.tryParse(v));
+                      },
+                    ),
+                  ),
+                const SizedBox(width: AppSpacing.xs),
                 IconButton(
                   icon: SvgPicture.asset(
                     OutlinedSvgAssets.documentDuplicate,

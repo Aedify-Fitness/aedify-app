@@ -74,10 +74,22 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
     _isSyncing = true;
     _repsController.text =
         widget.prescription.prescribedRepsMin?.toString() ?? '';
-    _weightController.text =
-        widget.prescription.prescribedWeightKg?.toString() ?? '';
+
+    final weightText = _formatWeight(widget.prescription.prescribedWeightKg);
+    if (weightText != _weightController.text) {
+      _weightController.text = weightText;
+    }
+
     _restController.text = widget.prescription.restSeconds?.toString() ?? '';
     _isSyncing = false;
+  }
+
+  String _formatWeight(double? weight) {
+    if (weight == null) return '';
+    if (weight == weight.truncateToDouble()) {
+      return weight.toInt().toString();
+    }
+    return weight.toString();
   }
 
   void _onRepsChanged() {
@@ -111,91 +123,94 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        children: [
-          SizedBox(
-            width: AppSpacing.xxl,
-            child: Text(
-              '${widget.prescription.setIndex + 1}',
-              style: AppTextStyles.labelSm,
-              textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            SizedBox(
+              width: AppSpacing.xxl,
+              child: Text(
+                '${widget.prescription.setIndex + 1}',
+                style: AppTextStyles.labelSm,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          SizedBox(
-            width: AppSizing.fieldWidthXl,
-            child: DropdownButtonFormField<SetType>(
-              initialValue: widget.prescription.setType,
-              isExpanded: true,
-              decoration: const InputDecoration(
-                labelText: AppStrings.setType,
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.inputHorizontal,
-                  vertical: AppSpacing.sm,
+            SizedBox(
+              width: AppSizing.fieldWidthXl,
+              child: DropdownButtonFormField<SetType>(
+                initialValue: widget.prescription.setType,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  labelText: AppStrings.setType,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.inputHorizontal,
+                    vertical: AppSpacing.sm,
+                  ),
                 ),
-              ),
-              items: widget.setTypeOptions.map((option) {
-                return DropdownMenuItem<SetType>(
-                  value: option.type,
-                  child: Text(option.label, style: AppTextStyles.labelSm),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  widget.onChanged(
-                    widget.prescription.copyWith(setType: value),
+                items: widget.setTypeOptions.map((option) {
+                  return DropdownMenuItem<SetType>(
+                    value: option.type,
+                    child: Text(option.label, style: AppTextStyles.labelSm),
                   );
-                }
-              },
-            ),
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          SizedBox(
-            width: AppSizing.fieldWidthLg,
-            child: TextField(
-              controller: _repsController,
-              decoration: InputDecoration(
-                labelText: AppStrings.reps,
-                isDense: true,
-                errorText: widget.errorText,
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    widget.onChanged(
+                      widget.prescription.copyWith(setType: value),
+                    );
+                  }
+                },
               ),
-              keyboardType: TextInputType.number,
             ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          SizedBox(
-            width: AppSizing.fieldWidthMd,
-            child: TextField(
-              controller: _weightController,
-              decoration: const InputDecoration(
-                labelText: AppStrings.weight,
-                isDense: true,
+            const SizedBox(width: AppSpacing.xs),
+            SizedBox(
+              width: AppSizing.fieldWidthLg,
+              child: TextField(
+                controller: _repsController,
+                decoration: InputDecoration(
+                  labelText: AppStrings.reps,
+                  isDense: true,
+                  errorText: widget.errorText,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
             ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          SizedBox(
-            width: AppSizing.fieldWidthSm,
-            child: TextField(
-              controller: _restController,
-              decoration: const InputDecoration(
-                labelText: AppStrings.rest,
-                isDense: true,
+            const SizedBox(width: AppSpacing.sm),
+            SizedBox(
+              width: AppSizing.fieldWidthMd,
+              child: TextField(
+                controller: _weightController,
+                decoration: const InputDecoration(
+                  labelText: AppStrings.weight,
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
             ),
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-              OutlinedSvgAssets.trash,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
+            const SizedBox(width: AppSpacing.sm),
+            SizedBox(
+              width: AppSizing.fieldWidthSm,
+              child: TextField(
+                controller: _restController,
+                decoration: const InputDecoration(
+                  labelText: AppStrings.rest,
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.number,
+              ),
             ),
-            onPressed: widget.onRemove,
-            tooltip: AppStrings.removeSet,
-          ),
-        ],
+            IconButton(
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.trash,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+              ),
+              onPressed: widget.onRemove,
+              tooltip: AppStrings.removeSet,
+            ),
+          ],
+        ),
       ),
     );
   }
