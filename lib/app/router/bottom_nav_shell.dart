@@ -11,18 +11,21 @@ class _BottomNavItemData {
 
   final String label;
   final String iconAsset;
-}
 
-const _items = [
-  _BottomNavItemData(label: 'HOME', iconAsset: OutlinedSvgAssets.home),
-  _BottomNavItemData(label: 'LIB', iconAsset: OutlinedSvgAssets.sparkles),
-  _BottomNavItemData(
-    label: 'PLAN',
-    iconAsset: OutlinedSvgAssets.clipboardDocumentList,
-  ),
-  _BottomNavItemData(label: 'AI', iconAsset: OutlinedSvgAssets.chatBubbleLeft),
-  _BottomNavItemData(label: 'STATS', iconAsset: OutlinedSvgAssets.chartBar),
-];
+  static const items = [
+    _BottomNavItemData(label: 'HOME', iconAsset: OutlinedSvgAssets.home),
+    _BottomNavItemData(label: 'LIB', iconAsset: OutlinedSvgAssets.sparkles),
+    _BottomNavItemData(
+      label: 'PLAN',
+      iconAsset: OutlinedSvgAssets.clipboardDocumentList,
+    ),
+    _BottomNavItemData(
+      label: 'AI',
+      iconAsset: OutlinedSvgAssets.chatBubbleLeft,
+    ),
+    _BottomNavItemData(label: 'STATS', iconAsset: OutlinedSvgAssets.chartBar),
+  ];
+}
 
 class BottomNavShell extends StatelessWidget {
   const BottomNavShell({super.key, required this.navigationShell});
@@ -88,8 +91,8 @@ class _BottomNavBar extends StatelessWidget {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_items.length, (index) {
-              final item = _items[index];
+            children: List.generate(_BottomNavItemData.items.length, (index) {
+              final item = _BottomNavItemData.items[index];
               final selected = index == currentIndex;
               return _BottomNavItem(
                 data: item,
