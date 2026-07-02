@@ -442,7 +442,7 @@ class _ProfileContentView extends ConsumerWidget {
             child: _ExerciseSelector(
               selectedIds: draft.favoriteExerciseIds,
               hintText: AppStrings.selectFavorites,
-              onTap: () => _showExerciseMultiSelect(
+              onTap: () => _ProfileExerciseMultiSelect.show(
                 context: context,
                 ref: ref,
                 draft: draft,
@@ -459,7 +459,7 @@ class _ProfileContentView extends ConsumerWidget {
             child: _ExerciseSelector(
               selectedIds: draft.substitutedExerciseIds,
               hintText: AppStrings.selectSubstitutions,
-              onTap: () => _showExerciseMultiSelect(
+              onTap: () => _ProfileExerciseMultiSelect.show(
                 context: context,
                 ref: ref,
                 draft: draft,
@@ -1054,97 +1054,104 @@ class _ExerciseSelector extends StatelessWidget {
 
 enum _ExerciseSelectMode { favorites, substitutions }
 
-Future<void> _showExerciseMultiSelect({
-  required BuildContext context,
-  required WidgetRef ref,
-  required ProfileEditDraft draft,
-  required ProfileController controller,
-  required _ExerciseSelectMode mode,
-}) async {
-  final exercises = await ref
-      .read(AppProviders.exerciseDaoProvider)
-      .getAllExercises();
-  if (!context.mounted) return;
+class _ProfileExerciseMultiSelect {
+  _ProfileExerciseMultiSelect._();
 
-  final currentIds = switch (mode) {
-    _ExerciseSelectMode.favorites => List<int>.from(draft.favoriteExerciseIds),
-    _ExerciseSelectMode.substitutions => List<int>.from(
-      draft.substitutedExerciseIds,
-    ),
-  };
+  static Future<void> show({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ProfileEditDraft draft,
+    required ProfileController controller,
+    required _ExerciseSelectMode mode,
+  }) async {
+    final exercises = await ref
+        .read(AppProviders.exerciseDaoProvider)
+        .getAllExercises();
+    if (!context.mounted) return;
 
-  await showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    builder: (ctx) {
-      final tempIds = Set<int>.from(currentIds);
-      return StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          return DraggableScrollableSheet(
-            initialChildSize: 0.8,
-            builder: (_, scrollController) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Text(
-                      mode == _ExerciseSelectMode.favorites
-                          ? AppStrings.selectFavorites
-                          : AppStrings.selectSubstitutions,
-                      style: AppTextStyles.headlineMd,
-                    ),
-                  ),
-                  const Divider(),
-                  Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      children: exercises.map((e) {
-                        return CheckboxListTile(
-                          title: Text(e.name),
-                          value: tempIds.contains(e.id),
-                          onChanged: (checked) {
-                            setSheetState(() {
-                              if (checked == true) {
-                                tempIds.add(e.id);
-                              } else {
-                                tempIds.remove(e.id);
-                              }
-                            });
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () {
-                          controller
-                              .updateDraft(switch (mode) {
-                                _ExerciseSelectMode.favorites => draft.copyWith(
-                                  favoriteExerciseIds: tempIds.toList(),
-                                ),
-                                _ExerciseSelectMode.substitutions =>
-                                  draft.copyWith(
-                                    substitutedExerciseIds: tempIds.toList(),
-                                  ),
-                              })
-                              .then((_) {
-                                if (ctx.mounted) Navigator.of(ctx).pop();
-                              });
-                        },
-                        child: const Text(AppStrings.done),
+    final currentIds = switch (mode) {
+      _ExerciseSelectMode.favorites => List<int>.from(
+        draft.favoriteExerciseIds,
+      ),
+      _ExerciseSelectMode.substitutions => List<int>.from(
+        draft.substitutedExerciseIds,
+      ),
+    };
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final tempIds = Set<int>.from(currentIds);
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            return DraggableScrollableSheet(
+              initialChildSize: 0.8,
+              builder: (_, scrollController) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Text(
+                        mode == _ExerciseSelectMode.favorites
+                            ? AppStrings.selectFavorites
+                            : AppStrings.selectSubstitutions,
+                        style: AppTextStyles.headlineMd,
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    },
-  );
+                    const Divider(),
+                    Expanded(
+                      child: ListView(
+                        controller: scrollController,
+                        children: exercises.map((e) {
+                          return CheckboxListTile(
+                            title: Text(e.name),
+                            value: tempIds.contains(e.id),
+                            onChanged: (checked) {
+                              setSheetState(() {
+                                if (checked == true) {
+                                  tempIds.add(e.id);
+                                } else {
+                                  tempIds.remove(e.id);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: () {
+                            controller
+                                .updateDraft(switch (mode) {
+                                  _ExerciseSelectMode.favorites =>
+                                    draft.copyWith(
+                                      favoriteExerciseIds: tempIds.toList(),
+                                    ),
+                                  _ExerciseSelectMode.substitutions =>
+                                    draft.copyWith(
+                                      substitutedExerciseIds: tempIds.toList(),
+                                    ),
+                                })
+                                .then((_) {
+                                  if (ctx.mounted) Navigator.of(ctx).pop();
+                                });
+                          },
+                          child: const Text(AppStrings.done),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 }

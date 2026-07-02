@@ -20,24 +20,26 @@ class ProgrammeWorkoutDetailController {
     final dayIdx = workout.scheduledDayIndex ?? 0;
     final dayLabel = TrainingDay.values[dayIdx].fullDisplayLabel;
 
-    final template = aggregate.templates.cast<ProgramWorkoutTemplate?>().firstWhere(
-      (t) => t?.id == workout.workoutTemplateId,
-      orElse: () => null,
-    );
+    final template = aggregate.templates
+        .cast<ProgramWorkoutTemplate?>()
+        .firstWhere(
+          (t) => t?.id == workout.workoutTemplateId,
+          orElse: () => null,
+        );
     final durationMinutes = template?.estimatedDurationMinutes ?? 0;
 
-    final workoutExercises = aggregate.exercises
-        .where((e) => e.programWorkoutId == workoutId)
-        .toList()
-      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    final workoutExercises =
+        aggregate.exercises
+            .where((e) => e.programWorkoutId == workoutId)
+            .toList()
+          ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
     final exerciseItems = <ExerciseDetailItem>[];
     for (final ex in workoutExercises) {
       final name = exerciseNames[ex.exerciseId] ?? 'Exercise ${ex.exerciseId}';
-      final sets = aggregate.sets
-          .where((s) => s.programExerciseId == ex.id)
-          .toList()
-        ..sort((a, b) => a.setIndex.compareTo(b.setIndex));
+      final sets =
+          aggregate.sets.where((s) => s.programExerciseId == ex.id).toList()
+            ..sort((a, b) => a.setIndex.compareTo(b.setIndex));
 
       final setItems = sets.map((s) {
         return SetPrescriptionItem(

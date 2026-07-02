@@ -1184,7 +1184,7 @@ class _LimitationsStep extends StatelessWidget {
             return _ExercisePanel(
               title: AppStrings.favoriteExercises,
               selectedIds: draft.favoriteExerciseIds,
-              onTap: () => _showExerciseMultiSelect(
+              onTap: () => _OnboardingExerciseMultiSelect.show(
                 context: context,
                 ref: ref,
                 currentIds: draft.favoriteExerciseIds,
@@ -1201,7 +1201,7 @@ class _LimitationsStep extends StatelessWidget {
             return _ExercisePanel(
               title: AppStrings.substitutions,
               selectedIds: draft.substitutedExerciseIds,
-              onTap: () => _showExerciseMultiSelect(
+              onTap: () => _OnboardingExerciseMultiSelect.show(
                 context: context,
                 ref: ref,
                 currentIds: draft.substitutedExerciseIds,
@@ -1279,15 +1279,21 @@ class _ByokFormNotifier extends Notifier<_ByokFormState> {
   }
 }
 
-final _byokOptionsProvider =
-    FutureProvider.autoDispose<List<ByokProviderOption>>((ref) {
-      return ref.read(AppProviders.byokRepositoryProvider).getProviderOptions();
-    });
+class _OnboardingProviders {
+  _OnboardingProviders._();
 
-final _byokFormProvider =
-    NotifierProvider.autoDispose<_ByokFormNotifier, _ByokFormState>(
-      _ByokFormNotifier.new,
-    );
+  static final byokOptionsProvider =
+      FutureProvider.autoDispose<List<ByokProviderOption>>((ref) {
+        return ref
+            .read(AppProviders.byokRepositoryProvider)
+            .getProviderOptions();
+      });
+
+  static final byokFormProvider =
+      NotifierProvider.autoDispose<_ByokFormNotifier, _ByokFormState>(
+        _ByokFormNotifier.new,
+      );
+}
 
 // ---- BYOK Optional Step ----
 
@@ -1302,6 +1308,79 @@ class _ByokOptionalStep extends ConsumerStatefulWidget {
 }
 
 class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
+  @override
+  Widget build(BuildContext context) {
+    final optionsAsync = ref.watch(_OnboardingProviders.byokOptionsProvider);
+
+    return optionsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, _) => Column(
+        children: [
+          const _ByokInfoPanel(),
+          AppWhiteSpace.hLg,
+          Text(
+            AppErrorStrings.byokLoadFailedMessage,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+      data: (options) => _ByokForm(
+        options: options,
+        draft: widget.draft,
+        onUpdateDraft: widget.onUpdateDraft,
+      ),
+    );
+  }
+}
+
+class _ByokInfoPanel extends StatelessWidget {
+  const _ByokInfoPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SurfacePanel(
+      backgroundColor: context.colorScheme.surfaceContainerLow,
+      borderColor: context.theme.brightness == Brightness.light
+          ? AedifyLightColors.secondaryBorder
+          : AedifyDarkColors.secondaryBorder,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PanelHeader(
+            iconAsset: OutlinedSvgAssets.cpuChip,
+            title: AppStrings.onboardingByokOptionalTitle,
+          ),
+          AppWhiteSpace.hMd,
+          Text(
+            AppStrings.onboardingByokDescription,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ByokForm extends ConsumerStatefulWidget {
+  const _ByokForm({
+    required this.options,
+    required this.draft,
+    required this.onUpdateDraft,
+  });
+
+  final List<ByokProviderOption> options;
+  final OnboardingDraft draft;
+  final void Function(OnboardingDraft) onUpdateDraft;
+
+  @override
+  ConsumerState<_ByokForm> createState() => _ByokFormWidgetState();
+}
+
+class _ByokFormWidgetState extends ConsumerState<_ByokForm> {
   final _keyController = TextEditingController();
   final _obscured = ValueNotifier<bool>(true);
 
@@ -1313,11 +1392,11 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
   }
 
   Future<void> _saveKey() async {
-    final formState = ref.read(_byokFormProvider);
+    final formState = ref.read(_OnboardingProviders.byokFormProvider);
     final provider = formState.selectedProvider;
     if (provider == null || _keyController.text.isEmpty) return;
 
-    ref.read(_byokFormProvider.notifier).setSaving(true);
+    ref.read(_OnboardingProviders.byokFormProvider.notifier).setSaving(true);
 
     try {
       final repository = ref.read(AppProviders.byokRepositoryProvider);
@@ -1330,47 +1409,22 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
         ),
       );
       widget.onUpdateDraft(widget.draft.copyWith(byokSkipped: false));
-      ref.read(_byokFormProvider.notifier).markSaved();
+      ref.read(_OnboardingProviders.byokFormProvider.notifier).markSaved();
     } catch (_) {
-      ref.read(_byokFormProvider.notifier).setSaving(false);
+      ref.read(_OnboardingProviders.byokFormProvider.notifier).setSaving(false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final optionsAsync = ref.watch(_byokOptionsProvider);
-    final formState = ref.watch(_byokFormProvider);
+    final formState = ref.watch(_OnboardingProviders.byokFormProvider);
 
-    return optionsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, _) => Column(
-        children: [
-          _infoPanel(context),
-          AppWhiteSpace.hLg,
-          Text(
-            AppErrorStrings.byokLoadFailedMessage,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-      data: (options) => _buildForm(context, options, formState),
-    );
-  }
-
-  Widget _buildForm(
-    BuildContext context,
-    List<ByokProviderOption> options,
-    _ByokFormState formState,
-  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _infoPanel(context),
+        const _ByokInfoPanel(),
         AppWhiteSpace.hLg,
 
-        // Provider selector
         if (!formState.hasSaved) ...[
           Text(
             AppStrings.provider,
@@ -1382,7 +1436,7 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
-            children: options.map((option) {
+            children: widget.options.map((option) {
               final isSelected =
                   formState.selectedProvider == option.providerName;
               return ChoiceChip(
@@ -1390,15 +1444,14 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
                 selected: isSelected,
                 onSelected: (_) {
                   ref
-                      .read(_byokFormProvider.notifier)
-                      .selectProvider(option.providerName, options);
+                      .read(_OnboardingProviders.byokFormProvider.notifier)
+                      .selectProvider(option.providerName, widget.options);
                 },
               );
             }).toList(),
           ),
           AppWhiteSpace.hMd,
 
-          // Model selector
           if (formState.selectedProvider != null) ...[
             Text(
               AppStrings.model,
@@ -1408,17 +1461,18 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
             ),
             AppWhiteSpace.hSm,
             _OnboardingModelSelector(
-              options: options,
+              options: widget.options,
               providerName: formState.selectedProvider!,
               selectedModelId: formState.selectedModel,
               onChanged: (value) {
-                ref.read(_byokFormProvider.notifier).selectModel(value);
+                ref
+                    .read(_OnboardingProviders.byokFormProvider.notifier)
+                    .selectModel(value);
               },
             ),
             AppWhiteSpace.hMd,
           ],
 
-          // API key input
           Text(
             AppStrings.apiKey,
             style: AppTextStyles.labelMd.copyWith(
@@ -1455,7 +1509,6 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
           ),
           AppWhiteSpace.hMd,
 
-          // Save key button
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -1478,7 +1531,6 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
           AppWhiteSpace.hLg,
         ],
 
-        // Saved confirmation
         if (formState.hasSaved)
           Container(
             width: double.infinity,
@@ -1511,7 +1563,6 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
             ),
           ),
 
-        // Benefit cards
         if (!formState.hasSaved) ...[
           AppWhiteSpace.hLg,
           _BenefitCard(
@@ -1534,31 +1585,6 @@ class _ByokOptionalStepState extends ConsumerState<_ByokOptionalStep> {
           ),
         ],
       ],
-    );
-  }
-
-  Widget _infoPanel(BuildContext context) {
-    return _SurfacePanel(
-      backgroundColor: context.colorScheme.surfaceContainerLow,
-      borderColor: context.theme.brightness == Brightness.light
-          ? AedifyLightColors.secondaryBorder
-          : AedifyDarkColors.secondaryBorder,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _PanelHeader(
-            iconAsset: OutlinedSvgAssets.cpuChip,
-            title: AppStrings.onboardingByokOptionalTitle,
-          ),
-          AppWhiteSpace.hMd,
-          Text(
-            AppStrings.onboardingByokDescription,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -2347,91 +2373,95 @@ class _ExercisePanel extends StatelessWidget {
   }
 }
 
-Future<void> _showExerciseMultiSelect({
-  required BuildContext context,
-  required WidgetRef ref,
-  required List<int> currentIds,
-  required void Function(List<int> ids) onDone,
-}) async {
-  if (!context.mounted) return;
-  final exercises = await ref
-      .read(AppProviders.exerciseDaoProvider)
-      .getAllExercises();
+class _OnboardingExerciseMultiSelect {
+  _OnboardingExerciseMultiSelect._();
 
-  if (!context.mounted) return;
-  if (exercises.isEmpty) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppStrings.exerciseLibrarySyncUnavailableOffline),
-        ),
-      );
+  static Future<void> show({
+    required BuildContext context,
+    required WidgetRef ref,
+    required List<int> currentIds,
+    required void Function(List<int> ids) onDone,
+  }) async {
+    if (!context.mounted) return;
+    final exercises = await ref
+        .read(AppProviders.exerciseDaoProvider)
+        .getAllExercises();
+
+    if (!context.mounted) return;
+    if (exercises.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppStrings.exerciseLibrarySyncUnavailableOffline),
+          ),
+        );
+      }
+      return;
     }
-    return;
-  }
-  final tempIds = Set<int>.from(currentIds);
+    final tempIds = Set<int>.from(currentIds);
 
-  await showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    builder: (ctx) {
-      return StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          return DraggableScrollableSheet(
-            initialChildSize: 0.8,
-            minChildSize: 0.5,
-            maxChildSize: 0.95,
-            builder: (_, scrollController) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppStrings.favoriteExercises,
-                          style: AppTextStyles.headlineMd,
-                        ),
-                        FilledButton(
-                          onPressed: () {
-                            onDone(tempIds.toList());
-                            Navigator.of(ctx).pop();
-                          },
-                          child: const Text(AppStrings.onboardingDoneLabel),
-                        ),
-                      ],
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            return DraggableScrollableSheet(
+              initialChildSize: 0.8,
+              minChildSize: 0.5,
+              maxChildSize: 0.95,
+              builder: (_, scrollController) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppStrings.favoriteExercises,
+                            style: AppTextStyles.headlineMd,
+                          ),
+                          FilledButton(
+                            onPressed: () {
+                              onDone(tempIds.toList());
+                              Navigator.of(ctx).pop();
+                            },
+                            child: const Text(AppStrings.onboardingDoneLabel),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Divider(height: 1),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: exercises.length,
-                      itemBuilder: (_, index) {
-                        final exercise = exercises[index];
-                        return CheckboxListTile(
-                          title: Text(exercise.name),
-                          value: tempIds.contains(exercise.id),
-                          onChanged: (checked) {
-                            setSheetState(() {
-                              if (checked == true) {
-                                tempIds.add(exercise.id);
-                              } else {
-                                tempIds.remove(exercise.id);
-                              }
-                            });
-                          },
-                        );
-                      },
+                    const Divider(height: 1),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: exercises.length,
+                        itemBuilder: (_, index) {
+                          final exercise = exercises[index];
+                          return CheckboxListTile(
+                            title: Text(exercise.name),
+                            value: tempIds.contains(exercise.id),
+                            onChanged: (checked) {
+                              setSheetState(() {
+                                if (checked == true) {
+                                  tempIds.add(exercise.id);
+                                } else {
+                                  tempIds.remove(exercise.id);
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    },
-  );
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 }

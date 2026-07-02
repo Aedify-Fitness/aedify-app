@@ -169,6 +169,16 @@ class DriftProfileRepository implements ProfileRepository {
   String _encodeJsonList(List<String> list) => jsonEncode(list);
 
   String _encodeJsonIntList(List<int> list) => jsonEncode(list);
+
+  static List<_OneRmEntry> _oneRmEntries(ProfileEditDraft draft) => [
+    _OneRmEntry(id: 'known_1rm_1', exerciseId: 1, weightKg: draft.bench1RmKg),
+    _OneRmEntry(id: 'known_1rm_5', exerciseId: 5, weightKg: draft.squat1RmKg),
+    _OneRmEntry(
+      id: 'known_1rm_6',
+      exerciseId: 6,
+      weightKg: draft.deadlift1RmKg,
+    ),
+  ];
 }
 
 class _OneRmEntry {
@@ -182,9 +192,3 @@ class _OneRmEntry {
   final int exerciseId;
   final double? weightKg;
 }
-
-List<_OneRmEntry> _oneRmEntries(ProfileEditDraft draft) => [
-  _OneRmEntry(id: 'known_1rm_1', exerciseId: 1, weightKg: draft.bench1RmKg),
-  _OneRmEntry(id: 'known_1rm_5', exerciseId: 5, weightKg: draft.squat1RmKg),
-  _OneRmEntry(id: 'known_1rm_6', exerciseId: 6, weightKg: draft.deadlift1RmKg),
-];
