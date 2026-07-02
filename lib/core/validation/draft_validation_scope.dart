@@ -1,7 +1,7 @@
 enum DraftValidationScope {
   root,
   exercise,
-  set,
+  exerciseSet,
   week,
   workoutSlot,
   template,

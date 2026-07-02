@@ -101,7 +101,8 @@ class ProgrammeBuilderValidationAdapter {
       DraftValidationScope.root => ProgrammeBuilderValidationScope.programme,
       DraftValidationScope.exercise =>
         ProgrammeBuilderValidationScope.programme,
-      DraftValidationScope.set => ProgrammeBuilderValidationScope.programme,
+      DraftValidationScope.exerciseSet =>
+        ProgrammeBuilderValidationScope.programme,
       DraftValidationScope.week => ProgrammeBuilderValidationScope.week,
       DraftValidationScope.workoutSlot =>
         ProgrammeBuilderValidationScope.workoutSlot,

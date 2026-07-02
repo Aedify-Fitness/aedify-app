@@ -142,7 +142,7 @@ void main() {
       final result = DraftValidationResult(
         issues: [
           DraftValidationIssue(
-            scope: DraftValidationScope.set,
+            scope: DraftValidationScope.exerciseSet,
             code: DraftValidationCode.invalidWeight,
             message: 'Enter a valid weight.',
             path: DraftValidationPath(exerciseId: 'e1', setId: 's1'),

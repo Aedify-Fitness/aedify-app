@@ -119,8 +119,8 @@ class DefaultDraftValidationService implements DraftValidationService {
       );
     }
 
-    for (final set in exercise.sets) {
-      issues.addAll(_validateSet(exercise, set));
+    for (final exerciseSet in exercise.sets) {
+      issues.addAll(_validateSet(exercise, exerciseSet));
     }
 
     return issues;
@@ -128,20 +128,23 @@ class DefaultDraftValidationService implements DraftValidationService {
 
   List<DraftValidationIssue> _validateSet(
     ValidatedExerciseDraft exercise,
-    ValidatedSetDraft set,
+    ValidatedSetDraft setDraft,
   ) {
     final issues = <DraftValidationIssue>[];
 
-    final path = DraftValidationPath(exerciseId: exercise.id, setId: set.id);
+    final path = DraftValidationPath(
+      exerciseId: exercise.id,
+      setId: setDraft.id,
+    );
 
-    final repsMin = set.prescribedRepsMin;
-    final repsMax = set.prescribedRepsMax;
-    final repsExact = set.prescribedRepsExact;
+    final repsMin = setDraft.prescribedRepsMin;
+    final repsMax = setDraft.prescribedRepsMax;
+    final repsExact = setDraft.prescribedRepsExact;
 
     if (repsMin != null && repsMin < 1) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRepsMin,
           message: AppStrings.minRepsAtLeast1,
           path: path,
@@ -152,7 +155,7 @@ class DefaultDraftValidationService implements DraftValidationService {
     if (repsMax != null && repsMax < 1) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRepsMax,
           message: AppStrings.maxRepsAtLeast1,
           path: path,
@@ -163,7 +166,7 @@ class DefaultDraftValidationService implements DraftValidationService {
     if (repsExact != null && repsExact < 1) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRepsExact,
           message: AppStrings.repsAtLeast1,
           path: path,
@@ -171,11 +174,12 @@ class DefaultDraftValidationService implements DraftValidationService {
       );
     }
 
-    if (_requiresWeight(exercise.modality, set.setType)) {
-      if (set.prescribedWeightKg == null || set.prescribedWeightKg! < 0) {
+    if (_requiresWeight(exercise.modality, setDraft.setType)) {
+      if (setDraft.prescribedWeightKg != null &&
+          setDraft.prescribedWeightKg! < 0) {
         issues.add(
           DraftValidationIssue(
-            scope: DraftValidationScope.set,
+            scope: DraftValidationScope.exerciseSet,
             code: DraftValidationCode.invalidWeight,
             message: AppStrings.enterValidWeight,
             path: path,
@@ -184,13 +188,13 @@ class DefaultDraftValidationService implements DraftValidationService {
       }
     }
 
-    final rpeMin = set.prescribedRpeMin;
-    final rpeMax = set.prescribedRpeMax;
+    final rpeMin = setDraft.prescribedRpeMin;
+    final rpeMax = setDraft.prescribedRpeMax;
 
     if (rpeMin != null && (rpeMin < 1 || rpeMin > 10)) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRpeMin,
           message: AppStrings.rpeMinBetween1And10,
           path: path,
@@ -201,7 +205,7 @@ class DefaultDraftValidationService implements DraftValidationService {
     if (rpeMax != null && (rpeMax < 1 || rpeMax > 10)) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRpeMax,
           message: AppStrings.rpeMaxBetween1And10,
           path: path,
@@ -212,7 +216,7 @@ class DefaultDraftValidationService implements DraftValidationService {
     if (rpeMin != null && rpeMax != null && rpeMin > rpeMax) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.rpeRange,
           message: AppStrings.rpeMinCannotExceedMax,
           path: path,
@@ -220,11 +224,11 @@ class DefaultDraftValidationService implements DraftValidationService {
       );
     }
 
-    final rir = set.prescribedRir;
+    final rir = setDraft.prescribedRir;
     if (rir != null && rir < 0) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRir,
           message: AppStrings.rirCannotBeNegative,
           path: path,
@@ -232,11 +236,11 @@ class DefaultDraftValidationService implements DraftValidationService {
       );
     }
 
-    final rest = set.restSeconds;
+    final rest = setDraft.restSeconds;
     if (rest != null && rest < 0) {
       issues.add(
         DraftValidationIssue(
-          scope: DraftValidationScope.set,
+          scope: DraftValidationScope.exerciseSet,
           code: DraftValidationCode.invalidRest,
           message: AppStrings.restCannotBeNegative,
           path: path,

@@ -67,7 +67,7 @@ class WorkoutBuilderValidationAdapter {
     return switch (scope) {
       DraftValidationScope.root => WorkoutBuilderValidationScope.workout,
       DraftValidationScope.exercise => WorkoutBuilderValidationScope.exercise,
-      DraftValidationScope.set => WorkoutBuilderValidationScope.set,
+      DraftValidationScope.exerciseSet => WorkoutBuilderValidationScope.set,
       _ => WorkoutBuilderValidationScope.workout,
     };
   }
