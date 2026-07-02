@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final service = const DefaultDraftValidationService();
 
-  ValidatedSetDraft _set({
+  ValidatedSetDraft defaultSet({
     String id = 's1',
     SetType setType = SetType.working,
     int? repsMin,
@@ -33,7 +33,7 @@ void main() {
     );
   }
 
-  ValidatedExerciseDraft _ex({
+  ValidatedExerciseDraft exercise({
     String id = 'e1',
     String modality = 'strength',
     List<ValidatedSetDraft> sets = const [],
@@ -54,7 +54,11 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(repsMin: 8, repsMax: 12, weightKg: 60.0, rest: 90)]),
+          exercise(
+            sets: [
+              defaultSet(repsMin: 8, repsMax: 12, weightKg: 60.0, rest: 90),
+            ],
+          ),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -65,7 +69,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: '',
         exercises: [
-          _ex(sets: [_set(repsMin: 8, weightKg: 60.0)]),
+          exercise(sets: [defaultSet(repsMin: 8, weightKg: 60.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -80,7 +84,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: '   ',
         exercises: [
-          _ex(sets: [_set(repsMin: 8, weightKg: 60.0)]),
+          exercise(sets: [defaultSet(repsMin: 8, weightKg: 60.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -103,7 +107,7 @@ void main() {
     test('no sets invalid', () {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
-        exercises: [_ex(sets: [])],
+        exercises: [exercise(sets: [])],
       );
       final result = service.validateWorkoutDraft(draft);
       expect(result.isValid, isFalse);
@@ -117,7 +121,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(repsMin: 0, weightKg: 60.0)]),
+          exercise(sets: [defaultSet(repsMin: 0, weightKg: 60.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -131,7 +135,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(repsMax: -1, weightKg: 60.0)]),
+          exercise(sets: [defaultSet(repsMax: -1, weightKg: 60.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -145,7 +149,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(
+          exercise(
             sets: [
               ValidatedSetDraft(
                 id: 's1',
@@ -166,25 +170,28 @@ void main() {
       );
     });
 
-    test('missing weight on strength working set invalid', () {
-      final draft = ValidatedWorkoutDraft(
-        name: 'Push Day',
-        exercises: [
-          _ex(sets: [_set(weightKg: null)]),
-        ],
-      );
-      final result = service.validateWorkoutDraft(draft);
-      expect(
-        result.issues.any((i) => i.code == DraftValidationCode.invalidWeight),
-        isTrue,
-      );
-    });
+    test(
+      'missing weight on strength working set is valid when not prescribed',
+      () {
+        final draft = ValidatedWorkoutDraft(
+          name: 'Push Day',
+          exercises: [
+            exercise(sets: [defaultSet(weightKg: null)]),
+          ],
+        );
+        final result = service.validateWorkoutDraft(draft);
+        expect(
+          result.issues.any((i) => i.code == DraftValidationCode.invalidWeight),
+          isFalse,
+        );
+      },
+    );
 
     test('negative weight invalid', () {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: -5.0)]),
+          exercise(sets: [defaultSet(weightKg: -5.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -198,7 +205,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Bodyweight Day',
         exercises: [
-          _ex(modality: 'bodyweight', sets: [_set(weightKg: null)]),
+          exercise(modality: 'bodyweight', sets: [defaultSet(weightKg: null)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -209,7 +216,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Cardio Day',
         exercises: [
-          _ex(modality: 'cardio', sets: [_set(weightKg: null)]),
+          exercise(modality: 'cardio', sets: [defaultSet(weightKg: null)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -220,7 +227,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rpeMin: 0.5)]),
+          exercise(sets: [defaultSet(weightKg: 60.0, rpeMin: 0.5)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -234,7 +241,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rpeMax: 11)]),
+          exercise(sets: [defaultSet(weightKg: 60.0, rpeMax: 11)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -248,7 +255,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rpeMin: 9, rpeMax: 7)]),
+          exercise(sets: [defaultSet(weightKg: 60.0, rpeMin: 9, rpeMax: 7)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -262,7 +269,11 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rpeMin: 7, rpeMax: 9, repsMin: 8)]),
+          exercise(
+            sets: [
+              defaultSet(weightKg: 60.0, rpeMin: 7, rpeMax: 9, repsMin: 8),
+            ],
+          ),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -276,7 +287,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rir: -1)]),
+          exercise(sets: [defaultSet(weightKg: 60.0, rir: -1)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -290,7 +301,7 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Push Day',
         exercises: [
-          _ex(sets: [_set(weightKg: 60.0, rest: -30)]),
+          exercise(sets: [defaultSet(weightKg: 60.0, rest: -30)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -304,13 +315,13 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Superset Day',
         exercises: [
-          _ex(
+          exercise(
             id: 'e1',
             supersetGroupId: 'g1',
             supersetOrder: 0,
-            sets: [_set(weightKg: 60.0)],
+            sets: [defaultSet(weightKg: 60.0)],
           ),
-          _ex(id: 'e2', sets: [_set(weightKg: 30.0)]),
+          exercise(id: 'e2', sets: [defaultSet(weightKg: 30.0)]),
         ],
       );
       final result = service.validateWorkoutDraft(draft);
@@ -324,15 +335,15 @@ void main() {
       final draft = ValidatedWorkoutDraft(
         name: 'Warmup Day',
         exercises: [
-          _ex(
+          exercise(
             sets: [
-              _set(
+              defaultSet(
                 id: 'w1',
                 setType: SetType.warmup,
                 weightKg: 40.0,
                 repsMin: 10,
               ),
-              _set(
+              defaultSet(
                 id: 's1',
                 setType: SetType.working,
                 weightKg: 60.0,

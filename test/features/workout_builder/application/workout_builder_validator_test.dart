@@ -155,7 +155,7 @@ void main() {
     });
 
     test(
-      'returns error when weight is missing for working sets with strength modality',
+      'allows missing weight for working sets when weight is not prescribed',
       () {
         final draft = validDraft().copyWith(
           exercises: [
@@ -165,7 +165,7 @@ void main() {
           ],
         );
         final errors = validator.validate(draft);
-        expect(errors.any((e) => e.code == 'invalid_weight'), isTrue);
+        expect(errors.any((e) => e.code == 'invalid_weight'), isFalse);
       },
     );
 
@@ -263,7 +263,15 @@ void main() {
         goalTags: [],
         equipment: [],
         exercises: [
-          exercise(sets: [set(prescribedRepsMin: 0, prescribedRpeMin: 0)]),
+          exercise(
+            sets: [
+              set(
+                prescribedRepsMin: 0,
+                prescribedRpeMin: 0,
+                prescribedWeightKg: -1,
+              ),
+            ],
+          ),
         ],
       );
       final errors = validator.validate(draft);

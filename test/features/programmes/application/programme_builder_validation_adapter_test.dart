@@ -20,7 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final adapter = const ProgrammeBuilderValidationAdapter();
 
-  ProgrammeBuilderDraft _draft({
+  ProgrammeBuilderDraft draftBuilder({
     String name = 'Test',
     List<ProgrammeBuilderWeekDraft> weeks = const [],
     List<String> templates = const [],
@@ -36,7 +36,7 @@ void main() {
     );
   }
 
-  ProgrammeExerciseDraft _ex({
+  ProgrammeExerciseDraft exercise({
     String id = 'e1',
     int exerciseId = 1,
     String? exerciseRef,
@@ -55,7 +55,7 @@ void main() {
     );
   }
 
-  SetPrescriptionDraft _set({
+  SetPrescriptionDraft setPrescription({
     String id = 's1',
     SetType setType = SetType.working,
     int? repsMin,
@@ -72,7 +72,7 @@ void main() {
 
   group('ProgrammeBuilderValidationAdapter — toValidatedDraft', () {
     test('maps name and empty weeks/templates', () {
-      final draft = _draft(name: 'My Programme');
+      final draft = draftBuilder(name: 'My Programme');
       final validated = adapter.toValidatedDraft(draft);
 
       expect(validated.name, 'My Programme');
@@ -86,16 +86,16 @@ void main() {
         templateKey: 't1',
         name: 'Push Day',
         exercises: [
-          _ex(
+          exercise(
             id: 'e1',
             exerciseId: 1,
             exerciseRef: 'Bench Press',
-            sets: [_set(repsMin: 8, weightKg: 60.0)],
+            sets: [setPrescription(repsMin: 8, weightKg: 60.0)],
           ),
         ],
       );
 
-      final draft = _draft(
+      final draft = draftBuilder(
         name: 'Plan',
         weeks: [
           ProgrammeBuilderWeekDraft(
@@ -134,22 +134,22 @@ void main() {
         templateKey: 't1',
         name: 'Push Day',
         exercises: [
-          _ex(
+          exercise(
             id: 'e1',
             supersetGroupId: 'g1',
             supersetOrder: 0,
-            sets: [_set()],
+            sets: [setPrescription()],
           ),
-          _ex(
+          exercise(
             id: 'e2',
             supersetGroupId: 'g1',
             supersetOrder: 1,
-            sets: [_set()],
+            sets: [setPrescription()],
           ),
         ],
       );
 
-      final draft = _draft(
+      final draft = draftBuilder(
         weeks: [
           ProgrammeBuilderWeekDraft(
             id: 'w1',
@@ -177,7 +177,7 @@ void main() {
     });
 
     test('handles missing weeks gracefully', () {
-      final draft = _draft(weeks: [], templates: []);
+      final draft = draftBuilder(weeks: [], templates: []);
       final validated = adapter.toValidatedDraft(draft);
 
       expect(validated.weeks, isEmpty);
