@@ -141,17 +141,18 @@ class _DetailContent extends ConsumerWidget {
               children: [
                 Text(detail.name, style: context.textTheme.titleMedium),
                 const SizedBox(height: AppSpacing.sm),
-                _infoRow(
-                  context,
-                  AppStrings.completedOn,
-                  _formatDate(detail.completedAt ?? detail.startedAt),
+                _InfoRow(
+                  label: AppStrings.completedOn,
+                  value: _formatDate(detail.completedAt ?? detail.startedAt),
                 ),
-                _infoRow(
-                  context,
-                  AppStrings.sessionDuration,
-                  _formatDuration(detail.durationSeconds),
+                _InfoRow(
+                  label: AppStrings.sessionDuration,
+                  value: _formatDuration(detail.durationSeconds),
                 ),
-                _infoRow(context, AppStrings.sessionSource, _sourceLabel()),
+                _InfoRow(
+                  label: AppStrings.sessionSource,
+                  value: _sourceLabel(),
+                ),
                 if (detail.notes != null && detail.notes!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.sm),
@@ -177,7 +178,19 @@ class _DetailContent extends ConsumerWidget {
     );
   }
 
-  Widget _infoRow(BuildContext context, String label, String value) {
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.xs),
       child: Row(
@@ -195,9 +208,5 @@ class _DetailContent extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 }
