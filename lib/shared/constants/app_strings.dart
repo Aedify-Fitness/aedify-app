@@ -5,15 +5,44 @@ class AppStrings {
       'Step $currentStep of $totalSteps';
 
   static const save = 'Save';
+  static const home = 'Home';
+  static const goodMorning = 'Good morning';
+  static const goodAfternoon = 'Good afternoon';
+  static const goodEvening = 'Good evening';
+  static const readyForSession = "Ready for your best session yet?";
+  static const dayStreak = 'Day Streak';
+  static const plateauAlert = 'Plateau Alert';
+  static const plateauComingSoon =
+      'Plateau detection coming soon — check back after M5';
+  static const volumeTrackingComingSoon =
+      'Volume tracking coming soon — check back after M5';
+  static const scheduledToday = 'Scheduled Today';
+  static const viewDetails = 'View Details';
+  static const activeProgramLabel = 'Active Program';
+  static const noActiveProgramme = 'No active programme';
+  static const noActiveProgrammeHint =
+      'Activate a programme to see today\u0027s scheduled workout.';
+  static const browseProgrammes = 'Browse Programmes';
+  static const restDay = 'Rest day — no workout scheduled today';
+  static const sessionsRemaining = 'sessions remaining this week';
+  static String weekOf(int current, int total) => 'Week $current of $total';
+  static const volumeThisWeek = 'Volume this week';
+  static const generateWorkout = 'Generate\nWorkout';
+  static const manualLog = 'Manual\nLog';
+  static const logBodyweight = 'Log\nBodyweight';
+  static const progressPhoto = 'Progress\nPhoto';
+  static const comingSoon = 'Coming soon';
   static const appTitle = 'Aedify';
   static const sex = 'Sex';
   static const done = 'Done';
+  static const createNew = 'Create New';
   static const dark = 'Dark';
   static const share = 'Share';
   static const goals = 'Goals';
   static const light = 'Light';
   static const notes = 'Notes';
   static const retry = 'Retry';
+  static const quickActions = 'Quick Actions';
   static const sexMale = 'Male';
   static const system = 'System';
   static const import = 'Import';
@@ -48,7 +77,7 @@ class AppStrings {
   static const aiTrainer = 'AI Trainer';
   static const themeMode = 'Theme mode';
   static const metricHeightHint = '170';
-  static const programmes = 'Programmes';
+  static const programmes = 'Programs';
   static const bodyweight = 'Bodyweight';
   static const imperialHeightHint = '67';
   static const imperialHeightUnit = 'in';
@@ -451,6 +480,17 @@ class AppStrings {
       'Complete these exercises back-to-back before resting.';
   static const supersetHistoryLabel = 'Superset';
 
+  static const workoutRestLabel = 'Rest between exercises';
+  static const workoutRestHint = 'Default rest (seconds)';
+  static const restSecondsUnit = 's';
+  static const weekTypeLabel = 'Week type';
+
+  // V1-M4-008b — slot day assignment
+  static const scheduledDayRequired =
+      'Select a day for each workout when planning more than 7 per week.';
+  static const programmeGoalsRequired =
+      'Select at least one goal for your programme.';
+
   // Workout builder — validation
   static const workoutNameRequired = 'Workout name is required.';
   static const addAtLeastOneExercise = 'Add at least one exercise.';
@@ -525,11 +565,32 @@ class AppStrings {
   static const activateProgramme = 'Activate programme';
   static const deactivateProgramme = 'Deactivate programme';
   static const programmeActive = 'Active';
+  static const programmeInactive = 'Inactive';
+  static const programmeActivated = 'Programme activated.';
+  static const programmeDeactivated = 'Programme deactivated.';
   static const programmeArchived = 'Archived';
+  static const newProgramme = 'New';
+  static const aiGenerated = 'AI-Generated';
+  static const custom = 'Custom';
+  static const imported = 'Imported';
+  static const completed = 'Completed';
+  static const weeks = 'weeks';
+  static const daysPerWeek = 'days/wk';
+  static const goal = 'goal';
+  static const importAedifyPlan = 'Import .aedifyplan or file';
+  static const allFilter = 'All';
   static const noWorkoutTemplatesAvailable = 'No workout templates available.';
   static const dayTypeLabel = 'Day type';
   static const optionalDescription = 'Optional description';
   static const addWeekContent = 'Add a new week to your programme.';
+  static const createTemplate = 'Create template';
+  static const templateName = 'Template name';
+  static const templateNameHint = 'e.g. Upper Body A';
+  static const selectExercisesForTemplate = 'Add exercises';
+  static const noSavedWorkoutsToImport = 'No saved workouts to import.';
+  static const fromSavedWorkouts = 'From saved workouts';
+  static const programmeTemplates = 'Programme templates';
+  static const templateCreated = 'Template created.';
 
   // Workout runner
   static const resumeWorkout = 'Resume workout';
@@ -656,4 +717,42 @@ class AppStrings {
   static const customExerciseDelete = 'Delete exercise';
   static const customExerciseDiscard = 'Discard';
   static const customExerciseRemoveStep = 'Remove step';
+
+  // Programme calendar
+  static const programmeCalendar = 'Programme Calendar';
+  static const activeRecovery = 'Active Recovery';
+  static const currentPhase = 'Current Phase';
+  static const weekDeload = 'Deload';
+  static const noWorkoutsInWeek = 'No workouts this week';
+  static const workoutDetail = 'Workout Details';
+  static const programmeCalendarLoadFailed =
+      'Could not load programme details.';
+  static const edit = 'Edit';
+  static const todaysWorkout = "Today\u0027s Workout";
+  static const today = 'Today';
+  static const noWorkoutToday = 'No workout scheduled today';
+  static const startTodaysWorkout = "Start Today\u0027s Workout";
+
+  // Workout runner
+  static const sessionInProgress = 'Session in Progress';
+  static const finishEarly = 'Finish Early';
+  static const logSet = 'Log Set';
+  static const restTime = 'Rest Time';
+  static const skipRest = 'Skip rest';
+  static const insightForProgress = 'Insight for Progress';
+  static const insightPlaceholder = 'Insights coming soon \u2014 M5 feature';
+  static const exerciseGuide = 'Exercise Guide';
+  static const muscleFocus = 'Muscle Focus';
+  static const executionSteps = 'Execution Steps';
+  static const substitute = 'Substitute';
+  static const previous = 'Previous';
+  static const weightKg = 'Weight (kg)';
+
+  // Exercise detail
+  static const guidance = 'Guidance';
+  static const performance = 'Performance';
+  static const noHistoryYet = 'No History Yet';
+  static const noHistoryHint =
+      'Complete this exercise in a workout to start tracking your performance metrics.';
+  static const askAiCoach = 'Ask AI Coach';
 }

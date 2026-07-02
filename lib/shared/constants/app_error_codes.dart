@@ -71,6 +71,8 @@ class AppErrorCodes {
   static const String programmeLoadFailed = 'programme_load_failed';
   static const String noWeeks = 'no_weeks';
   static const String noSlots = 'no_slots';
+  static const String noScheduledDay = 'no_scheduled_day';
+  static const String noGoals = 'no_goals';
   static const String noTemplates = 'no_templates';
   static const String missingTemplate = 'missing_template';
   static const String nonSequentialWeek = 'non_sequential_week';
