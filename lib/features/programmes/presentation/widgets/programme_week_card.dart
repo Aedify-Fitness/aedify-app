@@ -4,6 +4,7 @@ import 'package:aedify/features/programmes/domain/programme_builder_week_draft.d
 import 'package:aedify/features/programmes/presentation/widgets/programme_workout_slot_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -18,6 +19,7 @@ class ProgrammeWeekCard extends StatelessWidget {
     required this.onDuplicate,
     required this.onRemove,
     this.onOpenSupersetEditor,
+    this.onSetWeekType,
   });
 
   final ProgrammeBuilderWeekDraft week;
@@ -28,6 +30,7 @@ class ProgrammeWeekCard extends StatelessWidget {
   final VoidCallback onDuplicate;
   final VoidCallback onRemove;
   final void Function(int slotIndex)? onOpenSupersetEditor;
+  final void Function(WeekType type)? onSetWeekType;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +60,30 @@ class ProgrammeWeekCard extends StatelessWidget {
                     style: context.textTheme.titleMedium,
                   ),
                 ),
+                if (onSetWeekType != null)
+                  SizedBox(
+                    width: 130,
+                    child: DropdownButtonFormField<WeekType>(
+                      initialValue: week.weekType ?? WeekType.normal,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xs,
+                          vertical: AppSpacing.sm,
+                        ),
+                      ),
+                      items: WeekType.values.map((w) {
+                        return DropdownMenuItem(value: w, child: Text(w.name));
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          onSetWeekType!(value);
+                        }
+                      },
+                    ),
+                  ),
+                const SizedBox(width: AppSpacing.xs),
                 IconButton(
                   icon: SvgPicture.asset(
                     OutlinedSvgAssets.documentDuplicate,

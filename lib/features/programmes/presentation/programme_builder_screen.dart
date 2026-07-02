@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/application/programme_builder_controller.dart';
 import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
 import 'package:aedify/features/programmes/application/programme_builder_phase.dart';
 import 'package:aedify/features/programmes/application/programme_builder_state.dart';
+import 'package:aedify/features/programmes/application/saved_workout_to_template_converter.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_validation_error.dart';
+import 'package:aedify/features/programmes/domain/saved_workout_list_item.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_details_section.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_weeks_overview.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_save_bar.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_builder_error_banner.dart';
 import 'package:aedify/features/programmes/presentation/widgets/discard_programme_changes_dialog.dart';
+import 'package:aedify/features/programmes/presentation/widgets/active_programme_warning_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/template_reassignment_bottom_sheet.dart';
+import 'package:aedify/features/programmes/presentation/widgets/programme_template_quick_create_sheet.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_superset_editor_sheet.dart';
+import 'package:aedify/features/programmes/application/slot_day_assignment.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 
 class ProgrammeBuilderScreen extends ConsumerWidget {
   const ProgrammeBuilderScreen._({required this.mode, this.programmeId});
@@ -85,12 +94,24 @@ class _ProgrammeBuilderBody extends ConsumerStatefulWidget {
 }
 
 class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
+  static final _logger = AppLogger(name: 'ProgrammeBuilder._Body');
+
   late TextEditingController _nameController;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.state.draft.name);
+    if (widget.mode == ProgrammeBuilderMode.edit && widget.state.draft.active) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => const ActiveProgrammeWarningDialog(),
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -147,51 +168,124 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
               ),
             if (hasErrors) _ValidationBanner(errors: state.validationErrors),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ProgrammeDetailsSection(
-                      nameController: _nameController,
-                      onNameChanged: (value) => _controller.updateName(value),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    ProgrammeWeeksOverview(
-                      weeks: weeks,
-                      onAddWeek: () => _controller.addWeek(),
-                      onRemoveWeek: (index) => _controller.removeWeek(index),
-                      onDuplicateWeek: (index) =>
-                          _controller.duplicateWeek(index),
-                      onAddSlot: (weekIndex) => _controller.addSlot(
-                        weekIndex: weekIndex,
-                        scheduledDayIndex: weekIndex,
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ProgrammeDetailsSection(
+                        nameController: _nameController,
+                        onNameChanged: (value) => _controller.updateName(value),
+                        selectedGoals: widget.state.draft.goalTags ?? const {},
+                        onGoalsChanged: (goals) =>
+                            _controller.setGoalTags(goals),
                       ),
-                      onRemoveSlot: (weekIndex, slotIndex) =>
-                          _controller.removeSlot(weekIndex, slotIndex),
-                      onAssignTemplate: (weekIndex, slotIndex) {
-                        _showTemplateSheet(weekIndex, slotIndex);
-                      },
-                      onOpenSupersetEditor: (weekIndex, slotIndex) {
-                        _showSupersetSheet(weekIndex, slotIndex);
-                      },
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.lg),
+                      ProgrammeWeeksOverview(
+                        weeks: weeks,
+                        onAddWeek: () => _controller.addWeek(),
+                        onRemoveWeek: (index) => _controller.removeWeek(index),
+                        onDuplicateWeek: (index) =>
+                            _controller.duplicateWeek(index),
+                        onAddSlot: (weekIndex) async {
+                          _logger.debug('onAddSlot weekIndex=$weekIndex');
+                          final week = widget.state.draft.weeks?.elementAt(
+                            weekIndex,
+                          );
+                          final slotCount = week?.slots?.length ?? 0;
+                          _logger.debug('onAddSlot slotCount=$slotCount');
+                          var scheduledDayIndex = slotCount;
+                          TrainingDay? scheduledDay;
+
+                          final profileRepo = ref.read(
+                            AppProviders.profileRepositoryProvider,
+                          );
+                          final profile = await profileRepo.getProfile();
+                          final trainingDays = profile?.trainingDays ?? [];
+                          if (trainingDays.isNotEmpty) {
+                            final assigned = SlotDayAssignment.assignDaySlots(
+                              trainingDays,
+                              slotCount + 1,
+                            );
+                            if (assigned.isNotEmpty) {
+                              final day = assigned.last;
+                              scheduledDayIndex = TrainingDay.values.indexOf(
+                                day,
+                              );
+                              scheduledDay = day;
+                            }
+                          }
+                          _controller.addSlot(
+                            weekIndex: weekIndex,
+                            scheduledDayIndex: scheduledDayIndex,
+                            scheduledDay: scheduledDay,
+                          );
+                        },
+                        onRemoveSlot: (weekIndex, slotIndex) =>
+                            _controller.removeSlot(weekIndex, slotIndex),
+                        onAssignTemplate: (weekIndex, slotIndex) {
+                          _showTemplateSheet(weekIndex, slotIndex);
+                        },
+                        onOpenSupersetEditor: (weekIndex, slotIndex) {
+                          _showSupersetSheet(weekIndex, slotIndex);
+                        },
+                        onSetWeekType: (weekIndex, type) {
+                          _controller.setWeekType(
+                            weekIndex: weekIndex,
+                            type: type,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             ProgrammeSaveBar(
               state: state,
+              onToggleActive: () {
+                final newStatus = state.draft.status == ProgramStatus.active
+                    ? ProgramStatus.inactive
+                    : ProgramStatus.active;
+                _controller.setProgrammeStatus(newStatus);
+              },
               onSave: () async {
                 await _controller.saveProgramme();
-                final currentState = ref.read(widget.provider);
-                if (currentState is AsyncData &&
-                    !currentState.value.hasValidationErrors &&
-                    currentState.value.phase != ProgrammeBuilderPhase.failure &&
-                    context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppStrings.programmeSaved)),
+                final savedState = ref
+                    .read(
+                      AppProviders.programmeBuilderControllerProvider((
+                        mode: widget.mode,
+                        programmeId: widget.state.programmeId,
+                      )),
+                    )
+                    .asData
+                    ?.value;
+                final saved =
+                    savedState != null &&
+                    !savedState.hasValidationErrors &&
+                    savedState.phase != ProgrammeBuilderPhase.failure;
+                if (saved) {
+                  ref.invalidate(
+                    AppProviders.programmeLibraryControllerProvider,
                   );
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        saved
+                            ? AppStrings.programmeSaved
+                            : AppStrings.programmeSaveFailed,
+                      ),
+                    ),
+                  );
+                  if (saved) {
+                    context.pop();
+                  }
                 }
               },
             ),
@@ -211,10 +305,40 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
             .toSet()
             .toList() ??
         <ProgrammeBuilderTemplateDraft>[];
-    showModalBottomSheet(
+
+    final listUseCase = ref.read(AppProviders.listSavedWorkoutsUseCaseProvider);
+    listUseCase
+        .execute()
+        .then((savedWorkouts) {
+          if (!mounted) return;
+          _showTemplateSheetWithData(
+            weekIndex: weekIndex,
+            slotIndex: slotIndex,
+            templates: templates,
+            savedWorkouts: savedWorkouts,
+          );
+        })
+        .catchError((_) {
+          if (!mounted) return;
+          _showTemplateSheetWithData(
+            weekIndex: weekIndex,
+            slotIndex: slotIndex,
+            templates: templates,
+          );
+        });
+  }
+
+  void _showTemplateSheetWithData({
+    required int weekIndex,
+    required int slotIndex,
+    required List<ProgrammeBuilderTemplateDraft> templates,
+    List<SavedWorkoutListItem>? savedWorkouts,
+  }) {
+    showModalBottomSheet<bool?>(
       context: context,
       builder: (ctx) => TemplateReassignmentBottomSheet(
         availableTemplates: templates,
+        savedWorkouts: savedWorkouts,
         onSelected: (template) {
           _controller.assignTemplateToSlot(
             weekIndex: weekIndex,
@@ -222,8 +346,61 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
             template: template,
           );
         },
+        onSelectSavedWorkout: (item) {
+          _importSavedWorkoutAsTemplate(
+            weekIndex: weekIndex,
+            slotIndex: slotIndex,
+            savedWorkoutId: item.id,
+          );
+        },
       ),
-    );
+    ).then((shouldCreate) {
+      if (shouldCreate == true) {
+        _showQuickCreateSheet(weekIndex, slotIndex);
+      }
+    });
+  }
+
+  void _importSavedWorkoutAsTemplate({
+    required int weekIndex,
+    required int slotIndex,
+    required String savedWorkoutId,
+  }) {
+    final repo = ref.read(AppProviders.savedWorkoutRepositoryProvider);
+    repo
+        .getSavedWorkout(savedWorkoutId)
+        .then((aggregate) {
+          if (aggregate == null || !mounted) return;
+          final converter = const SavedWorkoutToTemplateConverter();
+          final template = converter.convert(aggregate);
+          _controller.assignTemplateToSlot(
+            weekIndex: weekIndex,
+            slotIndex: slotIndex,
+            template: template,
+          );
+        })
+        .catchError((_) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(AppStrings.workoutLoadFailed)));
+        });
+  }
+
+  void _showQuickCreateSheet(int weekIndex, int slotIndex) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const ProgrammeTemplateQuickCreateSheet(),
+    ).then((result) {
+      if (result is ProgrammeBuilderTemplateDraft && mounted) {
+        _controller.assignTemplateToSlot(
+          weekIndex: weekIndex,
+          slotIndex: slotIndex,
+          template: result,
+        );
+      }
+    });
   }
 
   void _showSupersetSheet(int weekIndex, int slotIndex) {

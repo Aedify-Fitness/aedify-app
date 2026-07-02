@@ -6,6 +6,7 @@ import 'package:aedify/features/workout_builder/presentation/widgets/superset_gr
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
 class ProgrammeWorkoutSlotCard extends StatelessWidget {
@@ -70,6 +71,13 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
                           onDeleteSuperset: onOpenSupersetEditor!,
                         ),
                     ],
+                  ),
+                  Text(
+                    slot.scheduledDay?.displayLabel ??
+                        '${AppStrings.onboardingDaySingle} ${slot.scheduledDayIndex + 1}',
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (hasTemplate && slot.template!.description != null)
                     Text(

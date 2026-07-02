@@ -4,6 +4,7 @@ import 'package:aedify/features/programmes/domain/programme_builder_week_draft.d
 import 'package:aedify/features/programmes/presentation/widgets/programme_week_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -18,6 +19,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
     required this.onRemoveSlot,
     required this.onAssignTemplate,
     this.onOpenSupersetEditor,
+    this.onSetWeekType,
   });
 
   final List<ProgrammeBuilderWeekDraft> weeks;
@@ -28,6 +30,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
   final void Function(int weekIndex, int slotIndex) onRemoveSlot;
   final void Function(int weekIndex, int slotIndex) onAssignTemplate;
   final void Function(int weekIndex, int slotIndex)? onOpenSupersetEditor;
+  final void Function(int weekIndex, WeekType type)? onSetWeekType;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +55,16 @@ class ProgrammeWeeksOverview extends StatelessWidget {
               AppStrings.noWeeksAddedHint,
               style: context.textTheme.bodyMedium,
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            OutlinedButton.icon(
+              onPressed: onAddWeek,
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.plus,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+              ),
+              label: const Text(AppStrings.addWeek),
             ),
           ],
         ),
@@ -78,6 +91,9 @@ class ProgrammeWeeksOverview extends StatelessWidget {
             onRemove: () => onRemoveWeek(entry.key),
             onOpenSupersetEditor: onOpenSupersetEditor != null
                 ? (slotIndex) => onOpenSupersetEditor!(entry.key, slotIndex)
+                : null,
+            onSetWeekType: onSetWeekType != null
+                ? (type) => onSetWeekType!(entry.key, type)
                 : null,
           ),
         ),
