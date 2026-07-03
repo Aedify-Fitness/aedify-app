@@ -24,6 +24,7 @@ class SetLogDraft {
     this.skipped = false,
     this.isPr = false,
     this.estimated1rmKg,
+    this.restSeconds,
     this.notes,
   });
 
@@ -48,5 +49,6 @@ class SetLogDraft {
   final bool skipped;
   final bool isPr;
   final double? estimated1rmKg;
+  final int? restSeconds;
   final String? notes;
 }

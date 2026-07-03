@@ -22,6 +22,7 @@ class WorkoutRunnerSetItem {
     this.actualDistanceMeters,
     this.actualRpe,
     this.actualRir,
+    this.restSeconds,
     this.notes,
   });
 
@@ -44,6 +45,7 @@ class WorkoutRunnerSetItem {
   final double? actualDistanceMeters;
   final double? actualRpe;
   final int? actualRir;
+  final int? restSeconds;
   final String? notes;
 
   WorkoutRunnerSetItem copyWith({
@@ -66,6 +68,7 @@ class WorkoutRunnerSetItem {
     double? actualDistanceMeters,
     double? actualRpe,
     int? actualRir,
+    int? restSeconds,
     String? notes,
   }) {
     return WorkoutRunnerSetItem(
@@ -89,6 +92,7 @@ class WorkoutRunnerSetItem {
       actualDistanceMeters: actualDistanceMeters ?? this.actualDistanceMeters,
       actualRpe: actualRpe ?? this.actualRpe,
       actualRir: actualRir ?? this.actualRir,
+      restSeconds: restSeconds ?? this.restSeconds,
       notes: notes ?? this.notes,
     );
   }

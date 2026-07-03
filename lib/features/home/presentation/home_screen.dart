@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/domain/programme_list_item.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -27,6 +28,10 @@ class HomeScreen extends ConsumerWidget {
       (p) => p?.active == true,
       orElse: () => null,
     );
+    final activeSessionAsync = ref.watch(
+      AppProviders.activeWorkoutSessionProvider,
+    );
+    final activeSession = activeSessionAsync.asData?.value;
 
     return Scaffold(
       body: SafeArea(
@@ -41,7 +46,10 @@ class HomeScreen extends ConsumerWidget {
               _ActiveProgramCard(programme: activeProgramme),
               const SizedBox(height: AppSpacing.lg),
             ],
-            _TodayWorkoutCard(activeProgramme: activeProgramme),
+            if (activeSession != null)
+              _OngoingWorkoutCard(session: activeSession)
+            else
+              _TodayWorkoutCard(activeProgramme: activeProgramme),
             const SizedBox(height: AppSpacing.lg),
             const _VolumeMetricCard(),
             const SizedBox(height: AppSpacing.lg),
@@ -517,6 +525,114 @@ class _MetaChip extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// ─── Section 4b: Ongoing Workout Card ────────────────────────────
+
+class _OngoingWorkoutCard extends ConsumerWidget {
+  const _OngoingWorkoutCard({required this.session});
+
+  final WorkoutRunnerSessionViewData session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final completedSets = session.exercises.fold<int>(
+      0,
+      (sum, e) => sum + e.sets.where((s) => s.completed).length,
+    );
+    final totalSets = session.exercises.fold<int>(
+      0,
+      (sum, e) => sum + e.sets.length,
+    );
+    final elapsedMinutes = DateTime.now()
+        .difference(session.startedAt)
+        .inMinutes;
+    final progressLabel = totalSets > 0 ? '$completedSets/$totalSets' : '0';
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      decoration: BoxDecoration(
+        color: context.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withAlpha(30),
+            blurRadius: AppRadius.lg,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Badge(label: AppStrings.workoutInProgress.toUpperCase()),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            session.name,
+            style: context.textTheme.headlineLarge?.copyWith(
+              color: context.colorScheme.onPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              _MetaChip(icon: OutlinedSvgAssets.sparkles, label: progressLabel),
+              const SizedBox(width: AppSpacing.md),
+              _MetaChip(
+                icon: OutlinedSvgAssets.clock,
+                label: '${elapsedMinutes}m',
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: [
+              FilledButton.icon(
+                onPressed: () {
+                  context.pushNamed(AppRoutes.workoutRunnerActive().name);
+                },
+                icon: SvgPicture.asset(
+                  OutlinedSvgAssets.playCircle,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.onSecondary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                label: Text(AppStrings.resumeWorkout),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.colorScheme.secondary,
+                  foregroundColor: context.colorScheme.onSecondary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              TextButton(
+                onPressed: () => _discardWorkout(context, ref),
+                child: Text(
+                  AppStrings.discardWorkout,
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: context.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _discardWorkout(BuildContext context, WidgetRef ref) async {
+    final abandonUseCase = ref.read(
+      AppProviders.abandonWorkoutSessionUseCaseProvider,
+    );
+    await abandonUseCase.abandon(session.sessionId);
+    ref.invalidate(AppProviders.activeWorkoutSessionProvider);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(AppStrings.workoutCancelled)));
   }
 }
 

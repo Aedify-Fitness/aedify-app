@@ -106,6 +106,7 @@ import 'package:aedify/features/programmes/application/load_programme_builder_dr
 import 'package:aedify/features/programmes/application/save_programme_builder_draft_use_case.dart';
 import 'package:aedify/features/workout_execution/application/abandon_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/application/complete_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/application/load_active_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/application/save_workout_session_progress_use_case.dart';
 import 'package:aedify/features/workout_execution/application/start_workout_session_use_case.dart';
@@ -639,6 +640,12 @@ class AppProviders {
         );
       });
 
+  static final activeWorkoutSessionProvider =
+      FutureProvider<WorkoutRunnerSessionViewData?>((ref) {
+        final useCase = ref.read(loadActiveWorkoutSessionUseCaseProvider);
+        return useCase.load();
+      });
+
   static final saveWorkoutSessionProgressUseCaseProvider =
       Provider<SaveWorkoutSessionProgressUseCase>((ref) {
         return SaveWorkoutSessionProgressUseCase(
@@ -661,8 +668,9 @@ class AppProviders {
         );
       });
 
-  static final workoutRunnerControllerProvider =
-      AsyncNotifierProvider.family<
+  static final workoutRunnerControllerProvider = AsyncNotifierProvider
+      .autoDispose
+      .family<
         WorkoutRunnerController,
         WorkoutRunnerState,
         ({

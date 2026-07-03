@@ -19,6 +19,7 @@ class DraftValidationCode {
   static const missingTemplate = 'missing_template';
   static const nonSequentialWeek = 'non_sequential_week';
   static const invalidSetType = 'invalid_set_type';
+  static const warmupSetOrdering = 'warmup_set_ordering';
   static const invalidSuperset = 'invalid_superset';
   static const invalidExerciseReference = 'invalid_exercise_reference';
 }

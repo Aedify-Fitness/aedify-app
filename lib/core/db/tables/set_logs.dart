@@ -22,6 +22,7 @@ class SetLogs extends Table {
   BoolColumn get completed => boolean().withDefault(const Constant(false))();
   BoolColumn get skipped => boolean().withDefault(const Constant(false))();
   BoolColumn get isPr => boolean().withDefault(const Constant(false))();
+  IntColumn get restSeconds => integer().nullable()();
   RealColumn get estimated1rmKg => real().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();

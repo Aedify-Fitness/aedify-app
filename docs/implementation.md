@@ -2,14 +2,73 @@
 
 ## Current Status
 
-| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                        |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. HomeScreen with greeting/active programme/today's workout, rest timer widget in workout runner, and exercise detail screen StatefulWidget migration are implemented. Logging instrumented across 59 M4-module files. **Zero top-level declaration violations remaining outside `main()` in `lib/`**. **Zero widget-builder helper methods (`Widget _build`) remaining in `lib/`**. **Convention sweep complete — all Navigator.pop, EdgeInsets.fromLTRB, raw TextStyle, and Theme.of(context).colorScheme violations resolved**. 1053/1053 passed. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                   |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                                                        |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Workout runner lifecycle hardened (auto-save timer cancel, session status guard, provider invalidation). HomeScreen ongoing workout card with resume/discard. Rest timer now duration-aware via RestResolver. Warmup ordering validation. DB schema v10. Convention sweeps complete. Logging instrumented across 59 M4-module files. Zero top-level declaration / widget-builder helper violations remaining in `lib/`. 1053/1053 passed (previous suite). |
+| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                   |
 
 ## Completed Work
+
+### 2026-07-03 — Workout runner lifecycle hardening + rest timer wiring + DB schema v10
+
+#### Workout runner abandon/restart fix
+
+- **Bug fixed**: Reopening the same workout after abandoning it could reuse stale `WorkoutRunnerController` state keyed by the same family arguments, leaving the UI tied to an abandoned session instead of forcing a fresh start.
+- **Provider lifecycle** (`lib/app/providers/providers.dart`): Converted `workoutRunnerControllerProvider` to `AsyncNotifierProvider.autoDispose.family` so abandoned/completed runner instances do not remain cached once the screen is dismissed.
+- **Cancel flow** (`lib/features/workout_execution/presentation/workout_runner_screen.dart`): After `cancelWorkout()` succeeds, the screen now invalidates the exact current runner provider instance and pops the runner route. This guarantees the next launch rebuilds from `build()` and starts a new session.
+- **Regression test** (`test/features/workout_execution/presentation/workout_runner_screen_test.dart`): Added widget coverage for abandon -> leave runner -> reopen same saved workout -> fresh session start.
+
+#### Lifecycle hardening (extends above)
+
+- `autoSave` timer cancelled on `completeWorkout()`/`cancelWorkout()` — prevents save-after-complete race.
+- `autoSave` guards on `session.status == inProgress` — no saves for already-completed/abandoned sessions.
+- `activeWorkoutSessionProvider` invalidated after start/resume/save/complete/cancel — consumers (HomeScreen, etc.) reflect current session state immediately.
+- Cancel dialog now invalidates controller provider and calls `context.pop()` after abandon, returning to HomeScreen instead of leaving runner UI visible.
+
+#### HomeScreen in-progress workout card
+
+- **`_OngoingWorkoutCard`** (`lib/features/home/presentation/home_screen.dart`): New `ConsumerWidget` rendered when `activeWorkoutSessionProvider` returns a non-null session — shows progress (completed/total sets), elapsed time, resume button, discard button.
+- Discard calls `AbandonWorkoutSessionUseCase.abandon()` + refreshes `activeWorkoutSessionProvider`.
+- **New provider**: `AppProviders.activeWorkoutSessionProvider` — `FutureProvider<WorkoutRunnerSessionViewData?>` wrapping `LoadActiveWorkoutSessionUseCase`.
+
+#### Rest timer wiring + runner presentation changes
+
+- **Rest timer duration-aware**: `onSetLogged` callback passes `int restSeconds` computed via `RestResolver.effectiveRest(setRest:, exerciseRest:)`. Timer starts with resolved duration (set-level > exercise-level > 60s default).
+- **Log set gating**: "Log Set N" button disabled until both `actualWeightKg` and `actualReps` entered — prevents logging incomplete sets.
+- **Active set index recomputed per build**: Removed mutable `_activeSetIndex` from `_SetTableState` — active index derived statically from completion state, eliminating stale-index bugs.
+- **Warmup chip in runner**: `SetTypeChip` shown for warmup sets in runner's `_SetTable`.
+- **`copyWithActuals` preserves rest**: `restSeconds` propagated. Params changed from `double?`/`int?` to `String?` with parse in body (fixes empty-field → null conversion).
+
+#### DB schema v10 — rest columns + warmup validation
+
+- **Schema v10**: Added `restSeconds` (nullable int) to `set_logs` table, `restBetweenExercisesSeconds` (nullable int) to `workout_session_exercises` table. v9→v10 migration in `AppDatabase`.
+- **Warmup ordering validation** (`lib/core/validation/default_draft_validation_service.dart`): New `_validateSetOrdering()` rule — detects warmup sets positioned after working sets. New `DraftValidationCode.warmupSetOrdering`, `AppStrings.warmupSetsMustComeFirst`.
+- **Saved workout delete simplified** (`lib/features/workout_builder/data/drift_saved_workout_repository.dart`): Always hard-deletes (removed archive-on-history conditional). DAO `SavedWorkoutDao.deleteById()` added.
+
+#### Domain + data-layer rest field propagation
+
+- **Domain model extensions**: `restSeconds` on `SetLogDraft` and `WorkoutRunnerSetItem`. `restBetweenExercisesSeconds` on `WorkoutSessionExerciseDraft`. All with `copyWith` propagation.
+- **Load use case** (`lib/features/workout_builder/application/load_workout_draft_use_case.dart`): Maps `restBetweenExercisesSeconds` from saved workout aggregate and its exercises. Also fixes `exerciseRef` → `exercise.name` mapping.
+- **Start use case** (`lib/features/workout_execution/application/start_workout_session_use_case.dart`): Propagates `restSeconds` from set prescriptions and `restBetweenExercisesSeconds` from exercise drafts (saved-workout and program-workout paths).
+- **Mapper** (`lib/features/workout_execution/application/workout_runner_mapper.dart`): `toViewData()`/`toDraft()` preserve `restSeconds`/`restBetweenExercisesSeconds` in round-trip.
+- **Repository persistence** (`lib/features/workout_execution/data/drift_workout_session_repository.dart`): Writes `restSeconds` and `restBetweenExercisesSeconds` columns when saving session state.
+
+#### Workout builder rest field StatefulWidget extraction
+
+- **`_RestField`** (`lib/features/workout_builder/presentation/workout_builder_screen.dart`): Extracted from inline `TextField` + `TextEditingController.fromValue(...)` to `StatefulWidget` with controller lifecycle — fixes cursor loss on rebuild.
+- **`_ExerciseRestField`** (`lib/features/workout_builder/presentation/widgets/workout_exercise_card.dart`): Same extraction for per-exercise rest field in exercise list.
+
+#### AppStrings
+
+- `warmupSetsMustComeFirst` (validation message), `workoutInProgress` (home card badge), `discardWorkout` (abandon button).
+
+#### Files changed
+
+25 files, ~747 insertions, ~144 deletions across `lib/app/providers/`, `lib/core/db/`, `lib/core/validation/`, `lib/features/home/`, `lib/features/workout_builder/`, `lib/features/workout_execution/`, `lib/shared/constants/`, and `test/`.
+
+- Verification: `dart format` — pending. `flutter analyze` — pending. `flutter test` — pending.
 
 ### 2026-07-02 — Convention compliance sweep — Navigator.pop, EdgeInsets.fromLTRB, TextStyle, Theme.of(context)
 
@@ -78,7 +137,7 @@
 
 - **Validation scope rename** (5 files): `DraftValidationScope.set` → `DraftValidationScope.exerciseSet` in `draft_validation_scope.dart`, `default_draft_validation_service.dart`, `workout_builder_validation_adapter.dart`, `programme_builder_validation_adapter.dart`, and `workout_builder_validation_adapter_test.dart`. No behavior change — naming consistency only.
 - **Custom exercise editor invalidation** (`custom_exercise_editor_screen.dart`): `CustomExerciseEditorController` now invalidates its provider on "Done" button press via `ref.invalidate(customExerciseEditorControllerProvider(...))`. Ensures subsequent re-entry to the editor loads a fresh state instead of stale cached data.
-- **_InfoRow widget extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow(BuildContext, String, String)` helper method extracted to standalone `_InfoRow` StatelessWidget — `const`-constructable, cleaner composition, enables future reuse in other detail screens. 23 lines added, 14 removed.
+- **\_InfoRow widget extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow(BuildContext, String, String)` helper method extracted to standalone `_InfoRow` StatelessWidget — `const`-constructable, cleaner composition, enables future reuse in other detail screens. 23 lines added, 14 removed.
 - **VSCode launch configuration** (`.vscode/launch.json`): Added Flutter debug and run launch configurations — enables F5 debugging from VSCode without manual `flutter run` commands.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
 

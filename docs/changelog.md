@@ -4,7 +4,56 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-03
+
+### Workout runner lifecycle hardening + HomeScreen in-progress card
+
+- **Lifecycle hardening** (extends 2026-07-02 fix): `autoSave` timer cancelled on `completeWorkout()`/`cancelWorkout()` — prevents save-after-complete race. `autoSave` now guards on `session.status == inProgress`. `activeWorkoutSessionProvider` invalidated after start/resume/save/complete/cancel — consumers reflect current session state immediately.
+- **Cancel pops runner**: After `cancelWorkout()` succeeds, dialog invalidates controller provider and calls `context.pop()`, returning to HomeScreen.
+- **HomeScreen ongoing card**: `_OngoingWorkoutCard` shown when `activeWorkoutSessionProvider` returns a session — progress (completed/total sets), elapsed time, resume button, discard button (calls `AbandonWorkoutSessionUseCase` + refreshes provider).
+- **New provider**: `AppProviders.activeWorkoutSessionProvider` — `FutureProvider<WorkoutRunnerSessionViewData?>`.
+
+### Rest timer wiring + warmup chip in runner
+
+- **Rest timer duration-aware**: `onSetLogged` passes `int restSeconds` computed via `RestResolver.effectiveRest(setRest:, exerciseRest:)`. Timer starts with resolved duration (set-level > exercise-level > 60s default).
+- **Log set gating**: Button disabled until both `actualWeightKg` and `actualReps` entered — prevents logging incomplete sets.
+- **Active set index recomputed per build**: Removed mutable `_activeSetIndex` from `_SetTableState` — derived statically from completion state.
+- **Warmup chip in runner**: `SetTypeChip` shown for warmup sets in runner's `_SetTable`.
+- **`copyWithActuals` preserves rest**: `restSeconds` propagated. Params changed from `double?`/`int?` to `String?` with parse in body.
+
+### DB schema v10 — rest columns + warmup validation
+
+- **Schema v10**: Added `restSeconds` (nullable int) to `set_logs`, `restBetweenExercisesSeconds` (nullable int) to `workout_session_exercises`. v9→v10 migration.
+- **Warmup ordering validation**: `DefaultDraftValidationService._validateSetOrdering()` — detects warmup sets after working sets. `DraftValidationCode.warmupSetOrdering`, `AppStrings.warmupSetsMustComeFirst`.
+- **Saved workout delete simplified**: `DriftSavedWorkoutRepository.deleteSavedWorkout()` always hard-deletes (removed archive-on-history conditional). DAO `deleteById()` added.
+
+### Domain + data-layer rest field propagation
+
+- **Domain models**: `restSeconds` on `SetLogDraft` / `WorkoutRunnerSetItem`. `restBetweenExercisesSeconds` on `WorkoutSessionExerciseDraft`. All with `copyWith`.
+- **Load use case**: Maps `restBetweenExercisesSeconds` from saved workout aggregate. Fixes `exerciseRef` → `exercise.name`.
+- **Start use case**: Propagates `restSeconds` from set prescriptions and `restBetweenExercisesSeconds` from exercise drafts (saved + program paths).
+- **Mapper**: `toViewData()`/`toDraft()` preserve rest fields in round-trip.
+- **Repository**: Writes `restSeconds` / `restBetweenExercisesSeconds` columns when saving session.
+
+### Workout builder rest field StatefulWidget extraction
+
+- **`_RestField`** (`workout_builder_screen.dart`): Extracted from inline `TextField` + `TextEditingController.fromValue(...)` to `StatefulWidget` with controller lifecycle — fixes cursor loss on rebuild.
+- **`_ExerciseRestField`** (`workout_exercise_card.dart`): Same extraction for per-exercise rest field.
+
+### New AppStrings
+
+- `warmupSetsMustComeFirst`, `workoutInProgress`, `discardWorkout`.
+
+- Verification: `dart format` — pending. `flutter analyze` — pending. `flutter test` — pending.
+
 ## 2026-07-02
+
+### Workout runner abandon/restart fix
+
+- **Runner provider lifecycle**: `AppProviders.workoutRunnerControllerProvider` is now `autoDispose.family`, so reopening the same saved workout or programme workout does not reuse a stale controller instance after the screen is dismissed.
+- **Cancel flow reset**: `workout_runner_screen.dart` now invalidates the current runner provider instance after `cancelWorkout()` succeeds and immediately pops the runner screen, preventing an abandoned in-memory session from being reused on the next launch.
+- **Regression coverage**: `workout_runner_screen_test.dart` now covers abandoning a workout, leaving the runner, reopening the same workout, and verifying that a fresh session is started.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test test/features/workout_execution/presentation/workout_runner_screen_test.dart` — passed. `flutter test` — not clean due pre-existing unrelated failures in BYOK/workout-builder widget tests and Flutter test runner shutdown errors.
 
 ### Convention compliance sweep — hardcoded strings + raw layout values
 

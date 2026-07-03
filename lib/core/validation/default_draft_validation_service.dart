@@ -123,6 +123,8 @@ class DefaultDraftValidationService implements DraftValidationService {
       issues.addAll(_validateSet(exercise, exerciseSet));
     }
 
+    issues.addAll(_validateSetOrdering(exercise));
+
     return issues;
   }
 
@@ -308,6 +310,33 @@ class DefaultDraftValidationService implements DraftValidationService {
             ),
           );
         }
+      }
+    }
+
+    return issues;
+  }
+
+  List<DraftValidationIssue> _validateSetOrdering(
+    ValidatedExerciseDraft exercise,
+  ) {
+    final issues = <DraftValidationIssue>[];
+    var seenWorking = false;
+
+    for (final setDraft in exercise.sets) {
+      if (setDraft.setType == SetType.working) {
+        seenWorking = true;
+      } else if (setDraft.setType == SetType.warmup && seenWorking) {
+        issues.add(
+          DraftValidationIssue(
+            scope: DraftValidationScope.exerciseSet,
+            code: DraftValidationCode.warmupSetOrdering,
+            message: AppStrings.warmupSetsMustComeFirst,
+            path: DraftValidationPath(
+              exerciseId: exercise.id,
+              setId: setDraft.id,
+            ),
+          ),
+        );
       }
     }
 

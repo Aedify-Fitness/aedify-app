@@ -68,13 +68,14 @@ class LoadWorkoutDraftUseCase {
       equipment: [],
       description: null,
       estimatedDurationMinutes: null,
+      restBetweenExercisesSeconds: saved.restBetweenExercisesSeconds,
       exercises: aggregate.exercises.map((e) {
         final sets = exerciseSets[e.id] ?? [];
         return WorkoutBuilderExerciseDraft(
           id: e.id,
           exercise: ExerciseReference(
             exerciseId: e.exerciseId,
-            name: '',
+            name: e.exerciseRef ?? '',
             modality: '',
           ),
           sortOrder: e.sortOrder,
@@ -82,6 +83,7 @@ class LoadWorkoutDraftUseCase {
           supersetGroupId: e.supersetGroupId,
           supersetOrder: e.supersetOrder,
           notes: e.notes,
+          restBetweenExercisesSeconds: e.restBetweenExercisesSeconds,
           sets: sets.map((s) {
             return builder.SetPrescriptionDraft(
               id: s.id,

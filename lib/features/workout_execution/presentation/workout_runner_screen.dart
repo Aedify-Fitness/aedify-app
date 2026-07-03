@@ -17,8 +17,11 @@ import 'package:aedify/features/workout_execution/presentation/widgets/rest_time
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_error_banner.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_header.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_resume_banner.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/rest_resolver.dart';
+import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -57,7 +60,7 @@ class WorkoutRunnerScreen extends ConsumerStatefulWidget {
 
 class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   bool _showRestTimer = false;
-  final _restSeconds = 90;
+  int _restSeconds = 90;
 
   @override
   Widget build(BuildContext context) {
@@ -72,36 +75,41 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     );
 
     return Scaffold(
-      body: stateAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppStrings.workoutRunnerLoadFailed,
-                style: context.textTheme.bodyLarge,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              FilledButton(
-                onPressed: () => ref.invalidate(
-                  AppProviders.workoutRunnerControllerProvider(arg),
+      body: SafeArea(
+        child: stateAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppStrings.workoutRunnerLoadFailed,
+                  style: context.textTheme.bodyLarge,
                 ),
-                child: const Text(AppStrings.retry),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.md),
+                FilledButton(
+                  onPressed: () => ref.invalidate(
+                    AppProviders.workoutRunnerControllerProvider(arg),
+                  ),
+                  child: const Text(AppStrings.retry),
+                ),
+              ],
+            ),
           ),
-        ),
-        data: (state) => _WorkoutRunnerBody(
-          state: state,
-          mode: widget.mode,
-          savedWorkoutId: widget.savedWorkoutId,
-          programId: widget.programId,
-          programWorkoutId: widget.programWorkoutId,
-          restSeconds: _restSeconds,
-          showRestTimer: _showRestTimer,
-          onSetLogged: () => setState(() => _showRestTimer = true),
-          onDismissRestTimer: () => setState(() => _showRestTimer = false),
+          data: (state) => _WorkoutRunnerBody(
+            state: state,
+            mode: widget.mode,
+            savedWorkoutId: widget.savedWorkoutId,
+            programId: widget.programId,
+            programWorkoutId: widget.programWorkoutId,
+            restSeconds: _restSeconds,
+            showRestTimer: _showRestTimer,
+            onSetLogged: (rs) => setState(() {
+              _restSeconds = rs;
+              _showRestTimer = true;
+            }),
+            onDismissRestTimer: () => setState(() => _showRestTimer = false),
+          ),
         ),
       ),
     );
@@ -128,7 +136,7 @@ class _WorkoutRunnerBody extends ConsumerWidget {
   final String? programWorkoutId;
   final int restSeconds;
   final bool showRestTimer;
-  final VoidCallback onSetLogged;
+  final void Function(int restSeconds) onSetLogged;
   final VoidCallback onDismissRestTimer;
 
   @override
@@ -203,7 +211,7 @@ class _WorkoutRunnerBody extends ConsumerWidget {
           title: session.name,
           onComplete: () =>
               _showCompleteSheet(context, ref, session, controller),
-          onCancel: () => _showCancelDialog(context, controller),
+          onCancel: () => _showCancelDialog(context, ref, controller),
           isCompleting: state.isCompleting,
         ),
         if (state.phase == WorkoutRunnerPhase.paused)
@@ -289,12 +297,26 @@ class _WorkoutRunnerBody extends ConsumerWidget {
 
   void _showCancelDialog(
     BuildContext context,
+    WidgetRef ref,
     WorkoutRunnerController controller,
   ) {
+    final arg = (
+      mode: mode,
+      savedWorkoutId: savedWorkoutId,
+      programId: programId,
+      programWorkoutId: programWorkoutId,
+    );
     showDialog(
       context: context,
-      builder: (_) =>
-          CancelWorkoutDialog(onConfirm: () => controller.cancelWorkout()),
+      builder: (_) => CancelWorkoutDialog(
+        onConfirm: () async {
+          await controller.cancelWorkout();
+          ref.invalidate(AppProviders.workoutRunnerControllerProvider(arg));
+          if (context.mounted) {
+            context.pop();
+          }
+        },
+      ),
     );
   }
 
@@ -374,7 +396,7 @@ class _ExerciseDetailView extends ConsumerWidget {
 
   final WorkoutRunnerExerciseItem exercise;
   final WorkoutRunnerController controller;
-  final VoidCallback onSetLogged;
+  final void Function(int restSeconds) onSetLogged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -593,32 +615,28 @@ class _SetTable extends ConsumerStatefulWidget {
   final List<WorkoutRunnerSetItem> sets;
   final WorkoutRunnerController controller;
   final WorkoutRunnerExerciseItem exercise;
-  final VoidCallback onSetLogged;
+  final void Function(int restSeconds) onSetLogged;
 
   @override
   ConsumerState<_SetTable> createState() => _SetTableState();
 }
 
 class _SetTableState extends ConsumerState<_SetTable> {
-  int _activeSetIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _findActive();
-  }
-
-  void _findActive() {
-    for (var i = 0; i < widget.sets.length; i++) {
-      if (!widget.sets[i].completed && !widget.sets[i].skipped) {
-        _activeSetIndex = i;
-        return;
-      }
+  static int _activeIndex(List<WorkoutRunnerSetItem> sets) {
+    for (var i = 0; i < sets.length; i++) {
+      if (!sets[i].completed && !sets[i].skipped) return i;
     }
+    return sets.length;
   }
 
   @override
   Widget build(BuildContext context) {
+    final activeSetIndex = _activeIndex(widget.sets);
+    final hasActiveSets = activeSetIndex < widget.sets.length;
+    final canLogSet =
+        hasActiveSets &&
+        widget.sets[activeSetIndex].actualWeightKg != null &&
+        widget.sets[activeSetIndex].actualReps != null;
     return Card(
       child: Column(
         children: [
@@ -650,7 +668,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
           ...widget.sets.asMap().entries.map((entry) {
             final index = entry.key;
             final set = entry.value;
-            final isActive = index == _activeSetIndex;
+            final isActive = index == activeSetIndex;
             final isCompleted = set.completed;
             final isSkipped = set.skipped;
             final previousLabel = set.prescribedWeightKg != null
@@ -715,6 +733,11 @@ class _SetTableState extends ConsumerState<_SetTable> {
                             ),
                     ),
                   ),
+                  if (set.setType == SetType.warmup)
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppSpacing.xxs),
+                      child: SetTypeChip(setType: set.setType),
+                    ),
                   Expanded(
                     child: Text(
                       isCompleted && actualWeight != null
@@ -744,7 +767,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                                 updatedSet:
                                     _WorkoutRunnerSetMutations.copyWithActuals(
                                       set,
-                                      weightKg: double.tryParse(value),
+                                      weightKg: value,
                                     ),
                               );
                             },
@@ -772,7 +795,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                                 updatedSet:
                                     _WorkoutRunnerSetMutations.copyWithActuals(
                                       set,
-                                      reps: int.tryParse(value),
+                                      reps: value,
                                     ),
                               );
                             },
@@ -792,19 +815,26 @@ class _SetTableState extends ConsumerState<_SetTable> {
             child: SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: () {
-                  final activeSet = widget.sets[_activeSetIndex];
-                  final s = activeSet;
-                  widget.controller.toggleSetCompleted(
-                    exerciseId: widget.exercise.id,
-                    setId: s.id,
-                    completed: true,
-                  );
-                  setState(() {
-                    _activeSetIndex++;
-                  });
-                  widget.onSetLogged();
-                },
+                onPressed: canLogSet
+                    ? () {
+                        final activeSet = widget.sets[activeSetIndex];
+                        widget.controller.toggleSetCompleted(
+                          exerciseId: widget.exercise.id,
+                          setId: activeSet.id,
+                          completed: true,
+                        );
+                        final setRest = activeSet.restSeconds;
+                        final exerciseRest =
+                            widget.exercise.restBetweenExercisesSeconds;
+                        if (setRest != null || exerciseRest != null) {
+                          final effective = RestResolver.effectiveRest(
+                            setRest: setRest,
+                            exerciseRest: exerciseRest,
+                          );
+                          widget.onSetLogged(effective);
+                        }
+                      }
+                    : null,
                 icon: SvgPicture.asset(
                   OutlinedSvgAssets.checkCircle,
                   width: AppSizing.iconSm,
@@ -814,7 +844,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                     BlendMode.srcIn,
                   ),
                 ),
-                label: Text('${AppStrings.logSet} ${_activeSetIndex + 1}'),
+                label: Text('${AppStrings.logSet} ${activeSetIndex + 1}'),
                 style: FilledButton.styleFrom(
                   backgroundColor: context.colorScheme.secondary,
                   foregroundColor: context.colorScheme.onSecondary,
@@ -835,8 +865,8 @@ class _WorkoutRunnerSetMutations {
 
   static WorkoutRunnerSetItem copyWithActuals(
     WorkoutRunnerSetItem set, {
-    double? weightKg,
-    int? reps,
+    String? weightKg,
+    String? reps,
   }) {
     return WorkoutRunnerSetItem(
       id: set.id,
@@ -852,12 +882,17 @@ class _WorkoutRunnerSetMutations {
       prescribedWeightKg: set.prescribedWeightKg,
       prescribedRpeMin: set.prescribedRpeMin,
       prescribedRpeMax: set.prescribedRpeMax,
-      actualReps: reps ?? set.actualReps,
-      actualWeightKg: weightKg ?? set.actualWeightKg,
+      actualReps: reps != null
+          ? (reps.isEmpty ? null : int.tryParse(reps))
+          : set.actualReps,
+      actualWeightKg: weightKg != null
+          ? (weightKg.isEmpty ? null : double.tryParse(weightKg))
+          : set.actualWeightKg,
       actualDurationSeconds: set.actualDurationSeconds,
       actualDistanceMeters: set.actualDistanceMeters,
       actualRpe: set.actualRpe,
       actualRir: set.actualRir,
+      restSeconds: set.restSeconds,
       notes: set.notes,
     );
   }

@@ -52,6 +52,7 @@ class WorkoutRunnerMapper {
             actualDistanceMeters: l.actualDistanceMeters,
             actualRpe: l.actualRpe,
             actualRir: l.actualRir,
+            restSeconds: l.restSeconds,
             performedAt: l.performedAt,
             completed: l.completed,
             skipped: l.skipped,
@@ -59,6 +60,7 @@ class WorkoutRunnerMapper {
           );
         }).toList(),
         supersetGroupId: e.supersetGroupId,
+        restBetweenExercisesSeconds: e.restBetweenExercisesSeconds,
         notes: e.notes,
       );
     }).toList();
@@ -113,6 +115,7 @@ class WorkoutRunnerMapper {
               actualDistanceMeters: s.actualDistanceMeters,
               actualRpe: s.actualRpe,
               actualRir: s.actualRir,
+              restSeconds: s.restSeconds,
               performedAt: s.performedAt,
               completed: s.completed,
               skipped: s.skipped,
@@ -122,6 +125,7 @@ class WorkoutRunnerMapper {
           sourceProgramExerciseId: e.sourceProgramExerciseId,
           sourceSavedWorkoutExerciseId: e.sourceSavedWorkoutExerciseId,
           supersetGroupId: e.supersetGroupId,
+          restBetweenExercisesSeconds: e.restBetweenExercisesSeconds,
           notes: e.notes,
         );
       }).toList(),

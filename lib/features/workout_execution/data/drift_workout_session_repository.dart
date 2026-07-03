@@ -292,6 +292,9 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
         exerciseNameSnapshot: Value(exercise.exerciseNameSnapshot),
         sortOrder: Value(exercise.sortOrder),
         supersetGroupId: Value(exercise.supersetGroupId),
+        restBetweenExercisesSeconds: Value(
+          exercise.restBetweenExercisesSeconds,
+        ),
         notes: Value(exercise.notes),
       ),
     );
@@ -395,6 +398,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       skipped: Value(setLog.skipped),
       isPr: Value(setLog.isPr),
       estimated1rmKg: Value(setLog.estimated1rmKg),
+      restSeconds: Value(setLog.restSeconds),
       notes: Value(setLog.notes),
       createdAt: Value(setLog.performedAt),
       updatedAt: Value(setLog.performedAt),

@@ -451,6 +451,8 @@ class AppStrings {
       'Warm-up sets are logged and shown in history, but excluded from analytics later.';
   static const warmupSetDescription =
       'Use warm-up sets to prepare before working sets.';
+  static const warmupSetsMustComeFirst =
+      'Warm-up sets must come before working sets.';
   static const setTypeRequired = 'Please choose a valid set type.';
   static const skipped = 'Skipped';
 
@@ -593,6 +595,8 @@ class AppStrings {
   static const templateCreated = 'Template created.';
 
   // Workout runner
+  static const workoutInProgress = 'Workout in progress';
+  static const discardWorkout = 'Discard';
   static const resumeWorkout = 'Resume workout';
   static const startWorkout = 'Start workout';
   static const completeWorkout = 'Complete workout';

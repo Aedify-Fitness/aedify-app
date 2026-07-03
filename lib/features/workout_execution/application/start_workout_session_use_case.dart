@@ -51,6 +51,7 @@ class StartWorkoutSessionUseCase {
 
     final now = DateTime.now();
     final sessionId = _uuid.v4();
+    final workoutRest = aggregate.savedWorkout.restBetweenExercisesSeconds;
 
     final exercises = aggregate.exercises.map((e) {
       final exerciseName = e.exerciseRef ?? e.exerciseId.toString();
@@ -76,6 +77,7 @@ class StartWorkoutSessionUseCase {
                 prescribedWeightKg: s.prescribedWeightKg,
                 prescribedRpeMin: s.prescribedRpeMin,
                 prescribedRpeMax: s.prescribedRpeMax,
+                restSeconds: s.restSeconds,
                 performedAt: now,
                 completed: false,
                 skipped: false,
@@ -84,6 +86,8 @@ class StartWorkoutSessionUseCase {
             .toList(),
         sourceSavedWorkoutExerciseId: e.id,
         supersetGroupId: e.supersetGroupId,
+        restBetweenExercisesSeconds:
+            e.restBetweenExercisesSeconds ?? workoutRest,
         notes: e.notes,
       );
     }).toList();
@@ -125,6 +129,18 @@ class StartWorkoutSessionUseCase {
     final now = DateTime.now();
     final sessionId = _uuid.v4();
 
+    final int? workoutRest;
+    if (workout.workoutTemplateId != null) {
+      final found = aggregate.templates.where(
+        (t) => t.id == workout.workoutTemplateId,
+      );
+      workoutRest = found.isNotEmpty
+          ? found.first.restBetweenExercisesSeconds
+          : null;
+    } else {
+      workoutRest = null;
+    }
+
     final programExercises = aggregate.exercises
         .where((e) => e.programWorkoutId == programWorkoutId)
         .toList();
@@ -156,6 +172,7 @@ class StartWorkoutSessionUseCase {
                 prescribedWeightKg: s.prescribedWeightKg,
                 prescribedRpeMin: s.prescribedRpeMin,
                 prescribedRpeMax: s.prescribedRpeMax,
+                restSeconds: s.restSeconds,
                 performedAt: now,
                 completed: false,
                 skipped: false,
@@ -164,6 +181,7 @@ class StartWorkoutSessionUseCase {
             .toList(),
         sourceProgramExerciseId: e.id,
         supersetGroupId: e.supersetGroupId,
+        restBetweenExercisesSeconds: workoutRest,
         notes: e.notes,
       );
     }).toList();

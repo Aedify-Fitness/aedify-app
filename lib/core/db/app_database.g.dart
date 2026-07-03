@@ -24438,6 +24438,17 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _restBetweenExercisesSecondsMeta =
+      const VerificationMeta('restBetweenExercisesSeconds');
+  @override
+  late final GeneratedColumn<int> restBetweenExercisesSeconds =
+      GeneratedColumn<int>(
+        'rest_between_exercises_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _supersetGroupIdMeta = const VerificationMeta(
     'supersetGroupId',
   );
@@ -24467,6 +24478,7 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
     exerciseId,
     exerciseNameSnapshot,
     sortOrder,
+    restBetweenExercisesSeconds,
     supersetGroupId,
     notes,
   ];
@@ -24543,6 +24555,15 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
     } else if (isInserting) {
       context.missing(_sortOrderMeta);
     }
+    if (data.containsKey('rest_between_exercises_seconds')) {
+      context.handle(
+        _restBetweenExercisesSecondsMeta,
+        restBetweenExercisesSeconds.isAcceptableOrUnknown(
+          data['rest_between_exercises_seconds']!,
+          _restBetweenExercisesSecondsMeta,
+        ),
+      );
+    }
     if (data.containsKey('superset_group_id')) {
       context.handle(
         _supersetGroupIdMeta,
@@ -24595,6 +24616,10 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      restBetweenExercisesSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_between_exercises_seconds'],
+      ),
       supersetGroupId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}superset_group_id'],
@@ -24621,6 +24646,7 @@ class WorkoutSessionExercise extends DataClass
   final int exerciseId;
   final String exerciseNameSnapshot;
   final int sortOrder;
+  final int? restBetweenExercisesSeconds;
   final String? supersetGroupId;
   final String? notes;
   const WorkoutSessionExercise({
@@ -24631,6 +24657,7 @@ class WorkoutSessionExercise extends DataClass
     required this.exerciseId,
     required this.exerciseNameSnapshot,
     required this.sortOrder,
+    this.restBetweenExercisesSeconds,
     this.supersetGroupId,
     this.notes,
   });
@@ -24652,6 +24679,11 @@ class WorkoutSessionExercise extends DataClass
     map['exercise_id'] = Variable<int>(exerciseId);
     map['exercise_name_snapshot'] = Variable<String>(exerciseNameSnapshot);
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || restBetweenExercisesSeconds != null) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds,
+      );
+    }
     if (!nullToAbsent || supersetGroupId != null) {
       map['superset_group_id'] = Variable<String>(supersetGroupId);
     }
@@ -24675,6 +24707,10 @@ class WorkoutSessionExercise extends DataClass
       exerciseId: Value(exerciseId),
       exerciseNameSnapshot: Value(exerciseNameSnapshot),
       sortOrder: Value(sortOrder),
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restBetweenExercisesSeconds),
       supersetGroupId: supersetGroupId == null && nullToAbsent
           ? const Value.absent()
           : Value(supersetGroupId),
@@ -24703,6 +24739,9 @@ class WorkoutSessionExercise extends DataClass
         json['exerciseNameSnapshot'],
       ),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      restBetweenExercisesSeconds: serializer.fromJson<int?>(
+        json['restBetweenExercisesSeconds'],
+      ),
       supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
       notes: serializer.fromJson<String?>(json['notes']),
     );
@@ -24722,6 +24761,9 @@ class WorkoutSessionExercise extends DataClass
       'exerciseId': serializer.toJson<int>(exerciseId),
       'exerciseNameSnapshot': serializer.toJson<String>(exerciseNameSnapshot),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'restBetweenExercisesSeconds': serializer.toJson<int?>(
+        restBetweenExercisesSeconds,
+      ),
       'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
       'notes': serializer.toJson<String?>(notes),
     };
@@ -24735,6 +24777,7 @@ class WorkoutSessionExercise extends DataClass
     int? exerciseId,
     String? exerciseNameSnapshot,
     int? sortOrder,
+    Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     Value<String?> supersetGroupId = const Value.absent(),
     Value<String?> notes = const Value.absent(),
   }) => WorkoutSessionExercise(
@@ -24749,6 +24792,9 @@ class WorkoutSessionExercise extends DataClass
     exerciseId: exerciseId ?? this.exerciseId,
     exerciseNameSnapshot: exerciseNameSnapshot ?? this.exerciseNameSnapshot,
     sortOrder: sortOrder ?? this.sortOrder,
+    restBetweenExercisesSeconds: restBetweenExercisesSeconds.present
+        ? restBetweenExercisesSeconds.value
+        : this.restBetweenExercisesSeconds,
     supersetGroupId: supersetGroupId.present
         ? supersetGroupId.value
         : this.supersetGroupId,
@@ -24775,6 +24821,9 @@ class WorkoutSessionExercise extends DataClass
           ? data.exerciseNameSnapshot.value
           : this.exerciseNameSnapshot,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      restBetweenExercisesSeconds: data.restBetweenExercisesSeconds.present
+          ? data.restBetweenExercisesSeconds.value
+          : this.restBetweenExercisesSeconds,
       supersetGroupId: data.supersetGroupId.present
           ? data.supersetGroupId.value
           : this.supersetGroupId,
@@ -24794,6 +24843,7 @@ class WorkoutSessionExercise extends DataClass
           ..write('exerciseId: $exerciseId, ')
           ..write('exerciseNameSnapshot: $exerciseNameSnapshot, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('notes: $notes')
           ..write(')'))
@@ -24809,6 +24859,7 @@ class WorkoutSessionExercise extends DataClass
     exerciseId,
     exerciseNameSnapshot,
     sortOrder,
+    restBetweenExercisesSeconds,
     supersetGroupId,
     notes,
   );
@@ -24824,6 +24875,8 @@ class WorkoutSessionExercise extends DataClass
           other.exerciseId == this.exerciseId &&
           other.exerciseNameSnapshot == this.exerciseNameSnapshot &&
           other.sortOrder == this.sortOrder &&
+          other.restBetweenExercisesSeconds ==
+              this.restBetweenExercisesSeconds &&
           other.supersetGroupId == this.supersetGroupId &&
           other.notes == this.notes);
 }
@@ -24837,6 +24890,7 @@ class WorkoutSessionExercisesCompanion
   final Value<int> exerciseId;
   final Value<String> exerciseNameSnapshot;
   final Value<int> sortOrder;
+  final Value<int?> restBetweenExercisesSeconds;
   final Value<String?> supersetGroupId;
   final Value<String?> notes;
   final Value<int> rowid;
@@ -24848,6 +24902,7 @@ class WorkoutSessionExercisesCompanion
     this.exerciseId = const Value.absent(),
     this.exerciseNameSnapshot = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -24860,6 +24915,7 @@ class WorkoutSessionExercisesCompanion
     required int exerciseId,
     required String exerciseNameSnapshot,
     required int sortOrder,
+    this.restBetweenExercisesSeconds = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -24876,6 +24932,7 @@ class WorkoutSessionExercisesCompanion
     Expression<int>? exerciseId,
     Expression<String>? exerciseNameSnapshot,
     Expression<int>? sortOrder,
+    Expression<int>? restBetweenExercisesSeconds,
     Expression<String>? supersetGroupId,
     Expression<String>? notes,
     Expression<int>? rowid,
@@ -24891,6 +24948,8 @@ class WorkoutSessionExercisesCompanion
       if (exerciseNameSnapshot != null)
         'exercise_name_snapshot': exerciseNameSnapshot,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (restBetweenExercisesSeconds != null)
+        'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
       if (notes != null) 'notes': notes,
       if (rowid != null) 'rowid': rowid,
@@ -24905,6 +24964,7 @@ class WorkoutSessionExercisesCompanion
     Value<int>? exerciseId,
     Value<String>? exerciseNameSnapshot,
     Value<int>? sortOrder,
+    Value<int?>? restBetweenExercisesSeconds,
     Value<String?>? supersetGroupId,
     Value<String?>? notes,
     Value<int>? rowid,
@@ -24919,6 +24979,8 @@ class WorkoutSessionExercisesCompanion
       exerciseId: exerciseId ?? this.exerciseId,
       exerciseNameSnapshot: exerciseNameSnapshot ?? this.exerciseNameSnapshot,
       sortOrder: sortOrder ?? this.sortOrder,
+      restBetweenExercisesSeconds:
+          restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
       notes: notes ?? this.notes,
       rowid: rowid ?? this.rowid,
@@ -24955,6 +25017,11 @@ class WorkoutSessionExercisesCompanion
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (restBetweenExercisesSeconds.present) {
+      map['rest_between_exercises_seconds'] = Variable<int>(
+        restBetweenExercisesSeconds.value,
+      );
+    }
     if (supersetGroupId.present) {
       map['superset_group_id'] = Variable<String>(supersetGroupId.value);
     }
@@ -24979,6 +25046,7 @@ class WorkoutSessionExercisesCompanion
           ..write('exerciseId: $exerciseId, ')
           ..write('exerciseNameSnapshot: $exerciseNameSnapshot, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('notes: $notes, ')
           ..write('rowid: $rowid')
@@ -25231,6 +25299,17 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _restSecondsMeta = const VerificationMeta(
+    'restSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> restSeconds = GeneratedColumn<int>(
+    'rest_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _estimated1rmKgMeta = const VerificationMeta(
     'estimated1rmKg',
   );
@@ -25296,6 +25375,7 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     completed,
     skipped,
     isPr,
+    restSeconds,
     estimated1rmKg,
     notes,
     createdAt,
@@ -25476,6 +25556,15 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         isPr.isAcceptableOrUnknown(data['is_pr']!, _isPrMeta),
       );
     }
+    if (data.containsKey('rest_seconds')) {
+      context.handle(
+        _restSecondsMeta,
+        restSeconds.isAcceptableOrUnknown(
+          data['rest_seconds']!,
+          _restSecondsMeta,
+        ),
+      );
+    }
     if (data.containsKey('estimated1rm_kg')) {
       context.handle(
         _estimated1rmKgMeta,
@@ -25600,6 +25689,10 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         DriftSqlType.bool,
         data['${effectivePrefix}is_pr'],
       )!,
+      restSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_seconds'],
+      ),
       estimated1rmKg: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}estimated1rm_kg'],
@@ -25647,6 +25740,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
   final bool completed;
   final bool skipped;
   final bool isPr;
+  final int? restSeconds;
   final double? estimated1rmKg;
   final String? notes;
   final DateTime createdAt;
@@ -25673,6 +25767,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     required this.completed,
     required this.skipped,
     required this.isPr,
+    this.restSeconds,
     this.estimated1rmKg,
     this.notes,
     required this.createdAt,
@@ -25728,6 +25823,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     map['completed'] = Variable<bool>(completed);
     map['skipped'] = Variable<bool>(skipped);
     map['is_pr'] = Variable<bool>(isPr);
+    if (!nullToAbsent || restSeconds != null) {
+      map['rest_seconds'] = Variable<int>(restSeconds);
+    }
     if (!nullToAbsent || estimated1rmKg != null) {
       map['estimated1rm_kg'] = Variable<double>(estimated1rmKg);
     }
@@ -25786,6 +25884,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       completed: Value(completed),
       skipped: Value(skipped),
       isPr: Value(isPr),
+      restSeconds: restSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(restSeconds),
       estimated1rmKg: estimated1rmKg == null && nullToAbsent
           ? const Value.absent()
           : Value(estimated1rmKg),
@@ -25832,6 +25933,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       completed: serializer.fromJson<bool>(json['completed']),
       skipped: serializer.fromJson<bool>(json['skipped']),
       isPr: serializer.fromJson<bool>(json['isPr']),
+      restSeconds: serializer.fromJson<int?>(json['restSeconds']),
       estimated1rmKg: serializer.fromJson<double?>(json['estimated1rmKg']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -25865,6 +25967,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       'completed': serializer.toJson<bool>(completed),
       'skipped': serializer.toJson<bool>(skipped),
       'isPr': serializer.toJson<bool>(isPr),
+      'restSeconds': serializer.toJson<int?>(restSeconds),
       'estimated1rmKg': serializer.toJson<double?>(estimated1rmKg),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -25894,6 +25997,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     bool? completed,
     bool? skipped,
     bool? isPr,
+    Value<int?> restSeconds = const Value.absent(),
     Value<double?> estimated1rmKg = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
@@ -25937,6 +26041,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     completed: completed ?? this.completed,
     skipped: skipped ?? this.skipped,
     isPr: isPr ?? this.isPr,
+    restSeconds: restSeconds.present ? restSeconds.value : this.restSeconds,
     estimated1rmKg: estimated1rmKg.present
         ? estimated1rmKg.value
         : this.estimated1rmKg,
@@ -25991,6 +26096,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       completed: data.completed.present ? data.completed.value : this.completed,
       skipped: data.skipped.present ? data.skipped.value : this.skipped,
       isPr: data.isPr.present ? data.isPr.value : this.isPr,
+      restSeconds: data.restSeconds.present
+          ? data.restSeconds.value
+          : this.restSeconds,
       estimated1rmKg: data.estimated1rmKg.present
           ? data.estimated1rmKg.value
           : this.estimated1rmKg,
@@ -26024,6 +26132,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           ..write('completed: $completed, ')
           ..write('skipped: $skipped, ')
           ..write('isPr: $isPr, ')
+          ..write('restSeconds: $restSeconds, ')
           ..write('estimated1rmKg: $estimated1rmKg, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
@@ -26055,6 +26164,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     completed,
     skipped,
     isPr,
+    restSeconds,
     estimated1rmKg,
     notes,
     createdAt,
@@ -26085,6 +26195,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           other.completed == this.completed &&
           other.skipped == this.skipped &&
           other.isPr == this.isPr &&
+          other.restSeconds == this.restSeconds &&
           other.estimated1rmKg == this.estimated1rmKg &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
@@ -26113,6 +26224,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
   final Value<bool> completed;
   final Value<bool> skipped;
   final Value<bool> isPr;
+  final Value<int?> restSeconds;
   final Value<double?> estimated1rmKg;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
@@ -26140,6 +26252,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.completed = const Value.absent(),
     this.skipped = const Value.absent(),
     this.isPr = const Value.absent(),
+    this.restSeconds = const Value.absent(),
     this.estimated1rmKg = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -26168,6 +26281,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.completed = const Value.absent(),
     this.skipped = const Value.absent(),
     this.isPr = const Value.absent(),
+    this.restSeconds = const Value.absent(),
     this.estimated1rmKg = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
@@ -26202,6 +26316,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Expression<bool>? completed,
     Expression<bool>? skipped,
     Expression<bool>? isPr,
+    Expression<int>? restSeconds,
     Expression<double>? estimated1rmKg,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
@@ -26234,6 +26349,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
       if (completed != null) 'completed': completed,
       if (skipped != null) 'skipped': skipped,
       if (isPr != null) 'is_pr': isPr,
+      if (restSeconds != null) 'rest_seconds': restSeconds,
       if (estimated1rmKg != null) 'estimated1rm_kg': estimated1rmKg,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
@@ -26264,6 +26380,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Value<bool>? completed,
     Value<bool>? skipped,
     Value<bool>? isPr,
+    Value<int?>? restSeconds,
     Value<double?>? estimated1rmKg,
     Value<String?>? notes,
     Value<DateTime>? createdAt,
@@ -26294,6 +26411,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
       completed: completed ?? this.completed,
       skipped: skipped ?? this.skipped,
       isPr: isPr ?? this.isPr,
+      restSeconds: restSeconds ?? this.restSeconds,
       estimated1rmKg: estimated1rmKg ?? this.estimated1rmKg,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
@@ -26374,6 +26492,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     if (isPr.present) {
       map['is_pr'] = Variable<bool>(isPr.value);
     }
+    if (restSeconds.present) {
+      map['rest_seconds'] = Variable<int>(restSeconds.value);
+    }
     if (estimated1rmKg.present) {
       map['estimated1rm_kg'] = Variable<double>(estimated1rmKg.value);
     }
@@ -26416,6 +26537,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
           ..write('completed: $completed, ')
           ..write('skipped: $skipped, ')
           ..write('isPr: $isPr, ')
+          ..write('restSeconds: $restSeconds, ')
           ..write('estimated1rmKg: $estimated1rmKg, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
@@ -38410,6 +38532,7 @@ typedef $$WorkoutSessionExercisesTableCreateCompanionBuilder =
       required int exerciseId,
       required String exerciseNameSnapshot,
       required int sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> supersetGroupId,
       Value<String?> notes,
       Value<int> rowid,
@@ -38423,6 +38546,7 @@ typedef $$WorkoutSessionExercisesTableUpdateCompanionBuilder =
       Value<int> exerciseId,
       Value<String> exerciseNameSnapshot,
       Value<int> sortOrder,
+      Value<int?> restBetweenExercisesSeconds,
       Value<String?> supersetGroupId,
       Value<String?> notes,
       Value<int> rowid,
@@ -38469,6 +38593,11 @@ class $$WorkoutSessionExercisesTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -38528,6 +38657,11 @@ class $$WorkoutSessionExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get supersetGroupId => $composableBuilder(
     column: $table.supersetGroupId,
     builder: (column) => ColumnOrderings(column),
@@ -38579,6 +38713,11 @@ class $$WorkoutSessionExercisesTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get restBetweenExercisesSeconds => $composableBuilder(
+    column: $table.restBetweenExercisesSeconds,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get supersetGroupId => $composableBuilder(
     column: $table.supersetGroupId,
@@ -38643,6 +38782,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 Value<int> exerciseId = const Value.absent(),
                 Value<String> exerciseNameSnapshot = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -38654,6 +38794,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 exerciseId: exerciseId,
                 exerciseNameSnapshot: exerciseNameSnapshot,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 supersetGroupId: supersetGroupId,
                 notes: notes,
                 rowid: rowid,
@@ -38668,6 +38809,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 required int exerciseId,
                 required String exerciseNameSnapshot,
                 required int sortOrder,
+                Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -38679,6 +38821,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 exerciseId: exerciseId,
                 exerciseNameSnapshot: exerciseNameSnapshot,
                 sortOrder: sortOrder,
+                restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 supersetGroupId: supersetGroupId,
                 notes: notes,
                 rowid: rowid,
@@ -38735,6 +38878,7 @@ typedef $$SetLogsTableCreateCompanionBuilder =
       Value<bool> completed,
       Value<bool> skipped,
       Value<bool> isPr,
+      Value<int?> restSeconds,
       Value<double?> estimated1rmKg,
       Value<String?> notes,
       required DateTime createdAt,
@@ -38764,6 +38908,7 @@ typedef $$SetLogsTableUpdateCompanionBuilder =
       Value<bool> completed,
       Value<bool> skipped,
       Value<bool> isPr,
+      Value<int?> restSeconds,
       Value<double?> estimated1rmKg,
       Value<String?> notes,
       Value<DateTime> createdAt,
@@ -38882,6 +39027,11 @@ class $$SetLogsTableFilterComposer
 
   ColumnFilters<bool> get isPr => $composableBuilder(
     column: $table.isPr,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -39020,6 +39170,11 @@ class $$SetLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get estimated1rmKg => $composableBuilder(
     column: $table.estimated1rmKg,
     builder: (column) => ColumnOrderings(column),
@@ -39137,6 +39292,11 @@ class $$SetLogsTableAnnotationComposer
   GeneratedColumn<bool> get isPr =>
       $composableBuilder(column: $table.isPr, builder: (column) => column);
 
+  GeneratedColumn<int> get restSeconds => $composableBuilder(
+    column: $table.restSeconds,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<double> get estimated1rmKg => $composableBuilder(
     column: $table.estimated1rmKg,
     builder: (column) => column,
@@ -39201,6 +39361,7 @@ class $$SetLogsTableTableManager
                 Value<bool> completed = const Value.absent(),
                 Value<bool> skipped = const Value.absent(),
                 Value<bool> isPr = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
                 Value<double?> estimated1rmKg = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -39228,6 +39389,7 @@ class $$SetLogsTableTableManager
                 completed: completed,
                 skipped: skipped,
                 isPr: isPr,
+                restSeconds: restSeconds,
                 estimated1rmKg: estimated1rmKg,
                 notes: notes,
                 createdAt: createdAt,
@@ -39257,6 +39419,7 @@ class $$SetLogsTableTableManager
                 Value<bool> completed = const Value.absent(),
                 Value<bool> skipped = const Value.absent(),
                 Value<bool> isPr = const Value.absent(),
+                Value<int?> restSeconds = const Value.absent(),
                 Value<double?> estimated1rmKg = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 required DateTime createdAt,
@@ -39284,6 +39447,7 @@ class $$SetLogsTableTableManager
                 completed: completed,
                 skipped: skipped,
                 isPr: isPr,
+                restSeconds: restSeconds,
                 estimated1rmKg: estimated1rmKg,
                 notes: notes,
                 createdAt: createdAt,

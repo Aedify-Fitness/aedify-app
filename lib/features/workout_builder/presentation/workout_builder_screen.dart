@@ -326,34 +326,20 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text:
-                          widget.state.draft.restBetweenExercisesSeconds
-                              ?.toString() ??
-                          '',
-                    ),
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.workoutRestLabel,
-                    hintText: AppStrings.workoutRestHint,
-                    isDense: true,
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (v) {
-                    ref
-                        .read(
-                          AppProviders.workoutBuilderControllerProvider((
-                            mode: widget.mode,
-                            savedWorkoutId: widget.savedWorkoutId,
-                          )).notifier,
-                        )
-                        .updateRestBetweenExercises(int.tryParse(v));
-                  },
-                ),
+              _RestField(
+                initialValue: widget.state.draft.restBetweenExercisesSeconds,
+                label: AppStrings.workoutRestLabel,
+                hint: AppStrings.workoutRestHint,
+                onChanged: (v) {
+                  ref
+                      .read(
+                        AppProviders.workoutBuilderControllerProvider((
+                          mode: widget.mode,
+                          savedWorkoutId: widget.savedWorkoutId,
+                        )).notifier,
+                      )
+                      .updateRestBetweenExercises(v);
+                },
               ),
               const SizedBox(height: AppSpacing.md),
               WorkoutExerciseList(
@@ -462,6 +448,69 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RestField extends StatefulWidget {
+  const _RestField({
+    required this.initialValue,
+    required this.label,
+    required this.hint,
+    required this.onChanged,
+  });
+
+  final int? initialValue;
+  final String label;
+  final String hint;
+  final ValueChanged<int?> onChanged;
+
+  @override
+  State<_RestField> createState() => _RestFieldState();
+}
+
+class _RestFieldState extends State<_RestField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialValue?.toString() ?? '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(_RestField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      final newText = widget.initialValue?.toString() ?? '';
+      if (newText != _controller.text) {
+        _controller.text = newText;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          labelText: widget.label,
+          hintText: widget.hint,
+          isDense: true,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (v) => widget.onChanged(int.tryParse(v)),
+      ),
     );
   }
 }

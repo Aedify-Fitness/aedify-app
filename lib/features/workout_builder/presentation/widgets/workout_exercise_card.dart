@@ -97,23 +97,9 @@ class WorkoutExerciseCard extends StatelessWidget {
                 if (onRestChanged != null)
                   SizedBox(
                     width: AppSizing.fieldWidthSm,
-                    child: TextField(
-                      controller: TextEditingController.fromValue(
-                        TextEditingValue(
-                          text:
-                              exercise.restBetweenExercisesSeconds
-                                  ?.toString() ??
-                              '',
-                        ),
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.rest,
-                        isDense: true,
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (v) {
-                        onRestChanged!(int.tryParse(v));
-                      },
+                    child: _ExerciseRestField(
+                      initialValue: exercise.restBetweenExercisesSeconds,
+                      onChanged: onRestChanged!,
                     ),
                   ),
                 const SizedBox(width: AppSpacing.xs),
@@ -159,6 +145,61 @@ class WorkoutExerciseCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ExerciseRestField extends StatefulWidget {
+  const _ExerciseRestField({
+    required this.initialValue,
+    required this.onChanged,
+  });
+
+  final int? initialValue;
+  final ValueChanged<int?> onChanged;
+
+  @override
+  State<_ExerciseRestField> createState() => _ExerciseRestFieldState();
+}
+
+class _ExerciseRestFieldState extends State<_ExerciseRestField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialValue?.toString() ?? '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(_ExerciseRestField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      final newText = widget.initialValue?.toString() ?? '';
+      if (newText != _controller.text) {
+        _controller.text = newText;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      decoration: const InputDecoration(
+        labelText: AppStrings.rest,
+        isDense: true,
+      ),
+      keyboardType: TextInputType.number,
+      onChanged: (v) => widget.onChanged(int.tryParse(v)),
     );
   }
 }

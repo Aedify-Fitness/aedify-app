@@ -53,11 +53,21 @@ WorkoutRunnerSessionViewData _sampleSession() {
 }
 
 class _FakeStartUseCase implements StartWorkoutSessionUseCase {
+  int startFromSavedWorkoutCalls = 0;
+  bool returnUniqueSessions = false;
+
   @override
   Future<WorkoutRunnerSessionViewData> startFromSavedWorkout(
     String savedWorkoutId,
   ) async {
-    return _sampleSession();
+    startFromSavedWorkoutCalls++;
+    if (!returnUniqueSessions) {
+      return _sampleSession();
+    }
+    return _sampleSession().copyWith(
+      sessionId: 'session-$startFromSavedWorkoutCalls',
+      name: 'Morning Push $startFromSavedWorkoutCalls',
+    );
   }
 
   @override
@@ -89,8 +99,12 @@ class _FakeCompleteUseCase implements CompleteWorkoutSessionUseCase {
 }
 
 class _FakeAbandonUseCase implements AbandonWorkoutSessionUseCase {
+  String? lastAbandonedId;
+
   @override
-  Future<void> abandon(String sessionId) async {}
+  Future<void> abandon(String sessionId) async {
+    lastAbandonedId = sessionId;
+  }
 }
 
 Widget _createTestApp(Widget child) {
@@ -208,4 +222,86 @@ void main() {
 
     expect(find.text(AppStrings.continueWorkout), findsOneWidget);
   });
+
+  testWidgets(
+    'abandoning and reopening the same workout starts a fresh session',
+    (tester) async {
+      final startUseCase = _FakeStartUseCase();
+      startUseCase.returnUniqueSessions = true;
+      final abandonUseCase = _FakeAbandonUseCase();
+      final navigatorKey = GlobalKey<NavigatorState>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            AppProviders.startWorkoutSessionUseCaseProvider.overrideWithValue(
+              startUseCase,
+            ),
+            AppProviders.loadActiveWorkoutSessionUseCaseProvider
+                .overrideWithValue(_FakeLoadUseCase()),
+            AppProviders.saveWorkoutSessionProgressUseCaseProvider
+                .overrideWithValue(_FakeSaveUseCase()),
+            AppProviders.completeWorkoutSessionUseCaseProvider
+                .overrideWithValue(_FakeCompleteUseCase()),
+            AppProviders.abandonWorkoutSessionUseCaseProvider.overrideWithValue(
+              abandonUseCase,
+            ),
+          ],
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            home: Builder(
+              builder: (context) => Center(
+                child: FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const WorkoutRunnerScreen.savedWorkout(
+                          savedWorkoutId: 'sw-1',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(WorkoutRunnerScreen)),
+      );
+      final controller = container.read(
+        AppProviders.workoutRunnerControllerProvider((
+          mode: WorkoutRunnerMode.savedWorkout,
+          savedWorkoutId: 'sw-1',
+          programId: null,
+          programWorkoutId: null,
+        )).notifier,
+      );
+
+      expect(startUseCase.startFromSavedWorkoutCalls, 1);
+      expect(find.text('Morning Push 1'), findsOneWidget);
+
+      await controller.cancelWorkout();
+      await tester.pumpAndSettle();
+
+      expect(abandonUseCase.lastAbandonedId, 'session-1');
+
+      navigatorKey.currentState!.pop();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(WorkoutRunnerScreen), findsNothing);
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      expect(startUseCase.startFromSavedWorkoutCalls, 2);
+      expect(find.text('Morning Push 2'), findsOneWidget);
+    },
+  );
 }

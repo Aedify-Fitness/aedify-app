@@ -92,22 +92,10 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   @override
   Future<void> deleteSavedWorkout(String id) async {
-    final hasHistory = await _savedWorkoutDao
-        .countSessionsReferencingSavedWorkout(id);
-    if (hasHistory > 0) {
-      final now = DateTime.now();
-      await _savedWorkoutDao.archiveSavedWorkout(
-        id: id,
-        archivedAt: now,
-        updatedAt: now,
-      );
-    } else {
-      final now = DateTime.now();
-      await _transactionExecutor.execute(
-        operationName: 'saved_workout.delete',
-        steps: _buildDeleteSavedWorkoutSteps(savedWorkoutId: id, now: now),
-      );
-    }
+    await _transactionExecutor.execute(
+      operationName: 'saved_workout.delete',
+      steps: _buildDeleteSavedWorkoutSteps(savedWorkoutId: id),
+    );
   }
 
   List<TransactionStep> _buildSaveSavedWorkoutSteps({
@@ -151,7 +139,6 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   List<TransactionStep> _buildDeleteSavedWorkoutSteps({
     required String savedWorkoutId,
-    required DateTime now,
   }) {
     return [
       TransactionStep(
@@ -161,12 +148,10 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
         run: () => _deleteSavedWorkoutHierarchy(savedWorkoutId),
       ),
       TransactionStep(
-        operation: const TransactionOperation(name: 'saved_workout.archive'),
-        run: () => _savedWorkoutDao.archiveSavedWorkout(
-          id: savedWorkoutId,
-          archivedAt: now,
-          updatedAt: now,
+        operation: const TransactionOperation(
+          name: 'saved_workout.delete_root',
         ),
+        run: () => _savedWorkoutDao.deleteById(savedWorkoutId),
       ),
     ];
   }

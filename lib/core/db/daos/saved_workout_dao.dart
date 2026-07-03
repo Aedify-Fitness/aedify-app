@@ -33,6 +33,10 @@ class SavedWorkoutDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  Future<void> deleteById(String id) async {
+    await (delete(savedWorkouts)..where((t) => t.id.equals(id))).go();
+  }
+
   Future<int> countSessionsReferencingSavedWorkout(
     String savedWorkoutId,
   ) async {

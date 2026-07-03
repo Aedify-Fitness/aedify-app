@@ -67,6 +67,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         }
         try {
           final session = await startUseCase.startFromSavedWorkout(id);
+          ref.invalidate(AppProviders.activeWorkoutSessionProvider);
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.savedWorkout,
             phase: WorkoutRunnerPhase.ready,
@@ -97,6 +98,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
             programId: pId,
             programWorkoutId: pwId,
           );
+          ref.invalidate(AppProviders.activeWorkoutSessionProvider);
           return WorkoutRunnerState(
             mode: WorkoutRunnerMode.programWorkout,
             phase: WorkoutRunnerPhase.ready,
@@ -129,6 +131,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     state = AsyncData(
       current.copyWith(
         phase: WorkoutRunnerPhase.ready,
+        hasRecoveredSession: false,
         resumeDecision: WorkoutRunnerResumeDecision.resume,
       ),
     );
@@ -145,6 +148,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         AppProviders.abandonWorkoutSessionUseCaseProvider,
       );
       await abandonUseCase.abandon(session.sessionId);
+      ref.invalidate(AppProviders.activeWorkoutSessionProvider);
     }
 
     state = AsyncData(
@@ -291,6 +295,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     if (current == null) return;
     final session = current.session;
     if (session == null) return;
+    if (session.status != WorkoutSessionStatus.inProgress) return;
 
     _logger.debug('autoSave — sessionId: ${session.sessionId}');
     state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.saving));
@@ -300,6 +305,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         AppProviders.saveWorkoutSessionProgressUseCaseProvider,
       );
       await saveUseCase.save(session);
+      ref.invalidate(AppProviders.activeWorkoutSessionProvider);
       state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.ready));
     } catch (e) {
       _logger.error('saveProgress — failed', error: e);
@@ -314,6 +320,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
 
   Future<void> completeWorkout() async {
     _logger.info('completeWorkout');
+    _autoSaveTimer?.cancel();
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -357,6 +364,8 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         durationSeconds: durationSeconds,
       );
 
+      ref.invalidate(AppProviders.activeWorkoutSessionProvider);
+
       state = AsyncData(
         currentState.copyWith(
           phase: WorkoutRunnerPhase.completed,
@@ -378,6 +387,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
 
   Future<void> cancelWorkout() async {
     _logger.info('abandonWorkout');
+    _autoSaveTimer?.cancel();
     final current = state.asData?.value;
     if (current == null) return;
     final session = current.session;
@@ -390,6 +400,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         AppProviders.abandonWorkoutSessionUseCaseProvider,
       );
       await abandonUseCase.abandon(session.sessionId);
+      ref.invalidate(AppProviders.activeWorkoutSessionProvider);
       state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.completed));
     } catch (e) {
       _logger.error('abandonWorkout — failed', error: e);

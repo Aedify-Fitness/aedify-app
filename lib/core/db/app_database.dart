@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -140,6 +140,13 @@ class AppDatabase extends _$AppDatabase {
         await customStatement(
           'ALTER TABLE program_template_exercises '
           'ADD COLUMN rest_between_exercises_seconds INTEGER',
+        );
+      }
+      if (from < 10) {
+        await m.addColumn(setLogs, setLogs.restSeconds);
+        await m.addColumn(
+          workoutSessionExercises,
+          workoutSessionExercises.restBetweenExercisesSeconds,
         );
       }
       if (from < to) {

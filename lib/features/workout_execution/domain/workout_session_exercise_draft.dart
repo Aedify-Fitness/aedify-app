@@ -10,6 +10,7 @@ class WorkoutSessionExerciseDraft {
     this.sourceProgramExerciseId,
     this.sourceSavedWorkoutExerciseId,
     this.supersetGroupId,
+    this.restBetweenExercisesSeconds,
     this.notes,
   });
 
@@ -21,5 +22,6 @@ class WorkoutSessionExerciseDraft {
   final String? sourceProgramExerciseId;
   final String? sourceSavedWorkoutExerciseId;
   final String? supersetGroupId;
+  final int? restBetweenExercisesSeconds;
   final String? notes;
 }
