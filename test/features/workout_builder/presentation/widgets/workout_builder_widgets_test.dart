@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/set_type_option.dart';
@@ -15,10 +16,62 @@ import 'package:aedify/features/workout_builder/presentation/widgets/workout_exe
 import 'package:aedify/features/workout_builder/presentation/widgets/workout_name_field.dart';
 
 Widget wrapApp(Widget child) {
-  return MaterialApp(
-    theme: ThemeData(colorSchemeSeed: Colors.blue),
-    home: Scaffold(body: child),
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => Scaffold(body: child),
+      ),
+    ],
   );
+
+  return MaterialApp.router(
+    routerConfig: router,
+    theme: ThemeData(colorSchemeSeed: Colors.blue),
+  );
+}
+
+class _ReorderableSetList extends StatefulWidget {
+  const _ReorderableSetList({required this.setTypeOptions});
+
+  final List<SetTypeOption> setTypeOptions;
+
+  @override
+  State<_ReorderableSetList> createState() => _ReorderableSetListState();
+}
+
+class _ReorderableSetListState extends State<_ReorderableSetList> {
+  List<SetPrescriptionDraft> _sets = [
+    SetPrescriptionDraft(id: 's1', setIndex: 0, setType: SetType.working),
+    SetPrescriptionDraft(id: 's2', setIndex: 1, setType: SetType.warmup),
+  ];
+
+  void _reorder() {
+    setState(() {
+      _sets = [_sets[1].copyWith(setIndex: 0), _sets[0].copyWith(setIndex: 1)];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextButton(
+          key: const ValueKey('reorder'),
+          onPressed: _reorder,
+          child: const Text('Reorder'),
+        ),
+        SetPrescriptionList(
+          exerciseDraftId: 'ex1',
+          setTypeOptions: widget.setTypeOptions,
+          sets: _sets,
+          onUpdateSet: (_, _) {},
+          onRemoveSet: (_) {},
+          validationErrors: const [],
+        ),
+      ],
+    );
+  }
 }
 
 final _placeholderExercise = WorkoutBuilderExerciseDraft(
@@ -82,15 +135,17 @@ void main() {
     ) async {
       var discarded = false;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) => ElevatedButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (_) =>
-                    DiscardChangesDialog(onDiscard: () => discarded = true),
+        wrapApp(
+          Builder(
+            builder: (context) => Center(
+              child: ElevatedButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) =>
+                      DiscardChangesDialog(onDiscard: () => discarded = true),
+                ),
+                child: const Text('Open'),
               ),
-              child: const Text('Open'),
             ),
           ),
         ),
@@ -337,6 +392,38 @@ void main() {
       );
       expect(find.text('1'), findsOneWidget);
       expect(find.text('2'), findsOneWidget);
+    });
+
+    testWidgets('reflects reordered sets', (tester) async {
+      await tester.pumpWidget(
+        wrapApp(
+          _ReorderableSetList(
+            setTypeOptions: const [
+              SetTypeOption(
+                type: SetType.working,
+                label: 'Working',
+                description: '',
+              ),
+              SetTypeOption(
+                type: SetType.warmup,
+                label: 'Warm-up',
+                description: '',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.text('1'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('reorder')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('1'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
+      expect(find.text('Warm-up'), findsOneWidget);
+      expect(find.text('Working'), findsOneWidget);
     });
   });
 

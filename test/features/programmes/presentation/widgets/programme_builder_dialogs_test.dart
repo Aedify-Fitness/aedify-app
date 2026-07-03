@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/programmes/presentation/widgets/add_week_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/discard_programme_changes_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/active_programme_warning_dialog.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 
+Widget _routerApp(Widget child) {
+  final router = GoRouter(
+    routes: [GoRoute(path: '/', builder: (context, state) => child)],
+  );
+
+  return MaterialApp.router(routerConfig: router);
+}
+
 Future<bool?> _showDialog(WidgetTester tester, Widget dialog) async {
   bool? result;
   await tester.pumpWidget(
-    MaterialApp(
-      home: Builder(
+    _routerApp(
+      Builder(
         builder: (context) {
           return ElevatedButton(
             onPressed: () async {
@@ -40,8 +49,8 @@ void main() {
     testWidgets('returns true when add button is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -69,8 +78,8 @@ void main() {
     testWidgets('returns false when cancel is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -105,8 +114,8 @@ void main() {
     testWidgets('returns true when discard is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -136,8 +145,8 @@ void main() {
     testWidgets('returns false when cancel is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -172,8 +181,8 @@ void main() {
     testWidgets('returns true when continue is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -201,8 +210,8 @@ void main() {
     testWidgets('returns false when cancel is tapped', (tester) async {
       bool? result;
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _routerApp(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {

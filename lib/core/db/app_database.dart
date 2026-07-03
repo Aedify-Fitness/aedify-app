@@ -79,7 +79,7 @@ class AppDatabase extends _$AppDatabase {
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 9);
+      await _logMigration(m, fromVersion: 0, toVersion: 10);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {

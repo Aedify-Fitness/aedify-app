@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import '../data/fake_dependencies.dart';
 
 class _ValidatingFakeRepository extends DriftByokRepository {
@@ -43,11 +44,20 @@ class _FailingValidationRepository extends DriftByokRepository {
 }
 
 Widget createTestApp({required ByokRepository repository}) {
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const ByokSettingsScreen(),
+      ),
+    ],
+  );
+
   return ProviderScope(
     overrides: [
       AppProviders.byokRepositoryProvider.overrideWith((ref) => repository),
     ],
-    child: const MaterialApp(home: ByokSettingsScreen()),
+    child: MaterialApp.router(routerConfig: router),
   );
 }
 

@@ -4,6 +4,7 @@ import 'package:aedify/features/workout_builder/application/workout_builder_stat
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
+import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +14,7 @@ class _FakeSavedWorkoutRepository implements SavedWorkoutRepository {
 
   final bool shouldThrowOnGet;
   final SavedWorkoutAggregate? aggregate;
+  SavedWorkoutDraft? lastSavedDraft;
 
   @override
   Future<SavedWorkoutAggregate?> getSavedWorkout(String id) async {
@@ -30,7 +32,8 @@ class _FakeSavedWorkoutRepository implements SavedWorkoutRepository {
   }
 
   @override
-  Future<String> saveSavedWorkout(dynamic draft) async {
+  Future<String> saveSavedWorkout(SavedWorkoutDraft draft) async {
+    lastSavedDraft = draft;
     return aggregate?.savedWorkout.id ?? 'saved-id';
   }
 
@@ -53,6 +56,43 @@ void main() {
         ],
       );
     }
+
+    test(
+      'saveWorkout resets create mode state after successful save',
+      () async {
+        final container = createContainer();
+        final controller = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )).notifier,
+        );
+
+        await controller.future;
+        await controller.renameWorkout('Push Day');
+        await controller.addExercise(
+          const ExerciseReference(
+            exerciseId: 1,
+            name: 'Bench Press',
+            modality: 'strength',
+          ),
+        );
+
+        await controller.saveWorkout();
+
+        final state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )),
+        );
+
+        expect(state.asData?.value.phase, WorkoutBuilderPhase.editing);
+        expect(state.asData?.value.isDirty, isFalse);
+        expect(state.asData?.value.draft.name, isEmpty);
+        expect(state.asData?.value.draft.exercises, isEmpty);
+      },
+    );
 
     test('initial state is editing with empty draft in create mode', () async {
       final container = createContainer();
@@ -392,8 +432,8 @@ void main() {
       );
       final sets = state.asData!.value.draft.exercises.first.sets;
       expect(sets.length, equals(2));
-      expect(sets.last.setType, equals(SetType.warmup));
       expect(sets.first.setType, equals(SetType.working));
+      expect(sets.last.setType, equals(SetType.warmup));
     });
 
     test('updateSetType changes set type of a set', () async {
@@ -482,11 +522,19 @@ void main() {
       );
       final sets = state.asData!.value.draft.exercises.first.sets;
       expect(sets.length, equals(2));
+      expect(sets.first.setType, equals(SetType.working));
       expect(sets.last.setType, equals(SetType.warmup));
     });
 
     test('warmup set survives save mapping (roundtrip)', () async {
-      final container = createContainer();
+      final fakeRepository = _FakeSavedWorkoutRepository();
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) => fakeRepository,
+          ),
+        ],
+      );
       final controller = container.read(
         AppProviders.workoutBuilderControllerProvider((
           mode: WorkoutBuilderMode.create,
@@ -520,6 +568,8 @@ void main() {
         )),
       );
       final updatedSets = state.asData!.value.draft.exercises.first.sets;
+      expect(updatedSets.first.setType, SetType.working);
+      expect(updatedSets.last.setType, SetType.warmup);
 
       await controller.updateSet(
         exerciseDraftId: exerciseId,
@@ -534,15 +584,14 @@ void main() {
 
       await controller.saveWorkout();
 
-      state = container.read(
-        AppProviders.workoutBuilderControllerProvider((
-          mode: WorkoutBuilderMode.create,
-          savedWorkoutId: null,
-        )),
-      );
-      expect(state.asData?.value.isDirty, isFalse);
-      expect(state.asData?.value.draft.name, isEmpty);
-      expect(state.asData?.value.draft.exercises, isEmpty);
+      final savedDraft = fakeRepository.lastSavedDraft;
+      expect(savedDraft, isNotNull);
+      expect(savedDraft!.exercises, hasLength(1));
+      expect(savedDraft.exercises.first.sets, hasLength(2));
+      expect(savedDraft.exercises.first.sets.first.setType, SetType.warmup);
+      expect(savedDraft.exercises.first.sets.last.setType, SetType.working);
+      expect(savedDraft.exercises.first.sets.first.prescribedWeightKg, 20);
+      expect(savedDraft.exercises.first.sets.last.prescribedWeightKg, 40);
     });
 
     test('createSuperset groups two exercises', () async {
@@ -858,6 +907,114 @@ void main() {
       expect(state.asData?.value.draft.exercises.length, equals(1));
       expect(state.asData?.value.isDirty, isTrue);
     });
+
+    test(
+      'edit mode save normalizes warmup sets in state and saved payload',
+      () async {
+        final t = DateTime(2025, 1, 1);
+        final aggregate = SavedWorkoutAggregate(
+          savedWorkout: SavedWorkout(
+            id: 'w1',
+            name: 'Original',
+            source: 'manual',
+            creationMethod: 'manual',
+            status: 'active',
+            goalTagsJson: '[]',
+            equipmentJson: '[]',
+            imported: false,
+            createdAt: t,
+            updatedAt: t,
+          ),
+          exercises: [
+            SavedWorkoutExercise(
+              id: 'ex1',
+              savedWorkoutId: 'w1',
+              exerciseId: 1,
+              sortOrder: 0,
+              exerciseRef: 'Bench Press',
+              createdAt: t,
+            ),
+          ],
+          sets: [
+            SavedWorkoutExerciseSet(
+              id: 's1',
+              savedWorkoutExerciseId: 'ex1',
+              setIndex: 0,
+              setType: SetType.working.dbValue,
+              prescribedWeightKg: 60,
+              isCalibrationEstimate: false,
+              createdAt: t,
+            ),
+          ],
+        );
+
+        final fakeRepository = _FakeSavedWorkoutRepository(
+          aggregate: aggregate,
+        );
+        final container = ProviderContainer(
+          overrides: [
+            AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+              (ref) => fakeRepository,
+            ),
+          ],
+        );
+
+        final controller = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )).notifier,
+        );
+
+        await controller.future;
+
+        var state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+        await controller.addWarmupSet(exerciseId);
+
+        state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final setsBeforeSave = state.asData!.value.draft.exercises.first.sets;
+        expect(setsBeforeSave.first.setType, SetType.working);
+        expect(setsBeforeSave.last.setType, SetType.warmup);
+
+        await controller.updateSet(
+          exerciseDraftId: exerciseId,
+          setId: setsBeforeSave.last.id,
+          prescription: setsBeforeSave.last.copyWith(prescribedWeightKg: 20),
+        );
+
+        await controller.saveWorkout();
+
+        state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final setsAfterSave = state.asData!.value.draft.exercises.first.sets;
+        expect(state.asData!.value.isDirty, isFalse);
+        expect(setsAfterSave.first.setType, SetType.warmup);
+        expect(setsAfterSave.last.setType, SetType.working);
+        expect(setsAfterSave.first.prescribedWeightKg, 20);
+        expect(setsAfterSave.last.prescribedWeightKg, 60);
+
+        final savedDraft = fakeRepository.lastSavedDraft;
+        expect(savedDraft, isNotNull);
+        expect(savedDraft!.exercises.first.sets.first.setType, SetType.warmup);
+        expect(savedDraft.exercises.first.sets.last.setType, SetType.working);
+      },
+    );
 
     test('surfaces error when repository throws', () async {
       final container = ProviderContainer(

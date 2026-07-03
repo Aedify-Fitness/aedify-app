@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/cancel_workout_dialog.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 
 void _onConfirm() {}
 
 Widget _createDialogApp(CancelWorkoutDialog dialog) {
-  return MaterialApp(
-    theme: ThemeData(splashFactory: NoSplash.splashFactory),
-    home: Scaffold(
-      body: Builder(
-        builder: (context) {
-          return ElevatedButton(
-            onPressed: () =>
-                showDialog(context: context, builder: (_) => dialog),
-            child: const Text('Show'),
-          );
-        },
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => Scaffold(
+          body: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () =>
+                    showDialog(context: context, builder: (_) => dialog),
+                child: const Text('Show'),
+              );
+            },
+          ),
+        ),
       ),
-    ),
+    ],
+  );
+
+  return MaterialApp.router(
+    routerConfig: router,
+    theme: ThemeData(splashFactory: NoSplash.splashFactory),
   );
 }
 

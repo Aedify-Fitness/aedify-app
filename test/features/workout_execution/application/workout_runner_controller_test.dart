@@ -743,6 +743,17 @@ void main() {
       () async {
         fakeSave.saveCallCount = 0;
         final container = createContainer();
+        final subscription = container.listen(
+          AppProviders.workoutRunnerControllerProvider((
+            mode: WorkoutRunnerMode.savedWorkout,
+            savedWorkoutId: 'sw-1',
+            programId: null,
+            programWorkoutId: null,
+          )),
+          (_, _) {},
+          fireImmediately: true,
+        );
+        addTearDown(subscription.close);
         final controller = container.read(
           AppProviders.workoutRunnerControllerProvider((
             mode: WorkoutRunnerMode.savedWorkout,
@@ -776,6 +787,17 @@ void main() {
       () async {
         fakeSave.saveCallCount = 0;
         final container = createContainer();
+        final subscription = container.listen(
+          AppProviders.workoutRunnerControllerProvider((
+            mode: WorkoutRunnerMode.savedWorkout,
+            savedWorkoutId: 'sw-1',
+            programId: null,
+            programWorkoutId: null,
+          )),
+          (_, _) {},
+          fireImmediately: true,
+        );
+        addTearDown(subscription.close);
         final controller = container.read(
           AppProviders.workoutRunnerControllerProvider((
             mode: WorkoutRunnerMode.savedWorkout,

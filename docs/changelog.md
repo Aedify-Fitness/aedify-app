@@ -6,6 +6,21 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-03
 
+### Full failing-test sweep to green
+
+- **Full suite green**: `flutter test` now passes cleanly at **1056/1056**.
+- **Workout builder warmup ordering fix**: `WorkoutBuilderController.addSet(..., setType: SetType.warmup)` now inserts warmup sets before working sets, fixing an unsaveable-workout bug exposed by tests.
+- **DB version / migration test repairs**: Updated schema-version expectations to `10` and fixed `AppDatabase` on-create migration logging from `toVersion: 9` to `toVersion: 10`.
+- **Router-backed widget tests**: Repaired dialog and bottom-sheet widget tests that now rely on `context.pop()` by wrapping them in `GoRouter`-backed harnesses. Covered workout builder, workout runner, custom exercise, BYOK settings, programme builder, and template reassignment surfaces.
+- **Runner autosave test stability**: Updated debounce tests to keep the `autoDispose` workout-runner provider alive while timers elapse.
+
+### Workout builder save-time warmup normalization
+
+- **Editing behavior preserved**: Adding a warmup set no longer immediately reorders the draft while the user is editing.
+- **Save-time reordering**: `WorkoutBuilderController.saveWorkout()` now normalizes each exercise before validation/persistence so all warmup sets are saved before working sets, while preserving relative order within each group.
+- **Edit-mode consistency**: After a successful save in edit mode, the controller state is updated to the normalized set order so the UI matches what was persisted.
+- **Coverage**: Added/updated workout-builder controller tests for mixed pre-save order, normalized saved payload order, and normalized post-save edit state.
+
 ### Workout runner lifecycle hardening + HomeScreen in-progress card
 
 - **Lifecycle hardening** (extends 2026-07-02 fix): `autoSave` timer cancelled on `completeWorkout()`/`cancelWorkout()` — prevents save-after-complete race. `autoSave` now guards on `session.status == inProgress`. `activeWorkoutSessionProvider` invalidated after start/resume/save/complete/cancel — consumers reflect current session state immediately.

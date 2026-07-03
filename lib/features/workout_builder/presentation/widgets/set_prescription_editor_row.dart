@@ -53,6 +53,8 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
   void didUpdateWidget(SetPrescriptionEditorRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.prescription.id != oldWidget.prescription.id ||
+        widget.prescription.setType != oldWidget.prescription.setType ||
+        widget.prescription.setIndex != oldWidget.prescription.setIndex ||
         widget.prescription.prescribedRepsMin !=
             oldWidget.prescription.prescribedRepsMin ||
         widget.prescription.prescribedWeightKg !=
@@ -138,6 +140,7 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
             SizedBox(
               width: AppSizing.fieldWidthXl,
               child: DropdownButtonFormField<SetType>(
+                key: ValueKey('${widget.prescription.id}_type_${widget.prescription.setType.index}'),
                 initialValue: widget.prescription.setType,
                 isExpanded: true,
                 decoration: const InputDecoration(

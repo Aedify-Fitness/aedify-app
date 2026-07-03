@@ -2,21 +2,31 @@ import 'package:aedify/features/exercise_library/presentation/widgets/delete_cus
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 Widget _createDialogApp(DeleteCustomExerciseDialog dialog) {
-  return MaterialApp(
-    theme: ThemeData(splashFactory: NoSplash.splashFactory),
-    home: Scaffold(
-      body: Builder(
-        builder: (context) {
-          return ElevatedButton(
-            onPressed: () =>
-                showDialog(context: context, builder: (_) => dialog),
-            child: const Text('Show'),
-          );
-        },
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => Scaffold(
+          body: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () =>
+                    showDialog(context: context, builder: (_) => dialog),
+                child: const Text('Show'),
+              );
+            },
+          ),
+        ),
       ),
-    ),
+    ],
+  );
+
+  return MaterialApp.router(
+    routerConfig: router,
+    theme: ThemeData(splashFactory: NoSplash.splashFactory),
   );
 }
 

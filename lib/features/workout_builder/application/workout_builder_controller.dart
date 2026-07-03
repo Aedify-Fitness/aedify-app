@@ -242,6 +242,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           setType: setType,
         ),
       ];
+
       return e.copyWith(sets: _reindexSets(sets));
     }).toList();
     state = AsyncData(
@@ -332,8 +333,10 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     final current = state.asData?.value;
     if (current == null) return;
 
+    final normalizedDraft = _normalizeDraftForSave(current.draft);
+
     final validator = ref.read(AppProviders.workoutBuilderValidatorProvider);
-    final errors = validator.validate(current.draft);
+    final errors = validator.validate(normalizedDraft);
 
     _logger.info(
       'saveWorkout — validation: ${errors.isEmpty ? "pass" : "fail"}, errors: ${errors.length}',
@@ -343,6 +346,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       state = AsyncData(
         current.copyWith(
           phase: WorkoutBuilderPhase.editing,
+          draft: normalizedDraft,
           validationErrors: errors,
         ),
       );
@@ -356,7 +360,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         AppProviders.saveWorkoutDraftUseCaseProvider,
       );
       final savedId = await saveUseCase.save(
-        WorkoutBuilderSaveRequest(draft: current.draft),
+        WorkoutBuilderSaveRequest(draft: normalizedDraft),
       );
       _logger.info('saveWorkout — success: $savedId');
       if (mode == WorkoutBuilderMode.create) {
@@ -376,6 +380,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         state = AsyncData(
           current.copyWith(
             phase: WorkoutBuilderPhase.editing,
+            draft: normalizedDraft,
             savedWorkoutId: savedId,
             isDirty: false,
           ),
@@ -528,6 +533,29 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     return sets.asMap().entries.map((entry) {
       return entry.value.copyWith(setIndex: entry.key);
     }).toList();
+  }
+
+  WorkoutBuilderDraft _normalizeDraftForSave(WorkoutBuilderDraft draft) {
+    return draft.copyWith(
+      exercises: draft.exercises.map(_normalizeExerciseForSave).toList(),
+    );
+  }
+
+  WorkoutBuilderExerciseDraft _normalizeExerciseForSave(
+    WorkoutBuilderExerciseDraft exercise,
+  ) {
+    final warmups = <SetPrescriptionDraft>[];
+    final nonWarmups = <SetPrescriptionDraft>[];
+
+    for (final set in exercise.sets) {
+      if (set.setType == SetType.warmup) {
+        warmups.add(set);
+      } else {
+        nonWarmups.add(set);
+      }
+    }
+
+    return exercise.copyWith(sets: _reindexSets([...warmups, ...nonWarmups]));
   }
 
   String _newId() => const Uuid().v4();

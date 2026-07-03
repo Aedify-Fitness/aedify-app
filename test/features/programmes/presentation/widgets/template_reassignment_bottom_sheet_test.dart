@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/features/programmes/domain/saved_workout_list_item.dart';
 import 'package:aedify/features/programmes/presentation/widgets/template_reassignment_bottom_sheet.dart';
@@ -7,9 +8,40 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
 
 Widget _wrap(Widget child) {
-  return MaterialApp(
-    home: Scaffold(body: SingleChildScrollView(child: child)),
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) =>
+            Scaffold(body: SingleChildScrollView(child: child)),
+      ),
+    ],
   );
+
+  return MaterialApp.router(routerConfig: router);
+}
+
+Future<void> _openBottomSheet(WidgetTester tester, Widget child) async {
+  await tester.pumpWidget(
+    _wrap(
+      Builder(
+        builder: (context) {
+          return ElevatedButton(
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (_) => child,
+              );
+            },
+            child: const Text('Open'),
+          );
+        },
+      ),
+    ),
+  );
+  await tester.tap(find.text('Open'));
+  await tester.pump();
+  await tester.pump();
 }
 
 ProgrammeBuilderTemplateDraft _template(String id, String name) {
@@ -40,8 +72,8 @@ void main() {
 
     testWidgets('create template tap pops with true', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        _wrap(
+          Builder(
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
@@ -60,9 +92,13 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pump();
       await tester.pump();
-      await tester.tap(find.text(AppStrings.createTemplate));
-      await tester.pump();
-      await tester.pump();
+      await tester.ensureVisible(find.text(AppStrings.createTemplate));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.text(AppStrings.createTemplate),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
     });
 
     testWidgets('shows no saved workouts message when none provided', (
@@ -90,16 +126,17 @@ void main() {
       tester,
     ) async {
       SavedWorkoutListItem? selected;
-      await tester.pumpWidget(
-        _wrap(
-          TemplateReassignmentBottomSheet(
-            savedWorkouts: [_savedWorkout('sw-1', 'Upper Body A', 4)],
-            onSelectSavedWorkout: (item) => selected = item,
-          ),
+      await _openBottomSheet(
+        tester,
+        TemplateReassignmentBottomSheet(
+          savedWorkouts: [_savedWorkout('sw-1', 'Upper Body A', 4)],
+          onSelectSavedWorkout: (item) => selected = item,
         ),
       );
-      await tester.tap(find.text('Upper Body A'));
-      await tester.pump();
+      await tester.ensureVisible(find.text('Upper Body A'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Upper Body A'), warnIfMissed: false);
+      await tester.pumpAndSettle();
       expect(selected?.id, 'sw-1');
     });
 
@@ -148,16 +185,17 @@ void main() {
       tester,
     ) async {
       ProgrammeBuilderTemplateDraft? selected;
-      await tester.pumpWidget(
-        _wrap(
-          TemplateReassignmentBottomSheet(
-            availableTemplates: [_template('t-1', 'Push Day')],
-            onSelected: (template) => selected = template,
-          ),
+      await _openBottomSheet(
+        tester,
+        TemplateReassignmentBottomSheet(
+          availableTemplates: [_template('t-1', 'Push Day')],
+          onSelected: (template) => selected = template,
         ),
       );
-      await tester.tap(find.text('Push Day'));
-      await tester.pump();
+      await tester.ensureVisible(find.text('Push Day'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Push Day'), warnIfMissed: false);
+      await tester.pumpAndSettle();
       expect(selected?.name, 'Push Day');
     });
   });
