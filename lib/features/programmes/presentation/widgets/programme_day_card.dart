@@ -16,6 +16,7 @@ class ProgrammeDayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (day.isRestDay) return _RestDayCard(day: day);
+    if (day.isToday) return _TodayCard(day: day, onTap: onTap);
     return _WorkoutDayCard(day: day, onTap: onTap);
   }
 }
@@ -28,42 +29,175 @@ class _RestDayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(
           color: context.colorScheme.outlineVariant,
-          style: BorderStyle.solid,
+          width: AppSizing.hairlineStrokeWidth,
         ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            OutlinedSvgAssets.moon,
-            width: AppSizing.iconXxl,
-            height: AppSizing.iconXxl,
+            SolidSvgAssets.meditation,
+            width: AppSizing.iconSm,
+            height: AppSizing.iconSm,
             colorFilter: ColorFilter.mode(
               context.colorScheme.outline,
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
           Text(
-            day.dayLabel,
+            day.dayLabel.toUpperCase(),
             style: context.textTheme.labelSmall?.copyWith(
               color: context.colorScheme.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             day.title,
-            style: context.textTheme.headlineMedium?.copyWith(
+            style: context.textTheme.headlineSmall?.copyWith(
+              fontSize: AppFontSizes.xxl,
               color: context.colorScheme.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TodayCard extends StatelessWidget {
+  const _TodayCard({required this.day, this.onTap});
+
+  final DayViewData day;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(
+          color: context.colorScheme.secondary,
+          width: AppSizing.strokeWidth,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.secondary.withAlpha(25),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _DayHeader(day: day, isCompleted: day.isCompleted),
+              const SizedBox(height: AppSpacing.sm),
+              if (day.exercisePreview.isNotEmpty) ...[
+                ...day.exercisePreview
+                    .take(3)
+                    .map(
+                      (name) => Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '\u2022 ',
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                name,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: onTap,
+                  icon: const SizedBox.shrink(),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(AppStrings.viewDetails),
+                      const SizedBox(width: AppSpacing.xxs),
+                      SvgPicture.asset(
+                        OutlinedSvgAssets.chevronRight,
+                        width: AppSizing.iconXxs,
+                        height: AppSizing.iconXxs,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.secondary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ],
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: context.colorScheme.surfaceContainerHigh,
+                    foregroundColor: context.colorScheme.secondary,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: -12,
+            right: -8,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xxs + 1,
+              ),
+              decoration: BoxDecoration(
+                color: context.colorScheme.secondary,
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                boxShadow: [
+                  BoxShadow(
+                    color: context.colorScheme.shadow.withAlpha(38),
+                    blurRadius: AppSpacing.xs,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(
+                AppStrings.today,
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: context.colorScheme.onSecondary,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -79,63 +213,38 @@ class _WorkoutDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isToday = day.isToday;
     final isCompleted = day.isCompleted;
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: isToday
-              ? context.colorScheme.surfaceContainerLowest
-              : context.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          border: Border.all(
-            color: isToday
-                ? context.colorScheme.secondary
-                : context.colorScheme.outlineVariant.withAlpha(77),
-            width: isToday ? AppSizing.strokeWidth : 1.0,
+      child: Opacity(
+        opacity: isCompleted ? 0.80 : 1.0,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: isCompleted
+                ? context.colorScheme.surfaceContainerLow
+                : context.colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: Border.all(
+              color: context.colorScheme.outlineVariant.withAlpha(51),
+              width: AppSizing.hairlineStrokeWidth,
+            ),
           ),
-        ),
-        child: Opacity(
-          opacity: isCompleted ? 0.80 : 1.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _DayHeader(day: day, isToday: isToday, isCompleted: isCompleted),
-              const SizedBox(height: AppSpacing.md),
-              if (day.exercisePreview.isNotEmpty) ...[
-                ...day.exercisePreview.map(
-                  (name) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '\u2022',
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Expanded(
-                          child: Text(
-                            name,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-              ],
-              _DayFooter(day: day),
+              _DayHeader(day: day, isCompleted: isCompleted),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  _MetaChip(text: '${day.exerciseCount} Exercises'),
+                  if (day.durationMinutes > 0) ...[
+                    const SizedBox(width: AppSpacing.sm),
+                    _MetaChip(text: '${day.durationMinutes}m'),
+                  ],
+                ],
+              ),
             ],
           ),
         ),
@@ -145,18 +254,15 @@ class _WorkoutDayCard extends StatelessWidget {
 }
 
 class _DayHeader extends StatelessWidget {
-  const _DayHeader({
-    required this.day,
-    required this.isToday,
-    required this.isCompleted,
-  });
+  const _DayHeader({required this.day, required this.isCompleted});
 
   final DayViewData day;
-  final bool isToday;
   final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
+    final isToday = day.isToday;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,22 +300,7 @@ class _DayHeader extends StatelessWidget {
             ),
           )
         else if (isToday)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const _TodayBadge(),
-              const SizedBox(width: AppSpacing.sm),
-              SvgPicture.asset(
-                OutlinedSvgAssets.chevronRight,
-                width: AppSizing.iconSm,
-                height: AppSizing.iconSm,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.secondary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          )
+          const SizedBox(width: AppSizing.iconMd, height: AppSizing.iconMd)
         else
           SvgPicture.asset(
             OutlinedSvgAssets.chevronRight,
@@ -221,47 +312,6 @@ class _DayHeader extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _DayFooter extends StatelessWidget {
-  const _DayFooter({required this.day});
-
-  final DayViewData day;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _MetaChip(text: '${day.exerciseCount} Exercises'),
-        const SizedBox(width: AppSpacing.sm),
-        if (day.durationMinutes > 0) _MetaChip(text: '${day.durationMinutes}m'),
-      ],
-    );
-  }
-}
-
-class _TodayBadge extends StatelessWidget {
-  const _TodayBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: context.colorScheme.secondary,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        AppStrings.today,
-        style: context.textTheme.labelSmall?.copyWith(
-          color: context.colorScheme.onSecondary,
-        ),
-      ),
     );
   }
 }

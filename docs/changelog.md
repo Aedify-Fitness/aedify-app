@@ -4,7 +4,88 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-04
+
+### Workout runner completion and active-session integrity
+
+- Completing a workout no longer immediately pops the route. `WorkoutRunnerScreen` now transitions into a dedicated completed-state summary showing workout name, duration, total volume, completed sets, completed exercises, and a `Done` CTA for intentional exit.
+- Cleared transient runner UI (`_showRestTimer`, `_restSeconds`) before completion/cancel and added explicit placeholders for `completing` / `cancelling` phases so the interactive runner body cannot linger in an invalid state.
+- Fixed the final-set path so logging the last incomplete set auto-completes exactly once and enters the same summary flow as finish-early completion.
+- Removed pre-pop invalidation of `workoutRunnerControllerProvider(...)` from finish-early and cancel flows. This prevents the still-mounted screen from rebuilding the auto-starting controller and creating a second persisted `in_progress` session while the route is exiting.
+- Hardened session persistence against stale-active state:
+  - `WorkoutSessionDao.updateSessionIfInProgress(...)` guards progress writes so a late autosave cannot revive a completed session.
+  - `DriftWorkoutSessionRepository.getActiveSession()` now repairs duplicate active rows by abandoning rows superseded by a later completed row and collapsing remaining duplicates to the most recent in-progress session.
+  - `completeSession()` abandons sibling in-progress rows for the same workout identity immediately after completion.
+  - `startSession()` performs the in-progress count check inside the transaction step instead of before transaction execution.
+- Added regression coverage for finish-early route exit, final-set auto-completion, late progress-save race protection, and duplicate active-session repair / sibling abandonment.
+- Files: `lib/features/workout_execution/presentation/workout_runner_screen.dart`, `lib/core/db/daos/workout_session_dao.dart`, `lib/features/workout_execution/data/drift_workout_session_repository.dart`, `test/features/workout_execution/presentation/workout_runner_screen_test.dart`, `test/features/workout_execution/data/drift_workout_session_repository_test.dart`
+
+### Programme builder save/load correctness and refresh flow
+
+- Fixed a multi-week save bug where programme expansion only reused slot-day configuration from week 1. `ProgrammeDraft` now carries `weekSlotDayIndices` and `weekSlotTemplateIds`, and the repository uses week-specific slot config when available.
+- Fixed edit-mode slot reconstruction by using the slot's sequential position within the week instead of `scheduledDayIndex` as `slotIndex`.
+- Restored saved day labels on edit by decoding `scheduledDayIndex` back into `TrainingDay`.
+- Added an optional day-of-week picker to workout slots in the programme builder. Users can tap the slot day label to override the assigned day via a bottom sheet; slots still fall back to auto-assignment when no override is chosen.
+- Fixed post-save refresh behavior:
+  - programme list refresh now uses explicit `reload()` after `context.pop()` instead of relying on a lost invalidation signal
+  - programme calendar refresh now also calls `reload()` on the family controller after save when editing an existing programme
+- Files: `lib/features/programmes/domain/programme_draft.dart`, `lib/features/programmes/application/save_programme_builder_draft_use_case.dart`, `lib/features/programmes/application/load_programme_builder_draft_use_case.dart`, `lib/features/programmes/data/drift_programme_repository.dart`, `lib/features/programmes/application/programme_builder_controller.dart`, `lib/features/programmes/presentation/programme_builder_screen.dart`, `lib/features/programmes/presentation/widgets/programme_workout_slot_card.dart`, `lib/features/programmes/presentation/widgets/programme_week_card.dart`, `lib/features/programmes/presentation/widgets/programme_weeks_overview.dart`, `lib/shared/constants/app_strings.dart`
+
+### Programme calendar, home sync, and progress resolution
+
+- Extracted shared flat-index progression logic into `TodayWorkoutResolver` so the calendar and home screen agree on which workout counts as "today" when days are skipped or the user starts mid-week.
+- Fixed calendar completion state to come from resolved workout-session data (`completedWorkoutIds`) instead of the never-updated `program_workouts.status` column.
+- `programmeSyncProvider` now watches the programme library controller as a data dependency, and `homeRefreshTriggerProvider` forces home-screen-related providers to refresh after completion/cancel so home and calendar state update immediately.
+- Fixed the runner rest-timer trigger to respect the default 60-second fallback by always calling `RestResolver.effectiveRest()`.
+- Active programme progress now reflects the current week instead of total programme count:
+  - `ProgrammeListItem` now carries `startDateLocal`
+  - home progress uses current-week sessions remaining and completion ratio
+  - current week is derived consistently from start date / flat-index resolution
+- Completed workouts now reflect correctly across the programme surfaces:
+  - today's completed workout shows a checkmark in the calendar
+  - the home today-workout card hides when no incomplete workout remains for today
+  - home and calendar both use active-session-aware resume / disable logic for start buttons when another workout session is already in progress
+- Files: `lib/app/providers/providers.dart`, `lib/features/home/presentation/home_screen.dart`, `lib/features/programmes/application/today_workout_resolver.dart`, `lib/features/programmes/application/list_programmes_use_case.dart`, `lib/features/programmes/application/programme_calendar_controller.dart`, `lib/features/programmes/domain/programme_list_item.dart`, `lib/features/programmes/presentation/programme_calendar_screen.dart`, `lib/features/programmes/presentation/widgets/programme_calendar_header.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/features/workout_execution/application/workout_runner_controller.dart`, `lib/shared/domain/week_calculator.dart`
+
+### Saved workout persistence moves to soft delete; schema v11
+
+- Bumped the database schema from `10` to `11`.
+- Added nullable `deleted_at` to `saved_workouts` and migrated existing databases with `ALTER TABLE saved_workouts ADD COLUMN deleted_at TEXT NULL`.
+- `SavedWorkoutDao.getAll()` and `getByStatus()` now exclude soft-deleted rows.
+- `DriftSavedWorkoutRepository.deleteSavedWorkout()` now performs a soft delete by setting `status = 'deleted'`, `deletedAt`, and `updatedAt` instead of deleting the saved-workout root row.
+- Updated schema-version and migration-log tests for version `11`.
+- Files: `lib/core/db/app_database.dart`, `lib/core/db/app_database.g.dart`, `lib/core/db/tables/saved_workouts.dart`, `lib/core/db/daos/saved_workout_dao.dart`, `lib/features/workout_builder/data/drift_saved_workout_repository.dart`, `test/core/db/app_database_test.dart`, `test/core/db/migration_test.dart`
+
+### Programme/library navigation and UI refinements
+
+- `ProgrammesScreen` now treats tapping a programme as navigation into the programme calendar, while edit moved into the overflow menu as an explicit action.
+- `ProgrammeListTile` now shows the primary goal label from `goalTags` instead of a placeholder and remains fully tappable as a details entry point.
+- `ProgrammeCalendarScreen`, `ProgrammeCalendarHeader`, `ProgrammeWeekSection`, and `ProgrammeDayCard` were visually refined:
+  - current week gets a distinct highlighted expanded section
+  - today cards and rest-day cards have dedicated presentation states
+  - the header uses the active-session-aware start/resume CTA and a cleaner full-bleed layout
+- `HomeScreen` now includes a `View details` path from the active programme surface into the programme calendar.
+- Removed nested child-screen app bars from the library/programme tab surfaces so the hub shell owns the top chrome consistently.
+- Added new SVG assets `leaf` and `meditation`, introduced `AppSizing.iconS`, reduced `iconXs`, and retuned deload-pattern sizing to support the updated programme/calendar visuals.
+- Files: `lib/features/programmes/presentation/programmes_screen.dart`, `lib/features/programmes/presentation/widgets/programme_list_tile.dart`, `lib/features/programmes/presentation/programme_calendar_screen.dart`, `lib/features/programmes/presentation/widgets/programme_calendar_header.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/features/programmes/presentation/widgets/programme_week_section.dart`, `lib/features/home/presentation/home_screen.dart`, `lib/features/exercise_library/presentation/exercise_library_screen.dart`, `lib/features/library/presentation/library_hub_screen.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`, `lib/features/bodymap/presentation/bodymap_screen.dart`, `lib/features/bodymap/presentation/widgets/bodymap_bucket_chip_bar.dart`, `lib/shared/constants/svg_assets_outlined.dart`, `lib/shared/constants/svg_assets_solid.dart`, `lib/shared/theme/app_spacing.dart`, `assets/svgs/outline/leaf.svg`, `assets/svgs/solid/meditation.svg`
+
+### Verification snapshot
+
+- Fresh verification run on 2026-07-04:
+  - `dart format .` — passed (`Formatted 634 files (0 changed) in 1.35 seconds`)
+  - `flutter analyze` — passed (`No issues found!`)
+  - `flutter test` — 1060 passed, 1 failed
+- The single failing test remains `test/app/m3/m3_setup_smoke_flow_test.dart: M3 Setup Smoke Flow library browse: exercise list screen renders with empty state`.
+- Result: the latest schema v11 soft-delete work and programme/library UI refinements did not introduce new format or analyzer issues; the test sweep still has the same outstanding M3 smoke-flow failure.
+
 ## 2026-07-03
+
+### Programme builder: goal tags and week type save/load roundtrip fix
+
+- **Goal tags now restored on edit** (`LoadProgrammeBuilderDraftUseCase.loadForEdit()`): `goalTags` and `equipment` are now decoded from `goalTagsJson`/`equipmentJson` via `EnumCodec.decodeSet` — previously they were silently dropped on load, so saved tags appeared empty when reopening a programme.
+- **Week type now persisted on save** (`DriftProgrammeRepository._insertExpandedProgramRows()`): Added `List<WeekType?>? weekTypes` to `ProgrammeDraft` domain model. `SaveProgrammeBuilderDraftUseCase` now extracts week types from builder weeks. The repository passes the value to `_buildProgramWeekCompanion(weekType: ...)` instead of always `null`.
+- **Week type now restored on edit** (`LoadProgrammeBuilderDraftUseCase.loadForEdit()`): Reads `w.weekType` and passes `WeekType.fromDb()` to `ProgrammeBuilderWeekDraft(weekType: ...)`.
+- Files changed: `programme_draft.dart`, `save_programme_builder_draft_use_case.dart`, `drift_programme_repository.dart`, `load_programme_builder_draft_use_case.dart`.
 
 ### Full failing-test sweep to green
 

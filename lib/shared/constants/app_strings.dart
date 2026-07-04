@@ -89,6 +89,7 @@ class AppStrings {
   static const imperialWeightUnit = 'lbs';
   static const continueLabel = 'Continue';
   static const selectDate = 'Select date';
+  static const selectDay = 'Select day';
   static const retryVideo = 'Retry video';
   static const aiDisabled = 'AI Disabled';
   static const diagnostics = 'Diagnostics';

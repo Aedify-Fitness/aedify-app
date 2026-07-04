@@ -19759,6 +19759,17 @@ class $SavedWorkoutsTable extends SavedWorkouts
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -19784,6 +19795,7 @@ class $SavedWorkoutsTable extends SavedWorkouts
     createdAt,
     updatedAt,
     archivedAt,
+    deletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -19986,6 +19998,12 @@ class $SavedWorkoutsTable extends SavedWorkouts
         archivedAt.isAcceptableOrUnknown(data['archived_at']!, _archivedAtMeta),
       );
     }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -20087,6 +20105,10 @@ class $SavedWorkoutsTable extends SavedWorkouts
         DriftSqlType.dateTime,
         data['${effectivePrefix}archived_at'],
       ),
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
     );
   }
 
@@ -20120,6 +20142,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? archivedAt;
+  final DateTime? deletedAt;
   const SavedWorkout({
     required this.id,
     required this.name,
@@ -20144,6 +20167,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     required this.createdAt,
     required this.updatedAt,
     this.archivedAt,
+    this.deletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -20203,6 +20227,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     if (!nullToAbsent || archivedAt != null) {
       map['archived_at'] = Variable<DateTime>(archivedAt);
     }
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
     return map;
   }
 
@@ -20258,6 +20285,9 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       archivedAt: archivedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(archivedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
     );
   }
 
@@ -20304,6 +20334,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       archivedAt: serializer.fromJson<DateTime?>(json['archivedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
   @override
@@ -20339,6 +20370,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'archivedAt': serializer.toJson<DateTime?>(archivedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
 
@@ -20366,6 +20398,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<DateTime?> archivedAt = const Value.absent(),
+    Value<DateTime?> deletedAt = const Value.absent(),
   }) => SavedWorkout(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -20408,6 +20441,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     archivedAt: archivedAt.present ? archivedAt.value : this.archivedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   SavedWorkout copyWithCompanion(SavedWorkoutsCompanion data) {
     return SavedWorkout(
@@ -20466,6 +20500,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
       archivedAt: data.archivedAt.present
           ? data.archivedAt.value
           : this.archivedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
 
@@ -20494,7 +20529,8 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
           ..write('exportPrivacyMode: $exportPrivacyMode, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('archivedAt: $archivedAt')
+          ..write('archivedAt: $archivedAt, ')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
@@ -20524,6 +20560,7 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
     createdAt,
     updatedAt,
     archivedAt,
+    deletedAt,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -20552,7 +20589,8 @@ class SavedWorkout extends DataClass implements Insertable<SavedWorkout> {
           other.exportPrivacyMode == this.exportPrivacyMode &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
-          other.archivedAt == this.archivedAt);
+          other.archivedAt == this.archivedAt &&
+          other.deletedAt == this.deletedAt);
 }
 
 class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
@@ -20579,6 +20617,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> archivedAt;
+  final Value<DateTime?> deletedAt;
   final Value<int> rowid;
   const SavedWorkoutsCompanion({
     this.id = const Value.absent(),
@@ -20604,6 +20643,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.archivedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SavedWorkoutsCompanion.insert({
@@ -20630,6 +20670,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     required DateTime createdAt,
     required DateTime updatedAt,
     this.archivedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -20661,6 +20702,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? archivedAt,
+    Expression<DateTime>? deletedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -20694,6 +20736,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (archivedAt != null) 'archived_at': archivedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -20722,6 +20765,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<DateTime?>? archivedAt,
+    Value<DateTime?>? deletedAt,
     Value<int>? rowid,
   }) {
     return SavedWorkoutsCompanion(
@@ -20752,6 +20796,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       archivedAt: archivedAt ?? this.archivedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -20838,6 +20883,9 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
     if (archivedAt.present) {
       map['archived_at'] = Variable<DateTime>(archivedAt.value);
     }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -20870,6 +20918,7 @@ class SavedWorkoutsCompanion extends UpdateCompanion<SavedWorkout> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('archivedAt: $archivedAt, ')
+          ..write('deletedAt: $deletedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -36458,6 +36507,7 @@ typedef $$SavedWorkoutsTableCreateCompanionBuilder =
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<DateTime?> archivedAt,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 typedef $$SavedWorkoutsTableUpdateCompanionBuilder =
@@ -36485,6 +36535,7 @@ typedef $$SavedWorkoutsTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<DateTime?> archivedAt,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 
@@ -36609,6 +36660,11 @@ class $$SavedWorkoutsTableFilterComposer
 
   ColumnFilters<DateTime> get archivedAt => $composableBuilder(
     column: $table.archivedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -36736,6 +36792,11 @@ class $$SavedWorkoutsTableOrderingComposer
     column: $table.archivedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SavedWorkoutsTableAnnotationComposer
@@ -36847,6 +36908,9 @@ class $$SavedWorkoutsTableAnnotationComposer
     column: $table.archivedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 }
 
 class $$SavedWorkoutsTableTableManager
@@ -36903,6 +36967,7 @@ class $$SavedWorkoutsTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> archivedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SavedWorkoutsCompanion(
                 id: id,
@@ -36928,6 +36993,7 @@ class $$SavedWorkoutsTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 archivedAt: archivedAt,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -36955,6 +37021,7 @@ class $$SavedWorkoutsTableTableManager
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<DateTime?> archivedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SavedWorkoutsCompanion.insert(
                 id: id,
@@ -36980,6 +37047,7 @@ class $$SavedWorkoutsTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 archivedAt: archivedAt,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

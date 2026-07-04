@@ -75,6 +75,7 @@ class OutlinedSvgAssets {
   static const arrowsUpDown = '$_pathPrefix/arrows_up_down.svg';
   static const atSymbol = '$_pathPrefix/at_symbol.svg';
   static const backspace = '$_pathPrefix/backspace.svg';
+  static const leaf = '$_pathPrefix/leaf.svg';
   static const backward = '$_pathPrefix/backward.svg';
   static const banknotes = '$_pathPrefix/banknotes.svg';
   static const bars2 = '$_pathPrefix/bars_2.svg';

@@ -112,8 +112,8 @@ class BodymapScreen extends ConsumerWidget {
                     },
                     icon: SvgPicture.asset(
                       OutlinedSvgAssets.magnifyingGlass,
-                      width: AppSizing.iconXs,
-                      height: AppSizing.iconXs,
+                      width: AppSizing.iconS,
+                      height: AppSizing.iconS,
                       colorFilter: ColorFilter.mode(
                         colorScheme.onSecondary,
                         BlendMode.srcIn,

@@ -30,7 +30,6 @@ class _LibraryHubScreenState extends State<LibraryHubScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.exerciseLibrary),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

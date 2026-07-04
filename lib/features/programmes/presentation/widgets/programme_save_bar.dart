@@ -50,8 +50,8 @@ class ProgrammeSaveBar extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: Container(
-                    width: AppSizing.iconXs,
-                    height: AppSizing.iconXs,
+                    width: AppSizing.iconS,
+                    height: AppSizing.iconS,
                     decoration: BoxDecoration(
                       color: context.colorScheme.primary,
                       shape: BoxShape.circle,

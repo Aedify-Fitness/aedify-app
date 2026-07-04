@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 
 class ProgrammeListItem {
@@ -9,9 +10,11 @@ class ProgrammeListItem {
     required this.weeksTotal,
     required this.daysPerWeek,
     required this.updatedAt,
+    this.startDateLocal,
     this.description,
     this.source,
     this.imported = false,
+    this.goalTags = const {},
   });
 
   final String id;
@@ -21,7 +24,9 @@ class ProgrammeListItem {
   final int? weeksTotal;
   final int? daysPerWeek;
   final DateTime updatedAt;
+  final String? startDateLocal;
   final String? description;
   final String? source;
   final bool imported;
+  final Set<GoalTag> goalTags;
 }

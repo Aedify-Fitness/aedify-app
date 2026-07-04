@@ -10,10 +10,14 @@ class ProgramDao extends DatabaseAccessor<AppDatabase> with _$ProgramDaoMixin {
   Future<Program?> getById(String id) =>
       (select(programs)..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  Future<List<Program>> getAll() => select(programs).get();
+  Future<List<Program>> getAll() =>
+      (select(programs)..where((t) => t.deletedAt.isNull())).get();
 
   Future<List<Program>> getByStatus(String status) =>
-      (select(programs)..where((t) => t.status.equals(status))).get();
+      (select(programs)
+            ..where((t) => t.status.equals(status))
+            ..where((t) => t.deletedAt.isNull()))
+          .get();
 
   Future<Program?> getActiveProgram() =>
       (select(programs)..where((t) => t.active.equals(true))).getSingleOrNull();
@@ -66,6 +70,8 @@ class ProgramDao extends DatabaseAccessor<AppDatabase> with _$ProgramDaoMixin {
   }) async {
     await (update(programs)..where((t) => t.id.equals(id))).write(
       ProgramsCompanion(
+        status: const Value('inactive'),
+        active: const Value(false),
         deletedAt: Value(deletedAt),
         updatedAt: Value(updatedAt),
       ),

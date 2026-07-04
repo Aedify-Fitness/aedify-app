@@ -28,20 +28,6 @@ class ExerciseLibraryScreen extends ConsumerWidget {
     final colorScheme = context.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.exerciseLibrary),
-        actions: [
-          IconButton(
-            onPressed: () => context.pushNamed(AppRoutes.bodymap().name),
-            icon: SvgPicture.asset(
-              OutlinedSvgAssets.user,
-              width: AppSpacing.lg,
-              height: AppSpacing.lg,
-            ),
-            tooltip: AppStrings.bodymap,
-          ),
-        ],
-      ),
       body: searchState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : searchState.errorCode != null
@@ -283,8 +269,8 @@ class _ActiveFilterBar extends StatelessWidget {
           IconButton(
             icon: SvgPicture.asset(
               OutlinedSvgAssets.xMark,
-              width: AppSizing.iconXs,
-              height: AppSizing.iconXs,
+              width: AppSizing.iconS,
+              height: AppSizing.iconS,
             ),
             onPressed: onClear,
             tooltip: AppStrings.clearFilters,

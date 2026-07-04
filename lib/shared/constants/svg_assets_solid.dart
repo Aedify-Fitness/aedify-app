@@ -112,6 +112,7 @@ class SolidSvgAssets {
   static const calendarDateRange = '$_pathPrefix/calendar_date_range.svg';
   static const calendarDays = '$_pathPrefix/calendar_days.svg';
   static const camera = '$_pathPrefix/camera.svg';
+  static const meditation = '$_pathPrefix/meditation.svg';
   static const chartBar = '$_pathPrefix/chart_bar.svg';
   static const chartBarSquare = '$_pathPrefix/chart_bar_square.svg';
   static const chartPie = '$_pathPrefix/chart_pie.svg';

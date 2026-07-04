@@ -72,14 +72,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 10);
+      await _logMigration(m, fromVersion: 0, toVersion: 11);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -147,6 +147,11 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(
           workoutSessionExercises,
           workoutSessionExercises.restBetweenExercisesSeconds,
+        );
+      }
+      if (from < 11) {
+        await customStatement(
+          'ALTER TABLE saved_workouts ADD COLUMN deleted_at TEXT NULL',
         );
       }
       if (from < to) {

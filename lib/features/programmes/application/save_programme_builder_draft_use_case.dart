@@ -37,6 +37,19 @@ class SaveProgrammeBuilderDraftUseCase {
           ? _buildTemplates(builderDraft)
           : [],
       description: builderDraft.description,
+      weekTypes: builderDraft.weeks?.map((w) => w.weekType).toList(),
+      slotDayIndices: builderDraft.weeks?.firstOrNull?.slots
+          ?.map((s) => s.scheduledDayIndex)
+          .toList(),
+      slotTemplateIds: builderDraft.weeks?.firstOrNull?.slots
+          ?.map((s) => s.template?.id ?? '')
+          .toList(),
+      weekSlotDayIndices: builderDraft.weeks
+          ?.map((w) => w.slots?.map((s) => s.scheduledDayIndex).toList() ?? [])
+          .toList(),
+      weekSlotTemplateIds: builderDraft.weeks
+          ?.map((w) => w.slots?.map((s) => s.template?.id ?? '').toList() ?? [])
+          .toList(),
       weeksTotal: builderDraft.weeks?.length ?? builderDraft.weeksTotal ?? 0,
       daysPerWeek: builderDraft.daysPerWeek ?? _maxSlots(builderDraft.weeks),
       sessionLengthMinutes: builderDraft.sessionLengthMinutes,

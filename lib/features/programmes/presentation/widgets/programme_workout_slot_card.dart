@@ -18,6 +18,7 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
     this.weekIndex,
     this.slotIndex,
     this.onOpenSupersetEditor,
+    this.onChangeDay,
   });
 
   final ProgrammeBuilderWorkoutSlotDraft slot;
@@ -26,6 +27,7 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
   final int? weekIndex;
   final int? slotIndex;
   final VoidCallback? onOpenSupersetEditor;
+  final VoidCallback? onChangeDay;
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +74,17 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  Text(
-                    slot.scheduledDay?.displayLabel ??
-                        '${AppStrings.onboardingDaySingle} ${slot.scheduledDayIndex + 1}',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+                  GestureDetector(
+                    onTap: onChangeDay,
+                    child: Text(
+                      slot.scheduledDay?.displayLabel ??
+                          '${AppStrings.onboardingDaySingle} ${slot.scheduledDayIndex + 1}',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                        decoration: onChangeDay != null
+                            ? TextDecoration.underline
+                            : null,
+                      ),
                     ),
                   ),
                   if (hasTemplate && slot.template!.description != null)

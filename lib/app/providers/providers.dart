@@ -86,8 +86,10 @@ import 'package:aedify/features/settings/data/provider_gate_service.dart';
 import 'package:aedify/features/settings/data/settings_repository.dart';
 import 'package:aedify/features/settings/application/provider_capability_controller.dart';
 import 'package:aedify/features/settings/application/provider_capability_state.dart';
+import 'package:aedify/features/programmes/application/today_workout_resolver.dart';
 import 'package:aedify/features/programmes/data/programme_repository.dart';
 import 'package:aedify/features/programmes/data/drift_programme_repository.dart';
+import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/data/drift_saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_controller.dart';
@@ -561,6 +563,30 @@ class AppProviders {
     );
   });
 
+  // ─── Home screen refresh trigger ──────────────────────────────
+
+  static final homeRefreshTriggerProvider =
+      NotifierProvider<RefreshTriggerNotifier, int>(RefreshTriggerNotifier.new);
+
+  // ─── Home screen sync provider ────────────────────────────────
+
+  static final programmeSyncProvider =
+      FutureProvider.family<ProgrammeSync?, String>((ref, id) async {
+        ref.watch(homeRefreshTriggerProvider);
+        final repo = ref.read(programmeRepositoryProvider);
+        final aggregate = await repo.getProgramme(id);
+        if (aggregate == null) return null;
+        final sessionDao = ref.read(workoutSessionDaoProvider);
+        final resolver = TodayWorkoutResolver(sessionDao: sessionDao);
+        final resolution = await resolver.resolve(
+          aggregate: aggregate,
+          now: DateTime.now(),
+        );
+        return ProgrammeSync(aggregate: aggregate, resolution: resolution);
+      });
+
+  // ─── Saved workout repository ─────────────────────────────────
+
   static final savedWorkoutRepositoryProvider =
       Provider<SavedWorkoutRepository>((ref) {
         return DriftSavedWorkoutRepository(
@@ -642,6 +668,7 @@ class AppProviders {
 
   static final activeWorkoutSessionProvider =
       FutureProvider<WorkoutRunnerSessionViewData?>((ref) {
+        ref.watch(homeRefreshTriggerProvider);
         final useCase = ref.read(loadActiveWorkoutSessionUseCaseProvider);
         return useCase.load();
       });
@@ -906,4 +933,18 @@ class AppProviders {
       Provider<WorkoutHistoryGroupingMapper>((ref) {
         return const WorkoutHistoryGroupingMapper();
       });
+}
+
+class ProgrammeSync {
+  const ProgrammeSync({required this.aggregate, required this.resolution});
+
+  final ProgrammeAggregate aggregate;
+  final TodayWorkoutResolution resolution;
+}
+
+class RefreshTriggerNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void trigger() => state++;
 }

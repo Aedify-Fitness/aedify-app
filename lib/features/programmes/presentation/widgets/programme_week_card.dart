@@ -20,6 +20,7 @@ class ProgrammeWeekCard extends StatelessWidget {
     required this.onRemove,
     this.onOpenSupersetEditor,
     this.onSetWeekType,
+    this.onChangeSlotDay,
   });
 
   final ProgrammeBuilderWeekDraft week;
@@ -31,6 +32,7 @@ class ProgrammeWeekCard extends StatelessWidget {
   final VoidCallback onRemove;
   final void Function(int slotIndex)? onOpenSupersetEditor;
   final void Function(WeekType type)? onSetWeekType;
+  final void Function(int slotIndex)? onChangeSlotDay;
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +120,9 @@ class ProgrammeWeekCard extends StatelessWidget {
                 onRemove: () => onRemoveSlot(entry.key),
                 onOpenSupersetEditor: onOpenSupersetEditor != null
                     ? () => onOpenSupersetEditor!(entry.key)
+                    : null,
+                onChangeDay: onChangeSlotDay != null
+                    ? () => onChangeSlotDay!(entry.key)
                     : null,
               ),
             ),

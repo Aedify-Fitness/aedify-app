@@ -94,8 +94,8 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
                     children: [
                       SvgPicture.asset(
                         OutlinedSvgAssets.clock,
-                        width: AppSizing.iconXs,
-                        height: AppSizing.iconXs,
+                        width: AppSizing.iconS,
+                        height: AppSizing.iconS,
                         colorFilter: ColorFilter.mode(
                           context.colorScheme.onSecondaryContainer,
                           BlendMode.srcIn,

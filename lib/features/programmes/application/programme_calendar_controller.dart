@@ -2,6 +2,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/programmes/application/programme_calendar_state.dart';
+import 'package:aedify/features/programmes/application/today_workout_resolver.dart';
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/programmes/domain/programme_calendar_view_data.dart';
 import 'package:aedify/shared/domain/program_workout_status.dart';
@@ -54,17 +55,19 @@ class ProgrammeCalendarController
     }
 
     final today = DateTime.now();
-    final todayDayIndex = today.weekday - 1;
     final todayWeekNumber = _computeTodayWeekNumber(
       program.startDateLocal,
       weeks,
       today,
     );
-    String? todayWorkoutId;
-
-    final daysPerWeek = program.daysPerWeek ?? 0;
     final weekViewDataList = <WeekViewData>[];
 
+    final sessionDao = ref.read(AppProviders.workoutSessionDaoProvider);
+    final resolver = TodayWorkoutResolver(sessionDao: sessionDao);
+    final resolution = await resolver.resolve(aggregate: aggregate, now: today);
+
+    // Build day view data
+    var currentFlatIndex = 0;
     for (final week in weeks) {
       final weekWorkouts = workouts
           .where((w) => w.programWeekId == week.id)
@@ -72,19 +75,19 @@ class ProgrammeCalendarController
 
       final isCurrentWeek =
           todayWeekNumber != null && week.weekNumber == todayWeekNumber;
-      final isPastWeek =
-          todayWeekNumber != null && week.weekNumber < todayWeekNumber;
 
       final dayViewDataList = <DayViewData>[];
 
-      for (var dayIdx = 0; dayIdx < daysPerWeek; dayIdx++) {
+      for (var dayIdx = 0; dayIdx < 7; dayIdx++) {
         final workout = weekWorkouts.cast<ProgramWorkout?>().firstWhere(
           (w) => w?.scheduledDayIndex == dayIdx,
           orElse: () => null,
         );
 
         final dayLabel = TrainingDay.values[dayIdx].fullDisplayLabel;
-        final isToday = isCurrentWeek && dayIdx == todayDayIndex;
+        final isToday =
+            resolution.todayFlatIndex != null &&
+            currentFlatIndex == resolution.todayFlatIndex;
 
         if (workout == null) {
           dayViewDataList.add(
@@ -100,6 +103,7 @@ class ProgrammeCalendarController
               exercisePreview: const [],
             ),
           );
+          currentFlatIndex++;
           continue;
         }
 
@@ -111,7 +115,9 @@ class ProgrammeCalendarController
             templateMap[workout.workoutTemplateId]?.estimatedDurationMinutes ??
             0;
 
-        final status = ProgramWorkoutStatus.fromDb(workout.status);
+        final status = resolution.completedWorkoutIds.contains(workout.id)
+            ? ProgramWorkoutStatus.completed
+            : ProgramWorkoutStatus.fromDb(workout.status);
 
         final previewNames = <String>[];
         for (var i = 0; i < workoutExercises.length && i < 3; i++) {
@@ -119,10 +125,6 @@ class ProgrammeCalendarController
           if (name != null) {
             previewNames.add(name);
           }
-        }
-
-        if (isToday) {
-          todayWorkoutId = workout.id;
         }
 
         dayViewDataList.add(
@@ -139,7 +141,15 @@ class ProgrammeCalendarController
             exercisePreview: previewNames,
           ),
         );
+        currentFlatIndex++;
       }
+
+      final nonRestDays = dayViewDataList.where((d) => !d.isRestDay).toList();
+      final isWeekCompleted =
+          nonRestDays.isNotEmpty && nonRestDays.every((d) => d.isCompleted);
+      final isWeekSkipped =
+          nonRestDays.isNotEmpty &&
+          nonRestDays.every((d) => d.status == ProgramWorkoutStatus.skipped);
 
       weekViewDataList.add(
         WeekViewData(
@@ -147,12 +157,17 @@ class ProgrammeCalendarController
           weekNumber: week.weekNumber,
           weekType: WeekType.fromDb(week.weekType) ?? WeekType.normal,
           isCurrentWeek: isCurrentWeek,
-          isPastWeek: isPastWeek,
+          isWeekCompleted: isWeekCompleted,
+          isWeekSkipped: isWeekSkipped,
           name: week.notes,
           days: dayViewDataList,
         ),
       );
     }
+
+    final progressionTodayDayIndex = resolution.todayFlatIndex != null
+        ? resolution.todayFlatIndex! % 7
+        : 0;
 
     return ProgrammeCalendarViewData(
       name: program.name,
@@ -163,8 +178,8 @@ class ProgrammeCalendarController
       isActive: program.active,
       weeks: weekViewDataList,
       todayWeekNumber: todayWeekNumber,
-      todayDayIndex: todayDayIndex,
-      todayWorkoutId: todayWorkoutId,
+      todayDayIndex: progressionTodayDayIndex,
+      todayWorkoutId: resolution.todayWorkoutId,
     );
   }
 
@@ -187,15 +202,14 @@ class ProgrammeCalendarController
     DateTime today,
   ) {
     if (weeks.isEmpty) return null;
-    if (startDateLocal != null) {
-      final startDate = DateTime.tryParse(startDateLocal);
-      if (startDate != null) {
-        final diffDays = today.difference(startDate).inDays;
-        if (diffDays < 0) return null;
-        final weekNum = (diffDays ~/ 7) + 1;
-        if (weekNum > weeks.length) return null;
-        return weekNum;
-      }
+    if (startDateLocal == null) return weeks.first.weekNumber;
+    final startDate = DateTime.tryParse(startDateLocal);
+    if (startDate != null) {
+      final diffDays = today.difference(startDate).inDays;
+      if (diffDays < 0) return null;
+      final weekNum = (diffDays ~/ 7) + 1;
+      if (weekNum > weeks.length) return null;
+      return weekNum;
     }
     return null;
   }

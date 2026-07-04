@@ -445,96 +445,170 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
     for (var weekNum = 1; weekNum <= draft.weeksTotal!; weekNum++) {
       final weekId = _newId();
+      final weekType =
+          draft.weekTypes != null && weekNum - 1 < draft.weekTypes!.length
+          ? draft.weekTypes![weekNum - 1]?.dbValue
+          : null;
       await _programWeekDao.upsertWeek(
         _buildProgramWeekCompanion(
           programId: programId,
           weekId: weekId,
           weekNumber: weekNum,
           now: now,
+          weekType: weekType,
         ),
       );
 
-      for (var dayIdx = 0; dayIdx < draft.daysPerWeek!; dayIdx++) {
-        if (dayIdx < draft.templates.length) {
-          final template = draft.templates[dayIdx];
-          final workoutId = _newId();
-          final occurrenceRef = 'w${weekNum}_d$dayIdx';
-
-          await _programWorkoutDao.upsertWorkout(
-            _buildProgramWorkoutCompanion(
-              programId: programId,
-              workoutId: workoutId,
-              occurrenceRef: occurrenceRef,
-              name: template.name,
-              now: now,
-              programWeekId: weekId,
-              workoutTemplateId: template.id,
-              scheduledDayIndex: dayIdx,
-            ),
+      final weekIdx = weekNum - 1;
+      final templateMap = {for (final t in draft.templates) t.id: t};
+      if (draft.weekSlotDayIndices != null &&
+          weekIdx < draft.weekSlotDayIndices!.length &&
+          draft.weekSlotDayIndices![weekIdx].isNotEmpty) {
+        final weekDayIndices = draft.weekSlotDayIndices![weekIdx];
+        final weekTemplateIds =
+            draft.weekSlotTemplateIds != null &&
+                weekIdx < draft.weekSlotTemplateIds!.length
+            ? draft.weekSlotTemplateIds![weekIdx]
+            : <String>[];
+        for (var slotIdx = 0; slotIdx < weekDayIndices.length; slotIdx++) {
+          final dayIndex = weekDayIndices[slotIdx];
+          final templateId = slotIdx < weekTemplateIds.length
+              ? weekTemplateIds[slotIdx]
+              : null;
+          final template = templateId != null ? templateMap[templateId] : null;
+          if (template == null) continue;
+          await _insertExpandedWorkout(
+            programId: programId,
+            weekId: weekId,
+            weekNum: weekNum,
+            slotIdx: slotIdx,
+            dayIndex: dayIndex,
+            template: template,
+            now: now,
           );
-
-          final templateExercises = await _programTemplateExerciseDao
-              .getByTemplateIdOrdered(template.id);
-          for (final te in templateExercises) {
-            final exerciseId = _newId();
-            await _programExerciseDao.upsertExercise(
-              ProgramExercisesCompanion(
-                id: Value(exerciseId),
-                programWorkoutId: Value(workoutId),
-                sourceTemplateExerciseId: Value(te.id),
-                exerciseId: Value(te.exerciseId),
-                exerciseRole: Value(te.exerciseRole),
-                supersetGroupId: Value(te.supersetGroupId),
-                supersetOrder: Value(te.supersetOrder),
-                sortOrder: Value(te.sortOrder),
-                notes: Value(te.notes),
-              ),
+        }
+      } else if (draft.slotDayIndices != null &&
+          draft.slotDayIndices!.isNotEmpty) {
+        final slotTemplateIds = draft.slotTemplateIds ?? [];
+        for (
+          var slotIdx = 0;
+          slotIdx < draft.slotDayIndices!.length;
+          slotIdx++
+        ) {
+          final dayIndex = draft.slotDayIndices![slotIdx];
+          final templateId = slotIdx < slotTemplateIds.length
+              ? slotTemplateIds[slotIdx]
+              : null;
+          final template = templateId != null ? templateMap[templateId] : null;
+          if (template == null) continue;
+          await _insertExpandedWorkout(
+            programId: programId,
+            weekId: weekId,
+            weekNum: weekNum,
+            slotIdx: slotIdx,
+            dayIndex: dayIndex,
+            template: template,
+            now: now,
+          );
+        }
+      } else {
+        for (var dayIdx = 0; dayIdx < (draft.daysPerWeek ?? 0); dayIdx++) {
+          if (dayIdx < draft.templates.length) {
+            await _insertExpandedWorkout(
+              programId: programId,
+              weekId: weekId,
+              weekNum: weekNum,
+              slotIdx: dayIdx,
+              dayIndex: dayIdx,
+              template: draft.templates[dayIdx],
+              now: now,
             );
-
-            final templateSets = await _programTemplateExerciseSetDao
-                .getByTemplateExerciseIdOrdered(te.id);
-            for (final ts in templateSets) {
-              await _programExerciseSetDao.upsertSet(
-                ProgramExerciseSetsCompanion(
-                  id: Value(_newId()),
-                  programExerciseId: Value(exerciseId),
-                  sourceTemplateSetId: Value(ts.id),
-                  setIndex: Value(ts.setIndex),
-                  setType: Value(ts.setType),
-                  setIntent: Value(ts.setIntent),
-                  prescribedRepsMin: Value(ts.prescribedRepsMin),
-                  prescribedRepsMax: Value(ts.prescribedRepsMax),
-                  prescribedRepsExact: Value(ts.prescribedRepsExact),
-                  durationSeconds: Value(ts.durationSeconds),
-                  distanceMeters: Value(ts.distanceMeters),
-                  weightPrescriptionType: Value(ts.weightPrescriptionType),
-                  prescribedWeightKg: Value(ts.prescribedWeightKg),
-                  prescribedWeightPct1rm: Value(ts.prescribedWeightPct1rm),
-                  prescribedWeightPctWorking: Value(
-                    ts.prescribedWeightPctWorking,
-                  ),
-                  bodyweightMultiplier: Value(ts.bodyweightMultiplier),
-                  prescribedRpeMin: Value(ts.prescribedRpeMin),
-                  prescribedRpeMax: Value(ts.prescribedRpeMax),
-                  prescribedRir: Value(ts.prescribedRir),
-                  restSeconds: Value(ts.restSeconds),
-                  loadingModel: Value(ts.loadingModel),
-                  percent1rmMin: Value(ts.percent1rmMin),
-                  percent1rmMax: Value(ts.percent1rmMax),
-                  rpeMin: Value(ts.rpeMin),
-                  rpeMax: Value(ts.rpeMax),
-                  loadSelectionNote: Value(ts.loadSelectionNote),
-                  isCalibrationEstimate: Value(ts.isCalibrationEstimate),
-                  derivedFromWorkingSetIndex: Value(
-                    ts.derivedFromWorkingSetIndex,
-                  ),
-                  warmupWeightRuleJson: Value(ts.warmupWeightRuleJson),
-                  createdAt: Value(now),
-                ),
-              );
-            }
           }
         }
+      }
+    }
+  }
+
+  Future<void> _insertExpandedWorkout({
+    required String programId,
+    required String weekId,
+    required int weekNum,
+    required int slotIdx,
+    required int dayIndex,
+    required ProgrammeWorkoutTemplateDraft template,
+    required DateTime now,
+  }) async {
+    final workoutId = _newId();
+    final occurrenceRef = 'w${weekNum}_s$slotIdx';
+
+    await _programWorkoutDao.upsertWorkout(
+      _buildProgramWorkoutCompanion(
+        programId: programId,
+        workoutId: workoutId,
+        occurrenceRef: occurrenceRef,
+        name: template.name,
+        now: now,
+        programWeekId: weekId,
+        workoutTemplateId: template.id,
+        scheduledDayIndex: dayIndex,
+      ),
+    );
+
+    final templateExercises = await _programTemplateExerciseDao
+        .getByTemplateIdOrdered(template.id);
+    for (final te in templateExercises) {
+      final exerciseId = _newId();
+      await _programExerciseDao.upsertExercise(
+        ProgramExercisesCompanion(
+          id: Value(exerciseId),
+          programWorkoutId: Value(workoutId),
+          sourceTemplateExerciseId: Value(te.id),
+          exerciseId: Value(te.exerciseId),
+          exerciseRole: Value(te.exerciseRole),
+          supersetGroupId: Value(te.supersetGroupId),
+          supersetOrder: Value(te.supersetOrder),
+          sortOrder: Value(te.sortOrder),
+          notes: Value(te.notes),
+        ),
+      );
+
+      final templateSets = await _programTemplateExerciseSetDao
+          .getByTemplateExerciseIdOrdered(te.id);
+      for (final ts in templateSets) {
+        await _programExerciseSetDao.upsertSet(
+          ProgramExerciseSetsCompanion(
+            id: Value(_newId()),
+            programExerciseId: Value(exerciseId),
+            sourceTemplateSetId: Value(ts.id),
+            setIndex: Value(ts.setIndex),
+            setType: Value(ts.setType),
+            setIntent: Value(ts.setIntent),
+            prescribedRepsMin: Value(ts.prescribedRepsMin),
+            prescribedRepsMax: Value(ts.prescribedRepsMax),
+            prescribedRepsExact: Value(ts.prescribedRepsExact),
+            durationSeconds: Value(ts.durationSeconds),
+            distanceMeters: Value(ts.distanceMeters),
+            weightPrescriptionType: Value(ts.weightPrescriptionType),
+            prescribedWeightKg: Value(ts.prescribedWeightKg),
+            prescribedWeightPct1rm: Value(ts.prescribedWeightPct1rm),
+            prescribedWeightPctWorking: Value(ts.prescribedWeightPctWorking),
+            bodyweightMultiplier: Value(ts.bodyweightMultiplier),
+            prescribedRpeMin: Value(ts.prescribedRpeMin),
+            prescribedRpeMax: Value(ts.prescribedRpeMax),
+            prescribedRir: Value(ts.prescribedRir),
+            restSeconds: Value(ts.restSeconds),
+            loadingModel: Value(ts.loadingModel),
+            percent1rmMin: Value(ts.percent1rmMin),
+            percent1rmMax: Value(ts.percent1rmMax),
+            rpeMin: Value(ts.rpeMin),
+            rpeMax: Value(ts.rpeMax),
+            loadSelectionNote: Value(ts.loadSelectionNote),
+            isCalibrationEstimate: Value(ts.isCalibrationEstimate),
+            derivedFromWorkingSetIndex: Value(ts.derivedFromWorkingSetIndex),
+            warmupWeightRuleJson: Value(ts.warmupWeightRuleJson),
+            createdAt: Value(now),
+          ),
+        );
       }
     }
   }

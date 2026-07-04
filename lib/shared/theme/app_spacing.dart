@@ -57,7 +57,8 @@ class AppRadius {
 class AppSizing {
   AppSizing._();
 
-  static const double iconXs = 18;
+  static const double iconXs = 14;
+  static const double iconS = 18;
   static const double iconSm = 20;
   static const double iconMd = 24;
   static const double iconLg = 28;
@@ -90,8 +91,8 @@ class AppSizing {
   static const double timerStrokeWidth = 8;
   static const double hairlineStrokeWidth = 1;
   static const double activeIndicatorHeight = 4;
-  static const double deloadLineStrokeWidth = 1;
-  static const double deloadLineSpacing = 20;
+  static const double deloadLineStrokeWidth = 10;
+  static const double deloadLineSpacing = 40;
   static const double exerciseNumberCircle = 56;
   static const double setNumberColumnWidth = 32;
 }

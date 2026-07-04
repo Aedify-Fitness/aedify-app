@@ -100,88 +100,85 @@ class _ProgrammeCalendarScreenState
           }
         }
 
+        final activeSession = ref
+            .watch(AppProviders.activeWorkoutSessionProvider)
+            .asData
+            ?.value;
+
         return Scaffold(
-          appBar: AppBar(
-            title: Text(viewData.name),
-            actions: [
-              IconButton(
-                icon: SvgPicture.asset(
-                  OutlinedSvgAssets.pencil,
-                  width: AppSizing.iconMd,
-                  height: AppSizing.iconMd,
-                ),
-                onPressed: () {
-                  context.pushNamed(
-                    AppRoutes.programmeBuilderEdit().name,
-                    pathParameters: {'id': widget.programmeId},
-                  );
-                },
-                tooltip: AppStrings.editProgramme,
-              ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ProgrammeCalendarHeader(
-                  viewData: viewData,
-                  onStartTodayWorkout: viewData.todayWorkoutId != null
-                      ? () {
-                          context.pushNamed(
-                            AppRoutes.workoutRunnerProgramWorkout().name,
-                            pathParameters: {
-                              'programId': widget.programmeId,
-                              'workoutId': viewData.todayWorkoutId!,
-                            },
-                          );
-                        }
-                      : null,
-                ),
-                WeekSelectorPills(
-                  weeks: viewData.weeks,
-                  currentWeekNumber: viewData.todayWeekNumber,
-                  scrollController: ScrollController(),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                  ),
-                  child: Column(
-                    children: viewData.weeks.map((week) {
-                      final isExpanded = _expandedWeeks.contains(
-                        week.weekNumber,
-                      );
-                      return ProgrammeWeekSection(
-                        week: week,
-                        isExpanded: isExpanded,
-                        onToggle: () {
-                          setState(() {
-                            if (isExpanded) {
-                              _expandedWeeks.remove(week.weekNumber);
-                            } else {
-                              _expandedWeeks.add(week.weekNumber);
-                            }
-                          });
-                        },
-                        onDayTap: (day) {
-                          if (day.workoutId != null) {
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(top: AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProgrammeCalendarHeader(
+                    viewData: viewData,
+                    programId: widget.programmeId,
+                    activeSession: activeSession,
+                    onStartTodayWorkout: viewData.todayWorkoutId != null
+                        ? () {
                             context.pushNamed(
-                              AppRoutes.programmeWorkoutDetail().name,
+                              AppRoutes.workoutRunnerProgramWorkout().name,
                               pathParameters: {
                                 'programId': widget.programmeId,
-                                'workoutId': day.workoutId!,
+                                'workoutId': viewData.todayWorkoutId!,
                               },
                             );
                           }
-                        },
-                      );
-                    }).toList(),
+                        : null,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-              ],
+                  const SizedBox(height: AppSpacing.xxl),
+                  WeekSelectorPills(
+                    weeks: viewData.weeks,
+                    currentWeekNumber: viewData.todayWeekNumber,
+                    scrollController: ScrollController(),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: Column(
+                      children: viewData.weeks.map((week) {
+                        final isExpanded = _expandedWeeks.contains(
+                          week.weekNumber,
+                        );
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                          child: ProgrammeWeekSection(
+                            week: week,
+                            isExpanded: isExpanded,
+                            isCurrentWeek:
+                                week.weekNumber == viewData.todayWeekNumber,
+                            onToggle: () {
+                              setState(() {
+                                if (isExpanded) {
+                                  _expandedWeeks.remove(week.weekNumber);
+                                } else {
+                                  _expandedWeeks.add(week.weekNumber);
+                                }
+                              });
+                            },
+                            onDayTap: (day) {
+                              if (day.workoutId != null) {
+                                context.pushNamed(
+                                  AppRoutes.programmeWorkoutDetail().name,
+                                  pathParameters: {
+                                    'programId': widget.programmeId,
+                                    'workoutId': day.workoutId!,
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xxxl),
+                ],
+              ),
             ),
           ),
         );

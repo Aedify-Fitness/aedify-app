@@ -18,8 +18,8 @@ class PatternDeloadPainter extends CustomPainter {
 
     for (var i = -maxDim; i < maxDim; i += spacing) {
       canvas.drawLine(
-        Offset(i.toDouble(), 0),
-        Offset(i + size.height, size.height),
+        Offset(i.toDouble(), -4),
+        Offset(i + size.height, size.height + 4),
         paint,
       );
     }

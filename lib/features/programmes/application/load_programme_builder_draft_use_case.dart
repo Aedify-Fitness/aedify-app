@@ -5,9 +5,14 @@ import 'package:aedify/features/programmes/domain/programme_builder_week_draft.d
 import 'package:aedify/features/programmes/domain/programme_builder_workout_slot_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/enum_codec.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 
 class LoadProgrammeBuilderDraftUseCase {
@@ -63,11 +68,16 @@ class LoadProgrammeBuilderDraftUseCase {
           .where((wo) => wo.programWeekId == w.id)
           .toList();
 
-      final slots = weekWorkouts.map((wo) {
+      final slots = weekWorkouts.asMap().entries.map((entry) {
+        final idx = entry.key;
+        final wo = entry.value;
         return ProgrammeBuilderWorkoutSlotDraft(
-          slotIndex: wo.scheduledDayIndex ?? 0,
+          slotIndex: idx,
           scheduledDayIndex: wo.scheduledDayIndex ?? 0,
           name: wo.name,
+          scheduledDay: wo.scheduledDayIndex != null
+              ? TrainingDay.values[wo.scheduledDayIndex!]
+              : null,
           template: wo.workoutTemplateId != null
               ? templateMap[wo.workoutTemplateId]
               : null,
@@ -79,6 +89,7 @@ class LoadProgrammeBuilderDraftUseCase {
         weekNumber: w.weekNumber,
         slots: slots,
         name: w.notes,
+        weekType: WeekType.fromDb(w.weekType),
       );
     }).toList();
 
@@ -90,6 +101,11 @@ class LoadProgrammeBuilderDraftUseCase {
       status: ProgramStatus.fromDb(program.status),
       description: program.description,
       active: program.active,
+      goalTags: EnumCodec.decodeSet(program.goalTagsJson, GoalTag.fromDb),
+      equipment: EnumCodec.decodeSet(
+        program.equipmentJson,
+        EquipmentTag.fromDb,
+      ),
       weeks: weeks,
       templates: templateList.map((t) => t.id).toList(),
       weeksTotal: program.weeksTotal,

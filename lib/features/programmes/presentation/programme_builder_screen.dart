@@ -239,6 +239,8 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                             type: type,
                           );
                         },
+                        onChangeSlotDay: (weekIndex, slotIndex) =>
+                            _handleChangeSlotDay(weekIndex, slotIndex),
                       ),
                     ],
                   ),
@@ -268,11 +270,6 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                     savedState != null &&
                     !savedState.hasValidationErrors &&
                     savedState.phase != ProgrammeBuilderPhase.failure;
-                if (saved) {
-                  ref.invalidate(
-                    AppProviders.programmeLibraryControllerProvider,
-                  );
-                }
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -284,7 +281,24 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                     ),
                   );
                   if (saved) {
+                    final programmeId = widget.state.programmeId;
                     context.pop();
+                    ref
+                        .read(
+                          AppProviders
+                              .programmeLibraryControllerProvider
+                              .notifier,
+                        )
+                        .reload();
+                    if (programmeId != null) {
+                      ref
+                          .read(
+                            AppProviders.programmeCalendarControllerProvider(
+                              programmeId,
+                            ).notifier,
+                          )
+                          .reload();
+                    }
                   }
                 }
               },
@@ -475,6 +489,68 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
               },
             );
           },
+        );
+      },
+    );
+  }
+
+  void _handleChangeSlotDay(int weekIndex, int slotIndex) {
+    final slots = widget.state.draft.weeks?.elementAt(weekIndex).slots;
+    if (slots == null || slotIndex >= slots.length) return;
+    final currentDay = slots[slotIndex].scheduledDay;
+    _showDayPicker(context, currentDay).then((selected) {
+      if (selected != null && mounted) {
+        _controller.updateSlotDay(
+          weekIndex: weekIndex,
+          slotIndex: slotIndex,
+          day: selected,
+        );
+      }
+    });
+  }
+
+  Future<TrainingDay?> _showDayPicker(
+    BuildContext context,
+    TrainingDay? currentDay,
+  ) {
+    return showModalBottomSheet<TrainingDay>(
+      context: context,
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppStrings.selectDay, style: context.textTheme.titleMedium),
+              const SizedBox(height: AppSpacing.md),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: TrainingDay.values.map((day) {
+                  final isSelected = day == currentDay;
+                  return ChoiceChip(
+                    selected: isSelected,
+                    label: Text(
+                      day.fullDisplayLabel,
+                      style: context.textTheme.labelMedium?.copyWith(
+                        color: isSelected
+                            ? context.colorScheme.onSecondary
+                            : context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    selectedColor: context.colorScheme.secondary,
+                    backgroundColor:
+                        context.colorScheme.surfaceContainerHighest,
+                    side: isSelected
+                        ? BorderSide.none
+                        : BorderSide(color: context.colorScheme.outlineVariant),
+                    onSelected: (_) => Navigator.of(ctx).pop(day),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         );
       },
     );

@@ -16,6 +16,21 @@ class WorkoutSessionDao extends DatabaseAccessor<AppDatabase>
     workoutSessions,
   )..where((t) => t.status.equals('in_progress'))).getSingleOrNull();
 
+  Future<List<WorkoutSession>> getInProgressSessions() =>
+      (select(workoutSessions)
+            ..where((t) => t.status.equals('in_progress'))
+            ..orderBy([
+              (t) => OrderingTerm(
+                expression: t.updatedAt,
+                mode: OrderingMode.desc,
+              ),
+              (t) => OrderingTerm(
+                expression: t.startedAt,
+                mode: OrderingMode.desc,
+              ),
+            ]))
+          .get();
+
   Future<List<WorkoutSession>> getCompletedSessions() =>
       (select(workoutSessions)
             ..where((t) => t.status.equals('completed'))
@@ -36,6 +51,17 @@ class WorkoutSessionDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> upsertSession(WorkoutSessionsCompanion entry) =>
       into(workoutSessions).insert(entry, mode: InsertMode.insertOrReplace);
+
+  Future<bool> updateSessionIfInProgress({
+    required String id,
+    required WorkoutSessionsCompanion entry,
+  }) async {
+    final affectedRows =
+        await (update(workoutSessions)
+              ..where((t) => t.id.equals(id) & t.status.equals('in_progress')))
+            .write(entry);
+    return affectedRows > 0;
+  }
 
   Future<void> markCompleted({
     required String id,
@@ -63,6 +89,51 @@ class WorkoutSessionDao extends DatabaseAccessor<AppDatabase>
         updatedAt: Value(updatedAt),
       ),
     );
+  }
+
+  Future<void> markAbandonedByIds({
+    required List<String> ids,
+    required DateTime updatedAt,
+  }) async {
+    if (ids.isEmpty) return;
+    await (update(workoutSessions)..where((t) => t.id.isIn(ids))).write(
+      WorkoutSessionsCompanion(
+        status: const Value('abandoned'),
+        updatedAt: Value(updatedAt),
+      ),
+    );
+  }
+
+  Future<List<WorkoutSession>> getCompletedByProgramWorkoutIds(
+    List<String> programWorkoutIds,
+  ) async {
+    if (programWorkoutIds.isEmpty) return [];
+    return (select(workoutSessions)
+          ..where((t) => t.programWorkoutId.isIn(programWorkoutIds))
+          ..where((t) => t.status.equals('completed'))
+          ..orderBy([
+            (t) => OrderingTerm(
+              expression: t.completedAt,
+              mode: OrderingMode.desc,
+            ),
+          ]))
+        .get();
+  }
+
+  Future<List<WorkoutSession>> getCompletedBySavedWorkoutIds(
+    List<String> savedWorkoutIds,
+  ) async {
+    if (savedWorkoutIds.isEmpty) return [];
+    return (select(workoutSessions)
+          ..where((t) => t.savedWorkoutId.isIn(savedWorkoutIds))
+          ..where((t) => t.status.equals('completed'))
+          ..orderBy([
+            (t) => OrderingTerm(
+              expression: t.completedAt,
+              mode: OrderingMode.desc,
+            ),
+          ]))
+        .get();
   }
 
   Future<void> deleteSession(String id) async {

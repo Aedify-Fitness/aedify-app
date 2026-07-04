@@ -12,7 +12,6 @@ import 'package:aedify/features/workout_execution/domain/workout_session_aggrega
 import 'package:aedify/features/workout_execution/domain/workout_session_draft.dart';
 import 'package:aedify/features/workout_execution/domain/workout_session_exercise_draft.dart';
 import 'package:aedify/features/workout_execution/domain/set_log_draft.dart';
-import 'package:aedify/shared/domain/workout_session_status.dart';
 
 class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   DriftWorkoutSessionRepository({
@@ -35,6 +34,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   @override
   Future<WorkoutSessionAggregate?> getActiveSession() async {
     _logger.debug('getActive');
+    await _repairInProgressSessions();
     final session = await _workoutSessionDao.getActiveSession();
     if (session == null) return null;
     return _buildAggregate(session);
@@ -52,7 +52,6 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     _logger.info('start — sessionId: ${draft.id}');
     final sessionId = draft.id;
     final now = DateTime.now();
-    final inProgressCount = await _workoutSessionDao.countInProgressSessions();
 
     await _transactionExecutor.execute(
       operationName: 'session.start',
@@ -60,7 +59,6 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
         draft: draft,
         sessionId: sessionId,
         now: now,
-        inProgressCount: inProgressCount,
       ),
     );
 
@@ -70,16 +68,11 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
   @override
   Future<void> saveSessionProgress(WorkoutSessionDraft draft) async {
     _logger.debug('saveProgress — sessionId: ${draft.id}');
-    final existing = await _workoutSessionDao.getById(draft.id);
     final now = DateTime.now();
 
     await _transactionExecutor.execute(
       operationName: 'session.save_progress',
-      steps: _buildSaveSessionProgressSteps(
-        draft: draft,
-        existing: existing,
-        now: now,
-      ),
+      steps: _buildSaveSessionProgressSteps(draft: draft, now: now),
     );
   }
 
@@ -118,12 +111,13 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     required WorkoutSessionDraft draft,
     required String sessionId,
     required DateTime now,
-    required int inProgressCount,
   }) {
     return [
       TransactionStep(
         operation: const TransactionOperation(name: 'session.ensure_no_active'),
         run: () async {
+          final inProgressCount = await _workoutSessionDao
+              .countInProgressSessions();
           if (inProgressCount > 0) {
             throw StateError(
               'Cannot start session: another session is already in progress',
@@ -156,32 +150,12 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
 
   List<TransactionStep> _buildSaveSessionProgressSteps({
     required WorkoutSessionDraft draft,
-    required WorkoutSession? existing,
     required DateTime now,
   }) {
     return [
       TransactionStep(
-        operation: const TransactionOperation(
-          name: 'session.validate_existing',
-        ),
-        run: () async {
-          if (existing == null) {
-            throw StateError('Session not found: ${draft.id}');
-          }
-          if (existing.status != WorkoutSessionStatus.inProgress.dbValue) {
-            throw StateError(
-              'Cannot save progress: session ${draft.id} status is ${existing.status}',
-            );
-          }
-        },
-      ),
-      TransactionStep(
         operation: const TransactionOperation(name: 'session.write_root'),
-        run: () => _updateSessionRootFromDraft(
-          draft: draft,
-          existing: existing!,
-          now: now,
-        ),
+        run: () => _updateSessionProgressRoot(draft: draft, now: now),
       ),
       TransactionStep(
         operation: const TransactionOperation(name: 'session.delete_hierarchy'),
@@ -209,11 +183,10 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     return [
       TransactionStep(
         operation: const TransactionOperation(name: 'session.complete'),
-        run: () => _workoutSessionDao.markCompleted(
-          id: sessionId,
+        run: () => _completeSessionAndAbandonSiblings(
+          sessionId: sessionId,
           completedAt: completedAt,
           durationSeconds: durationSeconds,
-          updatedAt: DateTime.now(),
         ),
       ),
     ];
@@ -319,31 +292,174 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
     );
   }
 
-  Future<void> _updateSessionRootFromDraft({
+  Future<void> _updateSessionProgressRoot({
     required WorkoutSessionDraft draft,
-    required WorkoutSession existing,
     required DateTime now,
   }) async {
-    await _workoutSessionDao.upsertSession(
-      WorkoutSessionsCompanion(
-        id: Value(draft.id),
+    final didUpdate = await _workoutSessionDao.updateSessionIfInProgress(
+      id: draft.id,
+      entry: WorkoutSessionsCompanion(
         source: Value(draft.source.dbValue),
         programId: Value(draft.programId),
         programWorkoutId: Value(draft.programWorkoutId),
         savedWorkoutId: Value(draft.savedWorkoutId),
         name: Value(draft.name),
         startedAt: Value(draft.startedAt),
-        completedAt: Value(existing.completedAt),
-        durationSeconds: Value(existing.durationSeconds),
-        status: Value(WorkoutSessionStatus.inProgress.dbValue),
         bodyweightKgAtSession: Value(draft.bodyweightKgAtSession),
         notes: Value(draft.notes),
         energyLevel: Value(draft.energyLevel),
         perceivedDifficulty: Value(draft.perceivedDifficulty),
-        createdAt: Value(existing.createdAt),
         updatedAt: Value(now),
       ),
     );
+    if (!didUpdate) {
+      final existing = await _workoutSessionDao.getById(draft.id);
+      if (existing == null) {
+        throw StateError('Session not found: ${draft.id}');
+      }
+      throw StateError(
+        'Cannot save progress: session ${draft.id} status is ${existing.status}',
+      );
+    }
+  }
+
+  Future<void> _completeSessionAndAbandonSiblings({
+    required String sessionId,
+    required DateTime completedAt,
+    required int durationSeconds,
+  }) async {
+    final updatedAt = DateTime.now();
+    await _workoutSessionDao.markCompleted(
+      id: sessionId,
+      completedAt: completedAt,
+      durationSeconds: durationSeconds,
+      updatedAt: updatedAt,
+    );
+
+    final completedSession = await _workoutSessionDao.getById(sessionId);
+    if (completedSession == null) {
+      throw StateError('Session not found after completion: $sessionId');
+    }
+
+    final siblingIds = await _findConflictingInProgressSessionIds(
+      reference: completedSession,
+    );
+    await _workoutSessionDao.markAbandonedByIds(
+      ids: siblingIds,
+      updatedAt: updatedAt,
+    );
+  }
+
+  Future<void> _repairInProgressSessions() async {
+    final activeSessions = await _workoutSessionDao.getInProgressSessions();
+    if (activeSessions.isEmpty) return;
+
+    final obsoleteIds = await _findObsoleteInProgressSessionIds(activeSessions);
+    if (obsoleteIds.isNotEmpty) {
+      await _workoutSessionDao.markAbandonedByIds(
+        ids: obsoleteIds,
+        updatedAt: DateTime.now(),
+      );
+    }
+
+    final remainingSessions = await _workoutSessionDao.getInProgressSessions();
+    if (remainingSessions.length <= 1) return;
+
+    await _workoutSessionDao.markAbandonedByIds(
+      ids: remainingSessions.skip(1).map((s) => s.id).toList(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  Future<List<String>> _findObsoleteInProgressSessionIds(
+    List<WorkoutSession> activeSessions,
+  ) async {
+    final obsoleteIds = <String>[];
+
+    final programWorkoutIds = activeSessions
+        .map((s) => s.programWorkoutId)
+        .whereType<String>()
+        .toSet()
+        .toList();
+    final latestCompletedProgramSessions = await _workoutSessionDao
+        .getCompletedByProgramWorkoutIds(programWorkoutIds);
+    final latestCompletedByProgramWorkoutId = <String, DateTime>{};
+    for (final session in latestCompletedProgramSessions) {
+      final programWorkoutId = session.programWorkoutId;
+      final completedAt = session.completedAt;
+      if (programWorkoutId == null || completedAt == null) continue;
+      latestCompletedByProgramWorkoutId.putIfAbsent(
+        programWorkoutId,
+        () => completedAt,
+      );
+    }
+
+    final savedWorkoutIds = activeSessions
+        .map((s) => s.savedWorkoutId)
+        .whereType<String>()
+        .toSet()
+        .toList();
+    final latestCompletedSavedSessions = await _workoutSessionDao
+        .getCompletedBySavedWorkoutIds(savedWorkoutIds);
+    final latestCompletedBySavedWorkoutId = <String, DateTime>{};
+    for (final session in latestCompletedSavedSessions) {
+      final savedWorkoutId = session.savedWorkoutId;
+      final completedAt = session.completedAt;
+      if (savedWorkoutId == null || completedAt == null) continue;
+      latestCompletedBySavedWorkoutId.putIfAbsent(
+        savedWorkoutId,
+        () => completedAt,
+      );
+    }
+
+    for (final session in activeSessions) {
+      final programCompletedAt = session.programWorkoutId == null
+          ? null
+          : latestCompletedByProgramWorkoutId[session.programWorkoutId!];
+      if (programCompletedAt != null &&
+          !programCompletedAt.isBefore(session.startedAt)) {
+        obsoleteIds.add(session.id);
+        continue;
+      }
+
+      final savedCompletedAt = session.savedWorkoutId == null
+          ? null
+          : latestCompletedBySavedWorkoutId[session.savedWorkoutId!];
+      if (savedCompletedAt != null &&
+          !savedCompletedAt.isBefore(session.startedAt)) {
+        obsoleteIds.add(session.id);
+      }
+    }
+
+    return obsoleteIds;
+  }
+
+  Future<List<String>> _findConflictingInProgressSessionIds({
+    required WorkoutSession reference,
+  }) async {
+    final activeSessions = await _workoutSessionDao.getInProgressSessions();
+    return activeSessions
+        .where((candidate) => candidate.id != reference.id)
+        .where((candidate) => _matchesWorkoutIdentity(candidate, reference))
+        .map((candidate) => candidate.id)
+        .toList();
+  }
+
+  bool _matchesWorkoutIdentity(
+    WorkoutSession candidate,
+    WorkoutSession target,
+  ) {
+    if (candidate.source != target.source) return false;
+
+    if (target.programWorkoutId != null) {
+      return candidate.programWorkoutId == target.programWorkoutId;
+    }
+
+    if (target.savedWorkoutId != null) {
+      return candidate.savedWorkoutId == target.savedWorkoutId;
+    }
+
+    return false;
   }
 
   WorkoutSessionsCompanion _buildWorkoutSessionCompanion({

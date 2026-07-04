@@ -11,10 +11,14 @@ class SavedWorkoutDao extends DatabaseAccessor<AppDatabase>
   Future<SavedWorkout?> getById(String id) =>
       (select(savedWorkouts)..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  Future<List<SavedWorkout>> getAll() => select(savedWorkouts).get();
+  Future<List<SavedWorkout>> getAll() =>
+      (select(savedWorkouts)..where((t) => t.deletedAt.isNull())).get();
 
   Future<List<SavedWorkout>> getByStatus(String status) =>
-      (select(savedWorkouts)..where((t) => t.status.equals(status))).get();
+      (select(savedWorkouts)
+            ..where((t) => t.status.equals(status))
+            ..where((t) => t.deletedAt.isNull()))
+          .get();
 
   Future<void> upsertSavedWorkout(SavedWorkoutsCompanion entry) =>
       into(savedWorkouts).insert(entry, mode: InsertMode.insertOrReplace);
@@ -28,6 +32,20 @@ class SavedWorkoutDao extends DatabaseAccessor<AppDatabase>
       SavedWorkoutsCompanion(
         status: const Value('archived'),
         archivedAt: Value(archivedAt),
+        updatedAt: Value(updatedAt),
+      ),
+    );
+  }
+
+  Future<void> softDeleteById({
+    required String id,
+    required DateTime deletedAt,
+    required DateTime updatedAt,
+  }) async {
+    await (update(savedWorkouts)..where((t) => t.id.equals(id))).write(
+      SavedWorkoutsCompanion(
+        status: const Value('deleted'),
+        deletedAt: Value(deletedAt),
         updatedAt: Value(updatedAt),
       ),
     );

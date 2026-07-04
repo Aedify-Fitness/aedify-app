@@ -33,7 +33,8 @@ class WeekViewData {
     required this.weekNumber,
     required this.weekType,
     required this.isCurrentWeek,
-    required this.isPastWeek,
+    required this.isWeekCompleted,
+    required this.isWeekSkipped,
     this.name,
     required this.days,
   });
@@ -42,11 +43,13 @@ class WeekViewData {
   final int weekNumber;
   final WeekType weekType;
   final bool isCurrentWeek;
-  final bool isPastWeek;
+  final bool isWeekCompleted;
+  final bool isWeekSkipped;
   final String? name;
   final List<DayViewData> days;
 
   bool get isDeload => weekType == WeekType.deload;
+  bool get isPastWeek => isWeekCompleted || isWeekSkipped;
 }
 
 class DayViewData {

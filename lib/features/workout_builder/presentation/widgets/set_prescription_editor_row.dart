@@ -140,7 +140,9 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
             SizedBox(
               width: AppSizing.fieldWidthXl,
               child: DropdownButtonFormField<SetType>(
-                key: ValueKey('${widget.prescription.id}_type_${widget.prescription.setType.index}'),
+                key: ValueKey(
+                  '${widget.prescription.id}_type_${widget.prescription.setType.index}',
+                ),
                 initialValue: widget.prescription.setType,
                 isExpanded: true,
                 decoration: const InputDecoration(

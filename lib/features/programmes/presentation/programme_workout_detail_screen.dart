@@ -133,8 +133,8 @@ class _WorkoutDetailHeader extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 OutlinedSvgAssets.clock,
-                width: AppSizing.iconXs,
-                height: AppSizing.iconXs,
+                width: AppSizing.iconS,
+                height: AppSizing.iconS,
                 colorFilter: ColorFilter.mode(
                   context.colorScheme.onSurfaceVariant,
                   BlendMode.srcIn,

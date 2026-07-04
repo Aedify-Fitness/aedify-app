@@ -92,9 +92,11 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
 
   @override
   Future<void> deleteSavedWorkout(String id) async {
-    await _transactionExecutor.execute(
-      operationName: 'saved_workout.delete',
-      steps: _buildDeleteSavedWorkoutSteps(savedWorkoutId: id),
+    final now = DateTime.now();
+    await _savedWorkoutDao.softDeleteById(
+      id: id,
+      deletedAt: now,
+      updatedAt: now,
     );
   }
 
@@ -133,25 +135,6 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
             );
           }
         },
-      ),
-    ];
-  }
-
-  List<TransactionStep> _buildDeleteSavedWorkoutSteps({
-    required String savedWorkoutId,
-  }) {
-    return [
-      TransactionStep(
-        operation: const TransactionOperation(
-          name: 'saved_workout.delete_hierarchy',
-        ),
-        run: () => _deleteSavedWorkoutHierarchy(savedWorkoutId),
-      ),
-      TransactionStep(
-        operation: const TransactionOperation(
-          name: 'saved_workout.delete_root',
-        ),
-        run: () => _savedWorkoutDao.deleteById(savedWorkoutId),
       ),
     ];
   }

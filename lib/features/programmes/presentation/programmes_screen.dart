@@ -89,6 +89,10 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
                             return ProgrammeListTile(
                               item: item,
                               onTap: () => context.pushNamed(
+                                AppRoutes.programmeCalendar().name,
+                                pathParameters: {'id': item.id},
+                              ),
+                              onEdit: () => context.pushNamed(
                                 AppRoutes.programmeBuilderEdit().name,
                                 pathParameters: {'id': item.id},
                               ),

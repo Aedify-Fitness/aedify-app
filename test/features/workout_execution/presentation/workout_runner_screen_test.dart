@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/workout_execution/application/start_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
@@ -13,6 +14,7 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_session_
 import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/widgets/rest_timer_widget.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
@@ -45,6 +47,8 @@ WorkoutRunnerSessionViewData _sampleSession() {
             prescribedRepsMin: 8,
             prescribedRepsMax: 12,
             prescribedWeightKg: 60.0,
+            actualWeightKg: 60.0,
+            actualReps: 10,
           ),
         ],
       ),
@@ -94,8 +98,14 @@ class _FakeSaveUseCase implements SaveWorkoutSessionProgressUseCase {
 }
 
 class _FakeCompleteUseCase implements CompleteWorkoutSessionUseCase {
+  int completeCalls = 0;
+  WorkoutRunnerCompletionDraft? lastDraft;
+
   @override
-  Future<void> complete(WorkoutRunnerCompletionDraft draft) async {}
+  Future<void> complete(WorkoutRunnerCompletionDraft draft) async {
+    completeCalls++;
+    lastDraft = draft;
+  }
 }
 
 class _FakeAbandonUseCase implements AbandonWorkoutSessionUseCase {
@@ -221,6 +231,113 @@ void main() {
     await tester.pump();
 
     expect(find.text(AppStrings.continueWorkout), findsOneWidget);
+  });
+
+  testWidgets(
+    'finish early stays on summary screen without starting a second session',
+    (tester) async {
+      final startUseCase = _FakeStartUseCase()..returnUniqueSessions = true;
+      final completeUseCase = _FakeCompleteUseCase();
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => Center(
+              child: FilledButton(
+                onPressed: () => context.push('/runner'),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: '/runner',
+            builder: (context, state) =>
+                const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            AppProviders.startWorkoutSessionUseCaseProvider.overrideWithValue(
+              startUseCase,
+            ),
+            AppProviders.loadActiveWorkoutSessionUseCaseProvider
+                .overrideWithValue(_FakeLoadUseCase()),
+            AppProviders.saveWorkoutSessionProgressUseCaseProvider
+                .overrideWithValue(_FakeSaveUseCase()),
+            AppProviders.completeWorkoutSessionUseCaseProvider
+                .overrideWithValue(completeUseCase),
+            AppProviders.abandonWorkoutSessionUseCaseProvider.overrideWithValue(
+              _FakeAbandonUseCase(),
+            ),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      expect(startUseCase.startFromSavedWorkoutCalls, 1);
+      expect(find.text('Morning Push 1'), findsOneWidget);
+
+      await tester.tap(find.text(AppStrings.finishEarly));
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppStrings.finishWorkoutSummary), findsOneWidget);
+
+      await tester.tap(find.text(AppStrings.completeWorkout));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+      expect(find.text(AppStrings.done), findsOneWidget);
+      expect(find.text(AppStrings.finishEarly), findsNothing);
+      expect(startUseCase.startFromSavedWorkoutCalls, 1);
+      expect(completeUseCase.completeCalls, 1);
+    },
+  );
+
+  testWidgets('logging the final set auto-completes into summary view', (
+    tester,
+  ) async {
+    final completeUseCase = _FakeCompleteUseCase();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          AppProviders.startWorkoutSessionUseCaseProvider.overrideWithValue(
+            _FakeStartUseCase(),
+          ),
+          AppProviders.loadActiveWorkoutSessionUseCaseProvider
+              .overrideWithValue(_FakeLoadUseCase()),
+          AppProviders.saveWorkoutSessionProgressUseCaseProvider
+              .overrideWithValue(_FakeSaveUseCase()),
+          AppProviders.completeWorkoutSessionUseCaseProvider.overrideWithValue(
+            completeUseCase,
+          ),
+          AppProviders.abandonWorkoutSessionUseCaseProvider.overrideWithValue(
+            _FakeAbandonUseCase(),
+          ),
+        ],
+        child: const MaterialApp(
+          home: WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.textContaining(AppStrings.logSet));
+    await tester.pump();
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(completeUseCase.completeCalls, 1);
+    expect(find.text(AppStrings.done), findsOneWidget);
+    expect(find.text(AppStrings.finishEarly), findsNothing);
+    expect(find.text(AppStrings.insightForProgress), findsNothing);
+    expect(find.byType(RestTimerWidget), findsNothing);
   });
 
   testWidgets(

@@ -202,6 +202,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         return s.copyWith(
           completed: completed,
           skipped: completed ? false : s.skipped,
+          performedAt: completed ? DateTime.now() : s.performedAt,
         );
       }).toList();
       return e.copyWith(sets: updatedSets);
@@ -318,7 +319,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     }
   }
 
-  Future<void> completeWorkout() async {
+  Future<void> completeWorkout([WorkoutRunnerCompletionDraft? draft]) async {
     _logger.info('completeWorkout');
     _autoSaveTimer?.cancel();
     final current = state.asData?.value;
@@ -339,32 +340,37 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       if (currentSession == null) return;
 
       final now = DateTime.now();
-      final durationSeconds = now
-          .difference(currentSession.startedAt)
-          .inSeconds;
+      final effectiveDraft =
+          draft ??
+          WorkoutRunnerCompletionDraft(
+            sessionId: currentSession.sessionId,
+            completedAt: now,
+            durationSeconds: now.difference(currentSession.startedAt).inSeconds,
+            notes: currentSession.notes,
+            energyLevel: currentSession.energyLevel,
+            perceivedDifficulty: currentSession.perceivedDifficulty,
+          );
 
       final completeUseCase = ref.read(
         AppProviders.completeWorkoutSessionUseCaseProvider,
       );
 
-      await completeUseCase.complete(
-        WorkoutRunnerCompletionDraft(
-          sessionId: currentSession.sessionId,
-          completedAt: now,
-          durationSeconds: durationSeconds,
-          notes: currentSession.notes,
-          energyLevel: currentSession.energyLevel,
-          perceivedDifficulty: currentSession.perceivedDifficulty,
-        ),
-      );
+      await completeUseCase.complete(effectiveDraft);
 
       final completedSession = currentSession.copyWith(
         status: WorkoutSessionStatus.completed,
-        completedAt: now,
-        durationSeconds: durationSeconds,
+        completedAt: effectiveDraft.completedAt,
+        durationSeconds: effectiveDraft.durationSeconds,
       );
 
       ref.invalidate(AppProviders.activeWorkoutSessionProvider);
+      ref.invalidate(AppProviders.programmeLibraryControllerProvider);
+      final pId = programId;
+      if (pId != null) {
+        ref.invalidate(AppProviders.programmeSyncProvider(pId));
+        ref.invalidate(AppProviders.programmeCalendarControllerProvider(pId));
+      }
+      ref.read(AppProviders.homeRefreshTriggerProvider.notifier).trigger();
 
       state = AsyncData(
         currentState.copyWith(
@@ -401,6 +407,13 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       );
       await abandonUseCase.abandon(session.sessionId);
       ref.invalidate(AppProviders.activeWorkoutSessionProvider);
+      ref.invalidate(AppProviders.programmeLibraryControllerProvider);
+      final pId = programId;
+      if (pId != null) {
+        ref.invalidate(AppProviders.programmeSyncProvider(pId));
+        ref.invalidate(AppProviders.programmeCalendarControllerProvider(pId));
+      }
+      ref.read(AppProviders.homeRefreshTriggerProvider.notifier).trigger();
       state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.completed));
     } catch (e) {
       _logger.error('abandonWorkout — failed', error: e);

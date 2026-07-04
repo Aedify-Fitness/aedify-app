@@ -208,6 +208,40 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
     );
   }
 
+  Future<void> updateSlotDay({
+    required int weekIndex,
+    required int slotIndex,
+    required TrainingDay day,
+  }) async {
+    _logger.info(
+      'updateSlotDay — weekIndex: $weekIndex, slotIndex: $slotIndex, day: $day',
+    );
+    final current = state.asData?.value;
+    if (current == null) return;
+    final weeks = current.draft.weeks != null
+        ? List<ProgrammeBuilderWeekDraft>.of(current.draft.weeks!)
+        : <ProgrammeBuilderWeekDraft>[];
+    if (weekIndex >= weeks.length) return;
+    final week = weeks[weekIndex];
+    final slots = week.slots != null
+        ? List<ProgrammeBuilderWorkoutSlotDraft>.of(week.slots!)
+        : <ProgrammeBuilderWorkoutSlotDraft>[];
+    if (slotIndex >= slots.length) return;
+    final dayIndex = TrainingDay.values.indexOf(day);
+    slots[slotIndex] = slots[slotIndex].copyWith(
+      scheduledDayIndex: dayIndex,
+      scheduledDay: day,
+    );
+    weeks[weekIndex] = week.copyWith(slots: slots);
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(weeks: weeks),
+        isDirty: true,
+        validationErrors: [],
+      ),
+    );
+  }
+
   Future<void> removeSlot(int weekIndex, int slotIndex) async {
     final current = state.asData?.value;
     if (current == null) return;

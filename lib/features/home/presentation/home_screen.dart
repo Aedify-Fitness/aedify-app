@@ -15,8 +15,38 @@ import 'package:aedify/shared/theme/context_extensions.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  int _computeWeekSessionsRemaining(ProgrammeSync sync, int weekNumber) {
+    final week = sync.aggregate.weeks.firstWhere(
+      (w) => w.weekNumber == weekNumber,
+    );
+    final weekWorkoutIds = sync.aggregate.workouts
+        .where((w) => w.programWeekId == week.id)
+        .map((w) => w.id)
+        .toSet();
+    final completedInWeek = weekWorkoutIds
+        .where(sync.resolution.completedWorkoutIds.contains)
+        .length;
+    return weekWorkoutIds.length - completedInWeek;
+  }
+
+  double _computeWeekProgress(ProgrammeSync sync, int weekNumber) {
+    final week = sync.aggregate.weeks.firstWhere(
+      (w) => w.weekNumber == weekNumber,
+    );
+    final weekWorkoutIds = sync.aggregate.workouts
+        .where((w) => w.programWeekId == week.id)
+        .map((w) => w.id)
+        .toSet();
+    if (weekWorkoutIds.isEmpty) return 0.0;
+    final completedInWeek = weekWorkoutIds
+        .where(sync.resolution.completedWorkoutIds.contains)
+        .length;
+    return completedInWeek / weekWorkoutIds.length;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(AppProviders.homeRefreshTriggerProvider);
     final profileState = ref.watch(AppProviders.profileControllerProvider);
     final programmeState = ref.watch(
       AppProviders.programmeLibraryControllerProvider,
@@ -33,6 +63,28 @@ class HomeScreen extends ConsumerWidget {
     );
     final activeSession = activeSessionAsync.asData?.value;
 
+    final syncAsync = activeProgramme != null
+        ? ref.watch(AppProviders.programmeSyncProvider(activeProgramme.id))
+        : null;
+    final sync = syncAsync?.asData?.value;
+    final currentWeek = sync?.resolution.todayFlatIndex != null
+        ? (sync!.resolution.todayFlatIndex! ~/ 7) + 1
+        : null;
+    final sessionsRemaining = (sync != null && currentWeek != null)
+        ? _computeWeekSessionsRemaining(sync, currentWeek)
+        : null;
+    final weekProgress = (sync != null && currentWeek != null)
+        ? _computeWeekProgress(sync, currentWeek)
+        : 0.0;
+    final todayWorkoutId = sync?.resolution.todayWorkoutId;
+    final exerciseCount = sync?.aggregate.exercises.length ?? 0;
+    final durationMinutes =
+        sync?.aggregate.templates.fold<int>(
+          0,
+          (sum, t) => sum + (t.estimatedDurationMinutes ?? 0),
+        ) ??
+        0;
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -43,13 +95,24 @@ class HomeScreen extends ConsumerWidget {
             const _PlateauBanner(),
             const SizedBox(height: AppSpacing.lg),
             if (activeProgramme != null) ...[
-              _ActiveProgramCard(programme: activeProgramme),
+              _ActiveProgramCard(
+                programme: activeProgramme,
+                currentWeek: currentWeek,
+                sessionsRemaining: sessionsRemaining,
+                totalWeeks: activeProgramme.weeksTotal ?? 0,
+                progress: weekProgress,
+              ),
               const SizedBox(height: AppSpacing.lg),
             ],
             if (activeSession != null)
               _OngoingWorkoutCard(session: activeSession)
             else
-              _TodayWorkoutCard(activeProgramme: activeProgramme),
+              _TodayWorkoutCard(
+                activeProgramme: activeProgramme,
+                todayWorkoutId: todayWorkoutId,
+                exerciseCount: exerciseCount,
+                durationMinutes: durationMinutes,
+              ),
             const SizedBox(height: AppSpacing.lg),
             const _VolumeMetricCard(),
             const SizedBox(height: AppSpacing.lg),
@@ -199,16 +262,22 @@ class _PlateauBanner extends StatelessWidget {
 // ─── Section 3: Active Program ───────────────────────────────────
 
 class _ActiveProgramCard extends StatelessWidget {
-  const _ActiveProgramCard({required this.programme});
+  const _ActiveProgramCard({
+    required this.programme,
+    required this.totalWeeks,
+    required this.progress,
+    this.currentWeek,
+    this.sessionsRemaining,
+  });
 
   final ProgrammeListItem programme;
+  final int totalWeeks;
+  final double progress;
+  final int? currentWeek;
+  final int? sessionsRemaining;
 
   @override
   Widget build(BuildContext context) {
-    final totalWeeks = programme.weeksTotal ?? 0;
-    final currentWeek = 1; // TODO: compute from startDate
-    final progress = totalWeeks > 0 ? currentWeek / totalWeeks : 0.0;
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -231,7 +300,7 @@ class _ActiveProgramCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  AppStrings.weekOf(currentWeek, totalWeeks),
+                  AppStrings.weekOf(currentWeek ?? 0, totalWeeks),
                   style: context.textTheme.labelSmall?.copyWith(
                     color: context.colorScheme.secondary,
                     fontWeight: FontWeight.bold,
@@ -243,7 +312,7 @@ class _ActiveProgramCard extends StatelessWidget {
             LinearProgressIndicator(value: progress),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              '${programme.daysPerWeek ?? 0} ${AppStrings.sessionsRemaining}',
+              '${sessionsRemaining ?? 0} ${AppStrings.sessionsRemaining}',
               style: context.textTheme.bodyMedium?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
               ),
@@ -257,59 +326,18 @@ class _ActiveProgramCard extends StatelessWidget {
 
 // ─── Section 4: Today's Workout ──────────────────────────────────
 
-class _TodayWorkoutCard extends ConsumerStatefulWidget {
-  const _TodayWorkoutCard({this.activeProgramme});
+class _TodayWorkoutCard extends StatelessWidget {
+  const _TodayWorkoutCard({
+    this.activeProgramme,
+    this.todayWorkoutId,
+    required this.exerciseCount,
+    required this.durationMinutes,
+  });
 
   final ProgrammeListItem? activeProgramme;
-
-  @override
-  ConsumerState<_TodayWorkoutCard> createState() => _TodayWorkoutCardState();
-}
-
-class _TodayWorkoutCardState extends ConsumerState<_TodayWorkoutCard> {
-  _ProgrammeDetail? _detail;
-  String? _programWorkoutId;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadDetail();
-  }
-
-  @override
-  void didUpdateWidget(covariant _TodayWorkoutCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.activeProgramme?.id != widget.activeProgramme?.id) {
-      _loadDetail();
-    }
-  }
-
-  Future<void> _loadDetail() async {
-    final id = widget.activeProgramme?.id;
-    if (id == null) return;
-    final repo = ref.read(AppProviders.programmeRepositoryProvider);
-    final aggregate = await repo.getProgramme(id);
-    if (!mounted) return;
-    if (aggregate != null) {
-      final totalExercises = aggregate.exercises.length;
-      final totalDuration = aggregate.templates.fold<int>(
-        0,
-        (sum, t) => sum + (t.estimatedDurationMinutes ?? 0),
-      );
-      final todayIndex = DateTime.now().weekday - 1;
-      final todayWorkout = aggregate.workouts.cast<dynamic>().firstWhere(
-        (w) => (w as dynamic).scheduledDayIndex == todayIndex,
-        orElse: () => null,
-      );
-      setState(() {
-        _detail = _ProgrammeDetail(
-          exerciseCount: totalExercises,
-          durationMinutes: totalDuration,
-        );
-        _programWorkoutId = todayWorkout?.id?.toString();
-      });
-    }
-  }
+  final String? todayWorkoutId;
+  final int exerciseCount;
+  final int durationMinutes;
 
   @override
   Widget build(BuildContext context) {
@@ -325,13 +353,15 @@ class _TodayWorkoutCardState extends ConsumerState<_TodayWorkoutCard> {
           ),
         ],
       ),
-      child: widget.activeProgramme != null
-          ? _ScheduledView(
-              activeProgramme: widget.activeProgramme!,
-              exerciseCount: _detail?.exerciseCount ?? 0,
-              durationMinutes: _detail?.durationMinutes ?? 0,
-              programWorkoutId: _programWorkoutId,
-            )
+      child: activeProgramme != null
+          ? (todayWorkoutId != null
+                ? _ScheduledView(
+                    activeProgramme: activeProgramme!,
+                    exerciseCount: exerciseCount,
+                    durationMinutes: durationMinutes,
+                    programWorkoutId: todayWorkoutId,
+                  )
+                : _RestDayView(programme: activeProgramme!))
           : const _EmptyView(),
     );
   }
@@ -432,6 +462,49 @@ class _ScheduledView extends StatelessWidget {
   }
 }
 
+class _RestDayView extends StatelessWidget {
+  const _RestDayView({required this.programme});
+
+  final ProgrammeListItem programme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Badge(label: AppStrings.rest.toUpperCase()),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          programme.name,
+          style: context.textTheme.headlineLarge?.copyWith(
+            color: context.colorScheme.onPrimary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          AppStrings.restDay,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colorScheme.onPrimary.withAlpha(179),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        TextButton(
+          onPressed: () {
+            context.pushNamed(
+              AppRoutes.programmeCalendar().name,
+              pathParameters: {'id': programme.id},
+            );
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: context.colorScheme.onPrimary,
+          ),
+          child: Text(AppStrings.viewDetails),
+        ),
+      ],
+    );
+  }
+}
+
 class _EmptyView extends StatelessWidget {
   const _EmptyView();
 
@@ -509,8 +582,8 @@ class _MetaChip extends StatelessWidget {
       children: [
         SvgPicture.asset(
           icon,
-          width: AppSizing.iconXs,
-          height: AppSizing.iconXs,
+          width: AppSizing.iconS,
+          height: AppSizing.iconS,
           colorFilter: ColorFilter.mode(
             context.colorScheme.onPrimary.withAlpha(179),
             BlendMode.srcIn,
@@ -791,14 +864,4 @@ class _ActionTile extends StatelessWidget {
       ),
     );
   }
-}
-
-class _ProgrammeDetail {
-  const _ProgrammeDetail({
-    required this.exerciseCount,
-    required this.durationMinutes,
-  });
-
-  final int exerciseCount;
-  final int durationMinutes;
 }

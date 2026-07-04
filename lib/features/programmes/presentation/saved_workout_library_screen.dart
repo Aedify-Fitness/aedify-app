@@ -22,7 +22,6 @@ class SavedWorkoutLibraryScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.savedWorkouts)),
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _ErrorView(

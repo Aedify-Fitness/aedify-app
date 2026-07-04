@@ -20,6 +20,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
     required this.onAssignTemplate,
     this.onOpenSupersetEditor,
     this.onSetWeekType,
+    this.onChangeSlotDay,
   });
 
   final List<ProgrammeBuilderWeekDraft> weeks;
@@ -31,6 +32,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
   final void Function(int weekIndex, int slotIndex) onAssignTemplate;
   final void Function(int weekIndex, int slotIndex)? onOpenSupersetEditor;
   final void Function(int weekIndex, WeekType type)? onSetWeekType;
+  final void Function(int weekIndex, int slotIndex)? onChangeSlotDay;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +96,9 @@ class ProgrammeWeeksOverview extends StatelessWidget {
                 : null,
             onSetWeekType: onSetWeekType != null
                 ? (type) => onSetWeekType!(entry.key, type)
+                : null,
+            onChangeSlotDay: onChangeSlotDay != null
+                ? (slotIndex) => onChangeSlotDay!(entry.key, slotIndex)
                 : null,
           ),
         ),

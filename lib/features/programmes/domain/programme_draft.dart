@@ -6,6 +6,7 @@ import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/domain/import_origin.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 import 'programme_workout_template_draft.dart';
 
 class ProgrammeDraft {
@@ -28,6 +29,11 @@ class ProgrammeDraft {
     this.sessionLengthMinutes,
     this.experienceLevelAtCreation,
     this.preferredUnitsAtCreation,
+    this.weekTypes,
+    this.slotDayIndices,
+    this.slotTemplateIds,
+    this.weekSlotDayIndices,
+    this.weekSlotTemplateIds,
   });
 
   final String id;
@@ -46,6 +52,11 @@ class ProgrammeDraft {
   final int? weeksTotal;
   final int? daysPerWeek;
   final int? sessionLengthMinutes;
+  final List<WeekType?>? weekTypes;
+  final List<int>? slotDayIndices;
+  final List<String>? slotTemplateIds;
+  final List<List<int>>? weekSlotDayIndices;
+  final List<List<String>>? weekSlotTemplateIds;
   final ExperienceLevel? experienceLevelAtCreation;
   final PreferredUnit? preferredUnitsAtCreation;
 }

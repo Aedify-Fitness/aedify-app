@@ -14,73 +14,127 @@ class ProgrammeWeekSection extends StatelessWidget {
     super.key,
     required this.week,
     required this.isExpanded,
+    required this.isCurrentWeek,
     required this.onToggle,
     this.onDayTap,
   });
 
   final WeekViewData week;
   final bool isExpanded;
+  final bool isCurrentWeek;
+  final VoidCallback onToggle;
+  final void Function(DayViewData day)? onDayTap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isCurrentWeek && isExpanded) {
+      return _CurrentWeekSection(
+        week: week,
+        onToggle: onToggle,
+        onDayTap: onDayTap,
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withAlpha(10),
+            blurRadius: AppSpacing.lg,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          if (week.isDeload)
+            Positioned.fill(
+              child: CustomPaint(
+                painter: PatternDeloadPainter(
+                  color: context.colorScheme.outlineVariant.withAlpha(30),
+                ),
+              ),
+            ),
+          Column(
+            children: [
+              _WeekHeader(
+                week: week,
+                isExpanded: isExpanded,
+                onToggle: onToggle,
+              ),
+              if (isExpanded)
+                _WeekExpandedContent(week: week, onDayTap: onDayTap),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CurrentWeekSection extends StatelessWidget {
+  const _CurrentWeekSection({
+    required this.week,
+    required this.onToggle,
+    this.onDayTap,
+  });
+
+  final WeekViewData week;
   final VoidCallback onToggle;
   final void Function(DayViewData day)? onDayTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppRadius.xl),
-        boxShadow: week.isCurrentWeek
-            ? [
-                BoxShadow(
-                  color: context.colorScheme.secondary.withAlpha(15),
-                  blurRadius: AppSpacing.xl,
-                  offset: const Offset(0, 8),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: context.colorScheme.shadow.withAlpha(10),
-                  blurRadius: AppSpacing.lg,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+        border: Border.all(color: context.colorScheme.secondary.withAlpha(51)),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.secondary.withAlpha(15),
+            blurRadius: AppSpacing.xl,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: Stack(
-          children: [
-            if (week.isCurrentWeek)
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                child: Container(
-                  width: AppSizing.strokeWidth + 2,
-                  color: context.colorScheme.secondary,
-                ),
-              ),
-            if (week.isDeload)
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: PatternDeloadPainter(
-                    color: context.colorScheme.outlineVariant.withAlpha(13),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: AppSizing.activeIndicatorHeight,
+              color: context.colorScheme.secondary,
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _WeekHeader(week: week, isExpanded: true, onToggle: onToggle),
+              if (week.name != null && week.name!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    bottom: AppSpacing.sm,
+                  ),
+                  child: Text(
+                    week.name!,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-              ),
-            Column(
-              children: [
-                _WeekHeader(
-                  week: week,
-                  isExpanded: isExpanded,
-                  onToggle: onToggle,
-                ),
-                if (isExpanded)
-                  _WeekExpandedContent(week: week, onDayTap: onDayTap),
-              ],
-            ),
-          ],
-        ),
+              _WeekExpandedContent(week: week, onDayTap: onDayTap),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -142,15 +196,6 @@ class _WeekHeader extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (week.name != null && week.name!.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xxs),
-                    Text(
-                      week.name!,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -182,8 +227,8 @@ class _WeekStatusIcon extends StatelessWidget {
     if (week.isPastWeek) {
       return SvgPicture.asset(
         SolidSvgAssets.checkCircle,
-        width: AppSizing.iconLg,
-        height: AppSizing.iconLg,
+        width: AppSizing.iconSm,
+        height: AppSizing.iconSm,
         colorFilter: ColorFilter.mode(
           context.colorScheme.secondary,
           BlendMode.srcIn,
@@ -198,9 +243,9 @@ class _WeekStatusIcon extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         child: SvgPicture.asset(
-          OutlinedSvgAssets.fire,
-          width: AppSizing.iconMd,
-          height: AppSizing.iconMd,
+          OutlinedSvgAssets.leaf,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
           colorFilter: ColorFilter.mode(
             context.colorScheme.onPrimaryContainer,
             BlendMode.srcIn,
@@ -216,8 +261,8 @@ class _WeekStatusIcon extends StatelessWidget {
       ),
       child: SvgPicture.asset(
         OutlinedSvgAssets.calendarDays,
-        width: AppSizing.iconMd,
-        height: AppSizing.iconMd,
+        width: AppSizing.iconSm,
+        height: AppSizing.iconSm,
         colorFilter: ColorFilter.mode(
           context.colorScheme.onSurface,
           BlendMode.srcIn,
@@ -260,7 +305,7 @@ class _WeekExpandedContent extends StatelessWidget {
       child: Column(
         children: week.days.map((day) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: ProgrammeDayCard(
               day: day,
               onTap: day.isRestDay ? null : () => onDayTap?.call(day),
