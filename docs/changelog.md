@@ -6,6 +6,22 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### Badge unification — SupersetGroupBadge, _PhaseBadge, _DifficultyBadge all delegate to AppBadge
+
+- **AppBadge extended**: Added `EdgeInsetsGeometry? padding` and `TextStyle? textStyle` optional params to support custom padding and text-style overrides without losing the shared badge pattern.
+- **`SupersetGroupBadge`** (`superset_group_badge.dart`): Rewrote `build()` to delegate to `AppBadge` — passes custom padding (`xs`/`xxxs`), `borderRadius: AppRadius.xxs`, `textStyle: AppTextStyles.labelSm`, and `primaryContainer`/`onPrimaryContainer` colors. Public API (`groupId`, `order`) and test unchanged.
+- **`_PhaseBadge`** removed from `programme_calendar_header.dart`: Inlined `AppBadge` at the single usage site with `borderRadius: AppRadius.full`, custom padding (`md`/`xxs+1`), `letterSpacing: 0.02`, and `surfaceContainerHigh`/`onSecondaryFixedVariant` colors.
+- **`_DifficultyBadge`** (`add_exercise_bottom_sheet.dart`): Rewrote `build()` to delegate to `AppBadge` — keeps its color-resolution switch and `_formatLabel` helper, passes resolved `bg`/`text` colors, custom padding (`sm`/`xs`), and `textStyle: AppTextStyles.headlineXl.copyWith(fontSize: AppFontSizes.xxs, letterSpacing: 0.5)`.
+- **6 private `_Badge`/badge-like widget definitions now consolidated into 1 shared `AppBadge`** + 2 thin public wrappers (`SupersetGroupBadge`, `_DifficultyBadge`).
+- Verification: `dart format .` — 2 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### _Badge extraction — 3 private definitions unified into shared AppBadge component
+
+- **New shared widget** `lib/shared/components/app_badge.dart` — `AppBadge` StatelessWidget with required `label`, optional `backgroundColor`/`foregroundColor` (defaults to `secondary`/`onSecondary`), `borderRadius` (default `AppRadius.sm`), `fontWeight`, and `letterSpacing`.
+- **Removed 3 private `_Badge` definitions** from `home_screen.dart`, `programme_list_tile.dart`, `programmes_screen.dart`.
+- **7 usage sites updated**: `home_screen.dart` (3 sites, uses defaults), `programme_list_tile.dart` (2 sites, `textColor` renamed to `foregroundColor`), `programmes_screen.dart` (2 sites, passes explicit `borderRadius: AppRadius.defaultRadius`, `fontWeight: FontWeight.w500`, `letterSpacing: 0.02` to preserve existing appearance).
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
 ### Convention compliance audit — fixed ~90 token, color, and navigation violations across 10 files
 
 - **Audit scope**: Systematic check of all enforceable rules from `AGENTS.md` and `rules.md` across `lib/`. 12 rule categories passed cleanly; ~90 violations fixed across 10 files.

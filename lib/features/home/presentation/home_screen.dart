@@ -9,6 +9,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -400,7 +401,7 @@ class _ScheduledView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Badge(label: AppStrings.scheduledToday.toUpperCase()),
+        AppBadge(label: AppStrings.scheduledToday.toUpperCase()),
         AppWhiteSpace.hMd,
         Text(
           name,
@@ -486,7 +487,7 @@ class _RestDayView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Badge(label: AppStrings.rest.toUpperCase()),
+        AppBadge(label: AppStrings.rest.toUpperCase()),
         AppWhiteSpace.hMd,
         Text(
           programme.name,
@@ -553,32 +554,6 @@ class _EmptyView extends StatelessWidget {
           child: const Text(AppStrings.browseProgrammes),
         ),
       ],
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: context.colorScheme.secondary,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        label,
-        style: context.textTheme.labelSmall?.copyWith(
-          color: context.colorScheme.onSecondary,
-        ),
-      ),
     );
   }
 }
@@ -650,7 +625,7 @@ class _OngoingWorkoutCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Badge(label: AppStrings.workoutInProgress.toUpperCase()),
+          AppBadge(label: AppStrings.workoutInProgress.toUpperCase()),
           AppWhiteSpace.hMd,
           Text(
             session.name,

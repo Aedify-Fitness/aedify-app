@@ -11,6 +11,28 @@
 
 ## Completed Work
 
+### 2026-07-05 — Badge unification — SupersetGroupBadge, _PhaseBadge, _DifficultyBadge all delegate to AppBadge
+
+- **AppBadge extended** (`lib/shared/components/app_badge.dart`): Added `EdgeInsetsGeometry? padding` and `TextStyle? textStyle` optional params. `padding` overrides the default `EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs)`. `textStyle` replaces the default `context.textTheme.labelSmall` base (still applies `color`, `fontWeight`, `letterSpacing` as `.copyWith` overrides on top).
+- **`SupersetGroupBadge`** (`lib/features/workout_builder/presentation/widgets/superset_group_badge.dart`): Rewrote `build()` to return `AppBadge` with `borderRadius: AppRadius.xxs`, `padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xxxs)`, `textStyle: AppTextStyles.labelSm`, and `primaryContainer`/`onPrimaryContainer` colors. Public API (`groupId`, `order`) unchanged. Existing test continues to pass.
+- **`_PhaseBadge` removed** (`lib/features/programmes/presentation/widgets/programme_calendar_header.dart`): Replaced private class and single usage site with inline `AppBadge` — `borderRadius: AppRadius.full`, `padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xxs + 1)`, `letterSpacing: 0.02`, `surfaceContainerHigh`/`onSecondaryFixedVariant` colors, label constructed as `'${AppStrings.currentPhase}: $blockType'.toUpperCase()`.
+- **`_DifficultyBadge`** (`lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`): Rewrote `build()` to return `AppBadge`. Keeps the brightness-aware color-resolution switch and `_formatLabel` helper. Passes resolved `bg`/`text` colors, `padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs)`, and `textStyle: AppTextStyles.headlineXl.copyWith(fontSize: AppFontSizes.xxs, letterSpacing: 0.5)`.
+- **Consolidation result**: 6 private/badge-like widget definitions → 1 shared `AppBadge` + 2 thin public wrappers (`SupersetGroupBadge`, `_DifficultyBadge`). Only `_StreakBadge` (ConsumerWidget, composite with fire SVG + text, not a simple label badge) and `_IconBadge` (icon-in-box, no text label) remain as private widgets — architecturally different patterns.
+- **Files**: `lib/shared/components/app_badge.dart`, `lib/features/workout_builder/presentation/widgets/superset_group_badge.dart`, `lib/features/programmes/presentation/widgets/programme_calendar_header.dart`, `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`.
+- Verification: `dart format .` — 2 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### 2026-07-05 — _Badge extraction — 3 private definitions unified into shared AppBadge component
+
+- **New shared widget**: `lib/shared/components/app_badge.dart` — `AppBadge` `StatelessWidget` with required `label`, optional `backgroundColor`/`foregroundColor` (defaults to `context.colorScheme.secondary`/`onSecondary`), `borderRadius` (default `AppRadius.sm`), `fontWeight`, and `letterSpacing`.
+- **Removed 3 private `_Badge` definitions** from `home_screen.dart` (hardcoded colors, 1 param), `programme_list_tile.dart` (customizable colors, `textColor` param), `programmes_screen.dart` (customizable colors, `foregroundColor` param, `FontWeight.w500` + `letterSpacing: 0.02`, `AppRadius.defaultRadius`).
+- **7 usage sites updated**:
+  - `home_screen.dart`: 3 `_Badge(label: ...)` → `AppBadge(label: ...)` — uses defaults (no params needed).
+  - `programme_list_tile.dart`: 2 `_Badge(label: ..., backgroundColor: ..., textColor: ...)` → `AppBadge(label: ..., backgroundColor: ..., foregroundColor: ...)` — renamed `textColor` to `foregroundColor`.
+  - `programmes_screen.dart`: 2 `_Badge(label: ..., foregroundColor: ..., backgroundColor: ...)` → `AppBadge(label: ..., foregroundColor: ..., backgroundColor: ..., borderRadius: AppRadius.defaultRadius, fontWeight: FontWeight.w500, letterSpacing: 0.02)` — preserves the non-default radius and typography overrides via explicit params.
+- **Token inconsistency resolved**: `AppRadius.sm` (4px) is the shared default; `programmes_screen.dart` passes `AppRadius.defaultRadius` (8px) explicitly.
+- **Files**: `lib/shared/components/app_badge.dart` (new), `lib/features/home/presentation/home_screen.dart`, `lib/features/programmes/presentation/widgets/programme_list_tile.dart`, `lib/features/programmes/presentation/programmes_screen.dart`.
+- Verification: `dart format .` — 1 changed (new file). `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
 ### 2026-07-05 — Convention compliance audit — ~90 token/color/navigation violations fixed across 10 files
 
 - **Scope**: Systematic check of all enforceable rules from `AGENTS.md` and `rules.md` across `lib/`. 8 of 12 rule categories passed clean. The remaining 4 categories produced ~90 violations across 10 files — all fixed.

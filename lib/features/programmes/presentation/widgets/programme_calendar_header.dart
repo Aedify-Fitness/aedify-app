@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
-import 'package:aedify/features/programmes/domain/programme_calendar_view_data.dart';
-import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:aedify/features/programmes/domain/programme_calendar_view_data.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 
 class ProgrammeCalendarHeader extends StatelessWidget {
   const ProgrammeCalendarHeader({
@@ -47,7 +48,18 @@ class ProgrammeCalendarHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (viewData.blockType != null && viewData.blockType!.isNotEmpty) ...[
-            _PhaseBadge(blockType: viewData.blockType!),
+            AppBadge(
+              label: '${AppStrings.currentPhase}: ${viewData.blockType!}'
+                  .toUpperCase(),
+              backgroundColor: context.colorScheme.surfaceContainerHigh,
+              foregroundColor: context.colorScheme.onSecondaryFixedVariant,
+              borderRadius: AppRadius.full,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.xxs + 1,
+              ),
+              letterSpacing: 0.02,
+            ),
             AppWhiteSpace.hMd,
           ],
           Text(
@@ -91,33 +103,6 @@ class ProgrammeCalendarHeader extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PhaseBadge extends StatelessWidget {
-  const _PhaseBadge({required this.blockType});
-
-  final String blockType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xxs + 1,
-      ),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-      ),
-      child: Text(
-        '${AppStrings.currentPhase}: $blockType'.toUpperCase(),
-        style: context.textTheme.labelSmall?.copyWith(
-          letterSpacing: 0.02,
-          color: context.colorScheme.onSecondaryFixedVariant,
-        ),
       ),
     );
   }

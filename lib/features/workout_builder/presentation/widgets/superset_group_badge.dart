@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -16,21 +17,16 @@ class SupersetGroupBadge extends StatelessWidget {
         ? '${AppStrings.superset} ${order! + 1}'
         : AppStrings.superset;
 
-    return Container(
+    return AppBadge(
+      label: label,
+      backgroundColor: context.colorScheme.primaryContainer,
+      foregroundColor: context.colorScheme.onPrimaryContainer,
+      borderRadius: AppRadius.xxs,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.xs,
         vertical: AppSpacing.xxxs,
       ),
-      decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppRadius.xxs),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelSm.copyWith(
-          color: context.colorScheme.onPrimaryContainer,
-        ),
-      ),
+      textStyle: AppTextStyles.labelSm,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:aedify/features/programmes/domain/programme_list_item.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
@@ -84,20 +85,20 @@ class ProgrammeListTile extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      _Badge(
+                      AppBadge(
                         label: _statusLabel().toUpperCase(),
                         backgroundColor: isActive
                             ? context.colorScheme.secondaryContainer
                             : context.colorScheme.surfaceContainer,
-                        textColor: isActive
+                        foregroundColor: isActive
                             ? context.colorScheme.onSecondaryContainer
                             : context.colorScheme.onSurfaceVariant,
                       ),
                       AppWhiteSpace.wXs,
-                      _Badge(
+                      AppBadge(
                         label: _sourceLabel(),
                         backgroundColor: context.colorScheme.surfaceContainer,
-                        textColor: context.colorScheme.onSurfaceVariant,
+                        foregroundColor: context.colorScheme.onSurfaceVariant,
                       ),
                       const Spacer(),
                       PopupMenuButton<String>(
@@ -165,36 +166,6 @@ class ProgrammeListTile extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({
-    required this.label,
-    required this.backgroundColor,
-    required this.textColor,
-  });
-
-  final String label;
-  final Color backgroundColor;
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        label,
-        style: context.textTheme.labelSmall?.copyWith(color: textColor),
       ),
     );
   }

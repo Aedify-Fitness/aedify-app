@@ -10,6 +10,7 @@ import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/widgets/dashed_border_painter.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -470,16 +471,22 @@ class _ProgramCard extends StatelessWidget {
                             runSpacing: AppSpacing.xs,
                             children: [
                               if (_statusLabel case final label?)
-                                _Badge(
+                                AppBadge(
                                   label: label,
                                   foregroundColor: cs.onSecondaryContainer,
                                   backgroundColor: cs.secondaryContainer,
+                                  borderRadius: AppRadius.defaultRadius,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.02,
                                 ),
                               if (_sourceLabel case final label?)
-                                _Badge(
+                                AppBadge(
                                   label: label,
                                   foregroundColor: cs.secondary,
                                   backgroundColor: cs.surfaceContainer,
+                                  borderRadius: AppRadius.defaultRadius,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.02,
                                 ),
                             ],
                           ),
@@ -542,40 +549,6 @@ class _ProgramCard extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({
-    required this.label,
-    required this.foregroundColor,
-    required this.backgroundColor,
-  });
-
-  final String label;
-  final Color foregroundColor;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-      ),
-      child: Text(
-        label,
-        style: context.textTheme.labelSmall?.copyWith(
-          color: foregroundColor,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.02,
         ),
       ),
     );

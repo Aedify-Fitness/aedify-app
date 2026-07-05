@@ -3,6 +3,7 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/exercise_picker_filter_sheet.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -680,22 +681,17 @@ class _DifficultyBadge extends StatelessWidget {
       ),
     };
 
-    return Container(
+    return AppBadge(
+      label: _formatLabel(difficulty?.dbValue ?? 'beginner'),
+      backgroundColor: bg,
+      foregroundColor: text,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        _formatLabel(difficulty?.dbValue ?? 'beginner'),
-        style: AppTextStyles.headlineXl.copyWith(
-          color: text,
-          letterSpacing: 0.5,
-          fontSize: AppFontSizes.xxs,
-        ),
+      textStyle: AppTextStyles.headlineXl.copyWith(
+        letterSpacing: 0.5,
+        fontSize: AppFontSizes.xxs,
       ),
     );
   }
