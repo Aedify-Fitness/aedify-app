@@ -127,12 +127,24 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     _logger.info('resumeRecoveredSession');
     final current = state.asData?.value;
     if (current == null || !current.hasRecoveredSession) return;
+    final session = current.session;
+    if (session == null) return;
+
+    final now = DateTime.now();
+    final accumulated = session.durationSeconds;
+    final adjustedStartedAt = accumulated != null
+        ? now.subtract(Duration(seconds: accumulated))
+        : session.startedAt;
 
     state = AsyncData(
       current.copyWith(
         phase: WorkoutRunnerPhase.ready,
         hasRecoveredSession: false,
         resumeDecision: WorkoutRunnerResumeDecision.resume,
+        session: session.copyWith(
+          startedAt: adjustedStartedAt,
+          durationSeconds: null,
+        ),
       ),
     );
   }
@@ -280,15 +292,48 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   Future<void> pauseWorkout() async {
     final current = state.asData?.value;
     if (current == null) return;
+    final session = current.session;
+    if (session == null) return;
 
-    state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.paused));
+    final now = DateTime.now();
+    final elapsed = now.difference(session.startedAt).inSeconds;
+
+    // Set duration in memory first
+    state = AsyncData(
+      current.copyWith(session: session.copyWith(durationSeconds: elapsed)),
+    );
+
+    // Persist the accumulated duration
+    await saveProgress();
+
+    // Restore paused phase (saveProgress resets phase to ready)
+    final afterSave = state.asData?.value;
+    if (afterSave != null) {
+      state = AsyncData(afterSave.copyWith(phase: WorkoutRunnerPhase.paused));
+    }
   }
 
   Future<void> continueWorkout() async {
     final current = state.asData?.value;
     if (current == null) return;
+    final session = current.session;
+    if (session == null) return;
 
-    state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.ready));
+    final now = DateTime.now();
+    final pausedDuration = session.durationSeconds;
+    final adjustedStartedAt = pausedDuration != null
+        ? now.subtract(Duration(seconds: pausedDuration))
+        : session.startedAt;
+
+    state = AsyncData(
+      current.copyWith(
+        phase: WorkoutRunnerPhase.ready,
+        session: session.copyWith(
+          startedAt: adjustedStartedAt,
+          durationSeconds: null,
+        ),
+      ),
+    );
   }
 
   Future<void> saveProgress() async {

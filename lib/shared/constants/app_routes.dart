@@ -81,6 +81,12 @@ class AppRoutes {
     path: '/programmes/:programId/workouts/:workoutId/run',
     name: 'workoutRunnerProgramWorkout',
   );
+  factory AppRoutes.finishEarlySummary() => AppRoutes._(
+    path: '/workout/finish-early/summary',
+    name: 'finishEarlySummary',
+  );
+  factory AppRoutes.sessionComplete() =>
+      AppRoutes._(path: '/workout/summary', name: 'sessionComplete');
 
   // Programme calendar (read-only)
   factory AppRoutes.programmeCalendar() =>

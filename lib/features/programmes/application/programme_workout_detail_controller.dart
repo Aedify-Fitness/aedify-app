@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_detail_view_data.dart';
 import 'package:aedify/shared/domain/training_day.dart';
+import 'package:aedify/shared/domain/workout_detail_button_state.dart';
 
 class ProgrammeWorkoutDetailController {
   ProgrammeWorkoutDetailController._();
@@ -9,8 +12,9 @@ class ProgrammeWorkoutDetailController {
   static ProgrammeWorkoutDetailViewData? buildWorkoutDetail(
     ProgrammeAggregate aggregate,
     String workoutId,
-    Map<int, String> exerciseNames,
-  ) {
+    Map<int, Exercise> exerciseModels, {
+    WorkoutDetailButtonState buttonState = WorkoutDetailButtonState.hidden,
+  }) {
     final workout = aggregate.workouts.cast<ProgramWorkout?>().firstWhere(
       (w) => w?.id == workoutId,
       orElse: () => null,
@@ -34,9 +38,15 @@ class ProgrammeWorkoutDetailController {
             .toList()
           ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
+    final allMuscles = <String>{};
     final exerciseItems = <ExerciseDetailItem>[];
     for (final ex in workoutExercises) {
-      final name = exerciseNames[ex.exerciseId] ?? 'Exercise ${ex.exerciseId}';
+      final exerciseModel = exerciseModels[ex.exerciseId];
+      final name = exerciseModel?.name ?? 'Exercise ${ex.exerciseId}';
+      final equipment = _capitalizeWords(exerciseModel?.equipment ?? '');
+      final muscles = _decodeJsonList(exerciseModel?.primaryMusclesJson ?? '');
+      allMuscles.addAll(muscles);
+
       final sets =
           aggregate.sets.where((s) => s.programExerciseId == ex.id).toList()
             ..sort((a, b) => a.setIndex.compareTo(b.setIndex));
@@ -64,15 +74,55 @@ class ProgrammeWorkoutDetailController {
         );
       }).toList();
 
-      exerciseItems.add(ExerciseDetailItem(name: name, sets: setItems));
+      exerciseItems.add(
+        ExerciseDetailItem(
+          exerciseId: ex.exerciseId,
+          name: name,
+          sets: setItems,
+          equipment: equipment,
+        ),
+      );
     }
+
+    final focusAreas = allMuscles.take(3).join(', ');
 
     return ProgrammeWorkoutDetailViewData(
       workoutName: workout.name,
       dayLabel: dayLabel,
+      programmeName: aggregate.program.name,
       durationMinutes: durationMinutes,
       exercises: exerciseItems,
+      focusAreas: focusAreas,
+      buttonState: buttonState,
     );
+  }
+
+  static String _capitalizeWords(String input) {
+    if (input.isEmpty) return input;
+    return input
+        .split(' ')
+        .map((word) {
+          if (word.isEmpty) return word;
+          if (word.contains('/')) {
+            return word
+                .split('/')
+                .map((part) {
+                  if (part.isEmpty) return part;
+                  return part[0].toUpperCase() + part.substring(1);
+                })
+                .join('/');
+          }
+          return word[0].toUpperCase() + word.substring(1);
+        })
+        .join(' ');
+  }
+
+  static List<String> _decodeJsonList(String json) {
+    try {
+      return (jsonDecode(json) as List).cast<String>();
+    } catch (_) {
+      return [];
+    }
   }
 }
 

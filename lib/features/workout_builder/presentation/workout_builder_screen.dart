@@ -6,6 +6,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -1034,7 +1035,7 @@ class _AddExerciseButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: CustomPaint(
-        foregroundPainter: _DashedBorderPainter(
+        foregroundPainter: DashedBorderPainter(
           color: cs.outlineVariant.withValues(alpha: 0.5),
           strokeWidth: 2,
           dashWidth: 6,
@@ -1076,60 +1077,6 @@ class _AddExerciseButton extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _DashedBorderPainter extends CustomPainter {
-  _DashedBorderPainter({
-    required this.color,
-    required this.strokeWidth,
-    required this.dashWidth,
-    required this.gapWidth,
-    required this.borderRadius,
-  });
-
-  final Color color;
-  final double strokeWidth;
-  final double dashWidth;
-  final double gapWidth;
-  final double borderRadius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    final rect = Rect.fromLTWH(
-      strokeWidth / 2,
-      strokeWidth / 2,
-      size.width - strokeWidth,
-      size.height - strokeWidth,
-    );
-    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
-
-    final path = Path()..addRRect(rrect);
-    final metrics = path.computeMetrics();
-
-    for (final metric in metrics) {
-      double distance = 0;
-      while (distance < metric.length) {
-        final end = (distance + dashWidth).clamp(0.0, metric.length);
-        final segment = metric.extractPath(distance, end);
-        canvas.drawPath(segment, paint);
-        distance += dashWidth + gapWidth;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedBorderPainter oldDelegate) {
-    return oldDelegate.color != color ||
-        oldDelegate.strokeWidth != strokeWidth ||
-        oldDelegate.dashWidth != dashWidth ||
-        oldDelegate.gapWidth != gapWidth ||
-        oldDelegate.borderRadius != borderRadius;
   }
 }
 

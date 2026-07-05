@@ -6,6 +6,7 @@ import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 
 class ProgrammeDayCard extends StatelessWidget {
   const ProgrammeDayCard({super.key, required this.day, this.onTap});
@@ -28,46 +29,50 @@ class _RestDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        border: Border.all(
-          color: context.colorScheme.outlineVariant,
-          width: AppSizing.hairlineStrokeWidth,
+    final cs = context.colorScheme;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.xl),
+      child: CustomPaint(
+        foregroundPainter: DashedBorderPainter(
+          color: cs.outlineVariant,
+          strokeWidth: AppSizing.hairlineStrokeWidth,
+          dashWidth: 6,
+          gapWidth: 6,
+          borderRadius: AppRadius.xl,
         ),
-      ),
-      child: Column(
-        children: [
-          SvgPicture.asset(
-            SolidSvgAssets.meditation,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.outline,
-              BlendMode.srcIn,
-            ),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          color: cs.surface,
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                SolidSvgAssets.meditation,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                colorFilter: ColorFilter.mode(cs.outline, BlendMode.srcIn),
+              ),
+              AppWhiteSpace.hXs,
+              Text(
+                day.dayLabel.toUpperCase(),
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppWhiteSpace.hXxs,
+              Text(
+                day.title,
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontSize: AppFontSizes.xxl,
+                  color: cs.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          AppWhiteSpace.hXs,
-          Text(
-            day.dayLabel.toUpperCase(),
-            style: context.textTheme.labelSmall?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          AppWhiteSpace.hXxs,
-          Text(
-            day.title,
-            style: context.textTheme.headlineSmall?.copyWith(
-              fontSize: AppFontSizes.xxl,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+        ),
       ),
     );
   }

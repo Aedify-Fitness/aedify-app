@@ -31,6 +31,27 @@ class WorkoutBuilderDraft {
   final int? estimatedDurationMinutes;
   final int? restBetweenExercisesSeconds;
 
+  /// Computes estimated duration in minutes based on:
+  /// - Per-set rest seconds (priority 1)
+  /// - Per-exercise rest between exercises (priority 2)
+  /// - Global workout rest between exercises (priority 3)
+  /// - Default 60s rest if none set
+  /// Plus 60 seconds per set for execution time.
+  int computeEstimatedDurationMinutes() {
+    int totalSeconds = 0;
+    for (final exercise in exercises) {
+      for (final set in exercise.sets) {
+        final effectiveRest =
+            set.restSeconds ??
+            exercise.restBetweenExercisesSeconds ??
+            restBetweenExercisesSeconds ??
+            60;
+        totalSeconds += effectiveRest + 60;
+      }
+    }
+    return totalSeconds ~/ 60;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

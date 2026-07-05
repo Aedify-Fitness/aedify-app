@@ -14,6 +14,7 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_session_
 import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/finish_early_session_complete_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/rest_timer_widget.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/session_source.dart';
@@ -234,7 +235,7 @@ void main() {
   });
 
   testWidgets(
-    'finish early stays on summary screen without starting a second session',
+    'finish early navigates to summary screen without starting a second session',
     (tester) async {
       final startUseCase = _FakeStartUseCase()..returnUniqueSessions = true;
       final completeUseCase = _FakeCompleteUseCase();
@@ -253,6 +254,20 @@ void main() {
             path: '/runner',
             builder: (context, state) =>
                 const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+          ),
+          GoRoute(
+            path: '/workout/summary',
+            name: 'sessionComplete',
+            builder: (context, state) => FinishEarlySessionCompleteScreen(
+              session: state.extra as WorkoutRunnerSessionViewData,
+            ),
+          ),
+          GoRoute(
+            path: '/workout/finish-early/summary',
+            name: 'finishEarlySummary',
+            builder: (context, state) => FinishEarlySessionCompleteScreen(
+              session: state.extra as WorkoutRunnerSessionViewData,
+            ),
           ),
         ],
       );
@@ -286,23 +301,41 @@ void main() {
       await tester.tap(find.text(AppStrings.finishEarly));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.finishWorkoutSummary), findsOneWidget);
+      expect(find.text(AppStrings.finishWorkoutEarly), findsOneWidget);
 
-      await tester.tap(find.text(AppStrings.completeWorkout));
+      await tester.tap(find.text(AppStrings.finishAndSaveSession));
       await tester.pumpAndSettle();
 
-      expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
-      expect(find.text(AppStrings.done), findsOneWidget);
-      expect(find.text(AppStrings.finishEarly), findsNothing);
+      expect(find.text(AppStrings.sessionComplete), findsOneWidget);
+      expect(
+        find.widgetWithText(FilledButton, AppStrings.done),
+        findsOneWidget,
+      );
       expect(startUseCase.startFromSavedWorkoutCalls, 1);
       expect(completeUseCase.completeCalls, 1);
     },
   );
 
-  testWidgets('logging the final set auto-completes into summary view', (
+  testWidgets('logging the final set auto-completes into summary screen', (
     tester,
   ) async {
     final completeUseCase = _FakeCompleteUseCase();
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) =>
+              const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+        GoRoute(
+          path: '/workout/summary',
+          name: 'sessionComplete',
+          builder: (context, state) => FinishEarlySessionCompleteScreen(
+            session: state.extra as WorkoutRunnerSessionViewData,
+          ),
+        ),
+      ],
+    );
 
     await tester.pumpWidget(
       ProviderScope(
@@ -321,9 +354,7 @@ void main() {
             _FakeAbandonUseCase(),
           ),
         ],
-        child: const MaterialApp(
-          home: WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
-        ),
+        child: MaterialApp.router(routerConfig: router),
       ),
     );
     await tester.pumpAndSettle();
@@ -334,8 +365,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(completeUseCase.completeCalls, 1);
-    expect(find.text(AppStrings.done), findsOneWidget);
-    expect(find.text(AppStrings.finishEarly), findsNothing);
+    expect(find.text(AppStrings.sessionComplete), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, AppStrings.done), findsOneWidget);
     expect(find.text(AppStrings.insightForProgress), findsNothing);
     expect(find.byType(RestTimerWidget), findsNothing);
   });

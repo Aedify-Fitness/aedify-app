@@ -1,11 +1,15 @@
+import 'dart:math' as math;
+
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/domain/programme_list_item.dart';
 import 'package:aedify/features/programmes/presentation/widgets/archive_item_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/delete_item_dialog.dart';
-import 'package:aedify/features/programmes/presentation/widgets/programme_list_tile.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
+import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +32,10 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
     final asyncState = ref.watch(
       AppProviders.programmeLibraryControllerProvider,
     );
+    final cs = context.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.programmes)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            context.pushNamed(AppRoutes.programmeBuilderCreate().name),
-        child: SvgPicture.asset(
-          OutlinedSvgAssets.plus,
-          width: AppSizing.iconMd,
-          height: AppSizing.iconMd,
-        ),
-      ),
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: asyncState.when(
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -66,43 +62,89 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
 
             final items = _filteredItems(state.items);
 
-            return Column(
-              children: [
-                AppWhiteSpace.hMd,
-                _FilterPills(
-                  activeFilter: _activeFilter,
-                  onChanged: (filter) {
-                    setState(() => _activeFilter = filter);
-                  },
-                ),
-                AppWhiteSpace.hMd,
-                Expanded(
-                  child: items.isEmpty
-                      ? const _EmptyView()
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppSpacing.md,
+                      top: AppSpacing.xl,
+                      right: AppSpacing.md,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.programmes,
+                          style: context.textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.01,
                           ),
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            final item = items[index];
-                            return ProgrammeListTile(
-                              item: item,
-                              onTap: () => context.pushNamed(
-                                AppRoutes.programmeCalendar().name,
-                                pathParameters: {'id': item.id},
-                              ),
-                              onEdit: () => context.pushNamed(
-                                AppRoutes.programmeBuilderEdit().name,
-                                pathParameters: {'id': item.id},
-                              ),
-                              onToggleActive: () => _toggleActive(item),
-                              onArchive: () => _showArchiveDialog(item),
-                              onDelete: () => _showDeleteDialog(item),
-                            );
-                          },
                         ),
+                        _NewButton(
+                          onTap: () => context.pushNamed(
+                            AppRoutes.programmeBuilderCreate().name,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
+                    child: _FilterPills(
+                      activeFilter: _activeFilter,
+                      onChanged: (filter) {
+                        setState(() => _activeFilter = filter);
+                      },
+                    ),
+                  ),
+                ),
+                if (items.isEmpty)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _EmptyView(),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.only(
+                      left: AppSpacing.md,
+                      top: AppSpacing.lg,
+                      right: AppSpacing.md,
+                      bottom: AppSpacing.xxl,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: items.length + 1,
+                        (context, index) {
+                          if (index == items.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.sm,
+                              ),
+                              child: _ImportCard(),
+                            );
+                          }
+                          final item = items[index];
+                          return _ProgramCard(
+                            item: item,
+                            onTap: () => context.pushNamed(
+                              AppRoutes.programmeCalendar().name,
+                              pathParameters: {'id': item.id},
+                            ),
+                            onEdit: () => context.pushNamed(
+                              AppRoutes.programmeBuilderEdit().name,
+                              pathParameters: {'id': item.id},
+                            ),
+                            onToggleActive: () => _toggleActive(item),
+                            onArchive: () => _showArchiveDialog(item),
+                            onDelete: () => _showDeleteDialog(item),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
               ],
             );
           },
@@ -155,7 +197,7 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
     }
     if (existingActive != null && existingActive.id != item.id && mounted) {
       final activeName = existingActive.name;
-      await showDialog<bool>(
+      final confirmed = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text(AppStrings.activateProgramme),
@@ -174,6 +216,7 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
           ],
         ),
       );
+      if (confirmed != true) return;
     }
 
     await controller.activateProgramme(item.id);
@@ -223,6 +266,49 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
   }
 }
 
+class _NewButton extends StatelessWidget {
+  const _NewButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    return Material(
+      color: cs.surfaceContainerHigh,
+      borderRadius: BorderRadius.circular(AppRadius.full),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                OutlinedSvgAssets.plus,
+                width: AppSizing.iconS,
+                height: AppSizing.iconS,
+                colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+              ),
+              AppWhiteSpace.wXs,
+              Text(
+                AppStrings.newProgramme,
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: cs.secondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _FilterPills extends StatelessWidget {
   const _FilterPills({required this.activeFilter, required this.onChanged});
 
@@ -238,6 +324,7 @@ class _FilterPills extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -246,24 +333,458 @@ class _FilterPills extends StatelessWidget {
           final selected = activeFilter == filter.$1;
           return Padding(
             padding: const EdgeInsets.only(right: AppSpacing.sm),
-            child: FilterChip(
-              selected: selected,
-              label: Text(filter.$2),
-              onSelected: (_) => onChanged(filter.$1),
-              showCheckmark: false,
-              backgroundColor: context.colorScheme.surfaceContainerHighest,
-              selectedColor: context.colorScheme.secondary,
-              labelStyle: context.textTheme.labelMedium?.copyWith(
-                color: selected
-                    ? context.colorScheme.onSecondary
-                    : context.colorScheme.onSurfaceVariant,
+            child: GestureDetector(
+              onTap: () => onChanged(filter.$1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: selected ? cs.secondary : cs.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  border: selected
+                      ? null
+                      : Border.all(color: cs.outlineVariant),
+                ),
+                child: Text(
+                  filter.$2,
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: selected ? cs.onSecondary : cs.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-              side: selected
-                  ? BorderSide.none
-                  : BorderSide(color: context.colorScheme.outlineVariant),
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+}
+
+class _ProgramCard extends StatelessWidget {
+  const _ProgramCard({
+    required this.item,
+    required this.onTap,
+    required this.onEdit,
+    required this.onToggleActive,
+    required this.onArchive,
+    required this.onDelete,
+  });
+
+  final ProgrammeListItem item;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onToggleActive;
+  final VoidCallback onArchive;
+  final VoidCallback onDelete;
+
+  bool get _isCompleted => item.status == ProgramStatus.completed;
+
+  String? get _sourceLabel {
+    if (item.source == 'ai_generated') return AppStrings.aiGenerated;
+    if (item.imported) return AppStrings.imported;
+    return AppStrings.custom;
+  }
+
+  String? get _statusLabel {
+    if (item.active) return AppStrings.programmeActive;
+    if (_isCompleted) return AppStrings.completed;
+    return null;
+  }
+
+  String get _goalDisplay {
+    if (item.goalTags.isEmpty) return '';
+    final tag = item.goalTags.first;
+    return switch (tag) {
+      GoalTag.buildMuscle => AppStrings.onboardingGoalBuildMuscle,
+      GoalTag.loseWeight => AppStrings.onboardingGoalLoseWeight,
+      GoalTag.increaseStrength => AppStrings.onboardingGoalIncreaseStrength,
+      GoalTag.improveEndurance => AppStrings.onboardingGoalImproveEndurance,
+      GoalTag.generalFitness => AppStrings.onboardingGoalGeneralFitness,
+      GoalTag.flexibility => AppStrings.onboardingGoalFlexibility,
+    };
+  }
+
+  int _currentWeek() {
+    if (item.startDateLocal == null || item.weeksTotal == null) return 1;
+    final start = DateTime.tryParse(item.startDateLocal!);
+    if (start == null) return 1;
+    final diff = DateTime.now().difference(start);
+    final week = (diff.inDays / 7).ceil() + 1;
+    if (week < 1) return 1;
+    if (item.weeksTotal != null && week > item.weeksTotal!) {
+      return item.weeksTotal!;
+    }
+    return week;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    final tt = context.textTheme;
+    final opacity = _isCompleted ? 0.8 : 1.0;
+
+    return Opacity(
+      opacity: opacity,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+        child: Material(
+          color: cs.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.black.withValues(alpha: 0.03),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(color: cs.surfaceContainer),
+              ),
+              foregroundDecoration: item.active
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      border: Border(
+                        top: BorderSide(
+                          color: cs.secondary,
+                          width: AppSizing.activeIndicatorHeight,
+                        ),
+                      ),
+                    )
+                  : null,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Wrap(
+                            spacing: AppSpacing.sm,
+                            runSpacing: AppSpacing.xs,
+                            children: [
+                              if (_statusLabel case final label?)
+                                _Badge(
+                                  label: label,
+                                  foregroundColor: cs.onSecondaryContainer,
+                                  backgroundColor: cs.secondaryContainer,
+                                ),
+                              if (_sourceLabel case final label?)
+                                _Badge(
+                                  label: label,
+                                  foregroundColor: cs.secondary,
+                                  backgroundColor: cs.surfaceContainer,
+                                ),
+                            ],
+                          ),
+                        ),
+                        _CardMenu(
+                          onEdit: onEdit,
+                          onToggleActive: onToggleActive,
+                          onArchive: onArchive,
+                          onDelete: onDelete,
+                        ),
+                      ],
+                    ),
+                    AppWhiteSpace.hSm,
+                    Text(
+                      item.name,
+                      style: tt.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    AppWhiteSpace.hMd,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _StatCell(
+                          value: '${item.weeksTotal ?? '-'}',
+                          label: AppStrings.weeks,
+                          tt: tt,
+                        ),
+                        _StatCell(
+                          value: '${item.daysPerWeek ?? '-'}',
+                          label: AppStrings.daysPerWeek,
+                          tt: tt,
+                        ),
+                        _StatCell(
+                          value: _goalDisplay,
+                          label: AppStrings.goal,
+                          tt: tt,
+                          isBoldValue: true,
+                        ),
+                      ],
+                    ),
+                    if (item.active && item.weeksTotal != null) ...[
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        child: Divider(
+                          height: AppSizing.divider,
+                          thickness: AppSizing.divider,
+                        ),
+                      ),
+                      _ProgressBar(
+                        currentWeek: _currentWeek(),
+                        totalWeeks: item.weeksTotal!,
+                        cs: cs,
+                        tt: tt,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge({
+    required this.label,
+    required this.foregroundColor,
+    required this.backgroundColor,
+  });
+
+  final String label;
+  final Color foregroundColor;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xxs,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: context.textTheme.labelSmall?.copyWith(
+          color: foregroundColor,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.02,
+        ),
+      ),
+    );
+  }
+}
+
+class _StatCell extends StatelessWidget {
+  const _StatCell({
+    required this.value,
+    required this.label,
+    required this.tt,
+    this.isBoldValue = false,
+  });
+
+  final String value;
+  final String label;
+  final TextTheme tt;
+  final bool isBoldValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            value,
+            maxLines: 1,
+            style: tt.headlineMedium?.copyWith(
+              fontSize: AppFontSizes.lg,
+              fontWeight: isBoldValue ? FontWeight.w600 : null,
+            ),
+          ),
+          Text(
+            label,
+            style: tt.labelSmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProgressBar extends StatelessWidget {
+  const _ProgressBar({
+    required this.currentWeek,
+    required this.totalWeeks,
+    required this.cs,
+    required this.tt,
+  });
+
+  final int currentWeek;
+  final int totalWeeks;
+  final ColorScheme cs;
+  final TextTheme tt;
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = math.min(currentWeek / totalWeeks, 1.0);
+    final percent = (progress * 100).round();
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              AppStrings.weekOf(currentWeek, totalWeeks),
+              style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+            ),
+            Text(
+              '$percent%',
+              style: tt.labelSmall?.copyWith(
+                color: cs.secondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        AppWhiteSpace.hXs,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor: cs.surfaceContainer,
+            valueColor: AlwaysStoppedAnimation(cs.secondary),
+            minHeight: AppSizing.progressBarHeight,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CardMenu extends StatelessWidget {
+  const _CardMenu({
+    required this.onEdit,
+    required this.onToggleActive,
+    required this.onArchive,
+    required this.onDelete,
+  });
+
+  final VoidCallback onEdit;
+  final VoidCallback onToggleActive;
+  final VoidCallback onArchive;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    return SizedBox(
+      width: AppSizing.iconMd,
+      height: AppSizing.iconMd,
+      child: Material(
+        color: Colors.transparent,
+        child: PopupMenuButton<String>(
+          padding: EdgeInsets.zero,
+          icon: Icon(
+            Icons.more_horiz,
+            color: cs.onSurfaceVariant,
+            size: AppSizing.iconMd,
+          ),
+          onSelected: (value) {
+            switch (value) {
+              case 'edit':
+                onEdit();
+              case 'toggleActive':
+                onToggleActive();
+              case 'archive':
+                onArchive();
+              case 'delete':
+                onDelete();
+            }
+          },
+          itemBuilder: (_) => [
+            const PopupMenuItem(value: 'edit', child: Text(AppStrings.edit)),
+            const PopupMenuItem(
+              value: 'toggleActive',
+              child: Text(AppStrings.activateProgramme),
+            ),
+            const PopupMenuItem(
+              value: 'archive',
+              child: Text(AppStrings.archiveProgramme),
+            ),
+            const PopupMenuItem(
+              value: 'delete',
+              child: Text(AppStrings.deleteProgramme),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ImportCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+
+    return Material(
+      color: cs.surface,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: InkWell(
+        onTap: () {
+          // TODO: wire import flow
+        },
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: SizedBox(
+            width: double.infinity,
+            child: CustomPaint(
+              painter: DashedBorderPainter(
+                color: cs.outlineVariant,
+                strokeWidth: 2,
+                dashWidth: 8,
+                gapWidth: 6,
+                borderRadius: AppRadius.md,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      OutlinedSvgAssets.plus,
+                      width: AppSizing.iconMd,
+                      height: AppSizing.iconMd,
+                      colorFilter: ColorFilter.mode(
+                        cs.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    AppWhiteSpace.wSm,
+                    Text(
+                      AppStrings.importAedifyPlan,
+                      style: context.textTheme.labelMedium?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -277,29 +798,34 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            OutlinedSvgAssets.exclamationCircle,
-            width: AppSizing.iconLg,
-            height: AppSizing.iconLg,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.error,
-              BlendMode.srcIn,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              OutlinedSvgAssets.exclamationCircle,
+              width: AppSizing.iconLg,
+              height: AppSizing.iconLg,
+              colorFilter: ColorFilter.mode(cs.error, BlendMode.srcIn),
             ),
-          ),
-          AppWhiteSpace.hMd,
-          Text(message),
-          if (onRetry != null) ...[
             AppWhiteSpace.hMd,
-            FilledButton(
-              onPressed: onRetry,
-              child: const Text(AppStrings.retry),
+            Text(
+              message,
+              style: context.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
+            if (onRetry != null) ...[
+              AppWhiteSpace.hMd,
+              FilledButton(
+                onPressed: onRetry,
+                child: const Text(AppStrings.retry),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -310,31 +836,37 @@ class _EmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            OutlinedSvgAssets.clipboardDocumentList,
-            width: AppSizing.iconLg,
-            height: AppSizing.iconLg,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              OutlinedSvgAssets.clipboardDocumentList,
+              width: AppSizing.iconXxl,
+              height: AppSizing.iconXxl,
+              colorFilter: ColorFilter.mode(
+                cs.onSurfaceVariant,
+                BlendMode.srcIn,
+              ),
             ),
-          ),
-          AppWhiteSpace.hMd,
-          Text(
-            AppStrings.noProgrammesYet,
-            style: context.textTheme.titleMedium,
-          ),
-          AppWhiteSpace.hSm,
-          Text(
-            AppStrings.noProgrammesYetHint,
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            AppWhiteSpace.hMd,
+            Text(
+              AppStrings.noProgrammesYet,
+              style: context.textTheme.titleMedium,
+            ),
+            AppWhiteSpace.hSm,
+            Text(
+              AppStrings.noProgrammesYetHint,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

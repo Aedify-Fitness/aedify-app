@@ -77,13 +77,27 @@ class HomeScreen extends ConsumerWidget {
         ? _computeWeekProgress(sync, currentWeek)
         : 0.0;
     final todayWorkoutId = sync?.resolution.todayWorkoutId;
-    final exerciseCount = sync?.aggregate.exercises.length ?? 0;
-    final durationMinutes =
-        sync?.aggregate.templates.fold<int>(
-          0,
-          (sum, t) => sum + (t.estimatedDurationMinutes ?? 0),
-        ) ??
-        0;
+    final exerciseCount = () {
+      if (todayWorkoutId == null || sync == null) return 0;
+      return sync.aggregate.exercises
+          .where((e) => e.programWorkoutId == todayWorkoutId)
+          .length;
+    }();
+    final durationMinutes = () {
+      if (todayWorkoutId == null || sync == null) return 0;
+      final workout = sync.aggregate.workouts.where(
+        (w) => w.id == todayWorkoutId,
+      );
+      if (workout.isEmpty) return 0;
+      final templateId = workout.first.workoutTemplateId;
+      if (templateId == null) return 0;
+      final template = sync.aggregate.templates.where(
+        (t) => t.id == templateId,
+      );
+      return template.isEmpty
+          ? 0
+          : (template.first.estimatedDurationMinutes ?? 0);
+    }();
 
     return Scaffold(
       body: SafeArea(
@@ -618,9 +632,7 @@ class _OngoingWorkoutCard extends ConsumerWidget {
       0,
       (sum, e) => sum + e.sets.length,
     );
-    final elapsedMinutes = DateTime.now()
-        .difference(session.startedAt)
-        .inMinutes;
+    final elapsedMinutes = (session.durationSeconds ?? 0) ~/ 60;
     final progressLabel = totalSets > 0 ? '$completedSets/$totalSets' : '0';
 
     return Container(

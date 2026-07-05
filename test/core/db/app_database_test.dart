@@ -9,7 +9,7 @@ void main() {
   group('AppDatabase', () {
     test('schema version is 11', () {
       final db = AppDatabase(NativeDatabase.memory());
-      expect(db.schemaVersion, equals(11));
+      expect(db.schemaVersion, equals(12));
       db.close();
     });
 

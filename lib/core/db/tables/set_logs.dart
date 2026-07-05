@@ -10,6 +10,7 @@ class SetLogs extends Table {
   TextColumn get setIntent => text().nullable()();
   IntColumn get prescribedRepsMin => integer().nullable()();
   IntColumn get prescribedRepsMax => integer().nullable()();
+  IntColumn get prescribedRepsExact => integer().nullable()();
   RealColumn get prescribedWeightKg => real().nullable()();
   RealColumn get prescribedRpeMin => real().nullable()();
   RealColumn get prescribedRpeMax => real().nullable()();

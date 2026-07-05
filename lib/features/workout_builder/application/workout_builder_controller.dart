@@ -552,6 +552,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
   WorkoutBuilderDraft _normalizeDraftForSave(WorkoutBuilderDraft draft) {
     return draft.copyWith(
       exercises: draft.exercises.map(_normalizeExerciseForSave).toList(),
+      estimatedDurationMinutes: draft.computeEstimatedDurationMinutes(),
     );
   }
 

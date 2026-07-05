@@ -6,6 +6,91 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### WorkoutCompleteScreen — new normal-completion screen matching HTML design
+
+- **New screen**: `WorkoutCompleteScreen` at `lib/features/workout_execution/presentation/workout_complete_screen.dart` — a dedicated success screen for workouts that were completed normally (not finished early). Matches the HTML design exactly: filled check_circle hero with pulse glow, 3-column bento stats grid (Duration, Volume, Sets), Aedify Insight card with `auto_awesome` background decoration and `completionInsight` message, Exercise Summary list with chevron_right icons, and a fixed bottom layer with Done + Share Summary buttons.
+- **New route**: `sessionComplete` (`/workout/summary`, name `sessionComplete`) added to `AppRoutes` and `app_router.dart`.
+- **New strings**: `shareSummary`, `setsLabel`, `volumeLabel`, `completionInsight` added to `AppStrings`.
+- **Navigation routing**: `workout_runner_screen.dart` now distinguishes normal completion from early finish. When all sets are completed or skipped, it navigates to `sessionComplete` route. When there are untouched sets (early finish), it navigates to `finishEarlySummary` route.
+- **Test updates**: Added `finishEarlySummary` route to test GoRouter for the finish early test case.
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing M3 smoke flow failure.
+
+### Session complete screen — workout summary fix, percentage formatting, preferred unit support
+
+- **Bug fix**: Workout summary no longer shows untouched exercises as completed. Replaced `allSkipped || (hasSkipped && !hasCompleted)` with `!hasCompleted` in `_WorkoutSummarySection`.
+- **`{percentage}` placeholder**: `AppStrings.recoveryIsProgress` changed from `static const` to `static String recoveryIsProgress(int percentage)`. The insight card now computes completion percentage: volume-based when all sets have prescribed weight/reps, otherwise falls back to set completion ratio.
+- **Preferred unit**: `SessionCompleteScreen` converted from `StatelessWidget` to `ConsumerWidget`. Wires `profileControllerProvider` to read `preferredUnits`. Volume stat card and exercise card now show `kg` or `lbs` based on profile preference.
+- **Navigation collision fix**: Cancel/abandon flow no longer triggers SessionCompleteScreen navigation. Added `session.status == WorkoutSessionStatus.completed` guard to `pushReplacementNamed` call. Removed redundant `context.pop()` after `completeWorkout()` in exit sheet handler.
+- **Test updates**: 3 `workout_runner_screen_test.dart` tests updated for navigation-based completion flow (GoRouter + SessionCompleteScreen expectations).
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing M3 smoke flow failure.
+
+### ProgrammeWorkoutDetailScreen — redesigned to match HTML spec (v2)
+
+- Rewrote `ProgrammeWorkoutDetailScreen` to exactly follow the HTML design (iteration 2): no AppBar/back button, `Wrap` for flex-wrap stat rows, Material Icons for stat icons (`fitness_center`, `schedule`, `my_location`), `p-5` (20px) card padding, `gap-5` (20px) image-content gap, `mt-8` (32px) before stats, `mb-1`/`mt-2` (12px total) between name row and stats row, `headline-lg` for "Workout Flow" heading, `rounded-2xl` (16px) on atmospheric section, fixed start button with `play_arrow` icon and `headlineMd` text.
+- Added `programmeName`, `focusAreas` to `ProgrammeWorkoutDetailViewData` and `modality` to `ExerciseDetailItem`.
+- Updated `ProgrammeWorkoutDetailController` to accept full `Exercise` models and compute focus areas from primary muscles.
+- Updated provider to pass full `Exercise` models.
+- New AppStrings: `minutes`, `focusLabel`, `workoutFlow`, `movements`, `setsAndReps`, `intensity`, `readyToPush`, `sessionInspirationMessage`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Home screen `durationMinutes` now reflects today's workout only (not entire programme)
+
+- Changed `durationMinutes` calculation on home screen from summing `estimatedDurationMinutes` across all programme templates to resolving only the template for `todayWorkoutId` via `workoutTemplateId` lookup.
+- Previously showed total estimated duration of every workout in the programme. Now shows the duration of today's scheduled workout only.
+- Verification: `dart format .` — 636 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Auto-calculated workout estimated duration from rest times + set count
+
+- Added `computeEstimatedDurationMinutes()` to `WorkoutBuilderDraft` — computes estimated duration per set using tiered fallback: per-set `restSeconds` (priority 1), per-exercise `restBetweenExercisesSeconds` (priority 2), global `restBetweenExercisesSeconds` (priority 3), default 60s (priority 4), plus 60s per set for execution time.
+- Updated `WorkoutBuilderController._normalizeDraftForSave()` to call `computeEstimatedDurationMinutes()` and set `estimatedDurationMinutes` before persistence.
+- Previously `estimatedDurationMinutes` was never calculated — the field existed in the model but was always null. Now every saved workout auto-computes its estimate from current exercises, sets, and rest values.
+- Downstream consumers (home screen, programme calendar) already read `estimatedDurationMinutes` — no changes needed.
+- Verification: `dart format .` — 636 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Shared `DashedBorderPainter` extracted from workout builder screen
+
+- Extracted `DashedBorderPainter` (was `_DashedBorderPainter`) from `workout_builder_screen.dart` into `lib/shared/widgets/dashed_border_painter.dart`.
+- Updated both `workout_builder_screen.dart` and `programmes_screen.dart` to import and use the shared `DashedBorderPainter`.
+- Removed duplicate local `_DashedBorderPainter` definition from `programmes_screen.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues.
+
+### Schema v12 — `prescribed_reps_exact` column on `set_logs`
+
+- Bumped database schema from `11` to `12`.
+- Added nullable `prescribed_reps_exact` (INTEGER) column to `set_logs` table via migration: `ALTER TABLE set_logs ADD COLUMN prescribed_reps_exact INTEGER`.
+- Updated `AppDatabase` onCreate logging to record `toVersion: 12`.
+- Migration-log and schema-version tests updated for version `12`.
+- Files: `lib/core/db/app_database.dart`, `lib/core/db/app_database.g.dart`, `lib/core/db/tables/set_logs.dart`, `test/core/db/app_database_test.dart`, `test/core/db/migration_test.dart`
+
+### ProgrammesScreen — redesigned list with state-aware start/resume CTA
+
+- Rewrote `ProgrammesScreen` with redesigned programme list: each tile shows programme name, goal tags, and a state-aware `WorkoutDetailButtonState` CTA (start/resume/hidden) that reflects the active-session status of the programme's today workout.
+- Added `WorkoutDetailButtonState` enum at `lib/shared/domain/workout_detail_button_state.dart` — three states: `start`, `resume`, `hidden`.
+- Tapping a programme tile navigates to `ProgrammeCalendarScreen`. The edit action moved to the overflow menu.
+- `ProgrammesScreen` now watches `activeWorkoutSessionProvider` to determine CTA state and uses `workoutRunnerControllerProvider.family` for start/resume actions.
+- Wired `programmeSyncProvider` refresh trigger for post-save state consistency.
+- Files: `lib/shared/domain/workout_detail_button_state.dart`, `lib/features/programmes/presentation/programmes_screen.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/app/providers/providers.dart`
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Runner exit flow — ExitWorkoutSheet, FinishEarlyDialog, FinishEarlySessionCompleteScreen
+
+- **`ExitWorkoutSheet`** (`lib/features/workout_execution/presentation/widgets/exit_workout_sheet.dart`): Replaces inline exit-confirmation UI with a dedicated bottom sheet showing elapsed session time, session name, and three action buttons — Finish & Save, Pause, Abandon.
+- **`FinishEarlyDialog`** (`lib/features/workout_execution/presentation/widgets/finish_early_dialog.dart`): Replaces the old `CancelWorkoutDialog` for early-finish flow with a dedicated dialog that shows session summary (duration, volume, completed sets) and collects optional notes/energy/difficulty before completing.
+- **`FinishEarlySessionCompleteScreen`** (`lib/features/workout_execution/presentation/finish_early_session_complete_screen.dart`): New dedicated summary screen for workouts finished early (untouched sets remain). Displays completion percentage, duration, volume, exercise summary with skipped/untouched badges, and Done CTA. Separate from `WorkoutCompleteScreen` which handles full-completion flow.
+- Updated `workout_runner_screen.dart` routing: normal completion → `WorkoutCompleteScreen` (sessionComplete route), early finish → `FinishEarlySessionCompleteScreen` (finishEarlySummary route), abandon/cancel → HomeScreen via `context.pop()`.
+- New AppStrings: `exitWorkout`, `finishAndSave`, `pauseWorkout`, `abandonConfirm`.
+- Files: `lib/features/workout_execution/presentation/workout_runner_screen.dart`, `lib/features/workout_execution/presentation/workout_complete_screen.dart`, `lib/features/workout_execution/presentation/finish_early_session_complete_screen.dart`, `lib/features/workout_execution/presentation/widgets/exit_workout_sheet.dart`, `lib/features/workout_execution/presentation/widgets/finish_early_dialog.dart`, `lib/shared/constants/app_routes.dart`, `lib/app/router/app_router.dart`, `lib/shared/constants/app_strings.dart`, `test/features/workout_execution/presentation/workout_runner_screen_test.dart`
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Domain model rest field propagation — SetLogDraft, WorkoutRunnerSetItem, WorkoutSessionDraft
+
+- Added `int? restSeconds` to `SetLogDraft` and `WorkoutRunnerSetItem` domain models with `copyWith` propagation.
+- Added `int? restBetweenExercisesSeconds` to `WorkoutSessionDraft` with `copyWith` propagation.
+- Updated `WorkoutRunnerMapper.toViewData()`/`toDraft()` to preserve `restSeconds` and `restBetweenExercisesSeconds` in round-trip.
+- Updated `StartWorkoutSessionUseCase` to propagate `restSeconds` from set prescriptions and `restBetweenExercisesSeconds` from exercise drafts into session domain models.
+- Updated `DriftWorkoutSessionRepository` to persist `restSeconds` on `set_logs` and `restBetweenExercisesSeconds` on `workout_session_exercises` columns.
+- Files: `lib/features/workout_execution/domain/set_log_draft.dart`, `lib/features/workout_execution/domain/workout_runner_set_item.dart`, `lib/features/workout_execution/domain/workout_session_draft.dart`, `lib/features/workout_execution/application/workout_runner_mapper.dart`, `lib/features/workout_execution/application/start_workout_session_use_case.dart`, `lib/features/workout_execution/data/drift_workout_session_repository.dart`
+
 ### Convention compliance — all `SizedBox` whitespace migrated to `AppWhiteSpace`
 
 - Added `wXxs` and `hXxs` constants to `AppWhiteSpace` in `app_spacing.dart` for the 2px (AppSpacing.xxs) spacing token.
@@ -13,7 +98,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - Replaced all `SizedBox(width: AppSpacing.*)` with `AppWhiteSpace.w*` (~52 occurrences across 19 files).
 - Replaced raw-number `SizedBox(width: 2)` with `AppWhiteSpace.wXxs` in `workout_builder_screen.dart`.
 - Replaced raw-number `SizedBox(width: 40)` with `AppWhiteSpace.custom(width: AppSizing.handleWidth)` in `workout_builder_screen.dart`.
-- Replaced `SizedBox(width: AppSpacing.buttonVertical)` with `AppWhiteSpace.custom(width: AppSpacing.buttonVertical)` in `exercise_picker_filter_sheet.dart`.
 - Files: `lib/shared/theme/app_spacing.dart` + 60 feature files.
 - Verification: `dart format .` — 0 unchanged. `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
 
@@ -24,7 +108,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - Expanded `_ExerciseConfigPanel` sets table with WEIGHT and REST columns alongside existing SET/TYPE/REPS/TARGET — inline `TextField` editors with proper `TextEditingController` lifecycle managed via `StatefulWidget` (`_SetTableRow`). Weight parsed as `double`, rest as `int`, reps as range or exact, target as RPE range or RIR.
 - Added `_SetTableRow` (StatefulWidget) with `_onWeightChanged`, `_onRestChanged`, `_onRepsChanged`, `_onTargetChanged` listeners and `_isSyncing` guard to prevent feedback loops. `_syncControllers` on `didUpdateWidget` preserves cursor position.
 - Added `_CoachNotesField` (StatefulWidget) for per-exercise notes textarea — controller lifecycle, `didUpdateWidget` sync on `exerciseId` change.
-- Added `_DashedBorderPainter` (CustomPainter) for the dashed-border "Add Exercise" button, `_AddExerciseButton` with plus-circle icon, `_ExerciseMenu` popup menu (duplicate/delete) replacing always-visible icons.
+- Added `_DashedBorderPainter` (`CustomPainter`, later moved to `lib/shared/widgets/dashed_border_painter.dart` as `DashedBorderPainter`) for the dashed-border "Add Exercise" button, `_AddExerciseButton` with plus-circle icon, `_ExerciseMenu` popup menu (duplicate/delete) replacing always-visible icons.
 - Added rest seconds display in `_MiniExerciseCard` summary line — shows clock icon + `{restSec}s` when set-level rest is present.
 - Added `SetPrescriptionDraft.clearTarget()`, `clearReps()`, `clearWeight()`, `clearRest()` mutation helpers and full `==`/`hashCode` overrides for dirty-state comparison.
 - Added `WorkoutBuilderDraft.clearRestBetweenExercises()`, `==`/`hashCode` with `listEquals` for list fields, and `WorkoutBuilderExerciseDraft` `==`/`hashCode`.

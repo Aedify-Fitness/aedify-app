@@ -15,6 +15,7 @@ class WorkoutSessionDraft {
     this.programWorkoutId,
     this.savedWorkoutId,
     this.bodyweightKgAtSession,
+    this.durationSeconds,
     this.notes,
     this.energyLevel,
     this.perceivedDifficulty,
@@ -30,6 +31,7 @@ class WorkoutSessionDraft {
   final String? programWorkoutId;
   final String? savedWorkoutId;
   final double? bodyweightKgAtSession;
+  final int? durationSeconds;
   final String? notes;
   final int? energyLevel;
   final int? perceivedDifficulty;

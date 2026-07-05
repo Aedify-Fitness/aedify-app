@@ -21,7 +21,10 @@ import 'package:aedify/features/exercise_library/presentation/exercise_library_s
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/finish_early_session_complete_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_complete_screen.dart';
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
@@ -290,6 +293,22 @@ class AppRouter {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return WorkoutRunnerScreen.savedWorkout(savedWorkoutId: id);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.finishEarlySummary().path,
+          name: AppRoutes.finishEarlySummary().name,
+          builder: (context, state) {
+            final session = state.extra as WorkoutRunnerSessionViewData;
+            return FinishEarlySessionCompleteScreen(session: session);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.sessionComplete().path,
+          name: AppRoutes.sessionComplete().name,
+          builder: (context, state) {
+            final session = state.extra as WorkoutRunnerSessionViewData;
+            return WorkoutCompleteScreen(session: session);
           },
         ),
         GoRoute(

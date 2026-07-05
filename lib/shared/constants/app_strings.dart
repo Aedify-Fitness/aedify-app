@@ -604,9 +604,9 @@ class AppStrings {
   static const custom = 'Custom';
   static const imported = 'Imported';
   static const completed = 'Completed';
-  static const weeks = 'weeks';
-  static const daysPerWeek = 'days/wk';
-  static const goal = 'goal';
+  static const weeks = 'Weeks';
+  static const daysPerWeek = 'Days/Wk';
+  static const goal = 'Goal';
   static const importAedifyPlan = 'Import .aedifyplan or file';
   static const allFilter = 'All';
   static const noWorkoutTemplatesAvailable = 'No workout templates available.';
@@ -767,6 +767,13 @@ class AppStrings {
 
   // Workout runner
   static const sessionInProgress = 'Session in Progress';
+  static const resumeSessionSubtitle =
+      'You have an active workout session. Would you like to continue where you left off or start fresh?';
+  static const inProgressLabel = 'In Progress';
+  static const timeElapsed = 'Time Elapsed';
+  static const currentExercise = 'Current Exercise';
+  static const abandonWorkout = 'Abandon Workout';
+  static const progressLabel = 'Progress';
   static const finishEarly = 'Finish Early';
   static const logSet = 'Log Set';
   static const restTime = 'Rest Time';
@@ -866,4 +873,53 @@ class AppStrings {
 
   // Workout builder — set table
   static const rpeHint = 'RPE 8-9';
+
+  // Programme workout detail
+  static const workoutFlow = 'Workout Flow';
+  static const movements = 'Movements';
+  static const minutes = 'Minutes';
+  static const focusLabel = 'Focus';
+  static const setsAndReps = 'Sets x Reps';
+  static const intensity = 'Intensity';
+  static const readyToPush = 'Ready to push?';
+  static const sessionInspirationMessage =
+      'This session is designed for peak performance. Ensure you have proper hydration and your equipment is set up before starting.';
+
+  // Session complete screen
+  static const sessionComplete = 'Session Complete';
+  static const workoutSummary = 'Workout Summary';
+  static const aedifyInsight = 'Aedify Insight';
+  static const backToHome = 'Back to Home';
+  static const shareSummary = 'Share Summary';
+  static const setsLabel = 'Sets';
+  static const volumeLabel = 'Volume';
+  static String recoveryIsProgress(int percentage) =>
+      'Recovery is progress. You completed $percentage% of your planned volume today. Your schedule will stay on track for the next session.';
+  static const nextSessionInfo = 'Next chest focus: Monday, 8:00 AM';
+  static const completionInsight =
+      'Exceptional session! You completed all your planned work. Recovery is progress — your body adapts and grows between sessions.';
+
+  // Finish early dialog
+  static const finishWorkoutEarly = 'Finish Workout Early?';
+  static const finishEarlyMessage =
+      'You still have {remaining} exercises remaining in this session. Your progress so far will be saved to your history.';
+  static const finishEarlyReason = 'Why are you finishing?';
+  static const finishEarlyReasonOutOfTime = 'Out of time';
+  static const finishEarlyReasonInjuryPain = 'Injury/Pain';
+  static const finishEarlyReasonEquipmentIssue = 'Equipment Issue';
+  static const finishEarlyReasonTooTired = 'Too Tired';
+  static const finishAndSaveSession = 'Finish & Save Session';
+
+  // Exit workout sheet
+  static const exitWorkoutTitle = 'Exit Workout?';
+  static const exitWorkoutMessage =
+      'Are you sure you want to end your session? Your current progress is saved below.';
+  static const currentSession = 'Current Session';
+  static const exercisesComplete = 'Exercises Complete';
+  static const finishAndSave = 'Finish & Save';
+  static const abandonSession = 'Abandon Session';
+  static const savedWorkoutsHistoryNote =
+      'Saved workouts can be viewed in your';
+  static const historyTab = 'History';
+  static const historyTabSuffix = 'tab.';
 }

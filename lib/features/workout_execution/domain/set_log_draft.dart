@@ -11,6 +11,7 @@ class SetLogDraft {
     this.setIntent,
     this.prescribedRepsMin,
     this.prescribedRepsMax,
+    this.prescribedRepsExact,
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
@@ -36,6 +37,7 @@ class SetLogDraft {
   final SetIntent? setIntent;
   final int? prescribedRepsMin;
   final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;

@@ -25207,6 +25207,16 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _prescribedRepsExactMeta =
+      const VerificationMeta('prescribedRepsExact');
+  @override
+  late final GeneratedColumn<int> prescribedRepsExact = GeneratedColumn<int>(
+    'prescribed_reps_exact',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _prescribedWeightKgMeta =
       const VerificationMeta('prescribedWeightKg');
   @override
@@ -25412,6 +25422,7 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     setIntent,
     prescribedRepsMin,
     prescribedRepsMax,
+    prescribedRepsExact,
     prescribedWeightKg,
     prescribedRpeMin,
     prescribedRpeMax,
@@ -25512,6 +25523,15 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         prescribedRepsMax.isAcceptableOrUnknown(
           data['prescribed_reps_max']!,
           _prescribedRepsMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_reps_exact')) {
+      context.handle(
+        _prescribedRepsExactMeta,
+        prescribedRepsExact.isAcceptableOrUnknown(
+          data['prescribed_reps_exact']!,
+          _prescribedRepsExactMeta,
         ),
       );
     }
@@ -25690,6 +25710,10 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         DriftSqlType.int,
         data['${effectivePrefix}prescribed_reps_max'],
       ),
+      prescribedRepsExact: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_reps_exact'],
+      ),
       prescribedWeightKg: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}prescribed_weight_kg'],
@@ -25777,6 +25801,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
   final String? setIntent;
   final int? prescribedRepsMin;
   final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;
@@ -25804,6 +25829,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     this.setIntent,
     this.prescribedRepsMin,
     this.prescribedRepsMax,
+    this.prescribedRepsExact,
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
@@ -25841,6 +25867,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     }
     if (!nullToAbsent || prescribedRepsMax != null) {
       map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax);
+    }
+    if (!nullToAbsent || prescribedRepsExact != null) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact);
     }
     if (!nullToAbsent || prescribedWeightKg != null) {
       map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg);
@@ -25903,6 +25932,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       prescribedRepsMax: prescribedRepsMax == null && nullToAbsent
           ? const Value.absent()
           : Value(prescribedRepsMax),
+      prescribedRepsExact: prescribedRepsExact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRepsExact),
       prescribedWeightKg: prescribedWeightKg == null && nullToAbsent
           ? const Value.absent()
           : Value(prescribedWeightKg),
@@ -25964,6 +25996,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       setIntent: serializer.fromJson<String?>(json['setIntent']),
       prescribedRepsMin: serializer.fromJson<int?>(json['prescribedRepsMin']),
       prescribedRepsMax: serializer.fromJson<int?>(json['prescribedRepsMax']),
+      prescribedRepsExact: serializer.fromJson<int?>(
+        json['prescribedRepsExact'],
+      ),
       prescribedWeightKg: serializer.fromJson<double?>(
         json['prescribedWeightKg'],
       ),
@@ -26004,6 +26039,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       'setIntent': serializer.toJson<String?>(setIntent),
       'prescribedRepsMin': serializer.toJson<int?>(prescribedRepsMin),
       'prescribedRepsMax': serializer.toJson<int?>(prescribedRepsMax),
+      'prescribedRepsExact': serializer.toJson<int?>(prescribedRepsExact),
       'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
       'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
       'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
@@ -26034,6 +26070,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     Value<String?> setIntent = const Value.absent(),
     Value<int?> prescribedRepsMin = const Value.absent(),
     Value<int?> prescribedRepsMax = const Value.absent(),
+    Value<int?> prescribedRepsExact = const Value.absent(),
     Value<double?> prescribedWeightKg = const Value.absent(),
     Value<double?> prescribedRpeMin = const Value.absent(),
     Value<double?> prescribedRpeMax = const Value.absent(),
@@ -26066,6 +26103,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     prescribedRepsMax: prescribedRepsMax.present
         ? prescribedRepsMax.value
         : this.prescribedRepsMax,
+    prescribedRepsExact: prescribedRepsExact.present
+        ? prescribedRepsExact.value
+        : this.prescribedRepsExact,
     prescribedWeightKg: prescribedWeightKg.present
         ? prescribedWeightKg.value
         : this.prescribedWeightKg,
@@ -26119,6 +26159,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       prescribedRepsMax: data.prescribedRepsMax.present
           ? data.prescribedRepsMax.value
           : this.prescribedRepsMax,
+      prescribedRepsExact: data.prescribedRepsExact.present
+          ? data.prescribedRepsExact.value
+          : this.prescribedRepsExact,
       prescribedWeightKg: data.prescribedWeightKg.present
           ? data.prescribedWeightKg.value
           : this.prescribedWeightKg,
@@ -26169,6 +26212,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           ..write('setIntent: $setIntent, ')
           ..write('prescribedRepsMin: $prescribedRepsMin, ')
           ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
           ..write('prescribedWeightKg: $prescribedWeightKg, ')
           ..write('prescribedRpeMin: $prescribedRpeMin, ')
           ..write('prescribedRpeMax: $prescribedRpeMax, ')
@@ -26201,6 +26245,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     setIntent,
     prescribedRepsMin,
     prescribedRepsMax,
+    prescribedRepsExact,
     prescribedWeightKg,
     prescribedRpeMin,
     prescribedRpeMax,
@@ -26232,6 +26277,7 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           other.setIntent == this.setIntent &&
           other.prescribedRepsMin == this.prescribedRepsMin &&
           other.prescribedRepsMax == this.prescribedRepsMax &&
+          other.prescribedRepsExact == this.prescribedRepsExact &&
           other.prescribedWeightKg == this.prescribedWeightKg &&
           other.prescribedRpeMin == this.prescribedRpeMin &&
           other.prescribedRpeMax == this.prescribedRpeMax &&
@@ -26261,6 +26307,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
   final Value<String?> setIntent;
   final Value<int?> prescribedRepsMin;
   final Value<int?> prescribedRepsMax;
+  final Value<int?> prescribedRepsExact;
   final Value<double?> prescribedWeightKg;
   final Value<double?> prescribedRpeMin;
   final Value<double?> prescribedRpeMax;
@@ -26289,6 +26336,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.setIntent = const Value.absent(),
     this.prescribedRepsMin = const Value.absent(),
     this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
     this.prescribedWeightKg = const Value.absent(),
     this.prescribedRpeMin = const Value.absent(),
     this.prescribedRpeMax = const Value.absent(),
@@ -26318,6 +26366,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.setIntent = const Value.absent(),
     this.prescribedRepsMin = const Value.absent(),
     this.prescribedRepsMax = const Value.absent(),
+    this.prescribedRepsExact = const Value.absent(),
     this.prescribedWeightKg = const Value.absent(),
     this.prescribedRpeMin = const Value.absent(),
     this.prescribedRpeMax = const Value.absent(),
@@ -26353,6 +26402,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Expression<String>? setIntent,
     Expression<int>? prescribedRepsMin,
     Expression<int>? prescribedRepsMax,
+    Expression<int>? prescribedRepsExact,
     Expression<double>? prescribedWeightKg,
     Expression<double>? prescribedRpeMin,
     Expression<double>? prescribedRpeMax,
@@ -26383,6 +26433,8 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
       if (setIntent != null) 'set_intent': setIntent,
       if (prescribedRepsMin != null) 'prescribed_reps_min': prescribedRepsMin,
       if (prescribedRepsMax != null) 'prescribed_reps_max': prescribedRepsMax,
+      if (prescribedRepsExact != null)
+        'prescribed_reps_exact': prescribedRepsExact,
       if (prescribedWeightKg != null)
         'prescribed_weight_kg': prescribedWeightKg,
       if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
@@ -26417,6 +26469,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Value<String?>? setIntent,
     Value<int?>? prescribedRepsMin,
     Value<int?>? prescribedRepsMax,
+    Value<int?>? prescribedRepsExact,
     Value<double?>? prescribedWeightKg,
     Value<double?>? prescribedRpeMin,
     Value<double?>? prescribedRpeMax,
@@ -26447,6 +26500,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
       setIntent: setIntent ?? this.setIntent,
       prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
       prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact ?? this.prescribedRepsExact,
       prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
       prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
       prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
@@ -26500,6 +26554,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     }
     if (prescribedRepsMax.present) {
       map['prescribed_reps_max'] = Variable<int>(prescribedRepsMax.value);
+    }
+    if (prescribedRepsExact.present) {
+      map['prescribed_reps_exact'] = Variable<int>(prescribedRepsExact.value);
     }
     if (prescribedWeightKg.present) {
       map['prescribed_weight_kg'] = Variable<double>(prescribedWeightKg.value);
@@ -26574,6 +26631,7 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
           ..write('setIntent: $setIntent, ')
           ..write('prescribedRepsMin: $prescribedRepsMin, ')
           ..write('prescribedRepsMax: $prescribedRepsMax, ')
+          ..write('prescribedRepsExact: $prescribedRepsExact, ')
           ..write('prescribedWeightKg: $prescribedWeightKg, ')
           ..write('prescribedRpeMin: $prescribedRpeMin, ')
           ..write('prescribedRpeMax: $prescribedRpeMax, ')
@@ -38934,6 +38992,7 @@ typedef $$SetLogsTableCreateCompanionBuilder =
       Value<String?> setIntent,
       Value<int?> prescribedRepsMin,
       Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
       Value<double?> prescribedWeightKg,
       Value<double?> prescribedRpeMin,
       Value<double?> prescribedRpeMax,
@@ -38964,6 +39023,7 @@ typedef $$SetLogsTableUpdateCompanionBuilder =
       Value<String?> setIntent,
       Value<int?> prescribedRepsMin,
       Value<int?> prescribedRepsMax,
+      Value<int?> prescribedRepsExact,
       Value<double?> prescribedWeightKg,
       Value<double?> prescribedRpeMin,
       Value<double?> prescribedRpeMax,
@@ -39035,6 +39095,11 @@ class $$SetLogsTableFilterComposer
 
   ColumnFilters<int> get prescribedRepsMax => $composableBuilder(
     column: $table.prescribedRepsMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -39178,6 +39243,11 @@ class $$SetLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get prescribedWeightKg => $composableBuilder(
     column: $table.prescribedWeightKg,
     builder: (column) => ColumnOrderings(column),
@@ -39310,6 +39380,11 @@ class $$SetLogsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get prescribedRepsExact => $composableBuilder(
+    column: $table.prescribedRepsExact,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<double> get prescribedWeightKg => $composableBuilder(
     column: $table.prescribedWeightKg,
     builder: (column) => column,
@@ -39417,6 +39492,7 @@ class $$SetLogsTableTableManager
                 Value<String?> setIntent = const Value.absent(),
                 Value<int?> prescribedRepsMin = const Value.absent(),
                 Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
                 Value<double?> prescribedWeightKg = const Value.absent(),
                 Value<double?> prescribedRpeMin = const Value.absent(),
                 Value<double?> prescribedRpeMax = const Value.absent(),
@@ -39445,6 +39521,7 @@ class $$SetLogsTableTableManager
                 setIntent: setIntent,
                 prescribedRepsMin: prescribedRepsMin,
                 prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
                 prescribedWeightKg: prescribedWeightKg,
                 prescribedRpeMin: prescribedRpeMin,
                 prescribedRpeMax: prescribedRpeMax,
@@ -39475,6 +39552,7 @@ class $$SetLogsTableTableManager
                 Value<String?> setIntent = const Value.absent(),
                 Value<int?> prescribedRepsMin = const Value.absent(),
                 Value<int?> prescribedRepsMax = const Value.absent(),
+                Value<int?> prescribedRepsExact = const Value.absent(),
                 Value<double?> prescribedWeightKg = const Value.absent(),
                 Value<double?> prescribedRpeMin = const Value.absent(),
                 Value<double?> prescribedRpeMax = const Value.absent(),
@@ -39503,6 +39581,7 @@ class $$SetLogsTableTableManager
                 setIntent: setIntent,
                 prescribedRepsMin: prescribedRepsMin,
                 prescribedRepsMax: prescribedRepsMax,
+                prescribedRepsExact: prescribedRepsExact,
                 prescribedWeightKg: prescribedWeightKg,
                 prescribedRpeMin: prescribedRpeMin,
                 prescribedRpeMax: prescribedRpeMax,

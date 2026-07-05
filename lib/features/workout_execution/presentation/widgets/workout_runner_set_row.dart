@@ -88,6 +88,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
         setIntent: s.setIntent,
         prescribedRepsMin: s.prescribedRepsMin,
         prescribedRepsMax: s.prescribedRepsMax,
+        prescribedRepsExact: s.prescribedRepsExact,
         prescribedWeightKg: s.prescribedWeightKg,
         prescribedRpeMin: s.prescribedRpeMin,
         prescribedRpeMax: s.prescribedRpeMax,

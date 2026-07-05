@@ -29,7 +29,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(11));
+      expect(logRows.first.toVersion, equals(12));
 
       db.close();
     });

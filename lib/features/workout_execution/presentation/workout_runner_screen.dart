@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,7 +13,8 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_mode.dar
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/cancel_workout_dialog.dart';
-import 'package:aedify/features/workout_execution/presentation/widgets/complete_workout_sheet.dart';
+import 'package:aedify/features/workout_execution/presentation/widgets/exit_workout_sheet.dart';
+import 'package:aedify/features/workout_execution/presentation/widgets/finish_early_dialog.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/rest_timer_widget.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_error_banner.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_header.dart';
@@ -22,6 +24,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/rest_resolver.dart';
 import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/domain/workout_session_status.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -61,6 +64,7 @@ class WorkoutRunnerScreen extends ConsumerStatefulWidget {
 class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   bool _showRestTimer = false;
   int _restSeconds = 90;
+  bool _hasNavigatedToCompletion = false;
 
   void _resetTransientUi() {
     setState(() {
@@ -80,45 +84,150 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     final stateAsync = ref.watch(
       AppProviders.workoutRunnerControllerProvider(arg),
     );
+    final currentState = stateAsync.asData?.value;
 
-    return Scaffold(
-      body: SafeArea(
-        child: stateAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  AppStrings.workoutRunnerLoadFailed,
-                  style: context.textTheme.bodyLarge,
-                ),
-                AppWhiteSpace.hMd,
-                FilledButton(
-                  onPressed: () => ref.invalidate(
-                    AppProviders.workoutRunnerControllerProvider(arg),
+    if (currentState?.phase == WorkoutRunnerPhase.completed &&
+        currentState?.session?.status == WorkoutSessionStatus.completed &&
+        currentState?.session != null &&
+        !_hasNavigatedToCompletion) {
+      _hasNavigatedToCompletion = true;
+      final session = currentState!.session!;
+      final allSetsCompleted = session.exercises.every(
+        (e) => e.sets.every((s) => s.completed || s.skipped),
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          context.pushReplacementNamed(
+            allSetsCompleted
+                ? AppRoutes.sessionComplete().name
+                : AppRoutes.finishEarlySummary().name,
+            extra: session,
+          );
+        }
+      });
+    }
+
+    final hasActiveSession =
+        currentState?.session != null &&
+        !(currentState?.hasRecoveredSession ?? false) &&
+        (currentState?.phase == WorkoutRunnerPhase.ready ||
+            currentState?.phase == WorkoutRunnerPhase.paused);
+    final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+
+    Widget body = PopScope(
+      canPop: !hasActiveSession,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop || !hasActiveSession) return;
+        final session = currentState!.session!;
+        final controller = ref.read(
+          AppProviders.workoutRunnerControllerProvider(arg).notifier,
+        );
+        _showExitWorkoutSheet(context, session, controller);
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: stateAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppStrings.workoutRunnerLoadFailed,
+                    style: context.textTheme.bodyLarge,
                   ),
-                  child: const Text(AppStrings.retry),
-                ),
-              ],
+                  AppWhiteSpace.hMd,
+                  FilledButton(
+                    onPressed: () => ref.invalidate(
+                      AppProviders.workoutRunnerControllerProvider(arg),
+                    ),
+                    child: const Text(AppStrings.retry),
+                  ),
+                ],
+              ),
+            ),
+            data: (state) => _WorkoutRunnerBody(
+              state: state,
+              mode: widget.mode,
+              savedWorkoutId: widget.savedWorkoutId,
+              programId: widget.programId,
+              programWorkoutId: widget.programWorkoutId,
+              restSeconds: _restSeconds,
+              showRestTimer: _showRestTimer,
+              onResetTransientUi: _resetTransientUi,
+              onSetLogged: (rs) => setState(() {
+                _restSeconds = rs;
+                _showRestTimer = true;
+              }),
+              onDismissRestTimer: () => setState(() => _showRestTimer = false),
             ),
           ),
-          data: (state) => _WorkoutRunnerBody(
-            state: state,
-            mode: widget.mode,
-            savedWorkoutId: widget.savedWorkoutId,
-            programId: widget.programId,
-            programWorkoutId: widget.programWorkoutId,
-            restSeconds: _restSeconds,
-            showRestTimer: _showRestTimer,
-            onResetTransientUi: _resetTransientUi,
-            onSetLogged: (rs) => setState(() {
-              _restSeconds = rs;
-              _showRestTimer = true;
-            }),
-            onDismissRestTimer: () => setState(() => _showRestTimer = false),
-          ),
         ),
+      ),
+    );
+
+    if (isIOS && hasActiveSession) {
+      body = Stack(
+        children: [
+          body,
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 30,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity != null &&
+                    details.primaryVelocity! > 200) {
+                  final session = currentState!.session!;
+                  final controller = ref.read(
+                    AppProviders.workoutRunnerControllerProvider(arg).notifier,
+                  );
+                  _showExitWorkoutSheet(context, session, controller);
+                }
+              },
+            ),
+          ),
+        ],
+      );
+    }
+
+    return body;
+  }
+
+  void _showExitWorkoutSheet(
+    BuildContext context,
+    WorkoutRunnerSessionViewData session,
+    WorkoutRunnerController controller,
+  ) {
+    final now = DateTime.now();
+    final elapsed = now.difference(session.startedAt).inSeconds;
+    final sessionWithDuration = session.copyWith(durationSeconds: elapsed);
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => ExitWorkoutSheet(
+        session: sessionWithDuration,
+        onFinishAndSave: () async {
+          Navigator.of(context).pop();
+          _resetTransientUi();
+          await controller.completeWorkout();
+        },
+        onPause: () async {
+          Navigator.of(context).pop();
+          await controller.pauseWorkout();
+          if (context.mounted) context.pop();
+        },
+        onAbandon: () async {
+          Navigator.of(context).pop();
+          _resetTransientUi();
+          await controller.cancelWorkout();
+          if (context.mounted) context.pop();
+        },
+        onClose: () => Navigator.of(context).pop(),
       ),
     );
   }
@@ -165,30 +274,13 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       );
     }
     if (state.phase == WorkoutRunnerPhase.completed) {
-      final session = state.session;
-      if (session == null) {
-        return Center(
-          child: Text(
-            AppStrings.workoutCompleted,
-            style: context.textTheme.titleLarge,
-          ),
-        );
-      }
-      return _WorkoutCompletedView(session: session);
+      return const SizedBox.shrink();
     }
     if (state.phase == WorkoutRunnerPhase.cancelling) {
       return const Center(child: CircularProgressIndicator());
     }
     if (state.phase == WorkoutRunnerPhase.completing) {
       return const Center(child: CircularProgressIndicator());
-    }
-    if (!state.hasSession && mode == WorkoutRunnerMode.resume) {
-      return Center(
-        child: Text(
-          AppStrings.noActiveWorkout,
-          style: context.textTheme.bodyLarge,
-        ),
-      );
     }
     if (state.hasRecoveredSession && state.phase == WorkoutRunnerPhase.ready) {
       final controller = ref.read(
@@ -200,8 +292,13 @@ class _WorkoutRunnerBody extends ConsumerWidget {
         )).notifier,
       );
       return WorkoutRunnerResumeBanner(
+        session: state.session!,
         onResume: () => controller.resumeRecoveredSession(),
-        onDiscard: () => controller.discardRecoveredSession(),
+        onDiscard: () async {
+          await controller.discardRecoveredSession();
+          if (!context.mounted) return;
+          context.pop();
+        },
       );
     }
     if (state.session == null) {
@@ -229,7 +326,8 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       children: [
         WorkoutRunnerHeader(
           title: session.name,
-          onComplete: () => _showCompleteSheet(context, session, controller),
+          onComplete: () =>
+              _showFinishEarlyDialog(context, session, controller),
           onCancel: () => _showCancelDialog(context, controller),
           isCompleting: state.isCompleting,
         ),
@@ -286,14 +384,15 @@ class _WorkoutRunnerBody extends ConsumerWidget {
     );
   }
 
-  void _showCompleteSheet(
+  void _showFinishEarlyDialog(
     BuildContext context,
     WorkoutRunnerSessionViewData session,
     WorkoutRunnerController controller,
   ) {
-    showModalBottomSheet(
+    showDialog(
+      useSafeArea: false,
       context: context,
-      builder: (_) => CompleteWorkoutSheet(
+      builder: (_) => FinishEarlyDialog(
         session: session,
         onComplete: (draft) async {
           context.pop();
@@ -331,92 +430,6 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       }
     }
     return null;
-  }
-}
-
-class _WorkoutCompletedView extends StatelessWidget {
-  const _WorkoutCompletedView({required this.session});
-
-  final WorkoutRunnerSessionViewData session;
-
-  @override
-  Widget build(BuildContext context) {
-    final completedAt = session.completedAt ?? DateTime.now();
-    final durationSeconds =
-        session.durationSeconds ??
-        completedAt.difference(session.startedAt).inSeconds;
-    final minutes = durationSeconds ~/ 60;
-    final durationLabel = '$minutes ${AppStrings.onboardingReviewMinutes}';
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppStrings.workoutCompleted,
-              style: context.textTheme.headlineMedium,
-            ),
-            AppWhiteSpace.hSm,
-            Text(
-              AppStrings.finishWorkoutSummaryMessage,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            AppWhiteSpace.hLg,
-            Expanded(
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _SummaryRow(
-                        label: AppStrings.workout,
-                        value: session.name,
-                      ),
-                      AppWhiteSpace.hSm,
-                      _SummaryRow(
-                        label: AppStrings.duration,
-                        value: durationLabel,
-                      ),
-                      AppWhiteSpace.hSm,
-                      _SummaryRow(
-                        label: AppStrings.totalVolume,
-                        value:
-                            '${_WorkoutCompletedMetrics.totalVolume(session)} ${AppStrings.metricWeightUnit}',
-                      ),
-                      AppWhiteSpace.hSm,
-                      _SummaryRow(
-                        label: AppStrings.setsCompleted,
-                        value:
-                            '${_WorkoutCompletedMetrics.completedSets(session)} / ${_WorkoutCompletedMetrics.totalSets(session)}',
-                      ),
-                      AppWhiteSpace.hSm,
-                      _SummaryRow(
-                        label: AppStrings.exercisesCompleted,
-                        value:
-                            '${_WorkoutCompletedMetrics.completedExercises(session)} / ${session.exercises.length}',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            AppWhiteSpace.hLg,
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () => context.pop(),
-                child: const Text(AppStrings.done),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -466,87 +479,6 @@ class _AutoCompleteWorkoutGuardState
   @override
   Widget build(BuildContext context) {
     return const Center(child: CircularProgressIndicator());
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        AppWhiteSpace.wMd,
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            style: context.textTheme.labelLarge,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _WorkoutCompletedMetrics {
-  _WorkoutCompletedMetrics._();
-
-  static int totalVolume(WorkoutRunnerSessionViewData session) {
-    var volume = 0.0;
-    for (final exercise in session.exercises) {
-      for (final set in exercise.sets) {
-        if (set.completed &&
-            set.actualWeightKg != null &&
-            set.actualReps != null) {
-          volume += set.actualWeightKg! * set.actualReps!;
-        }
-      }
-    }
-    return volume.round();
-  }
-
-  static int completedSets(WorkoutRunnerSessionViewData session) {
-    var count = 0;
-    for (final exercise in session.exercises) {
-      for (final set in exercise.sets) {
-        if (set.completed) count++;
-      }
-    }
-    return count;
-  }
-
-  static int totalSets(WorkoutRunnerSessionViewData session) {
-    var count = 0;
-    for (final exercise in session.exercises) {
-      count += exercise.sets.length;
-    }
-    return count;
-  }
-
-  static int completedExercises(WorkoutRunnerSessionViewData session) {
-    var count = 0;
-    for (final exercise in session.exercises) {
-      for (final set in exercise.sets) {
-        if (set.completed) {
-          count++;
-          break;
-        }
-      }
-    }
-    return count;
   }
 }
 
@@ -1093,6 +1025,7 @@ class _WorkoutRunnerSetMutations {
       setIntent: set.setIntent,
       prescribedRepsMin: set.prescribedRepsMin,
       prescribedRepsMax: set.prescribedRepsMax,
+      prescribedRepsExact: set.prescribedRepsExact,
       prescribedWeightKg: set.prescribedWeightKg,
       prescribedRpeMin: set.prescribedRpeMin,
       prescribedRpeMax: set.prescribedRpeMax,

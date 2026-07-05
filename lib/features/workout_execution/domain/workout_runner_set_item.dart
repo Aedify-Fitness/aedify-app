@@ -13,6 +13,7 @@ class WorkoutRunnerSetItem {
     this.setIntent,
     this.prescribedRepsMin,
     this.prescribedRepsMax,
+    this.prescribedRepsExact,
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
@@ -36,6 +37,7 @@ class WorkoutRunnerSetItem {
   final SetIntent? setIntent;
   final int? prescribedRepsMin;
   final int? prescribedRepsMax;
+  final int? prescribedRepsExact;
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;
@@ -59,6 +61,7 @@ class WorkoutRunnerSetItem {
     SetIntent? setIntent,
     int? prescribedRepsMin,
     int? prescribedRepsMax,
+    int? prescribedRepsExact,
     double? prescribedWeightKg,
     double? prescribedRpeMin,
     double? prescribedRpeMax,
@@ -82,6 +85,7 @@ class WorkoutRunnerSetItem {
       setIntent: setIntent ?? this.setIntent,
       prescribedRepsMin: prescribedRepsMin ?? this.prescribedRepsMin,
       prescribedRepsMax: prescribedRepsMax ?? this.prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact ?? this.prescribedRepsExact,
       prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
       prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
       prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
