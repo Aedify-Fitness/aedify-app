@@ -164,15 +164,15 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                         ),
                       ),
               ),
-              const SizedBox(width: AppSpacing.xs),
+              AppWhiteSpace.wXs,
               Text(
                 AppStrings.setNumberLabel(s.setIndex + 1),
                 style: context.textTheme.bodySmall,
               ),
-              const SizedBox(width: AppSpacing.xs),
+              AppWhiteSpace.wXs,
               SetTypeChip(setType: s.setType),
               if (prescribedLabel != null) ...[
-                const SizedBox(width: AppSpacing.xs),
+                AppWhiteSpace.wXs,
                 Text(
                   prescribedLabel,
                   style: context.textTheme.labelSmall?.copyWith(
@@ -191,7 +191,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
             ],
           ),
           if (!isSkipped) ...[
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             Row(
               children: [
                 SizedBox(
@@ -211,7 +211,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.xxs),
+                AppWhiteSpace.wXxs,
                 SizedBox(
                   width: AppSizing.fieldWidthSm,
                   child: TextFormField(
@@ -227,7 +227,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.xxs),
+                AppWhiteSpace.wXxs,
                 SizedBox(
                   width: AppSizing.fieldWidthXs,
                   child: DropdownButtonFormField<double?>(
@@ -255,7 +255,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                     onChanged: _setRpe,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.xxs),
+                AppWhiteSpace.wXxs,
                 SizedBox(
                   width: AppSizing.fieldWidthXs,
                   child: DropdownButtonFormField<int?>(
@@ -282,7 +282,7 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.xxs),
+            AppWhiteSpace.hXxs,
             TextFormField(
               controller: _notesController,
               decoration: const InputDecoration(

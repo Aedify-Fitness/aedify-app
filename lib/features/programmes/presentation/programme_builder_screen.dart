@@ -184,7 +184,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
                         onGoalsChanged: (goals) =>
                             _controller.setGoalTags(goals),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      AppWhiteSpace.hLg,
                       ProgrammeWeeksOverview(
                         weeks: weeks,
                         onAddWeek: () => _controller.addWeek(),
@@ -523,7 +523,7 @@ class _ProgrammeBuilderBodyState extends ConsumerState<_ProgrammeBuilderBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppStrings.selectDay, style: context.textTheme.titleMedium),
-              const SizedBox(height: AppSpacing.md),
+              AppWhiteSpace.hMd,
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -577,12 +577,12 @@ class _ErrorStateView extends ConsumerWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             AppStrings.programmeLoadFailed,
             style: context.textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           FilledButton(
             onPressed: () => ref.invalidate(provider),
             child: const Text(AppStrings.retry),
@@ -632,7 +632,7 @@ class _ValidationBanner extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                   Expanded(
                     child: Text(e.message, style: context.textTheme.bodySmall),
                   ),

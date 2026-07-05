@@ -27,7 +27,7 @@ class WorkoutRunnerErrorBanner extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: AppSpacing.md),
+              AppWhiteSpace.hMd,
               FilledButton(
                 onPressed: onRetry,
                 child: const Text(AppStrings.retry),

@@ -28,7 +28,7 @@ class DeleteItemDialog extends StatelessWidget {
           onPressed: () => context.pop(),
           child: const Text(AppStrings.cancel),
         ),
-        const SizedBox(width: AppSpacing.sm),
+        AppWhiteSpace.wSm,
         FilledButton(
           style: FilledButton.styleFrom(
             backgroundColor: context.colorScheme.error,

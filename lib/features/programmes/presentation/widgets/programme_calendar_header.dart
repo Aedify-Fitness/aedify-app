@@ -48,7 +48,7 @@ class ProgrammeCalendarHeader extends StatelessWidget {
         children: [
           if (viewData.blockType != null && viewData.blockType!.isNotEmpty) ...[
             _PhaseBadge(blockType: viewData.blockType!),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
           ],
           Text(
             viewData.name,
@@ -61,7 +61,7 @@ class ProgrammeCalendarHeader extends StatelessWidget {
           ),
           if (viewData.description != null &&
               viewData.description!.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             Text(
               viewData.description!,
               style: context.textTheme.bodyLarge?.copyWith(
@@ -71,7 +71,7 @@ class ProgrammeCalendarHeader extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: AppSpacing.lg),
+          AppWhiteSpace.hLg,
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(

@@ -160,7 +160,7 @@ class _WeekHeader extends StatelessWidget {
         child: Row(
           children: [
             _WeekStatusIcon(week: week),
-            const SizedBox(width: AppSpacing.sm),
+            AppWhiteSpace.wSm,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +176,7 @@ class _WeekHeader extends StatelessWidget {
                         ),
                       ),
                       if (week.isDeload) ...[
-                        const SizedBox(width: AppSpacing.sm),
+                        AppWhiteSpace.wSm,
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.sm,

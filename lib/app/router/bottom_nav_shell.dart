@@ -141,7 +141,7 @@ class _BottomNavItem extends StatelessWidget {
                 height: AppSizing.iconMd,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
-              const SizedBox(height: AppSpacing.xxs),
+              AppWhiteSpace.hXxs,
               Text(
                 data.label,
                 style: context.textTheme.labelSmall?.copyWith(
@@ -191,7 +191,7 @@ class _BottomNavItem extends StatelessWidget {
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
 //           Text(AppStrings.createNew, style: context.textTheme.titleMedium),
-//           const SizedBox(height: AppSpacing.md),
+//           AppWhiteSpace.hMd,
 //           ListTile(
 //             leading: SvgPicture.asset(
 //               OutlinedSvgAssets.sparkles,
@@ -228,7 +228,7 @@ class _BottomNavItem extends StatelessWidget {
 //               context.pushNamed(AppRoutes.customExerciseCreate().name);
 //             },
 //           ),
-//           const SizedBox(height: AppSpacing.sm),
+//           AppWhiteSpace.hSm,
 //         ],
 //       ),
 //     );

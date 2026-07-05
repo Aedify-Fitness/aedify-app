@@ -34,9 +34,9 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(AppStrings.assignTemplate, style: context.textTheme.titleMedium),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           _CreateNewSection(),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           if (workouts.isNotEmpty) ...[
             _SectionHeader(title: AppStrings.fromSavedWorkouts),
             ...workouts.map(
@@ -56,7 +56,7 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
           ] else
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -82,7 +82,7 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
         ],
       ),
     );

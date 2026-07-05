@@ -27,7 +27,7 @@ class WorkoutRunnerResumeBanner extends StatelessWidget {
               style: context.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -35,7 +35,7 @@ class WorkoutRunnerResumeBanner extends StatelessWidget {
                   onPressed: onResume,
                   child: Text(AppStrings.recoverWorkout),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 OutlinedButton(
                   onPressed: onDiscard,
                   child: Text(AppStrings.cancel),

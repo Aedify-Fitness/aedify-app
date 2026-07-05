@@ -45,9 +45,9 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 ),
               ),
             ),
-            SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             Text(AppStrings.filters, style: context.textTheme.headlineSmall),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             _FilterSection(
               title: AppStrings.filterMuscleGroup,
               options: BodymapBucket.values.map((e) => e.label).toList(),
@@ -69,7 +69,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 context.pop();
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             _FilterSection(
               title: AppStrings.filterDifficulty,
               options: ExerciseDifficulty.values
@@ -96,7 +96,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 context.pop();
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             _FilterSection(
               title: AppStrings.filterModality,
               options: ExerciseModality.values
@@ -122,7 +122,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 context.pop();
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             _FilterSection(
               title: AppStrings.filterEquipment,
               options: const [
@@ -156,7 +156,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
                 context.pop();
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             SwitchListTile(
               title: const Text(AppStrings.favoritesOnly),
               value: initialFilters.favoritesOnly,
@@ -188,7 +188,7 @@ class ExerciseFilterSheet extends ConsumerWidget {
               contentPadding: EdgeInsets.zero,
             ),
             if (initialFilters.hasActiveFilters) ...[
-              SizedBox(height: AppSpacing.md),
+              AppWhiteSpace.hMd,
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -249,7 +249,7 @@ class _FilterSection extends StatelessWidget {
             color: context.colorScheme.onSurfaceVariant,
           ),
         ),
-        SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,

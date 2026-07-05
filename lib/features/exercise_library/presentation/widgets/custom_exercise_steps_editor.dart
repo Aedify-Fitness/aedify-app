@@ -69,7 +69,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(AppStrings.customExerciseSteps, style: AppTextStyles.labelMd),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         if (widget.steps.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -102,7 +102,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                       onChanged: (value) => widget.onUpdateStep(index, value),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                   IconButton(
                     icon: SvgPicture.asset(
                       OutlinedSvgAssets.minusCircle,
@@ -116,7 +116,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
               ),
             );
           }),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         OutlinedButton.icon(
           onPressed: widget.onAddStep,
           icon: SvgPicture.asset(

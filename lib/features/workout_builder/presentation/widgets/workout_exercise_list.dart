@@ -54,7 +54,7 @@ class WorkoutExerciseList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(AppStrings.noExercisesAdded, style: AppTextStyles.bodyMd),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Text(AppStrings.noExercisesAddedHint, style: AppTextStyles.labelSm),
           ],
         ),

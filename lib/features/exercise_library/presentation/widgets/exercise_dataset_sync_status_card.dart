@@ -48,13 +48,13 @@ class ExerciseDatasetSyncStatusCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: context.textTheme.titleSmall),
-                  SizedBox(height: AppSpacing.xxs),
+                  AppWhiteSpace.hXxs,
                   Text(message, style: context.textTheme.bodySmall),
                 ],
               ),
             ),
             if (actionLabel != null && onAction != null) ...[
-              SizedBox(width: AppSpacing.md),
+              AppWhiteSpace.wMd,
               FilledButton.tonal(
                 onPressed: isLoading ? null : onAction,
                 child: Text(actionLabel!),

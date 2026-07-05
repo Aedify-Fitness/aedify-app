@@ -52,7 +52,7 @@ class WorkoutRunnerExerciseCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             ...exercise.sets.map(
               (set) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),

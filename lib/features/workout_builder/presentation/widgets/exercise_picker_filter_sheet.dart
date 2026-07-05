@@ -255,7 +255,7 @@ class _ExercisePickerFilterSheetState
                   size: AppSizing.iconS,
                   fill: 1,
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 Expanded(
                   child: Text(
                     AppStrings.filterRefineLibrary,
@@ -282,7 +282,7 @@ class _ExercisePickerFilterSheetState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppSpacing.xl),
+                  AppWhiteSpace.hXl,
                   _MuscleGroupSection(
                     allGroups: _allMuscleGroups,
                     selected: _selectedMuscleGroups,
@@ -336,7 +336,7 @@ class _ExercisePickerFilterSheetState
                     },
                     colorScheme: colorScheme,
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  AppWhiteSpace.hXl,
                 ],
               ),
             ),
@@ -377,7 +377,7 @@ class _ExercisePickerFilterSheetState
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  AppWhiteSpace.wSm,
                   Expanded(
                     flex: 2,
                     child: GestureDetector(
@@ -410,7 +410,7 @@ class _ExercisePickerFilterSheetState
                               ),
                             ),
                             if (_activeFilterCount > 0) ...[
-                              const SizedBox(width: AppSpacing.sm),
+                              AppWhiteSpace.wSm,
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.sm - AppSpacing.xxs,
@@ -480,7 +480,7 @@ class _MuscleGroupSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
@@ -543,7 +543,7 @@ class _EquipmentSection extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         GridView.count(
           crossAxisCount: 2,
           mainAxisSpacing: AppSpacing.buttonVertical,
@@ -581,7 +581,7 @@ class _EquipmentSection extends StatelessWidget {
                           ? colorScheme.secondary
                           : colorScheme.onSurfaceVariant,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    AppWhiteSpace.hSm,
                     Text(
                       label,
                       style: AppTextStyles.labelSm.copyWith(
@@ -625,7 +625,7 @@ class _DifficultySection extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         ...allDifficulties.map((item) {
           final label = item.$1;
           final description = item.$2;
@@ -673,7 +673,7 @@ class _DifficultySection extends StatelessWidget {
                             )
                           : null,
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    AppWhiteSpace.wMd,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,7 +686,7 @@ class _DifficultySection extends StatelessWidget {
                                   : colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.xxs),
+                          AppWhiteSpace.hXxs,
                           Text(
                             description,
                             style: AppTextStyles.labelSm.copyWith(
@@ -735,7 +735,7 @@ class _ModalitySection extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         ...allModalities.map((item) {
           final label = item.$1;
           final icon = item.$2;
@@ -758,7 +758,7 @@ class _ModalitySection extends StatelessWidget {
                     size: AppSizing.iconSm,
                     color: colorScheme.secondary,
                   ),
-                  const SizedBox(width: AppSpacing.buttonVertical),
+                  AppWhiteSpace.custom(width: AppSpacing.buttonVertical),
                   Expanded(
                     child: Text(
                       label,

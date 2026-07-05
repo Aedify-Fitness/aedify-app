@@ -24,7 +24,7 @@ class WorkoutBuilderHeader extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        const SizedBox(width: AppSpacing.sm),
+        AppWhiteSpace.wSm,
         Expanded(child: Text(title, style: AppTextStyles.headlineMd)),
         TextButton(
           onPressed: isSaving ? null : onSave,

@@ -307,7 +307,7 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _HeaderSection(mode: widget.mode),
-                const SizedBox(height: AppSpacing.lg),
+                AppWhiteSpace.hLg,
                 _InputSection(
                   nameController: _nameController,
                   focusController: _focusController,
@@ -316,7 +316,7 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
                   onFocusChanged: _onFocusChanged,
                   onRestChanged: _onRestChanged,
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                AppWhiteSpace.hXl,
                 _MainContentSection(
                   exercises: exercises,
                   selectedExercise: selectedExercise,
@@ -339,7 +339,7 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
                     }
                   },
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                AppWhiteSpace.hXl,
                 _FooterSection(
                   canSave:
                       widget.state.isDirty &&
@@ -374,7 +374,7 @@ class _HeaderSection extends StatelessWidget {
               : AppStrings.editWorkout,
           style: AppTextStyles.headlineLgMobile,
         ),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         Text(
           AppStrings.workoutBuilderSubtitle,
           style: AppTextStyles.bodyMd.copyWith(color: cs.onSurfaceVariant),
@@ -411,14 +411,14 @@ class _InputSection extends StatelessWidget {
           controller: nameController,
           onChanged: onNameChanged,
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         _InputField(
           label: AppStrings.workoutFocus,
           hint: AppStrings.workoutFocusHint,
           controller: focusController,
           onChanged: onFocusChanged,
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         _InputField(
           label: AppStrings.workoutRestLabel,
           hint: AppStrings.defaultRestHint,
@@ -476,7 +476,7 @@ class _MainContentSection extends ConsumerWidget {
           },
           onAddExercise: onAddExercise,
         ),
-        const SizedBox(height: AppSpacing.lg),
+        AppWhiteSpace.hLg,
         _ExerciseConfigPanel(
           selectedExercise: selectedExercise,
           setTypeOptions: ref
@@ -589,7 +589,7 @@ class _InputField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: AppTextStyles.labelMd.copyWith(color: cs.onSurface)),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         TextField(
           controller: controller,
           onChanged: onChanged,
@@ -658,7 +658,7 @@ class _ExerciseListPanel extends StatelessWidget {
           '${AppStrings.exercisesLabel} (${exercises.length})',
           style: AppTextStyles.labelMd.copyWith(color: cs.onSurface),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         if (exercises.isEmpty)
           Center(
             child: Padding(
@@ -672,7 +672,7 @@ class _ExerciseListPanel extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   Text(
                     AppStrings.addExercisesToGetStarted,
                     style: AppTextStyles.labelSm.copyWith(
@@ -707,7 +707,7 @@ class _ExerciseListPanel extends StatelessWidget {
               );
             },
           ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         _AddExerciseButton(onTap: onAddExercise),
       ],
     );
@@ -823,7 +823,7 @@ class _MiniExerciseCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: AppSpacing.xxs),
+                        AppWhiteSpace.hXxs,
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.sm,
@@ -867,7 +867,7 @@ class _MiniExerciseCard extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
               Row(
                 children: [
                   SvgPicture.asset(
@@ -879,7 +879,7 @@ class _MiniExerciseCard extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                   Text(
                     '$setCount sets',
                     style: AppTextStyles.labelSm.copyWith(
@@ -888,7 +888,7 @@ class _MiniExerciseCard extends StatelessWidget {
                     ),
                   ),
                   if (summary != null) ...[
-                    const SizedBox(width: AppSpacing.xs),
+                    AppWhiteSpace.wXs,
                     Text(
                       '•',
                       style: AppTextStyles.labelSm.copyWith(
@@ -898,7 +898,7 @@ class _MiniExerciseCard extends StatelessWidget {
                             : cs.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    AppWhiteSpace.wXs,
                     Text(
                       summary,
                       style: AppTextStyles.labelSm.copyWith(
@@ -908,7 +908,7 @@ class _MiniExerciseCard extends StatelessWidget {
                     ),
                   ],
                   if (restSec != null) ...[
-                    const SizedBox(width: AppSpacing.xs),
+                    AppWhiteSpace.wXs,
                     Text(
                       '•',
                       style: AppTextStyles.labelSm.copyWith(
@@ -918,7 +918,7 @@ class _MiniExerciseCard extends StatelessWidget {
                             : cs.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    AppWhiteSpace.wXs,
                     SvgPicture.asset(
                       OutlinedSvgAssets.clock,
                       width: 14,
@@ -928,7 +928,7 @@ class _MiniExerciseCard extends StatelessWidget {
                         BlendMode.srcIn,
                       ),
                     ),
-                    const SizedBox(width: 2),
+                    AppWhiteSpace.wXxs,
                     Text(
                       '${restSec}s',
                       style: AppTextStyles.labelSm.copyWith(
@@ -982,7 +982,7 @@ class _ExerciseMenu extends StatelessWidget {
                 height: AppSizing.iconXs,
                 colorFilter: ColorFilter.mode(cs.onSurface, BlendMode.srcIn),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              AppWhiteSpace.wSm,
               Text(
                 AppStrings.duplicateExercise,
                 style: AppTextStyles.labelSm.copyWith(color: cs.onSurface),
@@ -1000,7 +1000,7 @@ class _ExerciseMenu extends StatelessWidget {
                 height: AppSizing.iconXs,
                 colorFilter: ColorFilter.mode(cs.error, BlendMode.srcIn),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              AppWhiteSpace.wSm,
               Text(
                 AppStrings.removeExercise,
                 style: AppTextStyles.labelSm.copyWith(color: cs.error),
@@ -1063,7 +1063,7 @@ class _AddExerciseButton extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              AppWhiteSpace.wSm,
               Text(
                 AppStrings.addExercise,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -1184,7 +1184,7 @@ class _ExerciseConfigPanel extends StatelessWidget {
                 BlendMode.srcIn,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             Text(
               AppStrings.selectExerciseToConfigure,
               style: AppTextStyles.bodyMd.copyWith(color: cs.onSurfaceVariant),
@@ -1255,7 +1255,7 @@ class _ConfigPanelHeader extends StatelessWidget {
             size: 20,
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
+        AppWhiteSpace.wMd,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1324,7 +1324,7 @@ class _SetsTable extends StatelessWidget {
             _TableHeader(label: AppStrings.repsColumn, flex: 3),
             _TableHeader(label: AppStrings.targetColumn, flex: 4),
             _TableHeader(label: AppStrings.restColumn, flex: 2),
-            const SizedBox(width: 40),
+            AppWhiteSpace.custom(width: AppSizing.handleWidth),
           ],
         ),
         const Divider(height: 1, thickness: 1),
@@ -1337,7 +1337,7 @@ class _SetsTable extends StatelessWidget {
             onRemove: () => onRemoveSet(set.id),
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         GestureDetector(
           onTap: onAddSet,
           child: Container(
@@ -1354,7 +1354,7 @@ class _SetsTable extends StatelessWidget {
                   height: AppSizing.iconXs,
                   colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
                 ),
-                const SizedBox(width: AppSpacing.xs),
+                AppWhiteSpace.wXs,
                 Text(
                   AppStrings.addSet,
                   style: AppTextStyles.labelSm.copyWith(
@@ -1886,7 +1886,7 @@ class _CoachNotesFieldState extends State<_CoachNotesField> {
             AppStrings.coachNotes,
             style: AppTextStyles.labelSm.copyWith(color: cs.onSurface),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           TextField(
             controller: _controller,
             maxLines: 3,

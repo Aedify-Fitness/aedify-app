@@ -55,15 +55,15 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
             child: Column(
               children: [
                 _VideoHero(videos: detail.videos, name: detail.name),
-                const SizedBox(height: AppSpacing.md),
+                AppWhiteSpace.hMd,
                 _SegmentedTab(
                   tabIndex: _tabIndex,
                   onTabChanged: (i) => setState(() => _tabIndex = i),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                AppWhiteSpace.hLg,
                 if (_tabIndex == 0) _GuidanceTab(detail: detail),
                 if (_tabIndex == 1) const _PerformanceTab(),
-                const SizedBox(height: AppSpacing.lg),
+                AppWhiteSpace.hLg,
                 _ActionButtons(exerciseId: detail.id),
               ],
             ),
@@ -131,12 +131,12 @@ class _ErrorView extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             Text(
               AppStrings.exerciseDetailLoadFailed,
               style: context.textTheme.bodyLarge,
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             FilledButton(
               onPressed: () {
                 ref.invalidate(
@@ -324,14 +324,14 @@ class _GuidanceTab extends StatelessWidget {
     return Column(
       children: [
         _MetadataCard(detail: detail),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         _MuscleFocusCard(
           primaryMuscles: primaryMuscles,
           muscleGroups: muscleGroups,
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         _StepsCard(steps: steps, detail: detail),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         ExerciseVideoSection(
           videos: detail.videos,
           onRetry: () {},
@@ -411,14 +411,14 @@ class _MuscleFocusCard extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 Text(
                   AppStrings.muscleFocus,
                   style: context.textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             if (muscleGroups != null && muscleGroups.isNotEmpty) ...[
               Wrap(
                 spacing: AppSpacing.sm,
@@ -431,7 +431,7 @@ class _MuscleFocusCard extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
             ],
             Wrap(
               spacing: AppSpacing.sm,
@@ -482,14 +482,14 @@ class _StepsCard extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 Text(
                   AppStrings.executionSteps,
                   style: context.textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             ...steps.asMap().entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -513,7 +513,7 @@ class _StepsCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    AppWhiteSpace.wSm,
                     Expanded(
                       child: Text(
                         entry.value,
@@ -557,12 +557,12 @@ class _PerformanceTab extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              AppWhiteSpace.hMd,
               Text(
                 AppStrings.noHistoryYet,
                 style: context.textTheme.titleSmall,
               ),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                 child: Text(
@@ -609,7 +609,7 @@ class _ActionButtons extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
+        AppWhiteSpace.wMd,
         Expanded(
           child: FilledButton.tonalIcon(
             onPressed: () {

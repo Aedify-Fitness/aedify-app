@@ -46,14 +46,14 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                         BlendMode.srcIn,
                       ),
                     ),
-                    SizedBox(height: AppSpacing.md),
+                    AppWhiteSpace.hMd,
                     Text(
                       searchState.errorMessage ??
                           AppStrings.exerciseLibraryLoadFailed,
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodyLarge,
                     ),
-                    SizedBox(height: AppSpacing.md),
+                    AppWhiteSpace.hMd,
                     FilledButton(
                       onPressed: () {
                         ref
@@ -113,7 +113,7 @@ class ExerciseLibraryScreen extends ConsumerWidget {
                                   BlendMode.srcIn,
                                 ),
                               ),
-                              SizedBox(height: AppSpacing.md),
+                              AppWhiteSpace.hMd,
                               Text(
                                 AppStrings.noExercisesFound,
                                 style: context.textTheme.bodyLarge,

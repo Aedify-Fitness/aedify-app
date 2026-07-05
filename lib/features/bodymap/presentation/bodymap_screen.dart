@@ -46,7 +46,7 @@ class BodymapScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             BodymapSvgView(
               side: state.side,
               selectedBucket: state.selectedBucket,
@@ -58,7 +58,7 @@ class BodymapScreen extends ConsumerWidget {
                     .selectBucket(bucket);
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             BodymapBucketChipBar(
               selectedBucket: state.selectedBucket,
               onSelected: (bucket) {
@@ -76,7 +76,7 @@ class BodymapScreen extends ConsumerWidget {
                     .clearSelection();
               },
             ),
-            SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             if (state.selectedBucket != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),

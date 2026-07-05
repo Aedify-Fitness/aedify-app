@@ -67,13 +67,13 @@ class WorkoutExerciseCard extends StatelessWidget {
                     height: AppSizing.iconSm,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 if (isGrouped && exercise.supersetOrder != null) ...[
                   SupersetGroupBadge(
                     groupId: exercise.supersetGroupId!,
                     order: exercise.supersetOrder,
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                 ],
                 Expanded(
                   child: Text(
@@ -102,7 +102,7 @@ class WorkoutExerciseCard extends StatelessWidget {
                       onChanged: onRestChanged!,
                     ),
                   ),
-                const SizedBox(width: AppSpacing.xs),
+                AppWhiteSpace.wXs,
                 IconButton(
                   icon: SvgPicture.asset(
                     OutlinedSvgAssets.documentDuplicate,
@@ -123,7 +123,7 @@ class WorkoutExerciseCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             SetPrescriptionList(
               exerciseDraftId: exercise.id,
               sets: exercise.sets,
@@ -132,7 +132,7 @@ class WorkoutExerciseCard extends StatelessWidget {
               onRemoveSet: onRemoveSet,
               validationErrors: validationErrors,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             TextButton.icon(
               onPressed: onAddSet,
               icon: SvgPicture.asset(

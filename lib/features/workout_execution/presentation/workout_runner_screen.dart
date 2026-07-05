@@ -93,7 +93,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                   AppStrings.workoutRunnerLoadFailed,
                   style: context.textTheme.bodyLarge,
                 ),
-                const SizedBox(height: AppSpacing.md),
+                AppWhiteSpace.hMd,
                 FilledButton(
                   onPressed: () => ref.invalidate(
                     AppProviders.workoutRunnerControllerProvider(arg),
@@ -358,14 +358,14 @@ class _WorkoutCompletedView extends StatelessWidget {
               AppStrings.workoutCompleted,
               style: context.textTheme.headlineMedium,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Text(
               AppStrings.finishWorkoutSummaryMessage,
               style: context.textTheme.bodyMedium?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             Expanded(
               child: Card(
                 child: Padding(
@@ -377,24 +377,24 @@ class _WorkoutCompletedView extends StatelessWidget {
                         label: AppStrings.workout,
                         value: session.name,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      AppWhiteSpace.hSm,
                       _SummaryRow(
                         label: AppStrings.duration,
                         value: durationLabel,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      AppWhiteSpace.hSm,
                       _SummaryRow(
                         label: AppStrings.totalVolume,
                         value:
                             '${_WorkoutCompletedMetrics.totalVolume(session)} ${AppStrings.metricWeightUnit}',
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      AppWhiteSpace.hSm,
                       _SummaryRow(
                         label: AppStrings.setsCompleted,
                         value:
                             '${_WorkoutCompletedMetrics.completedSets(session)} / ${_WorkoutCompletedMetrics.totalSets(session)}',
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      AppWhiteSpace.hSm,
                       _SummaryRow(
                         label: AppStrings.exercisesCompleted,
                         value:
@@ -405,7 +405,7 @@ class _WorkoutCompletedView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             SizedBox(
               width: double.infinity,
               child: FilledButton(
@@ -488,7 +488,7 @@ class _SummaryRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
+        AppWhiteSpace.wMd,
         Flexible(
           child: Text(
             value,
@@ -580,7 +580,7 @@ class _InsightBanner extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
+          AppWhiteSpace.wSm,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -589,7 +589,7 @@ class _InsightBanner extends StatelessWidget {
                   AppStrings.insightForProgress,
                   style: context.textTheme.labelMedium,
                 ),
-                const SizedBox(height: AppSpacing.xxs),
+                AppWhiteSpace.hXxs,
                 Text(
                   AppStrings.insightPlaceholder,
                   style: context.textTheme.bodySmall?.copyWith(
@@ -627,14 +627,14 @@ class _ExerciseDetailView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(exercise.exerciseName, style: context.textTheme.titleLarge),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         if (detail != null) ...[
           _VideoHero(videos: detail.videos),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           _MuscleFocusSection(muscles: detail.primaryMuscles),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           _StepsSection(steps: detail.steps),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
         ],
         _SetTable(
           sets: exercise.sets,
@@ -738,7 +738,7 @@ class _MuscleFocusSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(AppStrings.muscleFocus, style: context.textTheme.titleSmall),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Wrap(
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
@@ -780,7 +780,7 @@ class _StepsSection extends StatelessWidget {
               AppStrings.executionSteps,
               style: context.textTheme.titleSmall,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             ...steps.asMap().entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -804,7 +804,7 @@ class _StepsSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    AppWhiteSpace.wSm,
                     Expanded(
                       child: Text(
                         entry.value,
@@ -1000,7 +1000,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
                             style: context.textTheme.bodyMedium,
                           ),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                   SizedBox(
                     width: AppSizing.dataFieldWidthSm,
                     child: isActive
@@ -1027,7 +1027,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
               ),
             );
           }),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: SizedBox(
@@ -1067,7 +1067,7 @@ class _SetTableState extends ConsumerState<_SetTable> {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
         ],
       ),
     );
@@ -1197,7 +1197,7 @@ class _BottomActions extends StatelessWidget {
               label: Text(substituteLabel),
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          AppWhiteSpace.wMd,
           Expanded(
             child: FilledButton.tonalIcon(
               onPressed: () {

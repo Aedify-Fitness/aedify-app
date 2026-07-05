@@ -21,7 +21,7 @@ class DiscardCustomExerciseChangesDialog extends StatelessWidget {
           onPressed: () => context.pop(),
           child: const Text(AppStrings.cancel),
         ),
-        const SizedBox(width: AppSpacing.sm),
+        AppWhiteSpace.wSm,
         FilledButton(
           onPressed: () {
             onDiscard();

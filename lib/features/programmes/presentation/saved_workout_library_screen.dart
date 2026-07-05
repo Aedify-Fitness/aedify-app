@@ -129,10 +129,10 @@ class _ErrorView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(message),
           if (onRetry != null) ...[
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             FilledButton(
               onPressed: onRetry,
               child: const Text(AppStrings.retry),
@@ -162,12 +162,12 @@ class _EmptyView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             AppStrings.noSavedWorkoutsYet,
             style: context.textTheme.titleMedium,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.noSavedWorkoutsYetHint,
             style: context.textTheme.bodyMedium,

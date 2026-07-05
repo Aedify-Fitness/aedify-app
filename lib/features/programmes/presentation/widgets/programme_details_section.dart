@@ -32,7 +32,7 @@ class ProgrammeDetailsSection extends StatelessWidget {
           AppStrings.programmeDetailsSectionTitle,
           style: context.textTheme.titleMedium,
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         TextField(
           controller: nameController,
           decoration: const InputDecoration(
@@ -42,7 +42,7 @@ class ProgrammeDetailsSection extends StatelessWidget {
           onChanged: onNameChanged,
         ),
         if (descriptionController != null) ...[
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           TextField(
             controller: descriptionController,
             decoration: const InputDecoration(
@@ -54,12 +54,12 @@ class ProgrammeDetailsSection extends StatelessWidget {
           ),
         ],
         if (onGoalsChanged != null) ...[
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             AppStrings.onboardingGoalsHint,
             style: context.textTheme.titleSmall,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,

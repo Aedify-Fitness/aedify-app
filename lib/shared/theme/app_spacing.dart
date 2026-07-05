@@ -21,6 +21,7 @@ class AppSpacing {
 class AppWhiteSpace {
   AppWhiteSpace._();
 
+  static const wXxs = SizedBox(width: AppSpacing.xxs);
   static const wXs = SizedBox(width: AppSpacing.xs);
   static const wSm = SizedBox(width: AppSpacing.sm);
   static const wMd = SizedBox(width: AppSpacing.md);
@@ -29,6 +30,7 @@ class AppWhiteSpace {
   static const wXxl = SizedBox(width: AppSpacing.xxl);
   static const wXxxl = SizedBox(width: AppSpacing.xxxl);
 
+  static const hXxs = SizedBox(height: AppSpacing.xxs);
   static const hXs = SizedBox(height: AppSpacing.xs);
   static const hSm = SizedBox(height: AppSpacing.sm);
   static const hMd = SizedBox(height: AppSpacing.md);

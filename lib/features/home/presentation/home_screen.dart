@@ -91,9 +91,9 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
             _GreetingRow(name: name),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             const _PlateauBanner(),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             if (activeProgramme != null) ...[
               _ActiveProgramCard(
                 programme: activeProgramme,
@@ -102,7 +102,7 @@ class HomeScreen extends ConsumerWidget {
                 totalWeeks: activeProgramme.weeksTotal ?? 0,
                 progress: weekProgress,
               ),
-              const SizedBox(height: AppSpacing.lg),
+              AppWhiteSpace.hLg,
             ],
             if (activeSession != null)
               _OngoingWorkoutCard(session: activeSession)
@@ -113,9 +113,9 @@ class HomeScreen extends ConsumerWidget {
                 exerciseCount: exerciseCount,
                 durationMinutes: durationMinutes,
               ),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             const _VolumeMetricCard(),
-            const SizedBox(height: AppSpacing.lg),
+            AppWhiteSpace.hLg,
             const _QuickActionGrid(),
           ],
         ),
@@ -150,7 +150,7 @@ class _GreetingRow extends StatelessWidget {
                 '${_greeting()}, $name',
                 style: context.textTheme.headlineLarge,
               ),
-              const SizedBox(height: AppSpacing.xs),
+              AppWhiteSpace.hXs,
               Text(
                 AppStrings.readyForSession,
                 style: context.textTheme.bodyMedium?.copyWith(
@@ -192,7 +192,7 @@ class _StreakBadge extends ConsumerWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(width: AppSpacing.xs),
+          AppWhiteSpace.wXs,
           Text(
             '$streak ${AppStrings.dayStreak}',
             style: context.textTheme.labelMedium,
@@ -236,7 +236,7 @@ class _PlateauBanner extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              AppWhiteSpace.wSm,
               Text(
                 AppStrings.plateauAlert,
                 style: context.textTheme.labelMedium?.copyWith(
@@ -246,7 +246,7 @@ class _PlateauBanner extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.plateauComingSoon,
             style: context.textTheme.bodyMedium?.copyWith(
@@ -290,7 +290,7 @@ class _ActiveProgramCard extends StatelessWidget {
                 color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Row(
               children: [
                 Expanded(
@@ -308,9 +308,9 @@ class _ActiveProgramCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             LinearProgressIndicator(value: progress),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Text(
               '${sessionsRemaining ?? 0} ${AppStrings.sessionsRemaining}',
               style: context.textTheme.bodyMedium?.copyWith(
@@ -387,28 +387,28 @@ class _ScheduledView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Badge(label: AppStrings.scheduledToday.toUpperCase()),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         Text(
           name,
           style: context.textTheme.headlineLarge?.copyWith(
             color: context.colorScheme.onPrimary,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         Row(
           children: [
             _MetaChip(
               icon: OutlinedSvgAssets.clock,
               label: '$durationMinutes min',
             ),
-            const SizedBox(width: AppSpacing.md),
+            AppWhiteSpace.wMd,
             _MetaChip(
               icon: OutlinedSvgAssets.sparkles,
               label: '$exerciseCount Exercises',
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.lg),
+        AppWhiteSpace.hLg,
         Row(
           children: [
             FilledButton.icon(
@@ -440,7 +440,7 @@ class _ScheduledView extends StatelessWidget {
                 foregroundColor: context.colorScheme.onSecondary,
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            AppWhiteSpace.wMd,
             TextButton(
               onPressed: () {
                 context.pushNamed(
@@ -473,21 +473,21 @@ class _RestDayView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Badge(label: AppStrings.rest.toUpperCase()),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         Text(
           programme.name,
           style: context.textTheme.headlineLarge?.copyWith(
             color: context.colorScheme.onPrimary,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         Text(
           AppStrings.restDay,
           style: context.textTheme.bodyMedium?.copyWith(
             color: context.colorScheme.onPrimary.withAlpha(179),
           ),
         ),
-        const SizedBox(height: AppSpacing.lg),
+        AppWhiteSpace.hLg,
         TextButton(
           onPressed: () {
             context.pushNamed(
@@ -519,14 +519,14 @@ class _EmptyView extends StatelessWidget {
             color: context.colorScheme.onPrimary,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         Text(
           AppStrings.noActiveProgrammeHint,
           style: context.textTheme.bodyMedium?.copyWith(
             color: context.colorScheme.onPrimary.withAlpha(179),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         OutlinedButton(
           onPressed: () {
             final shell = StatefulNavigationShell.of(context);
@@ -589,7 +589,7 @@ class _MetaChip extends StatelessWidget {
             BlendMode.srcIn,
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        AppWhiteSpace.wXs,
         Text(
           label,
           style: context.textTheme.labelMedium?.copyWith(
@@ -639,25 +639,25 @@ class _OngoingWorkoutCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Badge(label: AppStrings.workoutInProgress.toUpperCase()),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             session.name,
             style: context.textTheme.headlineLarge?.copyWith(
               color: context.colorScheme.onPrimary,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Row(
             children: [
               _MetaChip(icon: OutlinedSvgAssets.sparkles, label: progressLabel),
-              const SizedBox(width: AppSpacing.md),
+              AppWhiteSpace.wMd,
               _MetaChip(
                 icon: OutlinedSvgAssets.clock,
                 label: '${elapsedMinutes}m',
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
+          AppWhiteSpace.hLg,
           Row(
             children: [
               FilledButton.icon(
@@ -679,7 +679,7 @@ class _OngoingWorkoutCard extends ConsumerWidget {
                   foregroundColor: context.colorScheme.onSecondary,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              AppWhiteSpace.wMd,
               TextButton(
                 onPressed: () => _discardWorkout(context, ref),
                 child: Text(
@@ -731,9 +731,9 @@ class _VolumeMetricCard extends StatelessWidget {
                       color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   const Text('—', style: AppTextStyles.headlineMd),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   Text(
                     AppStrings.volumeTrackingComingSoon,
                     style: context.textTheme.labelSmall?.copyWith(
@@ -852,7 +852,7 @@ class _ActionTile extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
               Text(
                 label,
                 style: context.textTheme.labelMedium,

@@ -43,7 +43,7 @@ class BodymapBucketChipBar extends StatelessWidget {
           ),
         ),
         if (selectedBucket != null) ...[
-          SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           Center(
             child: TextButton.icon(
               onPressed: onClear,

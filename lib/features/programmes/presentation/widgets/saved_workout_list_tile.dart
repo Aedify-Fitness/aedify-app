@@ -63,7 +63,7 @@ class SavedWorkoutListTile extends StatelessWidget {
                     width: AppSizing.iconSm,
                     height: AppSizing.iconSm,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  AppWhiteSpace.wSm,
                   Text(AppStrings.startWorkout),
                 ],
               ),
@@ -77,7 +77,7 @@ class SavedWorkoutListTile extends StatelessWidget {
                     width: AppSizing.iconSm,
                     height: AppSizing.iconSm,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  AppWhiteSpace.wSm,
                   Text(AppStrings.archiveWorkout),
                 ],
               ),
@@ -95,7 +95,7 @@ class SavedWorkoutListTile extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  AppWhiteSpace.wSm,
                   Text(
                     AppStrings.deleteWorkout,
                     style: context.textTheme.labelLarge?.copyWith(

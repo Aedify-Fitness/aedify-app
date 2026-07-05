@@ -26,9 +26,9 @@ class ExerciseVideoSection extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: AppSpacing.lg),
+          AppWhiteSpace.hLg,
           Text(AppStrings.exerciseVideos, style: context.textTheme.titleSmall),
-          SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Row(
             children: [
               SvgPicture.asset(
@@ -40,7 +40,7 @@ class ExerciseVideoSection extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              SizedBox(width: AppSpacing.xs),
+              AppWhiteSpace.wXs,
               Text(
                 AppStrings.noExerciseVideos,
                 style: context.textTheme.bodyMedium?.copyWith(
@@ -56,9 +56,9 @@ class ExerciseVideoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.lg),
+        AppWhiteSpace.hLg,
         Text(AppStrings.exerciseVideos, style: context.textTheme.titleSmall),
-        SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         ...videos.map(
           (video) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),

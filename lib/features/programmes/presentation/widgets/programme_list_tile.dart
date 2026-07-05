@@ -93,7 +93,7 @@ class ProgrammeListTile extends StatelessWidget {
                             ? context.colorScheme.onSecondaryContainer
                             : context.colorScheme.onSurfaceVariant,
                       ),
-                      const SizedBox(width: AppSpacing.xs),
+                      AppWhiteSpace.wXs,
                       _Badge(
                         label: _sourceLabel(),
                         backgroundColor: context.colorScheme.surfaceContainer,
@@ -143,9 +143,9 @@ class ProgrammeListTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  AppWhiteSpace.hSm,
                   Text(item.name, style: context.textTheme.titleMedium),
-                  const SizedBox(height: AppSpacing.md),
+                  AppWhiteSpace.hMd,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

@@ -6,6 +6,19 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### Convention compliance — all `SizedBox` whitespace migrated to `AppWhiteSpace`
+
+- Added `wXxs` and `hXxs` constants to `AppWhiteSpace` in `app_spacing.dart` for the 2px (AppSpacing.xxs) spacing token.
+- Replaced all `SizedBox(height: AppSpacing.*)` with `AppWhiteSpace.h*` (~135 occurrences across 55 files).
+- Replaced all `SizedBox(width: AppSpacing.*)` with `AppWhiteSpace.w*` (~52 occurrences across 19 files).
+- Replaced raw-number `SizedBox(width: 2)` with `AppWhiteSpace.wXxs` in `workout_builder_screen.dart`.
+- Replaced raw-number `SizedBox(width: 40)` with `AppWhiteSpace.custom(width: AppSizing.handleWidth)` in `workout_builder_screen.dart`.
+- Replaced `SizedBox(width: AppSpacing.buttonVertical)` with `AppWhiteSpace.custom(width: AppSpacing.buttonVertical)` in `exercise_picker_filter_sheet.dart`.
+- Files: `lib/shared/theme/app_spacing.dart` + 60 feature files.
+- Verification: `dart format .` — 0 unchanged. `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+
+
 ### Workout builder screen — enhanced sets table, WEIGHT/REST columns, controller lifecycle
 
 - Expanded `_ExerciseConfigPanel` sets table with WEIGHT and REST columns alongside existing SET/TYPE/REPS/TARGET — inline `TextField` editors with proper `TextEditingController` lifecycle managed via `StatefulWidget` (`_SetTableRow`). Weight parsed as `double`, rest as `int`, reps as range or exact, target as RPE range or RIR.

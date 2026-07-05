@@ -142,7 +142,7 @@ class _DetailContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(detail.name, style: context.textTheme.titleMedium),
-                const SizedBox(height: AppSpacing.sm),
+                AppWhiteSpace.hSm,
                 _InfoRow(
                   label: AppStrings.completedOn,
                   value: _formatDate(detail.completedAt ?? detail.startedAt),
@@ -169,12 +169,12 @@ class _DetailContent extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         Text(
           AppStrings.historyExerciseList,
           style: context.textTheme.titleSmall,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         ..._buildExerciseWidgets(detail.exercises, groups),
       ],
     );

@@ -48,7 +48,7 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
                 BlendMode.srcIn,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            AppWhiteSpace.wSm,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +109,7 @@ class ProgrammeWorkoutSlotCard extends StatelessWidget {
                                 order: ex.supersetOrder,
                               ),
                             if (isGrouped && ex.supersetOrder != null)
-                              const SizedBox(width: AppSpacing.xxs),
+                              AppWhiteSpace.wXxs,
                             Text(
                               ex.exerciseRef ?? 'Exercise ${ex.exerciseId}',
                               style: context.textTheme.labelSmall,

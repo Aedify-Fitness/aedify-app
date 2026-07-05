@@ -26,10 +26,10 @@ class HistoryErrorBanner extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(message),
           if (onRetry != null) ...[
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             FilledButton(
               onPressed: onRetry,
               child: const Text(AppStrings.retry),

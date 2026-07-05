@@ -75,12 +75,12 @@ class _EmptyView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             AppStrings.noWorkoutHistoryYet,
             style: context.textTheme.titleMedium,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.noWorkoutHistoryYetHint,
             style: context.textTheme.bodyMedium,

@@ -47,7 +47,7 @@ class ProgrammeSupersetEditorSheet extends StatelessWidget {
                 : AppStrings.createSuperset,
             style: AppTextStyles.headlineMd,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           if (!hasActiveGroup)
             Text(
               AppStrings.supersetInvalidSelection,
@@ -62,7 +62,7 @@ class ProgrammeSupersetEditorSheet extends StatelessWidget {
                 color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             ...groupMembers.map((ex) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
@@ -86,7 +86,7 @@ class ProgrammeSupersetEditorSheet extends StatelessWidget {
               );
             }),
           ],
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           if (!hasActiveGroup && exercises.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
@@ -111,14 +111,14 @@ class ProgrammeSupersetEditorSheet extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
               );
             }),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           if (!hasActiveGroup)
             FilledButton(
               onPressed: canCreate ? onCreateSuperset : null,
               child: Text(AppStrings.createSuperset),
             ),
           if (hasActiveGroup && onDeleteGroup != null) ...[
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             OutlinedButton(
               onPressed: onDeleteGroup,
               child: Text(AppStrings.deleteSuperset),

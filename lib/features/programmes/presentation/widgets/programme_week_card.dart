@@ -55,7 +55,7 @@ class ProgrammeWeekCard extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                AppWhiteSpace.wSm,
                 Expanded(
                   child: Text(
                     '${AppStrings.weekLabelPrefix} ${week.weekNumber}',
@@ -85,7 +85,7 @@ class ProgrammeWeekCard extends StatelessWidget {
                       },
                     ),
                   ),
-                const SizedBox(width: AppSpacing.xs),
+                AppWhiteSpace.wXs,
                 IconButton(
                   icon: SvgPicture.asset(
                     OutlinedSvgAssets.documentDuplicate,
@@ -110,7 +110,7 @@ class ProgrammeWeekCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             ...slots.asMap().entries.map(
               (entry) => ProgrammeWorkoutSlotCard(
                 slot: entry.value,
@@ -126,7 +126,7 @@ class ProgrammeWeekCard extends StatelessWidget {
                     : null,
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             TextButton.icon(
               onPressed: onAddSlot,
               icon: SvgPicture.asset(

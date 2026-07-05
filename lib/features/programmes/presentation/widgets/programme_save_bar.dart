@@ -101,7 +101,7 @@ class ProgrammeSaveBar extends ConsumerWidget {
                         ? context.colorScheme.primary
                         : context.colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  AppWhiteSpace.wXs,
                   Text(
                     isActive
                         ? AppStrings.programmeActive

@@ -38,34 +38,34 @@ class CompleteWorkoutSheet extends StatelessWidget {
             AppStrings.finishWorkoutSummary,
             style: context.textTheme.titleLarge,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.finishWorkoutSummaryMessage,
             style: context.textTheme.bodyMedium,
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           _SummaryRow(label: AppStrings.workout, value: session.name),
-          const SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           _SummaryRow(label: AppStrings.duration, value: durationLabel),
-          const SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           _SummaryRow(
             label: AppStrings.totalVolume,
             value:
                 '${_CompleteWorkoutMetrics.totalVolume(session)} ${AppStrings.metricWeightUnit}',
           ),
-          const SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           _SummaryRow(
             label: AppStrings.setsCompleted,
             value:
                 '${_CompleteWorkoutMetrics.completedSets(session)} / ${_CompleteWorkoutMetrics.totalSets(session)}',
           ),
-          const SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           _SummaryRow(
             label: AppStrings.exercisesCompleted,
             value:
                 '${_CompleteWorkoutMetrics.completedExercises(session)} / ${session.exercises.length}',
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           SizedBox(
             width: double.infinity,
             child: FilledButton(

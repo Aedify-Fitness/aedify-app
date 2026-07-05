@@ -72,14 +72,14 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
                     color: context.colorScheme.secondary,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                AppWhiteSpace.hXs,
                 Text(
                   widget.title,
                   style: context.textTheme.headlineSmall?.copyWith(
                     color: context.colorScheme.primary,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                AppWhiteSpace.hXs,
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
@@ -101,7 +101,7 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
                           BlendMode.srcIn,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.xs),
+                      AppWhiteSpace.wXs,
                       Text(
                         _elapsed,
                         style: context.textTheme.labelMedium?.copyWith(

@@ -30,7 +30,7 @@ class CustomExerciseModalitySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(AppStrings.customExerciseModality, style: AppTextStyles.labelMd),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         SegmentedButton<ExerciseModality>(
           segments: ExerciseModality.values
               .map(
@@ -43,7 +43,7 @@ class CustomExerciseModalitySection extends StatelessWidget {
           selected: {modality},
           onSelectionChanged: (selected) => onChanged(selected.first),
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         DropdownButtonFormField<EquipmentTag>(
           initialValue: equipment,
           decoration: InputDecoration(
@@ -68,7 +68,7 @@ class CustomExerciseModalitySection extends StatelessWidget {
           ],
           onChanged: onEquipmentChanged,
         ),
-        const SizedBox(height: AppSpacing.md),
+        AppWhiteSpace.hMd,
         DropdownButtonFormField<ExerciseDifficulty>(
           initialValue: difficulty,
           decoration: InputDecoration(

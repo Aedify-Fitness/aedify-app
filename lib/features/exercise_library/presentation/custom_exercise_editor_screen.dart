@@ -87,7 +87,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                   textAlign: TextAlign.center,
                   style: context.textTheme.bodyLarge,
                 ),
-                const SizedBox(height: AppSpacing.md),
+                AppWhiteSpace.hMd,
                 FilledButton(
                   onPressed: () => ref.invalidate(
                     AppProviders.customExerciseEditorControllerProvider((
@@ -118,12 +118,12 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                         BlendMode.srcIn,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    AppWhiteSpace.hMd,
                     Text(
                       AppStrings.customExerciseSaved,
                       style: AppTextStyles.headlineMd,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    AppWhiteSpace.hLg,
                     FilledButton(
                       onPressed: () {
                         ref.invalidate(
@@ -193,7 +193,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             .map((e) => e.message)
                             .firstOrNull,
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      AppWhiteSpace.hMd,
                       CustomExerciseModalitySection(
                         modality: state.draft.modality,
                         onChanged: (value) => controller.setModality(value),
@@ -204,7 +204,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                         onDifficultyChanged: (value) =>
                             controller.setDifficulty(value),
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      AppWhiteSpace.hMd,
                       CustomExerciseMuscleGroupPicker(
                         selected: state.draft.muscleGroups,
                         onToggle: (bucket) =>
@@ -218,7 +218,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             .map((e) => e.message)
                             .firstOrNull,
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      AppWhiteSpace.hMd,
                       CustomExerciseStepsEditor(
                         steps: state.draft.steps,
                         onAddStep: () => controller.addStep(),
@@ -226,7 +226,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             controller.updateStep(index: index, value: value),
                         onRemoveStep: (index) => controller.removeStep(index),
                       ),
-                      SizedBox(height: AppSpacing.xxxl),
+                      AppWhiteSpace.hXxxl,
                     ],
                   ),
                 ),

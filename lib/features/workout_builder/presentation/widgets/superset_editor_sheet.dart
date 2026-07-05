@@ -32,14 +32,14 @@ class SupersetEditorSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(AppStrings.createSuperset, style: AppTextStyles.headlineMd),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.supersetInvalidSelection,
             style: AppTextStyles.bodyMd.copyWith(
               color: context.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           if (exercises.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
@@ -62,7 +62,7 @@ class SupersetEditorSheet extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
               );
             }),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           FilledButton.icon(
             onPressed: canCreate ? onCreateSuperset : null,
             icon: const Icon(Icons.link),

@@ -74,11 +74,11 @@ class ProgrammeWorkoutDetailScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               _WorkoutDetailHeader(detail: detail),
-              const SizedBox(height: AppSpacing.lg),
+              AppWhiteSpace.hLg,
               ...detail.exercises.map(
                 (exercise) => _WorkoutExerciseCard(exercise: exercise),
               ),
-              const SizedBox(height: AppSpacing.xxl),
+              AppWhiteSpace.hXxl,
               FilledButton.icon(
                 onPressed: () {
                   context.pushNamed(
@@ -127,7 +127,7 @@ class _WorkoutDetailHeader extends StatelessWidget {
             color: context.colorScheme.secondary,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         if (detail.durationMinutes > 0)
           Row(
             children: [
@@ -140,7 +140,7 @@ class _WorkoutDetailHeader extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              const SizedBox(width: AppSpacing.xs),
+              AppWhiteSpace.wXs,
               Text(
                 '${detail.durationMinutes} min',
                 style: context.textTheme.bodyMedium?.copyWith(
@@ -180,7 +180,7 @@ class _WorkoutExerciseCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           ...exercise.sets.map((set) => _WorkoutSetRow(set: set)),
         ],
       ),
@@ -212,15 +212,15 @@ class _WorkoutSetRow extends StatelessWidget {
             _SetDetail(label: set.repsDisplay!, sublabel: 'reps'),
           ],
           if (set.weightDisplay != null) ...[
-            const SizedBox(width: AppSpacing.lg),
+            AppWhiteSpace.wLg,
             _SetDetail(label: set.weightDisplay!, sublabel: ''),
           ],
           if (set.rpeDisplay != null) ...[
-            const SizedBox(width: AppSpacing.lg),
+            AppWhiteSpace.wLg,
             _SetDetail(label: set.rpeDisplay!, sublabel: ''),
           ],
           if (set.restSeconds != null && set.restSeconds! > 0) ...[
-            const SizedBox(width: AppSpacing.lg),
+            AppWhiteSpace.wLg,
             _SetDetail(label: '${set.restSeconds}s', sublabel: 'rest'),
           ],
         ],

@@ -94,7 +94,7 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
                     '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}',
                     style: context.textTheme.headlineLarge,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   Text(
                     AppStrings.restTime.toUpperCase(),
                     style: context.textTheme.labelSmall?.copyWith(
@@ -105,7 +105,7 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -113,14 +113,14 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
                 onPressed: () => _adjust(-15),
                 child: const Text(AppStrings.restMinus15),
               ),
-              const SizedBox(width: AppSpacing.md),
+              AppWhiteSpace.wMd,
               FilledButton.tonal(
                 onPressed: () => _adjust(15),
                 child: const Text(AppStrings.restPlus15),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           TextButton(
             onPressed: widget.onDismiss,
             child: const Text(AppStrings.skipRest),

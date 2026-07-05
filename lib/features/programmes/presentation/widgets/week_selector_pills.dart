@@ -76,7 +76,7 @@ class WeekSelectorPills extends StatelessWidget {
                           ),
                         ),
                         if (isDeload) ...[
-                          const SizedBox(width: AppSpacing.xs),
+                          AppWhiteSpace.wXs,
                           SvgPicture.asset(
                             OutlinedSvgAssets.leaf,
                             width: AppSizing.iconXs,

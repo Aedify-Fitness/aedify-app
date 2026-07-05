@@ -50,7 +50,7 @@ class _RestDayCard extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          AppWhiteSpace.hXs,
           Text(
             day.dayLabel.toUpperCase(),
             style: context.textTheme.labelSmall?.copyWith(
@@ -58,7 +58,7 @@ class _RestDayCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppSpacing.xxs),
+          AppWhiteSpace.hXxs,
           Text(
             day.title,
             style: context.textTheme.headlineSmall?.copyWith(
@@ -105,7 +105,7 @@ class _TodayCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _DayHeader(day: day, isCompleted: day.isCompleted),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
               if (day.exercisePreview.isNotEmpty) ...[
                 ...day.exercisePreview
                     .take(3)
@@ -135,7 +135,7 @@ class _TodayCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                const SizedBox(height: AppSpacing.sm),
+                AppWhiteSpace.hSm,
               ],
               SizedBox(
                 width: double.infinity,
@@ -146,7 +146,7 @@ class _TodayCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(AppStrings.viewDetails),
-                      const SizedBox(width: AppSpacing.xxs),
+                      AppWhiteSpace.wXxs,
                       SvgPicture.asset(
                         OutlinedSvgAssets.chevronRight,
                         width: AppSizing.iconXxs,
@@ -235,12 +235,12 @@ class _WorkoutDayCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _DayHeader(day: day, isCompleted: isCompleted),
-              const SizedBox(height: AppSpacing.sm),
+              AppWhiteSpace.hSm,
               Row(
                 children: [
                   _MetaChip(text: '${day.exerciseCount} Exercises'),
                   if (day.durationMinutes > 0) ...[
-                    const SizedBox(width: AppSpacing.sm),
+                    AppWhiteSpace.wSm,
                     _MetaChip(text: '${day.durationMinutes}m'),
                   ],
                 ],
@@ -279,7 +279,7 @@ class _DayHeader extends StatelessWidget {
                       : context.colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: AppSpacing.xxs),
+              AppWhiteSpace.hXxs,
               Text(
                 day.title,
                 style: context.textTheme.headlineMedium?.copyWith(

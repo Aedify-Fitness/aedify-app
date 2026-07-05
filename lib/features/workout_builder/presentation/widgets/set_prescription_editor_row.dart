@@ -168,7 +168,7 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
                 },
               ),
             ),
-            const SizedBox(width: AppSpacing.xs),
+            AppWhiteSpace.wXs,
             SizedBox(
               width: AppSizing.fieldWidthLg,
               child: TextField(
@@ -181,7 +181,7 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
                 keyboardType: TextInputType.number,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            AppWhiteSpace.wSm,
             SizedBox(
               width: AppSizing.fieldWidthMd,
               child: TextField(
@@ -193,7 +193,7 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
                 keyboardType: TextInputType.number,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            AppWhiteSpace.wSm,
             SizedBox(
               width: AppSizing.fieldWidthSm,
               child: TextField(

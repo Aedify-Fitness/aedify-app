@@ -34,7 +34,7 @@ class ProgrammeBuilderErrorBanner extends ConsumerWidget {
             width: AppSizing.iconMd,
             height: AppSizing.iconMd,
           ),
-          const SizedBox(width: AppSpacing.sm),
+          AppWhiteSpace.wSm,
           Expanded(child: Text(errorMessage)),
           TextButton(onPressed: () {}, child: const Text(AppStrings.retry)),
         ],

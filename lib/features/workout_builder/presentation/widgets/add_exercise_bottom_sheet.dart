@@ -163,7 +163,7 @@ class _AddExerciseBottomSheetState
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Container(
@@ -229,14 +229,14 @@ class _AddExerciseBottomSheetState
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           SizedBox(
             height: 34,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               scrollDirection: Axis.horizontal,
               itemCount: _filterLabels.length,
-              separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
+              separatorBuilder: (_, _) => AppWhiteSpace.wSm,
               itemBuilder: (context, index) {
                 final label = _filterLabels[index];
                 final isActive = label == AppStrings.filterAll
@@ -262,7 +262,7 @@ class _AddExerciseBottomSheetState
               },
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Expanded(
             child: searchState.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -279,7 +279,7 @@ class _AddExerciseBottomSheetState
                               color: colorScheme.error,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.sm),
+                          AppWhiteSpace.hSm,
                           TextButton(
                             onPressed: () => searchController.reload(),
                             child: Text(AppStrings.retry),
@@ -299,7 +299,7 @@ class _AddExerciseBottomSheetState
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        AppWhiteSpace.hMd,
                         _CreateCustomExerciseTile(
                           onTap: () async {
                             final result = await context.pushNamed(
@@ -378,7 +378,7 @@ class _AddExerciseBottomSheetState
                     ),
                     child: Row(
                       children: [
-                        const SizedBox(width: AppSpacing.sm),
+                        AppWhiteSpace.wSm,
                         TextButton(
                           onPressed: _clearSelection,
                           child: Text(
@@ -388,7 +388,7 @@ class _AddExerciseBottomSheetState
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        AppWhiteSpace.wSm,
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(
@@ -560,7 +560,7 @@ class _ExerciseCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(width: AppSpacing.md),
+            AppWhiteSpace.wMd,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -576,7 +576,7 @@ class _ExerciseCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   Row(
                     children: [
                       _TagChip(
@@ -595,7 +595,7 @@ class _ExerciseCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            AppWhiteSpace.wSm,
             _DifficultyBadge(difficulty: item.difficulty),
           ],
         ),
@@ -764,7 +764,7 @@ class _CreateCustomExerciseTile extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            AppWhiteSpace.wMd,
             Text(
               AppStrings.createCustomExercise,
               style: AppTextStyles.bodyMd.copyWith(

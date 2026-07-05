@@ -115,7 +115,7 @@ class _ProgrammeTemplateQuickCreateSheetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(AppStrings.createTemplate, style: context.textTheme.titleMedium),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           TextField(
             controller: _nameController,
             decoration: const InputDecoration(
@@ -125,7 +125,7 @@ class _ProgrammeTemplateQuickCreateSheetState
             ),
             onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           OutlinedButton.icon(
             onPressed: _showExercisePicker,
             icon: SvgPicture.asset(
@@ -136,12 +136,12 @@ class _ProgrammeTemplateQuickCreateSheetState
             label: const Text(AppStrings.selectExercisesForTemplate),
           ),
           if (_selectedExercises.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Text(
               '${_selectedExercises.length} ${AppStrings.exercisesSelected}',
               style: context.textTheme.labelMedium,
             ),
-            const SizedBox(height: AppSpacing.xs),
+            AppWhiteSpace.hXs,
             ...List.generate(_selectedExercises.length, (i) {
               final ex = _selectedExercises[i];
               return ListTile(
@@ -158,7 +158,7 @@ class _ProgrammeTemplateQuickCreateSheetState
               );
             }),
           ],
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Align(
             alignment: Alignment.centerRight,
             child: FilledButton(
@@ -166,7 +166,7 @@ class _ProgrammeTemplateQuickCreateSheetState
               child: const Text(AppStrings.createTemplate),
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
         ],
       ),
     );

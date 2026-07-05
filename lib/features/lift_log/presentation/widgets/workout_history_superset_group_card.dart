@@ -49,13 +49,13 @@ class WorkoutHistorySupersetGroupCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             ...exercises.map(
               (exercise) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(exercise.exerciseName, style: AppTextStyles.bodyMd),
-                  const SizedBox(height: AppSpacing.xs),
+                  AppWhiteSpace.hXs,
                   ...exercise.sets.map(
                     (set) => WorkoutHistorySetRow(item: set),
                   ),

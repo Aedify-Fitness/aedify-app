@@ -128,13 +128,13 @@ class _ProgrammeCalendarScreenState
                           }
                         : null,
                   ),
-                  const SizedBox(height: AppSpacing.xxl),
+                  AppWhiteSpace.hXxl,
                   WeekSelectorPills(
                     weeks: viewData.weeks,
                     currentWeekNumber: viewData.todayWeekNumber,
                     scrollController: ScrollController(),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  AppWhiteSpace.hLg,
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
@@ -176,7 +176,7 @@ class _ProgrammeCalendarScreenState
                       }).toList(),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xxxl),
+                  AppWhiteSpace.hXxxl,
                 ],
               ),
             ),
@@ -208,10 +208,10 @@ class _ErrorView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(message),
           if (onRetry != null) ...[
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             FilledButton(
               onPressed: onRetry,
               child: const Text(AppStrings.retry),

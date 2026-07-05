@@ -68,14 +68,14 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
 
             return Column(
               children: [
-                const SizedBox(height: AppSpacing.md),
+                AppWhiteSpace.hMd,
                 _FilterPills(
                   activeFilter: _activeFilter,
                   onChanged: (filter) {
                     setState(() => _activeFilter = filter);
                   },
                 ),
-                const SizedBox(height: AppSpacing.md),
+                AppWhiteSpace.hMd,
                 Expanded(
                   child: items.isEmpty
                       ? const _EmptyView()
@@ -290,10 +290,10 @@ class _ErrorView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(message),
           if (onRetry != null) ...[
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             FilledButton(
               onPressed: onRetry,
               child: const Text(AppStrings.retry),
@@ -323,12 +323,12 @@ class _EmptyView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          AppWhiteSpace.hMd,
           Text(
             AppStrings.noProgrammesYet,
             style: context.textTheme.titleMedium,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          AppWhiteSpace.hSm,
           Text(
             AppStrings.noProgrammesYetHint,
             style: context.textTheme.bodyMedium,

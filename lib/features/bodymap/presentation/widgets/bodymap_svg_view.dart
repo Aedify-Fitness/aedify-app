@@ -32,7 +32,7 @@ class BodymapSvgView extends StatelessWidget {
               : AppStrings.bodymapBack,
           style: context.textTheme.titleSmall,
         ),
-        SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.md),
           child: SizedBox(

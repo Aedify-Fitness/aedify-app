@@ -50,15 +50,15 @@ class ProgrammeWeeksOverview extends StatelessWidget {
                 BlendMode.srcIn,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             Text(AppStrings.noWeeksAdded, style: context.textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             Text(
               AppStrings.noWeeksAddedHint,
               style: context.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.md),
+            AppWhiteSpace.hMd,
             OutlinedButton.icon(
               onPressed: onAddWeek,
               icon: SvgPicture.asset(
@@ -80,7 +80,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
           AppStrings.programmeWeeksSectionTitle,
           style: context.textTheme.titleMedium,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         ...weeks.asMap().entries.map(
           (entry) => ProgrammeWeekCard(
             week: entry.value,
@@ -102,7 +102,7 @@ class ProgrammeWeeksOverview extends StatelessWidget {
                 : null,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        AppWhiteSpace.hSm,
         OutlinedButton.icon(
           onPressed: onAddWeek,
           icon: SvgPicture.asset(

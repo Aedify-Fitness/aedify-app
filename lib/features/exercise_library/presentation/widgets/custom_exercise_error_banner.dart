@@ -33,7 +33,7 @@ class CustomExerciseErrorBanner extends StatelessWidget {
             ),
           ),
           if (onRetry != null) ...[
-            const SizedBox(height: AppSpacing.sm),
+            AppWhiteSpace.hSm,
             OutlinedButton(
               onPressed: onRetry,
               child: const Text(AppStrings.retry),

@@ -30,7 +30,7 @@ class CustomExerciseMuscleGroupPicker extends StatelessWidget {
             padding: const EdgeInsets.only(top: AppSpacing.xs),
             child: Text(errorText!, style: AppTextStyles.labelSm),
           ),
-        const SizedBox(height: AppSpacing.xs),
+        AppWhiteSpace.hXs,
         Wrap(
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
