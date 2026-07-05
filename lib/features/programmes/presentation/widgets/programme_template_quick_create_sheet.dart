@@ -121,7 +121,6 @@ class _ProgrammeTemplateQuickCreateSheetState
             controller: _nameController,
             labelText: AppStrings.templateName,
             hintText: AppStrings.templateNameHint,
-            onChanged: (_) => setState(() {}),
           ),
           AppWhiteSpace.hMd,
           OutlinedButton.icon(
@@ -159,9 +158,12 @@ class _ProgrammeTemplateQuickCreateSheetState
           AppWhiteSpace.hMd,
           Align(
             alignment: Alignment.centerRight,
-            child: FilledButton(
-              onPressed: _canCreate ? _createTemplate : null,
-              child: const Text(AppStrings.createTemplate),
+            child: ListenableBuilder(
+              listenable: _nameController,
+              builder: (context, _) => FilledButton(
+                onPressed: _canCreate ? _createTemplate : null,
+                child: const Text(AppStrings.createTemplate),
+              ),
             ),
           ),
           AppWhiteSpace.hSm,

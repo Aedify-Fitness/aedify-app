@@ -11,6 +11,14 @@
 
 ## Completed Work
 
+### 2026-07-05 — Timer widgets — setState → ValueNotifier + ValueListenableBuilder
+
+- **Rationale**: Timer-driven `setState` calls caused entire widget subtrees to rebuild every second (progress circle, time text, label, title, button, clock icon). `ValueNotifier` + `ValueListenableBuilder` scopes rebuilds to only the widgets that depend on the changing value.
+- **`RestTimerWidget`**: `int _remaining` → `ValueNotifier<int>` initialized with `widget.seconds`. `_startTimer()` writes `_remaining.value--` instead of `setState(() => _remaining--)`. `_adjust()` writes `_remaining.value = clamped`. Timer Stack (circular progress + time text + "REST TIME" label) wrapped in `ValueListenableBuilder<int>`. `_remaining.dispose()` added to dispose.
+- **`WorkoutRunnerHeader`**: `_tick` `ValueNotifier<int>(0)` incremented each second instead of `setState(() {})`. `_elapsed` getter → `_formatElapsed(Duration)` method taking `_stopwatch.elapsed` as parameter. Elapsed `Text` wrapped in `ValueListenableBuilder<int>` — only the timer text rebuilds each tick; title, "Session In Progress" label, "Finish Early" button, clock SVG icon remain static.
+- **Files**: `lib/features/workout_execution/presentation/widgets/rest_timer_widget.dart`, `lib/features/workout_execution/presentation/widgets/workout_runner_header.dart`
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
 ### 2026-07-05 — AppTextField — shared text field widget with focus dismissal
 
 - **New shared widget**: `lib/shared/components/app_text_field.dart` — `AppTextField` `StatefulWidget` wrapping `TextField`/`TextFormField`.

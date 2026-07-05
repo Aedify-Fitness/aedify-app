@@ -26,6 +26,7 @@ class WorkoutRunnerHeader extends StatefulWidget {
 
 class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
   final _stopwatch = Stopwatch();
+  final _tick = ValueNotifier<int>(0);
   Timer? _timer;
 
   @override
@@ -33,7 +34,7 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
     super.initState();
     _stopwatch.start();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      if (mounted) _tick.value++;
     });
   }
 
@@ -41,11 +42,11 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
   void dispose() {
     _stopwatch.stop();
     _timer?.cancel();
+    _tick.dispose();
     super.dispose();
   }
 
-  String get _elapsed {
-    final d = _stopwatch.elapsed;
+  String _formatElapsed(Duration d) {
     final hours = d.inHours;
     final minutes = d.inMinutes.remainder(60);
     final seconds = d.inSeconds.remainder(60);
@@ -102,11 +103,16 @@ class _WorkoutRunnerHeaderState extends State<WorkoutRunnerHeader> {
                         ),
                       ),
                       AppWhiteSpace.wXs,
-                      Text(
-                        _elapsed,
-                        style: context.textTheme.labelMedium?.copyWith(
-                          color: context.colorScheme.onSecondaryContainer,
-                        ),
+                      ValueListenableBuilder<int>(
+                        valueListenable: _tick,
+                        builder: (context, _, _) {
+                          return Text(
+                            _formatElapsed(_stopwatch.elapsed),
+                            style: context.textTheme.labelMedium?.copyWith(
+                              color: context.colorScheme.onSecondaryContainer,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

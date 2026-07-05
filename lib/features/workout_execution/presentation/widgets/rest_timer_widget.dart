@@ -20,14 +20,14 @@ class RestTimerWidget extends StatefulWidget {
 
 class _RestTimerWidgetState extends State<RestTimerWidget>
     with SingleTickerProviderStateMixin {
-  late int _remaining;
+  late ValueNotifier<int> _remaining;
   Timer? _timer;
   late AnimationController _animController;
 
   @override
   void initState() {
     super.initState();
-    _remaining = widget.seconds;
+    _remaining = ValueNotifier<int>(widget.seconds);
     _animController = AnimationController(
       vsync: this,
       duration: Duration(seconds: widget.seconds),
@@ -38,10 +38,8 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
-      setState(() {
-        _remaining--;
-      });
-      if (_remaining <= 0) {
+      _remaining.value--;
+      if (_remaining.value <= 0) {
         _timer?.cancel();
         widget.onDismiss();
       }
@@ -49,61 +47,65 @@ class _RestTimerWidgetState extends State<RestTimerWidget>
   }
 
   void _adjust(int delta) {
-    final newRemaining = (_remaining + delta).clamp(0, 300);
-    setState(() {
-      _remaining = newRemaining;
-    });
+    _remaining.value = (_remaining.value + delta).clamp(0, 300);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _remaining.dispose();
     _animController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final minutes = _remaining ~/ 60;
-    final secs = _remaining % 60;
-    final progress = widget.seconds > 0 ? _remaining / widget.seconds : 0.0;
-
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       color: context.colorScheme.surface,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: AppSizing.restTimerSize,
-                height: AppSizing.restTimerSize,
-                child: CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: AppSizing.timerStrokeWidth,
-                  backgroundColor: context.colorScheme.surfaceContainer,
-                  color: context.colorScheme.secondary,
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
+          ValueListenableBuilder<int>(
+            valueListenable: _remaining,
+            builder: (context, remaining, _) {
+              final minutes = remaining ~/ 60;
+              final secs = remaining % 60;
+              final progress = widget.seconds > 0
+                  ? remaining / widget.seconds
+                  : 0.0;
+              return Stack(
+                alignment: Alignment.center,
                 children: [
-                  Text(
-                    '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}',
-                    style: context.textTheme.headlineLarge,
-                  ),
-                  AppWhiteSpace.hXs,
-                  Text(
-                    AppStrings.restTime.toUpperCase(),
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+                  SizedBox(
+                    width: AppSizing.restTimerSize,
+                    height: AppSizing.restTimerSize,
+                    child: CircularProgressIndicator(
+                      value: progress,
+                      strokeWidth: AppSizing.timerStrokeWidth,
+                      backgroundColor: context.colorScheme.surfaceContainer,
+                      color: context.colorScheme.secondary,
                     ),
                   ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}',
+                        style: context.textTheme.headlineLarge,
+                      ),
+                      AppWhiteSpace.hXs,
+                      Text(
+                        AppStrings.restTime.toUpperCase(),
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-            ],
+              );
+            },
           ),
           AppWhiteSpace.hMd,
           Row(

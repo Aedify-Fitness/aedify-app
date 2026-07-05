@@ -6,6 +6,19 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### ProgrammeTemplateQuickCreateSheet — narrowed empty-setState rebuild to ListenableBuilder
+
+- **`programme_template_quick_create_sheet.dart`**: Removed `onChanged: (_) => setState(() {})` from the template name `AppTextField` — previously every keystroke rebuilt the entire bottom sheet (exercise list, count text, button) just to re-evaluate the Create button's enabled state.
+- **New pattern**: Create button wrapped in `ListenableBuilder(listenable: _nameController, builder: ...)`. Only the button rebuilds on keystrokes. Exercise add/remove still uses `setState` (the exercise list itself changes).
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Timer widgets — migrated from setState to ValueNotifier + ValueListenableBuilder
+
+- **`RestTimerWidget`** (`rest_timer_widget.dart`): `int _remaining` → `ValueNotifier<int> _remaining`. Timer ticks and `_adjust()` now write to `_remaining.value` instead of `setState`. Timer display (circular progress + time text + label) wrapped in a single `ValueListenableBuilder<int>` — only that subtree rebuilds each tick.
+- **`WorkoutRunnerHeader`** (`workout_runner_header.dart`): Timer-driven `setState(() {})` → `_tick` `ValueNotifier<int>` incremented each second. Elapsed `Text` wrapped in `ValueListenableBuilder<int>` — header title, button, and clock icon no longer rebuild every second.
+- Both files now have zero `setState` calls. Timer-scoped rebuilds replace full-widget rebuilds.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow library browse).
+
 ### AppTextField — shared text field widget with focus dismissal (replaces all raw TextField/TextFormField)
 
 - **New widget**: `AppTextField` at `lib/shared/components/app_text_field.dart` — wraps `TextField`/`TextFormField` with built-in `onTapOutside` unfocus. Supports `enableObscureToggle` for API key fields, `style`, `isDense`, `suffixText`/`suffixStyle`, `borderOverride`, `borderRadius`, and all standard text field parameters. Auto-selects `TextFormField` when `validator` is non-null, `TextField` otherwise.
