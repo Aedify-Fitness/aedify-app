@@ -4,6 +4,49 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-05
+
+### Workout builder screen — enhanced sets table, WEIGHT/REST columns, controller lifecycle
+
+- Expanded `_ExerciseConfigPanel` sets table with WEIGHT and REST columns alongside existing SET/TYPE/REPS/TARGET — inline `TextField` editors with proper `TextEditingController` lifecycle managed via `StatefulWidget` (`_SetTableRow`). Weight parsed as `double`, rest as `int`, reps as range or exact, target as RPE range or RIR.
+- Added `_SetTableRow` (StatefulWidget) with `_onWeightChanged`, `_onRestChanged`, `_onRepsChanged`, `_onTargetChanged` listeners and `_isSyncing` guard to prevent feedback loops. `_syncControllers` on `didUpdateWidget` preserves cursor position.
+- Added `_CoachNotesField` (StatefulWidget) for per-exercise notes textarea — controller lifecycle, `didUpdateWidget` sync on `exerciseId` change.
+- Added `_DashedBorderPainter` (CustomPainter) for the dashed-border "Add Exercise" button, `_AddExerciseButton` with plus-circle icon, `_ExerciseMenu` popup menu (duplicate/delete) replacing always-visible icons.
+- Added rest seconds display in `_MiniExerciseCard` summary line — shows clock icon + `{restSec}s` when set-level rest is present.
+- Added `SetPrescriptionDraft.clearTarget()`, `clearReps()`, `clearWeight()`, `clearRest()` mutation helpers and full `==`/`hashCode` overrides for dirty-state comparison.
+- Added `WorkoutBuilderDraft.clearRestBetweenExercises()`, `==`/`hashCode` with `listEquals` for list fields, and `WorkoutBuilderExerciseDraft` `==`/`hashCode`.
+- Added `ExerciseReference` `==`/`hashCode` override.
+- Added `stack.svg` asset and `OutlinedSvgAssets.stack` for set count icon in mini cards.
+- New AppStrings: `weightColumn`, `restColumn`, `configLabel`, `reorderButton`, `defaultRestHint`, `rpeHint`, `secondsUnitAbbreviation`, `duplicateExercise`, `removeSet`.
+- Added `AppRadius.xxl = 32` for panel padding.
+- Controller: removed mutable `isDirty` field from `WorkoutBuilderState` — replaced with computed `isDirty` getter comparing `draft != originalDraft`. State gains `originalDraft` field. `updateExerciseNotes`, `updateGoalTags`, `updateDescription`, `updateRestBetweenExercises` all simplified with no `isDirty: true`.
+- `LoadWorkoutDraftUseCase` now accepts optional `ExerciseDao` — resolves `modality` per exercise from DB for badge display; `goalTags` decoded from JSON string list instead of `GoalTag` enum.
+- `SaveWorkoutDraftUseCase` uses raw string goal tags (`Set<String>`) — removed `_goalTagFromString`.
+- `SavedWorkoutDraft.goalTags` type changed from `Set<GoalTag>` to `Set<String>`.
+- `DriftSavedWorkoutRepository` serializes goal tags with `jsonEncode(draft.goalTags.toList())` instead of `EnumCodec.encodeSet`.
+- `AppTheme`: added `surfaceTintColor` to light and dark `AppBarTheme`.
+- Provider `loadWorkoutDraftUseCaseProvider` now injects `exerciseDaoProvider`.
+- Integration test uses `createNewWorkout` string assertion and `ensureVisible` for add exercise button.
+- Controller tests (4 groups) add `loadWorkoutDraftUseCaseProvider` override.
+- M4 tests: `GoalTag.generalFitness` replaced with `'general_fitness'` string.
+- Files: `lib/features/workout_builder/presentation/workout_builder_screen.dart`, `lib/features/workout_builder/application/workout_builder_controller.dart`, `lib/features/workout_builder/application/workout_builder_state.dart`, `lib/features/workout_builder/application/load_workout_draft_use_case.dart`, `lib/features/workout_builder/application/save_workout_draft_use_case.dart`, `lib/features/workout_builder/domain/exercise_reference.dart`, `lib/features/workout_builder/domain/set_prescription_draft.dart`, `lib/features/workout_builder/domain/workout_builder_draft.dart`, `lib/features/workout_builder/domain/workout_builder_exercise_draft.dart`, `lib/features/workout_builder/domain/saved_workout_draft.dart`, `lib/features/workout_builder/data/drift_saved_workout_repository.dart`, `lib/app/providers/providers.dart`, `lib/app/theme/app_theme.dart`, `lib/shared/constants/app_strings.dart`, `lib/shared/constants/svg_assets_outlined.dart`, `lib/shared/theme/app_spacing.dart`, `assets/svgs/outline/stack.svg`, `test/features/workout_builder/application/workout_builder_controller_test.dart`, `test/features/workout_builder/presentation/workout_builder_integration_test.dart`, `test/app/m4/m4_manual_tracker_acceptance_test.dart`, `test/app/m4/m4_privacy_integrity_blockers_test.dart`
+
+### Exercise picker bottom sheet — expanded difficulty badges (4 tiers), restyled cards
+
+- Redesigned `AddExerciseBottomSheet` as full-height container with handle bar, close button + "Add Exercise" header, pill-shaped search bar with magnifying glass and filter icons, horizontal muscle-group filter chips (All/Chest/Back/Legs/Shoulders/Arms/Core), single-column exercise card list with colored initial-letter avatar, tag chips, and animated bottom action bar with selection count + confirm button.
+- Expanded difficulty badges from 2 tiers (beginner, intermediate) to 4 tiers (novice, beginner, intermediate, advanced) — each with dedicated color tokens (`difficultyNoviceBg/Text`, `difficultyBeginnerBg/Text`, `difficultyIntermediateBg/Text`, `difficultyAdvancedBg/Text`) in both `AedifyLightColors` and `AedifyDarkColors`.
+- Exercise cards show color-coded difficulty badge: novice (blue-tinted), beginner (green), intermediate (orange), advanced (red). Selected cards get secondary border, tinted background, and check-circle overlay.
+- 35 new filter-related AppStrings for difficulty labels/descriptions, muscle group names, equipment types, modality types, and filter UI labels.
+- Files: `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`, `lib/shared/theme/app_colors.dart`, `lib/shared/constants/app_strings.dart`
+
+### Exercise picker filter sheet
+
+- Created `ExercisePickerFilterSheet` — a full filter bottom sheet triggered by tapping the search suffix icon. Includes multi-select muscle group pills, a 2-column equipment card grid (with Material icons), radio-style difficulty picker with descriptions, iOS-style modality toggles, and Cancel/Apply Filters footer with active filter count badge.
+- Fixed header in `AddExerciseBottomSheet` to properly show the "Add Exercise" title alongside the close button.
+- Wired the search bar's filter icon to open the new filter sheet.
+- Files: `lib/features/workout_builder/presentation/widgets/exercise_picker_filter_sheet.dart`, `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`
+- Verification: `dart format` passed, `flutter analyze` — 0 issues.
+
 ## 2026-07-04
 
 ### Workout runner completion and active-session integrity

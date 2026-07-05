@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
@@ -833,6 +834,13 @@ void main() {
           AppProviders.savedWorkoutRepositoryProvider.overrideWith(
             (ref) => _FakeSavedWorkoutRepository(aggregate: aggregate),
           ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
+          ),
         ],
       );
 
@@ -876,6 +884,13 @@ void main() {
         overrides: [
           AppProviders.savedWorkoutRepositoryProvider.overrideWith(
             (ref) => _FakeSavedWorkoutRepository(aggregate: aggregate),
+          ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
           ),
         ],
       );
@@ -956,6 +971,13 @@ void main() {
             AppProviders.savedWorkoutRepositoryProvider.overrideWith(
               (ref) => fakeRepository,
             ),
+            AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+              (ref) => LoadWorkoutDraftUseCase(
+                savedWorkoutRepository: ref.read(
+                  AppProviders.savedWorkoutRepositoryProvider,
+                ),
+              ),
+            ),
           ],
         );
 
@@ -1021,6 +1043,13 @@ void main() {
         overrides: [
           AppProviders.savedWorkoutRepositoryProvider.overrideWith(
             (ref) => _FakeSavedWorkoutRepository(shouldThrowOnGet: true),
+          ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
           ),
         ],
       );

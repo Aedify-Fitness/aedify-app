@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:aedify/shared/domain/exercise_role.dart';
 import 'exercise_reference.dart';
 import 'set_prescription_draft.dart';
@@ -24,6 +25,33 @@ class WorkoutBuilderExerciseDraft {
   final int? supersetOrder;
   final String? notes;
   final int? restBetweenExercisesSeconds;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WorkoutBuilderExerciseDraft &&
+          id == other.id &&
+          exercise == other.exercise &&
+          sortOrder == other.sortOrder &&
+          listEquals(sets, other.sets) &&
+          exerciseRole == other.exerciseRole &&
+          supersetGroupId == other.supersetGroupId &&
+          supersetOrder == other.supersetOrder &&
+          notes == other.notes &&
+          restBetweenExercisesSeconds == other.restBetweenExercisesSeconds;
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    exercise,
+    sortOrder,
+    Object.hashAll(sets),
+    exerciseRole,
+    supersetGroupId,
+    supersetOrder,
+    notes,
+    restBetweenExercisesSeconds,
+  );
 
   WorkoutBuilderExerciseDraft copyWith({
     String? id,

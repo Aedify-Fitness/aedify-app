@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
@@ -20,11 +23,14 @@ import 'package:aedify/core/logging/app_logger.dart';
 class LoadWorkoutDraftUseCase {
   const LoadWorkoutDraftUseCase({
     required SavedWorkoutRepository savedWorkoutRepository,
-  }) : _savedWorkoutRepository = savedWorkoutRepository;
+    ExerciseDao? exerciseDao,
+  }) : _savedWorkoutRepository = savedWorkoutRepository,
+       _exerciseDao = exerciseDao;
 
   static final _logger = AppLogger(name: 'LoadWorkoutDraftUseCase');
 
   final SavedWorkoutRepository _savedWorkoutRepository;
+  final ExerciseDao? _exerciseDao;
 
   Future<WorkoutBuilderDraft> createEmptyDraft() async {
     _logger.debug('createEmptyDraft');
@@ -58,13 +64,26 @@ class LoadWorkoutDraftUseCase {
       exerciseSets[set.savedWorkoutExerciseId]!.add(set);
     }
 
+    final modalityMap = <int, String>{};
+    if (_exerciseDao != null) {
+      final exerciseIds = aggregate.exercises
+          .map((e) => e.exerciseId)
+          .toSet()
+          .toList();
+      for (final id in exerciseIds) {
+        final ex = await _exerciseDao.getExerciseById(id);
+        if (ex != null) modalityMap[id] = ex.modality;
+      }
+    }
+
     return WorkoutBuilderDraft(
       id: saved.id,
       name: saved.name,
       source: WorkoutSource.fromDb(saved.source)!,
       creationMethod: CreationMethod.fromDb(saved.creationMethod)!,
       status: SavedWorkoutStatus.fromDb(saved.status),
-      goalTags: [],
+      goalTags: (jsonDecode(saved.goalTagsJson) as List<dynamic>)
+          .cast<String>(),
       equipment: [],
       description: null,
       estimatedDurationMinutes: null,
@@ -76,7 +95,7 @@ class LoadWorkoutDraftUseCase {
           exercise: ExerciseReference(
             exerciseId: e.exerciseId,
             name: e.exerciseRef ?? '',
-            modality: '',
+            modality: modalityMap[e.exerciseId] ?? '',
           ),
           sortOrder: e.sortOrder,
           exerciseRole: ExerciseRole.fromDb(e.exerciseRole),

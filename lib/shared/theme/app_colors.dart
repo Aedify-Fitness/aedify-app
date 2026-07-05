@@ -55,6 +55,16 @@ abstract final class AedifyLightColors {
   static const handleBarColor = Color(0x5044474c);
   static const surfaceVariantFaded = Color(0x6644474c);
   static const secondaryBorder = Color(0x3F0051d5);
+
+  // Difficulty badge colors
+  static const difficultyNoviceBg = Color(0x66d3e4fe);
+  static const difficultyNoviceText = Color(0xFF44474c);
+  static const difficultyBeginnerBg = Color(0xFFE8F5E9);
+  static const difficultyBeginnerText = Color(0xFF4CAF50);
+  static const difficultyIntermediateBg = Color(0xFFFFF3E0);
+  static const difficultyIntermediateText = Color(0xFFFF9800);
+  static const difficultyAdvancedBg = Color(0xFFffdad6);
+  static const difficultyAdvancedText = Color(0xFFba1a1a);
 }
 
 abstract final class AedifyDarkColors {
@@ -112,4 +122,14 @@ abstract final class AedifyDarkColors {
   static const surfaceVariantFaded = Color(0x66c3c6d7);
   static const primaryContainerSelected = Color(0x4C2563eb);
   static const secondaryBorder = Color(0x3Fb9c7e1);
+
+  // Difficulty badge colors
+  static const difficultyNoviceBg = Color(0x6632343d);
+  static const difficultyNoviceText = Color(0xFFc3c6d7);
+  static const difficultyBeginnerBg = Color(0xFF1B3D1B);
+  static const difficultyBeginnerText = Color(0xFF81C784);
+  static const difficultyIntermediateBg = Color(0xFF3D2E1B);
+  static const difficultyIntermediateText = Color(0xFFFFB74D);
+  static const difficultyAdvancedBg = Color(0xFF93000a);
+  static const difficultyAdvancedText = Color(0xFFffb4ab);
 }

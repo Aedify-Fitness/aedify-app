@@ -16,6 +16,7 @@ class OutlinedSvgAssets {
   static const arrowDownOnSquare = '$_pathPrefix/arrow_down_on_square.svg';
   static const arrowDownOnSquareStack =
       '$_pathPrefix/arrow_down_on_square_stack.svg';
+  static const stack = '$_pathPrefix/stack.svg';
   static const arrowDownRight = '$_pathPrefix/arrow_down_right.svg';
   static const arrowDownTray = '$_pathPrefix/arrow_down_tray.svg';
   static const arrowLeft = '$_pathPrefix/arrow_left.svg';

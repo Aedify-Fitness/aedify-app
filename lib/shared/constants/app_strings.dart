@@ -408,10 +408,16 @@ class AppStrings {
 
   // Workout builder
   static const workoutBuilder = 'Workout Builder';
+  static const createNewWorkout = 'Create New Workout';
   static const createWorkout = 'Create workout';
   static const editWorkout = 'Edit workout';
+  static const workoutBuilderSubtitle =
+      'Add exercises and set targets for your templates.';
   static const workoutName = 'Workout name';
   static const workoutNameHint = 'Upper Body A';
+  static const workoutFocus = 'Focus';
+  static const workoutFocusHint = 'e.g. Upper body strength';
+  static const exercisesLabel = 'Exercises';
   static const addExercise = 'Add exercise';
   static const addSet = 'Add set';
   static const removeExercise = 'Remove exercise';
@@ -456,6 +462,27 @@ class AppStrings {
       'Warm-up sets must come before working sets.';
   static const setTypeRequired = 'Please choose a valid set type.';
   static const skipped = 'Skipped';
+  static const setNumberColumn = 'SET';
+  static const setTypeColumn = 'TYPE';
+  static const repsColumn = 'REPS';
+  static const targetColumn = 'TARGET';
+  static const coachNotes = "Coach's Notes for Exercise";
+  static const coachNotesHint = 'Add coaching notes for this exercise...';
+  static const builderProgress = 'Builder Progress';
+  static const weeklySchedule = 'Weekly Schedule';
+  static const trainingBlocks = 'Training Blocks';
+  static const reviewAndPublish = 'Review & Publish';
+  static const nextReviewAndPublish = 'Next: Review & Publish';
+  static const dragToReorder = 'Drag to reorder';
+  static const selectExerciseToConfigure = 'Select an exercise to configure';
+  static const noExercisesInWorkout = 'No exercises in this workout yet';
+  static const addExercisesToGetStarted =
+      'Add exercises to get started building your workout.';
+  static const weightColumn = 'WEIGHT';
+  static const restColumn = 'REST';
+  static const configLabel = 'Configuration';
+  static const reorderButton = 'Reorder';
+  static const defaultRestHint = 'Default rest (seconds)';
 
   // V1-M4-008 — superset / execution groups
   static const supersets = 'Supersets';
@@ -799,4 +826,44 @@ class AppStrings {
   // Duration abbreviations
   static const durationHoursAbbreviation = 'h';
   static const durationMinutesAbbreviation = 'm';
+  static const secondsUnitAbbreviation = 's';
+
+  // Workout builder — exercise filter & picker
+  static const filterAll = 'All';
+  static const filterChest = 'Chest';
+  static const filterBack = 'Back';
+  static const filterLegs = 'Legs';
+  static const filterShoulders = 'Shoulders';
+  static const filterArms = 'Arms';
+  static const filterCore = 'Core';
+  static const filterTriceps = 'Triceps';
+  static const filterBiceps = 'Biceps';
+  static const filterQuads = 'Quads';
+  static const filterHamstrings = 'Hamstrings';
+  static const filterGlutes = 'Glutes';
+  static const filterMultiSelectEnabled = 'Multi-select enabled';
+  static const filterRefineLibrary = 'Refine Library';
+  static const filterClearAll = 'Clear All';
+  static const filterApply = 'Apply Filters';
+  static const filterCancel = 'Cancel';
+  static String filterConfirmSelection(int count) =>
+      'Confirm Selection ($count)';
+  static const filterDumbbell = 'Dumbbell';
+  static const filterBarbell = 'Barbell';
+  static const filterMachine = 'Machine';
+  static const filterBodyweight = 'Bodyweight';
+  static const filterStrength = 'Strength';
+  static const filterFlexibility = 'Flexibility';
+  static const filterCardio = 'Cardio';
+  static const filterNovice = 'Novice';
+  static const filterBeginner = 'Beginner';
+  static const filterIntermediate = 'Intermediate';
+  static const filterExpert = 'Expert';
+  static const filterNoviceDesc = 'Just getting started';
+  static const filterBeginnerDesc = 'Focus on form and safety';
+  static const filterIntermediateDesc = 'Increased intensity and complexity';
+  static const filterExpertDesc = 'High-skill movements';
+
+  // Workout builder — set table
+  static const rpeHint = 'RPE 8-9';
 }

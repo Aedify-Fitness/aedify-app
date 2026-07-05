@@ -35,8 +35,8 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         mode: WorkoutBuilderMode.create,
         phase: WorkoutBuilderPhase.editing,
         draft: draft,
+        originalDraft: draft,
         validationErrors: [],
-        isDirty: false,
       );
     }
 
@@ -50,24 +50,26 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         mode: WorkoutBuilderMode.edit,
         phase: WorkoutBuilderPhase.editing,
         draft: draft,
+        originalDraft: draft,
         validationErrors: [],
-        isDirty: false,
         savedWorkoutId: savedWorkoutId,
       );
     } catch (e) {
+      final failedDraft = WorkoutBuilderDraft(
+        id: '',
+        name: '',
+        source: WorkoutSource.manual,
+        creationMethod: CreationMethod.manual,
+        status: SavedWorkoutStatus.active,
+        goalTags: [],
+        equipment: [],
+        exercises: [],
+      );
       return WorkoutBuilderState(
         mode: WorkoutBuilderMode.edit,
         phase: WorkoutBuilderPhase.failure,
-        draft: WorkoutBuilderDraft(
-          id: '',
-          name: '',
-          source: WorkoutSource.manual,
-          creationMethod: CreationMethod.manual,
-          status: SavedWorkoutStatus.active,
-          goalTags: [],
-          equipment: [],
-          exercises: [],
-        ),
+        draft: failedDraft,
+        originalDraft: failedDraft,
         validationErrors: [
           WorkoutBuilderValidationError(
             scope: WorkoutBuilderValidationScope.workout,
@@ -75,7 +77,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
             message: AppStrings.workoutLoadFailed,
           ),
         ],
-        isDirty: false,
         errorCode: AppErrorCodes.loadFailed,
         errorMessage: AppStrings.workoutLoadFailed,
       );
@@ -96,7 +97,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -106,31 +106,49 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     final current = state.asData?.value;
     if (current == null) return;
     state = AsyncData(
-      current.copyWith(
-        draft: current.draft.copyWith(name: value),
-        isDirty: true,
-      ),
+      current.copyWith(draft: current.draft.copyWith(name: value)),
     );
   }
 
   Future<void> updateRestBetweenExercises(int? restSeconds) async {
     final current = state.asData?.value;
     if (current == null) return;
-    state = AsyncData(
-      current.copyWith(
-        draft: current.draft.copyWith(restBetweenExercisesSeconds: restSeconds),
-        isDirty: true,
-      ),
-    );
+    final updatedDraft = restSeconds != null
+        ? current.draft.copyWith(restBetweenExercisesSeconds: restSeconds)
+        : current.draft.clearRestBetweenExercises();
+    state = AsyncData(current.copyWith(draft: updatedDraft));
   }
 
   Future<void> updateDescription(String? value) async {
     final current = state.asData?.value;
     if (current == null) return;
     state = AsyncData(
+      current.copyWith(draft: current.draft.copyWith(description: value)),
+    );
+  }
+
+  Future<void> updateGoalTags(List<String> tags) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(draft: current.draft.copyWith(goalTags: tags)),
+    );
+  }
+
+  Future<void> updateExerciseNotes(
+    String exerciseDraftId,
+    String? notes,
+  ) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final exercises = current.draft.exercises.map((e) {
+      if (e.id != exerciseDraftId) return e;
+      return e.copyWith(notes: notes);
+    }).toList();
+    state = AsyncData(
       current.copyWith(
-        draft: current.draft.copyWith(description: value),
-        isDirty: true,
+        draft: current.draft.copyWith(exercises: exercises),
+        validationErrors: [],
       ),
     );
   }
@@ -158,7 +176,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: [...exercises, newExercise]),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -174,7 +191,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: _reindexExercises(exercises)),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -205,7 +221,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: _reindexExercises(exercises)),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -220,7 +235,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: _reindexExercises(exercises)),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -249,7 +263,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -278,7 +291,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -301,7 +313,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -323,7 +334,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -372,8 +382,8 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           current.copyWith(
             phase: WorkoutBuilderPhase.editing,
             draft: freshDraft,
+            originalDraft: freshDraft,
             savedWorkoutId: null,
-            isDirty: false,
           ),
         );
       } else {
@@ -381,8 +391,8 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           current.copyWith(
             phase: WorkoutBuilderPhase.editing,
             draft: normalizedDraft,
+            originalDraft: normalizedDraft,
             savedWorkoutId: savedId,
-            isDirty: false,
           ),
         );
       }
@@ -419,7 +429,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -440,7 +449,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -461,7 +469,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -493,7 +500,6 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
       current.copyWith(
         draft: current.draft.copyWith(exercises: exercises),
         validationErrors: [],
-        isDirty: true,
       ),
     );
   }
@@ -505,12 +511,20 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     if (mode == WorkoutBuilderMode.create) {
       final draft = await loadUseCase.createEmptyDraft();
       state = AsyncData(
-        current.copyWith(draft: draft, isDirty: false, validationErrors: []),
+        current.copyWith(
+          draft: draft,
+          originalDraft: draft,
+          validationErrors: [],
+        ),
       );
     } else if (savedWorkoutId != null) {
       final draft = await loadUseCase.loadForEdit(savedWorkoutId!);
       state = AsyncData(
-        current.copyWith(draft: draft, isDirty: false, validationErrors: []),
+        current.copyWith(
+          draft: draft,
+          originalDraft: draft,
+          validationErrors: [],
+        ),
       );
     }
   }

@@ -8,7 +8,6 @@ import 'package:aedify/features/workout_execution/domain/workout_session_draft.d
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
-import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
 import 'package:aedify/shared/domain/session_source.dart';
@@ -65,7 +64,7 @@ void main() {
           source: WorkoutSource.manual,
           creationMethod: CreationMethod.manual,
           status: SavedWorkoutStatus.active,
-          goalTags: const {GoalTag.generalFitness},
+          goalTags: const {'general_fitness'},
           equipment: const {EquipmentTag.barbell},
           exercises: [],
         ),

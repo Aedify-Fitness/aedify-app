@@ -3,7 +3,6 @@ import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart'
 import 'package:aedify/features/workout_builder/domain/saved_workout_exercise_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_save_request.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
-import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart'
     as builder_set;
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart'
@@ -31,7 +30,7 @@ class SaveWorkoutDraftUseCase {
       source: builderDraft.source,
       creationMethod: builderDraft.creationMethod,
       status: builderDraft.status,
-      goalTags: builderDraft.goalTags.map(_goalTagFromString).toSet(),
+      goalTags: builderDraft.goalTags.toSet(),
       equipment: builderDraft.equipment.map(_equipmentTagFromString).toSet(),
       description: builderDraft.description,
       estimatedDurationMinutes: builderDraft.estimatedDurationMinutes,
@@ -76,18 +75,6 @@ class SaveWorkoutDraftUseCase {
       prescribedRir: s.prescribedRir,
       restSeconds: s.restSeconds,
     );
-  }
-
-  GoalTag _goalTagFromString(String value) {
-    return switch (value) {
-      'build_muscle' => GoalTag.buildMuscle,
-      'lose_weight' => GoalTag.loseWeight,
-      'increase_strength' => GoalTag.increaseStrength,
-      'improve_endurance' => GoalTag.improveEndurance,
-      'general_fitness' => GoalTag.generalFitness,
-      'flexibility' => GoalTag.flexibility,
-      _ => GoalTag.generalFitness,
-    };
   }
 
   EquipmentTag _equipmentTagFromString(String value) {

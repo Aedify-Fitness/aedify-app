@@ -37,6 +37,125 @@ class SetPrescriptionDraft {
   final int? prescribedRir;
   final int? restSeconds;
 
+  SetPrescriptionDraft clearTarget() {
+    return SetPrescriptionDraft(
+      id: id,
+      setIndex: setIndex,
+      setType: setType,
+      setIntent: setIntent,
+      prescribedRepsMin: prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact,
+      durationSeconds: durationSeconds,
+      distanceMeters: distanceMeters,
+      weightPrescriptionType: weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg,
+      prescribedRpeMin: null,
+      prescribedRpeMax: null,
+      prescribedRir: null,
+      restSeconds: restSeconds,
+    );
+  }
+
+  SetPrescriptionDraft clearReps() {
+    return SetPrescriptionDraft(
+      id: id,
+      setIndex: setIndex,
+      setType: setType,
+      setIntent: setIntent,
+      prescribedRepsMin: null,
+      prescribedRepsMax: null,
+      prescribedRepsExact: null,
+      durationSeconds: durationSeconds,
+      distanceMeters: distanceMeters,
+      weightPrescriptionType: weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg,
+      prescribedRpeMin: prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax,
+      prescribedRir: prescribedRir,
+      restSeconds: restSeconds,
+    );
+  }
+
+  SetPrescriptionDraft clearWeight() {
+    return SetPrescriptionDraft(
+      id: id,
+      setIndex: setIndex,
+      setType: setType,
+      setIntent: setIntent,
+      prescribedRepsMin: prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact,
+      durationSeconds: durationSeconds,
+      distanceMeters: distanceMeters,
+      weightPrescriptionType: weightPrescriptionType,
+      prescribedWeightKg: null,
+      prescribedRpeMin: prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax,
+      prescribedRir: prescribedRir,
+      restSeconds: restSeconds,
+    );
+  }
+
+  SetPrescriptionDraft clearRest() {
+    return SetPrescriptionDraft(
+      id: id,
+      setIndex: setIndex,
+      setType: setType,
+      setIntent: setIntent,
+      prescribedRepsMin: prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact,
+      durationSeconds: durationSeconds,
+      distanceMeters: distanceMeters,
+      weightPrescriptionType: weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg,
+      prescribedRpeMin: prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax,
+      prescribedRir: prescribedRir,
+      restSeconds: null,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SetPrescriptionDraft &&
+          id == other.id &&
+          setIndex == other.setIndex &&
+          setType == other.setType &&
+          setIntent == other.setIntent &&
+          prescribedRepsMin == other.prescribedRepsMin &&
+          prescribedRepsMax == other.prescribedRepsMax &&
+          prescribedRepsExact == other.prescribedRepsExact &&
+          durationSeconds == other.durationSeconds &&
+          distanceMeters == other.distanceMeters &&
+          weightPrescriptionType == other.weightPrescriptionType &&
+          prescribedWeightKg == other.prescribedWeightKg &&
+          prescribedRpeMin == other.prescribedRpeMin &&
+          prescribedRpeMax == other.prescribedRpeMax &&
+          prescribedRir == other.prescribedRir &&
+          restSeconds == other.restSeconds;
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    setIndex,
+    setType,
+    setIntent,
+    prescribedRepsMin,
+    prescribedRepsMax,
+    prescribedRepsExact,
+    durationSeconds,
+    distanceMeters,
+    weightPrescriptionType,
+    prescribedWeightKg,
+    prescribedRpeMin,
+    prescribedRpeMax,
+    prescribedRir,
+    restSeconds,
+  );
+
   SetPrescriptionDraft copyWith({
     String? id,
     int? setIndex,

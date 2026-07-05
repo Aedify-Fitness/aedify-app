@@ -1,7 +1,6 @@
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/export_privacy_mode.dart';
-import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/import_origin.dart';
 import 'package:aedify/shared/domain/import_review_status.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
@@ -31,7 +30,7 @@ class SavedWorkoutDraft {
   final WorkoutSource source;
   final CreationMethod creationMethod;
   final SavedWorkoutStatus status;
-  final Set<GoalTag> goalTags;
+  final Set<String> goalTags;
   final Set<EquipmentTag> equipment;
   final List<SavedWorkoutExerciseDraft> exercises;
   final String? description;

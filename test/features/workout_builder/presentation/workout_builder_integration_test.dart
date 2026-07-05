@@ -116,8 +116,9 @@ void main() {
     // Initial loading completes
     await tester.pumpAndSettle();
 
-    // Verify initial state: empty name field
-    expect(find.text(AppStrings.createWorkout), findsOneWidget);
+    // Verify initial state: header title and name field
+    expect(find.text(AppStrings.createNewWorkout), findsOneWidget);
+    expect(find.text(AppStrings.workoutNameHint), findsOneWidget);
     final nameField = find.widgetWithText(
       TextField,
       AppStrings.workoutNameHint,
@@ -128,10 +129,11 @@ void main() {
     await tester.enterText(nameField, 'Push Day');
     await tester.pump();
 
-    // Tap the add exercise FAB
-    final addButton = find.text(AppStrings.addExercise);
-    expect(addButton, findsOneWidget);
-    await tester.tap(addButton);
+    // Scroll to find and tap the Add Exercise button
+    final addExerciseFinder = find.text(AppStrings.addExercise);
+    await tester.ensureVisible(addExerciseFinder);
+    await tester.pump();
+    await tester.tap(addExerciseFinder);
     await tester.pump();
     await tester.pump();
 

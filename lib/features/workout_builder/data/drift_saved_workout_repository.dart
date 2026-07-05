@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/saved_workout_dao.dart';
@@ -238,9 +240,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       status: Value(draft.status.dbValue),
       estimatedDurationMinutes: Value(draft.estimatedDurationMinutes),
       restBetweenExercisesSeconds: Value(draft.restBetweenExercisesSeconds),
-      goalTagsJson: Value(
-        EnumCodec.encodeSet(draft.goalTags, (value) => value.dbValue),
-      ),
+      goalTagsJson: Value(jsonEncode(draft.goalTags.toList())),
       equipmentJson: Value(
         EnumCodec.encodeSet(draft.equipment, (value) => value.dbValue),
       ),

@@ -623,6 +623,7 @@ class AppProviders {
       Provider<LoadWorkoutDraftUseCase>((ref) {
         return LoadWorkoutDraftUseCase(
           savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+          exerciseDao: ref.read(exerciseDaoProvider),
         );
       });
 

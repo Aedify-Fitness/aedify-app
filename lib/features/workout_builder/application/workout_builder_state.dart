@@ -13,8 +13,8 @@ class WorkoutBuilderState {
     required this.mode,
     required this.phase,
     required this.draft,
+    required this.originalDraft,
     required this.validationErrors,
-    required this.isDirty,
     this.savedWorkoutId,
     this.errorCode,
     this.errorMessage,
@@ -23,12 +23,13 @@ class WorkoutBuilderState {
   final WorkoutBuilderMode mode;
   final WorkoutBuilderPhase phase;
   final WorkoutBuilderDraft draft;
+  final WorkoutBuilderDraft originalDraft;
   final List<WorkoutBuilderValidationError> validationErrors;
-  final bool isDirty;
   final String? savedWorkoutId;
   final String? errorCode;
   final String? errorMessage;
 
+  bool get isDirty => draft != originalDraft;
   bool get isLoading => phase == WorkoutBuilderPhase.loading;
   bool get isSaving => phase == WorkoutBuilderPhase.saving;
   bool get hasValidationErrors => validationErrors.isNotEmpty;
@@ -38,8 +39,8 @@ class WorkoutBuilderState {
     WorkoutBuilderMode? mode,
     WorkoutBuilderPhase? phase,
     WorkoutBuilderDraft? draft,
+    WorkoutBuilderDraft? originalDraft,
     List<WorkoutBuilderValidationError>? validationErrors,
-    bool? isDirty,
     String? savedWorkoutId,
     String? errorCode,
     String? errorMessage,
@@ -48,8 +49,8 @@ class WorkoutBuilderState {
       mode: mode ?? this.mode,
       phase: phase ?? this.phase,
       draft: draft ?? this.draft,
+      originalDraft: originalDraft ?? this.originalDraft,
       validationErrors: validationErrors ?? this.validationErrors,
-      isDirty: isDirty ?? this.isDirty,
       savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
       errorCode: errorCode ?? this.errorCode,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -57,21 +58,22 @@ class WorkoutBuilderState {
   }
 
   factory WorkoutBuilderState.initial() {
+    final empty = WorkoutBuilderDraft(
+      id: '',
+      name: '',
+      source: WorkoutSource.manual,
+      creationMethod: CreationMethod.manual,
+      status: SavedWorkoutStatus.active,
+      goalTags: [],
+      equipment: [],
+      exercises: [],
+    );
     return WorkoutBuilderState(
       mode: WorkoutBuilderMode.create,
       phase: WorkoutBuilderPhase.editing,
-      draft: WorkoutBuilderDraft(
-        id: '',
-        name: '',
-        source: WorkoutSource.manual,
-        creationMethod: CreationMethod.manual,
-        status: SavedWorkoutStatus.active,
-        goalTags: [],
-        equipment: [],
-        exercises: [],
-      ),
+      draft: empty,
+      originalDraft: empty,
       validationErrors: [],
-      isDirty: false,
     );
   }
 }

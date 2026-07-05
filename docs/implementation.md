@@ -5,11 +5,66 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Workout runner/session integrity fixes landed across completion UX, duplicate-active-session repair, and guarded progress saves. Programme builder/calendar/home sync fixes landed across slot persistence, refresh flow, and shared today-workout resolution. Saved workouts are now moving toward soft-delete persistence via schema v11 (`deleted_at`). Convention sweeps remain complete, logging remains instrumented across 59 M4-module files, and zero top-level declaration / widget-builder helper violations remain in `lib/`. Latest verification: `dart format .` passed, `flutter analyze` passed, and `flutter test` has 1 remaining failing M3 smoke-flow test. |
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Workout runner/session integrity fixes landed across completion UX, duplicate-active-session repair, and guarded progress saves. Programme builder/calendar/home sync fixes landed across slot persistence, refresh flow, and shared today-workout resolution. Saved workouts are now soft-delete persisted via schema v11 (`deleted_at`). Convention sweeps remain complete, logging remains instrumented across 59 M4-module files, and zero top-level declaration / widget-builder helper violations remain in `lib/`. Workout builder screen redesigned with expanded sets table (WEIGHT/REST columns, StatefulWidget controllers, computed dirty-state), 4-tier difficulty badges (novice/beginner/intermediate/advanced) in exercise picker with color tokens, and new `ExercisePickerFilterSheet`. Goal tags migrated from enum to raw string format across domain, persistence, and tests. Latest verification: `dart format .` passed, `flutter analyze` passed, and `flutter test` has 1 remaining failing M3 smoke-flow test. |
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Completed Work
+
+### 2026-07-05 — Workout builder screen — enhanced sets table, WEIGHT/REST columns, controller lifecycle
+
+- Expanded `_ExerciseConfigPanel` sets table with **WEIGHT** and **REST** columns alongside existing SET/TYPE/REPS/TARGET — inline `TextField` editors with proper `TextEditingController` lifecycle managed via `StatefulWidget` (`_SetTableRow`). Weight parsed as `double`, rest as `int`, reps as range ("8-10") or exact, target as RPE range ("RPE 8-9") or RIR ("2").
+- `_SetTableRow` (StatefulWidget) — `_onWeightChanged`, `_onRestChanged`, `_onRepsChanged`, `_onTargetChanged` listeners with `_isSyncing` guard to prevent listener feedback loops. `_syncControllers()` on `didUpdateWidget` preserves cursor position across reorder/selection changes.
+- `_CoachNotesField` (StatefulWidget) — per-exercise notes textarea with controller lifecycle, `didUpdateWidget` sync on `exerciseId` change.
+- `_DashedBorderPainter` (CustomPainter) — dashed-border rounded-rect painter for "Add Exercise" button. `_AddExerciseButton` with plus-circle icon and `AppStrings.addExercise`. `_ExerciseMenu` popup menu (duplicate/delete) replacing always-visible icons — saves space on mini cards.
+- Rest seconds displayed in `_MiniExerciseCard` summary line — clock SVG icon + `{restSec}s` when set-level rest is present.
+- **Domain model enhancements**:
+  - `SetPrescriptionDraft` — added `clearTarget()`, `clearReps()`, `clearWeight()`, `clearRest()` mutation helpers (returns new instance with respective field cleared). Full `==`/`hashCode` overrides for dirty-state comparison.
+  - `WorkoutBuilderDraft` — added `clearRestBetweenExercises()`, `==`/`hashCode` with `listEquals` for list fields.
+  - `WorkoutBuilderExerciseDraft` — `==`/`hashCode` override.
+  - `ExerciseReference` — `==`/`hashCode` override for stable equality in dirty comparison.
+  - `SavedWorkoutDraft.goalTags` type changed from `Set<GoalTag>` to `Set<String>` — goal tags stored as raw strings instead of enum values, matching JSON persistence format.
+- **Controller state refactor** (`WorkoutBuilderState`):
+  - Mutable `isDirty` field removed — replaced with computed `bool get isDirty => draft != originalDraft`.
+  - State gains `WorkoutBuilderDraft originalDraft` — set on init, preserved for comparison.
+  - `updateExerciseNotes`, `updateGoalTags`, `updateDescription`, `updateRestBetweenExercises` simplified — no `isDirty: true` on copyWith calls.
+- **Load use case** (`LoadWorkoutDraftUseCase`):
+  - Now accepts optional `ExerciseDao` — resolves `modality` per exercise from DB for difficulty badge display in the picker sheet.
+  - `goalTags` decoded from `jsonDecode(saved.goalTagsJson)` cast to `List<String>` instead of `GoalTag` enum conversion.
+- **Save use case** (`SaveWorkoutDraftUseCase`):
+  - Uses raw string goal tags directly (`builderDraft.goalTags.toSet()`) — removed `_goalTagFromString` helper and `GoalTag` import.
+- **Repository** (`DriftSavedWorkoutRepository`):
+  - Goal tags serialized with `jsonEncode(draft.goalTags.toList())` instead of `EnumCodec.encodeSet`.
+  - Added `import 'dart:convert'`.
+- **Providers**: `loadWorkoutDraftUseCaseProvider` now injects `exerciseDaoProvider`.
+- **AppTheme**: `surfaceTintColor` set on both light and dark `AppBarTheme` to match scaffold background and prevent default tint on scroll.
+- **New AppStrings**: weightColumn, restColumn, configLabel, reorderButton, defaultRestHint, rpeHint, secondsUnitAbbreviation, duplicateExercise, removeSet.
+- **New SVG asset**: `assets/svgs/outline/stack.svg` — used in mini-card set count summary. `OutlinedSvgAssets.stack` added.
+- **New radius token**: `AppRadius.xxl = 32`.
+- **Test updates**:
+  - `workout_builder_controller_test.dart` — 4 test groups add `loadWorkoutDraftUseCaseProvider` override with `LoadWorkoutDraftUseCase` constructed from the same fake repository.
+  - `workout_builder_integration_test.dart` — asserts `createNewWorkout` header text, uses `ensureVisible` to scroll to add exercise button before tapping.
+  - `m4_manual_tracker_acceptance_test.dart` / `m4_privacy_integrity_blockers_test.dart` — `GoalTag.generalFitness` replaced with string `'general_fitness'`.
+- Files: `lib/features/workout_builder/presentation/workout_builder_screen.dart`, `lib/features/workout_builder/application/workout_builder_controller.dart`, `lib/features/workout_builder/application/workout_builder_state.dart`, `lib/features/workout_builder/application/load_workout_draft_use_case.dart`, `lib/features/workout_builder/application/save_workout_draft_use_case.dart`, `lib/features/workout_builder/domain/exercise_reference.dart`, `lib/features/workout_builder/domain/set_prescription_draft.dart`, `lib/features/workout_builder/domain/workout_builder_draft.dart`, `lib/features/workout_builder/domain/workout_builder_exercise_draft.dart`, `lib/features/workout_builder/domain/saved_workout_draft.dart`, `lib/features/workout_builder/data/drift_saved_workout_repository.dart`, `lib/app/providers/providers.dart`, `lib/app/theme/app_theme.dart`, `lib/shared/constants/app_strings.dart`, `lib/shared/constants/svg_assets_outlined.dart`, `lib/shared/theme/app_spacing.dart`, `assets/svgs/outline/stack.svg`, `test/features/workout_builder/application/workout_builder_controller_test.dart`, `test/features/workout_builder/presentation/workout_builder_integration_test.dart`, `test/app/m4/m4_manual_tracker_acceptance_test.dart`, `test/app/m4/m4_privacy_integrity_blockers_test.dart`
+
+### 2026-07-05 — Exercise picker bottom sheet — expanded difficulty badges (4 tiers), restyled cards
+
+- Redesigned `AddExerciseBottomSheet` as a full-height bottom sheet with handle bar, close button + "Add Exercise" header, pill-shaped search bar with magnifying glass and filter icons, horizontal muscle-group filter chips (All/Chest/Back/Legs/Shoulders/Arms/Core), single-column exercise card list with colored initial-letter avatar, muscle group + equipment tag chips, and animated bottom action bar with selection count and confirm button.
+- Expanded difficulty badges from 2 tiers to **4 tiers** (novice, beginner, intermediate, advanced) — each with dedicated color tokens in both light and dark themes:
+  - `difficultyNoviceBg` / `difficultyNoviceText` — blue-tinted
+  - `difficultyBeginnerBg` / `difficultyBeginnerText` — green
+  - `difficultyIntermediateBg` / `difficultyIntermediateText` — orange
+  - `difficultyAdvancedBg` / `difficultyAdvancedText` — red
+- ~35 new filter-related `AppStrings` for difficulty labels/descriptions, muscle group names, equipment/modality types, and filter UI chrome (cancel/apply/clear-all/confirm-selection).
+- Files: `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`, `lib/shared/theme/app_colors.dart`, `lib/shared/constants/app_strings.dart`
+
+### 2026-07-05 — Exercise picker filter sheet
+
+- Created `ExercisePickerFilterSheet` — filter bottom sheet with multi-select muscle group pills, 2-column equipment card grid (Material icons), radio-style difficulty picker with descriptions, modality toggle switches, and Cancel/Apply footer with active filter count badge.
+- Fixed `AddExerciseBottomSheet` header to include the "Add Exercise" title next to the close button.
+- Wired the search suffix icon to open the filter sheet via `GestureDetector`.
+- Files: `lib/features/workout_builder/presentation/widgets/exercise_picker_filter_sheet.dart`, `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`
+- Verification: `dart format` passed, `flutter analyze` — 0 issues.
 
 ### 2026-07-04 — Workout runner/session integrity cluster
 
