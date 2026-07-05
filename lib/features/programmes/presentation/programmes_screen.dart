@@ -568,7 +568,7 @@ class _Badge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
       ),
       child: Text(
         label,

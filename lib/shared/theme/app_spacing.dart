@@ -98,6 +98,7 @@ class AppSizing {
   static const double deloadLineSpacing = 40;
   static const double exerciseNumberCircle = 56;
   static const double setNumberColumnWidth = 32;
+  static const double decorativeIcon = 128;
 }
 
 class AppFontSizes {

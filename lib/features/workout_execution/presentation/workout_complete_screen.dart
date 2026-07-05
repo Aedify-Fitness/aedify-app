@@ -1,6 +1,8 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
@@ -41,13 +43,13 @@ class WorkoutCompleteScreen extends ConsumerWidget {
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: SizedBox(
                 height: 64,
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () => context.pop(),
                       child: Icon(
                         Icons.close,
                         color: context.colorScheme.onSurface,
@@ -61,13 +63,13 @@ class WorkoutCompleteScreen extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 24),
+            AppWhiteSpace.hLg,
             _HeroSection(workoutName: session.name),
-            const SizedBox(height: 32),
+            AppWhiteSpace.hXl,
             _MetricsRow(
               durationSeconds: durationSeconds,
               totalVolume: totalVolume,
@@ -75,19 +77,19 @@ class WorkoutCompleteScreen extends ConsumerWidget {
               totalSets: totalSets,
               weightUnit: weightUnit,
             ),
-            const SizedBox(height: 24),
+            AppWhiteSpace.hLg,
             _InsightCard(),
-            const SizedBox(height: 24),
+            AppWhiteSpace.hLg,
             _ExerciseSummarySection(
               exercises: session.exercises,
               weightUnit: weightUnit,
             ),
-            const SizedBox(height: 24),
+            AppWhiteSpace.hLg,
           ],
         ),
       ),
       bottomNavigationBar: _BottomActionsLayer(
-        onDone: () => Navigator.of(context).pop(),
+        onDone: () => context.pop(),
         onShare: () {},
       ),
     );
@@ -136,7 +138,7 @@ class _HeroSection extends StatelessWidget {
     return Column(
       children: [
         _PulsingCheckCircle(),
-        const SizedBox(height: 16),
+        AppWhiteSpace.hMd,
         Text(
           AppStrings.sessionComplete,
           textAlign: TextAlign.center,
@@ -145,7 +147,7 @@ class _HeroSection extends StatelessWidget {
             color: context.colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: 8),
+        AppWhiteSpace.hSm,
         Text(
           workoutName,
           textAlign: TextAlign.center,
@@ -263,7 +265,7 @@ class _MetricsRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: AppSpacing.buttonVertical),
         Expanded(
           child: _BentoStatCard(
             label: AppStrings.volumeLabel.toUpperCase(),
@@ -288,7 +290,7 @@ class _MetricsRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: AppSpacing.buttonVertical),
         Expanded(
           child: _BentoStatCard(
             label: AppStrings.setsLabel.toUpperCase(),
@@ -314,10 +316,10 @@ class _BentoStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         boxShadow: [
           BoxShadow(
             color: context.colorScheme.shadow.withAlpha(10),
@@ -336,7 +338,7 @@ class _BentoStatCard extends StatelessWidget {
               letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 4),
+          AppWhiteSpace.hXs,
           child,
         ],
       ),
@@ -349,10 +351,10 @@ class _InsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Stack(
         children: [
@@ -361,7 +363,7 @@ class _InsightCard extends StatelessWidget {
             top: -16,
             child: Icon(
               Icons.auto_awesome,
-              size: 128,
+              size: AppSizing.decorativeIcon,
               color: context.colorScheme.secondary.withAlpha(26),
             ),
           ),
@@ -372,10 +374,10 @@ class _InsightCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.bolt,
-                    size: 20,
+                    size: AppSizing.iconSm,
                     color: context.colorScheme.secondary,
                   ),
-                  const SizedBox(width: 8),
+                  AppWhiteSpace.wSm,
                   Text(
                     AppStrings.aedifyInsight.toUpperCase(),
                     style: AppTextStyles.labelMd.copyWith(
@@ -385,7 +387,7 @@ class _InsightCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              AppWhiteSpace.hMd,
               Text(
                 AppStrings.completionInsight,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -436,7 +438,7 @@ class _ExerciseSummarySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
           child: Text(
             AppStrings.workoutSummary,
             style: AppTextStyles.headlineMd.copyWith(
@@ -444,13 +446,13 @@ class _ExerciseSummarySection extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        AppWhiteSpace.hMd,
         ...exercises.map((exercise) {
           final volume = _exerciseVolume(exercise);
           final completedCount = _completedSetCount(exercise);
           final formattedVolume = _formatVolume(volume);
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
             child: _ExerciseCard(
               name: exercise.exerciseName,
               completedSets: completedCount,
@@ -491,10 +493,10 @@ class _ExerciseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: context.colorScheme.surfaceContainer),
         boxShadow: [
           BoxShadow(
@@ -516,7 +518,7 @@ class _ExerciseCard extends StatelessWidget {
                     color: context.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppWhiteSpace.hXs,
                 Text(
                   '$completedSets sets \u2022 $formattedVolume $weightUnit volume',
                   style: AppTextStyles.bodyMd.copyWith(
@@ -553,7 +555,12 @@ class _BottomActionsLayer extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          padding: const EdgeInsets.only(
+            left: AppSpacing.md,
+            top: AppSpacing.md,
+            right: AppSpacing.md,
+            bottom: AppSpacing.lg,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -566,14 +573,14 @@ class _BottomActionsLayer extends StatelessWidget {
                     backgroundColor: context.colorScheme.secondary,
                     foregroundColor: context.colorScheme.onSecondary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     elevation: 0,
                   ),
                   child: Text(AppStrings.done, style: AppTextStyles.labelMd),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSpacing.buttonVertical),
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -583,7 +590,7 @@ class _BottomActionsLayer extends StatelessWidget {
                     backgroundColor: context.colorScheme.surfaceContainer,
                     foregroundColor: context.colorScheme.secondary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     elevation: 0,
                   ),
@@ -592,10 +599,10 @@ class _BottomActionsLayer extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.share,
-                        size: 20,
+                        size: AppSizing.iconSm,
                         color: context.colorScheme.secondary,
                       ),
-                      const SizedBox(width: 8),
+                      AppWhiteSpace.wSm,
                       Text(
                         AppStrings.shareSummary,
                         style: AppTextStyles.labelMd.copyWith(

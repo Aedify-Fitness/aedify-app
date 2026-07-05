@@ -123,7 +123,10 @@ class ProgrammeWorkoutDetailScreen extends ConsumerWidget {
                         );
                       }
                     },
-                    icon: const Icon(Icons.play_arrow, color: Colors.white),
+                    icon: Icon(
+                      Icons.play_arrow,
+                      color: context.colorScheme.onSecondary,
+                    ),
                     label: Text(
                       detail.buttonState == WorkoutDetailButtonState.resume
                           ? AppStrings.resumeWorkout
@@ -135,7 +138,9 @@ class ProgrammeWorkoutDetailScreen extends ConsumerWidget {
                     ),
                     style: FilledButton.styleFrom(
                       backgroundColor: context.colorScheme.secondary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),

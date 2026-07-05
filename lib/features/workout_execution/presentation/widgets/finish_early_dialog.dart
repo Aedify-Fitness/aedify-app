@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -52,7 +53,7 @@ class _FinishEarlyDialogState extends State<FinishEarlyDialog> {
     final remaining = _remainingExercises;
 
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: 0.4),
+      backgroundColor: context.colorScheme.scrim.withAlpha(102),
       body: Stack(
         children: [
           BackdropFilter(
@@ -67,9 +68,9 @@ class _FinishEarlyDialogState extends State<FinishEarlyDialog> {
                 decoration: BoxDecoration(
                   color: context.colorScheme.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(AppRadius.xl),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Color(0x26000000),
+                      color: context.colorScheme.shadow.withAlpha(38),
                       blurRadius: 50,
                       offset: Offset(0, 20),
                     ),
@@ -203,7 +204,7 @@ class _FinishEarlyDialogState extends State<FinishEarlyDialog> {
         SizedBox(
           width: double.infinity,
           child: TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             ),

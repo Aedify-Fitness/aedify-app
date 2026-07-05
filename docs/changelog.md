@@ -6,6 +6,25 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### Convention compliance audit — fixed ~90 token, color, and navigation violations across 10 files
+
+- **Audit scope**: Systematic check of all enforceable rules from `AGENTS.md` and `rules.md` across `lib/`. 12 rule categories passed cleanly; ~90 violations fixed across 10 files.
+- **Hardcoded colors → theme tokens**:
+  - `finish_early_dialog.dart`: `Color(0x26000000)` → `context.colorScheme.shadow.withAlpha(38)`, `Colors.black.withValues(alpha: 0.4)` → `context.colorScheme.scrim.withAlpha(102)`
+  - `exit_workout_sheet.dart`: `Color(0x140052d5)` / `Color(0x0a0052d5)` → `context.colorScheme.secondary.withAlpha(20/10)`
+  - `finish_early_session_complete_screen.dart`: `Colors.white.withAlpha(128)` → `context.colorScheme.outlineVariant.withAlpha(128)`, `Colors.black.withAlpha(10)` → `context.colorScheme.shadow.withAlpha(10)`
+  - `programme_workout_detail_screen.dart`: `Colors.white` → `context.colorScheme.onSecondary`
+- **Raw spacing → `AppSpacing.*` / `AppWhiteSpace.*`**: Replaced ~40 `SizedBox(height:/width:)` with `AppWhiteSpace.*` tokens and ~18 `EdgeInsets.all/symmetric/only/fromLTRB` with `AppSpacing.*` tokens across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `exit_workout_sheet.dart`, `programme_workout_detail_screen.dart`.
+- **Raw border radius → `AppRadius.*`**: Replaced 11 `BorderRadius.circular(n)` with `AppRadius.md` / `AppRadius.full` / `AppRadius.defaultRadius` across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `programmes_screen.dart`.
+- **Raw icon sizes → `AppSizing.*`**: Replaced 9 `size:` values with `AppSizing.iconSm/Md/Xxl` across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `workout_builder_screen.dart`.
+- **New token**: `AppSizing.decorativeIcon = 128` added to `app_spacing.dart` for one-off decorative icon.
+- **`Navigator.of(context).pop()` → `context.pop()`**: Fixed 3 remaining calls in `finish_early_dialog.dart` and `workout_complete_screen.dart`.
+- **Commented code removed**: 42-line commented-out `ListTile` block in `bottom_nav_shell.dart`.
+- **`boxShadow: const` removed from `exit_workout_sheet.dart`** and `finish_early_dialog.dart` — `const` arrays cannot contain `.withAlpha()` method calls.
+- **Restored missing import**: `workout_runner_session_view_data.dart` import added back to `workout_complete_screen.dart`.
+- Files: `app_spacing.dart`, `finish_early_dialog.dart`, `exit_workout_sheet.dart`, `programme_workout_detail_screen.dart`, `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `workout_builder_screen.dart`, `programmes_screen.dart`, `bottom_nav_shell.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow library browse).
+
 ### ProgrammeTemplateQuickCreateSheet — narrowed empty-setState rebuild to ListenableBuilder
 
 - **`programme_template_quick_create_sheet.dart`**: Removed `onChanged: (_) => setState(() {})` from the template name `AppTextField` — previously every keystroke rebuilt the entire bottom sheet (exercise list, count text, button) just to re-evaluate the Create button's enabled state.

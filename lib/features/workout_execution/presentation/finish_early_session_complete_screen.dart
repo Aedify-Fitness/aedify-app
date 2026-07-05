@@ -47,7 +47,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: SizedBox(
                 height: 64,
                 child: Row(
@@ -64,11 +64,11 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 32),
+            AppWhiteSpace.hXl,
             Text(
               AppStrings.sessionComplete,
               textAlign: TextAlign.center,
@@ -79,7 +79,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
                 height: 1.20,
               ),
             ),
-            const SizedBox(height: 8),
+            AppWhiteSpace.hSm,
             Text(
               session.name,
               textAlign: TextAlign.center,
@@ -87,7 +87,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
                 color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 8),
+            AppWhiteSpace.hSm,
             Text(
               AppStrings.finishEarly,
               style: AppTextStyles.bodyLg.copyWith(
@@ -95,7 +95,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
                 color: context.colorScheme.secondary,
               ),
             ),
-            const SizedBox(height: 40),
+            AppWhiteSpace.custom(height: AppSpacing.xxl - AppSpacing.sm),
             _StatsGrid(
               durationSeconds: durationSeconds,
               totalVolume: totalVolume,
@@ -104,14 +104,14 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
               progress: progress,
               weightUnit: weightUnit,
             ),
-            const SizedBox(height: 48),
+            AppWhiteSpace.hXxl,
             _WorkoutSummarySection(
               exercises: session.exercises,
               weightUnit: weightUnit,
             ),
-            const SizedBox(height: 48),
+            AppWhiteSpace.hXxl,
             _InsightCard(percentage: percentage),
-            const SizedBox(height: 48),
+            AppWhiteSpace.hXxl,
             SizedBox(
               width: double.infinity,
               child: FilledButton(
@@ -120,15 +120,17 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
                   backgroundColor: context.colorScheme.secondary,
                   foregroundColor: context.colorScheme.onSecondary,
                   minimumSize: const Size(double.infinity, 56),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppRadius.defaultRadius,
+                    ),
                   ),
                 ),
                 child: Text(AppStrings.done, style: AppTextStyles.labelMd),
               ),
             ),
-            const SizedBox(height: 32),
+            AppWhiteSpace.hXl,
           ],
         ),
       ),
@@ -255,7 +257,7 @@ class _StatsGrid extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            AppWhiteSpace.wMd,
             Expanded(
               child: _StatCard(
                 label: AppStrings.totalVolume,
@@ -268,7 +270,7 @@ class _StatsGrid extends StatelessWidget {
                         color: context.colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    AppWhiteSpace.wXs,
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
@@ -285,7 +287,7 @@ class _StatsGrid extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        AppWhiteSpace.hMd,
         _StatCard(
           label: AppStrings.exercisesCompleted,
           child: Row(
@@ -296,10 +298,10 @@ class _StatsGrid extends StatelessWidget {
                   color: context.colorScheme.primary,
                 ),
               ),
-              const SizedBox(width: 8),
+              AppWhiteSpace.wSm,
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(9999),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
                   child: LinearProgressIndicator(
                     value: progress,
                     minHeight: 8,
@@ -327,11 +329,13 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: Colors.white.withAlpha(128)),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withAlpha(128),
+        ),
         boxShadow: [
           BoxShadow(
             color: context.colorScheme.shadow.withAlpha(8),
@@ -349,7 +353,7 @@ class _StatCard extends StatelessWidget {
               color: context.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 4),
+          AppWhiteSpace.hXs,
           child,
         ],
       ),
@@ -389,18 +393,18 @@ class _WorkoutSummarySection extends StatelessWidget {
             color: context.colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: 24),
+        AppWhiteSpace.hLg,
         ...exercises.map((exercise) {
           final hasCompleted = exercise.sets.any((s) => s.completed);
 
           if (!hasCompleted) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
               child: _SkippedExerciseCard(exercise: exercise),
             );
           }
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
             child: _CompletedExerciseCard(
               exercise: exercise,
               volume: _exerciseVolume(exercise),
@@ -427,7 +431,7 @@ class _CompletedExerciseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -442,17 +446,17 @@ class _CompletedExerciseCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: AppSizing.handleWidth,
+            height: AppSizing.handleWidth,
             decoration: BoxDecoration(
               color: context.colorScheme.secondary.withAlpha(26),
-              borderRadius: BorderRadius.circular(9999),
+              borderRadius: BorderRadius.circular(AppRadius.full),
             ),
             child: Center(
               child: SvgPicture.asset(
                 SolidSvgAssets.checkCircle,
-                width: 20,
-                height: 20,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
                 colorFilter: ColorFilter.mode(
                   context.colorScheme.secondary,
                   BlendMode.srcIn,
@@ -460,7 +464,7 @@ class _CompletedExerciseCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          AppWhiteSpace.wMd,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +475,7 @@ class _CompletedExerciseCard extends StatelessWidget {
                     color: context.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppWhiteSpace.hXs,
                 Text(
                   '${exercise.sets.length} sets \u2022 ${_formatVolume(volume)} $weightUnit volume',
                   style: AppTextStyles.labelSm.copyWith(
@@ -509,7 +513,7 @@ class _SkippedExerciseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -519,21 +523,21 @@ class _SkippedExerciseCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: AppSizing.handleWidth,
+              height: AppSizing.handleWidth,
               decoration: BoxDecoration(
                 color: context.colorScheme.outlineVariant.withAlpha(51),
-                borderRadius: BorderRadius.circular(9999),
+                borderRadius: BorderRadius.circular(AppRadius.full),
               ),
               child: Center(
                 child: Icon(
                   Icons.block,
-                  size: 20,
+                  size: AppSizing.iconSm,
                   color: context.colorScheme.outline,
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            AppWhiteSpace.wMd,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,7 +548,7 @@ class _SkippedExerciseCard extends StatelessWidget {
                       color: context.colorScheme.outline,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppWhiteSpace.hXs,
                   Text(
                     '${AppStrings.planned}: ${exercise.sets.length} sets',
                     style: AppTextStyles.labelSm.copyWith(
@@ -577,7 +581,7 @@ class _InsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -604,14 +608,14 @@ class _InsightCard extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     OutlinedSvgAssets.leaf,
-                    width: 24,
-                    height: 24,
+                    width: AppSizing.iconMd,
+                    height: AppSizing.iconMd,
                     colorFilter: ColorFilter.mode(
                       context.colorScheme.secondary,
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: AppSpacing.buttonVertical),
                   Text(
                     AppStrings.aedifyInsight,
                     style: AppTextStyles.headlineMd.copyWith(
@@ -620,7 +624,7 @@ class _InsightCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              AppWhiteSpace.hLg,
               Text(
                 AppStrings.recoveryIsProgress(percentage),
                 style: AppTextStyles.bodyLg.copyWith(
@@ -646,13 +650,18 @@ class _BottomNavBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.colorScheme.shadow.withAlpha(10),
             blurRadius: 12,
             offset: const Offset(0, -4),
           ),
         ],
       ),
-      padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
+      padding: const EdgeInsets.only(
+        top: AppSpacing.sm,
+        bottom: AppSpacing.lg,
+        left: AppSpacing.md,
+        right: AppSpacing.md,
+      ),
       child: SafeArea(
         top: false,
         child: Row(
@@ -699,24 +708,27 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md + AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: isSelected
             ? context.colorScheme.secondaryContainer
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(9999),
+        borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             icon,
-            size: 24,
+            size: AppSizing.iconMd,
             color: isSelected
                 ? context.colorScheme.onSecondaryContainer
                 : context.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(height: 4),
+          AppWhiteSpace.hXs,
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(

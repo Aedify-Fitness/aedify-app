@@ -1140,7 +1140,7 @@ class _ConfigPanelHeader extends StatelessWidget {
           child: Icon(
             Icons.fitness_center,
             color: cs.onSecondaryContainer,
-            size: 20,
+            size: AppSizing.iconSm,
           ),
         ),
         AppWhiteSpace.wMd,

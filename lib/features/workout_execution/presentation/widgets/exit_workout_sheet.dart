@@ -42,7 +42,7 @@ class ExitWorkoutSheet extends StatelessWidget {
         : 0.0;
 
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: 0.4),
+      backgroundColor: context.colorScheme.scrim.withAlpha(102),
       body: Stack(
         children: [
           BackdropFilter(
@@ -57,14 +57,14 @@ class ExitWorkoutSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.colorScheme.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(AppRadius.xl),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Color(0x140052d5),
+                      color: context.colorScheme.secondary.withAlpha(20),
                       blurRadius: 40,
                       offset: Offset(0, 10),
                     ),
                     BoxShadow(
-                      color: Color(0x0a0052d5),
+                      color: context.colorScheme.secondary.withAlpha(10),
                       blurRadius: 12,
                       offset: Offset(0, 4),
                     ),
@@ -76,20 +76,22 @@ class ExitWorkoutSheet extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _HeaderSection(),
-                      const SizedBox(height: 32),
+                      AppWhiteSpace.hXl,
                       _SessionSummaryCard(
                         timeLabel: timeLabel,
                         completedExercises: completedExercises,
                         totalExercises: totalExercises,
                         progress: progress,
                       ),
-                      const SizedBox(height: 40),
+                      AppWhiteSpace.custom(
+                        height: AppSpacing.xxl - AppSpacing.sm,
+                      ),
                       _ActionButtons(
                         onFinishAndSave: onFinishAndSave,
                         onPause: onPause,
                         onAbandon: onAbandon,
                       ),
-                      const SizedBox(height: 32),
+                      AppWhiteSpace.hXl,
                       _BottomNote(),
                     ],
                   ),
