@@ -3,6 +3,7 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/exercise_picker_filter_sheet.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -178,19 +179,31 @@ class _AddExerciseBottomSheetState
                   ),
                 ],
               ),
-              child: TextField(
+              child: AppTextField(
                 controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: AppStrings.searchExercises,
-                  hintStyle: AppTextStyles.bodyMd.copyWith(
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                hintText: AppStrings.searchExercises,
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.buttonVertical,
                   ),
-                  prefixIcon: Padding(
+                  child: SvgPicture.asset(
+                    OutlinedSvgAssets.magnifyingGlass,
+                    width: AppSizing.iconS,
+                    height: AppSizing.iconS,
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                suffixIcon: GestureDetector(
+                  onTap: () => _showFilterSheet(context),
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.buttonVertical,
                     ),
                     child: SvgPicture.asset(
-                      OutlinedSvgAssets.magnifyingGlass,
+                      OutlinedSvgAssets.adjustmentsHorizontal,
                       width: AppSizing.iconS,
                       height: AppSizing.iconS,
                       colorFilter: ColorFilter.mode(
@@ -199,32 +212,9 @@ class _AddExerciseBottomSheetState
                       ),
                     ),
                   ),
-                  suffixIcon: GestureDetector(
-                    onTap: () => _showFilterSheet(context),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.buttonVertical,
-                      ),
-                      child: SvgPicture.asset(
-                        OutlinedSvgAssets.adjustmentsHorizontal,
-                        width: AppSizing.iconS,
-                        height: AppSizing.iconS,
-                        colorFilter: ColorFilter.mode(
-                          colorScheme.outline,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.buttonVertical,
-                  ),
                 ),
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: colorScheme.onSurface,
-                ),
+                borderOverride: InputBorder.none,
+                borderRadius: AppRadius.full,
                 onChanged: (query) => searchController.updateSearchQuery(query),
               ),
             ),

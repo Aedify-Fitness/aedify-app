@@ -11,6 +11,39 @@
 
 ## Completed Work
 
+### 2026-07-05 — AppTextField — shared text field widget with focus dismissal
+
+- **New shared widget**: `lib/shared/components/app_text_field.dart` — `AppTextField` `StatefulWidget` wrapping `TextField`/`TextFormField`.
+  - Always calls `FocusScope.of(context).unfocus()` on `onTapOutside` — no `FocusNode` needed.
+  - `enableObscureToggle` renders internal eye/eye-slash `IconButton` managed via `setState` (used by API key fields in BYOK settings and onboarding).
+  - `validator` auto-selects `TextFormField` (when non-null) or `TextField` — callers don't need to choose.
+  - Parameters: `controller`, `focusNode`, `hintText`, `labelText`, `errorText`, `prefixIcon`, `suffixIcon`, `obscureText`, `enableObscureToggle`, `keyboardType`, `textInputAction`, `textCapitalization`, `maxLines`, `minLines`, `inputFormatters`, `onChanged`, `onSubmitted`, `enabled`, `validator`, `filled`, `fillColor`, `contentPadding`, `borderRadius`, `style`, `isDense`, `suffixText`, `suffixStyle`, `borderOverride`.
+  - Default decoration uses theme tokens: `surfaceContainerLowest` fill, `outlineVariant` borders, `secondary` focused border, `AppSpacing.md`/`inputVertical` padding, `AppRadius.defaultRadius` radius.
+- **Replaced all 16 raw `TextField`/`TextFormField` usages** across 14 files:
+  - `custom_exercise_name_field.dart` — name input field
+  - `workout_name_field.dart` — workout name field
+  - `programme_details_section.dart` — programme name + description (2 fields)
+  - `programme_template_quick_create_sheet.dart` — template name field
+  - `workout_exercise_card.dart` — rest seconds field
+  - `exercise_library_screen.dart` — `_SearchBar` with controller leak fix (converted to `StatefulWidget`, controller disposed in `dispose()`)
+  - `custom_exercise_steps_editor.dart` — step editor loop
+  - `set_prescription_editor_row.dart` — 3 fields (weight, reps, rest)
+  - `add_exercise_bottom_sheet.dart` — search bar with pill shape (`borderOverride: InputBorder.none`, `borderRadius: AppRadius.full`)
+  - `workout_runner_screen.dart` — `_EditableField` inline weight editor
+  - `workout_runner_set_row.dart` — 3 fields (weight, reps, notes)
+  - `profile_screen.dart` — `_FormField` wrapper
+  - `onboarding_screen.dart` — `_FormField` wrapper + BYOK API key field
+  - `byok_settings_screen.dart` — `_ApiKeyField` API key field
+  - `workout_builder_screen.dart` — `_InputField` (3 label+field rows) + compact set table (4 fields: weight, reps, target, rest) + `_CoachNotesField`
+- **Removed 4 private wrapper classes**: `_InputField` (workout_builder_screen.dart), `_FormField` (profile_screen.dart + onboarding_screen.dart), `_ApiKeyField` (byok_settings_screen.dart), `_ByokFormWidgetState` (onboarding_screen.dart).
+- **Cleaned up `_obscured` `ValueNotifier`** from `_ApiKeyFieldState` and `_ByokFormWidgetState` — obscure toggle now internal to `AppTextField.enableObscureToggle`.
+- **Test updates**:
+  - `byok_settings_screen_test.dart` — all `find.byType(TextFormField)` → `find.byType(TextField)` (5 occurrences)
+  - `m3_setup_smoke_flow_test.dart` — `find.byType(TextFormField)` → `find.byType(TextField)` (2 occurrences)
+  - `workout_runner_set_row_test.dart` — `find.widgetWithText(TextFormField, ...)` → `TextField` (3 occurrences)
+- **Files**: `lib/shared/components/app_text_field.dart` (new), 14 modified widget files, 3 modified test files
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1051 passed, 1 pre-existing failure (M3 smoke flow library browse).
+
 ### 2026-07-05 — Schema v12 — prescribed_reps_exact column
 
 - Bumped database schema from `11` to `12`.

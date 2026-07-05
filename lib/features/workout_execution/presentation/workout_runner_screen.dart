@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1081,17 +1082,9 @@ class _EditableFieldState extends State<_EditableField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AppTextField(
       controller: _controller,
-      textAlign: TextAlign.center,
-      decoration: const InputDecoration(
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.xs,
-          vertical: AppSpacing.sm,
-        ),
-        border: OutlineInputBorder(),
-      ),
+      labelText: AppStrings.weightLabel,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
       onChanged: widget.onChanged,
     );

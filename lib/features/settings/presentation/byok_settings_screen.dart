@@ -1,6 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -649,7 +650,6 @@ class _ApiKeyField extends StatefulWidget {
 
 class _ApiKeyFieldState extends State<_ApiKeyField> {
   late TextEditingController _controller;
-  final _obscured = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -668,37 +668,16 @@ class _ApiKeyFieldState extends State<_ApiKeyField> {
   @override
   void dispose() {
     _controller.dispose();
-    _obscured.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _obscured,
-      builder: (context, obscured, child) {
-        return TextFormField(
-          controller: _controller,
-          obscureText: obscured,
-          onChanged: widget.onChanged,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            hintText: AppStrings.apiKeyHint,
-            suffixIcon: IconButton(
-              icon: SvgPicture.asset(
-                obscured ? OutlinedSvgAssets.eye : OutlinedSvgAssets.eyeSlash,
-                width: AppSizing.iconSm,
-                height: AppSizing.iconSm,
-              ),
-              onPressed: () => _obscured.value = !obscured,
-            ),
-          ),
-        );
-      },
+    return AppTextField(
+      controller: _controller,
+      hintText: AppStrings.apiKeyHint,
+      enableObscureToggle: true,
+      onChanged: widget.onChanged,
     );
   }
 }

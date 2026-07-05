@@ -1,5 +1,5 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
-import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
 class CustomExerciseNameField extends StatefulWidget {
@@ -44,18 +44,11 @@ class _CustomExerciseNameFieldState extends State<CustomExerciseNameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AppTextField(
       controller: _controller,
-      decoration: InputDecoration(
-        labelText: AppStrings.customExerciseName,
-        hintText: AppStrings.customExerciseNameHint,
-        errorText: widget.errorText,
-        border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-      ),
+      labelText: AppStrings.customExerciseName,
+      hintText: AppStrings.customExerciseNameHint,
+      errorText: widget.errorText,
       onChanged: widget.onChanged,
     );
   }

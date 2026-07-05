@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
@@ -33,22 +34,18 @@ class ProgrammeDetailsSection extends StatelessWidget {
           style: context.textTheme.titleMedium,
         ),
         AppWhiteSpace.hMd,
-        TextField(
+        AppTextField(
           controller: nameController,
-          decoration: const InputDecoration(
-            labelText: AppStrings.programmeName,
-            hintText: AppStrings.programmeNameHint,
-          ),
+          labelText: AppStrings.programmeName,
+          hintText: AppStrings.programmeNameHint,
           onChanged: onNameChanged,
         ),
         if (descriptionController != null) ...[
           AppWhiteSpace.hSm,
-          TextField(
-            controller: descriptionController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.notes,
-              hintText: AppStrings.optionalDescription,
-            ),
+          AppTextField(
+            controller: descriptionController!,
+            labelText: AppStrings.notes,
+            hintText: AppStrings.optionalDescription,
             onChanged: onDescriptionChanged,
             maxLines: 2,
           ),

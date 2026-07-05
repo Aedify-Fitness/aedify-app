@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
@@ -197,16 +198,9 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
               children: [
                 SizedBox(
                   width: AppSizing.fieldWidthMd,
-                  child: TextFormField(
+                  child: AppTextField(
                     controller: _weightController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.weightLabel,
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: AppSpacing.inputHorizontal,
-                        vertical: AppSpacing.sm,
-                      ),
-                    ),
+                    labelText: AppStrings.weightLabel,
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -215,16 +209,9 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 AppWhiteSpace.wXxs,
                 SizedBox(
                   width: AppSizing.fieldWidthSm,
-                  child: TextFormField(
+                  child: AppTextField(
                     controller: _repsController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.repsLabel,
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: AppSpacing.inputHorizontal,
-                        vertical: AppSpacing.sm,
-                      ),
-                    ),
+                    labelText: AppStrings.repsLabel,
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -284,17 +271,11 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
               ],
             ),
             AppWhiteSpace.hXxs,
-            TextFormField(
+            AppTextField(
               controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: AppStrings.setNotes,
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.inputHorizontal,
-                  vertical: AppSpacing.sm,
-                ),
-              ),
+              labelText: AppStrings.setNotes,
               maxLines: 1,
+              isDense: true,
             ),
           ],
         ],

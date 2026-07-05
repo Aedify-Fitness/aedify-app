@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -86,19 +87,12 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: AppTextField(
                       controller: _controllers[index],
-                      decoration: InputDecoration(
-                        hintText:
-                            '${AppStrings.customExerciseSteps} ${index + 1}',
-                        border: const OutlineInputBorder(),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                        isDense: true,
-                      ),
+                      hintText:
+                          '${AppStrings.customExerciseSteps} ${index + 1}',
                       maxLines: 2,
+                      isDense: true,
                       onChanged: (value) => widget.onUpdateStep(index, value),
                     ),
                   ),

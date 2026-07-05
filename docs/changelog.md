@@ -6,6 +6,16 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-05
 
+### AppTextField — shared text field widget with focus dismissal (replaces all raw TextField/TextFormField)
+
+- **New widget**: `AppTextField` at `lib/shared/components/app_text_field.dart` — wraps `TextField`/`TextFormField` with built-in `onTapOutside` unfocus. Supports `enableObscureToggle` for API key fields, `style`, `isDense`, `suffixText`/`suffixStyle`, `borderOverride`, `borderRadius`, and all standard text field parameters. Auto-selects `TextFormField` when `validator` is non-null, `TextField` otherwise.
+- **Replaced all 16 raw `TextField`/`TextFormField` usages** across 14 files with `AppTextField`.
+- **Controller leak fix**: `_SearchBar` in `exercise_library_screen.dart` converted from `StatelessWidget` to `StatefulWidget` — `TextEditingController` now properly created in `initState` and disposed in `dispose()`.
+- **Removed 4 private wrapper classes**: `_InputField` (workout_builder_screen), `_FormField` (profile_screen + onboarding_screen variants), `_ApiKeyField` (byok_settings_screen), `_ByokFormWidgetState` (onboarding_screen).
+- **Cleaned up `_obscured` `ValueNotifier`** from `_ApiKeyFieldState` and `_ByokFormWidgetState` — obscure toggle now managed internally by `AppTextField.enableObscureToggle`.
+- **Test updates**: `byok_settings_screen_test`, `m3_setup_smoke_flow_test`, `workout_runner_set_row_test` — `find.byType(TextFormField)` → `TextField`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1051 passed, 1 pre-existing failure (M3 smoke flow library browse test, pre-dates this change).
+
 ### WorkoutCompleteScreen — new normal-completion screen matching HTML design
 
 - **New screen**: `WorkoutCompleteScreen` at `lib/features/workout_execution/presentation/workout_complete_screen.dart` — a dedicated success screen for workouts that were completed normally (not finished early). Matches the HTML design exactly: filled check_circle hero with pulse glow, 3-column bento stats grid (Duration, Volume, Sets), Aedify Insight card with `auto_awesome` background decoration and `completionInsight` message, Exercise Summary list with chevron_right icons, and a fixed bottom layer with Done + Share Summary buttons.

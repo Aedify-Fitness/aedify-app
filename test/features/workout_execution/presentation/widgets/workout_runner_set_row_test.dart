@@ -159,7 +159,7 @@ void main() {
       );
 
       await tester.enterText(
-        find.widgetWithText(TextFormField, AppStrings.weightLabel),
+        find.widgetWithText(TextField, AppStrings.weightLabel),
         '70.0',
       );
       await tester.pumpAndSettle();
@@ -182,7 +182,7 @@ void main() {
       );
 
       await tester.enterText(
-        find.widgetWithText(TextFormField, AppStrings.repsLabel),
+        find.widgetWithText(TextField, AppStrings.repsLabel),
         '12',
       );
       await tester.pumpAndSettle();
@@ -227,7 +227,7 @@ void main() {
       );
 
       await tester.enterText(
-        find.widgetWithText(TextFormField, AppStrings.setNotes),
+        find.widgetWithText(TextField, AppStrings.setNotes),
         'Felt heavy',
       );
       await tester.pumpAndSettle();

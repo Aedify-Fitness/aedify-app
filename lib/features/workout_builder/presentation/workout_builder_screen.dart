@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -406,23 +407,23 @@ class _InputSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _InputField(
-          label: AppStrings.workoutName,
-          hint: AppStrings.workoutNameHint,
+        AppTextField(
+          labelText: AppStrings.workoutName,
+          hintText: AppStrings.workoutNameHint,
           controller: nameController,
           onChanged: onNameChanged,
         ),
         AppWhiteSpace.hMd,
-        _InputField(
-          label: AppStrings.workoutFocus,
-          hint: AppStrings.workoutFocusHint,
+        AppTextField(
+          labelText: AppStrings.workoutFocus,
+          hintText: AppStrings.workoutFocusHint,
           controller: focusController,
           onChanged: onFocusChanged,
         ),
         AppWhiteSpace.hMd,
-        _InputField(
-          label: AppStrings.workoutRestLabel,
-          hint: AppStrings.defaultRestHint,
+        AppTextField(
+          labelText: AppStrings.workoutRestLabel,
+          hintText: AppStrings.defaultRestHint,
           controller: restController,
           onChanged: onRestChanged,
         ),
@@ -565,66 +566,6 @@ class _FooterSection extends StatelessWidget {
               ),
             )
           : const SizedBox.shrink(),
-    );
-  }
-}
-
-class _InputField extends StatelessWidget {
-  const _InputField({
-    required this.label,
-    required this.hint,
-    required this.controller,
-    required this.onChanged,
-  });
-
-  final String label;
-  final String hint;
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.labelMd.copyWith(color: cs.onSurface)),
-        AppWhiteSpace.hSm,
-        TextField(
-          controller: controller,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.bodyMd.copyWith(
-              color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-            filled: true,
-            fillColor: cs.surfaceContainerLowest,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.5),
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.5),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-              borderSide: BorderSide(color: cs.secondary, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.inputVertical,
-            ),
-          ),
-          style: AppTextStyles.bodyMd.copyWith(color: cs.onSurface),
-        ),
-      ],
     );
   }
 }
@@ -1608,32 +1549,19 @@ class _SetTableRowState extends State<_SetTableRow> {
                 flex: 3,
                 child: SizedBox(
                   height: 36,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _weightController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.sm,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
+                    keyboardType: TextInputType.number,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
                     ),
+                    borderRadius: AppRadius.sm,
                     style: AppTextStyles.labelSm.copyWith(
                       color: cs.onSurface,
                       fontSize: AppFontSizes.sm,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
                 ),
               ),
@@ -1641,32 +1569,19 @@ class _SetTableRowState extends State<_SetTableRow> {
                 flex: 2,
                 child: SizedBox(
                   height: 36,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _repsController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.sm,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
+                    keyboardType: TextInputType.text,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
                     ),
+                    borderRadius: AppRadius.sm,
                     style: AppTextStyles.labelSm.copyWith(
                       color: cs.onSurface,
                       fontSize: AppFontSizes.sm,
                     ),
-                    keyboardType: TextInputType.text,
                   ),
                 ),
               ),
@@ -1674,36 +1589,20 @@ class _SetTableRowState extends State<_SetTableRow> {
                 flex: 3,
                 child: SizedBox(
                   height: 36,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _targetController,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.rpeHint,
-                      hintStyle: AppTextStyles.labelSm.copyWith(
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.4),
-                      ),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.sm,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
+                    hintText: AppStrings.rpeHint,
+                    keyboardType: TextInputType.text,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
                     ),
+                    borderRadius: AppRadius.sm,
                     style: AppTextStyles.labelSm.copyWith(
                       color: cs.onSurface,
                       fontSize: AppFontSizes.sm,
                     ),
-                    keyboardType: TextInputType.text,
                   ),
                 ),
               ),
@@ -1711,32 +1610,19 @@ class _SetTableRowState extends State<_SetTableRow> {
                 flex: 2,
                 child: SizedBox(
                   height: 36,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _restController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.sm,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        borderSide: BorderSide(
-                          color: cs.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                      ),
+                    keyboardType: TextInputType.number,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
                     ),
+                    borderRadius: AppRadius.sm,
                     style: AppTextStyles.labelSm.copyWith(
                       color: cs.onSurface,
                       fontSize: AppFontSizes.sm,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
                 ),
               ),
@@ -1834,33 +1720,10 @@ class _CoachNotesFieldState extends State<_CoachNotesField> {
             style: AppTextStyles.labelSm.copyWith(color: cs.onSurface),
           ),
           AppWhiteSpace.hSm,
-          TextField(
+          AppTextField(
             controller: _controller,
+            hintText: AppStrings.coachNotesHint,
             maxLines: 3,
-            decoration: InputDecoration(
-              hintText: AppStrings.coachNotesHint,
-              hintStyle: AppTextStyles.bodyMd.copyWith(
-                color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-                borderSide: BorderSide(
-                  color: cs.outlineVariant.withValues(alpha: 0.3),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-                borderSide: BorderSide(
-                  color: cs.outlineVariant.withValues(alpha: 0.3),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-                borderSide: BorderSide(color: cs.secondary, width: 1.5),
-              ),
-              contentPadding: const EdgeInsets.all(AppSpacing.md),
-            ),
-            style: AppTextStyles.bodyMd.copyWith(color: cs.onSurface),
           ),
         ],
       ),

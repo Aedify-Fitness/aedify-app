@@ -3,6 +3,7 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/profile/application/profile_controller.dart';
 import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/features/profile/domain/profile_save_impact.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -992,14 +993,12 @@ class _FormFieldState extends State<_FormField> {
             ),
             AppWhiteSpace.hSm,
           ],
-          TextField(
+          AppTextField(
             controller: _controller,
             keyboardType: widget.keyboardType,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              suffixText: widget.suffixText,
-            ),
-            maxLines: widget.maxLines,
+            hintText: widget.hintText,
+            suffixText: widget.suffixText,
+            maxLines: widget.maxLines ?? 1,
             onChanged: widget.onChanged,
           ),
         ],

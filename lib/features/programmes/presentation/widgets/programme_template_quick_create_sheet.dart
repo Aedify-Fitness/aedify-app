@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -116,13 +117,10 @@ class _ProgrammeTemplateQuickCreateSheetState
         children: [
           Text(AppStrings.createTemplate, style: context.textTheme.titleMedium),
           AppWhiteSpace.hMd,
-          TextField(
+          AppTextField(
             controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.templateName,
-              hintText: AppStrings.templateNameHint,
-              isDense: true,
-            ),
+            labelText: AppStrings.templateName,
+            hintText: AppStrings.templateNameHint,
             onChanged: (_) => setState(() {}),
           ),
           AppWhiteSpace.hMd,

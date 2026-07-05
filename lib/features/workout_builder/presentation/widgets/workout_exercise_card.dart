@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -192,12 +193,9 @@ class _ExerciseRestFieldState extends State<_ExerciseRestField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AppTextField(
       controller: _controller,
-      decoration: const InputDecoration(
-        labelText: AppStrings.rest,
-        isDense: true,
-      ),
+      labelText: AppStrings.rest,
       keyboardType: TextInputType.number,
       onChanged: (v) => widget.onChanged(int.tryParse(v)),
     );

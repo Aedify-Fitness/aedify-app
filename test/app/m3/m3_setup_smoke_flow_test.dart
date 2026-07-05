@@ -223,7 +223,7 @@ void main() {
 
       // Enter sentinel key
       await tester.enterText(
-        find.byType(TextFormField),
+        find.byType(TextField),
         PrivacySentinelValues.fakeApiKey,
       );
       await tester.pumpAndSettle();
@@ -337,7 +337,7 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.enterText(
-          find.byType(TextFormField),
+          find.byType(TextField),
           PrivacySentinelValues.fakeApiKey,
         );
         await tester.pumpAndSettle();

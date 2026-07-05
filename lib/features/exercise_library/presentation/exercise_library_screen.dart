@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_dataset_sync_banner.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_filter_sheet.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
@@ -184,11 +185,30 @@ class ExerciseLibraryScreen extends ConsumerWidget {
   }
 }
 
-class _SearchBar extends StatelessWidget {
+class _SearchBar extends StatefulWidget {
   const _SearchBar({required this.initialQuery, required this.onChanged});
 
   final String initialQuery;
   final ValueChanged<String> onChanged;
+
+  @override
+  State<_SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<_SearchBar> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialQuery);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,25 +217,17 @@ class _SearchBar extends StatelessWidget {
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
-      child: TextField(
-        controller: TextEditingController(text: initialQuery),
-        decoration: InputDecoration(
-          hintText: AppStrings.searchExercises,
-          prefixIcon: SvgPicture.asset(
-            OutlinedSvgAssets.magnifyingGlass,
-            width: AppSpacing.lg,
-            height: AppSpacing.lg,
-            fit: BoxFit.scaleDown,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.full),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
+      child: AppTextField(
+        controller: _controller,
+        hintText: AppStrings.searchExercises,
+        prefixIcon: SvgPicture.asset(
+          OutlinedSvgAssets.magnifyingGlass,
+          width: AppSpacing.lg,
+          height: AppSpacing.lg,
+          fit: BoxFit.scaleDown,
         ),
-        onChanged: onChanged,
+        borderRadius: AppRadius.full,
+        onChanged: widget.onChanged,
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:aedify/features/onboarding/presentation/widgets/onboarding_progr
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding_step_scaffold.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -311,14 +312,12 @@ class _FormFieldState extends State<_FormField> {
 
   @override
   Widget build(BuildContext context) {
-    final textField = TextField(
+    final textField = AppTextField(
       controller: _controller,
       keyboardType: widget.keyboardType,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        suffixText: widget.suffixText,
-      ),
-      maxLines: widget.maxLines,
+      hintText: widget.hintText,
+      suffixText: widget.suffixText,
+      maxLines: widget.maxLines ?? 1,
       onChanged: widget.onChanged,
     );
 
@@ -1383,12 +1382,10 @@ class _ByokForm extends ConsumerStatefulWidget {
 
 class _ByokFormWidgetState extends ConsumerState<_ByokForm> {
   final _keyController = TextEditingController();
-  final _obscured = ValueNotifier<bool>(true);
 
   @override
   void dispose() {
     _keyController.dispose();
-    _obscured.dispose();
     super.dispose();
   }
 
@@ -1481,32 +1478,10 @@ class _ByokFormWidgetState extends ConsumerState<_ByokForm> {
             ),
           ),
           AppWhiteSpace.hSm,
-          ValueListenableBuilder<bool>(
-            valueListenable: _obscured,
-            builder: (context, obscured, child) {
-              return TextFormField(
-                controller: _keyController,
-                obscureText: obscured,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  hintText: AppStrings.apiKeyHint,
-                  suffixIcon: IconButton(
-                    icon: SvgPicture.asset(
-                      obscured
-                          ? OutlinedSvgAssets.eye
-                          : OutlinedSvgAssets.eyeSlash,
-                      width: AppSizing.iconSm,
-                      height: AppSizing.iconSm,
-                    ),
-                    onPressed: () => _obscured.value = !obscured,
-                  ),
-                ),
-              );
-            },
+          AppTextField(
+            controller: _keyController,
+            hintText: AppStrings.apiKeyHint,
+            enableObscureToggle: true,
           ),
           AppWhiteSpace.hMd,
 

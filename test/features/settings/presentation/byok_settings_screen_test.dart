@@ -101,7 +101,7 @@ void main() {
 
     expect(find.text(AppStrings.model), findsOneWidget);
 
-    await tester.enterText(find.byType(TextFormField), 'sk-test-key');
+    await tester.enterText(find.byType(TextField), 'sk-test-key');
     await tester.pumpAndSettle();
 
     await tester.tap(find.text(AppStrings.saveKey));
@@ -118,7 +118,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(
-      find.byType(TextFormField),
+      find.byType(TextField),
       PrivacySentinelValues.fakeApiKey,
     );
     await tester.pumpAndSettle();
@@ -145,7 +145,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(
-      find.byType(TextFormField),
+      find.byType(TextField),
       PrivacySentinelValues.fakeApiKey,
     );
     await tester.pumpAndSettle();
@@ -177,7 +177,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byType(TextFormField),
+        find.byType(TextField),
         PrivacySentinelValues.fakeApiKey,
       );
       await tester.pumpAndSettle();
@@ -204,7 +204,7 @@ void main() {
     await tester.tap(find.text('OpenAI'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextFormField), 'sk-test-key-delete');
+    await tester.enterText(find.byType(TextField), 'sk-test-key-delete');
     await tester.pumpAndSettle();
 
     await tester.tap(find.text(AppStrings.saveKey));

@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -46,13 +47,11 @@ class _WorkoutNameFieldState extends State<WorkoutNameField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: TextField(
+      child: AppTextField(
         controller: _controller,
-        decoration: InputDecoration(
-          labelText: AppStrings.workoutName,
-          hintText: AppStrings.workoutNameHint,
-          errorText: widget.errorText,
-        ),
+        labelText: AppStrings.workoutName,
+        hintText: AppStrings.workoutNameHint,
+        errorText: widget.errorText,
         onChanged: widget.onChanged,
       ),
     );

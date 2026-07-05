@@ -1,4 +1,5 @@
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/set_type.dart';
@@ -171,37 +172,28 @@ class _SetPrescriptionEditorRowState extends State<SetPrescriptionEditorRow> {
             AppWhiteSpace.wXs,
             SizedBox(
               width: AppSizing.fieldWidthLg,
-              child: TextField(
+              child: AppTextField(
                 controller: _repsController,
-                decoration: InputDecoration(
-                  labelText: AppStrings.reps,
-                  isDense: true,
-                  errorText: widget.errorText,
-                ),
+                labelText: AppStrings.reps,
+                errorText: widget.errorText,
                 keyboardType: TextInputType.number,
               ),
             ),
             AppWhiteSpace.wSm,
             SizedBox(
               width: AppSizing.fieldWidthMd,
-              child: TextField(
+              child: AppTextField(
                 controller: _weightController,
-                decoration: const InputDecoration(
-                  labelText: AppStrings.weight,
-                  isDense: true,
-                ),
+                labelText: AppStrings.weight,
                 keyboardType: TextInputType.number,
               ),
             ),
             AppWhiteSpace.wSm,
             SizedBox(
               width: AppSizing.fieldWidthSm,
-              child: TextField(
+              child: AppTextField(
                 controller: _restController,
-                decoration: const InputDecoration(
-                  labelText: AppStrings.rest,
-                  isDense: true,
-                ),
+                labelText: AppStrings.rest,
                 keyboardType: TextInputType.number,
               ),
             ),
