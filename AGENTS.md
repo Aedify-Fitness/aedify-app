@@ -65,14 +65,14 @@ The zipped implementation packages are expected to be unzipped before or during
 development. When available, agents must treat these folders as project
 references:
 
-- `references/ai_implementation_plan/` — AI implementation details, schemas, prompt flows,
+- `references/aedify-v1-ai-implementation-plan-v1.0/` — AI implementation details, schemas, prompt flows,
   provider boundaries, repair flows, and AI validation work.
-- `references/build_ticket_backlog/` — implementation tickets and build backlog.
-- `references/data_model_implementation_plan/` — Drift schema, data model, migrations,
+- `references/aedify-v1-build-ticket-backlog-v1.0/` — implementation tickets and build backlog.
+- `references/aedify-v1-data-model-implementation-plan-v1.0/` — Drift schema, data model, migrations,
   storage ownership, validation, and persistence details.
-- `references/feature_by_feature_build_plan/` — feature-level implementation plans and
+- `references/aedify-v1-feature-by-feature-build-plan-v1.0/` — feature-level implementation plans and
   sequencing details.
-- `references/testing_acceptance_plan/` — test strategy, acceptance gates, release checks,
+- `references/aedify-v1-testing-acceptance-plan-v1.0/` — test strategy, acceptance gates, release checks,
   and QA expectations.
 
 If an expected folder has not been unzipped yet, do not invent its contents.
@@ -82,17 +82,17 @@ related implementation work continues.
 
 ### Bundled AI fitness reference files
 
-- `references/aedify00-index.md` — reference-file index and usage guidance.
-- `references/aedify01-getting-started.md` — beginner mindset and fitness basics.
-- `references/aedify02-weight-loss.md` — weight-loss principles and guidance.
-- `references/aedify03-muscle-building.md` — muscle-building principles and guidance.
-- `references/aedify04-nutrition-and-diet.md` — nutrition and diet guidance.
-- `references/aedify05-exercise-programming.md` — exercise programming and routine
+- `references/aedify-00-index.md` — reference-file index and usage guidance.
+- `references/aedify-01-getting-started.md` — beginner mindset and fitness basics.
+- `references/aedify-02-weight-loss.md` — weight-loss principles and guidance.
+- `references/aedify-03-muscle-building.md` — muscle-building principles and guidance.
+- `references/aedify-04-nutrition-and-diet.md` — nutrition and diet guidance.
+- `references/aedify-05-exercise-programming.md` — exercise programming and routine
   selection guidance.
-- `references/aedify06-faq.md` — common fitness questions and answers.
-- `references/aedify07-supplements.md` — supplement guidance.
-- `references/aedify08-glossary.md` — fitness glossary and terminology.
-- `references/aedify09-powerbuilding-strength-hypertrophy.md` — scoped supplemental
+- `references/aedify-06-faq.md` — common fitness questions and answers.
+- `references/aedify-07-supplements.md` — supplement guidance.
+- `references/aedify-08-glossary.md` — fitness glossary and terminology.
+- `references/aedify-09-powerbuilding-strength-hypertrophy.md` — scoped supplemental
   powerbuilding reference for eligible non-beginner strength + hypertrophy
   requests only.
 
