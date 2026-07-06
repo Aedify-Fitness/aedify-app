@@ -770,6 +770,7 @@ class AppProviders {
       Provider<ListSavedWorkoutsUseCase>((ref) {
         return ListSavedWorkoutsUseCase(
           savedWorkoutRepository: ref.read(savedWorkoutRepositoryProvider),
+          exerciseDao: ref.read(exerciseDaoProvider),
         );
       });
 

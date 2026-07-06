@@ -85,6 +85,20 @@ Widget createTestApp(ExerciseRepository repository) {
   );
 }
 
+List<ExerciseListItem> _benchPressItem() => [
+  const ExerciseListItem(
+    id: 1,
+    name: 'Bench Press',
+    difficulty: ExerciseDifficulty.intermediate,
+    muscleGroups: {BodymapBucket.chest},
+    modality: ExerciseModality.strength,
+    equipment: EquipmentTag.barbell,
+    isFavorite: false,
+    isSubstitutedOut: false,
+    isCustom: false,
+  ),
+];
+
 void main() {
   group('ExerciseLibraryScreen', () {
     late _MockSearchRepository mockRepository;
@@ -95,9 +109,7 @@ void main() {
 
     testWidgets('shows loading state initially', (tester) async {
       await tester.pumpWidget(createTestApp(mockRepository));
-      // Initially the controller is loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      // Resolve the async work
       await tester.pump();
     });
 
@@ -118,19 +130,7 @@ void main() {
     });
 
     testWidgets('renders result list', (tester) async {
-      mockRepository.searchResults = [
-        const ExerciseListItem(
-          id: 1,
-          name: 'Bench Press',
-          difficulty: ExerciseDifficulty.intermediate,
-          muscleGroups: {BodymapBucket.chest},
-          modality: ExerciseModality.strength,
-          equipment: EquipmentTag.barbell,
-          isFavorite: false,
-          isSubstitutedOut: false,
-          isCustom: false,
-        ),
-      ];
+      mockRepository.searchResults = _benchPressItem();
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
@@ -138,19 +138,7 @@ void main() {
     });
 
     testWidgets('search field exists', (tester) async {
-      mockRepository.searchResults = [
-        const ExerciseListItem(
-          id: 1,
-          name: 'Bench Press',
-          difficulty: ExerciseDifficulty.intermediate,
-          muscleGroups: {BodymapBucket.chest},
-          modality: ExerciseModality.strength,
-          equipment: EquipmentTag.barbell,
-          isFavorite: false,
-          isSubstitutedOut: false,
-          isCustom: false,
-        ),
-      ];
+      mockRepository.searchResults = _benchPressItem();
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
@@ -158,30 +146,34 @@ void main() {
       expect(searchField, findsOneWidget);
     });
 
-    testWidgets('filter button opens filter sheet', (tester) async {
-      mockRepository.searchResults = [
-        const ExerciseListItem(
-          id: 1,
-          name: 'Bench Press',
-          difficulty: ExerciseDifficulty.intermediate,
-          muscleGroups: {BodymapBucket.chest},
-          modality: ExerciseModality.strength,
-          equipment: EquipmentTag.barbell,
-          isFavorite: false,
-          isSubstitutedOut: false,
-          isCustom: false,
-        ),
-      ];
+    testWidgets('view toggle has list and bodymap options', (tester) async {
+      mockRepository.searchResults = _benchPressItem();
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      final fab = find.byType(FloatingActionButton);
-      expect(fab, findsOneWidget);
+      expect(find.text('Exercise Library'), findsOneWidget);
+      expect(find.text('Bodymap'), findsOneWidget);
+    });
 
-      await tester.tap(fab);
+    testWidgets('muscle group filter chips exist', (tester) async {
+      mockRepository.searchResults = _benchPressItem();
+      await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.text('Filters'), findsWidgets);
+      expect(find.text('All'), findsOneWidget);
+      expect(find.text('Chest'), findsWidgets);
+      expect(find.text('Back'), findsOneWidget);
+      expect(find.text('Legs'), findsOneWidget);
+      expect(find.text('Shoulders'), findsOneWidget);
+    });
+
+    testWidgets('create exercise FAB exists', (tester) async {
+      mockRepository.searchResults = _benchPressItem();
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      final createFab = find.byKey(const Key('create_action_fab'));
+      expect(createFab, findsOneWidget);
     });
   });
 }

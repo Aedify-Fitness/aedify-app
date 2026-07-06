@@ -11,6 +11,30 @@
 
 ## Completed Work
 
+### 2026-07-06 — ExerciseCard extraction — shared widget reused across workout builder and exercise library
+
+- **New shared widget**: `lib/features/exercise_library/presentation/widgets/exercise_card.dart` — `ExerciseCard` (public `StatelessWidget`) extracted from `AddExerciseBottomSheet._ExerciseCard`. Takes `ExerciseListItem item`, `bool isSelected` (defaults `false`), `VoidCallback onTap`. Row layout: 56×56 first-letter avatar, name (bodyLg, single-line ellipsis), `_TagChip` (first muscle group label or modality), equipment chip (when present), trailing `_DifficultyBadge` (color-resolved per difficulty + brightness via `AppBadge`). Selection state animates with `AnimatedContainer` (200ms, easeInOut): secondary border, tinted avatar, `checkCircle` SVG overlay. Private helpers `_TagChip` and `_DifficultyBadge` co-located with `_formatEquipment`/`_formatLabel` functions.
+- **`AddExerciseBottomSheet`**: `_ExerciseCard`, `_TagChip`, `_DifficultyBadge` classes (~240 lines) removed; uses shared `ExerciseCard`. Cleaned up 4 unused imports (`app_badge`, `svg_assets_solid`, `exercise_difficulty`). `app_colors` kept (handle bar color).
+- **`ExerciseLibraryScreen`**: Old `_ExerciseCard` + `_ExerciseCardImage` + `_MuscleGroupTagRow` (~185 lines) replaced with shared `ExerciseCard`. Cleaned up 2 unused imports (`exercise_list_item`, `exercise_difficulty`).
+- Verification: `dart format .` — 3 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1064 passed.
+
+### 2026-07-06 — Exercise library screen — full redesign to match HTML design system
+
+- **ExerciseLibraryScreen rewritten** (587 lines): View toggle (`_ViewToggle`/`_TogglePill` — List/Bodymap pills in `surfaceContainerLow` bg, `secondary` selection with shadow, 300ms animation, bodymap icon uses `BodymapSvgAssets.front`). Search bar (white `surfaceContainerLowest` card, `AppRadius.md`, no-border style, search icon, 2px `secondary/20` focused ring). Horizontal muscle-group filter chips (`_MuscleGroupChips` — All/Chest/Back/Legs/Shoulders/Arms/Core/Cardio via `_FilterChipData` mapping to `BodymapBucket` + `ExerciseModality`; `clearMuscleGroup`/`clearModality` flags on `copyWith` to correctly null fields when switching chips). Exercise list uses shared `ExerciseCard` (from extraction above). Dashed-border empty state (`_EmptyState` with `DashedBorderPainter`, 300px, 2px stroke). `_CreateExerciseFab` (`AppRadius.lg`, secondary color, 60×60px, `plusSmall` icon, key `create_exercise_fab`, navigates to custom exercise create).
+- **Removed**: `_ActiveFilterBar`, `_FilterChipWidget`, `_ExerciseListTile`, `_FloatingActionButton` filter — replaced by chip bar and shared `ExerciseCard`.
+- **Extracted**: `_ErrorView` as private widget (centered exclamation-circle + message + retry `FilledButton`).
+- **Test updates**: 8 tests — new view toggle, chip bar, create FAB tests; filter FAB test removed (sheet replaced by inline chips). All existing tests adapted for new widget tree.
+- Verification: `dart format .` — 643 files (0 changed). `flutter analyze` — 0 issues. `flutter test` — 1064 passed (8 exercise library screen tests).
+
+### 2026-07-06 — Saved workout library screen — card redesign + FAB
+
+- **`SavedWorkoutListTile` redesigned**: Replaced `Card`+`ListTile` with rich card matching the HTML design spec. Card uses `surfaceContainerLowest` background, `AppRadius.lg` corners, 3-level shadow, 1px `surfaceContainer` border. Layout: description-as-category label (uppercase, 10px, secondary), headline-md title (max 2 lines), stats row with `listBullet` + exercise count and `clock` + duration, trailing `ellipsisVertical` popup menu (start/archive/delete). Bottom row: stacked category circles (bolt + clock, 32px, -8px overlap, `surfaceContainer`/`surfaceContainerLow` fills, 2px `surfaceContainerLowest` border) + 48px filled `play` button (`secondary` bg, `AppRadius.lg`, shadow `secondary` at 20%).
+- **New private widgets**: `_StackedCategoryIcons` and `_CategoryIconCircle` for the overlapping icon circles.
+- **FAB added** to `SavedWorkoutLibraryScreen`: 56px `secondary` FAB with `plus` icon, `AppRadius.lg` shape, navigates to `AppRoutes.workoutBuilderCreate`.
+- **Screen updates**: `_ListView` padding → `top: lg, horizontal: md, bottom: xxl + xl` for FAB clearance. `_EmptyView`/`_ErrorView` text styles updated to `AppTextStyles`. Extracted card `onTap` → `workoutBuilderEdit` route.
+- **Files**: `lib/features/programmes/presentation/widgets/saved_workout_list_tile.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`.
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing.
+
 ### 2026-07-06 — Convention violation fixes — private widget method, cs param, raw numbers
 
 - **`_buildExerciseListView` extracted**: Private widget-returning method in `_ExerciseListPanel` promoted to proper `_ExerciseListView` `StatelessWidget` class with constructor params. Uses `context.colorScheme` internally instead of receiving `cs`.

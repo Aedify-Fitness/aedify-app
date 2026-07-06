@@ -55,6 +55,8 @@ SavedWorkoutListItem _savedWorkout(String id, String name, int exerciseCount) {
     status: SavedWorkoutStatus.active,
     exerciseCount: exerciseCount,
     updatedAt: DateTime(2025),
+    modalities: [],
+    focus: '',
   );
 }
 

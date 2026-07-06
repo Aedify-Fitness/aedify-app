@@ -6,10 +6,12 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/presentation/widgets/archive_item_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/delete_item_dialog.dart';
 import 'package:aedify/features/programmes/presentation/widgets/saved_workout_list_tile.dart';
+import 'package:aedify/shared/components/create_action_fab.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
 class SavedWorkoutLibraryScreen extends ConsumerWidget {
@@ -22,6 +24,11 @@ class SavedWorkoutLibraryScreen extends ConsumerWidget {
     );
 
     return Scaffold(
+      floatingActionButton: CreateActionFab(
+        onPressed: () {
+          context.pushNamed(AppRoutes.workoutBuilderCreate().name);
+        },
+      ),
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _ErrorView(
@@ -53,6 +60,12 @@ class SavedWorkoutLibraryScreen extends ConsumerWidget {
             onStart: (id) {
               context.pushNamed(
                 AppRoutes.workoutRunnerSavedWorkout().name,
+                pathParameters: {'id': id},
+              );
+            },
+            onTap: (id) {
+              context.pushNamed(
+                AppRoutes.workoutBuilderEdit().name,
                 pathParameters: {'id': id},
               );
             },
@@ -117,28 +130,37 @@ class _ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            OutlinedSvgAssets.exclamationCircle,
-            width: AppSizing.iconLg,
-            height: AppSizing.iconLg,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.error,
-              BlendMode.srcIn,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              OutlinedSvgAssets.exclamationCircle,
+              width: AppSizing.iconLg,
+              height: AppSizing.iconLg,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.error,
+                BlendMode.srcIn,
+              ),
             ),
-          ),
-          AppWhiteSpace.hMd,
-          Text(message),
-          if (onRetry != null) ...[
             AppWhiteSpace.hMd,
-            FilledButton(
-              onPressed: onRetry,
-              child: const Text(AppStrings.retry),
+            Text(
+              message,
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
             ),
+            if (onRetry != null) ...[
+              AppWhiteSpace.hMd,
+              FilledButton(
+                onPressed: onRetry,
+                child: const Text(AppStrings.retry),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -150,30 +172,38 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            OutlinedSvgAssets.clipboardDocumentList,
-            width: AppSizing.iconLg,
-            height: AppSizing.iconLg,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              OutlinedSvgAssets.clipboardDocumentList,
+              width: AppSizing.iconLg,
+              height: AppSizing.iconLg,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.onSurfaceVariant,
+                BlendMode.srcIn,
+              ),
             ),
-          ),
-          AppWhiteSpace.hMd,
-          Text(
-            AppStrings.noSavedWorkoutsYet,
-            style: context.textTheme.titleMedium,
-          ),
-          AppWhiteSpace.hSm,
-          Text(
-            AppStrings.noSavedWorkoutsYetHint,
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            AppWhiteSpace.hMd,
+            Text(
+              AppStrings.noSavedWorkoutsYet,
+              style: AppTextStyles.headlineMd.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            AppWhiteSpace.hSm,
+            Text(
+              AppStrings.noSavedWorkoutsYetHint,
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -183,31 +213,40 @@ class _ListView extends StatelessWidget {
   const _ListView({
     required this.items,
     required this.onStart,
+    required this.onTap,
     required this.onArchive,
     required this.onDelete,
   });
 
   final List items;
   final void Function(String id) onStart;
+  final void Function(String id) onTap;
   final void Function(String id) onArchive;
   final void Function(String id) onDelete;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.only(
+        left: AppSpacing.md,
+        top: AppSpacing.lg,
+        right: AppSpacing.md,
+        bottom: AppSpacing.xxl + AppSpacing.xl,
+      ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return SavedWorkoutListTile(
-          item: item,
-          onTap: () => context.pushNamed(
-            AppRoutes.workoutBuilderEdit().name,
-            pathParameters: {'id': item.id},
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index < items.length - 1 ? AppSpacing.lg : 0,
           ),
-          onStart: () => onStart(item.id),
-          onArchive: () => onArchive(item.id),
-          onDelete: () => onDelete(item.id),
+          child: SavedWorkoutListTile(
+            item: item,
+            onTap: () => onTap(item.id),
+            onStart: () => onStart(item.id),
+            onArchive: () => onArchive(item.id),
+            onDelete: () => onDelete(item.id),
+          ),
         );
       },
     );

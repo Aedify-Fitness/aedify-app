@@ -3,6 +3,7 @@ class SolidSvgAssets {
 
   static const _pathPrefix = 'assets/svgs/solid';
 
+  static const dumbbell = '$_pathPrefix/dumbbell.svg';
   static const academicCap = '$_pathPrefix/academic_cap.svg';
   static const adjustmentsHorizontal =
       '$_pathPrefix/adjustments_horizontal.svg';

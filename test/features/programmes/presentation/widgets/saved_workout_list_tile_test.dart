@@ -17,6 +17,8 @@ void main() {
       status: SavedWorkoutStatus.active,
       exerciseCount: 5,
       updatedAt: DateTime(2026, 6, 30),
+      modalities: [],
+      focus: '',
     );
 
     await tester.pumpWidget(
@@ -42,6 +44,8 @@ void main() {
       status: SavedWorkoutStatus.active,
       exerciseCount: 5,
       updatedAt: DateTime(2026, 6, 30),
+      modalities: [],
+      focus: '',
     );
 
     await tester.pumpWidget(
@@ -71,6 +75,8 @@ void main() {
       status: SavedWorkoutStatus.active,
       exerciseCount: 5,
       updatedAt: DateTime(2026, 6, 30),
+      modalities: [],
+      focus: '',
     );
 
     await tester.pumpWidget(
