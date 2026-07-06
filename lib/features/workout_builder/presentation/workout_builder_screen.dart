@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -116,6 +117,8 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
   late final TextEditingController _restController;
   late final ({WorkoutBuilderMode mode, String? savedWorkoutId}) _providerKey;
   int? _selectedExerciseIndex;
+  bool _isSupersetSelectionMode = false;
+  final Set<String> _selectedSupersetIds = {};
 
   @override
   void initState() {
@@ -159,7 +162,8 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
         _selectedExerciseIndex != null) {
       _selectedExerciseIndex = null;
     } else if (_selectedExerciseIndex != null &&
-        _selectedExerciseIndex! >= widget.state.draft.exercises.length) {
+        (_selectedExerciseIndex! >= widget.state.draft.exercises.length ||
+            _selectedExerciseIndex! < 0)) {
       _selectedExerciseIndex = widget.state.draft.exercises.length - 1;
     }
   }
@@ -230,6 +234,64 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
     });
   }
 
+  void _openSupersetSelection() {
+    setState(() {
+      _selectedSupersetIds.clear();
+      _isSupersetSelectionMode = true;
+    });
+  }
+
+  void _cancelSupersetSelection() {
+    setState(() {
+      _selectedSupersetIds.clear();
+      _isSupersetSelectionMode = false;
+    });
+  }
+
+  void _toggleExerciseSupersetSelection(String id) {
+    final exercises = widget.state.draft.exercises;
+    final exercise = exercises.where((e) => e.id == id).firstOrNull;
+    if (exercise == null || exercise.supersetGroupId != null) return;
+    setState(() {
+      if (_selectedSupersetIds.contains(id)) {
+        _selectedSupersetIds.remove(id);
+      } else {
+        _selectedSupersetIds.add(id);
+      }
+    });
+  }
+
+  void _createSupersetFromSelection() {
+    if (_selectedSupersetIds.length < 2) return;
+    final notifier = ref.read(
+      AppProviders.workoutBuilderControllerProvider(_providerKey).notifier,
+    );
+    notifier.createSuperset(_selectedSupersetIds.toList());
+    setState(() {
+      _selectedSupersetIds.clear();
+      _isSupersetSelectionMode = false;
+    });
+  }
+
+  void _removeFromSuperset(String exerciseDraftId) {
+    ref
+        .read(
+          AppProviders.workoutBuilderControllerProvider(_providerKey).notifier,
+        )
+        .removeExerciseFromSuperset(exerciseDraftId);
+  }
+
+  void _reorderWithinSuperset(String exerciseDraftId, int newOrder) {
+    ref
+        .read(
+          AppProviders.workoutBuilderControllerProvider(_providerKey).notifier,
+        )
+        .reorderWithinSuperset(
+          exerciseDraftId: exerciseDraftId,
+          newOrder: newOrder,
+        );
+  }
+
   void _saveWorkout() async {
     final ctx = context;
     final currentMode = widget.mode;
@@ -279,7 +341,9 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
     final exercises = widget.state.draft.exercises;
     final selectedExerciseIdx = _selectedExerciseIndex;
     final selectedExercise =
-        selectedExerciseIdx != null && selectedExerciseIdx < exercises.length
+        selectedExerciseIdx != null &&
+            selectedExerciseIdx >= 0 &&
+            selectedExerciseIdx < exercises.length
         ? exercises[selectedExerciseIdx]
         : null;
 
@@ -325,6 +389,14 @@ class _WorkoutBuilderBodyState extends ConsumerState<_WorkoutBuilderBody> {
                   selectedExerciseIndex: _selectedExerciseIndex,
                   providerKey: _providerKey,
                   onAddExercise: _showAddExerciseSheet,
+                  isSupersetSelectionMode: _isSupersetSelectionMode,
+                  selectedSupersetIds: _selectedSupersetIds,
+                  onOpenSupersetSelection: _openSupersetSelection,
+                  onCancelSupersetSelection: _cancelSupersetSelection,
+                  onToggleSupersetSelection: _toggleExerciseSupersetSelection,
+                  onCreateSupersetFromSelection: _createSupersetFromSelection,
+                  onRemoveFromSuperset: _removeFromSuperset,
+                  onReorderWithinSuperset: _reorderWithinSuperset,
                   onSelectExercise: (index) {
                     setState(() => _selectedExerciseIndex = index);
                   },
@@ -439,6 +511,14 @@ class _MainContentSection extends ConsumerWidget {
     required this.selectedExerciseIndex,
     required this.providerKey,
     required this.onAddExercise,
+    required this.isSupersetSelectionMode,
+    required this.selectedSupersetIds,
+    required this.onOpenSupersetSelection,
+    required this.onCancelSupersetSelection,
+    required this.onToggleSupersetSelection,
+    required this.onCreateSupersetFromSelection,
+    required this.onRemoveFromSuperset,
+    required this.onReorderWithinSuperset,
     required this.onSelectExercise,
     required this.onReorderExercises,
   });
@@ -448,6 +528,15 @@ class _MainContentSection extends ConsumerWidget {
   final int? selectedExerciseIndex;
   final ({WorkoutBuilderMode mode, String? savedWorkoutId}) providerKey;
   final VoidCallback onAddExercise;
+  final bool isSupersetSelectionMode;
+  final Set<String> selectedSupersetIds;
+  final VoidCallback onOpenSupersetSelection;
+  final VoidCallback onCancelSupersetSelection;
+  final ValueChanged<String> onToggleSupersetSelection;
+  final VoidCallback onCreateSupersetFromSelection;
+  final ValueChanged<String> onRemoveFromSuperset;
+  final void Function(String exerciseDraftId, int newOrder)
+  onReorderWithinSuperset;
   final void Function(int index) onSelectExercise;
   final void Function(int oldIndex, int newIndex) onReorderExercises;
 
@@ -460,6 +549,14 @@ class _MainContentSection extends ConsumerWidget {
         _ExerciseListPanel(
           exercises: exercises,
           selectedIndex: selectedExerciseIndex,
+          isSupersetSelectionMode: isSupersetSelectionMode,
+          selectedSupersetIds: selectedSupersetIds,
+          onOpenSupersetSelection: onOpenSupersetSelection,
+          onCancelSupersetSelection: onCancelSupersetSelection,
+          onToggleSupersetSelection: onToggleSupersetSelection,
+          onCreateSupersetFromSelection: onCreateSupersetFromSelection,
+          onRemoveFromSuperset: onRemoveFromSuperset,
+          onReorderWithinSuperset: onReorderWithinSuperset,
           onSelect: onSelectExercise,
           onReorder: onReorderExercises,
           onRemove: (id) {
@@ -574,6 +671,14 @@ class _ExerciseListPanel extends StatelessWidget {
   const _ExerciseListPanel({
     required this.exercises,
     required this.selectedIndex,
+    required this.isSupersetSelectionMode,
+    required this.selectedSupersetIds,
+    required this.onOpenSupersetSelection,
+    required this.onCancelSupersetSelection,
+    required this.onToggleSupersetSelection,
+    required this.onCreateSupersetFromSelection,
+    required this.onRemoveFromSuperset,
+    required this.onReorderWithinSuperset,
     required this.onSelect,
     required this.onReorder,
     required this.onRemove,
@@ -583,6 +688,15 @@ class _ExerciseListPanel extends StatelessWidget {
 
   final List<WorkoutBuilderExerciseDraft> exercises;
   final int? selectedIndex;
+  final bool isSupersetSelectionMode;
+  final Set<String> selectedSupersetIds;
+  final VoidCallback onOpenSupersetSelection;
+  final VoidCallback onCancelSupersetSelection;
+  final ValueChanged<String> onToggleSupersetSelection;
+  final VoidCallback onCreateSupersetFromSelection;
+  final ValueChanged<String> onRemoveFromSuperset;
+  final void Function(String exerciseDraftId, int newOrder)
+  onReorderWithinSuperset;
   final ValueChanged<int> onSelect;
   final void Function(int oldIndex, int newIndex) onReorder;
   final ValueChanged<String> onRemove;
@@ -596,62 +710,444 @@ class _ExerciseListPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${AppStrings.exercisesLabel} (${exercises.length})',
-          style: AppTextStyles.labelMd.copyWith(color: cs.onSurface),
-        ),
-        AppWhiteSpace.hMd,
-        if (exercises.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-              child: Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${AppStrings.exercisesLabel} (${exercises.length})',
+              style: AppTextStyles.labelMd.copyWith(color: cs.onSurface),
+            ),
+            GestureDetector(
+              onTap: isSupersetSelectionMode
+                  ? onCancelSupersetSelection
+                  : onOpenSupersetSelection,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    AppStrings.noExercisesInWorkout,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: cs.onSurfaceVariant,
+                  SvgPicture.asset(
+                    isSupersetSelectionMode
+                        ? OutlinedSvgAssets.xMark
+                        : OutlinedSvgAssets.link,
+                    width: AppSizing.iconXs,
+                    height: AppSizing.iconXs,
+                    colorFilter: ColorFilter.mode(
+                      cs.secondary,
+                      BlendMode.srcIn,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  AppWhiteSpace.hXs,
+                  AppWhiteSpace.wXxs,
                   Text(
-                    AppStrings.addExercisesToGetStarted,
+                    isSupersetSelectionMode
+                        ? AppStrings.cancelSelection
+                        : AppStrings.createSuperset,
                     style: AppTextStyles.labelSm.copyWith(
-                      color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                      color: cs.secondary,
+                      fontWeight: FontWeight.w700,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-          )
-        else
-          ReorderableListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: exercises.length,
-            onReorderItem: onReorder,
-            buildDefaultDragHandles: false,
-            proxyDecorator: (child, index, animation) =>
-                Material(color: Colors.transparent, child: child),
-            itemBuilder: (context, index) {
-              final exercise = exercises[index];
-              final isSelected = selectedIndex == index;
-              return _MiniExerciseCard(
-                key: ValueKey(exercise.id),
-                exercise: exercise,
-                index: index,
-                isSelected: isSelected,
-                onSelect: () => onSelect(index),
-                onRemove: () => onRemove(exercise.id),
-                onDuplicate: () => onDuplicate(exercise.id),
-              );
-            },
-          ),
+          ],
+        ),
+        AppWhiteSpace.hMd,
+        _ExerciseListView(
+          exercises: exercises,
+          selectedIndex: selectedIndex,
+          isSupersetSelectionMode: isSupersetSelectionMode,
+          selectedSupersetIds: selectedSupersetIds,
+          onToggleSupersetSelection: onToggleSupersetSelection,
+          onRemoveFromSuperset: onRemoveFromSuperset,
+          onReorderWithinSuperset: onReorderWithinSuperset,
+          onSelect: onSelect,
+          onReorder: onReorder,
+          onRemove: onRemove,
+          onDuplicate: onDuplicate,
+        ),
         AppWhiteSpace.hMd,
         _AddExerciseButton(onTap: onAddExercise),
+        if (isSupersetSelectionMode) ...[
+          AppWhiteSpace.hMd,
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: selectedSupersetIds.length >= 2
+                  ? onCreateSupersetFromSelection
+                  : null,
+              style: FilledButton.styleFrom(
+                backgroundColor: cs.secondaryContainer,
+                foregroundColor: cs.onSecondaryContainer,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+                ),
+              ),
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.link,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                colorFilter: ColorFilter.mode(
+                  cs.onSecondaryContainer,
+                  BlendMode.srcIn,
+                ),
+              ),
+              label: Text(
+                '${AppStrings.groupedExercises} (${selectedSupersetIds.length} Selected)',
+                style: AppTextStyles.labelMd.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
+    );
+  }
+}
+
+class _ExerciseListView extends StatelessWidget {
+  const _ExerciseListView({
+    required this.exercises,
+    required this.selectedIndex,
+    required this.isSupersetSelectionMode,
+    required this.selectedSupersetIds,
+    required this.onToggleSupersetSelection,
+    required this.onRemoveFromSuperset,
+    required this.onReorderWithinSuperset,
+    required this.onSelect,
+    required this.onReorder,
+    required this.onRemove,
+    required this.onDuplicate,
+  });
+
+  final List<WorkoutBuilderExerciseDraft> exercises;
+  final int? selectedIndex;
+  final bool isSupersetSelectionMode;
+  final Set<String> selectedSupersetIds;
+  final ValueChanged<String> onToggleSupersetSelection;
+  final ValueChanged<String> onRemoveFromSuperset;
+  final void Function(String exerciseDraftId, int newOrder)
+  onReorderWithinSuperset;
+  final ValueChanged<int> onSelect;
+  final void Function(int oldIndex, int newIndex) onReorder;
+  final ValueChanged<String> onRemove;
+  final ValueChanged<String> onDuplicate;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+
+    if (exercises.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+          child: Column(
+            children: [
+              Text(
+                AppStrings.noExercisesInWorkout,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppWhiteSpace.hXs,
+              Text(
+                AppStrings.addExercisesToGetStarted,
+                style: AppTextStyles.labelSm.copyWith(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Build display items: each is either a superset group or a standalone exercise
+    final processedGroups = <String>{};
+    final displayKeys = <String>[];
+    final displayFirstExerciseIndex = <int>[];
+    final displayItemCounts = <int>[];
+
+    for (var i = 0; i < exercises.length; i++) {
+      final exercise = exercises[i];
+      final groupId = exercise.supersetGroupId;
+
+      if (groupId != null) {
+        if (processedGroups.contains(groupId)) continue;
+        processedGroups.add(groupId);
+        displayKeys.add('superset_$groupId');
+        displayFirstExerciseIndex.add(i);
+        var count = 0;
+        for (var j = i; j < exercises.length; j++) {
+          if (exercises[j].supersetGroupId == groupId) count++;
+        }
+        displayItemCounts.add(count);
+      } else {
+        displayKeys.add(exercise.id);
+        displayFirstExerciseIndex.add(i);
+        displayItemCounts.add(1);
+      }
+    }
+
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: displayKeys.length,
+      buildDefaultDragHandles: false,
+      proxyDecorator: (child, index, animation) =>
+          Material(color: Colors.transparent, child: child),
+      onReorderItem: (oldDisplayIndex, newDisplayIndex) {
+        final oldFirstIndex = displayFirstExerciseIndex[oldDisplayIndex];
+        final oldCount = displayItemCounts[oldDisplayIndex];
+
+        int newFirstIndex;
+        if (newDisplayIndex >= displayKeys.length) {
+          newFirstIndex = exercises.length - oldCount;
+        } else if (newDisplayIndex > oldDisplayIndex) {
+          newFirstIndex =
+              displayFirstExerciseIndex[newDisplayIndex] +
+              displayItemCounts[newDisplayIndex] -
+              oldCount;
+        } else {
+          newFirstIndex = displayFirstExerciseIndex[newDisplayIndex];
+        }
+
+        if (oldCount == 1) {
+          onReorder(oldFirstIndex, newFirstIndex);
+        } else if (newFirstIndex > oldFirstIndex) {
+          for (var k = oldCount - 1; k >= 0; k--) {
+            onReorder(oldFirstIndex + k, newFirstIndex + k);
+          }
+        } else if (newFirstIndex < oldFirstIndex) {
+          for (var k = 0; k < oldCount; k++) {
+            onReorder(oldFirstIndex + k, newFirstIndex + k);
+          }
+        }
+      },
+      itemBuilder: (context, displayIndex) {
+        final key = displayKeys[displayIndex];
+        final firstIndex = displayFirstExerciseIndex[displayIndex];
+        final exercise = exercises[firstIndex];
+
+        if (exercise.supersetGroupId != null) {
+          // Build group members
+          final groupMembers = <WorkoutBuilderExerciseDraft>[];
+          final memberIndices = <int>[];
+          for (var j = firstIndex; j < exercises.length; j++) {
+            if (exercises[j].supersetGroupId == exercise.supersetGroupId) {
+              groupMembers.add(exercises[j]);
+              memberIndices.add(j);
+            }
+          }
+
+          return Padding(
+            key: ValueKey(key),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: _SupersetGroupWidget(
+              exercises: groupMembers,
+              memberIndices: memberIndices,
+              displayIndex: displayIndex,
+              selectedIndex: selectedIndex,
+              isSupersetSelectionMode: isSupersetSelectionMode,
+              selectedSupersetIds: selectedSupersetIds,
+              onToggleSupersetSelection: onToggleSupersetSelection,
+              onRemoveFromSuperset: onRemoveFromSuperset,
+              onReorderWithinSuperset: onReorderWithinSuperset,
+              onSelect: onSelect,
+              onReorder: onReorder,
+              onRemove: onRemove,
+              onDuplicate: onDuplicate,
+            ),
+          );
+        }
+
+        final isSelected = selectedIndex == firstIndex;
+        return Padding(
+          key: ValueKey(key),
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+          child: _MiniExerciseCard(
+            exercise: exercise,
+            index: firstIndex,
+            displayIndex: displayIndex,
+            isSelected: isSelected,
+            isSupersetSelectionMode: isSupersetSelectionMode,
+            isSelectedForSuperset: selectedSupersetIds.contains(exercise.id),
+            onToggleSupersetSelection: () =>
+                onToggleSupersetSelection(exercise.id),
+            onSelect: () => onSelect(firstIndex),
+            onRemove: () => onRemove(exercise.id),
+            onDuplicate: () => onDuplicate(exercise.id),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SupersetGroupWidget extends StatelessWidget {
+  const _SupersetGroupWidget({
+    required this.exercises,
+    required this.memberIndices,
+    required this.displayIndex,
+    required this.selectedIndex,
+    required this.isSupersetSelectionMode,
+    required this.selectedSupersetIds,
+    required this.onToggleSupersetSelection,
+    required this.onRemoveFromSuperset,
+    required this.onReorderWithinSuperset,
+    required this.onSelect,
+    required this.onReorder,
+    required this.onRemove,
+    required this.onDuplicate,
+  });
+
+  final List<WorkoutBuilderExerciseDraft> exercises;
+  final List<int> memberIndices;
+  final int displayIndex;
+  final int? selectedIndex;
+  final bool isSupersetSelectionMode;
+  final Set<String> selectedSupersetIds;
+  final ValueChanged<String> onToggleSupersetSelection;
+  final ValueChanged<String> onRemoveFromSuperset;
+  final void Function(String exerciseDraftId, int newOrder)
+  onReorderWithinSuperset;
+  final ValueChanged<int> onSelect;
+  final void Function(int oldIndex, int newIndex) onReorder;
+  final ValueChanged<String> onRemove;
+  final ValueChanged<String> onDuplicate;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+
+    // Sort group members by supersetOrder for correct display
+    final sortedIndices = List.generate(exercises.length, (i) => i)
+      ..sort(
+        (a, b) => (exercises[a].supersetOrder ?? a).compareTo(
+          exercises[b].supersetOrder ?? b,
+        ),
+      );
+    final sortedExercises = sortedIndices.map((i) => exercises[i]).toList();
+    final sortedMemberIndices = sortedIndices
+        .map((i) => memberIndices[i])
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(
+              top: AppSpacing.sm,
+              right: AppSpacing.md - AppSpacing.xxs,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: cs.secondary,
+                  width: 2 * AppSizing.strokeWidth,
+                ),
+              ),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(AppRadius.defaultRadius),
+                bottomRight: Radius.circular(AppRadius.defaultRadius),
+              ),
+              color: cs.secondaryContainer.withValues(alpha: 0.03),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                        child: AppBadge(
+                          label: AppStrings.superset.toUpperCase(),
+                          backgroundColor: cs.secondaryContainer,
+                          foregroundColor: cs.onSecondaryContainer,
+                          borderRadius: AppRadius.full,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm + AppSpacing.xxs,
+                            vertical: AppSpacing.xxs,
+                          ),
+                          textStyle: AppTextStyles.headlineXl.copyWith(
+                            fontSize: AppFontSizes.xxs,
+                            letterSpacing: -0.3,
+                          ),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      ReorderableDragStartListener(
+                        index: displayIndex,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: AppSpacing.sm,
+                            bottom: AppSpacing.sm,
+                          ),
+                          child: SvgPicture.asset(
+                            OutlinedSvgAssets.bars3,
+                            width: AppSizing.iconSm,
+                            height: AppSizing.iconSm,
+                            colorFilter: ColorFilter.mode(
+                              cs.outline,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...sortedExercises.asMap().entries.map((entry) {
+                    final idx = entry.key;
+                    final exercise = entry.value;
+                    final globalIndex = sortedMemberIndices[idx];
+                    final isSelected = selectedIndex == globalIndex;
+                    final isFirst = idx == 0;
+                    final isLast = idx == sortedExercises.length - 1;
+                    return _MiniExerciseCard(
+                      key: ValueKey(exercise.id),
+                      exercise: exercise,
+                      index: globalIndex,
+                      isSelected: isSelected,
+                      isSupersetSelectionMode: isSupersetSelectionMode,
+                      isSelectedForSuperset: selectedSupersetIds.contains(
+                        exercise.id,
+                      ),
+                      onToggleSupersetSelection: () =>
+                          onToggleSupersetSelection(exercise.id),
+                      isInSupersetGroup: true,
+                      isFirstInGroup: isFirst,
+                      isLastInGroup: isLast,
+                      onMoveUp: isFirst
+                          ? null
+                          : () => onReorderWithinSuperset(
+                              exercise.id,
+                              exercise.supersetOrder! - 1,
+                            ),
+                      onMoveDown: isLast
+                          ? null
+                          : () => onReorderWithinSuperset(
+                              exercise.id,
+                              exercise.supersetOrder! + 1,
+                            ),
+                      onRemoveFromSuperset: () =>
+                          onRemoveFromSuperset(exercise.id),
+                      onSelect: () => onSelect(globalIndex),
+                      onRemove: () => onRemove(exercise.id),
+                      onDuplicate: () => onDuplicate(exercise.id),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -661,18 +1157,38 @@ class _MiniExerciseCard extends StatelessWidget {
     super.key,
     required this.exercise,
     required this.index,
+    this.displayIndex,
     required this.isSelected,
+    required this.isSupersetSelectionMode,
+    required this.isSelectedForSuperset,
+    required this.onToggleSupersetSelection,
     required this.onSelect,
     required this.onRemove,
     required this.onDuplicate,
+    this.isInSupersetGroup = false,
+    this.isFirstInGroup = false,
+    this.isLastInGroup = false,
+    this.onMoveUp,
+    this.onMoveDown,
+    this.onRemoveFromSuperset,
   });
 
   final WorkoutBuilderExerciseDraft exercise;
   final int index;
+  final int? displayIndex;
   final bool isSelected;
+  final bool isSupersetSelectionMode;
+  final bool isSelectedForSuperset;
+  final VoidCallback onToggleSupersetSelection;
   final VoidCallback onSelect;
   final VoidCallback onRemove;
   final VoidCallback onDuplicate;
+  final bool isInSupersetGroup;
+  final bool isFirstInGroup;
+  final bool isLastInGroup;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
+  final VoidCallback? onRemoveFromSuperset;
 
   @override
   Widget build(BuildContext context) {
@@ -722,10 +1238,42 @@ class _MiniExerciseCard extends StatelessWidget {
       summary = parts.isNotEmpty ? parts.first : null;
     }
 
+    final effectiveBorderColor =
+        isSupersetSelectionMode && isSelectedForSuperset
+        ? cs.secondary
+        : isSelected
+        ? cs.secondary
+        : cs.outlineVariant;
+    final effectiveBorderWidth =
+        (isSupersetSelectionMode && isSelectedForSuperset) || isSelected
+        ? 2.0
+        : 1.0;
+    final effectiveShadow = isSupersetSelectionMode && isSelectedForSuperset
+        ? [
+            BoxShadow(
+              color: cs.secondary.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ]
+        : isSelected
+        ? [
+            BoxShadow(
+              color: cs.secondary.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ]
+        : null;
+
+    final isInSuperset = exercise.supersetGroupId != null;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: GestureDetector(
-        onTap: onSelect,
+        onTap: isSupersetSelectionMode && !isInSuperset
+            ? onToggleSupersetSelection
+            : onSelect,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           curve: Curves.easeInOut,
@@ -734,18 +1282,10 @@ class _MiniExerciseCard extends StatelessWidget {
             color: cs.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
             border: Border.all(
-              color: isSelected ? cs.secondary : cs.outlineVariant,
-              width: isSelected ? 2 : 1,
+              color: effectiveBorderColor,
+              width: effectiveBorderWidth,
             ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: cs.secondary.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
+            boxShadow: effectiveShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -789,11 +1329,40 @@ class _MiniExerciseCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isSelected)
-                    _ExerciseMenu(onDuplicate: onDuplicate, onDelete: onRemove)
-                  else
+                  if (isSupersetSelectionMode && !isInSuperset)
+                    Container(
+                      width: AppSizing.iconMd,
+                      height: AppSizing.iconMd,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelectedForSuperset
+                            ? cs.secondary
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: isSelectedForSuperset
+                              ? cs.secondary
+                              : cs.outlineVariant,
+                          width: 2,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: isSelectedForSuperset
+                          ? Icon(
+                              Icons.check,
+                              size: AppSizing.iconSm - 2,
+                              color: cs.onSecondary,
+                            )
+                          : null,
+                    )
+                  else if (isSelected)
+                    _ExerciseMenu(
+                      onDuplicate: onDuplicate,
+                      onDelete: onRemove,
+                      onRemoveFromSuperset: onRemoveFromSuperset,
+                    )
+                  else if (!isInSupersetGroup)
                     ReorderableDragStartListener(
-                      index: index,
+                      index: displayIndex ?? index,
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.xs),
                         child: SvgPicture.asset(
@@ -807,6 +1376,63 @@ class _MiniExerciseCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (isInSupersetGroup &&
+                      !isSupersetSelectionMode &&
+                      !isSelected) ...[
+                    AppWhiteSpace.hXxs,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (onMoveUp != null)
+                          GestureDetector(
+                            onTap: onMoveUp,
+                            child: Container(
+                              padding: const EdgeInsets.all(AppSpacing.xxs),
+                              decoration: BoxDecoration(
+                                color: cs.surfaceContainerLow,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.sm,
+                                ),
+                              ),
+                              child: SvgPicture.asset(
+                                OutlinedSvgAssets.chevronUp,
+                                width: AppSizing.iconXs + 2,
+                                height: AppSizing.iconXs + 2,
+                                colorFilter: ColorFilter.mode(
+                                  cs.onSurfaceVariant,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (onMoveDown != null)
+                          Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.xs),
+                            child: GestureDetector(
+                              onTap: onMoveDown,
+                              child: Container(
+                                padding: const EdgeInsets.all(AppSpacing.xxs),
+                                decoration: BoxDecoration(
+                                  color: cs.surfaceContainerLow,
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.sm,
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                  OutlinedSvgAssets.chevronDown,
+                                  width: AppSizing.iconXs + 2,
+                                  height: AppSizing.iconXs + 2,
+                                  colorFilter: ColorFilter.mode(
+                                    cs.onSurfaceVariant,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
               AppWhiteSpace.hSm,
@@ -890,10 +1516,15 @@ class _MiniExerciseCard extends StatelessWidget {
 }
 
 class _ExerciseMenu extends StatelessWidget {
-  const _ExerciseMenu({required this.onDuplicate, required this.onDelete});
+  const _ExerciseMenu({
+    required this.onDuplicate,
+    required this.onDelete,
+    this.onRemoveFromSuperset,
+  });
 
   final VoidCallback onDuplicate;
   final VoidCallback onDelete;
+  final VoidCallback? onRemoveFromSuperset;
 
   @override
   Widget build(BuildContext context) {
@@ -906,6 +1537,8 @@ class _ExerciseMenu extends StatelessWidget {
             onDuplicate();
           case 'delete':
             onDelete();
+          case 'removeFromSuperset':
+            onRemoveFromSuperset?.call();
         }
       },
       color: cs.surface,
@@ -914,6 +1547,25 @@ class _ExerciseMenu extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
       ),
       itemBuilder: (context) => [
+        if (onRemoveFromSuperset != null)
+          PopupMenuItem(
+            value: 'removeFromSuperset',
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  OutlinedSvgAssets.linkSlash,
+                  width: AppSizing.iconXs,
+                  height: AppSizing.iconXs,
+                  colorFilter: ColorFilter.mode(cs.onSurface, BlendMode.srcIn),
+                ),
+                AppWhiteSpace.wSm,
+                Text(
+                  AppStrings.removeFromSuperset,
+                  style: AppTextStyles.labelSm.copyWith(color: cs.onSurface),
+                ),
+              ],
+            ),
+          ),
         PopupMenuItem(
           value: 'duplicate',
           child: Row(
@@ -1151,17 +1803,33 @@ class _ConfigPanelHeader extends StatelessWidget {
             children: [
               Text(
                 exercise.exercise.name,
-                style: AppTextStyles.labelMd.copyWith(color: cs.onSurface),
+                style: AppTextStyles.headlineMd.copyWith(
+                  color: cs.onSurface,
+                  fontSize: AppFontSizes.xl,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              Text(
-                AppStrings.configLabel.toUpperCase(),
-                style: AppTextStyles.labelSm.copyWith(
-                  color: cs.onSurfaceVariant,
-                  fontSize: AppFontSizes.xxs,
-                  letterSpacing: 0.5,
-                ),
+              AppWhiteSpace.hXxs,
+              Wrap(
+                spacing: AppSpacing.sm,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (exercise.supersetGroupId != null)
+                    AppBadge(
+                      label: AppStrings.superset.toUpperCase(),
+                      backgroundColor: cs.secondaryContainer,
+                      foregroundColor: cs.onSecondaryContainer,
+                      borderRadius: AppRadius.sm,
+                    ),
+                  Text(
+                    AppStrings.configLabel.toUpperCase(),
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: cs.onSurfaceVariant,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

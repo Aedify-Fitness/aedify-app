@@ -487,6 +487,7 @@ class AppStrings {
   // V1-M4-008 — superset / execution groups
   static const supersets = 'Supersets';
   static const superset = 'Superset';
+  static const cancelSelection = 'Cancel Selection';
   static const createSuperset = 'Create superset';
   static const editSuperset = 'Edit superset';
   static const addToSuperset = 'Add to superset';

@@ -4,7 +4,36 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-06
+
+### Convention violation fixes — private widget method, cs param, raw numbers
+
+- **`_buildExerciseListView` → `_ExerciseListView` widget class**: Private method returning a `Widget` extracted into a proper `StatelessWidget` class, per `rules.md` ("Use small, private `Widget` classes instead of private helper methods that return a `Widget`").
+- **`_SupersetGroupWidget` `cs` param removed**: Widget now uses `context.colorScheme` in `build()` instead of receiving `ColorScheme` via constructor, matching the file-wide convention of extracting `cs` from `context.colorScheme` (via ThemeX extension).
+- **Raw `4` border width**: `BorderSide(width: 4)` → `2 * AppSizing.strokeWidth`.
+- **`AppFontSizes.sm` as padding**: `right: AppFontSizes.sm` → `right: AppSpacing.md - AppSpacing.xxs` (preserves 14px intent with spacing tokens).
+- **`_selectionCount` getter inlined**: Both call sites replaced with `selectedSupersetIds.length`, getter removed.
+- **Superset badge in `_SupersetGroupWidget`**: Inline `Container`/`Text` (with `secondaryContainer`/`onSecondaryContainer`, `AppRadius.full`, uppercase, custom padding, `FontWeight.w700`) replaced with shared `AppBadge` component.
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing (M3 smoke flow).
+
 ## 2026-07-05
+
+### Workout builder — inline superset selection replaces bottom sheet
+
+- **Inline superset selection**: Tapping "Create Superset" now enters inline selection mode (`_isSupersetSelectionMode`) instead of opening `SupersetEditorSheet` bottom sheet. Exercise cards show check circles; selected exercises get secondary border + shadow. "Cancel Selection" link replaces "Create Superset" in the header; "Group Exercises (N Selected)" button appears below the add-exercise button.
+- **Removed `SupersetEditorSheet` import** from `workout_builder_screen.dart` — no longer used.
+- **Added `AppStrings.cancelSelection`** ('Cancel Selection') to `app_strings.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Workout builder screen redesign — superset grouping, DropdownButton TYPE, new CTA
+
+- **Superset grouping in exercise list**: `_ExerciseListPanel` rewritten to group exercises by `supersetGroupId` into `_SupersetGroupWidget` (left border + inline superset badge). Preserves original exercise order; ungrouped exercises render individually.
+- **"Create Superset" header link**: Exercise list header shows "Exercises (N)" + icon + text link. Initially wired to `SupersetEditorSheet` bottom sheet, later replaced by inline selection mode.
+- **`_ConfigPanelHeader` redesigned**: Exercise name now uses `headlineMd`; superset badge + "CONFIGURATION" label side by side below name; delete button preserved.
+- **`_SetTableRow` TYPE column**: Changed from `GestureDetector` toggle to `DropdownButton` with `setTypeOptions` — matches HTML design.
+- **`_FooterSection`**: Changed save button to "Next: Review & Publish" with `arrow_forward` icon, rounded-full shape, increased padding.
+- **Cleanup**: Removed unused `superset_grouping_policy.dart` import, `displayIndex` variable, and string interpolation warning.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
 
 ### Badge unification — SupersetGroupBadge, _PhaseBadge, _DifficultyBadge all delegate to AppBadge
 
