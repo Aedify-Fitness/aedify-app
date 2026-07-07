@@ -6,6 +6,53 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-07-06
 
+### WorkoutDetailScreen — session-aware buttons, goal badge, stale-data fixes
+
+- **Hide start/resume when conflicting session**: `_loadSavedWorkoutDetail` now sets `buttonState = hidden` when there's an active session for a different workout.
+- **Stale data after discard**: Added `ref.watch(AppProviders.activeWorkoutSessionProvider)` to saved-workout loading; home-screen discard invalidates this provider, cascading re-fetch.
+- **Stale data after edits/pauses**: `_loadSavedWorkoutDetail` also watches `homeRefreshTriggerProvider` (triggered by workout runner on pause/complete).
+- **Top-level functions encapsulated**: `_loadProgrammeDetail` and `_loadSavedWorkoutDetail` moved into `_WorkoutDetailProviders` as `static` methods.
+
+### SavedWorkoutListTile — session-aware play button, edit menu, spacing
+
+- **`_PlayButton`**: No session → play starts workout; session IS this workout → play resumes; session for DIFFERENT workout → grayed out, disabled.
+- **Removed "Start Workout" from popup menu**: Start action lives exclusively on play button.
+- **"Edit Workout" menu item**: `pencil` icon, navigates to `workoutBuilderEdit`.
+- **Spacing fixes**: Category `mb-1` 2→4px. Icon-text `gap-1` 2→4px. More button `p-2 -mr-2` via `Transform.translate` + 8px padding.
+
+### WorkoutDetailScreen — dual programme/saved-workout mode
+
+- **Renamed**: `ProgrammeWorkoutDetailScreen` → `WorkoutDetailScreen`. `programId` made nullable; when null loads from `SavedWorkoutRepository`.
+- **Goal badge**: `buildSavedWorkoutDetail` parses `goalTagsJson` into display string for hero badge.
+- **Controller**: `buildSavedWorkoutDetail(SavedWorkoutAggregate, exerciseModels)` reuses existing formatting.
+- **Routes**: New `/workouts/:workoutId` (`AppRoutes.workoutDetail`). `SavedWorkoutListTile` tap now navigates here instead of `workoutBuilderEdit`.
+
+### CreateActionFab — shared component
+
+- Extracted from `_CreateExerciseFab` into `lib/shared/components/create_action_fab.dart`. Used in both `ExerciseLibraryScreen` and `SavedWorkoutLibraryScreen`.
+
+### SavedWorkoutListItem — focus + modalities
+
+- **`focus`**: Required field from `goalTagsJson`, formatted via `_formatFocus` in use case.
+- **`modalities`**: Required `List<String>` from exercise lookups via `ExerciseDao.getModalityByIds(List<int>)`.
+
+### _StackedCategoryIcons — modality-driven, up to 3
+
+- Maps modality strings to icons (`dumbbell`/`heart`/`meditation`). `.take(3)` with progressive offsets for proper overlap.
+
+### Convention violations — widget method, cs param, raw numbers
+
+- `_buildExerciseListView` → `_ExerciseListView` widget class.
+- `_SupersetGroupWidget`: removed `cs` param, uses `context.colorScheme`.
+- Raw `4` → `2 * AppSizing.strokeWidth`. `AppFontSizes.sm` → `AppSpacing.md - AppSpacing.xxs`.
+- `_selectionCount` inlined. Superset badge → `AppBadge`.
+
+### ProgrammeWorkoutDetailScreen — superset grouping
+
+- `ExerciseDetailItem` gains `supersetGroupId`/`supersetOrder`. `_ExerciseList` groups into `_SupersetGroupSection` (left accent border, badge, 5% bg).
+
+### Saved workout library screen — card redesign + FAB
+
 ### Exercise library screen — full redesign to match HTML design system
 
 - **ExerciseLibraryScreen rewritten** (587 lines, down from 391+185): Matches the HTML design with view toggle (List/Bodymap pill toggle using `surfaceContainerLow` bg + `AppRadius.full`), search bar (white card, `AppRadius.md`, no-border style, focused ring at `secondary/20`), horizontal scrollable muscle-group filter chips (`_MuscleGroupChips` — All/Chest/Back/Legs/Shoulders/Arms/Core/Cardio mapping to `BodymapBucket` and `ExerciseModality`), exercise list using shared `ExerciseCard` component, das

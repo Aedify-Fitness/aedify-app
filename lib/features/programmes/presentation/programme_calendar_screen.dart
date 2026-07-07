@@ -106,79 +106,77 @@ class _ProgrammeCalendarScreenState
             ?.value;
 
         return Scaffold(
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(top: AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ProgrammeCalendarHeader(
-                    viewData: viewData,
-                    programId: widget.programmeId,
-                    activeSession: activeSession,
-                    onStartTodayWorkout: viewData.todayWorkoutId != null
-                        ? () {
-                            context.pushNamed(
-                              AppRoutes.workoutRunnerProgramWorkout().name,
-                              pathParameters: {
-                                'programId': widget.programmeId,
-                                'workoutId': viewData.todayWorkoutId!,
-                              },
-                            );
-                          }
-                        : null,
-                  ),
-                  AppWhiteSpace.hXxl,
-                  WeekSelectorPills(
-                    weeks: viewData.weeks,
-                    currentWeekNumber: viewData.todayWeekNumber,
-                    scrollController: ScrollController(),
-                  ),
-                  AppWhiteSpace.hLg,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                    ),
-                    child: Column(
-                      children: viewData.weeks.map((week) {
-                        final isExpanded = _expandedWeeks.contains(
-                          week.weekNumber,
-                        );
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: ProgrammeWeekSection(
-                            week: week,
-                            isExpanded: isExpanded,
-                            isCurrentWeek:
-                                week.weekNumber == viewData.todayWeekNumber,
-                            onToggle: () {
-                              setState(() {
-                                if (isExpanded) {
-                                  _expandedWeeks.remove(week.weekNumber);
-                                } else {
-                                  _expandedWeeks.add(week.weekNumber);
-                                }
-                              });
+          appBar: AppBar(),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProgrammeCalendarHeader(
+                  viewData: viewData,
+                  programId: widget.programmeId,
+                  activeSession: activeSession,
+                  onStartTodayWorkout: viewData.todayWorkoutId != null
+                      ? () {
+                          context.pushNamed(
+                            AppRoutes.workoutRunnerProgramWorkout().name,
+                            pathParameters: {
+                              'programId': widget.programmeId,
+                              'workoutId': viewData.todayWorkoutId!,
                             },
-                            onDayTap: (day) {
-                              if (day.workoutId != null) {
-                                context.pushNamed(
-                                  AppRoutes.programmeWorkoutDetail().name,
-                                  pathParameters: {
-                                    'programId': widget.programmeId,
-                                    'workoutId': day.workoutId!,
-                                  },
-                                );
+                          );
+                        }
+                      : null,
+                ),
+                AppWhiteSpace.hXxl,
+                WeekSelectorPills(
+                  weeks: viewData.weeks,
+                  currentWeekNumber: viewData.todayWeekNumber,
+                  scrollController: ScrollController(),
+                ),
+                AppWhiteSpace.hLg,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: Column(
+                    children: viewData.weeks.map((week) {
+                      final isExpanded = _expandedWeeks.contains(
+                        week.weekNumber,
+                      );
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                        child: ProgrammeWeekSection(
+                          week: week,
+                          isExpanded: isExpanded,
+                          isCurrentWeek:
+                              week.weekNumber == viewData.todayWeekNumber,
+                          onToggle: () {
+                            setState(() {
+                              if (isExpanded) {
+                                _expandedWeeks.remove(week.weekNumber);
+                              } else {
+                                _expandedWeeks.add(week.weekNumber);
                               }
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                            });
+                          },
+                          onDayTap: (day) {
+                            if (day.workoutId != null) {
+                              context.pushNamed(
+                                AppRoutes.programmeWorkoutDetail().name,
+                                pathParameters: {
+                                  'programId': widget.programmeId,
+                                  'workoutId': day.workoutId!,
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  AppWhiteSpace.hXxxl,
-                ],
-              ),
+                ),
+                AppWhiteSpace.hXxxl,
+              ],
             ),
           ),
         );

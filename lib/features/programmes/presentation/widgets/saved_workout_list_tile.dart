@@ -13,16 +13,22 @@ class SavedWorkoutListTile extends StatelessWidget {
     super.key,
     required this.item,
     required this.onTap,
-    required this.onStart,
+    required this.onPlay,
+    required this.onResume,
+    required this.onEdit,
     required this.onArchive,
     required this.onDelete,
+    this.activeSessionWorkoutId,
   });
 
   final SavedWorkoutListItem item;
   final VoidCallback onTap;
-  final VoidCallback onStart;
+  final VoidCallback onPlay;
+  final VoidCallback onResume;
+  final VoidCallback onEdit;
   final VoidCallback onArchive;
   final VoidCallback onDelete;
+  final String? activeSessionWorkoutId;
 
   @override
   Widget build(BuildContext context) {
@@ -142,16 +148,16 @@ class SavedWorkoutListTile extends StatelessWidget {
                     ),
                     itemBuilder: (context) => [
                       PopupMenuItem(
-                        value: 'start',
+                        value: 'edit',
                         child: Row(
                           children: [
                             SvgPicture.asset(
-                              OutlinedSvgAssets.playCircle,
+                              OutlinedSvgAssets.pencil,
                               width: AppSizing.iconSm,
                               height: AppSizing.iconSm,
                             ),
                             AppWhiteSpace.wSm,
-                            Text(AppStrings.startWorkout),
+                            Text(AppStrings.editWorkout),
                           ],
                         ),
                       ),
@@ -195,8 +201,8 @@ class SavedWorkoutListTile extends StatelessWidget {
                     ],
                     onSelected: (value) {
                       switch (value) {
-                        case 'start':
-                          onStart();
+                        case 'edit':
+                          onEdit();
                         case 'archive':
                           onArchive();
                         case 'delete':
@@ -213,34 +219,11 @@ class SavedWorkoutListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _StackedCategoryIcons(modalities: item.modalities, cs: cs),
-                GestureDetector(
-                  onTap: onStart,
-                  child: Container(
-                    width: AppSizing.iconXxl,
-                    height: AppSizing.iconXxl,
-                    decoration: BoxDecoration(
-                      color: cs.secondary,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                      boxShadow: [
-                        BoxShadow(
-                          color: cs.secondary.withValues(alpha: 0.2),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        SolidSvgAssets.play,
-                        width: AppSizing.iconSm,
-                        height: AppSizing.iconSm,
-                        colorFilter: ColorFilter.mode(
-                          cs.onSecondary,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
+                _PlayButton(
+                  activeSessionWorkoutId: activeSessionWorkoutId,
+                  workoutId: item.id,
+                  onPlay: onPlay,
+                  onResume: onResume,
                 ),
               ],
             ),
@@ -339,9 +322,61 @@ class _CategoryIconCircle extends StatelessWidget {
           assetPath,
           width: AppSizing.iconXs + 2,
           height: AppSizing.iconXs + 2,
-          colorFilter: ColorFilter.mode(
-            context.colorScheme.onSurfaceVariant,
-            BlendMode.srcIn,
+        ),
+      ),
+    );
+  }
+}
+
+class _PlayButton extends StatelessWidget {
+  const _PlayButton({
+    required this.activeSessionWorkoutId,
+    required this.workoutId,
+    required this.onPlay,
+    required this.onResume,
+  });
+
+  final String? activeSessionWorkoutId;
+  final String workoutId;
+  final VoidCallback onPlay;
+  final VoidCallback onResume;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    final isActive = activeSessionWorkoutId == workoutId;
+    final isBlocked =
+        activeSessionWorkoutId != null && activeSessionWorkoutId != workoutId;
+
+    final bgColor = isBlocked ? cs.surfaceContainerHigh : cs.secondary;
+    final iconColor = isBlocked ? cs.onSurfaceVariant : cs.onSecondary;
+    final effectiveOnTap = isBlocked ? null : (isActive ? onResume : onPlay);
+    final effectiveShadow = isBlocked
+        ? null
+        : [
+            BoxShadow(
+              color: cs.secondary.withValues(alpha: 0.2),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ];
+
+    return GestureDetector(
+      onTap: effectiveOnTap,
+      child: Container(
+        width: AppSizing.iconXxl,
+        height: AppSizing.iconXxl,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: effectiveShadow,
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            SolidSvgAssets.play,
+            width: AppSizing.iconSm,
+            height: AppSizing.iconSm,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           ),
         ),
       ),

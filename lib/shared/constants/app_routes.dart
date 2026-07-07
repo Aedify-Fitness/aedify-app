@@ -77,6 +77,8 @@ class AppRoutes {
       AppRoutes._(path: '/workout/active', name: 'workoutRunnerActive');
   factory AppRoutes.workoutRunnerSavedWorkout() =>
       AppRoutes._(path: '/workouts/:id/run', name: 'workoutRunnerSavedWorkout');
+  factory AppRoutes.workoutDetail() =>
+      AppRoutes._(path: '/workouts/:workoutId', name: 'workoutDetail');
   factory AppRoutes.workoutRunnerProgramWorkout() => AppRoutes._(
     path: '/programmes/:programId/workouts/:workoutId/run',
     name: 'workoutRunnerProgramWorkout',

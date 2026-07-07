@@ -26,7 +26,9 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
-          onStart: () {},
+          onPlay: () {},
+          onResume: () {},
+          onEdit: () {},
           onArchive: () {},
           onDelete: () {},
         ),
@@ -37,7 +39,9 @@ void main() {
     expect(find.textContaining('5'), findsOneWidget);
   });
 
-  testWidgets('shows popup menu with archive and delete', (tester) async {
+  testWidgets('shows popup menu with edit, archive and delete', (
+    tester,
+  ) async {
     final item = SavedWorkoutListItem(
       id: 'w1',
       name: 'Push Day',
@@ -53,7 +57,9 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
-          onStart: () {},
+          onPlay: () {},
+          onResume: () {},
+          onEdit: () {},
           onArchive: () {},
           onDelete: () {},
         ),
@@ -63,6 +69,7 @@ void main() {
     await tester.tap(find.byType(PopupMenuButton<String>));
     await tester.pumpAndSettle();
 
+    expect(find.text(AppStrings.editWorkout), findsOneWidget);
     expect(find.text(AppStrings.archiveWorkout), findsOneWidget);
     expect(find.text(AppStrings.deleteWorkout), findsOneWidget);
   });
@@ -84,7 +91,9 @@ void main() {
         SavedWorkoutListTile(
           item: item,
           onTap: () {},
-          onStart: () {},
+          onPlay: () {},
+          onResume: () {},
+          onEdit: () {},
           onArchive: () => archived = true,
           onDelete: () {},
         ),

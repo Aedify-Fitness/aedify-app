@@ -13,7 +13,7 @@ class ProgrammeWorkoutDetailViewData {
 
   final String workoutName;
   final String dayLabel;
-  final String programmeName;
+  final String? programmeName;
   final int durationMinutes;
   final List<ExerciseDetailItem> exercises;
   final String focusAreas;
@@ -26,12 +26,16 @@ class ExerciseDetailItem {
     required this.name,
     required this.sets,
     required this.equipment,
+    this.supersetGroupId,
+    this.supersetOrder,
   });
 
   final int exerciseId;
   final String name;
   final List<SetPrescriptionItem> sets;
   final String equipment;
+  final String? supersetGroupId;
+  final int? supersetOrder;
 }
 
 class SetPrescriptionItem {

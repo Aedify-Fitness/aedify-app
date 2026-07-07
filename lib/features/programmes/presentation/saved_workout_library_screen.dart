@@ -55,15 +55,30 @@ class SavedWorkoutLibraryScreen extends ConsumerWidget {
           if (state.isEmpty) {
             return const _EmptyView();
           }
+          final activeSessionAsync = ref.watch(
+            AppProviders.activeWorkoutSessionProvider,
+          );
+          final activeSession = activeSessionAsync.asData?.value;
+
           return _ListView(
             items: state.items,
-            onStart: (id) {
+            activeSessionWorkoutId: activeSession?.savedWorkoutId,
+            onTap: (id) {
+              context.pushNamed(
+                AppRoutes.workoutDetail().name,
+                pathParameters: {'workoutId': id},
+              );
+            },
+            onPlay: (id) {
               context.pushNamed(
                 AppRoutes.workoutRunnerSavedWorkout().name,
                 pathParameters: {'id': id},
               );
             },
-            onTap: (id) {
+            onResume: () {
+              context.pushNamed(AppRoutes.workoutRunnerActive().name);
+            },
+            onEdit: (id) {
               context.pushNamed(
                 AppRoutes.workoutBuilderEdit().name,
                 pathParameters: {'id': id},
@@ -212,15 +227,21 @@ class _EmptyView extends StatelessWidget {
 class _ListView extends StatelessWidget {
   const _ListView({
     required this.items,
-    required this.onStart,
+    required this.activeSessionWorkoutId,
     required this.onTap,
+    required this.onPlay,
+    required this.onResume,
+    required this.onEdit,
     required this.onArchive,
     required this.onDelete,
   });
 
   final List items;
-  final void Function(String id) onStart;
+  final String? activeSessionWorkoutId;
   final void Function(String id) onTap;
+  final void Function(String id) onPlay;
+  final VoidCallback onResume;
+  final void Function(String id) onEdit;
   final void Function(String id) onArchive;
   final void Function(String id) onDelete;
 
@@ -243,9 +264,12 @@ class _ListView extends StatelessWidget {
           child: SavedWorkoutListTile(
             item: item,
             onTap: () => onTap(item.id),
-            onStart: () => onStart(item.id),
+            onPlay: () => onPlay(item.id),
+            onResume: onResume,
+            onEdit: () => onEdit(item.id),
             onArchive: () => onArchive(item.id),
             onDelete: () => onDelete(item.id),
+            activeSessionWorkoutId: activeSessionWorkoutId,
           ),
         );
       },

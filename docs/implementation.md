@@ -11,6 +11,45 @@
 
 ## Completed Work
 
+### 2026-07-06 — WorkoutDetailScreen — session-aware buttons, goal badge, stale-data fixes
+
+- **Hide button when conflicting session**: `_loadSavedWorkoutDetail` sets `buttonState = hidden` when active session exists for a different workout.
+- **Stale data fix**: Added `ref.watch(AppProviders.activeWorkoutSessionProvider)` — home-screen discard invalidates this provider, cascading re-fetch. Also watches `homeRefreshTriggerProvider` for edits/pauses.
+- **Top-level functions**: `_loadProgrammeDetail` and `_loadSavedWorkoutDetail` moved into `_WorkoutDetailProviders` as `static` methods (per AGENTS.md rule against top-level declarations).
+
+### 2026-07-06 — SavedWorkoutListTile — session-aware play button, edit menu, spacing
+
+- **`_PlayButton`**: Session-aware three-state button. No session → starts; session IS this workout → resumes; session for DIFFERENT workout → grayed out (`surfaceContainerHigh` bg, disabled).
+- **Removed "Start Workout" from popup menu**. Added "Edit Workout" (`pencil`, `AppStrings.editWorkout`) navigating to `workoutBuilderEdit`.
+- **Spacing**: Category `mb-1` → 4px. Icon-text `gap-1` → 4px. More button `p-2 -mr-2` via `Transform.translate` + 8px padding.
+
+### 2026-07-06 — WorkoutDetailScreen — dual programme/saved-workout mode
+
+- **Renamed**: `ProgrammeWorkoutDetailScreen` → `WorkoutDetailScreen`. `programId` made nullable; when null loads from `SavedWorkoutRepository` via `buildSavedWorkoutDetail`.
+- **Goal badge**: `buildSavedWorkoutDetail` parses `goalTagsJson` into display string, sets as `programmeName` for hero badge.
+- **Route**: New `/workouts/:workoutId` (`AppRoutes.workoutDetail`). `SavedWorkoutListTile` tap navigates here.
+
+### 2026-07-06 — CreateActionFab — shared component
+
+- Extracted from `_CreateExerciseFab` into `lib/shared/components/create_action_fab.dart`. Both screens use it.
+
+### 2026-07-06 — SavedWorkoutListItem — focus + modalities
+
+- **`focus`**: Required `String` from `goalTagsJson`, formatted via `_formatFocus`. **`modalities`**: Required `List<String>` from `ExerciseDao.getModalityByIds`.
+- **`ExerciseDao.getModalityByIds(List<int>)`**: Returns `Map<int, String>`.
+
+### 2026-07-06 — _StackedCategoryIcons — modality-driven, up to 3
+
+- Maps modalities to icons (`dumbbell`/`heart`/`meditation`). `.take(3)` with progressive offsets. Falls back to single dumbbell.
+
+### 2026-07-06 — Convention violations — widget method, cs param, raw numbers
+
+- `_buildExerciseListView` → `_ExerciseListView` widget class. `_SupersetGroupWidget`: removed `cs` param. Raw border/padding values converted to tokens. `_selectionCount` inlined. Superset badge → `AppBadge`.
+
+### 2026-07-06 — ProgrammeWorkoutDetailScreen — superset grouping
+
+- `ExerciseDetailItem` gains `supersetGroupId`/`supersetOrder`. `_ExerciseList` groups into `_SupersetGroupSection` (left border, badge, 5% bg).
+
 ### 2026-07-06 — ExerciseCard extraction — shared widget reused across workout builder and exercise library
 
 - **New shared widget**: `lib/features/exercise_library/presentation/widgets/exercise_card.dart` — `ExerciseCard` (public `StatelessWidget`) extracted from `AddExerciseBottomSheet._ExerciseCard`. Takes `ExerciseListItem item`, `bool isSelected` (defaults `false`), `VoidCallback onTap`. Row layout: 56×56 first-letter avatar, name (bodyLg, single-line ellipsis), `_TagChip` (first muscle group label or modality), equipment chip (when present), trailing `_DifficultyBadge` (color-resolved per difficulty + brightness via `AppBadge`). Selection state animates with `AnimatedContainer` (200ms, easeInOut): secondary border, tinted avatar, `checkCircle` SVG overlay. Private helpers `_TagChip` and `_DifficultyBadge` co-located with `_formatEquipment`/`_formatLabel` functions.
