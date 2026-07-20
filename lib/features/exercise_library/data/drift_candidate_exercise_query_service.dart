@@ -11,6 +11,8 @@ import 'package:aedify/features/exercise_library/domain/candidate_exercise_ranke
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/exercise_logging_type_resolver.dart';
 import 'package:aedify/shared/domain/exercise_mechanic.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
@@ -131,6 +133,13 @@ class DriftCandidateExerciseQueryService
   }
 
   CandidateExerciseDto _toDto(Exercise exercise) {
+    final modality = ExerciseModality.fromDb(exercise.modality);
+    final equipment = exercise.equipment == null || exercise.equipment!.isEmpty
+        ? null
+        : EquipmentTag.fromDb(exercise.equipment!);
+    final force = exercise.force == null || exercise.force!.isEmpty
+        ? null
+        : ExerciseForce.fromDb(exercise.force!.toLowerCase());
     return CandidateExerciseDto(
       id: exercise.id,
       name: exercise.name,
@@ -142,17 +151,19 @@ class DriftCandidateExerciseQueryService
             (label) => BodymapBucket.values.firstWhere((e) => e.label == label),
           )
           .toSet(),
-      modality: ExerciseModality.fromDb(exercise.modality),
-      equipment: exercise.equipment == null || exercise.equipment!.isEmpty
-          ? null
-          : EquipmentTag.fromDb(exercise.equipment!),
+      modality: modality,
+      equipment: equipment,
       mechanic: exercise.mechanic == null || exercise.mechanic!.isEmpty
           ? null
           : ExerciseMechanic.fromDb(exercise.mechanic!.toLowerCase()),
-      force: exercise.force == null || exercise.force!.isEmpty
-          ? null
-          : ExerciseForce.fromDb(exercise.force!.toLowerCase()),
+      force: force,
       isCustom: exercise.isCustom,
+      loggingType: _resolveLoggingType(
+        exercise.loggingType,
+        modality: modality,
+        equipment: equipment,
+        force: force,
+      ),
     );
   }
 
@@ -162,5 +173,21 @@ class DriftCandidateExerciseQueryService
     } catch (_) {
       return [];
     }
+  }
+
+  ExerciseLoggingType _resolveLoggingType(
+    String? dbValue, {
+    required ExerciseModality modality,
+    required EquipmentTag? equipment,
+    required ExerciseForce? force,
+  }) {
+    if (dbValue != null && dbValue.isNotEmpty) {
+      return ExerciseLoggingType.fromDb(dbValue);
+    }
+    return ExerciseLoggingTypeResolver.resolve(
+      modality: modality,
+      equipment: equipment,
+      force: force,
+    );
   }
 }

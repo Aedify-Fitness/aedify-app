@@ -16,6 +16,7 @@ class Exercises extends Table {
   TextColumn get muscleGroupsJson => text()();
   TextColumn get category => text().nullable()();
   TextColumn get modality => text()();
+  TextColumn get loggingType => text().nullable()();
   TextColumn get equipment => text().nullable()();
   TextColumn get force => text().nullable()();
   TextColumn get mechanic => text().nullable()();

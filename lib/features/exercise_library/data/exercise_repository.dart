@@ -15,6 +15,8 @@ import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart'
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/exercise_logging_type_resolver.dart';
 import 'package:aedify/shared/domain/exercise_mechanic.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/domain/exercise_source.dart';
@@ -89,6 +91,12 @@ class DriftExerciseRepository implements ExerciseRepository {
             isFavorite: e.isFavorite,
             isSubstitutedOut: e.isSubstitutedOut,
             isCustom: e.isCustom,
+            loggingType: _resolveLoggingType(
+              e.loggingType,
+              modalityValue: e.modality,
+              equipmentValue: e.equipment,
+              forceValue: e.force,
+            ),
           ),
         )
         .toList();
@@ -126,6 +134,12 @@ class DriftExerciseRepository implements ExerciseRepository {
           .toList(),
       isFavorite: exercise.isFavorite,
       isSubstitutedOut: exercise.isSubstitutedOut,
+      loggingType: _resolveLoggingType(
+        exercise.loggingType,
+        modalityValue: exercise.modality,
+        equipmentValue: exercise.equipment,
+        forceValue: exercise.force,
+      ),
     );
   }
 
@@ -166,6 +180,12 @@ class DriftExerciseRepository implements ExerciseRepository {
             isFavorite: e.isFavorite,
             isSubstitutedOut: e.isSubstitutedOut,
             isCustom: e.isCustom,
+            loggingType: _resolveLoggingType(
+              e.loggingType,
+              modalityValue: e.modality,
+              equipmentValue: e.equipment,
+              forceValue: e.force,
+            ),
           ),
         )
         .toList();
@@ -194,6 +214,12 @@ class DriftExerciseRepository implements ExerciseRepository {
       videos: const [],
       isFavorite: exercise.isFavorite,
       isSubstitutedOut: exercise.isSubstitutedOut,
+      loggingType: _resolveLoggingType(
+        exercise.loggingType,
+        modalityValue: exercise.modality,
+        equipmentValue: exercise.equipment,
+        forceValue: exercise.force,
+      ),
     );
   }
 
@@ -223,6 +249,9 @@ class DriftExerciseRepository implements ExerciseRepository {
             json.encode(seed.muscleGroups.map((e) => e.label).toList()),
           ),
           modality: Value(seed.modality.dbValue),
+          loggingType: seed.loggingType != null
+              ? Value(seed.loggingType!.dbValue)
+              : const Value(null),
           equipment: seed.equipment != null
               ? Value(seed.equipment!.dbValue)
               : const Value(null),
@@ -260,6 +289,9 @@ class DriftExerciseRepository implements ExerciseRepository {
           json.encode(seed.muscleGroups.map((e) => e.label).toList()),
         ),
         modality: Value(seed.modality.dbValue),
+        loggingType: seed.loggingType != null
+            ? Value(seed.loggingType!.dbValue)
+            : const Value(null),
         equipment: seed.equipment != null
             ? Value(seed.equipment!.dbValue)
             : const Value(null),
@@ -311,6 +343,22 @@ class DriftExerciseRepository implements ExerciseRepository {
   ExerciseMechanic? _decodeMechanic(String? value) {
     if (value == null || value.isEmpty) return null;
     return ExerciseMechanic.fromDb(value.toLowerCase());
+  }
+
+  ExerciseLoggingType _resolveLoggingType(
+    String? dbValue, {
+    required String modalityValue,
+    required String? equipmentValue,
+    required String? forceValue,
+  }) {
+    if (dbValue != null && dbValue.isNotEmpty) {
+      return ExerciseLoggingType.fromDb(dbValue);
+    }
+    return ExerciseLoggingTypeResolver.resolve(
+      modality: ExerciseModality.fromDb(modalityValue),
+      equipment: _decodeEquipment(equipmentValue),
+      force: _decodeForce(forceValue),
+    );
   }
 
   ExerciseVideoAngle? _decodeVideoAngle(String? value) {

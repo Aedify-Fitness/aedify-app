@@ -72,14 +72,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 12);
+      await _logMigration(m, fromVersion: 0, toVersion: 14);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -157,6 +157,37 @@ class AppDatabase extends _$AppDatabase {
       if (from < 12) {
         await customStatement(
           'ALTER TABLE set_logs ADD COLUMN prescribed_reps_exact INTEGER',
+        );
+      }
+      if (from < 13) {
+        await m.addColumn(exercises, exercises.loggingType);
+        await customStatement('''
+          UPDATE exercises
+          SET logging_type =
+            CASE modality
+              WHEN 'strength' THEN
+                CASE
+                  WHEN equipment IN (
+                    'bodyweight', 'bands', 'pull_up_bar',
+                    'bosu_ball', 'medicine_ball', 'trx', 'vitruvian'
+                  ) THEN 'repsOnly'
+                  ELSE 'repsWeight'
+                END
+              WHEN 'flexibility' THEN
+                CASE
+                  WHEN force = 'hold' THEN 'duration'
+                  ELSE 'repsOnly'
+                END
+              WHEN 'cardio' THEN 'duration'
+              WHEN 'recovery' THEN 'duration'
+            END
+          WHERE logging_type IS NULL
+        ''');
+      }
+      if (from < 14) {
+        await m.addColumn(
+          savedWorkoutExercises,
+          savedWorkoutExercises.loggingType,
         );
       }
       if (from < to) {

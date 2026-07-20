@@ -163,6 +163,7 @@ class ExerciseLibraryImporter {
       ),
       category: Value(exercise.category),
       modality: Value(exercise.modality.dbValue),
+      loggingType: Value(exercise.loggingType?.dbValue),
       equipment: Value(exercise.equipment?.dbValue),
       force: Value(exercise.force?.dbValue),
       mechanic: Value(exercise.mechanic?.dbValue),

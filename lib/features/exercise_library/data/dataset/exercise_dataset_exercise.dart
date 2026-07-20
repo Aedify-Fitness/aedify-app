@@ -3,6 +3,7 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_mechanic.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 
@@ -15,6 +16,7 @@ class ExerciseDatasetExercise {
     required this.muscleGroups,
     this.category,
     required this.modality,
+    this.loggingType,
     this.equipment,
     this.force,
     this.mechanic,
@@ -30,6 +32,7 @@ class ExerciseDatasetExercise {
   final Set<BodymapBucket> muscleGroups;
   final String? category;
   final ExerciseModality modality;
+  final ExerciseLoggingType? loggingType;
   final EquipmentTag? equipment;
   final ExerciseForce? force;
   final ExerciseMechanic? mechanic;

@@ -7,6 +7,7 @@ import 'package:aedify/features/exercise_library/application/custom_exercise_edi
 import 'package:aedify/features/exercise_library/domain/custom_exercise_editor_mode.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -88,6 +89,16 @@ class CustomExerciseEditorController
     state = AsyncData(
       current.copyWith(
         draft: current.draft.copyWith(difficulty: difficulty),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> setLoggingType(ExerciseLoggingType? loggingType) async {
+    final current = state.requireValue;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(loggingType: loggingType),
         isDirty: true,
       ),
     );

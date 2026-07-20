@@ -5,6 +5,7 @@ class SavedWorkoutExercises extends Table {
   TextColumn get savedWorkoutId => text()();
   IntColumn get exerciseId => integer()();
   TextColumn get exerciseRef => text().nullable()();
+  TextColumn get loggingType => text().nullable()();
   TextColumn get exerciseRole => text().nullable()();
   TextColumn get supersetGroupId => text().nullable()();
   IntColumn get supersetOrder => integer().nullable()();

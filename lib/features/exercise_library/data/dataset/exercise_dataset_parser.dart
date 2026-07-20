@@ -8,6 +8,7 @@ import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_v
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_mechanic.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/domain/exercise_video_angle.dart';
@@ -219,6 +220,9 @@ class ExerciseDatasetParser {
       muscleGroups: muscleGroups,
       category: _readNullableString(json, 'category'),
       modality: modality,
+      loggingType: _decodeLoggingType(
+        _readNullableString(json, 'logging_type'),
+      ),
       equipment: equipment,
       force: _decodeForce(_readNullableString(json, 'force')),
       mechanic: _decodeMechanic(_readNullableString(json, 'mechanic')),
@@ -265,6 +269,11 @@ class ExerciseDatasetParser {
   ExerciseForce? _decodeForce(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     return ExerciseForce.fromDb(value.toLowerCase());
+  }
+
+  ExerciseLoggingType? _decodeLoggingType(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return ExerciseLoggingType.fromDb(value.toLowerCase());
   }
 
   ExerciseMechanic? _decodeMechanic(String? value) {

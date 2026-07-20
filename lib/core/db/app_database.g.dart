@@ -358,6 +358,17 @@ class $ExercisesTable extends Exercises
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _loggingTypeMeta = const VerificationMeta(
+    'loggingType',
+  );
+  @override
+  late final GeneratedColumn<String> loggingType = GeneratedColumn<String>(
+    'logging_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _equipmentMeta = const VerificationMeta(
     'equipment',
   );
@@ -526,6 +537,7 @@ class $ExercisesTable extends Exercises
     muscleGroupsJson,
     category,
     modality,
+    loggingType,
     equipment,
     force,
     mechanic,
@@ -656,6 +668,15 @@ class $ExercisesTable extends Exercises
       );
     } else if (isInserting) {
       context.missing(_modalityMeta);
+    }
+    if (data.containsKey('logging_type')) {
+      context.handle(
+        _loggingTypeMeta,
+        loggingType.isAcceptableOrUnknown(
+          data['logging_type']!,
+          _loggingTypeMeta,
+        ),
+      );
     }
     if (data.containsKey('equipment')) {
       context.handle(
@@ -813,6 +834,10 @@ class $ExercisesTable extends Exercises
         DriftSqlType.string,
         data['${effectivePrefix}modality'],
       )!,
+      loggingType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}logging_type'],
+      ),
       equipment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}equipment'],
@@ -888,6 +913,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
   final String muscleGroupsJson;
   final String? category;
   final String modality;
+  final String? loggingType;
   final String? equipment;
   final String? force;
   final String? mechanic;
@@ -915,6 +941,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     required this.muscleGroupsJson,
     this.category,
     required this.modality,
+    this.loggingType,
     this.equipment,
     this.force,
     this.mechanic,
@@ -955,6 +982,9 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       map['category'] = Variable<String>(category);
     }
     map['modality'] = Variable<String>(modality);
+    if (!nullToAbsent || loggingType != null) {
+      map['logging_type'] = Variable<String>(loggingType);
+    }
     if (!nullToAbsent || equipment != null) {
       map['equipment'] = Variable<String>(equipment);
     }
@@ -1008,6 +1038,9 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           ? const Value.absent()
           : Value(category),
       modality: Value(modality),
+      loggingType: loggingType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loggingType),
       equipment: equipment == null && nullToAbsent
           ? const Value.absent()
           : Value(equipment),
@@ -1063,6 +1096,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       muscleGroupsJson: serializer.fromJson<String>(json['muscleGroupsJson']),
       category: serializer.fromJson<String?>(json['category']),
       modality: serializer.fromJson<String>(json['modality']),
+      loggingType: serializer.fromJson<String?>(json['loggingType']),
       equipment: serializer.fromJson<String?>(json['equipment']),
       force: serializer.fromJson<String?>(json['force']),
       mechanic: serializer.fromJson<String?>(json['mechanic']),
@@ -1095,6 +1129,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       'muscleGroupsJson': serializer.toJson<String>(muscleGroupsJson),
       'category': serializer.toJson<String?>(category),
       'modality': serializer.toJson<String>(modality),
+      'loggingType': serializer.toJson<String?>(loggingType),
       'equipment': serializer.toJson<String?>(equipment),
       'force': serializer.toJson<String?>(force),
       'mechanic': serializer.toJson<String?>(mechanic),
@@ -1125,6 +1160,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     String? muscleGroupsJson,
     Value<String?> category = const Value.absent(),
     String? modality,
+    Value<String?> loggingType = const Value.absent(),
     Value<String?> equipment = const Value.absent(),
     Value<String?> force = const Value.absent(),
     Value<String?> mechanic = const Value.absent(),
@@ -1158,6 +1194,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     muscleGroupsJson: muscleGroupsJson ?? this.muscleGroupsJson,
     category: category.present ? category.value : this.category,
     modality: modality ?? this.modality,
+    loggingType: loggingType.present ? loggingType.value : this.loggingType,
     equipment: equipment.present ? equipment.value : this.equipment,
     force: force.present ? force.value : this.force,
     mechanic: mechanic.present ? mechanic.value : this.mechanic,
@@ -1203,6 +1240,9 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           : this.muscleGroupsJson,
       category: data.category.present ? data.category.value : this.category,
       modality: data.modality.present ? data.modality.value : this.modality,
+      loggingType: data.loggingType.present
+          ? data.loggingType.value
+          : this.loggingType,
       equipment: data.equipment.present ? data.equipment.value : this.equipment,
       force: data.force.present ? data.force.value : this.force,
       mechanic: data.mechanic.present ? data.mechanic.value : this.mechanic,
@@ -1243,6 +1283,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           ..write('muscleGroupsJson: $muscleGroupsJson, ')
           ..write('category: $category, ')
           ..write('modality: $modality, ')
+          ..write('loggingType: $loggingType, ')
           ..write('equipment: $equipment, ')
           ..write('force: $force, ')
           ..write('mechanic: $mechanic, ')
@@ -1275,6 +1316,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     muscleGroupsJson,
     category,
     modality,
+    loggingType,
     equipment,
     force,
     mechanic,
@@ -1306,6 +1348,7 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           other.muscleGroupsJson == this.muscleGroupsJson &&
           other.category == this.category &&
           other.modality == this.modality &&
+          other.loggingType == this.loggingType &&
           other.equipment == this.equipment &&
           other.force == this.force &&
           other.mechanic == this.mechanic &&
@@ -1335,6 +1378,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
   final Value<String> muscleGroupsJson;
   final Value<String?> category;
   final Value<String> modality;
+  final Value<String?> loggingType;
   final Value<String?> equipment;
   final Value<String?> force;
   final Value<String?> mechanic;
@@ -1362,6 +1406,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     this.muscleGroupsJson = const Value.absent(),
     this.category = const Value.absent(),
     this.modality = const Value.absent(),
+    this.loggingType = const Value.absent(),
     this.equipment = const Value.absent(),
     this.force = const Value.absent(),
     this.mechanic = const Value.absent(),
@@ -1390,6 +1435,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     required String muscleGroupsJson,
     this.category = const Value.absent(),
     required String modality,
+    this.loggingType = const Value.absent(),
     this.equipment = const Value.absent(),
     this.force = const Value.absent(),
     this.mechanic = const Value.absent(),
@@ -1427,6 +1473,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     Expression<String>? muscleGroupsJson,
     Expression<String>? category,
     Expression<String>? modality,
+    Expression<String>? loggingType,
     Expression<String>? equipment,
     Expression<String>? force,
     Expression<String>? mechanic,
@@ -1459,6 +1506,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
       if (muscleGroupsJson != null) 'muscle_groups_json': muscleGroupsJson,
       if (category != null) 'category': category,
       if (modality != null) 'modality': modality,
+      if (loggingType != null) 'logging_type': loggingType,
       if (equipment != null) 'equipment': equipment,
       if (force != null) 'force': force,
       if (mechanic != null) 'mechanic': mechanic,
@@ -1489,6 +1537,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     Value<String>? muscleGroupsJson,
     Value<String?>? category,
     Value<String>? modality,
+    Value<String?>? loggingType,
     Value<String?>? equipment,
     Value<String?>? force,
     Value<String?>? mechanic,
@@ -1517,6 +1566,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
       muscleGroupsJson: muscleGroupsJson ?? this.muscleGroupsJson,
       category: category ?? this.category,
       modality: modality ?? this.modality,
+      loggingType: loggingType ?? this.loggingType,
       equipment: equipment ?? this.equipment,
       force: force ?? this.force,
       mechanic: mechanic ?? this.mechanic,
@@ -1577,6 +1627,9 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     if (modality.present) {
       map['modality'] = Variable<String>(modality.value);
     }
+    if (loggingType.present) {
+      map['logging_type'] = Variable<String>(loggingType.value);
+    }
     if (equipment.present) {
       map['equipment'] = Variable<String>(equipment.value);
     }
@@ -1635,6 +1688,7 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
           ..write('muscleGroupsJson: $muscleGroupsJson, ')
           ..write('category: $category, ')
           ..write('modality: $modality, ')
+          ..write('loggingType: $loggingType, ')
           ..write('equipment: $equipment, ')
           ..write('force: $force, ')
           ..write('mechanic: $mechanic, ')
@@ -20973,6 +21027,17 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _loggingTypeMeta = const VerificationMeta(
+    'loggingType',
+  );
+  @override
+  late final GeneratedColumn<String> loggingType = GeneratedColumn<String>(
+    'logging_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _exerciseRoleMeta = const VerificationMeta(
     'exerciseRole',
   );
@@ -21065,6 +21130,7 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
     savedWorkoutId,
     exerciseId,
     exerciseRef,
+    loggingType,
     exerciseRole,
     supersetGroupId,
     supersetOrder,
@@ -21116,6 +21182,15 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
         exerciseRef.isAcceptableOrUnknown(
           data['exercise_ref']!,
           _exerciseRefMeta,
+        ),
+      );
+    }
+    if (data.containsKey('logging_type')) {
+      context.handle(
+        _loggingTypeMeta,
+        loggingType.isAcceptableOrUnknown(
+          data['logging_type']!,
+          _loggingTypeMeta,
         ),
       );
     }
@@ -21208,6 +21283,10 @@ class $SavedWorkoutExercisesTable extends SavedWorkoutExercises
         DriftSqlType.string,
         data['${effectivePrefix}exercise_ref'],
       ),
+      loggingType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}logging_type'],
+      ),
       exerciseRole: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}exercise_role'],
@@ -21255,6 +21334,7 @@ class SavedWorkoutExercise extends DataClass
   final String savedWorkoutId;
   final int exerciseId;
   final String? exerciseRef;
+  final String? loggingType;
   final String? exerciseRole;
   final String? supersetGroupId;
   final int? supersetOrder;
@@ -21268,6 +21348,7 @@ class SavedWorkoutExercise extends DataClass
     required this.savedWorkoutId,
     required this.exerciseId,
     this.exerciseRef,
+    this.loggingType,
     this.exerciseRole,
     this.supersetGroupId,
     this.supersetOrder,
@@ -21285,6 +21366,9 @@ class SavedWorkoutExercise extends DataClass
     map['exercise_id'] = Variable<int>(exerciseId);
     if (!nullToAbsent || exerciseRef != null) {
       map['exercise_ref'] = Variable<String>(exerciseRef);
+    }
+    if (!nullToAbsent || loggingType != null) {
+      map['logging_type'] = Variable<String>(loggingType);
     }
     if (!nullToAbsent || exerciseRole != null) {
       map['exercise_role'] = Variable<String>(exerciseRole);
@@ -21319,6 +21403,9 @@ class SavedWorkoutExercise extends DataClass
       exerciseRef: exerciseRef == null && nullToAbsent
           ? const Value.absent()
           : Value(exerciseRef),
+      loggingType: loggingType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loggingType),
       exerciseRole: exerciseRole == null && nullToAbsent
           ? const Value.absent()
           : Value(exerciseRole),
@@ -21353,6 +21440,7 @@ class SavedWorkoutExercise extends DataClass
       savedWorkoutId: serializer.fromJson<String>(json['savedWorkoutId']),
       exerciseId: serializer.fromJson<int>(json['exerciseId']),
       exerciseRef: serializer.fromJson<String?>(json['exerciseRef']),
+      loggingType: serializer.fromJson<String?>(json['loggingType']),
       exerciseRole: serializer.fromJson<String?>(json['exerciseRole']),
       supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
       supersetOrder: serializer.fromJson<int?>(json['supersetOrder']),
@@ -21373,6 +21461,7 @@ class SavedWorkoutExercise extends DataClass
       'savedWorkoutId': serializer.toJson<String>(savedWorkoutId),
       'exerciseId': serializer.toJson<int>(exerciseId),
       'exerciseRef': serializer.toJson<String?>(exerciseRef),
+      'loggingType': serializer.toJson<String?>(loggingType),
       'exerciseRole': serializer.toJson<String?>(exerciseRole),
       'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
       'supersetOrder': serializer.toJson<int?>(supersetOrder),
@@ -21391,6 +21480,7 @@ class SavedWorkoutExercise extends DataClass
     String? savedWorkoutId,
     int? exerciseId,
     Value<String?> exerciseRef = const Value.absent(),
+    Value<String?> loggingType = const Value.absent(),
     Value<String?> exerciseRole = const Value.absent(),
     Value<String?> supersetGroupId = const Value.absent(),
     Value<int?> supersetOrder = const Value.absent(),
@@ -21404,6 +21494,7 @@ class SavedWorkoutExercise extends DataClass
     savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
     exerciseId: exerciseId ?? this.exerciseId,
     exerciseRef: exerciseRef.present ? exerciseRef.value : this.exerciseRef,
+    loggingType: loggingType.present ? loggingType.value : this.loggingType,
     exerciseRole: exerciseRole.present ? exerciseRole.value : this.exerciseRole,
     supersetGroupId: supersetGroupId.present
         ? supersetGroupId.value
@@ -21431,6 +21522,9 @@ class SavedWorkoutExercise extends DataClass
       exerciseRef: data.exerciseRef.present
           ? data.exerciseRef.value
           : this.exerciseRef,
+      loggingType: data.loggingType.present
+          ? data.loggingType.value
+          : this.loggingType,
       exerciseRole: data.exerciseRole.present
           ? data.exerciseRole.value
           : this.exerciseRole,
@@ -21457,6 +21551,7 @@ class SavedWorkoutExercise extends DataClass
           ..write('savedWorkoutId: $savedWorkoutId, ')
           ..write('exerciseId: $exerciseId, ')
           ..write('exerciseRef: $exerciseRef, ')
+          ..write('loggingType: $loggingType, ')
           ..write('exerciseRole: $exerciseRole, ')
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
@@ -21475,6 +21570,7 @@ class SavedWorkoutExercise extends DataClass
     savedWorkoutId,
     exerciseId,
     exerciseRef,
+    loggingType,
     exerciseRole,
     supersetGroupId,
     supersetOrder,
@@ -21492,6 +21588,7 @@ class SavedWorkoutExercise extends DataClass
           other.savedWorkoutId == this.savedWorkoutId &&
           other.exerciseId == this.exerciseId &&
           other.exerciseRef == this.exerciseRef &&
+          other.loggingType == this.loggingType &&
           other.exerciseRole == this.exerciseRole &&
           other.supersetGroupId == this.supersetGroupId &&
           other.supersetOrder == this.supersetOrder &&
@@ -21509,6 +21606,7 @@ class SavedWorkoutExercisesCompanion
   final Value<String> savedWorkoutId;
   final Value<int> exerciseId;
   final Value<String?> exerciseRef;
+  final Value<String?> loggingType;
   final Value<String?> exerciseRole;
   final Value<String?> supersetGroupId;
   final Value<int?> supersetOrder;
@@ -21523,6 +21621,7 @@ class SavedWorkoutExercisesCompanion
     this.savedWorkoutId = const Value.absent(),
     this.exerciseId = const Value.absent(),
     this.exerciseRef = const Value.absent(),
+    this.loggingType = const Value.absent(),
     this.exerciseRole = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
@@ -21538,6 +21637,7 @@ class SavedWorkoutExercisesCompanion
     required String savedWorkoutId,
     required int exerciseId,
     this.exerciseRef = const Value.absent(),
+    this.loggingType = const Value.absent(),
     this.exerciseRole = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
     this.supersetOrder = const Value.absent(),
@@ -21557,6 +21657,7 @@ class SavedWorkoutExercisesCompanion
     Expression<String>? savedWorkoutId,
     Expression<int>? exerciseId,
     Expression<String>? exerciseRef,
+    Expression<String>? loggingType,
     Expression<String>? exerciseRole,
     Expression<String>? supersetGroupId,
     Expression<int>? supersetOrder,
@@ -21572,6 +21673,7 @@ class SavedWorkoutExercisesCompanion
       if (savedWorkoutId != null) 'saved_workout_id': savedWorkoutId,
       if (exerciseId != null) 'exercise_id': exerciseId,
       if (exerciseRef != null) 'exercise_ref': exerciseRef,
+      if (loggingType != null) 'logging_type': loggingType,
       if (exerciseRole != null) 'exercise_role': exerciseRole,
       if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
       if (supersetOrder != null) 'superset_order': supersetOrder,
@@ -21590,6 +21692,7 @@ class SavedWorkoutExercisesCompanion
     Value<String>? savedWorkoutId,
     Value<int>? exerciseId,
     Value<String?>? exerciseRef,
+    Value<String?>? loggingType,
     Value<String?>? exerciseRole,
     Value<String?>? supersetGroupId,
     Value<int?>? supersetOrder,
@@ -21605,6 +21708,7 @@ class SavedWorkoutExercisesCompanion
       savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
       exerciseId: exerciseId ?? this.exerciseId,
       exerciseRef: exerciseRef ?? this.exerciseRef,
+      loggingType: loggingType ?? this.loggingType,
       exerciseRole: exerciseRole ?? this.exerciseRole,
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
       supersetOrder: supersetOrder ?? this.supersetOrder,
@@ -21632,6 +21736,9 @@ class SavedWorkoutExercisesCompanion
     }
     if (exerciseRef.present) {
       map['exercise_ref'] = Variable<String>(exerciseRef.value);
+    }
+    if (loggingType.present) {
+      map['logging_type'] = Variable<String>(loggingType.value);
     }
     if (exerciseRole.present) {
       map['exercise_role'] = Variable<String>(exerciseRole.value);
@@ -21672,6 +21779,7 @@ class SavedWorkoutExercisesCompanion
           ..write('savedWorkoutId: $savedWorkoutId, ')
           ..write('exerciseId: $exerciseId, ')
           ..write('exerciseRef: $exerciseRef, ')
+          ..write('loggingType: $loggingType, ')
           ..write('exerciseRole: $exerciseRole, ')
           ..write('supersetGroupId: $supersetGroupId, ')
           ..write('supersetOrder: $supersetOrder, ')
@@ -27500,6 +27608,7 @@ typedef $$ExercisesTableCreateCompanionBuilder =
       required String muscleGroupsJson,
       Value<String?> category,
       required String modality,
+      Value<String?> loggingType,
       Value<String?> equipment,
       Value<String?> force,
       Value<String?> mechanic,
@@ -27529,6 +27638,7 @@ typedef $$ExercisesTableUpdateCompanionBuilder =
       Value<String> muscleGroupsJson,
       Value<String?> category,
       Value<String> modality,
+      Value<String?> loggingType,
       Value<String?> equipment,
       Value<String?> force,
       Value<String?> mechanic,
@@ -27662,6 +27772,11 @@ class $$ExercisesTableFilterComposer
 
   ColumnFilters<String> get modality => $composableBuilder(
     column: $table.modality,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -27855,6 +27970,11 @@ class $$ExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get equipment => $composableBuilder(
     column: $table.equipment,
     builder: (column) => ColumnOrderings(column),
@@ -27982,6 +28102,11 @@ class $$ExercisesTableAnnotationComposer
 
   GeneratedColumn<String> get modality =>
       $composableBuilder(column: $table.modality, builder: (column) => column);
+
+  GeneratedColumn<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get equipment =>
       $composableBuilder(column: $table.equipment, builder: (column) => column);
@@ -28126,6 +28251,7 @@ class $$ExercisesTableTableManager
                 Value<String> muscleGroupsJson = const Value.absent(),
                 Value<String?> category = const Value.absent(),
                 Value<String> modality = const Value.absent(),
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> equipment = const Value.absent(),
                 Value<String?> force = const Value.absent(),
                 Value<String?> mechanic = const Value.absent(),
@@ -28153,6 +28279,7 @@ class $$ExercisesTableTableManager
                 muscleGroupsJson: muscleGroupsJson,
                 category: category,
                 modality: modality,
+                loggingType: loggingType,
                 equipment: equipment,
                 force: force,
                 mechanic: mechanic,
@@ -28182,6 +28309,7 @@ class $$ExercisesTableTableManager
                 required String muscleGroupsJson,
                 Value<String?> category = const Value.absent(),
                 required String modality,
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> equipment = const Value.absent(),
                 Value<String?> force = const Value.absent(),
                 Value<String?> mechanic = const Value.absent(),
@@ -28209,6 +28337,7 @@ class $$ExercisesTableTableManager
                 muscleGroupsJson: muscleGroupsJson,
                 category: category,
                 modality: modality,
+                loggingType: loggingType,
                 equipment: equipment,
                 force: force,
                 mechanic: mechanic,
@@ -37139,6 +37268,7 @@ typedef $$SavedWorkoutExercisesTableCreateCompanionBuilder =
       required String savedWorkoutId,
       required int exerciseId,
       Value<String?> exerciseRef,
+      Value<String?> loggingType,
       Value<String?> exerciseRole,
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
@@ -37155,6 +37285,7 @@ typedef $$SavedWorkoutExercisesTableUpdateCompanionBuilder =
       Value<String> savedWorkoutId,
       Value<int> exerciseId,
       Value<String?> exerciseRef,
+      Value<String?> loggingType,
       Value<String?> exerciseRole,
       Value<String?> supersetGroupId,
       Value<int?> supersetOrder,
@@ -37192,6 +37323,11 @@ class $$SavedWorkoutExercisesTableFilterComposer
 
   ColumnFilters<String> get exerciseRef => $composableBuilder(
     column: $table.exerciseRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -37265,6 +37401,11 @@ class $$SavedWorkoutExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get exerciseRole => $composableBuilder(
     column: $table.exerciseRole,
     builder: (column) => ColumnOrderings(column),
@@ -37330,6 +37471,11 @@ class $$SavedWorkoutExercisesTableAnnotationComposer
 
   GeneratedColumn<String> get exerciseRef => $composableBuilder(
     column: $table.exerciseRef,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
     builder: (column) => column,
   );
 
@@ -37416,6 +37562,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 Value<String> savedWorkoutId = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
                 Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> exerciseRole = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
@@ -37430,6 +37577,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 savedWorkoutId: savedWorkoutId,
                 exerciseId: exerciseId,
                 exerciseRef: exerciseRef,
+                loggingType: loggingType,
                 exerciseRole: exerciseRole,
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,
@@ -37446,6 +37594,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 required String savedWorkoutId,
                 required int exerciseId,
                 Value<String?> exerciseRef = const Value.absent(),
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> exerciseRole = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
                 Value<int?> supersetOrder = const Value.absent(),
@@ -37460,6 +37609,7 @@ class $$SavedWorkoutExercisesTableTableManager
                 savedWorkoutId: savedWorkoutId,
                 exerciseId: exerciseId,
                 exerciseRef: exerciseRef,
+                loggingType: loggingType,
                 exerciseRole: exerciseRole,
                 supersetGroupId: supersetGroupId,
                 supersetOrder: supersetOrder,

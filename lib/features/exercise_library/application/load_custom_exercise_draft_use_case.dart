@@ -1,6 +1,7 @@
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_draft.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 
 class LoadCustomExerciseDraftUseCase {
@@ -18,6 +19,7 @@ class LoadCustomExerciseDraftUseCase {
       name: '',
       muscleGroups: {},
       modality: ExerciseModality.strength,
+      loggingType: ExerciseLoggingType.repsWeight,
     );
   }
 
@@ -33,6 +35,7 @@ class LoadCustomExerciseDraftUseCase {
       name: detail.name,
       muscleGroups: detail.muscleGroups,
       modality: detail.modality,
+      loggingType: detail.loggingType,
       equipment: detail.equipment,
       difficulty: detail.difficulty,
       steps: detail.steps,

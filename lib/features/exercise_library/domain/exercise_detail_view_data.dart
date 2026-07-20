@@ -3,6 +3,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_video_vi
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_mechanic.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 
@@ -23,6 +24,7 @@ class ExerciseDetailViewData {
     required this.videos,
     required this.isFavorite,
     required this.isSubstitutedOut,
+    this.loggingType = ExerciseLoggingType.repsWeight,
   });
 
   final int id;
@@ -40,4 +42,5 @@ class ExerciseDetailViewData {
   final List<ExerciseDetailVideoViewData> videos;
   final bool isFavorite;
   final bool isSubstitutedOut;
+  final ExerciseLoggingType loggingType;
 }
