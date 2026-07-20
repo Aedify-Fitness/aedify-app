@@ -93,6 +93,7 @@ class AppSizing {
   static const double dataFieldWidthMd = 100;
   static const double timerStrokeWidth = 8;
   static const double hairlineStrokeWidth = 1;
+  static const double inputFieldHeight = 36;
   static const double activeIndicatorHeight = 4;
   static const double deloadLineStrokeWidth = 10;
   static const double deloadLineSpacing = 40;

@@ -480,6 +480,8 @@ class AppStrings {
       'Add exercises to get started building your workout.';
   static const weightColumn = 'WEIGHT';
   static const restColumn = 'REST';
+  static const durationColumn = 'DURATION';
+  static const durationUnit = 'min';
   static const configLabel = 'Configuration';
   static const reorderButton = 'Reorder';
   static const defaultRestHint = 'Default rest (seconds)';
@@ -750,6 +752,27 @@ class AppStrings {
   static const customExerciseDelete = 'Delete exercise';
   static const customExerciseDiscard = 'Discard';
   static const customExerciseRemoveStep = 'Remove step';
+  static const customExerciseLoggingType = 'Logging Type';
+  static const customExerciseLoggingTypeDesc =
+      'How would you like to track this exercise?';
+  static const customExerciseLoggingTypeRepsOnly = 'Reps Only';
+  static const customExerciseLoggingTypeRepsOnlyDesc = 'Simple volume tracking';
+  static const customExerciseLoggingTypeWeightReps = 'Weight & Reps';
+  static const customExerciseLoggingTypeWeightRepsDesc =
+      'Standard strength tracking';
+  static const customExerciseLoggingTypeDuration = 'Duration';
+  static const customExerciseLoggingTypeDurationDesc = 'Time-based tracking';
+  static const createExercise = 'Create Exercise';
+  static const customExercisePrimaryMuscleGroup = 'Primary Muscle Group';
+  static const customExerciseInstructionsHint =
+      'Describe the movement, cues, and safety tips...';
+  static const customExerciseInstructionsOptional = 'Optional';
+  static const customExerciseNameLabel = 'Exercise name';
+  static const customExerciseNameHintPlaceholder = 'e.g., Cable Face Pulls';
+  static const customExerciseEquipmentSelect = 'Select equipment';
+  static const customExerciseInstructionsLabel = 'Instructions & Form Notes';
+  static const customExerciseStepHint =
+      'e.g., Stand with feet shoulder-width apart';
 
   // Programme calendar
   static const programmeCalendar = 'Programme Calendar';
@@ -758,6 +781,7 @@ class AppStrings {
   static const weekDeload = 'Deload';
   static const noWorkoutsInWeek = 'No workouts this week';
   static const workoutDetail = 'Workout Details';
+  static const workoutDetailLoadError = 'Could not load workout details.';
   static const programmeCalendarLoadFailed =
       'Could not load programme details.';
   static const edit = 'Edit';
@@ -881,6 +905,7 @@ class AppStrings {
   static const minutes = 'Minutes';
   static const focusLabel = 'Focus';
   static const setsAndReps = 'Sets x Reps';
+  static const setsAndDuration = 'Sets x Duration';
   static const intensity = 'Intensity';
   static const readyToPush = 'Ready to push?';
   static const sessionInspirationMessage =
