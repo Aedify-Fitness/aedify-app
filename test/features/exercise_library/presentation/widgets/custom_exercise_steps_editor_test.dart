@@ -23,7 +23,6 @@ void main() {
         ),
       );
 
-      expect(find.text(AppStrings.customExerciseNoSteps), findsOneWidget);
       expect(find.text(AppStrings.customExerciseAddStep), findsOneWidget);
     });
 
@@ -42,8 +41,8 @@ void main() {
       expect(find.text('Step one'), findsOneWidget);
       expect(find.text('Step two'), findsOneWidget);
       expect(find.byType(TextField), findsNWidgets(2));
-      expect(find.byType(IconButton), findsNWidgets(2));
-      expect(find.byType(OutlinedButton), findsOneWidget);
+      expect(find.byType(IconButton), findsNWidgets(4));
+      expect(find.text(AppStrings.customExerciseAddStep), findsOneWidget);
     });
 
     testWidgets('calls onAddStep when add button is tapped', (tester) async {

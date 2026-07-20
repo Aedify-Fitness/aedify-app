@@ -39,9 +39,7 @@ void main() {
     expect(find.textContaining('5'), findsOneWidget);
   });
 
-  testWidgets('shows popup menu with edit, archive and delete', (
-    tester,
-  ) async {
+  testWidgets('shows popup menu with edit, archive and delete', (tester) async {
     final item = SavedWorkoutListItem(
       id: 'w1',
       name: 'Push Day',

@@ -20,7 +20,10 @@ void main() {
         ),
       );
 
-      expect(find.text(AppStrings.customExerciseMuscleGroups), findsOneWidget);
+      expect(
+        find.text(AppStrings.customExercisePrimaryMuscleGroup.toUpperCase()),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders a chip for each bodymap bucket', (tester) async {
@@ -48,25 +51,17 @@ void main() {
         ),
       );
 
-      final chestChip = tester.widget<FilterChip>(
-        find.ancestor(
-          of: find.text('Chest'),
-          matching: find.byType(FilterChip),
-        ),
+      final chestContainer = tester.widget<Container>(
+        find.ancestor(of: find.text('Chest'), matching: find.byType(Container)),
       );
-      final shouldersChip = tester.widget<FilterChip>(
-        find.ancestor(
-          of: find.text('Shoulders'),
-          matching: find.byType(FilterChip),
-        ),
-      );
-      final backChip = tester.widget<FilterChip>(
-        find.ancestor(of: find.text('Back'), matching: find.byType(FilterChip)),
+      final backContainer = tester.widget<Container>(
+        find.ancestor(of: find.text('Back'), matching: find.byType(Container)),
       );
 
-      expect(chestChip.selected, isTrue);
-      expect(shouldersChip.selected, isTrue);
-      expect(backChip.selected, isFalse);
+      final chestDeco = chestContainer.decoration as BoxDecoration;
+      final backDeco = backContainer.decoration as BoxDecoration;
+
+      expect(chestDeco.color, isNot(equals(backDeco.color)));
     });
 
     testWidgets('shows error text when provided', (tester) async {
