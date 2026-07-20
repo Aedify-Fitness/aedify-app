@@ -259,6 +259,7 @@ class DriftSavedWorkoutRepository implements SavedWorkoutRepository {
       savedWorkoutId: Value(savedWorkoutId),
       exerciseId: Value(exercise.exerciseId),
       exerciseRef: Value(exercise.exerciseRef),
+      loggingType: Value(exercise.loggingType),
       exerciseRole: Value(exercise.exerciseRole?.dbValue),
       supersetGroupId: Value(exercise.supersetGroupId),
       supersetOrder: Value(exercise.supersetOrder),

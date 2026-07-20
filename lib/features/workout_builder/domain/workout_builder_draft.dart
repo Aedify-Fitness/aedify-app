@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:aedify/shared/domain/creation_method.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'workout_builder_exercise_draft.dart';
@@ -36,17 +37,26 @@ class WorkoutBuilderDraft {
   /// - Per-exercise rest between exercises (priority 2)
   /// - Global workout rest between exercises (priority 3)
   /// - Default 60s rest if none set
-  /// Plus 60 seconds per set for execution time.
+  /// - Duration exercises: set.durationSeconds (default 30s) + rest per set
+  /// - Non-duration exercises: 60s execution + rest per set
   int computeEstimatedDurationMinutes() {
     int totalSeconds = 0;
     for (final exercise in exercises) {
+      final loggingType = ExerciseLoggingType.fromDbWithDefault(
+        exercise.exercise.loggingType,
+      );
+      final isDurationType = loggingType == ExerciseLoggingType.duration;
       for (final set in exercise.sets) {
         final effectiveRest =
             set.restSeconds ??
             exercise.restBetweenExercisesSeconds ??
             restBetweenExercisesSeconds ??
             60;
-        totalSeconds += effectiveRest + 60;
+        if (isDurationType) {
+          totalSeconds += (set.durationSeconds ?? 30) + effectiveRest;
+        } else {
+          totalSeconds += effectiveRest + 60;
+        }
       }
     }
     return totalSeconds ~/ 60;

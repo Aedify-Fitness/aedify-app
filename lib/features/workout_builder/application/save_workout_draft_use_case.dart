@@ -41,6 +41,7 @@ class SaveWorkoutDraftUseCase {
           exerciseId: e.exercise.exerciseId,
           sortOrder: e.sortOrder,
           exerciseRef: e.exercise.name,
+          loggingType: e.exercise.loggingType,
           exerciseRole: e.exerciseRole,
           supersetGroupId: e.supersetGroupId,
           supersetOrder: e.supersetOrder,

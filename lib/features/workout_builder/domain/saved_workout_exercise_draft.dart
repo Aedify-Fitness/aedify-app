@@ -8,6 +8,7 @@ class SavedWorkoutExerciseDraft {
     required this.sortOrder,
     required this.sets,
     this.exerciseRef,
+    this.loggingType,
     this.exerciseRole,
     this.supersetGroupId,
     this.supersetOrder,
@@ -21,6 +22,7 @@ class SavedWorkoutExerciseDraft {
   final int sortOrder;
   final List<SetPrescriptionDraft> sets;
   final String? exerciseRef;
+  final String? loggingType;
   final ExerciseRole? exerciseRole;
   final String? supersetGroupId;
   final int? supersetOrder;

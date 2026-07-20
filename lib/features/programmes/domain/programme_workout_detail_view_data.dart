@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/workout_detail_button_state.dart';
 
 class ProgrammeWorkoutDetailViewData {
@@ -28,6 +29,7 @@ class ExerciseDetailItem {
     required this.equipment,
     this.supersetGroupId,
     this.supersetOrder,
+    this.loggingType = ExerciseLoggingType.repsWeight,
   });
 
   final int exerciseId;
@@ -36,6 +38,7 @@ class ExerciseDetailItem {
   final String equipment;
   final String? supersetGroupId;
   final int? supersetOrder;
+  final ExerciseLoggingType loggingType;
 }
 
 class SetPrescriptionItem {
@@ -46,6 +49,7 @@ class SetPrescriptionItem {
     this.weightDisplay,
     this.rpeDisplay,
     this.restSeconds,
+    this.durationSeconds,
     this.notes,
   });
 
@@ -55,5 +59,6 @@ class SetPrescriptionItem {
   final String? weightDisplay;
   final String? rpeDisplay;
   final int? restSeconds;
+  final int? durationSeconds;
   final String? notes;
 }

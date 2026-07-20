@@ -117,6 +117,26 @@ class SetPrescriptionDraft {
     );
   }
 
+  SetPrescriptionDraft clearDuration() {
+    return SetPrescriptionDraft(
+      id: id,
+      setIndex: setIndex,
+      setType: setType,
+      setIntent: setIntent,
+      prescribedRepsMin: prescribedRepsMin,
+      prescribedRepsMax: prescribedRepsMax,
+      prescribedRepsExact: prescribedRepsExact,
+      durationSeconds: null,
+      distanceMeters: distanceMeters,
+      weightPrescriptionType: weightPrescriptionType,
+      prescribedWeightKg: prescribedWeightKg,
+      prescribedRpeMin: prescribedRpeMin,
+      prescribedRpeMax: prescribedRpeMax,
+      prescribedRir: prescribedRir,
+      restSeconds: restSeconds,
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

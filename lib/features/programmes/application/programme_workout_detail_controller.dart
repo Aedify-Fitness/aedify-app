@@ -4,6 +4,7 @@ import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/programmes/domain/programme_aggregate.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_detail_view_data.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/training_day.dart';
 import 'package:aedify/shared/domain/workout_detail_button_state.dart';
 
@@ -71,6 +72,7 @@ class ProgrammeWorkoutDetailController {
             s.prescribedRir,
           ),
           restSeconds: s.restSeconds,
+          durationSeconds: s.durationSeconds,
           notes: s.loadSelectionNote,
         );
       }).toList();
@@ -83,6 +85,9 @@ class ProgrammeWorkoutDetailController {
           equipment: equipment,
           supersetGroupId: ex.supersetGroupId,
           supersetOrder: ex.supersetOrder,
+          loggingType: ExerciseLoggingType.fromDbWithDefault(
+            exerciseModel?.loggingType,
+          ),
         ),
       );
     }
@@ -142,6 +147,7 @@ class ProgrammeWorkoutDetailController {
             s.prescribedRir,
           ),
           restSeconds: s.restSeconds,
+          durationSeconds: s.durationSeconds,
           notes: s.loadSelectionNote,
         );
       }).toList();
@@ -154,6 +160,9 @@ class ProgrammeWorkoutDetailController {
           equipment: equipment,
           supersetGroupId: ex.supersetGroupId,
           supersetOrder: ex.supersetOrder,
+          loggingType: exerciseModel?.loggingType != null
+              ? ExerciseLoggingType.fromDb(exerciseModel!.loggingType!)
+              : ExerciseLoggingType.repsWeight,
         ),
       );
     }

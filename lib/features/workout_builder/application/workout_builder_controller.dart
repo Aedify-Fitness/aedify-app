@@ -373,6 +373,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
         WorkoutBuilderSaveRequest(draft: normalizedDraft),
       );
       _logger.info('saveWorkout — success: $savedId');
+      ref.read(AppProviders.homeRefreshTriggerProvider.notifier).trigger();
       if (mode == WorkoutBuilderMode.create) {
         final loadUseCase = ref.read(
           AppProviders.loadWorkoutDraftUseCaseProvider,

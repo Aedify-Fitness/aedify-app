@@ -96,6 +96,7 @@ class LoadWorkoutDraftUseCase {
             exerciseId: e.exerciseId,
             name: e.exerciseRef ?? '',
             modality: modalityMap[e.exerciseId] ?? '',
+            loggingType: e.loggingType,
           ),
           sortOrder: e.sortOrder,
           exerciseRole: ExerciseRole.fromDb(e.exerciseRole),
