@@ -56,7 +56,8 @@ abstract final class AedifyLightColors {
   static const surfaceVariantFaded = Color(0x6644474c);
   static const secondaryBorder = Color(0x3F0051d5);
 
-  // Difficulty badge colors
+  // Difficulty badge colors — approved semantic exceptions outside the
+  // Serene Professional palette (green/orange tiers are intentional).
   static const difficultyNoviceBg = Color(0x66d3e4fe);
   static const difficultyNoviceText = Color(0xFF44474c);
   static const difficultyBeginnerBg = Color(0xFFE8F5E9);
@@ -123,7 +124,8 @@ abstract final class AedifyDarkColors {
   static const primaryContainerSelected = Color(0x4C2563eb);
   static const secondaryBorder = Color(0x3Fb9c7e1);
 
-  // Difficulty badge colors
+  // Difficulty badge colors — approved semantic exceptions outside the
+  // Serene Professional palette (green/orange tiers are intentional).
   static const difficultyNoviceBg = Color(0x6632343d);
   static const difficultyNoviceText = Color(0xFFc3c6d7);
   static const difficultyBeginnerBg = Color(0xFF1B3D1B);

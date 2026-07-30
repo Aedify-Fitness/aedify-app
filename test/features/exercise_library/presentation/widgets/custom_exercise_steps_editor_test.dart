@@ -41,7 +41,7 @@ void main() {
       expect(find.text('Step one'), findsOneWidget);
       expect(find.text('Step two'), findsOneWidget);
       expect(find.byType(TextField), findsNWidgets(2));
-      expect(find.byType(IconButton), findsNWidgets(4));
+      expect(find.byType(IconButton), findsNWidgets(2));
       expect(find.text(AppStrings.customExerciseAddStep), findsOneWidget);
     });
 

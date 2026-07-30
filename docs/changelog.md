@@ -4,7 +4,201 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-07-30
+
+### Onboarding step nine — Final Architecture Review alignment
+
+- **Review hierarchy**: Moved the Step 9 hero into the review body so the supplied 40px headline, 18px lead copy, 16px internal gap, and 48px card offset are preserved without changing the shared onboarding scaffold.
+- **Fixed mobile cards**: Retained the five-card single-column order with 24px gaps and corrected Experience, Schedule, and Equipment to use 32px padding, 12px radii, restrained shadows, reference-style fact tiles, and plain schedule/equipment summaries.
+- **AI Intelligence**: Preserved the existing AI card content and tonal treatment, removed its `Modify` button, and made the full card navigate to the optional AI setup step with button semantics and pressed feedback.
+- **Metric Integration**: Removed its `Modify` button and made the complete bordered metric card navigate to the Metrics step while retaining truthful local metric copy and chips.
+- **Project boundaries**: Kept the shared Step 9 of 9 header and pinned `INITIALIZE WORKSPACE` / `Back` actions instead of reintroducing the reference's inline action or unsupported biometric-sync claims.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 9 design/navigation test passed. The complete onboarding file passed 30 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+## 2026-07-29
+
+### Onboarding step eight — Intelligence Layer alignment
+
+- **Composition**: Rebuilt Step 8 around the supplied fixed-mobile hierarchy: Configuration eyebrow, 40px Intelligence Layer headline, truthful supporting copy, and compact benefit rows ordered Private → BYOK → Optional.
+- **Provider setup**: Replaced compact provider pills with stacked OpenAI, Anthropic, and Google cards using the supplied 48px icon tiles, 12px radii, tonal selected surface, and animated 2px accent outline. OpenAI is selected initially.
+- **Credentials**: Added provider-specific API-key labels and hints, a masked 56px credential field with reference visibility behavior and focus ring, secure-storage helper copy, filled `Secure Connection` action, inline failure feedback, and the encrypted dot-line divider.
+- **BYOK behavior**: Preserved the required model selector, corrected each provider's initial model to the cheapest catalog option, and now validates a key before saving it through the existing secure-storage repository boundary.
+- **Project boundaries**: Retained the nine-step header and shared pinned `Continue` / `Back` actions, omitted the reference's unsupported nutrition/recovery claims and decorative gradient, and kept core Aedify features fully usable without AI.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and both focused Step 8 widget tests passed. The full onboarding file passed 29 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding step seven — Elite Baseline alignment
+
+- **Composition**: Rebuilt Step 7 around the supplied centered `Onboarding: Step 7` introduction, separate Weight and Height baseline cards, and a dedicated optional Max Lifts card.
+- **Metric cards**: Added synchronized compact unit selectors, prominent editable values, and interactive 96px reference-style analogue rulers. Their tick strips now follow the drag direction beneath a fixed center marker, carry release velocity, settle to the nearest increment, support tap-to-seek, and retain accessibility increment/decrement controls. Retained the supplied Weight-before-Height hierarchy and fixed 32px card padding.
+- **Max Lifts**: Matched the supplied fixed-mobile card with exact title casing, a 40px post-Height offset, translucent bordered surface and restrained blue ambient shadow, contiguous title/helper hierarchy, and the larger muted accuracy pill.
+- **Strength anchors**: Rebuilt Bench Press, Back Squat, and Deadlift as stacked 56px tonal inputs with 8px radii, `0` hints, headline numerals, explicit unit suffix styling, and animated blue label/ring plus white-surface focus states.
+- **Behavior boundary**: Preserved optional/null semantics, canonical centimetre/kilogram storage, synchronized global unit preference, imperial conversions, and the existing three strength-anchor fields. Clearing Height or Weight now correctly restores `null`.
+- **Actions**: Retained the project-wide pinned stacked `Continue` and `Back` controls established for onboarding.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 7 plus end-to-end onboarding flow tests passed 8/8. The complete onboarding screen file passed 27 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding step six — Precision Constraints alignment
+
+- **Composition**: Rebuilt Step 6 around the supplied centered introduction and fixed-width single-column sequence: Safety First, injury flags, Favorites, Substitutions / Avoid List, and Other Notes.
+- **Safety priority**: Retained Aedify's truthful local-first safety and privacy content, promoted it to the first content section, and kept its quiet tonal surface treatment.
+- **Controls**: Reworked limitations into reference-style two-column visual tiles and restyled the real favorite/substitution pickers as tonal input surfaces without replacing their local exercise-ID behavior with mockup-only sample chips.
+- **Exercise chips**: Favorite and substitution selections now render their exercise names in selection order. Up to eight selections remain individually visible; additional selections collapse into a single `n selected` overflow chip after the first eight.
+- **Actions**: Set the shared pinned action copy to `Next Step` and `Back` while preserving the established stacked layout.
+- **Behavior boundary**: Preserved all nine existing optional limitation values, note persistence, exercise selection workflow, nine-step progress, and no-validation progression.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 6 plus end-to-end onboarding flow tests passed 7/7, including the eight-chip boundary and overflow behavior.
+
+### Onboarding step five — Gym Environment alignment
+
+- **Composition**: Matched the supplied centered introduction and tiered equipment-card hierarchy while preserving Aedify's existing equipment taxonomy and selection behavior.
+- **Equipment artwork**: Generated and bundled original local images for the squat rack, pull-up bar, and cardio machine—the three displayed equipment choices that previously used icon fallbacks. Bodyweight only intentionally retains its illustrated symbol treatment.
+- **Asset boundary**: Added the generated artwork as local JPG assets referenced through `ImageAssets`; onboarding remains offline-first with no runtime image requests.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 5 widget test passed. The complete onboarding suite remains blocked by an existing Step 4 duration-ruler assertion (expected 10 keyed marks; current widget tree contains none).
+
+### Onboarding step four — Your Rhythm alignment
+
+- **Composition**: Rebuilt the schedule screen around the supplied centered intro and three white bento surfaces for weekly availability, session duration, and total weekly load.
+- **Controls**: Restyled weekday choices as substantial tonal schedule tiles, added the reference-style inset coaching tip, promoted the duration value, and refined summary metrics plus the seven-day load chart.
+- **Session duration**: Added the reference 8px tonal slider track and white-ringed blue thumb with restrained shadow. Corrected the below-slider scale to a compact fixed-gap ten-mark ruler with emphasized intervals and full-width uppercase, tracked, muted Endurance/Optimal/Intensity labels.
+- **Total weekly load**: Matched the reference metric copy and hierarchy with uppercase tile labels, `x.x hours` volume formatting, a taller unlabeled seven-bar chart with fixed gaps and top-only rounding, plus the faint analytics decoration.
+- **Actions**: Explicitly set the pinned action copy to `Continue` and `Back`.
+- **Behavior boundary**: Preserved weekday selections as the authoritative persisted schedule model rather than replacing them with decorative frequency-only numbers.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 21/21.
+
+### Onboarding step three — Define Your Path alignment
+
+- **Composition**: Replaced the two generic form panels with the supplied open layout: centered intro, three standalone Novice/Adept/Elite experience cards, and free-standing wrapped growth-pillar selectors.
+- **Interaction**: Experience cards now use the supplied white surface, selected blue outline, emphasized icon, and check state. The pinned primary action is explicitly labeled `Continue`.
+- **Growth pillars**: Matched the supplied spacious chip treatment with 24×16 padding, white outlined unselected surfaces, blue selected fills, 12px icon gaps, and no trailing check glyph.
+- **Scope**: Preserved the existing experience enums, supported goal taxonomy, validation, and persistence behavior.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 20/20.
+
+### Onboarding step two + shared pinned actions
+
+- **Core Identity**: Rebuilt step two as one centered white identity surface with reference-aligned title, supporting copy, three sex choices, pill measurement selector, and date-of-birth control.
+- **Shared navigation**: Moved onboarding actions outside the scrolling content into a bottom-pinned action bar on every step, including Welcome and Final Review. Primary and Back actions are stacked vertically in reference order with standardized rectangular radii, and the pinned area uses the same surface color as the scaffold.
+- **Measurement selector**: Corrected the selected segment to a white inset surface with blue text and subtle shadow; unselected segments remain transparent with muted text on the tonal container.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 19/19.
+
+### Onboarding step one — supplied welcome design alignment
+
+- **Composition**: Removed the mobile gym-image hero and rebuilt the welcome step around the supplied headline-first hierarchy: privacy feature grid, display-name field, bottom-pinned rectangular primary action, and trust footer.
+- **Product boundaries**: Preserved Aedify's locked nine-step flow and local-only/BYOK copy instead of introducing the supplied mockup's unsupported cloud-sync claims.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 17/17.
+
+### Onboarding — updated nine-step fixed mobile flow
+
+- **Flow order**: Expanded onboarding to Welcome → Core Identity → Experience & Goals → Schedule → Gym Environment → Limitations → Metrics → Optional AI → Review, including updated forward, back, resume, and review-edit navigation.
+- **Core Identity stepper**: Retained the theme-aware Aedify logo and applied the Core Identity segmented `Step X of 9` progress treatment to every onboarding page.
+- **Weekday frequency**: Replaced independent numeric frequency choices with a fixed four-column Monday–Sunday selector. The selected weekday list is now the source of truth; displayed, saved, reloaded, and reviewed day counts are derived from it.
+- **Gym environment**: Bundled and displayed the supplied dumbbell, barbell, bench, kettlebell, resistance-band, cable-machine, and Smith-machine images, with deliberate icon treatments for bodyweight and existing equipment options without supplied artwork.
+- **Design SVGs**: Bundled all 55 unique Google Material Symbols referenced by the supplied onboarding design, plus its filled `info` state, under the existing outlined SVG asset family. Centralized every path in `OutlinedSvgAssets`, retained the Aedify logo, and applied the exact design glyphs to onboarding choices, section cues, statuses, and navigation controls.
+- **Asset provenance**: Added the upstream Apache 2.0 license alongside the local Material Symbols set. The SVGs ship in the app bundle and require no runtime font or network request.
+- **Presentation**: Reworked the supplied design into a fixed mobile composition using Aedify theme, spacing, typography, SVG, privacy, local-first, and optional-AI conventions without adding responsive breakpoints or unsupported cloud/health behavior.
+- **Verification**: `dart format .` completed with no changes, `flutter analyze` reported no issues, all 56 downloaded SVG variants passed XML validation, focused onboarding/M3 tests passed 27/27, focused Drift repository tests passed 14/14, and full `flutter test` passed 1098/1098.
+
+## 2026-07-24
+
+### M4 UI redesign — complete Serene Professional mobile experience
+
+- **Design foundation**: Fixed dark-theme button typography and input focus color, added semantic layout spacing and light `bodySm` tokens, documented the approved green/orange difficulty-color exceptions, and added reusable `AppBottomSheet`, `AppDialog`, `AppEmptyState`, `AppIconButton`, `AppListTile`, `AppSectionHeader`, and `AppTogglePill` components.
+- **Floating navigation**: Replaced the custom bottom bar with a floating Material 3 `NavigationBar` using rounded tonal surfaces, mode-correct active indicators, SVG destinations, safe-area spacing, and existing `StatefulNavigationShell` branch behavior.
+- **Setup and trust surfaces**: Redesigned onboarding, profile, settings, BYOK setup, and provider capabilities with privacy-first tonal hierarchy, semantic pill selectors, grouped mobile forms, secure key presentation, explicit capability states, and touch targets of at least 44 logical pixels.
+- **Training discovery**: Redesigned Home as a coach's clipboard with a dominant Start/Resume action, programme continuity, active-session progress, guided empty/error states, and disabled M5 actions. Exercise Detail now stages video, instructions/TTS, bodymap, metadata, notes, and honest history-empty content as alternating visual sections. Bodymap now uses a full-width anatomical stage, bucket pills, and front/back controls.
+- **Programme planning**: Redesigned Programme Builder with quiet mode headers, tonal details panels, semantic goals/equipment pills, expandable weeks, clearer workout slots, consistent sheets, inline validation, and a separated save/active-state surface. Programme Calendar now provides current-week, today, completion, rest, and patterned deload treatments with active-session-aware Start/Resume behavior.
+- **History review**: Redesigned Lift Log with rich snapshot cards, guided empty/error states, pull-to-refresh, and floating-nav clearance. Workout History Detail now uses a session summary hero, tonal exercise/superset sections, and explicit Warm-up/Working plus Completed/Skipped/In Progress set states.
+- **M4 audit cleanup**: Replaced all remaining production Material `Icons.*` and `Navigator.pop` usages, converted the exercise-picker modality switches and onboarding favorite selector to shared controls, removed the unused legacy exercise-filter and superset sheets, and routed the generic workout path to the real active-session runner instead of the obsolete placeholder screen.
+- **Scope**: Presentation, theme, routing cleanup, shared UI components, and widget tests only. No product scope, persistence, privacy, AI, or domain behavior changed.
+- **Verification**: `dart format .` — 0 pending formatting changes. `flutter analyze` — no issues found. `flutter test` — **1087/1087 passed**.
+
+## 2026-07-20
+
+### Workout execution — Material Icons replaced with SvgPicture.asset
+
+- **`finish_early_session_complete_screen.dart`**: 6 Material icons replaced — `Icons.close` → `OutlinedSvgAssets.xMark`, `Icons.block` → `OutlinedSvgAssets.noSymbol`, bottom-nav `_NavItem.icon` type changed from `IconData` to SVG asset path (`calendar`, `dumbbell` solid, `clock`, `user`).
+- **`workout_complete_screen.dart`**: 6 Material icons replaced — `close` → `xMark`, `check_circle` → `SolidSvgAssets.checkCircle`, `auto_awesome` → `sparkles`, `bolt` → `bolt`, `chevron_right` → `chevronRight`, `share` → `share`. Added `flutter_svg` + both SVG asset imports.
+- **`exit_workout_sheet.dart`**: 5 Material icons replaced — `pause_circle_filled` → `SolidSvgAssets.pauseCircle`, `save` → `arrowDownTray`, `arrow_forward` → `arrowRight` (both `onSecondary` per button foreground), `play_arrow` → `SolidSvgAssets.play`, `delete_forever` → `trash`. Added `flutter_svg` + both SVG asset imports.
+- **`finish_early_dialog.dart`**: 1 Material icon replaced — `Icons.warning` → `OutlinedSvgAssets.exclamationTriangle`. Added `flutter_svg` + outlined SVG asset imports.
+- **`workout_runner_screen.dart`**: 4 `Navigator.of(context).pop()` calls in `_showExitWorkoutSheet` replaced with `context.pop()` (go_router was already imported).
+- No behavior, layout, or string changes; existing `AppSizing.*` sizes and explicit icon colors preserved.
+- Verification: `dart format lib/features/workout_execution/` — 0 changed. `flutter analyze lib/features/workout_execution/` — no issues found.
+
+## 2026-07-07
+
+### Workout detail screen — logging-type-aware exercise cards
+
+- **`_ExerciseCard` now renders per `ExerciseLoggingType`**: `repsWeight` shows "Sets x Reps" + "Intensity" (unchanged); `repsOnly` shows "Sets x Reps" only (no intensity column); `duration` shows "Sets x Duration" with formatted time (`Xs` for <60s, `M:SS` for ≥60s) and no intensity column.
+- **`ExerciseDetailItem.loggingType`** field added (defaults to `repsWeight`).
+- **Controller** passes resolved `ExerciseLoggingType` from `exerciseModel.loggingType` in both `buildWorkoutDetail` and `buildSavedWorkoutDetail`.
+- **`AppStrings.setsAndDuration`** added (`"Sets x Duration"`).
+- Files: 4 lib files changed.
+- Verification: `dart format .` — 0 issues. `flutter analyze` — 0 issues.
+
+### Custom exercise editor — step list view redesigned to match HTML
+
+- **`CustomExerciseStepsEditor` redesigned**: Matches the HTML list view with `surfaceContainerLow` container, `rounded-2xl`, `min-h-[240px]`, numbered step rows with white input fields (`border outlineVariant`, `rounded-xl`, `px-4 py-3`), delete icon per step, `add_circle` + "Add Step" button, and two overlay buttons (notes + AI suggestion) with `rounded-lg` and `shadow-sm`.
+- **Added `onSwitchToText` callback**: Notes button in steps editor switches back to textarea view by clearing all steps.
+- Updated `_InstructionsSection` with `_switchToText` method to handle the toggle.
+- Files: `lib/features/exercise_library/presentation/widgets/custom_exercise_steps_editor.dart`, `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart`, test file.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — third pass: HTML mobile view match, section order fix
+
+- **Section order corrected to match HTML mobile view**: Exercise Name → PRIMARY MUSCLE GROUP → Equipment + Difficulty → MODALITY → Instructions → Logging Type → Action Buttons.
+- **Chip spacing**: All chip wraps changed from 4px gap to 8px gap (`gap-2` in HTML).
+- **Instructions overlay**: Added second AI suggestion button; both use `rounded-lg` (8px radius) with `shadow-sm`.
+- **Action buttons**: Changed from side-by-side `Row` to stacked `Column` (mobile `flex-col`), 16px gap.
+- **Logging type spacing**: Header-to-cards gap 24px (`space-y-6`); card wrap spacing 16px (`gap-4`).
+- Files: 4 lib files.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — second pass: precise HTML design match
+
+- **Section order corrected**: Modality now appears before Primary Muscle Group per the HTML layout.
+- **Chips replaced**: `FilterChip` and `SegmentedButton` replaced with custom `GestureDetector` + `Container` pills — `px-5 py-2.5` (20h/10v), `rounded-full`, toggle colors matching HTML exactly (`secondaryContainer`/`onSecondaryContainer`/`secondary` border when selected; `surfaceContainerLowest`/`onSurfaceVariant`/`outlineVariant` when unselected).
+- **Section spacing**: 40px (`AppWhiteSpace.hXl`) between major sections.
+- **Name input**: `surfaceContainerLow` bg, no border, `rounded-2xl` (16px), `px-6 py-5` (24h/20v), `bodyLg` font, focus state with white bg + blue-tinted shadow.
+- **Instructions section**: `TextField(maxLines: 6)` styled as textarea when steps are empty; delegates to `CustomExerciseStepsEditor` when steps exist. "Optional" label tag.
+- **Action buttons**: `py-5` (20v padding), `rounded-2xl` (16px radius), 16px gap, primary has `shadow-lg`.
+- **Logging type cards**: `shadow-sm` on all cards (selected and unselected), 8px gap between internal elements.
+- **Equipment dropdown**: `surfaceContainerLow` bg, `rounded-2xl`, `padding horizontal: 24`, `expand_more` icon.
+- **Difficulty segment**: 6px container padding, 12px vertical button padding, 3 segments.
+- Files:
+  - `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart` — rewrite
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_modality_section.dart` — chip padding fix
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_muscle_group_picker.dart` — replaced FilterChip with custom toggle chips
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_logging_type_picker.dart` — card shadows/spacing fix
+  - `test/features/exercise_library/presentation/widgets/custom_exercise_muscle_group_picker_test.dart` — updated tests for custom chips
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — redesigned to match HTML design, modality moved above muscle groups
+
+- **CustomExerciseModalitySection redesigned**: Replaced `SegmentedButton` + `DropdownButtonFormField` layout with pill-shaped toggle chips matching the HTML design — `surfaceContainerLowest`/`secondaryContainer` toggle with `outlineVariant`/`secondary` border, `AnimatedContainer` for smooth transitions.
+- **Modality moved above muscle groups**: The `CustomExerciseEditorScreen` now shows Modality chips before the Primary Muscle Group picker.
+- **Equipment + Difficulty combined into `_EquipmentDifficultySection`**: Styled side-by-side layout — equipment dropdown uses `DropdownButton` with `surfaceContainerLow` background and `AppRadius.xl` rounding; difficulty uses 3-segment button group (Beginner/Intermediate/Advanced) with `surfaceContainerLow` container and `surfaceContainerLowest` selected pill.
+- **New `CustomExerciseLoggingTypePicker`**: Matches the HTML "Logging Type" section — icon header with `Icons.calculate`, subtitle, and 3 selectable cards (Reps Only, Weight & Reps, Duration) with `AnimatedContainer` selection state, check-circle overlay, and `surfaceContainerLowest`/`secondary` border styling.
+- **Instructions section redesigned**: Label updated to "INSTRUCTIONS & FORM NOTES" with "Optional" badge.
+- **Bottom buttons redesigned**: "Create Exercise" (primary) and "Discard" (outlined) buttons side by side, using `AppRadius.lg` rounded shape.
+- **New controller method**: `setLoggingType(ExerciseLoggingType?)` added to `CustomExerciseEditorController`.
+- **Default logging type**: `LoadCustomExerciseDraftUseCase.createEmptyDraft()` now defaults `loggingType` to `ExerciseLoggingType.repsWeight`.
+- **New AppStrings**: `customExerciseLoggingType`, `customExerciseLoggingTypeDesc`, `customExerciseLoggingTypeRepsOnly/Desc`, `customExerciseLoggingTypeWeightReps/Desc`, `customExerciseLoggingTypeDuration/Desc`, `createExercise`, `customExercisePrimaryMuscleGroup`, `customExerciseInstructionsHint`, `customExerciseInstructionsOptional`.
+- Files:
+  - `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart` — full rewrite
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_modality_section.dart` — redesigned
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_logging_type_picker.dart` — new
+  - `lib/features/exercise_library/application/custom_exercise_editor_controller.dart` — added `setLoggingType`
+  - `lib/features/exercise_library/application/load_custom_exercise_draft_use_case.dart` — default loggingType
+  - `lib/shared/constants/app_strings.dart` — new strings
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+---
+
 ## 2026-07-06
+
+### ExerciseLoggingType — new logging type field on exercises
+
+- **New enum**: `ExerciseLoggingType` (`repsWeight`, `repsOnly`, `duration`) in `lib/shared/domain/exercise_logging_type.dart`.
+- **New resolver**: `ExerciseLoggingTypeResolver.resolve({modality, equipment?, force?})` — computes defaults from modality/equipment/force per explicit rules: strength + bodyweight equipment → repsOnly, strength + other → repsWeight, flexibility + hold → duration, flexibility + other → repsOnly, cardio → duration, recovery → duration.
+- **DB column**: `exercises.logging_type` (nullable TEXT). Schema bumped 12 → 13 with migration that backfills all existing rows via SQL CASE statement.
+- **Propagated** through `ExerciseDatasetExercise`, `ExerciseListItem`, `ExerciseDetailViewData`, `CandidateExerciseDto`, `CustomExerciseDraft`, `CustomExerciseSeed`, `ExerciseReference`, dataset parser/importer, repository read/write methods, candidate query service, and custom exercise load/save flow.
 
 ### WorkoutDetailScreen — session-aware buttons, goal badge, stale-data fixes
 
@@ -1523,3 +1717,10 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 #### M0 — Implementation lock & backlog setup
 
 - Created `implementation.md` and `changelog.md` tracking files
+# 2026-07-29 — Final onboarding review body aligned to supplied design
+
+- Reworked `OnboardingScreen` final review into the supplied fixed mobile, single-column bento composition.
+- Added exact review hierarchy and spacing for experience, AI status, schedule, equipment, metric integration, and the in-body initialize action.
+- Added centralized review sizing and copy tokens; retained editable section actions and local-first/BYOK-safe content.
+- Updated `OnboardingStepScaffold` so only the final review places its primary action in the content body.
+- Verification: `dart format .` passed; `flutter analyze` passed; onboarding widget tests passed 17/17; full `flutter test` passed 1098/1098.

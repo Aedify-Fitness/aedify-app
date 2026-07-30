@@ -1,12 +1,19 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
+import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
-import 'package:aedify/shared/components/app_text_field.dart';
+import 'package:aedify/features/settings/domain/byok_model_option.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/features/settings/presentation/widgets/settings_storage_boundary_card.dart';
+import 'package:aedify/shared/components/app_dialog.dart';
+import 'package:aedify/shared/components/app_icon_button.dart';
+import 'package:aedify/shared/components/app_list_tile.dart';
+import 'package:aedify/shared/components/app_section_header.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
-import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/provider_validation_status.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -33,7 +40,7 @@ class ByokSettingsScreen extends ConsumerWidget {
               .reload(),
         ),
         data: (state) {
-          if (state.hasError) {
+          if (state.hasError && state.providerOptions.isEmpty) {
             return _ErrorView(
               message:
                   state.errorMessage ?? AppErrorStrings.byokLoadFailedMessage,
@@ -42,7 +49,7 @@ class ByokSettingsScreen extends ConsumerWidget {
                   .reload(),
             );
           }
-          return _ByokContentView(state: state, ref: ref);
+          return _ByokContentView(state: state);
         },
       ),
     );
@@ -93,10 +100,9 @@ class _ErrorView extends StatelessWidget {
 }
 
 class _ByokContentView extends ConsumerWidget {
-  const _ByokContentView({required this.state, required this.ref});
+  const _ByokContentView({required this.state});
 
   final ByokSetupState state;
-  final WidgetRef ref;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,104 +110,90 @@ class _ByokContentView extends ConsumerWidget {
       AppProviders.byokSetupControllerProvider.notifier,
     );
     final draft = state.editDraft ?? const ByokEditDraft();
+    final selectedProvider = state.providerOptions
+        .where((option) => option.providerName == draft.providerName)
+        .firstOrNull;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.marginMobile,
+        vertical: AppSpacing.lg,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (state.errorMessage != null)
-            _ErrorBanner(message: state.errorMessage!),
-          if (state.validationMessage != null)
-            _ValidationBanner(message: state.validationMessage!),
-
-          // Existing configs
+          const SettingsStorageBoundaryCard(),
           if (state.configs.isNotEmpty) ...[
-            Text(
-              AppStrings.savedProviders,
-              style: AppTextStyles.labelMd.copyWith(
-                color: context.colorScheme.onSurface,
-              ),
-            ),
+            AppWhiteSpace.hLg,
+            const AppSectionHeader(title: AppStrings.savedProviders),
             AppWhiteSpace.hSm,
             ...state.configs.map(
-              (config) => _ConfigCard(
-                config: config,
-                onSetActive: () => controller.setActiveConfig(config.id),
-                onDelete: () => _confirmDelete(context, config.id, controller),
-              ),
-            ),
-            AppWhiteSpace.hLg,
-          ],
-
-          // Provider selector
-          Text(
-            AppStrings.provider,
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
-          ),
-          AppWhiteSpace.hSm,
-          _ProviderSelector(
-            options: state.providerOptions,
-            selectedId: draft.providerName?.dbValue,
-            onChanged: (value) {
-              final option = state.providerOptions.firstWhere(
-                (o) => o.providerName.dbValue == value,
-              );
-              controller.updateDraft(
-                draft.copyWith(
-                  providerName: option.providerName,
-                  selectedModel: option.models.isNotEmpty
-                      ? option.models.first.id
-                      : null,
+              (config) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _ConfigCard(
+                  config: config,
+                  onSetActive: () => controller.setActiveConfig(config.id),
+                  onDelete: () =>
+                      _confirmDelete(context, config.id, controller),
                 ),
-              );
-            },
-          ),
-          AppWhiteSpace.hMd,
-
-          // Model selector
-          if (draft.providerName != null) ...[
-            Text(
-              AppStrings.model,
-              style: AppTextStyles.labelMd.copyWith(
-                color: context.colorScheme.onSurface,
               ),
             ),
-            AppWhiteSpace.hSm,
-            _ModelSelector(
-              providerName: draft.providerName!,
+          ],
+          AppWhiteSpace.hLg,
+          const AppSectionHeader(title: AppStrings.provider),
+          AppWhiteSpace.hSm,
+          if (state.providerOptions.isEmpty)
+            const _InlineStatus(
+              message: AppStrings.providerSetupRequired,
+              icon: OutlinedSvgAssets.noSymbol,
+              isError: true,
+            )
+          else
+            _ProviderSelector(
               options: state.providerOptions,
-              selectedModelId: draft.selectedModel,
+              selectedId: draft.providerName?.dbValue,
               onChanged: (value) {
-                controller.updateDraft(draft.copyWith(selectedModel: value));
+                final option = state.providerOptions.firstWhere(
+                  (candidate) => candidate.providerName.dbValue == value,
+                );
+                controller.updateDraft(
+                  draft.copyWith(
+                    providerName: option.providerName,
+                    selectedModel: option.models.firstOrNull?.id,
+                    clearSelectedModel: option.models.isEmpty,
+                  ),
+                );
               },
             ),
-            if (draft.selectedModel != null) ...[
-              AppWhiteSpace.hXs,
-              _CostIndicator(
-                options: state.providerOptions,
-                providerName: draft.providerName!,
-                selectedModelId: draft.selectedModel!,
+          if (selectedProvider != null) ...[
+            AppWhiteSpace.hLg,
+            const AppSectionHeader(title: AppStrings.model),
+            AppWhiteSpace.hSm,
+            if (selectedProvider.models.isEmpty)
+              const _InlineStatus(
+                message: AppStrings.providerCapabilityUnavailable,
+                icon: OutlinedSvgAssets.noSymbol,
+                isError: true,
+              )
+            else ...[
+              _ModelSelector(
+                models: selectedProvider.models,
+                selectedModelId: draft.selectedModel,
+                onChanged: (value) {
+                  controller.updateDraft(draft.copyWith(selectedModel: value));
+                },
               ),
-              if (draft.selectedModel != null)
-                _MoreCapableHint(
-                  options: state.providerOptions,
-                  providerName: draft.providerName!,
+              if (draft.selectedModel != null) ...[
+                AppWhiteSpace.hSm,
+                _ModelDetails(
+                  provider: selectedProvider,
                   selectedModelId: draft.selectedModel!,
                 ),
+              ],
             ],
-            AppWhiteSpace.hMd,
           ],
-
-          // API key input
-          Text(
-            AppStrings.apiKey,
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
-          ),
+          AppWhiteSpace.hLg,
+          const AppSectionHeader(title: AppStrings.apiKey),
           AppWhiteSpace.hSm,
           _ApiKeyField(
             value: draft.apiKey ?? '',
@@ -209,15 +201,36 @@ class _ByokContentView extends ConsumerWidget {
               controller.updateDraft(draft.copyWith(apiKey: value));
             },
           ),
-          AppWhiteSpace.hMd,
-
-          // Save button
+          if (state.validationMessage != null) ...[
+            AppWhiteSpace.hSm,
+            _InlineStatus(
+              message: state.validationMessage!,
+              icon: OutlinedSvgAssets.exclamationCircle,
+              isError: true,
+            ),
+          ],
+          if (state.errorMessage != null) ...[
+            AppWhiteSpace.hSm,
+            _InlineStatus(
+              message: state.errorMessage!,
+              icon: OutlinedSvgAssets.signalSlash,
+              isError: true,
+            ),
+          ],
+          if (state.isTesting) ...[
+            AppWhiteSpace.hSm,
+            const _InlineStatus(
+              message: AppStrings.byokTestingKey,
+              icon: OutlinedSvgAssets.arrowPath,
+            ),
+          ],
+          AppWhiteSpace.hLg,
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: state.isSaving || state.isTesting
                   ? null
-                  : () => controller.save(),
+                  : controller.save,
               child: state.isSaving || state.isTesting
                   ? const SizedBox(
                       width: AppSizing.iconSm,
@@ -229,20 +242,7 @@ class _ByokContentView extends ConsumerWidget {
                   : const Text(AppStrings.saveKey),
             ),
           ),
-          if (state.isTesting) ...[
-            AppWhiteSpace.hSm,
-            Center(
-              child: Text(
-                AppStrings.byokTestingKey,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ],
-          AppWhiteSpace.hLg,
-
-          // Skip AI for now
+          AppWhiteSpace.hMd,
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
@@ -261,209 +261,27 @@ class _ByokContentView extends ConsumerWidget {
     String configId,
     ByokSetupController controller,
   ) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(AppStrings.deleteKey),
-        content: const Text(AppStrings.deleteKeyConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => ctx.pop(),
+    AppDialog.show<void>(
+      context,
+      title: AppStrings.deleteKey,
+      content: const Text(AppStrings.deleteKeyConfirmation),
+      actions: [
+        Builder(
+          builder: (dialogContext) => TextButton(
+            onPressed: () => dialogContext.pop(),
             child: const Text(AppStrings.cancel),
           ),
-          FilledButton(
+        ),
+        Builder(
+          builder: (dialogContext) => FilledButton(
             onPressed: () {
-              ctx.pop();
+              dialogContext.pop();
               controller.deleteConfig(configId);
             },
             child: const Text(AppStrings.deleteKey),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CostIndicator extends StatelessWidget {
-  const _CostIndicator({
-    required this.options,
-    required this.providerName,
-    required this.selectedModelId,
-  });
-
-  final List<ByokProviderOption> options;
-  final AiProviderName providerName;
-  final String selectedModelId;
-
-  @override
-  Widget build(BuildContext context) {
-    final option = options.firstWhere((o) => o.providerName == providerName);
-
-    final models = option.models;
-    final selectedModel = models
-        .where((m) => m.id == selectedModelId)
-        .firstOrNull;
-
-    if (selectedModel == null) return const SizedBox.shrink();
-
-    return Row(
-      children: [
-        SvgPicture.asset(
-          OutlinedSvgAssets.bolt,
-          width: AppSizing.iconSm,
-          height: AppSizing.iconSm,
-          colorFilter: ColorFilter.mode(
-            context.colorScheme.onSurfaceVariant,
-            BlendMode.srcIn,
-          ),
-        ),
-        AppWhiteSpace.wXs,
-        Text(
-          '${AppStrings.estimatedCostPerWorkout}${selectedModel.estimatedCostPerWorkout}',
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
         ),
       ],
-    );
-  }
-}
-
-class _MoreCapableHint extends StatelessWidget {
-  const _MoreCapableHint({
-    required this.options,
-    required this.providerName,
-    required this.selectedModelId,
-  });
-
-  final List<ByokProviderOption> options;
-  final AiProviderName providerName;
-  final String selectedModelId;
-
-  @override
-  Widget build(BuildContext context) {
-    final option = options.firstWhere((o) => o.providerName == providerName);
-    final models = option.models;
-    final selectedModel = models
-        .where((m) => m.id == selectedModelId)
-        .firstOrNull;
-
-    if (selectedModel == null) return const SizedBox.shrink();
-
-    final hasMoreCapable = models.any(
-      (m) => m.totalCostPer1kTokens > selectedModel.totalCostPer1kTokens,
-    );
-
-    if (!hasMoreCapable) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.xs),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            OutlinedSvgAssets.bolt,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
-            ),
-          ),
-          AppWhiteSpace.wXs,
-          Text(
-            AppStrings.byokMoreCapableModelsHint,
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorBanner extends StatelessWidget {
-  const _ErrorBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: context.colorScheme.errorContainer,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              OutlinedSvgAssets.exclamationCircle,
-              width: AppSizing.iconMd,
-              height: AppSizing.iconMd,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onErrorContainer,
-                BlendMode.srcIn,
-              ),
-            ),
-            AppWhiteSpace.wSm,
-            Expanded(
-              child: Text(
-                message,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: context.colorScheme.onErrorContainer,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ValidationBanner extends StatelessWidget {
-  const _ValidationBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: context.colorScheme.tertiaryContainer,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              OutlinedSvgAssets.exclamationCircle,
-              width: AppSizing.iconMd,
-              height: AppSizing.iconMd,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onTertiaryContainer,
-                BlendMode.srcIn,
-              ),
-            ),
-            AppWhiteSpace.wSm,
-            Expanded(
-              child: Text(
-                message,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: context.colorScheme.onTertiaryContainer,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -475,97 +293,143 @@ class _ConfigCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  final dynamic config;
+  final ByokConfigViewData config;
   final VoidCallback onSetActive;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
+    final connectionStatus = _connectionStatus(config);
+    final connectionIsValid =
+        config.hasKey &&
+        (config.lastValidationStatus == ProviderValidationStatus.valid ||
+            config.lastValidationStatus == null);
+
     return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
+        color: context.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(
-          color: config.isActive
-              ? context.colorScheme.primary
-              : context.colorScheme.outlineVariant,
-          width: AppSizing.divider,
-        ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  config.displayName ?? config.providerName.dbValue,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: context.colorScheme.onSurface,
-                  ),
-                ),
-              ),
-              if (config.isActive)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xxs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Text(
-                    AppStrings.active,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ),
-            ],
+          AppListTile(
+            title: config.displayName ?? config.providerName.dbValue,
+            subtitle: config.selectedModel,
+            leadingAsset: OutlinedSvgAssets.key,
+            trailing: config.isActive
+                ? const _StatusPill(label: AppStrings.active, available: true)
+                : null,
           ),
-          if (config.selectedModel != null) ...[
-            AppWhiteSpace.hXs,
-            Text(
-              config.selectedModel,
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.md,
+              right: AppSpacing.sm,
+              bottom: AppSpacing.sm,
             ),
-          ],
-          if (config.hasKey) ...[
-            AppWhiteSpace.hXs,
-            Text(
-              AppStrings.keySaved,
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.colorScheme.tertiary,
-              ),
-            ),
-          ],
-          AppWhiteSpace.hSm,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (!config.isActive)
-                TextButton(
-                  onPressed: onSetActive,
-                  child: const Text(AppStrings.makeActive),
-                ),
-              TextButton(
-                onPressed: onDelete,
-                child: Text(
-                  AppStrings.deleteKey,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.colorScheme.error,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _ConnectionStatus(
+                    label: connectionStatus,
+                    available: connectionIsValid,
                   ),
                 ),
-              ),
-            ],
+                if (!config.isActive)
+                  TextButton(
+                    onPressed: onSetActive,
+                    child: const Text(AppStrings.makeActive),
+                  ),
+                AppIconButton(
+                  key: ValueKey('byok-delete-${config.id}'),
+                  asset: OutlinedSvgAssets.trash,
+                  semanticLabel: AppStrings.deleteKey,
+                  color: context.colorScheme.error,
+                  onPressed: onDelete,
+                ),
+              ],
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  String _connectionStatus(ByokConfigViewData config) {
+    if (!config.hasKey) return AppStrings.providerKeyRequired;
+    return switch (config.lastValidationStatus) {
+      ProviderValidationStatus.invalid =>
+        AppErrorStrings.byokKeyValidationFailed,
+      ProviderValidationStatus.rateLimited =>
+        AppErrorStrings.rateLimitedMessage,
+      ProviderValidationStatus.unknown =>
+        AppStrings.providerCapabilityUnavailable,
+      ProviderValidationStatus.valid => AppStrings.keySaved,
+      null => AppStrings.keySaved,
+    };
+  }
+}
+
+class _ConnectionStatus extends StatelessWidget {
+  const _ConnectionStatus({required this.label, required this.available});
+
+  final String label;
+  final bool available;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = available
+        ? context.colorScheme.tertiary
+        : context.colorScheme.error;
+
+    return Row(
+      children: [
+        SvgPicture.asset(
+          available
+              ? OutlinedSvgAssets.checkCircle
+              : OutlinedSvgAssets.noSymbol,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
+        AppWhiteSpace.wXs,
+        Expanded(
+          child: Text(
+            label,
+            style: AppTextStyles.labelSm.copyWith(color: color),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.label, required this.available});
+
+  final String label;
+  final bool available;
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = available
+        ? context.colorScheme.tertiaryContainer
+        : context.colorScheme.errorContainer;
+    final foregroundColor = available
+        ? context.colorScheme.onTertiaryContainer
+        : context.colorScheme.onErrorContainer;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Text(
+        label,
+        style: AppTextStyles.labelSm.copyWith(color: foregroundColor),
       ),
     );
   }
@@ -578,8 +442,137 @@ class _ProviderSelector extends StatelessWidget {
     required this.onChanged,
   });
 
-  final List<dynamic> options;
+  final List<ByokProviderOption> options;
   final String? selectedId;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var index = 0; index < options.length; index++) ...[
+          _ProviderOptionCard(
+            option: options[index],
+            selected: options[index].providerName.dbValue == selectedId,
+            onTap: () => onChanged(options[index].providerName.dbValue),
+          ),
+          if (index < options.length - 1) AppWhiteSpace.hSm,
+        ],
+      ],
+    );
+  }
+}
+
+class _ProviderOptionCard extends StatelessWidget {
+  const _ProviderOptionCard({
+    required this.option,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final ByokProviderOption option;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+    final selectedBackground = isDark
+        ? context.colorScheme.primaryContainer
+        : context.colorScheme.secondaryContainer;
+    final selectedForeground = isDark
+        ? context.colorScheme.onPrimaryContainer
+        : context.colorScheme.onSecondaryContainer;
+    final foreground = selected
+        ? selectedForeground
+        : context.colorScheme.onSurface;
+
+    return Semantics(
+      key: ValueKey('byok-provider-${option.id}'),
+      button: true,
+      selected: selected,
+      label: option.displayName,
+      child: Material(
+        color: selected
+            ? selectedBackground
+            : context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: AppSizing.iconXxl,
+                  height: AppSizing.iconXxl,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? foreground.withValues(alpha: 0.12)
+                        : context.colorScheme.surfaceContainerLowest,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    OutlinedSvgAssets.sparkles,
+                    width: AppSizing.iconMd,
+                    height: AppSizing.iconMd,
+                    colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+                  ),
+                ),
+                AppWhiteSpace.wMd,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        option.displayName,
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      AppWhiteSpace.hXxs,
+                      Text(
+                        option.description,
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: selected
+                              ? selectedForeground
+                              : context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (selected) ...[
+                  AppWhiteSpace.wSm,
+                  SvgPicture.asset(
+                    OutlinedSvgAssets.checkCircle,
+                    key: ValueKey('byok-provider-${option.id}-selected'),
+                    width: AppSizing.iconMd,
+                    height: AppSizing.iconMd,
+                    colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModelSelector extends StatelessWidget {
+  const _ModelSelector({
+    required this.models,
+    required this.selectedModelId,
+    required this.onChanged,
+  });
+
+  final List<ByokModelOption> models;
+  final String? selectedModelId;
   final ValueChanged<String> onChanged;
 
   @override
@@ -587,53 +580,214 @@ class _ProviderSelector extends StatelessWidget {
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
-      children: options.map((option) {
-        final isSelected = option.providerName.dbValue == selectedId;
-        return ChoiceChip(
-          label: Text(option.displayName),
-          selected: isSelected,
-          onSelected: (_) => onChanged(option.providerName.dbValue),
-        );
-      }).toList(),
+      children: models
+          .map(
+            (model) => _ModelPill(
+              model: model,
+              selected: model.id == selectedModelId,
+              onTap: () => onChanged(model.id),
+            ),
+          )
+          .toList(),
     );
   }
 }
 
-class _ModelSelector extends StatelessWidget {
-  const _ModelSelector({
-    required this.providerName,
-    required this.options,
-    required this.selectedModelId,
-    required this.onChanged,
+class _ModelPill extends StatelessWidget {
+  const _ModelPill({
+    required this.model,
+    required this.selected,
+    required this.onTap,
   });
 
-  final AiProviderName providerName;
-  final List<ByokProviderOption> options;
-  final String? selectedModelId;
-  final ValueChanged<String?> onChanged;
+  final ByokModelOption model;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final byokOption = options.firstWhere(
-      (o) => o.providerName == providerName,
-    );
-    final models = byokOption.models;
-    return DropdownButtonFormField<String>(
-      initialValue: selectedModelId,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
+    final isDark = context.theme.brightness == Brightness.dark;
+    final selectedBackground = isDark
+        ? context.colorScheme.primaryContainer
+        : context.colorScheme.secondaryContainer;
+    final selectedForeground = isDark
+        ? context.colorScheme.onPrimaryContainer
+        : context.colorScheme.onSecondaryContainer;
+
+    return Semantics(
+      key: ValueKey('byok-model-${model.id}'),
+      button: true,
+      selected: selected,
+      label: model.displayName,
+      child: Material(
+        color: selected
+            ? selectedBackground
+            : context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.buttonVertical,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (selected) ...[
+                  SvgPicture.asset(
+                    OutlinedSvgAssets.check,
+                    key: ValueKey('byok-model-${model.id}-selected'),
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      selectedForeground,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  AppWhiteSpace.wXs,
+                ],
+                Text(
+                  model.displayName,
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: selected
+                        ? selectedForeground
+                        : context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      items: models.map<DropdownMenuItem<String>>((model) {
-        return DropdownMenuItem(
-          value: model.id,
-          child: Text(model.displayName),
-        );
-      }).toList(),
-      onChanged: onChanged,
+    );
+  }
+}
+
+class _ModelDetails extends StatelessWidget {
+  const _ModelDetails({required this.provider, required this.selectedModelId});
+
+  final ByokProviderOption provider;
+  final String selectedModelId;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedModel = provider.models
+        .where((model) => model.id == selectedModelId)
+        .firstOrNull;
+    if (selectedModel == null) return const SizedBox.shrink();
+
+    final hasMoreCapable = provider.models.any(
+      (model) =>
+          model.totalCostPer1kTokens > selectedModel.totalCostPer1kTokens,
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DetailLine(
+            icon: OutlinedSvgAssets.bolt,
+            text:
+                '${AppStrings.estimatedCostPerWorkout}${selectedModel.estimatedCostPerWorkout}',
+          ),
+          if (hasMoreCapable) ...[
+            AppWhiteSpace.hSm,
+            const _DetailLine(
+              icon: OutlinedSvgAssets.sparkles,
+              text: AppStrings.byokMoreCapableModelsHint,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailLine extends StatelessWidget {
+  const _DetailLine({required this.icon, required this.text});
+
+  final String icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          icon,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.onSurfaceVariant,
+            BlendMode.srcIn,
+          ),
+        ),
+        AppWhiteSpace.wXs,
+        Expanded(
+          child: Text(
+            text,
+            style: AppTextStyles.labelSm.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InlineStatus extends StatelessWidget {
+  const _InlineStatus({
+    required this.message,
+    required this.icon,
+    this.isError = false,
+  });
+
+  final String message;
+  final String icon;
+  final bool isError;
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = isError
+        ? context.colorScheme.errorContainer
+        : context.colorScheme.tertiaryContainer;
+    final foregroundColor = isError
+        ? context.colorScheme.onErrorContainer
+        : context.colorScheme.onTertiaryContainer;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            icon,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(foregroundColor, BlendMode.srcIn),
+          ),
+          AppWhiteSpace.wSm,
+          Expanded(
+            child: Text(
+              message,
+              style: AppTextStyles.labelMd.copyWith(color: foregroundColor),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -674,9 +828,23 @@ class _ApiKeyFieldState extends State<_ApiKeyField> {
   @override
   Widget build(BuildContext context) {
     return AppTextField(
+      key: const ValueKey('byok-api-key-field'),
       controller: _controller,
       hintText: AppStrings.apiKeyHint,
+      obscureText: true,
       enableObscureToggle: true,
+      prefixIcon: Padding(
+        padding: const EdgeInsets.all(AppSpacing.buttonVertical),
+        child: SvgPicture.asset(
+          OutlinedSvgAssets.lockClosed,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.onSurfaceVariant,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
       onChanged: widget.onChanged,
     );
   }

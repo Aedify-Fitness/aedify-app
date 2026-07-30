@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -8,6 +9,9 @@ import 'package:aedify/features/programmes/application/today_workout_resolver.da
 import 'package:aedify/features/programmes/domain/programme_workout_detail_view_data.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/workout_detail_button_state.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -35,7 +39,9 @@ class WorkoutDetailScreen extends ConsumerWidget {
     return detailAsync.when(
       loading: () =>
           Scaffold(body: const Center(child: CircularProgressIndicator())),
-      error: (error, stack) => Scaffold(body: Center(child: Text('$error'))),
+      error: (error, stack) => Scaffold(
+        body: Center(child: Text(AppStrings.workoutDetailLoadError)),
+      ),
       data: (detail) {
         if (detail == null) {
           return Scaffold(
@@ -102,9 +108,14 @@ class WorkoutDetailScreen extends ConsumerWidget {
                         );
                       }
                     },
-                    icon: Icon(
-                      Icons.play_arrow,
-                      color: context.colorScheme.onSecondary,
+                    icon: SvgPicture.asset(
+                      OutlinedSvgAssets.play,
+                      width: AppSizing.iconMd,
+                      height: AppSizing.iconMd,
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.onSecondary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     label: Text(
                       detail.buttonState == WorkoutDetailButtonState.resume
@@ -173,18 +184,18 @@ class _HeroSection extends StatelessWidget {
           runSpacing: AppSpacing.sm,
           children: [
             _StatItem(
-              icon: Icons.fitness_center,
+              iconAsset: SolidSvgAssets.dumbbell,
               label: AppStrings.exercisesLabel,
               value: '${detail.exercises.length} ${AppStrings.movements}',
             ),
             _StatItem(
-              icon: Icons.schedule,
+              iconAsset: OutlinedSvgAssets.clock,
               label: AppStrings.duration,
               value: '~${detail.durationMinutes} ${AppStrings.minutes}',
             ),
             if (detail.focusAreas.isNotEmpty)
               _StatItem(
-                icon: Icons.my_location,
+                iconAsset: OutlinedSvgAssets.mapPin,
                 label: AppStrings.focusLabel,
                 value: detail.focusAreas,
               ),
@@ -197,12 +208,12 @@ class _HeroSection extends StatelessWidget {
 
 class _StatItem extends StatelessWidget {
   const _StatItem({
-    required this.icon,
+    required this.iconAsset,
     required this.label,
     required this.value,
   });
 
-  final IconData icon;
+  final String iconAsset;
   final String label;
   final String value;
 
@@ -220,7 +231,12 @@ class _StatItem extends StatelessWidget {
             color: cs.surfaceContainer,
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
-          child: Icon(icon, color: cs.secondary, size: AppSizing.iconMd),
+          child: SvgPicture.asset(
+            iconAsset,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+          ),
         ),
         AppWhiteSpace.custom(width: AppSpacing.sm + AppSpacing.xs),
         Column(
@@ -397,6 +413,17 @@ class _ExerciseCard extends StatelessWidget {
     final cs = context.colorScheme;
     final firstSet = exercise.sets.isNotEmpty ? exercise.sets.last : null;
 
+    String formatDurationValue(int seconds) {
+      if (seconds >= 60) {
+        final minutes = seconds ~/ 60;
+        final secs = seconds % 60;
+        return '$minutes:${secs.toString().padLeft(2, '0')}';
+      }
+      return '$seconds${AppStrings.secondsUnitAbbreviation}';
+    }
+
+    final durationValue = firstSet?.durationSeconds;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -421,10 +448,14 @@ class _ExerciseCard extends StatelessWidget {
                 color: cs.surfaceContainer,
                 borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
               ),
-              child: Icon(
-                Icons.fitness_center,
-                color: cs.onSurfaceVariant.withAlpha(77),
-                size: AppSizing.iconMd,
+              child: SvgPicture.asset(
+                SolidSvgAssets.dumbbell,
+                width: AppSizing.iconMd,
+                height: AppSizing.iconMd,
+                colorFilter: ColorFilter.mode(
+                  cs.onSurfaceVariant.withAlpha(77),
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.md + AppSpacing.xs),
@@ -477,33 +508,49 @@ class _ExerciseCard extends StatelessWidget {
                         spacing: AppSpacing.md,
                         children: [
                           _SetSummaryColumn(
-                            label: AppStrings.setsAndReps,
+                            label:
+                                exercise.loggingType ==
+                                    ExerciseLoggingType.duration
+                                ? AppStrings.setsAndDuration
+                                : AppStrings.setsAndReps,
                             value:
-                                '${exercise.sets.length} x ${firstSet.repsDisplay ?? '-'}',
+                                exercise.loggingType ==
+                                    ExerciseLoggingType.duration
+                                ? '${exercise.sets.length} x ${durationValue != null ? formatDurationValue(durationValue) : '-'}'
+                                : '${exercise.sets.length} x ${firstSet.repsDisplay ?? '-'}',
                           ),
-                          Container(
-                            width: 1,
-                            height: AppSpacing.lg,
-                            color: cs.outlineVariant,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: AppSpacing.md),
-                            child: _SetSummaryColumn(
-                              label: AppStrings.intensity,
-                              value: firstSet.rpeDisplay ?? '-',
-                              valueColor: cs.secondary,
+                          if (exercise.loggingType ==
+                              ExerciseLoggingType.repsWeight) ...[
+                            Container(
+                              width: AppSizing.hairlineStrokeWidth,
+                              height: AppSpacing.lg,
+                              color: cs.outlineVariant,
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: AppSpacing.md,
+                              ),
+                              child: _SetSummaryColumn(
+                                label: AppStrings.intensity,
+                                value: firstSet.rpeDisplay ?? '-',
+                                valueColor: cs.secondary,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: cs.onSurfaceVariant,
-              size: AppSizing.iconSm,
+            SvgPicture.asset(
+              OutlinedSvgAssets.chevronRight,
+              width: AppSizing.iconSm,
+              height: AppSizing.iconSm,
+              colorFilter: ColorFilter.mode(
+                cs.onSurfaceVariant,
+                BlendMode.srcIn,
+              ),
             ),
           ],
         ),

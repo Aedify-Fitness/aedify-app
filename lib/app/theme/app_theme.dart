@@ -107,6 +107,19 @@ class AppTheme {
       backgroundColor: AedifyLightColors.surfaceContainerLow,
       selectedColor: AedifyLightColors.secondaryContainer,
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: AedifyLightColors.secondaryContainer,
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? AppTextStyles.labelSm.copyWith(
+                color: AedifyLightColors.onSurface,
+                fontWeight: FontWeight.w600,
+              )
+            : AppTextStyles.labelSm.copyWith(
+                color: AedifyLightColors.onSurfaceVariant,
+              ),
+      ),
+    ),
     textTheme: const TextTheme(
       displayLarge: AppTextStyles.headlineXl,
       headlineLarge: AppTextStyles.headlineLg,
@@ -114,6 +127,7 @@ class AppTheme {
       headlineSmall: AppTextStyles.headlineLgMobile,
       bodyLarge: AppTextStyles.bodyLg,
       bodyMedium: AppTextStyles.bodyMd,
+      bodySmall: AppTextStyles.bodySm,
       labelLarge: AppTextStyles.labelMd,
       labelSmall: AppTextStyles.labelSm,
     ),
@@ -194,7 +208,7 @@ class AppTheme {
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.buttonVertical,
         ),
-        textStyle: AppTextStyles.labelMd,
+        textStyle: AppTextStylesDark.labelMd,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -206,7 +220,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-        borderSide: BorderSide(color: AedifyDarkColors.secondaryFixedDim),
+        borderSide: BorderSide(color: AedifyDarkColors.primary),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -219,6 +233,19 @@ class AppTheme {
       ),
       backgroundColor: AedifyDarkColors.surfaceContainerHigh,
       selectedColor: AedifyDarkColors.primaryContainerSelected,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: AedifyDarkColors.primaryContainer,
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? AppTextStylesDark.labelSm.copyWith(
+                color: AedifyDarkColors.primary,
+                fontWeight: FontWeight.w600,
+              )
+            : AppTextStylesDark.labelSm.copyWith(
+                color: AedifyDarkColors.onSurfaceVariant,
+              ),
+      ),
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStylesDark.headlineXl,

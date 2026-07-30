@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -35,6 +37,7 @@ class AppTextField extends StatefulWidget {
     this.suffixText,
     this.suffixStyle,
     this.borderOverride,
+    this.textAlign = TextAlign.start,
   });
 
   final TextEditingController controller;
@@ -65,6 +68,7 @@ class AppTextField extends StatefulWidget {
   final bool? isDense;
   final String? suffixText;
   final TextStyle? suffixStyle;
+  final TextAlign textAlign;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -89,8 +93,15 @@ class _AppTextFieldState extends State<AppTextField> {
 
   Widget? _buildObscureToggle() {
     if (!widget.enableObscureToggle) return null;
+    final cs = context.colorScheme;
     return IconButton(
-      icon: Icon(_obscured ? Icons.visibility_off : Icons.visibility),
+      tooltip: _obscured ? 'Show' : 'Hide',
+      icon: SvgPicture.asset(
+        _obscured ? OutlinedSvgAssets.eyeSlash : OutlinedSvgAssets.eye,
+        width: AppSizing.iconMd,
+        height: AppSizing.iconMd,
+        colorFilter: ColorFilter.mode(cs.onSurfaceVariant, BlendMode.srcIn),
+      ),
       onPressed: () => setState(() => _obscured = !_obscured),
     );
   }
@@ -149,7 +160,10 @@ class _AppTextFieldState extends State<AppTextField> {
             borderRadius: BorderRadius.circular(
               widget.borderRadius ?? AppRadius.defaultRadius,
             ),
-            borderSide: BorderSide(color: cs.secondary, width: 2),
+            borderSide: BorderSide(
+              color: cs.secondary,
+              width: AppSizing.strokeWidth,
+            ),
           ),
       errorBorder:
           widget.borderOverride ??
@@ -165,7 +179,10 @@ class _AppTextFieldState extends State<AppTextField> {
             borderRadius: BorderRadius.circular(
               widget.borderRadius ?? AppRadius.defaultRadius,
             ),
-            borderSide: BorderSide(color: cs.error, width: 2),
+            borderSide: BorderSide(
+              color: cs.error,
+              width: AppSizing.strokeWidth,
+            ),
           ),
     );
   }
@@ -193,6 +210,7 @@ class _AppTextFieldState extends State<AppTextField> {
             enabled: widget.enabled,
             validator: widget.validator,
             style: widget.style,
+            textAlign: widget.textAlign,
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
           )
         : TextField(
@@ -210,6 +228,7 @@ class _AppTextFieldState extends State<AppTextField> {
             onSubmitted: widget.onSubmitted,
             enabled: widget.enabled,
             style: widget.style,
+            textAlign: widget.textAlign,
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
           );
 

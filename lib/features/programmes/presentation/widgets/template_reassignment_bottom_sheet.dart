@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 import 'package:aedify/features/programmes/domain/saved_workout_list_item.dart';
+import 'package:aedify/shared/components/app_bottom_sheet.dart';
+import 'package:aedify/shared/components/app_list_tile.dart';
+import 'package:aedify/shared/components/app_section_header.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
-import 'package:go_router/go_router.dart';
 
 class TemplateReassignmentBottomSheet extends StatelessWidget {
   const TemplateReassignmentBottomSheet({
@@ -27,63 +30,64 @@ class TemplateReassignmentBottomSheet extends StatelessWidget {
     final templates = availableTemplates ?? [];
     final workouts = savedWorkouts ?? [];
 
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(AppStrings.assignTemplate, style: context.textTheme.titleMedium),
-          AppWhiteSpace.hMd,
-          _CreateNewSection(),
-          AppWhiteSpace.hMd,
-          if (workouts.isNotEmpty) ...[
-            _SectionHeader(title: AppStrings.fromSavedWorkouts),
-            ...workouts.map(
-              (item) => ListTile(
-                leading: SvgPicture.asset(
-                  OutlinedSvgAssets.documentText,
-                  width: AppSizing.iconSm,
-                  height: AppSizing.iconSm,
+    return AppBottomSheet(
+      title: AppStrings.assignTemplate,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(
+          top: AppSpacing.md,
+          bottom: AppSpacing.lg,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _CreateNewSection(),
+            AppWhiteSpace.hLg,
+            const AppSectionHeader(title: AppStrings.fromSavedWorkouts),
+            AppWhiteSpace.hSm,
+            if (workouts.isNotEmpty)
+              ...workouts.map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: AppListTile(
+                    leadingAsset: OutlinedSvgAssets.documentText,
+                    title: item.name,
+                    subtitle:
+                        '${item.exerciseCount} ${AppStrings.exercisesSelected}',
+                    showChevron: true,
+                    onTap: () {
+                      onSelectSavedWorkout?.call(item);
+                      context.pop();
+                    },
+                  ),
                 ),
-                title: Text(item.name),
-                subtitle: Text(
-                  '${item.exerciseCount} ${AppStrings.exercisesSelected}',
+              )
+            else
+              const _EmptySavedWorkouts(),
+            if (templates.isNotEmpty) ...[
+              AppWhiteSpace.hLg,
+              const AppSectionHeader(title: AppStrings.programmeTemplates),
+              AppWhiteSpace.hSm,
+              ...templates.map(
+                (template) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: AppListTile(
+                    leadingAsset: OutlinedSvgAssets.rectangleStack,
+                    title: template.name,
+                    subtitle: template.dayType != null
+                        ? '${AppStrings.dayTypeLabel}: ${template.dayType!.name}'
+                        : null,
+                    showChevron: true,
+                    onTap: () {
+                      onSelected?.call(template);
+                      context.pop();
+                    },
+                  ),
                 ),
-                onTap: () {
-                  onSelectSavedWorkout?.call(item);
-                  context.pop();
-                },
               ),
-            ),
-            AppWhiteSpace.hMd,
-          ] else
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: Text(
-                AppStrings.noSavedWorkoutsToImport,
-                style: context.textTheme.bodyMedium,
-              ),
-            ),
-          if (templates.isNotEmpty) ...[
-            _SectionHeader(title: AppStrings.programmeTemplates),
-            ...templates.map(
-              (template) => ListTile(
-                title: Text(template.name),
-                subtitle: template.dayType != null
-                    ? Text(
-                        '${AppStrings.dayTypeLabel}: ${template.dayType!.name}',
-                      )
-                    : null,
-                onTap: () {
-                  onSelected?.call(template);
-                  context.pop();
-                },
-              ),
-            ),
+            ],
           ],
-          AppWhiteSpace.hSm,
-        ],
+        ),
       ),
     );
   }
@@ -94,42 +98,33 @@ class _CreateNewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: SvgPicture.asset(
-        OutlinedSvgAssets.plusCircle,
-        width: AppSizing.iconSm,
-        height: AppSizing.iconSm,
-        colorFilter: ColorFilter.mode(
-          context.colorScheme.primary,
-          BlendMode.srcIn,
-        ),
-      ),
-      title: Text(
-        AppStrings.createTemplate,
-        style: context.textTheme.bodyMedium?.copyWith(
-          color: context.colorScheme.primary,
-        ),
-      ),
-      onTap: () {
-        context.pop(true);
-      },
+    return AppListTile(
+      leadingAsset: OutlinedSvgAssets.plusCircle,
+      title: AppStrings.createTemplate,
+      subtitle: AppStrings.selectExercisesForTemplate,
+      showChevron: true,
+      onTap: () => context.pop(true),
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-
-  final String title;
+class _EmptySavedWorkouts extends StatelessWidget {
+  const _EmptySavedWorkouts();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-      child: Text(
-        title,
-        style: context.textTheme.labelMedium?.copyWith(
-          color: context.colorScheme.onSurface.withAlpha(150),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Text(
+          AppStrings.noSavedWorkoutsToImport,
+          style: AppTextStyles.bodySm.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );

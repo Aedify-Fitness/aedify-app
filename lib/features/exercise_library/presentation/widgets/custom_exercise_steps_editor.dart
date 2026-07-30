@@ -1,8 +1,8 @@
-import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,12 +13,14 @@ class CustomExerciseStepsEditor extends StatefulWidget {
     required this.onAddStep,
     required this.onUpdateStep,
     required this.onRemoveStep,
+    this.onSwitchToText,
   });
 
   final List<String> steps;
   final VoidCallback onAddStep;
   final void Function(int index, String value) onUpdateStep;
   final ValueChanged<int> onRemoveStep;
+  final VoidCallback? onSwitchToText;
 
   @override
   State<CustomExerciseStepsEditor> createState() =>
@@ -66,61 +68,150 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(AppStrings.customExerciseSteps, style: AppTextStyles.labelMd),
-        AppWhiteSpace.hXs,
-        if (widget.steps.isEmpty)
+    final cs = context.colorScheme;
+    return Container(
+      constraints: BoxConstraints(minHeight: AppSizing.inputFieldHeight * 6),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      child: Stack(
+        children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-            child: Text(
-              AppStrings.customExerciseNoSteps,
-              style: AppTextStyles.labelSm,
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...List.generate(widget.steps.length, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: AppSizing.iconSm,
+                          child: Text(
+                            '${index + 1}.',
+                            style: AppTextStyles.labelMd.copyWith(
+                              color: cs.secondary,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: cs.surfaceContainerLowest,
+                              border: Border.all(color: cs.outlineVariant),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                            ),
+                            child: TextField(
+                              controller: _controllers[index],
+                              decoration: InputDecoration(
+                                hintText: AppStrings.customExerciseStepHint,
+                                hintStyle: AppTextStyles.bodyMd.copyWith(
+                                  color: cs.onSurfaceVariant.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                ),
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                isDense: true,
+                              ),
+                              style: AppTextStyles.bodyMd.copyWith(
+                                color: cs.onSurface,
+                              ),
+                              onChanged: (value) =>
+                                  widget.onUpdateStep(index, value),
+                              onTapOutside: (_) =>
+                                  FocusScope.of(context).unfocus(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.md),
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            OutlinedSvgAssets.trash,
+                            width: AppSizing.iconMd,
+                            height: AppSizing.iconMd,
+                            colorFilter: ColorFilter.mode(
+                              cs.onSurfaceVariant,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          onPressed: () => widget.onRemoveStep(index),
+                          tooltip: AppStrings.customExerciseRemoveStep,
+                          constraints: BoxConstraints(
+                            minWidth: AppSizing.iconXxl,
+                            minHeight: AppSizing.iconXxl,
+                          ),
+                          padding: const EdgeInsets.all(AppSpacing.sm),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                const SizedBox(height: AppSpacing.sm),
+                GestureDetector(
+                  onTap: widget.onAddStep,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        OutlinedSvgAssets.plusCircle,
+                        width: AppSizing.iconMd,
+                        height: AppSizing.iconMd,
+                        colorFilter: ColorFilter.mode(
+                          cs.secondary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      SizedBox(width: AppSpacing.sm),
+                      Text(
+                        AppStrings.customExerciseAddStep,
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: cs.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          )
-        else
-          ...List.generate(widget.steps.length, (index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: AppTextField(
-                      controller: _controllers[index],
-                      hintText:
-                          '${AppStrings.customExerciseSteps} ${index + 1}',
-                      maxLines: 2,
-                      isDense: true,
-                      onChanged: (value) => widget.onUpdateStep(index, value),
-                    ),
-                  ),
-                  AppWhiteSpace.wXs,
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      OutlinedSvgAssets.minusCircle,
-                      width: AppSizing.iconMd,
-                      height: AppSizing.iconMd,
-                    ),
-                    onPressed: () => widget.onRemoveStep(index),
-                    tooltip: AppStrings.customExerciseRemoveStep,
-                  ),
-                ],
-              ),
-            );
-          }),
-        AppWhiteSpace.hXs,
-        OutlinedButton.icon(
-          onPressed: widget.onAddStep,
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.plus,
-            width: AppSizing.iconMd,
-            height: AppSizing.iconMd,
           ),
-          label: Text(AppStrings.customExerciseAddStep),
-        ),
-      ],
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: GestureDetector(
+              onTap: widget.onSwitchToText,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: cs.secondary,
+                  borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+                  boxShadow: [
+                    BoxShadow(
+                      color: cs.shadow.withValues(alpha: 0.04),
+                      offset: const Offset(0, 2),
+                      blurRadius: AppRadius.defaultRadius,
+                    ),
+                  ],
+                ),
+                child: SvgPicture.asset(
+                  OutlinedSvgAssets.bars3BottomLeft,
+                  height: AppSizing.iconS,
+                  colorFilter: ColorFilter.mode(
+                    cs.onSecondary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

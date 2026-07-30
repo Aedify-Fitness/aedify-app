@@ -1,8 +1,9 @@
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/bodymap/presentation/widgets/bodymap_bucket_chip_bar.dart';
-import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 Widget createChipBar({
   BodymapBucket? selectedBucket,
@@ -37,13 +38,23 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // The selected chip should have a distinct style; at minimum we assert
-      // it is present and the clear button appears.
-      expect(find.text(BodymapBucket.chest.label), findsWidgets);
-      expect(find.text(AppStrings.clearSelection), findsOneWidget);
+      final selectedPill = find.byKey(
+        const ValueKey<String>('bodymap_bucket_chest'),
+      );
+      final semantics = tester.widget<Semantics>(selectedPill);
+
+      expect(semantics.properties.selected, isTrue);
+      expect(
+        find.descendant(of: selectedPill, matching: find.byType(SvgPicture)),
+        findsOneWidget,
+      );
+      expect(
+        tester.getSize(selectedPill).height,
+        greaterThanOrEqualTo(AppSizing.cardBadge),
+      );
     });
 
-    testWidgets('clear button calls onClear', (tester) async {
+    testWidgets('tapping selected bucket calls onClear', (tester) async {
       var cleared = false;
       await tester.pumpWidget(
         createChipBar(
@@ -53,17 +64,24 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(AppStrings.clearSelection));
+      await tester.tap(
+        find.byKey(const ValueKey<String>('bodymap_bucket_chest')),
+      );
       expect(cleared, isTrue);
     });
 
-    testWidgets('clear button is hidden when no bucket selected', (
-      tester,
-    ) async {
-      await tester.pumpWidget(createChipBar());
+    testWidgets('tapping bucket calls onSelected', (tester) async {
+      BodymapBucket? selected;
+      await tester.pumpWidget(
+        createChipBar(onSelected: (bucket) => selected = bucket),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.clearSelection), findsNothing);
+      await tester.tap(
+        find.byKey(const ValueKey<String>('bodymap_bucket_chest')),
+      );
+
+      expect(selected, BodymapBucket.chest);
     });
   });
 }

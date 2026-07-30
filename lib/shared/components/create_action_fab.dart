@@ -26,7 +26,7 @@ class CreateActionFab extends StatelessWidget {
             BoxShadow(
               color: colorScheme.secondary.withValues(alpha: 0.4),
               blurRadius: AppSpacing.md,
-              offset: const Offset(0, 4),
+              offset: const Offset(0, AppSpacing.xs),
             ),
           ],
         ),

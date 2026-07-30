@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_list_item.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class WorkoutHistoryListTile extends StatelessWidget {
   const WorkoutHistoryListTile({
@@ -25,19 +30,103 @@ class WorkoutHistoryListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     final sourceLabel = _sourceLabel();
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: ListTile(
-        title: Text(item.name),
-        subtitle: Text(
-          '$sourceLabel \u2022 ${item.exerciseCount} ${AppStrings.historyExerciseList.toLowerCase()}',
+    final duration = _formatDuration(item.durationSeconds);
+
+    return Semantics(
+      button: true,
+      child: Material(
+        color: colorScheme.surfaceContainerLowest,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(
+            color: colorScheme.surfaceContainer,
+            width: AppSizing.hairlineStrokeWidth,
+          ),
         ),
-        trailing: Text(
-          _formatDuration(item.durationSeconds),
-          style: context.textTheme.bodySmall,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md + AppSpacing.xs,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: AppBadge(
+                        label: sourceLabel,
+                        backgroundColor: colorScheme.secondaryContainer,
+                        foregroundColor: colorScheme.onSecondaryContainer,
+                        borderRadius: AppRadius.full,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
+                        ),
+                        textStyle: AppTextStyles.labelSm,
+                      ),
+                    ),
+                    const Spacer(),
+                    AppWhiteSpace.wSm,
+                    Container(
+                      width: AppSizing.iconXxl,
+                      height: AppSizing.iconXxl,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerLow,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        OutlinedSvgAssets.chevronRight,
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                        colorFilter: ColorFilter.mode(
+                          colorScheme.onSurfaceVariant,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                AppWhiteSpace.hMd,
+                Text(
+                  item.name,
+                  style: AppTextStyles.bodyLg.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                AppWhiteSpace.hMd,
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    _HistoryMetadata(
+                      iconAsset: OutlinedSvgAssets.calendarDays,
+                      label: DateFormat.yMMMd().format(item.completedAt),
+                    ),
+                    if (duration.isNotEmpty)
+                      _HistoryMetadata(
+                        iconAsset: OutlinedSvgAssets.clock,
+                        label: duration,
+                      ),
+                    _HistoryMetadata(
+                      iconAsset: OutlinedSvgAssets.listBullet,
+                      label:
+                          '${item.exerciseCount} ${AppStrings.historyExerciseList}',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        onTap: onTap,
       ),
     );
   }
@@ -48,8 +137,40 @@ class WorkoutHistoryListTile extends StatelessWidget {
     final hours = minutes ~/ 60;
     final remainingMinutes = minutes % 60;
     if (hours > 0) {
-      return '${hours}h ${remainingMinutes}m';
+      return '$hours${AppStrings.durationHoursAbbreviation} '
+          '$remainingMinutes${AppStrings.durationMinutesAbbreviation}';
     }
-    return '${minutes}m';
+    return '$minutes${AppStrings.durationMinutesAbbreviation}';
+  }
+}
+
+class _HistoryMetadata extends StatelessWidget {
+  const _HistoryMetadata({required this.iconAsset, required this.label});
+
+  final String iconAsset;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme.onSurfaceVariant;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SvgPicture.asset(
+          iconAsset,
+          width: AppSizing.iconS,
+          height: AppSizing.iconS,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
+        AppWhiteSpace.wXs,
+        Flexible(
+          child: Text(
+            label,
+            style: AppTextStyles.labelMd.copyWith(color: color),
+          ),
+        ),
+      ],
+    );
   }
 }

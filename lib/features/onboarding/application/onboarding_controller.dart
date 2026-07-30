@@ -207,17 +207,14 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
 
   OnboardingStep _resumeStepForDraft(OnboardingDraft draft) {
     if (draft.experienceLevel == null) {
-      return OnboardingStep.experienceGoals;
+      return OnboardingStep.coreIdentity;
     }
     if (draft.trainingDays.isEmpty) {
       return OnboardingStep.schedule;
     }
     if (draft.equipmentAccess.isEmpty &&
-        draft.preferredUnits == null &&
         draft.heightCm == null &&
         draft.bodyweightKg == null &&
-        draft.sex == null &&
-        draft.dateOfBirth == null &&
         draft.bench1RmKg == null &&
         draft.squat1RmKg == null &&
         draft.deadlift1RmKg == null &&
@@ -228,21 +225,23 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         draft.byokSkipped) {
       return OnboardingStep.equipment;
     }
-    if (draft.preferredUnits == null &&
+    if (draft.limitations.isEmpty &&
+        (draft.notes == null || draft.notes!.isEmpty) &&
+        draft.favoriteExerciseIds.isEmpty &&
+        draft.substitutedExerciseIds.isEmpty &&
         draft.heightCm == null &&
         draft.bodyweightKg == null &&
-        draft.sex == null &&
-        draft.dateOfBirth == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null) {
+      return OnboardingStep.limitations;
+    }
+    if (draft.heightCm == null &&
+        draft.bodyweightKg == null &&
         draft.bench1RmKg == null &&
         draft.squat1RmKg == null &&
         draft.deadlift1RmKg == null) {
       return OnboardingStep.unitsMetrics;
-    }
-    if (draft.limitations.isEmpty &&
-        (draft.notes == null || draft.notes!.isEmpty) &&
-        draft.favoriteExerciseIds.isEmpty &&
-        draft.substitutedExerciseIds.isEmpty) {
-      return OnboardingStep.limitations;
     }
     if (!draft.byokSkipped) {
       return OnboardingStep.review;
@@ -263,9 +262,10 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         }
         return null;
       case OnboardingStep.welcome:
+      case OnboardingStep.coreIdentity:
       case OnboardingStep.equipment:
-      case OnboardingStep.unitsMetrics:
       case OnboardingStep.limitations:
+      case OnboardingStep.unitsMetrics:
       case OnboardingStep.byokOptional:
       case OnboardingStep.review:
         return null;
@@ -275,16 +275,18 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   OnboardingStep? _nextStepFor(OnboardingStep current) {
     switch (current) {
       case OnboardingStep.welcome:
+        return OnboardingStep.coreIdentity;
+      case OnboardingStep.coreIdentity:
         return OnboardingStep.experienceGoals;
       case OnboardingStep.experienceGoals:
         return OnboardingStep.schedule;
       case OnboardingStep.schedule:
         return OnboardingStep.equipment;
       case OnboardingStep.equipment:
-        return OnboardingStep.unitsMetrics;
-      case OnboardingStep.unitsMetrics:
         return OnboardingStep.limitations;
       case OnboardingStep.limitations:
+        return OnboardingStep.unitsMetrics;
+      case OnboardingStep.unitsMetrics:
         return OnboardingStep.byokOptional;
       case OnboardingStep.byokOptional:
         return OnboardingStep.review;
@@ -295,18 +297,20 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
 
   OnboardingStep? _previousStepFor(OnboardingStep current) {
     switch (current) {
-      case OnboardingStep.experienceGoals:
+      case OnboardingStep.coreIdentity:
         return OnboardingStep.welcome;
+      case OnboardingStep.experienceGoals:
+        return OnboardingStep.coreIdentity;
       case OnboardingStep.schedule:
         return OnboardingStep.experienceGoals;
       case OnboardingStep.equipment:
         return OnboardingStep.schedule;
-      case OnboardingStep.unitsMetrics:
-        return OnboardingStep.equipment;
       case OnboardingStep.limitations:
-        return OnboardingStep.unitsMetrics;
-      case OnboardingStep.byokOptional:
+        return OnboardingStep.equipment;
+      case OnboardingStep.unitsMetrics:
         return OnboardingStep.limitations;
+      case OnboardingStep.byokOptional:
+        return OnboardingStep.unitsMetrics;
       case OnboardingStep.review:
         return OnboardingStep.byokOptional;
       case OnboardingStep.welcome:

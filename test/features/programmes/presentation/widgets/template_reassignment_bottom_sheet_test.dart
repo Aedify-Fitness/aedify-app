@@ -12,8 +12,7 @@ Widget _wrap(Widget child) {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) =>
-            Scaffold(body: SingleChildScrollView(child: child)),
+        builder: (context, state) => Scaffold(body: child),
       ),
     ],
   );

@@ -83,6 +83,20 @@ void main() {
       expect(state.hasValidationMessage, isFalse);
     });
 
+    test('steps use the approved nine-step order', () {
+      expect(OnboardingStep.values, const [
+        OnboardingStep.welcome,
+        OnboardingStep.coreIdentity,
+        OnboardingStep.experienceGoals,
+        OnboardingStep.schedule,
+        OnboardingStep.equipment,
+        OnboardingStep.limitations,
+        OnboardingStep.unitsMetrics,
+        OnboardingStep.byokOptional,
+        OnboardingStep.review,
+      ]);
+    });
+
     test('build resumes at correct step from saved draft', () async {
       await repository.saveOnboardingDraft(
         const OnboardingDraft(
@@ -97,6 +111,7 @@ void main() {
           ],
           equipmentAccess: {EquipmentTag.dumbbell},
           preferredUnits: PreferredUnit.metric,
+          heightCm: 175,
           limitations: ['None'],
           byokSkipped: false,
         ),
@@ -107,14 +122,14 @@ void main() {
     });
 
     test(
-      'build resumes at experienceGoals when draft lacks experienceLevel',
+      'build resumes at coreIdentity when draft lacks experienceLevel',
       () async {
         await repository.saveOnboardingDraft(
           const OnboardingDraft(goals: {GoalTag.buildMuscle}),
         );
         container.invalidate(AppProviders.onboardingControllerProvider);
         await container.read(AppProviders.onboardingControllerProvider.future);
-        expect(readState().currentStep, OnboardingStep.experienceGoals);
+        expect(readState().currentStep, OnboardingStep.coreIdentity);
       },
     );
 
@@ -130,16 +145,62 @@ void main() {
       },
     );
 
-    test('nextStep advances from welcome to experienceGoals', () async {
+    test(
+      'build resumes at equipment after core identity and schedule',
+      () async {
+        await repository.saveOnboardingDraft(
+          const OnboardingDraft(
+            experienceLevel: ExperienceLevel.intermediate,
+            trainingDays: [TrainingDay.monday],
+            preferredUnits: PreferredUnit.metric,
+          ),
+        );
+        container.invalidate(AppProviders.onboardingControllerProvider);
+        await container.read(AppProviders.onboardingControllerProvider.future);
+        expect(readState().currentStep, OnboardingStep.equipment);
+      },
+    );
+
+    test('build resumes at limitations after equipment', () async {
+      await repository.saveOnboardingDraft(
+        const OnboardingDraft(
+          experienceLevel: ExperienceLevel.intermediate,
+          trainingDays: [TrainingDay.monday],
+          equipmentAccess: {EquipmentTag.dumbbell},
+          preferredUnits: PreferredUnit.metric,
+        ),
+      );
+      container.invalidate(AppProviders.onboardingControllerProvider);
+      await container.read(AppProviders.onboardingControllerProvider.future);
+      expect(readState().currentStep, OnboardingStep.limitations);
+    });
+
+    test('build resumes at metrics after limitations', () async {
+      await repository.saveOnboardingDraft(
+        const OnboardingDraft(
+          experienceLevel: ExperienceLevel.intermediate,
+          trainingDays: [TrainingDay.monday],
+          equipmentAccess: {EquipmentTag.dumbbell},
+          preferredUnits: PreferredUnit.metric,
+          limitations: ['None'],
+        ),
+      );
+      container.invalidate(AppProviders.onboardingControllerProvider);
+      await container.read(AppProviders.onboardingControllerProvider.future);
+      expect(readState().currentStep, OnboardingStep.unitsMetrics);
+    });
+
+    test('nextStep advances from welcome to coreIdentity', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);
       await controller.nextStep();
-      expect(readState().currentStep, OnboardingStep.experienceGoals);
+      expect(readState().currentStep, OnboardingStep.coreIdentity);
     });
 
     test(
       'nextStep blocks when experienceLevel is missing on experienceGoals',
       () async {
         await container.read(AppProviders.onboardingControllerProvider.future);
+        await controller.nextStep();
         await controller.nextStep();
         await controller.nextStep();
 
@@ -158,6 +219,7 @@ void main() {
       () async {
         await container.read(AppProviders.onboardingControllerProvider.future);
         await controller.nextStep();
+        await controller.nextStep();
         controller.updateDraft(
           const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
         );
@@ -171,6 +233,7 @@ void main() {
 
     test('nextStep blocks at schedule when trainingDays is empty', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);
+      await controller.nextStep();
       await controller.nextStep();
       controller.updateDraft(
         const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
@@ -193,7 +256,11 @@ void main() {
     test('nextStep advances through all steps to review', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
+      expect(readState().currentStep, OnboardingStep.welcome);
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.coreIdentity);
+      await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.experienceGoals);
       controller.updateDraft(
         const OnboardingDraft(
           experienceLevel: ExperienceLevel.intermediate,
@@ -201,6 +268,7 @@ void main() {
         ),
       );
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.schedule);
       controller.updateDraft(
         const OnboardingDraft(
           experienceLevel: ExperienceLevel.intermediate,
@@ -215,9 +283,13 @@ void main() {
         ),
       );
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.equipment);
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.limitations);
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.unitsMetrics);
       await controller.nextStep();
+      expect(readState().currentStep, OnboardingStep.byokOptional);
       await controller.nextStep();
 
       expect(readState().currentStep, OnboardingStep.review);
@@ -226,6 +298,7 @@ void main() {
     test('nextStep stops at review', () async {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
+      await controller.nextStep();
       await controller.nextStep();
       controller.updateDraft(
         const OnboardingDraft(experienceLevel: ExperienceLevel.intermediate),
@@ -260,10 +333,31 @@ void main() {
       await container.read(AppProviders.onboardingControllerProvider.future);
 
       await controller.nextStep();
-      expect(readState().currentStep, OnboardingStep.experienceGoals);
+      expect(readState().currentStep, OnboardingStep.coreIdentity);
 
       controller.previousStep();
       expect(readState().currentStep, OnboardingStep.welcome);
+    });
+
+    test('previousStep follows the approved reverse order', () async {
+      await container.read(AppProviders.onboardingControllerProvider.future);
+      controller.jumpToStep(OnboardingStep.review);
+
+      const expectedSteps = [
+        OnboardingStep.byokOptional,
+        OnboardingStep.unitsMetrics,
+        OnboardingStep.limitations,
+        OnboardingStep.equipment,
+        OnboardingStep.schedule,
+        OnboardingStep.experienceGoals,
+        OnboardingStep.coreIdentity,
+        OnboardingStep.welcome,
+      ];
+
+      for (final expectedStep in expectedSteps) {
+        controller.previousStep();
+        expect(readState().currentStep, expectedStep);
+      }
     });
 
     test('previousStep does not go before welcome', () async {
@@ -334,6 +428,7 @@ void main() {
         await container.read(AppProviders.onboardingControllerProvider.future);
 
         await controller.nextStep();
+        await controller.nextStep();
         controller.updateDraft(
           const OnboardingDraft(
             experienceLevel: ExperienceLevel.advanced,
@@ -373,6 +468,7 @@ void main() {
       () async {
         await container.read(AppProviders.onboardingControllerProvider.future);
 
+        await controller.nextStep();
         await controller.nextStep();
         await controller.completeOnboarding();
 
@@ -423,7 +519,7 @@ void main() {
         await controller.nextStep();
 
         final state = readState();
-        expect(state.currentStep, OnboardingStep.experienceGoals);
+        expect(state.currentStep, OnboardingStep.coreIdentity);
         expect(
           state.draft.notes,
           equals(PrivacySentinelValues.fakeProfileNote),
@@ -444,6 +540,7 @@ void main() {
           ),
         );
 
+        await controller.nextStep();
         await controller.nextStep();
         await controller.nextStep();
 

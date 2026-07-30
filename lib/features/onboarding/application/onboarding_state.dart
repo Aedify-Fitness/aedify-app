@@ -7,11 +7,12 @@ import 'package:aedify/shared/domain/training_day.dart';
 
 enum OnboardingStep {
   welcome,
+  coreIdentity,
   experienceGoals,
   schedule,
   equipment,
-  unitsMetrics,
   limitations,
+  unitsMetrics,
   byokOptional,
   review,
 }

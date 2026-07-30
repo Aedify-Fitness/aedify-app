@@ -2,6 +2,7 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class CustomExerciseMuscleGroupPicker extends StatelessWidget {
@@ -18,31 +19,57 @@ class CustomExerciseMuscleGroupPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          AppStrings.customExerciseMuscleGroups,
-          style: AppTextStyles.labelMd,
+        Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.xs),
+          child: Text(
+            AppStrings.customExercisePrimaryMuscleGroup.toUpperCase(),
+            style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+          ),
         ),
         if (errorText != null)
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.xs),
             child: Text(errorText!, style: AppTextStyles.labelSm),
           ),
-        AppWhiteSpace.hXs,
+        AppWhiteSpace.hSm,
         Wrap(
-          spacing: AppSpacing.xs,
-          runSpacing: AppSpacing.xs,
-          children: BodymapBucket.values
-              .map(
-                (bucket) => FilterChip(
-                  label: Text(bucket.label),
-                  selected: selected.contains(bucket),
-                  onSelected: (_) => onToggle(bucket),
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: BodymapBucket.values.map((bucket) {
+            final isSelected = selected.contains(bucket);
+            return GestureDetector(
+              onTap: () => onToggle(bucket),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm,
                 ),
-              )
-              .toList(),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? cs.secondaryContainer
+                      : cs.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  border: Border.all(
+                    color: isSelected
+                        ? cs.secondary.withValues(alpha: 0.2)
+                        : cs.outlineVariant,
+                  ),
+                ),
+                child: Text(
+                  bucket.label,
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: isSelected
+                        ? cs.onSecondaryContainer
+                        : cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

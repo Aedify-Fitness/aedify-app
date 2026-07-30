@@ -43,28 +43,67 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(AppStrings.bodymap), findsOneWidget);
-      expect(find.text(AppStrings.bodymapFront), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('bodymap_svg_front')),
+        findsOneWidget,
+      );
+
+      final frontControl = tester.widget<Semantics>(
+        find.byKey(const ValueKey<String>('bodymap_side_front')),
+      );
+      expect(frontControl.properties.selected, isTrue);
     });
 
-    testWidgets('toggles to back side via button', (tester) async {
+    testWidgets('selects the back side via segmented control', (tester) async {
       await tester.pumpWidget(createBodymapApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('front'));
+      await tester.tap(find.byKey(const ValueKey<String>('bodymap_side_back')));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.bodymapBack), findsWidgets);
+      expect(
+        find.byKey(const ValueKey<String>('bodymap_svg_back')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey<String>('bodymap_svg_front')),
+        findsNothing,
+      );
+
+      final backControl = tester.widget<Semantics>(
+        find.byKey(const ValueKey<String>('bodymap_side_back')),
+      );
+      expect(backControl.properties.selected, isTrue);
     });
 
-    testWidgets('browse button appears when bucket selected', (tester) async {
+    testWidgets('selected bucket shows context and browse action', (
+      tester,
+    ) async {
       await tester.pumpWidget(createBodymapApp());
       await tester.pumpAndSettle();
 
-      final chestChip = find.text('Chest').last;
+      final chestChip = find.byKey(
+        const ValueKey<String>('bodymap_bucket_chest'),
+      );
       await tester.ensureVisible(chestChip);
       await tester.pumpAndSettle();
       await tester.tap(chestChip);
       await tester.pumpAndSettle();
+
+      final contextPanel = find.byKey(
+        const ValueKey<String>('bodymap_selection_context'),
+      );
+      await tester.ensureVisible(contextPanel);
+      await tester.pumpAndSettle();
+
+      expect(contextPanel, findsOneWidget);
+      expect(
+        find.descendant(
+          of: contextPanel,
+          matching: find.text(BodymapBucket.chest.label),
+        ),
+        findsOneWidget,
+      );
 
       final browseButton = find.text(AppStrings.browseByMuscle);
       await tester.ensureVisible(browseButton);

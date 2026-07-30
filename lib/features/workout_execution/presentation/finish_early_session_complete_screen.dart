@@ -54,7 +54,15 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
                   children: [
                     GestureDetector(
                       onTap: () => context.pop(),
-                      child: const Icon(Icons.close),
+                      child: SvgPicture.asset(
+                        OutlinedSvgAssets.xMark,
+                        width: AppSizing.iconMd,
+                        height: AppSizing.iconMd,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -530,10 +538,14 @@ class _SkippedExerciseCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
               child: Center(
-                child: Icon(
-                  Icons.block,
-                  size: AppSizing.iconSm,
-                  color: context.colorScheme.outline,
+                child: SvgPicture.asset(
+                  OutlinedSvgAssets.noSymbol,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.outline,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -668,22 +680,22 @@ class _BottomNavBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _NavItem(
-              icon: Icons.calendar_today,
+              icon: OutlinedSvgAssets.calendar,
               label: AppStrings.today,
               isSelected: false,
             ),
             _NavItem(
-              icon: Icons.fitness_center,
+              icon: SolidSvgAssets.dumbbell,
               label: 'Programs',
               isSelected: false,
             ),
             _NavItem(
-              icon: Icons.history,
+              icon: OutlinedSvgAssets.clock,
               label: AppStrings.historyTab,
               isSelected: true,
             ),
             _NavItem(
-              icon: Icons.person,
+              icon: OutlinedSvgAssets.user,
               label: AppStrings.profile,
               isSelected: false,
             ),
@@ -701,7 +713,7 @@ class _NavItem extends StatelessWidget {
     required this.isSelected,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final bool isSelected;
 
@@ -721,12 +733,16 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          SvgPicture.asset(
             icon,
-            size: AppSizing.iconMd,
-            color: isSelected
-                ? context.colorScheme.onSecondaryContainer
-                : context.colorScheme.onSurfaceVariant,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(
+              isSelected
+                  ? context.colorScheme.onSecondaryContainer
+                  : context.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
+            ),
           ),
           AppWhiteSpace.hXs,
           Text(

@@ -86,6 +86,26 @@ void main() {
       expect(button.onPressed, isNotNull);
     });
 
+    testWidgets('uses custom selection rows and fires selection callback', (
+      tester,
+    ) async {
+      String? selected;
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeSupersetEditorSheet(
+            exercises: exercises,
+            selectedExerciseIds: const {},
+            onToggleSelection: (id) => selected = id,
+            onCreateSuperset: () {},
+          ),
+        ),
+      );
+
+      expect(find.byType(CheckboxListTile), findsNothing);
+      await tester.tap(find.text('Bench Press'));
+      expect(selected, 'e1');
+    });
+
     testWidgets('fires onCreateSuperset', (tester) async {
       var created = false;
       await tester.pumpWidget(
@@ -183,7 +203,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byIcon(Icons.remove_circle_outline).first);
+      await tester.tap(find.byKey(const ValueKey('remove_superset_member_e1')));
       expect(removed, equals('e1'));
     });
 

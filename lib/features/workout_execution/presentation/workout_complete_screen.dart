@@ -1,5 +1,7 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -9,6 +11,7 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_exercise
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class WorkoutCompleteScreen extends ConsumerWidget {
   const WorkoutCompleteScreen({super.key, required this.session});
@@ -50,9 +53,14 @@ class WorkoutCompleteScreen extends ConsumerWidget {
                   children: [
                     GestureDetector(
                       onTap: () => context.pop(),
-                      child: Icon(
-                        Icons.close,
-                        color: context.colorScheme.onSurface,
+                      child: SvgPicture.asset(
+                        OutlinedSvgAssets.xMark,
+                        width: AppSizing.iconMd,
+                        height: AppSizing.iconMd,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ],
@@ -210,10 +218,14 @@ class _PulsingCheckCircleState extends State<_PulsingCheckCircle>
               ),
             ],
           ),
-          child: Icon(
-            Icons.check_circle,
-            size: 40,
-            color: context.colorScheme.onSecondaryContainer,
+          child: SvgPicture.asset(
+            SolidSvgAssets.checkCircle,
+            width: 40,
+            height: 40,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSecondaryContainer,
+              BlendMode.srcIn,
+            ),
           ),
         );
       },
@@ -361,10 +373,14 @@ class _InsightCard extends StatelessWidget {
           Positioned(
             right: -16,
             top: -16,
-            child: Icon(
-              Icons.auto_awesome,
-              size: AppSizing.decorativeIcon,
-              color: context.colorScheme.secondary.withAlpha(26),
+            child: SvgPicture.asset(
+              OutlinedSvgAssets.sparkles,
+              width: AppSizing.decorativeIcon,
+              height: AppSizing.decorativeIcon,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.secondary.withAlpha(26),
+                BlendMode.srcIn,
+              ),
             ),
           ),
           Column(
@@ -372,10 +388,14 @@ class _InsightCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.bolt,
-                    size: AppSizing.iconSm,
-                    color: context.colorScheme.secondary,
+                  SvgPicture.asset(
+                    OutlinedSvgAssets.bolt,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.secondary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   AppWhiteSpace.wSm,
                   Text(
@@ -528,7 +548,15 @@ class _ExerciseCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: context.colorScheme.outlineVariant),
+          SvgPicture.asset(
+            OutlinedSvgAssets.chevronRight,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.outlineVariant,
+              BlendMode.srcIn,
+            ),
+          ),
         ],
       ),
     );
@@ -597,10 +625,14 @@ class _BottomActionsLayer extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.share,
-                        size: AppSizing.iconSm,
-                        color: context.colorScheme.secondary,
+                      SvgPicture.asset(
+                        OutlinedSvgAssets.share,
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.secondary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                       AppWhiteSpace.wSm,
                       Text(

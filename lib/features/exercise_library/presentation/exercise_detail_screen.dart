@@ -1,6 +1,15 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/bodymap/data/bodymap_asset_contract.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_view_side.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
+import 'package:aedify/shared/components/app_badge.dart';
+import 'package:aedify/shared/components/app_empty_state.dart';
+import 'package:aedify/shared/components/app_icon_button.dart';
+import 'package:aedify/shared/components/app_section_header.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -31,119 +40,28 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
     final detailAsync = ref.watch(
       AppProviders.exerciseDetailControllerProvider(widget.exerciseId),
     );
+    final detail = detailAsync.asData?.value;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(detailAsync.asData?.value?.name ?? ''),
-        actions: [
-          if (detailAsync.asData?.value != null)
-            _FavoriteButton(
-              detail: detailAsync.asData!.value!,
-              exerciseId: widget.exerciseId,
-            ),
-        ],
-      ),
-      body: detailAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => _ErrorView(exerciseId: widget.exerciseId),
-        data: (detail) {
-          if (detail == null) {
-            return Center(child: Text(AppStrings.exerciseNotFound));
-          }
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              children: [
-                _VideoHero(videos: detail.videos, name: detail.name),
-                AppWhiteSpace.hMd,
-                _SegmentedTab(
-                  tabIndex: _tabIndex,
-                  onTabChanged: (i) => setState(() => _tabIndex = i),
-                ),
-                AppWhiteSpace.hLg,
-                if (_tabIndex == 0) _GuidanceTab(detail: detail),
-                if (_tabIndex == 1) const _PerformanceTab(),
-                AppWhiteSpace.hLg,
-                _ActionButtons(exerciseId: detail.id),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _FavoriteButton extends ConsumerWidget {
-  const _FavoriteButton({required this.detail, required this.exerciseId});
-
-  final dynamic detail;
-  final int exerciseId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isFavorite = detail.isFavorite as bool;
-    return IconButton(
-      icon: SvgPicture.asset(
-        isFavorite ? SolidSvgAssets.heart : OutlinedSvgAssets.heart,
-        width: AppSpacing.lg,
-        height: AppSpacing.lg,
-        colorFilter: isFavorite
-            ? ColorFilter.mode(context.colorScheme.error, BlendMode.srcIn)
-            : null,
-      ),
-      onPressed: () async {
-        try {
-          final repository = ref.read(AppProviders.exerciseRepositoryProvider);
-          await repository.setFavorite(
-            exerciseId: detail.id,
-            isFavorite: !isFavorite,
-          );
-          ref.invalidate(
-            AppProviders.exerciseDetailControllerProvider(exerciseId),
-          );
-        } catch (_) {}
-      },
-      tooltip: AppStrings.toggleFavorite,
-    );
-  }
-}
-
-class _ErrorView extends ConsumerWidget {
-  const _ErrorView({required this.exerciseId});
-
-  final int exerciseId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+      backgroundColor: context.colorScheme.surface,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              OutlinedSvgAssets.exclamationCircle,
-              width: AppSpacing.xxl,
-              height: AppSpacing.xxl,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.error,
-                BlendMode.srcIn,
+            _CompactHeader(detail: detail, exerciseId: widget.exerciseId),
+            Expanded(
+              child: detailAsync.when(
+                loading: () => const _LoadingView(),
+                error: (_, _) => _ErrorView(exerciseId: widget.exerciseId),
+                data: (detail) => detail == null
+                    ? const _NotFoundView()
+                    : _DetailContent(
+                        detail: detail,
+                        tabIndex: _tabIndex,
+                        onTabChanged: (index) {
+                          setState(() => _tabIndex = index);
+                        },
+                      ),
               ),
-            ),
-            AppWhiteSpace.hMd,
-            Text(
-              AppStrings.exerciseDetailLoadFailed,
-              style: context.textTheme.bodyLarge,
-            ),
-            AppWhiteSpace.hMd,
-            FilledButton(
-              onPressed: () {
-                ref.invalidate(
-                  AppProviders.exerciseDetailControllerProvider(exerciseId),
-                );
-              },
-              child: const Text(AppStrings.tryAgain),
             ),
           ],
         ),
@@ -152,81 +70,620 @@ class _ErrorView extends ConsumerWidget {
   }
 }
 
-class _VideoHero extends StatelessWidget {
-  const _VideoHero({required this.videos, required this.name});
+class _CompactHeader extends StatelessWidget {
+  const _CompactHeader({required this.detail, required this.exerciseId});
 
-  final List videos;
-  final String name;
+  final ExerciseDetailViewData? detail;
+  final int exerciseId;
 
   @override
   Widget build(BuildContext context) {
-    final hasVideo = videos.isNotEmpty;
-    return Container(
-      width: double.infinity,
-      height: AppSizing.videoCardHeight,
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        alignment: Alignment.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (hasVideo)
-            Positioned.fill(
-              child: Center(
-                child: SvgPicture.asset(
-                  OutlinedSvgAssets.playCircle,
-                  width: AppSizing.iconXxl,
-                  height: AppSizing.iconXxl,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.onSurface.withAlpha(25),
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            )
+          Tooltip(
+            message: AppStrings.backLabel,
+            child: AppIconButton(
+              asset: OutlinedSvgAssets.arrowLeft,
+              semanticLabel: AppStrings.backLabel,
+              backgroundColor: context.colorScheme.surfaceContainerLow,
+              onPressed: () {
+                if (context.canPop()) context.pop();
+              },
+            ),
+          ),
+          if (detail != null)
+            _FavoriteButton(detail: detail!, exerciseId: exerciseId)
           else
-            Center(
+            AppWhiteSpace.custom(
+              width: AppSizing.iconXxl,
+              height: AppSizing.iconXxl,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FavoriteButton extends ConsumerWidget {
+  const _FavoriteButton({required this.detail, required this.exerciseId});
+
+  final ExerciseDetailViewData detail;
+  final int exerciseId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: AppStrings.toggleFavorite,
+      child: AppIconButton(
+        asset: detail.isFavorite
+            ? SolidSvgAssets.heart
+            : OutlinedSvgAssets.heart,
+        semanticLabel: AppStrings.toggleFavorite,
+        color: detail.isFavorite
+            ? context.colorScheme.error
+            : context.colorScheme.onSurfaceVariant,
+        backgroundColor: detail.isFavorite
+            ? context.colorScheme.errorContainer
+            : context.colorScheme.surfaceContainerLow,
+        onPressed: () async {
+          try {
+            final repository = ref.read(
+              AppProviders.exerciseRepositoryProvider,
+            );
+            await repository.setFavorite(
+              exerciseId: detail.id,
+              isFavorite: !detail.isFavorite,
+            );
+            ref.invalidate(
+              AppProviders.exerciseDetailControllerProvider(exerciseId),
+            );
+          } catch (_) {}
+        },
+      ),
+    );
+  }
+}
+
+class _DetailContent extends StatelessWidget {
+  const _DetailContent({
+    required this.detail,
+    required this.tabIndex,
+    required this.onTabChanged,
+  });
+
+  final ExerciseDetailViewData detail;
+  final int tabIndex;
+  final ValueChanged<int> onTabChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _ExerciseHero(detail: detail),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            child: _SegmentedTab(
+              tabIndex: tabIndex,
+              onTabChanged: onTabChanged,
+            ),
+          ),
+          if (tabIndex == 0) _GuidanceTab(detail: detail),
+          if (tabIndex == 1) const _PerformanceTab(),
+          _TonalSection(elevated: tabIndex == 1, child: const _ActionButtons()),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExerciseHero extends StatelessWidget {
+  const _ExerciseHero({required this.detail});
+
+  final ExerciseDetailViewData detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final metadata = <String>[
+      if (detail.difficulty != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.difficulty!.dbValue),
+      _ExerciseDetailLabelFormatter.formatLabel(detail.modality.dbValue),
+      if (detail.equipment != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment!.dbValue),
+    ];
+
+    return Container(
+      color: context.colorScheme.surface,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.lg,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (detail.category != null && detail.category!.isNotEmpty) ...[
+            Text(
+              _ExerciseDetailLabelFormatter.formatLabel(detail.category!),
+              style: AppTextStyles.labelSm.copyWith(
+                color: context.colorScheme.secondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            AppWhiteSpace.hSm,
+          ],
+          Text(
+            detail.name,
+            style: AppTextStyles.headlineLgMobile.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+          if (detail.primaryMuscles.isNotEmpty) ...[
+            AppWhiteSpace.hSm,
+            Text(
+              detail.primaryMuscles.join(', '),
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+          if (metadata.isNotEmpty) ...[
+            AppWhiteSpace.hLg,
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: metadata
+                  .map((label) => _MetadataBadge(label: label))
+                  .toList(),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _GuidanceTab extends StatelessWidget {
+  const _GuidanceTab({required this.detail});
+
+  final ExerciseDetailViewData detail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _TonalSection(
+          key: const Key('exercise_detail_video_section'),
+          elevated: true,
+          child: ExerciseVideoSection(
+            videos: detail.videos,
+            onRetry: () {},
+            failureStates: const {},
+          ),
+        ),
+        _TonalSection(
+          key: const Key('exercise_detail_instructions_section'),
+          child: _StepsSection(steps: detail.steps, detail: detail),
+        ),
+        _TonalSection(
+          key: const Key('exercise_detail_bodymap_section'),
+          elevated: true,
+          child: _BodymapSection(detail: detail),
+        ),
+        _TonalSection(
+          key: const Key('exercise_detail_metadata_section'),
+          child: _MetadataSection(detail: detail),
+        ),
+        const _TonalSection(
+          key: Key('exercise_detail_notes_section'),
+          elevated: true,
+          child: _NotesSection(),
+        ),
+      ],
+    );
+  }
+}
+
+class _TonalSection extends StatelessWidget {
+  const _TonalSection({super.key, required this.child, this.elevated = false});
+
+  final Widget child;
+  final bool elevated;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: elevated
+          ? context.colorScheme.surfaceContainerLow
+          : context.colorScheme.surface,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xl,
+      ),
+      child: child,
+    );
+  }
+}
+
+class _StepsSection extends ConsumerWidget {
+  const _StepsSection({required this.steps, required this.detail});
+
+  final List<String> steps;
+  final ExerciseDetailViewData detail;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final audioStates = ref.watch(
+      AppProviders.exerciseStepAudioControllerProvider,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppSectionHeader(title: AppStrings.executionSteps),
+        AppWhiteSpace.hLg,
+        ...steps.asMap().entries.map((entry) {
+          final stepState =
+              audioStates['${detail.id}:${entry.key}'] ??
+              const ExerciseStepAudioState.idle();
+          final isActive = stepState.isBusy;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: entry.key == steps.length - 1
+                  ? AppSpacing.xxs
+                  : AppSpacing.md,
+            ),
+            child: AnimatedContainer(
+              key: ValueKey(
+                'exercise_step_${entry.key}_${isActive ? 'active' : 'idle'}',
+              ),
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
+              ),
+              decoration: BoxDecoration(
+                color: isActive
+                    ? context.colorScheme.secondaryContainer
+                    : context.colorScheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: AppSpacing.lg,
+                    height: AppSpacing.lg,
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? context.colorScheme.secondary
+                          : context.colorScheme.surfaceContainerHigh,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${entry.key + 1}',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: isActive
+                            ? context.colorScheme.onSecondary
+                            : context.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  AppWhiteSpace.wMd,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.xxs),
+                      child: Text(
+                        entry.value,
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: isActive
+                              ? context.colorScheme.onSecondaryContainer
+                              : context.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                  AppWhiteSpace.wSm,
+                  ExerciseStepAudioButton(
+                    exerciseId: detail.id,
+                    stepIndex: entry.key,
+                    text: entry.value,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _BodymapSection extends StatefulWidget {
+  const _BodymapSection({required this.detail});
+
+  final ExerciseDetailViewData detail;
+
+  @override
+  State<_BodymapSection> createState() => _BodymapSectionState();
+}
+
+class _BodymapSectionState extends State<_BodymapSection> {
+  BodymapViewSide _side = BodymapViewSide.front;
+
+  @override
+  Widget build(BuildContext context) {
+    final muscleLabels = widget.detail.muscleGroups
+        .map((group) => group.label)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppSectionHeader(title: AppStrings.muscleFocus),
+        AppWhiteSpace.hLg,
+        _BodymapSideToggle(
+          side: _side,
+          onChanged: (side) => setState(() => _side = side),
+        ),
+        AppWhiteSpace.hLg,
+        Center(
+          child: Container(
+            constraints: const BoxConstraints(
+              maxWidth: AppSizing.bodymapSvgWidth,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.lg,
+            ),
+            decoration: BoxDecoration(
+              color: context.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+            ),
+            child: AspectRatio(
+              aspectRatio:
+                  AppSizing.bodymapSvgWidth / AppSizing.bodymapSvgHeight,
               child: SvgPicture.asset(
-                OutlinedSvgAssets.playCircle,
-                width: AppSizing.iconXxl,
-                height: AppSizing.iconXxl,
+                BodymapAssetContract.assetPathForSide(_side),
+                fit: BoxFit.contain,
                 colorFilter: ColorFilter.mode(
-                  context.colorScheme.onSurfaceVariant.withAlpha(77),
+                  context.colorScheme.onSurfaceVariant,
                   BlendMode.srcIn,
                 ),
               ),
             ),
-          Center(
-            child: Container(
-              width: AppSpacing.xxxl,
-              height: AppSpacing.xxxl,
-              decoration: BoxDecoration(
-                color: context.colorScheme.surface.withAlpha(230),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: context.colorScheme.shadow.withAlpha(30),
-                    blurRadius: AppRadius.md,
-                  ),
-                ],
+          ),
+        ),
+        if (muscleLabels.isNotEmpty ||
+            widget.detail.primaryMuscles.isNotEmpty) ...[
+          AppWhiteSpace.hLg,
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              ...muscleLabels.map((label) => _MetadataBadge(label: label)),
+              ...widget.detail.primaryMuscles.map(
+                (label) => _MetadataBadge(label: label, emphasized: true),
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  OutlinedSvgAssets.play,
-                  width: AppSizing.iconLg,
-                  height: AppSizing.iconLg,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _BodymapSideToggle extends StatelessWidget {
+  const _BodymapSideToggle({required this.side, required this.onChanged});
+
+  final BodymapViewSide side;
+  final ValueChanged<BodymapViewSide> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _PillToggle(
+              label: AppStrings.bodymapFront,
+              selected: side == BodymapViewSide.front,
+              onTap: () => onChanged(BodymapViewSide.front),
+            ),
+          ),
+          Expanded(
+            child: _PillToggle(
+              label: AppStrings.bodymapBack,
+              selected: side == BodymapViewSide.back,
+              onTap: () => onChanged(BodymapViewSide.back),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _MetadataSection extends StatefulWidget {
+  const _MetadataSection({required this.detail});
+
+  final ExerciseDetailViewData detail;
+
+  @override
+  State<_MetadataSection> createState() => _MetadataSectionState();
+}
+
+class _MetadataSectionState extends State<_MetadataSection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final detail = widget.detail;
+    final items = <String>[
+      if (detail.category != null && detail.category!.isNotEmpty)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.category!),
+      if (detail.difficulty != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.difficulty!.dbValue),
+      _ExerciseDetailLabelFormatter.formatLabel(detail.modality.dbValue),
+      if (detail.equipment != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment!.dbValue),
+      if (detail.force != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.force!.dbValue),
+      if (detail.mechanic != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.mechanic!.dbValue),
+      ...detail.grips.map(_ExerciseDetailLabelFormatter.formatLabel),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppSectionHeader(title: AppStrings.exerciseGuide),
+        AppWhiteSpace.hMd,
+        Material(
+          color: context.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.buttonVertical,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppStrings.viewDetails,
+                      style: AppTextStyles.labelMd.copyWith(
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    _expanded
+                        ? OutlinedSvgAssets.chevronUp
+                        : OutlinedSvgAssets.chevronDown,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          child: _expanded
+              ? Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.md),
+                  child: Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: items
+                        .map((label) => _MetadataBadge(label: label))
+                        .toList(),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+}
+
+class _NotesSection extends StatefulWidget {
+  const _NotesSection();
+
+  @override
+  State<_NotesSection> createState() => _NotesSectionState();
+}
+
+class _NotesSectionState extends State<_NotesSection> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppSectionHeader(title: AppStrings.notes),
+        AppWhiteSpace.hMd,
+        AppTextField(
+          controller: _controller,
+          enabled: false,
+          hintText: AppStrings.comingSoon,
+          minLines: 3,
+          maxLines: 3,
+          filled: true,
+          fillColor: context.colorScheme.surfaceContainerLowest,
+          borderOverride: InputBorder.none,
+          style: AppTextStyles.bodyMd,
+        ),
+      ],
+    );
+  }
+}
+
+class _MetadataBadge extends StatelessWidget {
+  const _MetadataBadge({required this.label, this.emphasized = false});
+
+  final String label;
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBadge(
+      label: label,
+      backgroundColor: emphasized
+          ? context.colorScheme.secondaryContainer
+          : context.colorScheme.surfaceContainerHigh,
+      foregroundColor: emphasized
+          ? context.colorScheme.onSecondaryContainer
+          : context.colorScheme.onSurfaceVariant,
+      borderRadius: AppRadius.full,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      textStyle: AppTextStyles.labelSm,
+      fontWeight: FontWeight.w600,
     );
   }
 }
@@ -240,22 +697,25 @@ class _SegmentedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Row(
         children: [
           Expanded(
-            child: _TabButton(
+            child: _PillToggle(
               label: AppStrings.guidance,
               selected: tabIndex == 0,
               onTap: () => onTabChanged(0),
             ),
           ),
           Expanded(
-            child: _TabButton(
+            child: _PillToggle(
               label: AppStrings.performance,
               selected: tabIndex == 1,
               onTap: () => onTabChanged(1),
@@ -267,8 +727,8 @@ class _SegmentedTab extends StatelessWidget {
   }
 }
 
-class _TabButton extends StatelessWidget {
-  const _TabButton({
+class _PillToggle extends StatelessWidget {
+  const _PillToggle({
     required this.label,
     required this.selected,
     required this.onTap,
@@ -280,256 +740,37 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-        decoration: selected
-            ? BoxDecoration(
-                color: context.colorScheme.surface,
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.colorScheme.shadow.withAlpha(15),
-                    blurRadius: AppRadius.sm,
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected
+            ? context.colorScheme.secondary
+            : context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: AppSizing.cardBadge),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.sm,
+                ),
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: selected
+                        ? context.colorScheme.onSecondary
+                        : context.colorScheme.onSurfaceVariant,
                   ),
-                ],
-              )
-            : null,
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: context.textTheme.labelMedium?.copyWith(
-            color: selected
-                ? context.colorScheme.onSurface
-                : context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GuidanceTab extends StatelessWidget {
-  const _GuidanceTab({required this.detail});
-
-  final dynamic detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final primaryMuscles = detail.primaryMuscles as List<String>;
-    final muscleGroups = detail.muscleGroups;
-    final steps = detail.steps as List<String>;
-
-    return Column(
-      children: [
-        _MetadataCard(detail: detail),
-        AppWhiteSpace.hMd,
-        _MuscleFocusCard(
-          primaryMuscles: primaryMuscles,
-          muscleGroups: muscleGroups,
-        ),
-        AppWhiteSpace.hMd,
-        _StepsCard(steps: steps, detail: detail),
-        AppWhiteSpace.hMd,
-        ExerciseVideoSection(
-          videos: detail.videos,
-          onRetry: () {},
-          failureStates: const {},
-        ),
-      ],
-    );
-  }
-}
-
-class _MetadataCard extends StatelessWidget {
-  const _MetadataCard({required this.detail});
-
-  final dynamic detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = <String>[
-      if (detail.difficulty != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.difficulty.dbValue),
-      if (detail.modality != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.modality.dbValue),
-      if (detail.equipment != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment.dbValue),
-      if (detail.force != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.force.dbValue),
-    ];
-
-    if (items.isEmpty) return const SizedBox.shrink();
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          children: items
-              .map(
-                (item) => Chip(
-                  label: Text(item),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
-  }
-}
-
-class _MuscleFocusCard extends StatelessWidget {
-  const _MuscleFocusCard({
-    required this.primaryMuscles,
-    required this.muscleGroups,
-  });
-
-  final List<String> primaryMuscles;
-  final dynamic muscleGroups;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SvgPicture.asset(
-                  OutlinedSvgAssets.user,
-                  width: AppSizing.iconSm,
-                  height: AppSizing.iconSm,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                AppWhiteSpace.wSm,
-                Text(
-                  AppStrings.muscleFocus,
-                  style: context.textTheme.titleSmall,
-                ),
-              ],
-            ),
-            AppWhiteSpace.hSm,
-            if (muscleGroups != null && muscleGroups.isNotEmpty) ...[
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: (muscleGroups as Iterable).map((g) {
-                  return Chip(
-                    label: Text(g.label.toString()),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                  );
-                }).toList(),
-              ),
-              AppWhiteSpace.hSm,
-            ],
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: primaryMuscles
-                  .map(
-                    (m) => Chip(
-                      label: Text(m),
-                      backgroundColor: context.colorScheme.secondaryContainer,
-                      labelStyle: context.textTheme.labelSmall?.copyWith(
-                        color: context.colorScheme.onSecondaryContainer,
-                      ),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StepsCard extends StatelessWidget {
-  const _StepsCard({required this.steps, required this.detail});
-
-  final List<String> steps;
-  final dynamic detail;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SvgPicture.asset(
-                  OutlinedSvgAssets.listBullet,
-                  width: AppSizing.iconSm,
-                  height: AppSizing.iconSm,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                AppWhiteSpace.wSm,
-                Text(
-                  AppStrings.executionSteps,
-                  style: context.textTheme.titleSmall,
-                ),
-              ],
-            ),
-            AppWhiteSpace.hSm,
-            ...steps.asMap().entries.map(
-              (entry) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.secondary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${entry.key + 1}',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: context.colorScheme.onSecondary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    AppWhiteSpace.wSm,
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style: context.textTheme.bodyMedium,
-                      ),
-                    ),
-                    ExerciseStepAudioButton(
-                      exerciseId: detail.id,
-                      stepIndex: entry.key,
-                      text: entry.value,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -541,56 +782,28 @@ class _PerformanceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: SizedBox(
-        height: AppSizing.emptyStateHeight,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                OutlinedSvgAssets.chartBar,
-                width: AppSizing.iconXxl,
-                height: AppSizing.iconXxl,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.surfaceContainerHighest,
-                  BlendMode.srcIn,
-                ),
-              ),
-              AppWhiteSpace.hMd,
-              Text(
-                AppStrings.noHistoryYet,
-                style: context.textTheme.titleSmall,
-              ),
-              AppWhiteSpace.hSm,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                child: Text(
-                  AppStrings.noHistoryHint,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
+    return _TonalSection(
+      elevated: true,
+      child: AppEmptyState(
+        key: const Key('exercise_detail_history_empty_state'),
+        iconAsset: OutlinedSvgAssets.chartBar,
+        title: AppStrings.noHistoryYet,
+        message: AppStrings.noHistoryHint,
       ),
     );
   }
 }
 
 class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({required this.exerciseId});
-
-  final int exerciseId;
+  const _ActionButtons();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
+        Tooltip(
+          message: AppStrings.toggleSubstitution,
           child: OutlinedButton.icon(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -602,28 +815,103 @@ class _ActionButtons extends StatelessWidget {
               OutlinedSvgAssets.arrowsRightLeft,
               width: AppSizing.iconSm,
               height: AppSizing.iconSm,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.secondary,
+                BlendMode.srcIn,
+              ),
             ),
-            label: const Tooltip(
-              message: AppStrings.toggleSubstitution,
-              child: Text(AppStrings.substitute),
-            ),
+            label: const Text(AppStrings.substitute),
           ),
         ),
-        AppWhiteSpace.wMd,
-        Expanded(
-          child: FilledButton.tonalIcon(
-            onPressed: () {
-              context.pushNamed(AppRoutes.chat().name);
-            },
-            icon: SvgPicture.asset(
-              OutlinedSvgAssets.sparkles,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
+        AppWhiteSpace.hMd,
+        FilledButton.icon(
+          onPressed: () {
+            context.pushNamed(AppRoutes.chat().name);
+          },
+          icon: SvgPicture.asset(
+            OutlinedSvgAssets.sparkles,
+            width: AppSizing.iconSm,
+            height: AppSizing.iconSm,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSecondary,
+              BlendMode.srcIn,
             ),
-            label: const Text(AppStrings.askAiCoach),
           ),
+          label: const Text(AppStrings.askAiCoach),
         ),
       ],
+    );
+  }
+}
+
+class _LoadingView extends StatelessWidget {
+  const _LoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xl,
+          vertical: AppSpacing.xl,
+        ),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            AppWhiteSpace.hMd,
+            Text(
+              AppStrings.loading,
+              style: AppTextStyles.labelMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotFoundView extends StatelessWidget {
+  const _NotFoundView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: AppEmptyState(
+        iconAsset: OutlinedSvgAssets.informationCircle,
+        title: AppStrings.exerciseNotFound,
+      ),
+    );
+  }
+}
+
+class _ErrorView extends ConsumerWidget {
+  const _ErrorView({required this.exerciseId});
+
+  final int exerciseId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: AppEmptyState(
+        iconAsset: OutlinedSvgAssets.exclamationCircle,
+        title: AppStrings.exerciseDetailLoadFailed,
+        actionLabel: AppStrings.tryAgain,
+        onAction: () {
+          ref.invalidate(
+            AppProviders.exerciseDetailControllerProvider(exerciseId),
+          );
+        },
+      ),
     );
   }
 }

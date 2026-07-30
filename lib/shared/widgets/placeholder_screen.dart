@@ -1,17 +1,18 @@
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({
     super.key,
     required this.title,
-    this.icon,
+    this.svgAsset,
     this.message,
   });
 
   final String title;
-  final IconData? icon;
+  final String? svgAsset;
   final String? message;
 
   @override
@@ -24,13 +25,17 @@ class PlaceholderScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null)
+              if (svgAsset != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Icon(
-                    icon,
-                    size: AppSizing.iconLg,
-                    color: context.colorScheme.secondary,
+                  child: SvgPicture.asset(
+                    svgAsset!,
+                    width: AppSizing.iconLg,
+                    height: AppSizing.iconLg,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.secondary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               Text(title, style: context.textTheme.headlineSmall),

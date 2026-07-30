@@ -6,6 +6,10 @@ class AppStrings {
 
   static const save = 'Save';
   static const home = 'Home';
+  static const navLibrary = 'Library';
+  static const navPlan = 'Plan';
+  static const navAi = 'AI';
+  static const navStats = 'Stats';
   static const goodMorning = 'Good morning';
   static const goodAfternoon = 'Good afternoon';
   static const goodEvening = 'Good evening';
@@ -124,9 +128,10 @@ class AppStrings {
   static const substitutions = 'Substitutions';
   static const favoriteExercises = 'Favorite exercises';
   static const onboardingPersonalDetailsTitle = 'Personal details';
-  static const onboardingMaxLiftsTitle = 'Max lifts (optional)';
+  static const onboardingMaxLiftsTitle = 'Max Lifts (Optional)';
   static const onboardingDoneLabel = 'Done';
   static const onboardingReviewExercisesSelected = 'selected';
+  static String onboardingExerciseOverflow(int count) => '$count selected';
   static const pageNotFound = 'Page Not Found';
   static const progressMedia = 'Progress Media';
   static const featureStatus = 'Feature status';
@@ -248,6 +253,17 @@ class AppStrings {
   static const onboardingGoalsHint = 'What are your main fitness goals?';
   static const onboardingLimitationsTitle = 'Limitations and preferences';
   static const onboardingLimitationsHint = 'Any injuries or limitations?';
+  static const onboardingInjuryFlagsTitle = 'Injury Flags & Sensitivity';
+  static const onboardingInjuryFlagsDescription =
+      'Tap on areas that require special attention or modifications during your workouts.';
+  static const onboardingFavoriteExercisesPlaceholder = 'Add an exercise...';
+  static const onboardingAvoidListTitle = 'Substitutions / Avoid List';
+  static const onboardingAvoidExercisesPlaceholder =
+      'Avoid certain movements...';
+  static const onboardingOtherNotesTitle = 'Other Notes';
+  static const onboardingOtherNotesPlaceholder =
+      'Any specific health concerns, cardiovascular considerations, or general fitness goals you’d like to share?';
+  static const onboardingNextStep = 'Next Step';
   static const pageNotFoundMessage = 'The requested page does not exist.';
   static const diagnosticsSummaryTitle = 'Redacted foundation diagnostics';
   static const shareDisabledMessage = 'Sharing is disabled for this build.';
@@ -263,7 +279,7 @@ class AppStrings {
   static const onboardingEquipmentGroupAccessories =
       'Accessories and small tools';
   static const onboardingByokBenefitBringYourOwnKey =
-      'Bring your own provider key';
+      'BYOK (Bring Your Own Key)';
   static const exerciseLibrarySyncRequired =
       'Exercise library download required';
   static const onboardingValidationRequired =
@@ -327,7 +343,7 @@ class AppStrings {
   static const onboardingExperienceIntermediateDescription =
       'Comfortable with structured progression and weekly training rhythm.';
   static const onboardingByokBenefitPrivateDescription =
-      'No hosted profile, no mandatory cloud sync, and no app-managed billing.';
+      'Your training data stays on this device unless you explicitly choose to send context to your provider.';
   static const exerciseLibrarySyncUnavailableOffline =
       'Exercise library is unavailable offline until the first sync completes.';
   static const onboardingExperienceAdvancedDescription =
@@ -335,11 +351,11 @@ class AppStrings {
   static const onboardingGoalsDescription =
       'Select every pillar you want Aedify to emphasize when generating sessions.';
   static const onboardingByokBenefitBringYourOwnKeyDescription =
-      'Add your preferred model later and keep full control over when it is used.';
+      'You control provider costs and model usage through your own API key.';
   static const onboardingScheduleDescription =
       'Set a weekly rhythm that feels realistic so the plan fits your actual life.';
   static const onboardingByokBenefitOptionalDescription =
-      'Your plan setup, workouts, and logs stay useful even if you never enable AI.';
+      'Core Aedify features remain fully functional without AI connectivity.';
   static const onboardingEquipmentGroupAccessoriesDescription =
       'Flexible add-ons that broaden exercise variety without requiring a full gym.';
   static const onboardingBodyMetricsDescription =
@@ -349,7 +365,7 @@ class AppStrings {
   static const onboardingUnitsDescription =
       'Pick your default system and add body metrics if you want more precise load suggestions.';
   static const onboardingReviewDescription =
-      'Everything below is editable. Tap any section to jump back and refine it before finishing.';
+      'Your high-performance protocol is ready for deployment. Please review the architectural synthesis below before initializing your workspace.';
   static const onboardingExperienceDescription =
       'Use your training age and priorities to tune progression, exercise complexity, and recovery.';
   static const onboardingWelcomeHeroDescription =
@@ -358,6 +374,176 @@ class AppStrings {
       'Optionally connect your own provider later for AI-assisted planning while keeping privacy, zero telemetry, and full local control.';
   static const onboardingByokDetail =
       'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
+  static const onboardingWelcomeStepName = 'Welcome';
+  static const onboardingCoreIdentityTitle = 'Core identity';
+  static const onboardingCoreIdentityDescription =
+      'Help us personalize your experience with a few optional details.';
+  static const onboardingCoreIdentityCardDescription =
+      'Help us personalize your experience by providing these essential details.';
+  static const onboardingCoreIdentitySexLabel = 'Biological sex (optional)';
+  static const onboardingMeasurementSystem = 'Measurement system';
+  static const onboardingMetricChoice = 'Metric (kg/cm)';
+  static const onboardingImperialChoice = 'Imperial (lb/in)';
+  static const onboardingDateOfBirthHelper =
+      'Your age is used for calculating metabolic benchmarks.';
+  static const onboardingDisplayNamePrompt = 'What should we call you?';
+  static const onboardingDisplayNameHint = 'e.g. Alex';
+  static const onboardingInitializeSpace = 'Initialize space';
+  static const onboardingWelcomePrivacyFooter =
+      'No cloud harvesting. No tracking. Just you and your progress.';
+  static const onboardingPrivateControlTitle = 'Private by design';
+  static const onboardingPrivateControlDescription =
+      'No tracking or hosted profile. Your progress stays under your control.';
+  static const onboardingExperiencePathTitle = 'Define your path';
+  static const onboardingExperiencePathDisplayTitle = 'Define your path.';
+  static const onboardingExperiencePathDescription =
+      'Help us calibrate your training environment. Your journey is unique; your programme should be too.';
+  static const onboardingExperienceNovice = 'Novice';
+  static const onboardingExperienceNoviceDescription =
+      'Building fundamentals. 0–1 years of consistent, structured training experience.';
+  static const onboardingExperienceAdept = 'Adept';
+  static const onboardingExperienceAdeptDescription =
+      'Mastered the basics. 1–3 years of technical proficiency and volume management.';
+  static const onboardingExperienceElite = 'Elite';
+  static const onboardingExperienceEliteDescription =
+      'High-performance focus. 3+ years of advanced specialization and intensity.';
+  static const onboardingGrowthPillarsTitle = 'Primary growth pillars';
+  static const onboardingGrowthPillarsHelper =
+      'Select every goal that fits your current training vision.';
+  static const onboardingGrowthPillarsVisionHelper =
+      'Select all that align with your current 6-month vision.';
+  static const onboardingMultiSelectEnabled = 'Multi-select enabled';
+  static const onboardingRhythmTitle = 'Your rhythm';
+  static const onboardingRhythmDescription =
+      'Choose the weekdays you can train and a realistic session duration.';
+  static const onboardingRhythmDisplayTitle = 'Your Rhythm';
+  static const onboardingRhythmDisplayDescription =
+      'Precision is the foundation of progress. Define your availability and session intensity to build a sustainable athletic habit.';
+  static const onboardingWeeklyFrequencyDescription =
+      'Which days can you commit to each week?';
+  static const onboardingSessionDurationDescription =
+      'Average time per workout.';
+  static const onboardingTotalWeeklyLoad = 'Total weekly load';
+  static const onboardingWeeklyFrequency = 'Weekly frequency';
+  static const onboardingSessionDuration = 'Session duration';
+  static const onboardingScheduleEndurance = 'Endurance';
+  static const onboardingScheduleOptimal = 'Optimal';
+  static const onboardingScheduleIntensity = 'Intensity';
+  static const onboardingScheduleTip =
+      'A schedule you can repeat consistently is more valuable than an aggressive plan you cannot sustain.';
+  static const onboardingEstimatedTrainingVolume = 'Est. training volume';
+  static const onboardingFatigueRisk = 'Fatigue risk';
+  static const onboardingFatigueLow = 'Low';
+  static const onboardingFatigueModerate = 'Moderate';
+  static const onboardingFatigueHigh = 'High';
+  static String onboardingHoursPerWeek(double hours) =>
+      '${hours.toStringAsFixed(1)} hrs / week';
+  static String onboardingScheduleHours(double hours) =>
+      '${hours.toStringAsFixed(1)} hours';
+  static String onboardingSelectedDayCount(int count) =>
+      '$count ${count == 1 ? onboardingDaySingle : onboardingDayPlural} selected';
+  static String onboardingScheduleReviewSummary(
+    int count,
+    int minutes,
+    String weekdays,
+  ) =>
+      '$count ${count == 1 ? onboardingDaySingle : onboardingDayPlural} / week • '
+      '$minutes min sessions\n$weekdays';
+  static const onboardingGymEnvironmentTitle = 'Gym Environment';
+  static const onboardingGymEnvironmentDescription =
+      'Select the equipment you have access to. We’ll tailor your workout plans to match your available gear.';
+  static const onboardingEquipmentGroupNone = 'No equipment';
+  static const onboardingEquipmentBodyweightTitle = 'Bodyweight only';
+  static const onboardingEquipmentBodyweightDescription =
+      'Train at home or while travelling without external equipment.';
+  static const onboardingEquipmentEssential = 'Essential';
+  static const onboardingEquipmentHeavyLifts = 'Heavy lifts';
+  static const onboardingEquipmentSupport = 'Support';
+  static const onboardingEquipmentDumbbellsDescription =
+      'Versatile weights for isolation and compound movements.';
+  static const onboardingEquipmentBarbellDescription =
+      'The standard for building strength and power.';
+  static const onboardingEquipmentBenchDescription =
+      'An adjustable surface for pressing and supported movements.';
+  static const onboardingEquipmentKettlebellsDescription =
+      'Useful for dynamic, functional strength.';
+  static const onboardingEquipmentBandsDescription =
+      'Portable resistance for mobility and activation.';
+  static const onboardingEquipmentCableDescription =
+      'Adjustable pulleys that maintain tension through each repetition.';
+  static const onboardingEquipmentSmithDescription =
+      'A guided barbell for added stability and control.';
+  static const onboardingEquipmentSquatRackDescription =
+      'A stable setup for squats, presses, and barbell work.';
+  static const onboardingEquipmentPullUpBarDescription =
+      'A dependable station for vertical pulling and core work.';
+  static const onboardingEquipmentCardioDescription =
+      'Treadmill, bike, rower, or similar conditioning equipment.';
+  static const onboardingPrecisionConstraintsTitle = 'Precision constraints';
+  static const onboardingPrecisionConstraintsDescription =
+      'Tailor your experience by flagging physical limitations and defining your movement preferences for a safer, more effective routine.';
+  static const onboardingSafetyFirst = 'Safety first';
+  static const onboardingSafetyFirstDescription =
+      'Aedify uses these constraints to suggest safer exercise alternatives and substitutions.';
+  static const onboardingSensitiveDataLocal =
+      'Limitations and health notes stay in local app storage on this device.';
+  static const onboardingEliteBaselineTitle = 'Elite Baseline';
+  static const onboardingEliteBaselineDescription =
+      'Calibrate your physical profile. These metrics define your starting intensity and performance ratios.';
+  static const onboardingEliteBaselineEyebrow = 'Onboarding: Step 7';
+  static const onboardingMaxLiftsHelper =
+      'Enter your current 1-Rep Max for power estimation.';
+  static const onboardingImprovesAccuracy = 'Improves plan accuracy';
+  static const onboardingBenchPressLabel = 'Bench Press';
+  static const onboardingBackSquatLabel = 'Back Squat';
+  static const onboardingDeadliftLabel = 'Deadlift';
+  static const onboardingMetricZeroHint = '0';
+  static String onboardingMetricRulerLabel(String metric) => '$metric ruler';
+  static const onboardingIntelligenceLayerTitle = 'Intelligence Layer';
+  static const onboardingIntelligenceLayerDescription =
+      'Connect your preferred AI provider to enable optional AI-assisted workout and programme planning.';
+  static const onboardingSelectProvider = 'Select Provider';
+  static const onboardingSecureConnection = 'Secure Connection';
+  static const onboardingOpenAiApiKeyLabel = 'OpenAI API Key';
+  static const onboardingAnthropicApiKeyLabel = 'Anthropic API Key';
+  static const onboardingGoogleApiKeyLabel = 'Google Gemini API Key';
+  static const onboardingAnthropicApiKeyHint = 'sk-ant-api03-...';
+  static const onboardingGoogleApiKeyHint = 'AIzaSy...';
+  static const onboardingApiKeySecureHelper =
+      'Your key is encrypted and stored locally on your device.';
+  static const showApiKey = 'Show API key';
+  static const hideApiKey = 'Hide API key';
+  static const onboardingFinalReviewTitle = 'Review';
+  static const onboardingInitializeWorkspace = 'INITIALIZE WORKSPACE';
+  static const onboardingArchitecturePhase = 'ARCHITECTURE PHASE: DEPLOYMENT';
+  static const onboardingReviewExperienceTitle = 'Experience & Level';
+  static const onboardingReviewTierLabel = 'TIER';
+  static const onboardingReviewFocusLabel = 'FOCUS';
+  static const onboardingReviewDurationLabel = 'DURATION';
+  static const onboardingReviewAiIntelligenceTitle =
+      'AI Intelligence (Optional)';
+  static const onboardingReviewAiOptionalDescription =
+      'No AI provider connected. Core training features remain fully functional. Connect a provider later in Settings to enable optional AI assistance.';
+  static const onboardingReviewAiConfiguredDescription =
+      'Your provider is configured for optional AI assistance. Core training features continue to work locally without it.';
+  static const onboardingReviewAiNotConfiguredStatus = 'STATUS: NOT CONFIGURED';
+  static const onboardingReviewAiConfiguredStatus = 'STATUS: CONFIGURED';
+  static const onboardingReviewScheduleTitle = 'Schedule';
+  static const onboardingReviewScheduleLabel = 'TRAINING RHYTHM';
+  static const onboardingReviewEquipmentTitle = 'Equipment';
+  static const onboardingReviewEquipmentLabel = 'AVAILABLE SETUP';
+  static const onboardingReviewMetricTitle = 'Metric Integration';
+  static const onboardingReviewMetricDescription =
+      'Your preferred units and optional baseline metrics are stored locally and remain editable after setup.';
+  static const modify = 'Modify';
+  static const update = 'Update';
+
+  static String onboardingReviewExperienceDuration(String experience) =>
+      experience;
+
+  static String onboardingReviewScheduleValue(int days, int minutes) =>
+      '$days ${days == 1 ? onboardingDaySingle : onboardingDayPlural} / week • '
+      '$minutes min sessions';
 
   // BYOK
   static const byokSettings = 'AI provider setup';

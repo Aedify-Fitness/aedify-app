@@ -2,6 +2,81 @@ class OutlinedSvgAssets {
   OutlinedSvgAssets._();
 
   static const _pathPrefix = 'assets/svgs/outline';
+  static const _materialSymbolPrefix = '$_pathPrefix/material_symbol';
+
+  // Google Material Symbols used by the supplied onboarding design.
+  static const materialAccessibilityNew =
+      '${_materialSymbolPrefix}_accessibility_new.svg';
+  static const materialAdd = '${_materialSymbolPrefix}_add.svg';
+  static const materialAddCircle = '${_materialSymbolPrefix}_add_circle.svg';
+  static const materialAnalytics = '${_materialSymbolPrefix}_analytics.svg';
+  static const materialArrowBack = '${_materialSymbolPrefix}_arrow_back.svg';
+  static const materialArrowForward =
+      '${_materialSymbolPrefix}_arrow_forward.svg';
+  static const materialAutoAwesome =
+      '${_materialSymbolPrefix}_auto_awesome.svg';
+  static const materialBackHand = '${_materialSymbolPrefix}_back_hand.svg';
+  static const materialBedtime = '${_materialSymbolPrefix}_bedtime.svg';
+  static const materialBlock = '${_materialSymbolPrefix}_block.svg';
+  static const materialBolt = '${_materialSymbolPrefix}_bolt.svg';
+  static const materialCalendarMonth =
+      '${_materialSymbolPrefix}_calendar_month.svg';
+  static const materialCalendarToday =
+      '${_materialSymbolPrefix}_calendar_today.svg';
+  static const materialCheck = '${_materialSymbolPrefix}_check.svg';
+  static const materialCheckCircle =
+      '${_materialSymbolPrefix}_check_circle.svg';
+  static const materialChildCare = '${_materialSymbolPrefix}_child_care.svg';
+  static const materialClose = '${_materialSymbolPrefix}_close.svg';
+  static const materialCloud = '${_materialSymbolPrefix}_cloud.svg';
+  static const materialDirectionsWalk =
+      '${_materialSymbolPrefix}_directions_walk.svg';
+  static const materialDoNotDisturbOn =
+      '${_materialSymbolPrefix}_do_not_disturb_on.svg';
+  static const materialEdit = '${_materialSymbolPrefix}_edit.svg';
+  static const materialEditNote = '${_materialSymbolPrefix}_edit_note.svg';
+  static const materialEncrypted = '${_materialSymbolPrefix}_encrypted.svg';
+  static const materialExercise = '${_materialSymbolPrefix}_exercise.svg';
+  static const materialFavorite = '${_materialSymbolPrefix}_favorite.svg';
+  static const materialFemale = '${_materialSymbolPrefix}_female.svg';
+  static const materialFitnessCenter =
+      '${_materialSymbolPrefix}_fitness_center.svg';
+  static const materialHome = '${_materialSymbolPrefix}_home.svg';
+  static const materialHub = '${_materialSymbolPrefix}_hub.svg';
+  static const materialInfo = '${_materialSymbolPrefix}_info.svg';
+  static const materialInfoFilled = '${_materialSymbolPrefix}_info_filled.svg';
+  static const materialInventory2 = '${_materialSymbolPrefix}_inventory_2.svg';
+  static const materialKey = '${_materialSymbolPrefix}_key.svg';
+  static const materialLightBulb = '${_materialSymbolPrefix}_lightbulb.svg';
+  static const materialMale = '${_materialSymbolPrefix}_male.svg';
+  static const materialMenu = '${_materialSymbolPrefix}_menu.svg';
+  static const materialMilitaryTech =
+      '${_materialSymbolPrefix}_military_tech.svg';
+  static const materialMonitoring = '${_materialSymbolPrefix}_monitoring.svg';
+  static const materialPerson = '${_materialSymbolPrefix}_person.svg';
+  static const materialPersonalInjury =
+      '${_materialSymbolPrefix}_personal_injury.svg';
+  static const materialQueryStats = '${_materialSymbolPrefix}_query_stats.svg';
+  static const materialSchool = '${_materialSymbolPrefix}_school.svg';
+  static const materialSecurity = '${_materialSymbolPrefix}_security.svg';
+  static const materialSelfImprovement =
+      '${_materialSymbolPrefix}_self_improvement.svg';
+  static const materialSettings = '${_materialSymbolPrefix}_settings.svg';
+  static const materialSettingsAccessibility =
+      '${_materialSymbolPrefix}_settings_accessibility.svg';
+  static const materialSteps = '${_materialSymbolPrefix}_steps.svg';
+  static const materialSyncLock = '${_materialSymbolPrefix}_sync_lock.svg';
+  static const materialTimer = '${_materialSymbolPrefix}_timer.svg';
+  static const materialToggleOff = '${_materialSymbolPrefix}_toggle_off.svg';
+  static const materialTransgender = '${_materialSymbolPrefix}_transgender.svg';
+  static const materialVerifiedUser =
+      '${_materialSymbolPrefix}_verified_user.svg';
+  static const materialVisibility = '${_materialSymbolPrefix}_visibility.svg';
+  static const materialVisibilityOff =
+      '${_materialSymbolPrefix}_visibility_off.svg';
+  static const materialWarning = '${_materialSymbolPrefix}_warning.svg';
+  static const materialWorkspacePremium =
+      '${_materialSymbolPrefix}_workspace_premium.svg';
 
   static const academicCap = '$_pathPrefix/academic_cap.svg';
   static const adjustmentsHorizontal =

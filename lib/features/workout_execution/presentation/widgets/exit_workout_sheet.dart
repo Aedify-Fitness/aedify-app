@@ -1,8 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -117,10 +120,14 @@ class _HeaderSection extends StatelessWidget {
             color: context.colorScheme.surfaceContainer,
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            Icons.pause_circle_filled,
-            color: context.colorScheme.secondary,
-            size: AppSizing.iconXxl,
+          child: SvgPicture.asset(
+            SolidSvgAssets.pauseCircle,
+            width: AppSizing.iconXxl,
+            height: AppSizing.iconXxl,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.secondary,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         AppWhiteSpace.hLg,
@@ -294,12 +301,28 @@ class _ActionButtons extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.save, size: AppSizing.iconSm),
+                    SvgPicture.asset(
+                      OutlinedSvgAssets.arrowDownTray,
+                      width: AppSizing.iconSm,
+                      height: AppSizing.iconSm,
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.onSecondary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     AppWhiteSpace.wSm,
                     Text(AppStrings.finishAndSave),
                   ],
                 ),
-                const Icon(Icons.arrow_forward, size: AppSizing.iconSm),
+                SvgPicture.asset(
+                  OutlinedSvgAssets.arrowRight,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.onSecondary,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ],
             ),
           ),
@@ -310,10 +333,14 @@ class _ActionButtons extends StatelessWidget {
             Expanded(
               child: FilledButton.icon(
                 onPressed: onPause,
-                icon: Icon(
-                  Icons.play_arrow,
-                  size: AppSizing.iconSm,
-                  color: context.colorScheme.secondary,
+                icon: SvgPicture.asset(
+                  SolidSvgAssets.play,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.secondary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(
                   AppStrings.pauseWorkout,
@@ -337,10 +364,14 @@ class _ActionButtons extends StatelessWidget {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: onAbandon,
-                icon: Icon(
-                  Icons.delete_forever,
-                  size: AppSizing.iconSm,
-                  color: context.colorScheme.error,
+                icon: SvgPicture.asset(
+                  OutlinedSvgAssets.trash,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.error,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(
                   AppStrings.abandonSession,

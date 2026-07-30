@@ -668,10 +668,11 @@ class _CardMenu extends StatelessWidget {
         color: Colors.transparent,
         child: PopupMenuButton<String>(
           padding: EdgeInsets.zero,
-          icon: Icon(
-            Icons.more_horiz,
-            color: cs.onSurfaceVariant,
-            size: AppSizing.iconMd,
+          icon: SvgPicture.asset(
+            OutlinedSvgAssets.ellipsisHorizontal,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(cs.onSurfaceVariant, BlendMode.srcIn),
           ),
           onSelected: (value) {
             switch (value) {

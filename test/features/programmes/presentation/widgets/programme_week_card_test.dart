@@ -7,7 +7,9 @@ import 'package:aedify/features/programmes/presentation/widgets/programme_week_c
 import 'package:aedify/shared/constants/app_strings.dart';
 
 Widget _wrap(Widget widget) {
-  return MaterialApp(home: Scaffold(body: widget));
+  return MaterialApp(
+    home: Scaffold(body: SingleChildScrollView(child: widget)),
+  );
 }
 
 void main() {
@@ -170,6 +172,48 @@ void main() {
 
       await tester.tap(find.text(AppStrings.addWorkoutSlot));
       expect(added, isTrue);
+    });
+
+    testWidgets('collapsed week keeps day and workout summary visible', (
+      tester,
+    ) async {
+      final week = ProgrammeBuilderWeekDraft(
+        id: 'w1',
+        weekNumber: 1,
+        slots: [
+          ProgrammeBuilderWorkoutSlotDraft(
+            slotIndex: 0,
+            scheduledDayIndex: 0,
+            template: ProgrammeBuilderTemplateDraft(
+              id: 't-1',
+              templateKey: 't-1',
+              name: 'Push Day',
+            ),
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeWeekCard(
+            week: week,
+            weekIndex: 0,
+            onAddSlot: () {},
+            onRemoveSlot: (_) {},
+            onAssignTemplate: (_) {},
+            onDuplicate: () {},
+            onRemove: () {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('${AppStrings.weekLabelPrefix} 1'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Push Day'), findsOneWidget);
+      expect(
+        find.textContaining(AppStrings.onboardingDaySingle),
+        findsOneWidget,
+      );
     });
   });
 }

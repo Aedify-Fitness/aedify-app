@@ -126,7 +126,41 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.text(AppStrings.saveProfile), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, AppStrings.save), findsOneWidget);
+  });
+
+  testWidgets('groups profile fields into calm scrolling sections', (
+    tester,
+  ) async {
+    final repo = _FakeProfileRepository();
+    await repo.saveProfile(
+      const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
+    );
+
+    await tester.pumpWidget(createTestApp(repo));
+    await tester.pump();
+    await tester.pump();
+
+    final scrollable = find.byType(Scrollable).first;
+    expect(scrollable, findsOneWidget);
+
+    for (final title in [
+      AppStrings.onboardingPersonalDetailsTitle,
+      AppStrings.onboardingReviewProfileTitle,
+      AppStrings.onboardingScheduleTitle,
+      AppStrings.onboardingEquipmentTitle,
+      AppStrings.onboardingLimitationsTitle,
+      AppStrings.onboardingBodyMetricsTitle,
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(title),
+        400,
+        scrollable: scrollable,
+      );
+      expect(find.text(title), findsOneWidget);
+    }
+
+    expect(find.widgetWithText(FilledButton, AppStrings.save), findsOneWidget);
   });
 
   testWidgets('renders editable fields when profile loaded', (tester) async {
@@ -142,6 +176,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.experienceLevel),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text(AppStrings.experienceLevel), findsOneWidget);
     expect(find.text(AppStrings.goals), findsOneWidget);
   });
@@ -163,7 +202,7 @@ void main() {
     expect(find.text('Alex'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('renders sex chips when profile loaded', (tester) async {
+  testWidgets('renders custom sex pills when profile loaded', (tester) async {
     final repo = _FakeProfileRepository();
     await repo.saveProfile(
       const ProfileEditDraft(experienceLevel: ExperienceLevel.beginner),
@@ -177,6 +216,8 @@ void main() {
     expect(find.text(AppStrings.sexMale), findsOneWidget);
     expect(find.text(AppStrings.sexFemale), findsOneWidget);
     expect(find.text(AppStrings.sexNotSpecified), findsOneWidget);
+    expect(find.byType(FilterChip), findsNothing);
+    expect(find.byType(ChoiceChip), findsNothing);
   });
 
   testWidgets('renders date of birth picker when profile loaded', (
@@ -204,7 +245,12 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.text(AppStrings.maxLifts), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.onboardingMaxLiftsTitle),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text(AppStrings.onboardingMaxLiftsTitle), findsOneWidget);
     expect(find.text(AppStrings.bench1Rm), findsOneWidget);
     expect(find.text(AppStrings.squat1Rm), findsOneWidget);
     expect(find.text(AppStrings.deadlift1Rm), findsOneWidget);
@@ -220,6 +266,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.substitutions),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text(AppStrings.favorites), findsOneWidget);
     expect(find.text(AppStrings.substitutions), findsOneWidget);
   });
@@ -234,9 +285,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    await tester.ensureVisible(find.text(AppStrings.saveProfile));
-    await tester.pump();
-    await tester.tap(find.text(AppStrings.saveProfile));
+    await tester.tap(find.widgetWithText(FilledButton, AppStrings.save));
     await tester.pump();
     await tester.pump();
 
@@ -269,6 +318,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.metricWeightLabel),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text(AppStrings.metricWeightLabel), findsOneWidget);
   });
 
@@ -285,6 +339,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.imperialWeightLabel),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text(AppStrings.imperialWeightLabel), findsOneWidget);
   });
 
@@ -305,6 +364,11 @@ void main() {
     await tester.pump();
     await tester.pump();
 
+    await tester.scrollUntilVisible(
+      find.text('70.0'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     // Bodyweight formatted value (70.0 kg)
     expect(find.text('70.0'), findsOneWidget);
     // Height formatted value (175.0 cm)

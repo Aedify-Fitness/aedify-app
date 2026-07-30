@@ -8,12 +8,14 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/set_type_option.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
 import 'package:aedify/features/workout_builder/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/domain/workout_builder_exercise_draft.dart';
@@ -1347,10 +1349,14 @@ class _MiniExerciseCard extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: isSelectedForSuperset
-                          ? Icon(
-                              Icons.check,
-                              size: AppSizing.iconSm - 2,
-                              color: cs.onSecondary,
+                          ? SvgPicture.asset(
+                              OutlinedSvgAssets.check,
+                              width: AppSizing.iconSm - 2,
+                              height: AppSizing.iconSm - 2,
+                              colorFilter: ColorFilter.mode(
+                                cs.onSecondary,
+                                BlendMode.srcIn,
+                              ),
                             )
                           : null,
                     )
@@ -1752,12 +1758,18 @@ class _ExerciseConfigPanel extends StatelessWidget {
           _SetsTable(
             exercise: exercise,
             setTypeOptions: setTypeOptions,
+            loggingType: ExerciseLoggingType.fromDbWithDefault(
+              exercise.exercise.loggingType,
+            ),
             onAddSet: () => onAddSet(exercise.id),
             onRemoveSet: (setId) => onRemoveSet(exercise.id, setId),
             onUpdateSet: (setId, prescription) =>
                 onUpdateSet(exercise.id, setId, prescription),
           ),
-          const Divider(height: 1, thickness: 1),
+          Divider(
+            height: AppSizing.hairlineStrokeWidth,
+            thickness: AppSizing.hairlineStrokeWidth,
+          ),
           _CoachNotesField(
             exerciseId: exercise.id,
             initialNotes: exercise.notes,
@@ -1782,17 +1794,21 @@ class _ConfigPanelHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 48,
-          height: 48,
+          width: AppSizing.iconXxl,
+          height: AppSizing.iconXxl,
           decoration: BoxDecoration(
             color: cs.secondaryContainer,
             borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
           ),
           alignment: Alignment.center,
-          child: Icon(
-            Icons.fitness_center,
-            color: cs.onSecondaryContainer,
-            size: AppSizing.iconSm,
+          child: SvgPicture.asset(
+            SolidSvgAssets.dumbbell,
+            width: AppSizing.iconSm,
+            height: AppSizing.iconSm,
+            colorFilter: ColorFilter.mode(
+              cs.onSecondaryContainer,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         AppWhiteSpace.wMd,
@@ -1853,6 +1869,7 @@ class _SetsTable extends StatelessWidget {
   const _SetsTable({
     required this.exercise,
     required this.setTypeOptions,
+    required this.loggingType,
     required this.onAddSet,
     required this.onRemoveSet,
     required this.onUpdateSet,
@@ -1860,6 +1877,7 @@ class _SetsTable extends StatelessWidget {
 
   final WorkoutBuilderExerciseDraft exercise;
   final List<SetTypeOption> setTypeOptions;
+  final ExerciseLoggingType loggingType;
   final VoidCallback onAddSet;
   final ValueChanged<String> onRemoveSet;
   final void Function(String setId, SetPrescriptionDraft prescription)
@@ -1872,23 +1890,17 @@ class _SetsTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            _TableHeader(label: AppStrings.setNumberColumn, flex: 2),
-            _TableHeader(label: AppStrings.setTypeColumn, flex: 3),
-            _TableHeader(label: AppStrings.weightColumn, flex: 4),
-            _TableHeader(label: AppStrings.repsColumn, flex: 3),
-            _TableHeader(label: AppStrings.targetColumn, flex: 4),
-            _TableHeader(label: AppStrings.restColumn, flex: 2),
-            AppWhiteSpace.custom(width: AppSizing.handleWidth),
-          ],
+        _buildHeader(context),
+        Divider(
+          height: AppSizing.hairlineStrokeWidth,
+          thickness: AppSizing.hairlineStrokeWidth,
         ),
-        const Divider(height: 1, thickness: 1),
         ...exercise.sets.map(
           (set) => _SetTableRow(
             key: ValueKey(set.id),
             set: set,
             setTypeOptions: setTypeOptions,
+            loggingType: loggingType,
             onUpdate: (updated) => onUpdateSet(set.id, updated),
             onRemove: () => onRemoveSet(set.id),
           ),
@@ -1925,6 +1937,42 @@ class _SetsTable extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildHeader(BuildContext context) {
+    switch (loggingType) {
+      case ExerciseLoggingType.repsWeight:
+        return Row(
+          children: [
+            _TableHeader(label: AppStrings.setNumberColumn, flex: 2),
+            _TableHeader(label: AppStrings.setTypeColumn, flex: 3),
+            _TableHeader(label: AppStrings.weightColumn, flex: 4),
+            _TableHeader(label: AppStrings.repsColumn, flex: 3),
+            _TableHeader(label: AppStrings.targetColumn, flex: 4),
+            _TableHeader(label: AppStrings.restColumn, flex: 2),
+            AppWhiteSpace.custom(width: AppSizing.handleWidth),
+          ],
+        );
+      case ExerciseLoggingType.repsOnly:
+        return Row(
+          children: [
+            _TableHeader(label: AppStrings.setNumberColumn, flex: 2),
+            _TableHeader(label: AppStrings.repsColumn, flex: 3),
+            Expanded(flex: 6, child: const SizedBox.shrink()),
+            _TableHeader(label: AppStrings.restColumn, flex: 2),
+            AppWhiteSpace.custom(width: AppSizing.handleWidth),
+          ],
+        );
+      case ExerciseLoggingType.duration:
+        return Row(
+          children: [
+            _TableHeader(label: AppStrings.setNumberColumn, flex: 2),
+            _TableHeader(label: AppStrings.durationColumn, flex: 5),
+            _TableHeader(label: AppStrings.restColumn, flex: 2),
+            AppWhiteSpace.custom(width: AppSizing.handleWidth),
+          ],
+        );
+    }
+  }
 }
 
 class _TableHeader extends StatelessWidget {
@@ -1958,12 +2006,14 @@ class _SetTableRow extends StatefulWidget {
     super.key,
     required this.set,
     required this.setTypeOptions,
+    required this.loggingType,
     required this.onUpdate,
     required this.onRemove,
   });
 
   final SetPrescriptionDraft set;
   final List<SetTypeOption> setTypeOptions;
+  final ExerciseLoggingType loggingType;
   final ValueChanged<SetPrescriptionDraft> onUpdate;
   final VoidCallback onRemove;
 
@@ -1976,6 +2026,7 @@ class _SetTableRowState extends State<_SetTableRow> {
   late final TextEditingController _targetController;
   late final TextEditingController _weightController;
   late final TextEditingController _restController;
+  late final TextEditingController _durationController;
   bool _isSyncing = false;
 
   @override
@@ -1985,11 +2036,13 @@ class _SetTableRowState extends State<_SetTableRow> {
     _targetController = TextEditingController();
     _weightController = TextEditingController();
     _restController = TextEditingController();
+    _durationController = TextEditingController();
     _syncControllers();
     _repsController.addListener(_onRepsChanged);
     _targetController.addListener(_onTargetChanged);
     _weightController.addListener(_onWeightChanged);
     _restController.addListener(_onRestChanged);
+    _durationController.addListener(_onDurationChanged);
   }
 
   @override
@@ -2004,7 +2057,8 @@ class _SetTableRowState extends State<_SetTableRow> {
         widget.set.prescribedRpeMax != oldWidget.set.prescribedRpeMax ||
         widget.set.prescribedRir != oldWidget.set.prescribedRir ||
         widget.set.prescribedWeightKg != oldWidget.set.prescribedWeightKg ||
-        widget.set.restSeconds != oldWidget.set.restSeconds) {
+        widget.set.restSeconds != oldWidget.set.restSeconds ||
+        widget.set.durationSeconds != oldWidget.set.durationSeconds) {
       _syncControllers();
     }
   }
@@ -2015,12 +2069,31 @@ class _SetTableRowState extends State<_SetTableRow> {
     _targetController.dispose();
     _weightController.dispose();
     _restController.dispose();
+    _durationController.dispose();
     super.dispose();
   }
 
   static String _formatWeight(double value) {
     if (value == value.truncateToDouble()) return value.toInt().toString();
     return value.toString();
+  }
+
+  static String _formatDuration(int? totalSeconds) {
+    if (totalSeconds == null) return '';
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  static int? _parseDuration(String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return null;
+    final parts = trimmed.split(':');
+    if (parts.length != 2) return null;
+    final minutes = int.tryParse(parts[0]);
+    final seconds = int.tryParse(parts[1]);
+    if (minutes == null || seconds == null) return null;
+    return minutes * 60 + seconds;
   }
 
   void _syncControllers() {
@@ -2031,6 +2104,7 @@ class _SetTableRowState extends State<_SetTableRow> {
         ? _formatWeight(widget.set.prescribedWeightKg!)
         : '';
     _restController.text = widget.set.restSeconds?.toString() ?? '';
+    _durationController.text = _formatDuration(widget.set.durationSeconds);
     _isSyncing = false;
   }
 
@@ -2155,9 +2229,18 @@ class _SetTableRowState extends State<_SetTableRow> {
     }
   }
 
+  void _onDurationChanged() {
+    if (_isSyncing) return;
+    final seconds = _parseDuration(_durationController.text);
+    if (seconds == null) {
+      widget.onUpdate(widget.set.clearDuration());
+      return;
+    }
+    widget.onUpdate(widget.set.copyWith(durationSeconds: seconds));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cs = context.colorScheme;
     final set = widget.set;
 
     return Column(
@@ -2171,154 +2254,239 @@ class _SetTableRowState extends State<_SetTableRow> {
           ),
           child: Row(
             spacing: AppSpacing.xs,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Text(
-                  '${set.setIndex + 1}',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: GestureDetector(
-                  onTap: () {
-                    final newType = set.setType == SetType.working
-                        ? SetType.warmup
-                        : SetType.working;
-                    widget.onUpdate(set.copyWith(setType: newType));
-                  },
-                  child: Container(
-                    height: 36,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: set.setType == SetType.working
-                          ? cs.secondary.withValues(alpha: 0.1)
-                          : cs.surfaceContainerHighest.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(AppRadius.sm),
-                    ),
-                    child: Text(
-                      set.setType == SetType.working
-                          ? AppStrings.setTypeWorking
-                          : AppStrings.setTypeWarmup,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: set.setType == SetType.working
-                            ? cs.secondary
-                            : cs.onSurfaceVariant,
-                        fontSize: AppFontSizes.xxs,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: SizedBox(
-                  height: 36,
-                  child: AppTextField(
-                    controller: _weightController,
-                    keyboardType: TextInputType.number,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.sm,
-                    ),
-                    borderRadius: AppRadius.sm,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: cs.onSurface,
-                      fontSize: AppFontSizes.sm,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: SizedBox(
-                  height: 36,
-                  child: AppTextField(
-                    controller: _repsController,
-                    keyboardType: TextInputType.text,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.sm,
-                    ),
-                    borderRadius: AppRadius.sm,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: cs.onSurface,
-                      fontSize: AppFontSizes.sm,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: SizedBox(
-                  height: 36,
-                  child: AppTextField(
-                    controller: _targetController,
-                    hintText: AppStrings.rpeHint,
-                    keyboardType: TextInputType.text,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.sm,
-                    ),
-                    borderRadius: AppRadius.sm,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: cs.onSurface,
-                      fontSize: AppFontSizes.sm,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: SizedBox(
-                  height: 36,
-                  child: AppTextField(
-                    controller: _restController,
-                    keyboardType: TextInputType.number,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.sm,
-                    ),
-                    borderRadius: AppRadius.sm,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: cs.onSurface,
-                      fontSize: AppFontSizes.sm,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 40,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    OutlinedSvgAssets.trash,
-                    width: AppSizing.iconXs,
-                    height: AppSizing.iconXs,
-                    colorFilter: ColorFilter.mode(
-                      cs.onSurfaceVariant.withValues(alpha: 0.5),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  onPressed: widget.onRemove,
-                  tooltip: AppStrings.removeSet,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
-                ),
-              ),
-            ],
+            children: _buildRowCells(context, set),
           ),
         ),
       ],
+    );
+  }
+
+  List<Widget> _buildRowCells(BuildContext context, SetPrescriptionDraft set) {
+    final cs = context.colorScheme;
+
+    switch (widget.loggingType) {
+      case ExerciseLoggingType.repsWeight:
+        return [
+          _setNumber(set),
+          _setTypeChip(set, cs),
+          _weightInput(cs),
+          _repsInput(cs),
+          _targetInput(cs),
+          _restInput(cs),
+          _deleteButton(cs),
+        ];
+
+      case ExerciseLoggingType.repsOnly:
+        return [
+          _setNumber(set),
+          Expanded(flex: 3, child: _repsInput(cs)),
+          const Expanded(flex: 6, child: SizedBox.shrink()),
+          _restInput(cs),
+          _deleteButton(cs),
+        ];
+
+      case ExerciseLoggingType.duration:
+        return [
+          _setNumber(set),
+          _durationInput(cs),
+          _restInput(cs),
+          _deleteButton(cs),
+        ];
+    }
+  }
+
+  Widget _setNumber(SetPrescriptionDraft set) {
+    final cs = context.colorScheme;
+    return Expanded(
+      flex: 1,
+      child: Text(
+        '${set.setIndex + 1}',
+        style: AppTextStyles.labelSm.copyWith(color: cs.onSurfaceVariant),
+      ),
+    );
+  }
+
+  Widget _setTypeChip(SetPrescriptionDraft set, ColorScheme cs) {
+    return Expanded(
+      flex: 3,
+      child: GestureDetector(
+        onTap: () {
+          final newType = set.setType == SetType.working
+              ? SetType.warmup
+              : SetType.working;
+          widget.onUpdate(set.copyWith(setType: newType));
+        },
+        child: Container(
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: set.setType == SetType.working
+                ? cs.secondary.withValues(alpha: 0.1)
+                : cs.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
+          child: Text(
+            set.setType == SetType.working
+                ? AppStrings.setTypeWorking
+                : AppStrings.setTypeWarmup,
+            style: AppTextStyles.labelSm.copyWith(
+              color: set.setType == SetType.working
+                  ? cs.secondary
+                  : cs.onSurfaceVariant,
+              fontSize: AppFontSizes.xxs,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _weightInput(ColorScheme cs) {
+    return Expanded(
+      flex: 3,
+      child: SizedBox(
+        height: 36,
+        child: AppTextField(
+          controller: _weightController,
+          keyboardType: TextInputType.number,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.sm,
+          ),
+          borderRadius: AppRadius.sm,
+          style: AppTextStyles.labelSm.copyWith(
+            color: cs.onSurface,
+            fontSize: AppFontSizes.sm,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _repsInput(ColorScheme cs) {
+    return Expanded(
+      flex: 2,
+      child: SizedBox(
+        height: 36,
+        child: AppTextField(
+          controller: _repsController,
+          keyboardType: TextInputType.text,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.sm,
+          ),
+          borderRadius: AppRadius.sm,
+          style: AppTextStyles.labelSm.copyWith(
+            color: cs.onSurface,
+            fontSize: AppFontSizes.sm,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _targetInput(ColorScheme cs) {
+    return Expanded(
+      flex: 3,
+      child: SizedBox(
+        height: 36,
+        child: AppTextField(
+          controller: _targetController,
+          hintText: AppStrings.rpeHint,
+          keyboardType: TextInputType.text,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.sm,
+          ),
+          borderRadius: AppRadius.sm,
+          style: AppTextStyles.labelSm.copyWith(
+            color: cs.onSurface,
+            fontSize: AppFontSizes.sm,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _restInput(ColorScheme cs) {
+    return Expanded(
+      flex: 2,
+      child: SizedBox(
+        height: 36,
+        child: AppTextField(
+          controller: _restController,
+          keyboardType: TextInputType.number,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.sm,
+          ),
+          borderRadius: AppRadius.sm,
+          style: AppTextStyles.labelSm.copyWith(
+            color: cs.onSurface,
+            fontSize: AppFontSizes.sm,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _durationInput(ColorScheme cs) {
+    return Expanded(
+      flex: 5,
+      child: SizedBox(
+        height: 36,
+        child: Row(
+          children: [
+            Expanded(
+              child: AppTextField(
+                controller: _durationController,
+                keyboardType: TextInputType.text,
+                hintText: '05:00',
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.sm,
+                ),
+                borderRadius: AppRadius.sm,
+                style: AppTextStyles.labelSm.copyWith(
+                  color: cs.onSurface,
+                  fontSize: AppFontSizes.sm,
+                ),
+              ),
+            ),
+            AppWhiteSpace.wXs,
+            Text(
+              AppStrings.durationUnit,
+              style: AppTextStyles.labelSm.copyWith(color: cs.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _deleteButton(ColorScheme cs) {
+    return SizedBox(
+      width: 40,
+      child: IconButton(
+        icon: SvgPicture.asset(
+          OutlinedSvgAssets.trash,
+          width: AppSizing.iconXs,
+          height: AppSizing.iconXs,
+          colorFilter: ColorFilter.mode(
+            cs.onSurfaceVariant.withValues(alpha: 0.5),
+            BlendMode.srcIn,
+          ),
+        ),
+        onPressed: widget.onRemove,
+        tooltip: AppStrings.removeSet,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+      ),
     );
   }
 }

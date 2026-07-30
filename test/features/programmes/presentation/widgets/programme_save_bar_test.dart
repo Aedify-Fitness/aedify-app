@@ -11,6 +11,7 @@ import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/components/app_toggle_pill.dart';
 
 ProviderScope _wrap(Widget widget) {
   return ProviderScope(
@@ -58,12 +59,7 @@ void main() {
       );
 
       expect(
-        find.byWidgetPredicate(
-          (w) =>
-              w is Container &&
-              w.decoration is BoxDecoration &&
-              (w.decoration as BoxDecoration).shape == BoxShape.circle,
-        ),
+        find.byKey(const Key('programme_dirty_indicator')),
         findsOneWidget,
       );
       expect(find.text(AppStrings.unsavedProgrammeChanges), findsOneWidget);
@@ -80,15 +76,7 @@ void main() {
         ),
       );
 
-      expect(
-        find.byWidgetPredicate(
-          (w) =>
-              w is Container &&
-              w.decoration is BoxDecoration &&
-              (w.decoration as BoxDecoration).shape == BoxShape.circle,
-        ),
-        findsNothing,
-      );
+      expect(find.byKey(const Key('programme_dirty_indicator')), findsNothing);
     });
 
     testWidgets(
@@ -153,6 +141,25 @@ void main() {
 
       await tester.tap(find.byType(FilledButton));
       expect(saved, isTrue);
+    });
+
+    testWidgets('calls onToggleActive from the explicit status control', (
+      tester,
+    ) async {
+      bool toggled = false;
+      await tester.pumpWidget(
+        _wrap(
+          ProgrammeSaveBar(
+            state: _state(hasWeeks: true),
+            onSave: () {},
+            onToggleActive: () => toggled = true,
+          ),
+        ),
+      );
+
+      expect(find.text(AppStrings.programmeInactive), findsOneWidget);
+      await tester.tap(find.byType(AppTogglePill));
+      expect(toggled, isTrue);
     });
   });
 }

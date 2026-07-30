@@ -55,7 +55,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
         goalsJson: Value(
           EnumCodec.encodeSet(draft.goals, (value) => value.dbValue),
         ),
-        trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
+        trainingDaysPerWeek: Value(draft.trainingDays.length),
         trainingDayNamesJson: Value(
           EnumCodec.encodeList(draft.trainingDays, (value) => value.dbValue),
         ),
@@ -137,7 +137,7 @@ class DriftOnboardingRepository implements OnboardingRepository {
         experienceLevel: const Value(''),
         targetSessionLengthMinutes: const Value(null),
         trainingDaysPerWeek: const Value(null),
-        trainingDayNamesJson: Value(existing?.trainingDayNamesJson ?? '[]'),
+        trainingDayNamesJson: const Value('[]'),
         onboardingCompleted: Value(existing?.onboardingCompleted ?? false),
         onboardingCompletedAt: Value(existing?.onboardingCompletedAt),
         goalsJson: const Value('[]'),
@@ -153,6 +153,11 @@ class DriftOnboardingRepository implements OnboardingRepository {
   }
 
   OnboardingDraft _profileToDraft(UserProfileData profile) {
+    final trainingDays = EnumCodec.decodeList(
+      profile.trainingDayNamesJson,
+      TrainingDay.fromDb,
+    );
+
     return OnboardingDraft(
       displayName: profile.name,
       sex: profile.sex == null || profile.sex!.isEmpty
@@ -163,11 +168,8 @@ class DriftOnboardingRepository implements OnboardingRepository {
           ? null
           : ExperienceLevel.fromDb(profile.experienceLevel),
       goals: EnumCodec.decodeSet(profile.goalsJson, GoalTag.fromDb),
-      trainingDaysPerWeek: profile.trainingDaysPerWeek,
-      trainingDays: EnumCodec.decodeList(
-        profile.trainingDayNamesJson,
-        TrainingDay.fromDb,
-      ),
+      trainingDaysPerWeek: trainingDays.isEmpty ? null : trainingDays.length,
+      trainingDays: trainingDays,
       targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
       equipmentAccess: EnumCodec.decodeSet(
         profile.equipmentAccessJson,

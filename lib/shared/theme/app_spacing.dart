@@ -16,6 +16,17 @@ class AppSpacing {
   static const double buttonVertical = 12;
   static const double inputHorizontal = 6;
   static const double inputVertical = 14;
+  static const double reviewActionVertical = 20;
+  static const double controlGap = 12;
+
+  // DESIGN.md semantic layout tokens
+  static const double gutter = 24;
+  static const double marginMobile = 16;
+  static const double marginDesktop = 48;
+  static const double containerMax = 1280;
+  static const double stackSm = 8;
+  static const double stackMd = 16;
+  static const double stackLg = 32;
 }
 
 class AppWhiteSpace {
@@ -24,6 +35,7 @@ class AppWhiteSpace {
   static const wXxs = SizedBox(width: AppSpacing.xxs);
   static const wXs = SizedBox(width: AppSpacing.xs);
   static const wSm = SizedBox(width: AppSpacing.sm);
+  static const wControlGap = SizedBox(width: AppSpacing.controlGap);
   static const wMd = SizedBox(width: AppSpacing.md);
   static const wLg = SizedBox(width: AppSpacing.lg);
   static const wXl = SizedBox(width: AppSpacing.xl);
@@ -33,6 +45,7 @@ class AppWhiteSpace {
   static const hXxs = SizedBox(height: AppSpacing.xxs);
   static const hXs = SizedBox(height: AppSpacing.xs);
   static const hSm = SizedBox(height: AppSpacing.sm);
+  static const hControlGap = SizedBox(height: AppSpacing.controlGap);
   static const hMd = SizedBox(height: AppSpacing.md);
   static const hLg = SizedBox(height: AppSpacing.lg);
   static const hXl = SizedBox(height: AppSpacing.xl);
@@ -95,11 +108,42 @@ class AppSizing {
   static const double hairlineStrokeWidth = 1;
   static const double inputFieldHeight = 36;
   static const double activeIndicatorHeight = 4;
+  static const double navBarHeight = 72;
   static const double deloadLineStrokeWidth = 10;
   static const double deloadLineSpacing = 40;
   static const double exerciseNumberCircle = 56;
   static const double setNumberColumnWidth = 32;
   static const double decorativeIcon = 128;
+  static const double onboardingHeroImageHeight = 200;
+  static const double onboardingEquipmentImageHeight = 160;
+  static const double onboardingEquipmentThumbnail = 96;
+  static const double onboardingConstraintActionSize = 32;
+  static const double onboardingLimitationTileHeight = 120;
+  static const double onboardingMetricValueWidth = 180;
+  static const double onboardingMetricRulerHeight = 96;
+  static const double onboardingMetricRulerMajorTick = 32;
+  static const double onboardingMetricRulerMinorTick = 16;
+  static const double onboardingMaxLiftFieldHeight = 56;
+  static const double onboardingByokFieldHeight = 56;
+  static const double onboardingByokProviderCardMinHeight = 112;
+  static const double onboardingByokBenefitIcon = 32;
+  static const double onboardingEyebrowLetterSpacing = 0.6;
+  static const double onboardingGlassCardShadowBlur = 40;
+  static const double onboardingGlassCardShadowSpread = -10;
+  static const double onboardingGlassCardShadowOffset = 10;
+  static const double onboardingIdentityChoiceHeight = 88;
+  static const double onboardingWeekdayChoiceHeight = 56;
+  static const double onboardingScheduleChartHeight = 96;
+  static const double onboardingWeeklyLoadChartHeight = 128;
+  static const double onboardingScheduleBarMinHeight = 16;
+  static const double onboardingScheduleBarMaxHeight = 72;
+  static const double onboardingGoalCardAspectRatio = 2.2;
+  static const double reviewStatusDot = 8;
+  static const double reviewDayIndicatorWidth = 24;
+  static const double reviewDayIndicatorHeight = 4;
+  static const double reviewMetricIcon = 96;
+  static const double reviewDecorativeIcon = 200;
+  static const double reviewStatusLetterSpacing = 1.2;
 }
 
 class AppFontSizes {
@@ -115,4 +159,5 @@ class AppFontSizes {
   static const double xxxl = 28;
   static const double displaySm = 32;
   static const double displayMd = 40;
+  static const double displayLg = 56;
 }

@@ -7,6 +7,7 @@ import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/experience_level.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -28,6 +29,12 @@ void main() {
       ExperienceLevel? experienceLevel = ExperienceLevel.intermediate,
       Set<GoalTag> goals = const {GoalTag.buildMuscle},
       int? trainingDaysPerWeek = 4,
+      List<TrainingDay> trainingDays = const [
+        TrainingDay.monday,
+        TrainingDay.tuesday,
+        TrainingDay.wednesday,
+        TrainingDay.thursday,
+      ],
       Set<EquipmentTag> equipment = const {EquipmentTag.dumbbell},
       PreferredUnit? preferredUnits = PreferredUnit.metric,
       double? heightCm = 175,
@@ -39,6 +46,7 @@ void main() {
         experienceLevel: experienceLevel,
         goals: goals,
         trainingDaysPerWeek: trainingDaysPerWeek,
+        trainingDays: trainingDays,
         equipmentAccess: equipment,
         preferredUnits: preferredUnits,
         heightCm: heightCm,
@@ -63,6 +71,12 @@ void main() {
       expect(loaded!.experienceLevel, ExperienceLevel.intermediate);
       expect(loaded.goals, {GoalTag.buildMuscle});
       expect(loaded.trainingDaysPerWeek, 4);
+      expect(loaded.trainingDays, const [
+        TrainingDay.monday,
+        TrainingDay.tuesday,
+        TrainingDay.wednesday,
+        TrainingDay.thursday,
+      ]);
       expect(loaded.equipmentAccess, {EquipmentTag.dumbbell});
       expect(loaded.preferredUnits, PreferredUnit.metric);
       expect(loaded.heightCm, 175);
@@ -79,6 +93,11 @@ void main() {
         experienceLevel: ExperienceLevel.beginner,
         goals: {GoalTag.loseWeight, GoalTag.generalFitness},
         trainingDaysPerWeek: 3,
+        trainingDays: const [
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+          TrainingDay.friday,
+        ],
         equipment: {EquipmentTag.bands},
         preferredUnits: PreferredUnit.imperial,
         heightCm: null,
@@ -92,6 +111,11 @@ void main() {
       expect(loaded!.experienceLevel, ExperienceLevel.beginner);
       expect(loaded.goals, {GoalTag.loseWeight, GoalTag.generalFitness});
       expect(loaded.trainingDaysPerWeek, 3);
+      expect(loaded.trainingDays, const [
+        TrainingDay.monday,
+        TrainingDay.wednesday,
+        TrainingDay.friday,
+      ]);
       expect(loaded.equipmentAccess, {EquipmentTag.bands});
       expect(loaded.preferredUnits, PreferredUnit.imperial);
       expect(loaded.heightCm, isNull);
@@ -127,8 +151,63 @@ void main() {
       expect(loaded!.experienceLevel, isNull);
       expect(loaded.goals, isEmpty);
       expect(loaded.trainingDaysPerWeek, isNull);
+      expect(loaded.trainingDays, isEmpty);
       expect(loaded.notes, isNull);
+
+      final profile = await db.select(db.userProfile).getSingle();
+      expect(profile.trainingDayNamesJson, '[]');
     });
+
+    test('save derives trainingDaysPerWeek from selected weekdays', () async {
+      await repository.saveOnboardingDraft(
+        makeDraft(
+          trainingDaysPerWeek: 6,
+          trainingDays: const [
+            TrainingDay.tuesday,
+            TrainingDay.thursday,
+            TrainingDay.saturday,
+          ],
+        ),
+      );
+
+      final loaded = await repository.loadOnboardingDraft();
+      expect(loaded!.trainingDaysPerWeek, 3);
+      expect(loaded.trainingDays, const [
+        TrainingDay.tuesday,
+        TrainingDay.thursday,
+        TrainingDay.saturday,
+      ]);
+
+      final profile = await db.select(db.userProfile).getSingle();
+      expect(profile.trainingDaysPerWeek, 3);
+    });
+
+    test(
+      'load derives frequency from weekdays when stored count is stale',
+      () async {
+        await repository.saveOnboardingDraft(
+          makeDraft(
+            trainingDays: const [
+              TrainingDay.monday,
+              TrainingDay.wednesday,
+              TrainingDay.friday,
+            ],
+          ),
+        );
+        await (db.update(db.userProfile)
+              ..where((profile) => profile.id.equals('default')))
+            .write(const UserProfileCompanion(trainingDaysPerWeek: Value(6)));
+
+        final loaded = await repository.loadOnboardingDraft();
+
+        expect(loaded!.trainingDaysPerWeek, 3);
+        expect(loaded.trainingDays, const [
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+          TrainingDay.friday,
+        ]);
+      },
+    );
 
     test('clearOnboardingDraft preserves onboarding completed flag', () async {
       final draft = makeDraft();

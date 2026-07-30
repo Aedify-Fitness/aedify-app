@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget widget) {
-  return MaterialApp(home: Scaffold(body: widget));
+  return MaterialApp(
+    home: Scaffold(body: SingleChildScrollView(child: widget)),
+  );
 }
 
 void main() {
@@ -68,6 +70,10 @@ void main() {
       );
 
       expect(find.text(AppStrings.supersetHistoryLabel), findsOneWidget);
+      expect(find.text('2 ${AppStrings.exercisesLabel}'), findsOneWidget);
+      expect(find.text(AppStrings.supersetRunnerHint), findsOneWidget);
+      expect(find.text(AppStrings.exerciseNumberLabel(1)), findsOneWidget);
+      expect(find.text(AppStrings.exerciseNumberLabel(2)), findsOneWidget);
       expect(find.text('Bench Press'), findsOneWidget);
       expect(find.text('Fly'), findsOneWidget);
     });

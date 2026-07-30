@@ -79,6 +79,7 @@ class _AddExerciseBottomSheetState
       exerciseId: item.id,
       name: item.name,
       modality: item.modality.dbValue,
+      loggingType: item.loggingType.dbValue,
       equipment: item.equipment?.dbValue,
       isCustom: item.isCustom,
     );
@@ -335,6 +336,7 @@ class _AddExerciseBottomSheetState
                               exerciseId: item.id,
                               name: item.name,
                               modality: item.modality.dbValue,
+                              loggingType: item.loggingType.dbValue,
                               equipment: item.equipment?.dbValue,
                               isCustom: item.isCustom,
                             ),

@@ -34,6 +34,8 @@ void main() {
 
     expect(find.text('Bench Press'), findsOneWidget);
     expect(find.text(AppStrings.historySetList), findsOneWidget);
+    expect(find.text(AppStrings.completed), findsNWidgets(2));
+    expect(find.text(AppStrings.workingSet), findsOneWidget);
     expect(find.text('10 reps'), findsOneWidget);
     expect(find.text('100.0 kg'), findsOneWidget);
   });

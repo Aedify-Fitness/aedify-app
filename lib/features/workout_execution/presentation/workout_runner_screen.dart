@@ -213,22 +213,22 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       builder: (_) => ExitWorkoutSheet(
         session: sessionWithDuration,
         onFinishAndSave: () async {
-          Navigator.of(context).pop();
+          context.pop();
           _resetTransientUi();
           await controller.completeWorkout();
         },
         onPause: () async {
-          Navigator.of(context).pop();
+          context.pop();
           await controller.pauseWorkout();
           if (context.mounted) context.pop();
         },
         onAbandon: () async {
-          Navigator.of(context).pop();
+          context.pop();
           _resetTransientUi();
           await controller.cancelWorkout();
           if (context.mounted) context.pop();
         },
-        onClose: () => Navigator.of(context).pop(),
+        onClose: () => context.pop(),
       ),
     );
   }

@@ -20,7 +20,6 @@ import 'package:aedify/features/exercise_library/presentation/custom_exercise_ed
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
-import 'package:aedify/features/workout_execution/presentation/workout_execution_screen.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/finish_early_session_complete_screen.dart';
@@ -280,7 +279,7 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.workout().path,
           name: AppRoutes.workout().name,
-          builder: (context, state) => const WorkoutExecutionScreen(),
+          builder: (context, state) => const WorkoutRunnerScreen.resume(),
         ),
         GoRoute(
           path: AppRoutes.workoutRunnerActive().path,
@@ -317,17 +316,17 @@ class AppRouter {
           builder: (context, state) => const SavedWorkoutLibraryScreen(),
         ),
         GoRoute(
+          path: AppRoutes.workoutBuilderCreate().path,
+          name: AppRoutes.workoutBuilderCreate().name,
+          builder: (context, state) => const WorkoutBuilderScreen.create(),
+        ),
+        GoRoute(
           path: AppRoutes.workoutDetail().path,
           name: AppRoutes.workoutDetail().name,
           builder: (context, state) {
             final workoutId = state.pathParameters['workoutId']!;
             return WorkoutDetailScreen(workoutId: workoutId);
           },
-        ),
-        GoRoute(
-          path: AppRoutes.workoutBuilderCreate().path,
-          name: AppRoutes.workoutBuilderCreate().name,
-          builder: (context, state) => const WorkoutBuilderScreen.create(),
         ),
         GoRoute(
           path: AppRoutes.workoutBuilderEdit().path,

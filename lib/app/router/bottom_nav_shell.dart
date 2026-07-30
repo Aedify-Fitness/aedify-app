@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
-//TODO: REMOVE CUSTOM IMPLEMENTATION
 class _BottomNavItemData {
   const _BottomNavItemData({required this.label, required this.iconAsset});
 
@@ -13,17 +13,26 @@ class _BottomNavItemData {
   final String iconAsset;
 
   static const items = [
-    _BottomNavItemData(label: 'HOME', iconAsset: OutlinedSvgAssets.home),
-    _BottomNavItemData(label: 'LIB', iconAsset: OutlinedSvgAssets.sparkles),
     _BottomNavItemData(
-      label: 'PLAN',
+      label: AppStrings.home,
+      iconAsset: OutlinedSvgAssets.home,
+    ),
+    _BottomNavItemData(
+      label: AppStrings.navLibrary,
+      iconAsset: OutlinedSvgAssets.sparkles,
+    ),
+    _BottomNavItemData(
+      label: AppStrings.navPlan,
       iconAsset: OutlinedSvgAssets.clipboardDocumentList,
     ),
     _BottomNavItemData(
-      label: 'AI',
+      label: AppStrings.navAi,
       iconAsset: OutlinedSvgAssets.chatBubbleLeft,
     ),
-    _BottomNavItemData(label: 'STATS', iconAsset: OutlinedSvgAssets.chartBar),
+    _BottomNavItemData(
+      label: AppStrings.navStats,
+      iconAsset: OutlinedSvgAssets.chartBar,
+    ),
   ];
 }
 
@@ -36,7 +45,7 @@ class BottomNavShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: _BottomNavBar(
+      bottomNavigationBar: _FloatingNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
           navigationShell.goBranch(
@@ -45,150 +54,90 @@ class BottomNavShell extends StatelessWidget {
           );
         },
       ),
-      // floatingActionButton: _CreateFab(
-      //   onPressed: () => _showCreateMenu(context),
-      // ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-
-  // void _showCreateMenu(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (_) => const _CreateMenuSheet(),
-  //   );
-  // }
 }
 
-class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar({
+class _FloatingNavigationBar extends StatelessWidget {
+  const _FloatingNavigationBar({
     required this.currentIndex,
     required this.onDestinationSelected,
   });
 
   final int currentIndex;
-  final void Function(int) onDestinationSelected;
+  final ValueChanged<int> onDestinationSelected;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: context.colorScheme.shadow.withAlpha(30),
-            blurRadius: AppRadius.md,
-            offset: const Offset(0, -1),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.sm,
-            horizontal: AppSpacing.sm,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_BottomNavItemData.items.length, (index) {
-              final item = _BottomNavItemData.items[index];
-              final selected = index == currentIndex;
-              return _BottomNavItem(
-                data: item,
-                selected: selected,
-                onTap: () => onDestinationSelected(index),
-              );
-            }),
-          ),
+    final cs = context.colorScheme;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: AppSpacing.marginMobile,
+          right: AppSpacing.marginMobile,
+          bottom: AppSpacing.marginMobile,
         ),
-      ),
-    );
-  }
-}
-
-class _BottomNavItem extends StatelessWidget {
-  const _BottomNavItem({
-    required this.data,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final _BottomNavItemData data;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected
-        ? context.colorScheme.primary
-        : context.colorScheme.onSurfaceVariant;
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.xs,
-            horizontal: AppSpacing.xxs,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                data.iconAsset,
-                width: AppSizing.iconMd,
-                height: AppSizing.iconMd,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-              ),
-              AppWhiteSpace.hXxs,
-              Text(
-                data.label,
-                style: context.textTheme.labelSmall?.copyWith(
-                  color: color,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            boxShadow: [
+              BoxShadow(
+                color: cs.shadow.withValues(alpha: 0.08),
+                blurRadius: AppSpacing.xl,
+                offset: const Offset(0, AppSpacing.sm),
               ),
             ],
           ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            child: NavigationBar(
+              height: AppSizing.navBarHeight,
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+              selectedIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              destinations: [
+                for (final item in _BottomNavItemData.items)
+                  NavigationDestination(
+                    icon: _NavIcon(asset: item.iconAsset, selected: false),
+                    selectedIcon: _NavIcon(
+                      asset: item.iconAsset,
+                      selected: true,
+                    ),
+                    label: item.label,
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-// class _CreateFab extends StatelessWidget {
-//   const _CreateFab({required this.onPressed});
+class _NavIcon extends StatelessWidget {
+  const _NavIcon({required this.asset, required this.selected});
 
-//   final VoidCallback onPressed;
+  final String asset;
+  final bool selected;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return FloatingActionButton(
-//       onPressed: onPressed,
-//       child: SvgPicture.asset(
-//         OutlinedSvgAssets.plus,
-//         width: AppSizing.iconMd,
-//         height: AppSizing.iconMd,
-//         colorFilter: ColorFilter.mode(
-//           context.colorScheme.onPrimary,
-//           BlendMode.srcIn,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class _CreateMenuSheet extends StatelessWidget {
-//   const _CreateMenuSheet();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(AppSpacing.md),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(AppStrings.createNew, style: context.textTheme.titleMedium),
-//           AppWhiteSpace.hMd,
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    final color = selected
+        ? (Theme.brightnessOf(context) == Brightness.dark
+              ? cs.onPrimaryContainer
+              : cs.onSecondaryContainer)
+        : cs.onSurfaceVariant;
+    return SvgPicture.asset(
+      asset,
+      width: AppSizing.iconMd,
+      height: AppSizing.iconMd,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+    );
+  }
+}

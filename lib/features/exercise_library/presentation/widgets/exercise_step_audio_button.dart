@@ -1,13 +1,12 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
+import 'package:aedify/shared/components/app_icon_button.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
-import 'package:aedify/shared/theme/app_colors.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ExerciseStepAudioButton extends ConsumerWidget {
   const ExerciseStepAudioButton({
@@ -33,91 +32,103 @@ class ExerciseStepAudioButton extends ConsumerWidget {
 
     switch (stepState.phase) {
       case ExerciseStepAudioPhase.idle:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.play,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
-            ),
+        return Tooltip(
+          message: AppStrings.playStepAudio,
+          child: AppIconButton(
+            asset: OutlinedSvgAssets.play,
+            semanticLabel: AppStrings.playStepAudio,
+            iconSize: AppSizing.iconSm,
+            color: colorScheme.onSurfaceVariant,
+            backgroundColor: colorScheme.surfaceContainerLow,
+            onPressed: () {
+              ref
+                  .read(
+                    AppProviders.exerciseStepAudioControllerProvider.notifier,
+                  )
+                  .playStep(
+                    exerciseId: exerciseId,
+                    stepIndex: stepIndex,
+                    text: text,
+                  );
+            },
           ),
-          onPressed: () {
-            ref
-                .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
-                .playStep(
-                  exerciseId: exerciseId,
-                  stepIndex: stepIndex,
-                  text: text,
-                );
-          },
-          tooltip: AppStrings.playStepAudio,
         );
 
       case ExerciseStepAudioPhase.checkingCache:
       case ExerciseStepAudioPhase.generating:
-        return Container(
-          width: AppSpacing.lg,
-          height: AppSpacing.lg,
-          padding: const EdgeInsets.all(AppSpacing.xs),
-          child: CircularProgressIndicator(
-            strokeWidth: AppSizing.divider * 2,
-            color: colorScheme.onSurfaceVariant,
+        return Semantics(
+          label: AppStrings.audioGenerating,
+          child: SizedBox(
+            width: AppSizing.iconXxl,
+            height: AppSizing.iconXxl,
+            child: Center(
+              child: SizedBox(
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppSizing.strokeWidth,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
           ),
         );
 
       case ExerciseStepAudioPhase.speaking:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.stop,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+        return Tooltip(
+          message: AppStrings.stopStepAudio,
+          child: AppIconButton(
+            asset: OutlinedSvgAssets.stop,
+            semanticLabel: AppStrings.stopStepAudio,
+            iconSize: AppSizing.iconSm,
+            color: colorScheme.onSecondaryContainer,
+            backgroundColor: colorScheme.secondaryContainer,
+            onPressed: () {
+              ref
+                  .read(
+                    AppProviders.exerciseStepAudioControllerProvider.notifier,
+                  )
+                  .stop(exerciseId, stepIndex);
+            },
           ),
-          onPressed: () {
-            ref
-                .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
-                .stop(exerciseId, stepIndex);
-          },
-          tooltip: AppStrings.stopStepAudio,
         );
 
       case ExerciseStepAudioPhase.unavailable:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.speakerXMark,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              colorScheme.brightness == Brightness.light
-                  ? AedifyLightColors.surfaceVariantFaded
-                  : AedifyDarkColors.surfaceVariantFaded,
-              BlendMode.srcIn,
-            ),
+        return Tooltip(
+          message: AppStrings.audioUnavailable,
+          child: AppIconButton(
+            asset: OutlinedSvgAssets.speakerXMark,
+            semanticLabel: AppStrings.audioUnavailable,
+            iconSize: AppSizing.iconSm,
+            color: colorScheme.outline,
+            backgroundColor: colorScheme.surfaceContainerLow,
+            onPressed: null,
           ),
-          onPressed: null,
-          tooltip: AppStrings.audioUnavailable,
         );
 
       case ExerciseStepAudioPhase.failed:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.speakerXMark,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
+        final errorMessage =
+            stepState.errorMessage ?? AppStrings.audioUnavailable;
+        return Tooltip(
+          message: errorMessage,
+          child: AppIconButton(
+            asset: OutlinedSvgAssets.speakerXMark,
+            semanticLabel: errorMessage,
+            iconSize: AppSizing.iconSm,
+            color: colorScheme.error,
+            backgroundColor: colorScheme.errorContainer,
+            onPressed: () {
+              ref
+                  .read(
+                    AppProviders.exerciseStepAudioControllerProvider.notifier,
+                  )
+                  .playStep(
+                    exerciseId: exerciseId,
+                    stepIndex: stepIndex,
+                    text: text,
+                  );
+            },
           ),
-          onPressed: () {
-            ref
-                .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
-                .playStep(
-                  exerciseId: exerciseId,
-                  stepIndex: stepIndex,
-                  text: text,
-                );
-          },
-          tooltip: stepState.errorMessage ?? AppStrings.audioUnavailable,
         );
     }
   }

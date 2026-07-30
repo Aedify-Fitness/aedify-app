@@ -1,9 +1,7 @@
-import 'package:aedify/shared/constants/app_strings.dart';
-import 'package:aedify/shared/domain/equipment_tag.dart';
-import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class CustomExerciseModalitySection extends StatelessWidget {
@@ -11,87 +9,59 @@ class CustomExerciseModalitySection extends StatelessWidget {
     super.key,
     required this.modality,
     required this.onChanged,
-    required this.equipment,
-    required this.onEquipmentChanged,
-    required this.difficulty,
-    required this.onDifficultyChanged,
   });
 
   final ExerciseModality modality;
   final ValueChanged<ExerciseModality> onChanged;
-  final EquipmentTag? equipment;
-  final ValueChanged<EquipmentTag?> onEquipmentChanged;
-  final ExerciseDifficulty? difficulty;
-  final ValueChanged<ExerciseDifficulty?> onDifficultyChanged;
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppStrings.customExerciseModality, style: AppTextStyles.labelMd),
-        AppWhiteSpace.hXs,
-        SegmentedButton<ExerciseModality>(
-          segments: ExerciseModality.values
-              .map(
-                (m) => ButtonSegment<ExerciseModality>(
-                  value: m,
-                  label: Text(_formatLabel(m.dbValue)),
+        Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.xs),
+          child: Text(
+            'MODALITY',
+            style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+          ),
+        ),
+        AppWhiteSpace.hSm,
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: ExerciseModality.values.map((m) {
+            final isSelected = m == modality;
+            return GestureDetector(
+              onTap: () => onChanged(m),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm,
                 ),
-              )
-              .toList(),
-          selected: {modality},
-          onSelectionChanged: (selected) => onChanged(selected.first),
-        ),
-        AppWhiteSpace.hMd,
-        DropdownButtonFormField<EquipmentTag>(
-          initialValue: equipment,
-          decoration: InputDecoration(
-            labelText: AppStrings.customExerciseEquipment,
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-          ),
-          items: [
-            DropdownMenuItem<EquipmentTag>(
-              value: null,
-              child: Text(AppStrings.filterAny),
-            ),
-            ...EquipmentTag.values.map(
-              (tag) => DropdownMenuItem<EquipmentTag>(
-                value: tag,
-                child: Text(_formatLabel(tag.dbValue)),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? cs.secondaryContainer
+                      : cs.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  border: Border.all(
+                    color: isSelected
+                        ? cs.secondary.withValues(alpha: 0.2)
+                        : cs.outlineVariant,
+                  ),
+                ),
+                child: Text(
+                  _formatLabel(m.dbValue),
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: isSelected
+                        ? cs.onSecondaryContainer
+                        : cs.onSurfaceVariant,
+                  ),
+                ),
               ),
-            ),
-          ],
-          onChanged: onEquipmentChanged,
-        ),
-        AppWhiteSpace.hMd,
-        DropdownButtonFormField<ExerciseDifficulty>(
-          initialValue: difficulty,
-          decoration: InputDecoration(
-            labelText: AppStrings.customExerciseDifficulty,
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-          ),
-          items: [
-            DropdownMenuItem<ExerciseDifficulty>(
-              value: null,
-              child: Text(AppStrings.filterAny),
-            ),
-            ...ExerciseDifficulty.values.map(
-              (d) => DropdownMenuItem<ExerciseDifficulty>(
-                value: d,
-                child: Text(_formatLabel(d.dbValue)),
-              ),
-            ),
-          ],
-          onChanged: onDifficultyChanged,
+            );
+          }).toList(),
         ),
       ],
     );

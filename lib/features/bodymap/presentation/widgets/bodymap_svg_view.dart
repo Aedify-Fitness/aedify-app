@@ -23,44 +23,42 @@ class BodymapSvgView extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final mapping = BodymapAssetContract.mappingForSide(side);
+    final sideLabel = side == BodymapViewSide.front
+        ? AppStrings.bodymapFront
+        : AppStrings.bodymapBack;
 
-    return Column(
-      children: [
-        Text(
-          side == BodymapViewSide.front
-              ? AppStrings.bodymapFront
-              : AppStrings.bodymapBack,
-          style: context.textTheme.titleSmall,
-        ),
-        AppWhiteSpace.hSm,
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: SizedBox(
-            width: AppSizing.bodymapSvgWidth,
-            height: AppSizing.bodymapSvgHeight,
-            child: GestureDetector(
-              onTapDown: (details) {
-                final renderBox = context.findRenderObject() as RenderBox?;
-                if (renderBox == null) return;
-                final localPosition = renderBox.globalToLocal(
-                  details.globalPosition,
-                );
-                _handleTap(localPosition, renderBox.size, mapping);
-              },
-              child: SvgPicture.asset(
-                BodymapAssetContract.assetPathForSide(side),
-                width: AppSizing.bodymapSvgWidth,
-                height: AppSizing.bodymapSvgHeight,
-                fit: BoxFit.contain,
-                colorFilter: ColorFilter.mode(
-                  colorScheme.onSurfaceVariant,
-                  BlendMode.srcIn,
-                ),
+    return Semantics(
+      key: ValueKey<String>('bodymap_svg_${side.name}'),
+      image: true,
+      label: sideLabel,
+      value: selectedBucket?.label,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: SizedBox(
+          width: double.infinity,
+          height: AppSizing.bodymapSvgHeight,
+          child: GestureDetector(
+            onTapDown: (details) {
+              final renderBox = context.findRenderObject() as RenderBox?;
+              if (renderBox == null) return;
+              final localPosition = renderBox.globalToLocal(
+                details.globalPosition,
+              );
+              _handleTap(localPosition, renderBox.size, mapping);
+            },
+            child: SvgPicture.asset(
+              BodymapAssetContract.assetPathForSide(side),
+              width: double.infinity,
+              height: AppSizing.bodymapSvgHeight,
+              fit: BoxFit.contain,
+              colorFilter: ColorFilter.mode(
+                colorScheme.onSurfaceVariant,
+                BlendMode.srcIn,
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -69,8 +67,7 @@ class BodymapSvgView extends StatelessWidget {
     Size svgSize,
     Map<String, BodymapBucket> mapping,
   ) {
-    // Placeholder: SVG path hit-testing is approximated by bucket chip selection.
-    // Tap on the SVG surface is a visual hint; actual bucket selection
-    // happens via the chip bar below.
+    // SVG path hit-testing remains intentionally unavailable. The anatomical
+    // surface is visual; bucket selection happens through the pill selector.
   }
 }

@@ -1,14 +1,16 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/features/exercise_library/application/exercise_step_audio_controller.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_video_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
-import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_force.dart';
@@ -104,10 +106,26 @@ class _MockDetailScreenRepository implements ExerciseRepository {
   Future<void> deleteCustomExercise(int exerciseId) async {}
 }
 
-Widget createTestApp(ExerciseRepository repository, {int exerciseId = 1}) {
+class _PreloadedAudioController extends ExerciseStepAudioController {
+  _PreloadedAudioController(this.initialState);
+
+  final Map<String, ExerciseStepAudioState> initialState;
+
+  @override
+  Map<String, ExerciseStepAudioState> build() => initialState;
+}
+
+Widget createTestApp(
+  ExerciseRepository repository, {
+  int exerciseId = 1,
+  Map<String, ExerciseStepAudioState> audioStates = const {},
+}) {
   return ProviderScope(
     overrides: [
       AppProviders.exerciseRepositoryProvider.overrideWithValue(repository),
+      AppProviders.exerciseStepAudioControllerProvider.overrideWith(
+        () => _PreloadedAudioController(audioStates),
+      ),
     ],
     child: MaterialApp(home: ExerciseDetailScreen(exerciseId: exerciseId)),
   );
@@ -149,12 +167,49 @@ void main() {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      // Name appears in AppBar title and body headline
-      expect(find.text('Bench Press'), findsWidgets);
+      expect(find.text('Bench Press'), findsOneWidget);
       expect(find.text('Intermediate'), findsOneWidget);
       expect(find.text('Strength'), findsOneWidget);
       expect(find.text('Barbell'), findsOneWidget);
+
+      expect(find.text('Push'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text(AppStrings.viewDetails),
+        400,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text(AppStrings.viewDetails));
+      await tester.pumpAndSettle();
+
       expect(find.text('Push'), findsOneWidget);
+    });
+
+    testWidgets('renders the redesigned guidance section hierarchy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('exercise_detail_video_section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('exercise_detail_instructions_section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('exercise_detail_bodymap_section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('exercise_detail_metadata_section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('exercise_detail_notes_section')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders steps in order', (tester) async {
@@ -195,7 +250,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Videos'), findsOneWidget);
-      expect(find.text('Front'), findsOneWidget);
+      expect(find.text('Front'), findsWidgets);
       expect(find.text('Male'), findsOneWidget);
     });
 
@@ -274,6 +329,47 @@ void main() {
       // Steps still visible even though audio is in idle state
       expect(find.text('Step 1'), findsOneWidget);
       expect(find.text('Step 2'), findsOneWidget);
+    });
+
+    testWidgets('highlights the active audio step', (tester) async {
+      await tester.pumpWidget(
+        createTestApp(
+          mockRepository,
+          audioStates: {
+            '1:0': const ExerciseStepAudioState(
+              phase: ExerciseStepAudioPhase.speaking,
+              activeStepIndex: 0,
+            ),
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('exercise_step_0_active')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('exercise_step_1_idle')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('performance tab presents an honest history empty state', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(AppStrings.performance));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('exercise_detail_history_empty_state')),
+        findsOneWidget,
+      );
+      expect(find.text(AppStrings.noHistoryYet), findsOneWidget);
+      expect(find.text(AppStrings.noHistoryHint), findsOneWidget);
     });
   });
 }

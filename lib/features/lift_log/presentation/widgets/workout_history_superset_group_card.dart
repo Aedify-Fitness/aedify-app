@@ -1,5 +1,6 @@
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
-import 'package:aedify/features/lift_log/presentation/widgets/workout_history_set_row.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/superset_group_summary.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -19,49 +20,64 @@ class WorkoutHistorySupersetGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs,
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border(
+          left: BorderSide(
+            color: context.colorScheme.secondary,
+            width: AppSpacing.xs,
+          ),
+        ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.only(
+          left: AppSpacing.md,
+          top: AppSpacing.md,
+          right: AppSpacing.md,
+          bottom: AppSpacing.md,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: AppSpacing.xxxs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.xxs),
-                  ),
-                  child: Text(
-                    AppStrings.supersetHistoryLabel,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.colorScheme.onPrimaryContainer,
-                    ),
+                AppBadge(
+                  label: AppStrings.supersetHistoryLabel,
+                  backgroundColor: context.colorScheme.secondary,
+                  foregroundColor: context.colorScheme.onSecondary,
+                  borderRadius: AppRadius.full,
+                  fontWeight: FontWeight.w700,
+                ),
+                Text(
+                  '${group.memberCount} ${AppStrings.exercisesLabel}',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
             ),
-            AppWhiteSpace.hSm,
-            ...exercises.map(
-              (exercise) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(exercise.exerciseName, style: AppTextStyles.bodyMd),
-                  AppWhiteSpace.hXs,
-                  ...exercise.sets.map(
-                    (set) => WorkoutHistorySetRow(item: set),
-                  ),
-                ],
+            AppWhiteSpace.hXs,
+            Text(
+              AppStrings.supersetRunnerHint,
+              style: AppTextStyles.bodySm.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
+            AppWhiteSpace.hMd,
+            for (var index = 0; index < exercises.length; index++) ...[
+              WorkoutHistoryExerciseCard(
+                item: exercises[index],
+                isInSuperset: true,
+                positionLabel: AppStrings.exerciseNumberLabel(index + 1),
+              ),
+              if (index < exercises.length - 1) AppWhiteSpace.hSm,
+            ],
           ],
         ),
       ),

@@ -1,6 +1,9 @@
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SupersetActionsMenu extends StatelessWidget {
   const SupersetActionsMenu({
@@ -48,7 +51,18 @@ class SupersetActionsMenu extends StatelessWidget {
           ),
         ],
       ],
-      child: IconButton(icon: const Icon(Icons.more_vert), onPressed: null),
+      child: IconButton(
+        icon: SvgPicture.asset(
+          OutlinedSvgAssets.ellipsisVertical,
+          width: AppSizing.iconMd,
+          height: AppSizing.iconMd,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.onSurface.withValues(alpha: 0.38),
+            BlendMode.srcIn,
+          ),
+        ),
+        onPressed: null,
+      ),
     );
   }
 }

@@ -1,10 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -231,11 +233,14 @@ class _WarningIcon extends StatelessWidget {
         color: context.colorScheme.secondaryContainer.withValues(alpha: 0.2),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        Icons.warning,
-        color: context.colorScheme.secondary,
-        size: AppSizing.iconMd,
-        fill: 1,
+      child: SvgPicture.asset(
+        OutlinedSvgAssets.exclamationTriangle,
+        width: AppSizing.iconMd,
+        height: AppSizing.iconMd,
+        colorFilter: ColorFilter.mode(
+          context.colorScheme.secondary,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }

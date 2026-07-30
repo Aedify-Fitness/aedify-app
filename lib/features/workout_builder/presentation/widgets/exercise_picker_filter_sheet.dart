@@ -4,11 +4,15 @@ import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/components/app_toggle_pill.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class ExercisePickerFilterSheet extends ConsumerStatefulWidget {
@@ -39,10 +43,10 @@ class _ExercisePickerFilterSheetState
   ];
 
   static const _allEquipment = [
-    (AppStrings.filterDumbbell, Icons.fitness_center),
-    (AppStrings.filterBarbell, Icons.horizontal_rule),
-    (AppStrings.filterMachine, Icons.settings_accessibility),
-    (AppStrings.filterBodyweight, Icons.boy),
+    (AppStrings.filterDumbbell, SolidSvgAssets.dumbbell),
+    (AppStrings.filterBarbell, OutlinedSvgAssets.minus),
+    (AppStrings.filterMachine, OutlinedSvgAssets.cog),
+    (AppStrings.filterBodyweight, OutlinedSvgAssets.user),
   ];
 
   static const _allDifficulties = [
@@ -53,9 +57,9 @@ class _ExercisePickerFilterSheetState
   ];
 
   static const _allModalities = [
-    (AppStrings.filterStrength, Icons.fitness_center),
-    (AppStrings.filterFlexibility, Icons.self_improvement),
-    (AppStrings.filterCardio, Icons.monitor_heart),
+    (AppStrings.filterStrength, SolidSvgAssets.dumbbell),
+    (AppStrings.filterFlexibility, SolidSvgAssets.meditation),
+    (AppStrings.filterCardio, OutlinedSvgAssets.heart),
   ];
 
   @override
@@ -249,11 +253,14 @@ class _ExercisePickerFilterSheetState
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.tune,
-                  color: colorScheme.secondary,
-                  size: AppSizing.iconS,
-                  fill: 1,
+                SvgPicture.asset(
+                  OutlinedSvgAssets.adjustmentsVertical,
+                  width: AppSizing.iconS,
+                  height: AppSizing.iconS,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.secondary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 AppWhiteSpace.wSm,
                 Expanded(
@@ -527,7 +534,7 @@ class _EquipmentSection extends StatelessWidget {
     required this.colorScheme,
   });
 
-  final List<(String, IconData)> allEquipment;
+  final List<(String, String)> allEquipment;
   final Set<String> selected;
   final ValueChanged<String> onToggle;
   final ColorScheme colorScheme;
@@ -574,12 +581,16 @@ class _EquipmentSection extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    SvgPicture.asset(
                       icon,
-                      size: AppSizing.iconMd,
-                      color: isActive
-                          ? colorScheme.secondary
-                          : colorScheme.onSurfaceVariant,
+                      width: AppSizing.iconMd,
+                      height: AppSizing.iconMd,
+                      colorFilter: ColorFilter.mode(
+                        isActive
+                            ? colorScheme.secondary
+                            : colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     AppWhiteSpace.hSm,
                     Text(
@@ -719,7 +730,7 @@ class _ModalitySection extends StatelessWidget {
     required this.colorScheme,
   });
 
-  final List<(String, IconData)> allModalities;
+  final List<(String, String)> allModalities;
   final Set<String> selected;
   final ValueChanged<String> onToggle;
   final ColorScheme colorScheme;
@@ -753,10 +764,14 @@ class _ModalitySection extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  SvgPicture.asset(
                     icon,
-                    size: AppSizing.iconSm,
-                    color: colorScheme.secondary,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.secondary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   AppWhiteSpace.custom(width: AppSpacing.buttonVertical),
                   Expanded(
@@ -767,18 +782,10 @@ class _ModalitySection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 24,
-                    child: Switch(
-                      value: isActive,
-                      onChanged: (_) => onToggle(label),
-                      activeThumbColor: colorScheme.surface,
-                      activeTrackColor: colorScheme.secondary,
-                      inactiveThumbColor: colorScheme.surface,
-                      trackOutlineWidth: WidgetStatePropertyAll(0),
-                      inactiveTrackColor: colorScheme.outlineVariant,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
+                  AppTogglePill(
+                    value: isActive,
+                    semanticLabel: label,
+                    onChanged: (_) => onToggle(label),
                   ),
                 ],
               ),

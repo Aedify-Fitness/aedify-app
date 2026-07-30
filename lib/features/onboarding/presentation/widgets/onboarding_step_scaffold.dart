@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -17,6 +19,7 @@ class OnboardingStepScaffold extends StatelessWidget {
     this.description,
     this.header,
     this.hero,
+    this.bodyFooterLabel,
   });
 
   final String title;
@@ -29,88 +32,167 @@ class OnboardingStepScaffold extends StatelessWidget {
   final String? description;
   final Widget? header;
   final Widget? hero;
+  final String? bodyFooterLabel;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+    final primaryBackground = isDark
+        ? context.colorScheme.primaryContainer
+        : context.colorScheme.secondary;
+    final primaryForeground = isDark
+        ? context.colorScheme.onPrimaryContainer
+        : context.colorScheme.onSecondary;
+
     return Scaffold(
+      backgroundColor: context.colorScheme.surface,
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
+            ?header,
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.lg,
-                ),
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (header != null) ...[header!, AppWhiteSpace.hXl],
-                    if (title.isNotEmpty)
-                      Text(
-                        title,
-                        style: AppTextStyles.headlineLgMobile.copyWith(
-                          color: context.colorScheme.onSurface,
+                    if (hero != null)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.xl,
                         ),
+                        color: context.colorScheme.surface,
+                        child: hero!,
                       ),
-                    if (description != null) ...[
-                      AppWhiteSpace.hSm,
-                      Text(
-                        description!,
-                        style: AppTextStyles.bodyMd.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: AppSpacing.md,
+                        top: AppSpacing.xl,
+                        right: AppSpacing.md,
+                        bottom: AppSpacing.xl,
                       ),
-                    ],
-                    if (title.isNotEmpty) AppWhiteSpace.hLg,
-                    if (hero != null) ...[hero!, AppWhiteSpace.hXl],
-                    child,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (title.isNotEmpty)
+                            Text(
+                              title,
+                              style: AppTextStyles.headlineLgMobile.copyWith(
+                                color: context.colorScheme.onSurface,
+                              ),
+                            ),
+                          if (description != null) ...[
+                            AppWhiteSpace.hSm,
+                            Text(
+                              description!,
+                              style: AppTextStyles.bodyMd.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                          if (title.isNotEmpty) AppWhiteSpace.hXl,
+                          child,
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
             Container(
+              color: context.colorScheme.surface,
               padding: const EdgeInsets.only(
                 left: AppSpacing.md,
                 top: AppSpacing.md,
                 right: AppSpacing.md,
-                bottom: AppSpacing.lg,
+                bottom: AppSpacing.md,
               ),
-              decoration: BoxDecoration(
-                color: context.colorScheme.surfaceContainerLowest,
-                border: Border(
-                  top: BorderSide(
-                    color: context.colorScheme.outlineVariant,
-                    width: AppSizing.divider,
-                  ),
-                ),
-              ),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (onBack != null)
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: onBack,
-                        child: Text(secondaryLabel ?? AppStrings.backLabel),
-                      ),
-                    ),
-                  if (onBack != null) AppWhiteSpace.wSm,
-                  Expanded(
+                  SizedBox(
+                    width: double.infinity,
+                    height: AppSizing.iconXxl,
                     child: FilledButton(
                       onPressed: onNext,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: primaryBackground,
+                        foregroundColor: primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppRadius.defaultRadius,
+                          ),
+                        ),
+                      ),
                       child: isPrimaryLoading
                           ? SizedBox(
                               width: AppSizing.iconSm,
                               height: AppSizing.iconSm,
                               child: CircularProgressIndicator(
-                                strokeWidth: AppSizing.divider * 2,
-                                color: context.colorScheme.onPrimary,
+                                strokeWidth: AppSizing.strokeWidth,
+                                color: primaryForeground,
                               ),
                             )
-                          : Text(primaryLabel ?? AppStrings.continueLabel),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    primaryLabel ?? AppStrings.continueLabel,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                AppWhiteSpace.wXs,
+                                SvgPicture.asset(
+                                  OutlinedSvgAssets.materialArrowForward,
+                                  width: AppSizing.iconSm,
+                                  height: AppSizing.iconSm,
+                                  colorFilter: ColorFilter.mode(
+                                    primaryForeground,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ],
+                            ),
                     ),
                   ),
+                  if (onBack != null) ...[
+                    AppWhiteSpace.hSm,
+                    SizedBox(
+                      width: double.infinity,
+                      height: AppSizing.iconXxl,
+                      child: TextButton(
+                        onPressed: onBack,
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.colorScheme.onSurfaceVariant,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.defaultRadius,
+                            ),
+                          ),
+                        ),
+                        child: Text(secondaryLabel ?? AppStrings.backLabel),
+                      ),
+                    ),
+                  ],
+                  if (bodyFooterLabel != null) ...[
+                    AppWhiteSpace.hSm,
+                    Container(
+                      alignment: Alignment.center,
+                      height: AppSizing.iconXxl,
+                      child: Text(
+                        bodyFooterLabel!,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.labelSm.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
