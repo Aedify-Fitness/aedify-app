@@ -43,10 +43,7 @@ class OnboardingProgressHeader extends StatelessWidget {
       label: AppStrings.onboardingStepLabel(displayStep, totalSteps),
       child: ExcludeSemantics(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.md,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

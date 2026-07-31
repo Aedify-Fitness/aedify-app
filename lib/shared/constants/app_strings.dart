@@ -127,6 +127,8 @@ class AppStrings {
   static const onboardingLimitationHip = 'Hip';
   static const substitutions = 'Substitutions';
   static const favoriteExercises = 'Favorite exercises';
+  static const onboardingSelectExercises = 'Select Exercises';
+  static const onboardingAddSelectedExercises = 'Add Selected Exercises';
   static const onboardingPersonalDetailsTitle = 'Personal details';
   static const onboardingMaxLiftsTitle = 'Max Lifts (Optional)';
   static const onboardingDoneLabel = 'Done';
@@ -142,7 +144,7 @@ class AppStrings {
   static const favoritesOnly = 'Favorites only';
   static const noSubstituted = 'No Substituted';
   static const aiUnavailable = 'AI Unavailable';
-  static const sexNotSpecified = 'Not specified';
+  static const sexOther = 'Other';
   static const onboardingLimitationNone = 'None';
   static const playStepAudio = 'Play step audio';
   static const metricHeightLabel = 'Height (cm)';
@@ -375,12 +377,12 @@ class AppStrings {
   static const onboardingByokDetail =
       'Aedify works fully without AI. If you connect a provider later, your key stays in secure local storage and the coach remains completely optional.';
   static const onboardingWelcomeStepName = 'Welcome';
-  static const onboardingCoreIdentityTitle = 'Core identity';
+  static const onboardingCoreIdentityTitle = 'Core Identity';
   static const onboardingCoreIdentityDescription =
       'Help us personalize your experience with a few optional details.';
   static const onboardingCoreIdentityCardDescription =
       'Help us personalize your experience by providing these essential details.';
-  static const onboardingCoreIdentitySexLabel = 'Biological sex (optional)';
+  static const onboardingCoreIdentitySexLabel = 'Biological Sex (optional)';
   static const onboardingMeasurementSystem = 'Measurement system';
   static const onboardingMetricChoice = 'Metric (kg/cm)';
   static const onboardingImperialChoice = 'Imperial (lb/in)';
@@ -395,7 +397,7 @@ class AppStrings {
   static const onboardingPrivateControlDescription =
       'No tracking or hosted profile. Your progress stays under your control.';
   static const onboardingExperiencePathTitle = 'Define your path';
-  static const onboardingExperiencePathDisplayTitle = 'Define your path.';
+  static const onboardingExperiencePathDisplayTitle = 'Define your path';
   static const onboardingExperiencePathDescription =
       'Help us calibrate your training environment. Your journey is unique; your programme should be too.';
   static const onboardingExperienceNovice = 'Novice';
@@ -503,7 +505,7 @@ class AppStrings {
   static const onboardingIntelligenceLayerDescription =
       'Connect your preferred AI provider to enable optional AI-assisted workout and programme planning.';
   static const onboardingSelectProvider = 'Select Provider';
-  static const onboardingSecureConnection = 'Secure Connection';
+  static const onboardingConnectProvider = 'Connect to provider';
   static const onboardingOpenAiApiKeyLabel = 'OpenAI API Key';
   static const onboardingAnthropicApiKeyLabel = 'Anthropic API Key';
   static const onboardingGoogleApiKeyLabel = 'Google Gemini API Key';
@@ -538,8 +540,21 @@ class AppStrings {
   static const modify = 'Modify';
   static const update = 'Update';
 
-  static String onboardingReviewExperienceDuration(String experience) =>
-      experience;
+  static String onboardingReviewExperienceTier(String experience) {
+    final durationStart = experience.indexOf(' (');
+    return durationStart == -1
+        ? experience
+        : experience.substring(0, durationStart);
+  }
+
+  static String onboardingReviewExperienceDuration(String experience) {
+    final durationStart = experience.indexOf('(');
+    final durationEnd = experience.lastIndexOf(')');
+    if (durationStart == -1 || durationEnd <= durationStart) {
+      return experience;
+    }
+    return experience.substring(durationStart + 1, durationEnd);
+  }
 
   static String onboardingReviewScheduleValue(int days, int minutes) =>
       '$days ${days == 1 ? onboardingDaySingle : onboardingDayPlural} / week • '

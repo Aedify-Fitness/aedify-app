@@ -215,7 +215,7 @@ class _IdentityUnitsSection extends StatelessWidget {
             options: const [
               AppStrings.sexMale,
               AppStrings.sexFemale,
-              AppStrings.sexNotSpecified,
+              AppStrings.sexOther,
             ],
             selected: _ProfileTaxonomy.sexLabel(draft.sex),
             onTonalSurface: true,
@@ -703,7 +703,7 @@ class _ProfileTaxonomy {
     return switch (value) {
       Sex.male => AppStrings.sexMale,
       Sex.female => AppStrings.sexFemale,
-      Sex.notSpecified => AppStrings.sexNotSpecified,
+      Sex.notSpecified => AppStrings.sexOther,
       null => null,
     };
   }
@@ -1313,6 +1313,13 @@ class _ProfileExerciseMultiSelect {
         draft.substitutedExerciseIds,
       ),
     };
+    final excludedIds = switch (mode) {
+      _ExerciseSelectMode.favorites => draft.substitutedExerciseIds.toSet(),
+      _ExerciseSelectMode.substitutions => draft.favoriteExerciseIds.toSet(),
+    };
+    final availableExercises = exercises
+        .where((exercise) => !excludedIds.contains(exercise.id))
+        .toList(growable: false);
 
     await showModalBottomSheet<void>(
       context: context,
@@ -1363,10 +1370,10 @@ class _ProfileExerciseMultiSelect {
                             vertical: AppSpacing.sm,
                           ),
                           controller: scrollController,
-                          itemCount: exercises.length,
+                          itemCount: availableExercises.length,
                           separatorBuilder: (_, _) => AppWhiteSpace.hSm,
                           itemBuilder: (_, index) {
-                            final exercise = exercises[index];
+                            final exercise = availableExercises[index];
                             final isSelected = tempIds.contains(exercise.id);
                             return Semantics(
                               button: true,

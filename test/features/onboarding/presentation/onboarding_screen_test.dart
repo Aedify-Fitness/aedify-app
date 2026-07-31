@@ -1,16 +1,22 @@
+import 'dart:convert';
+
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:aedify/features/onboarding/presentation/widgets/onboarding_selection_pill.dart';
+import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_experience_goals_step.dart';
+import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_schedule_step.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_model_option.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/image_assets.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -22,12 +28,14 @@ import 'package:aedify/shared/domain/preferred_unit.dart';
 import 'package:aedify/shared/domain/training_day.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
-import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/drift.dart' show Value, driftRuntimeOptions;
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 class _FakeOnboardingRepository implements OnboardingRepository {
   bool _completed = false;
@@ -155,18 +163,32 @@ Widget createTestApp(
   OnboardingRepository repository, {
   Map<int, String> exerciseNames = const {},
   ByokRepository? byokRepository,
+  ExerciseDao? exerciseDao,
 }) {
+  final route = AppRoutes.home();
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: route.path,
+        name: route.name,
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+    ],
+  );
+
   return ProviderScope(
     overrides: [
       AppProviders.onboardingRepositoryProvider.overrideWithValue(repository),
       if (byokRepository != null)
         AppProviders.byokRepositoryProvider.overrideWithValue(byokRepository),
+      if (exerciseDao != null)
+        AppProviders.exerciseDaoProvider.overrideWithValue(exerciseDao),
       AppProviders.exerciseDetailControllerProvider.overrideWith((ref, id) {
         final name = exerciseNames[id];
         return Future.value(name == null ? null : exerciseDetail(id, name));
       }),
     ],
-    child: const MaterialApp(home: OnboardingScreen()),
+    child: MaterialApp.router(routerConfig: router),
   );
 }
 
@@ -181,6 +203,7 @@ Future<void> pumpUntilLoaded(
   WidgetTester tester, {
   Map<int, String> exerciseNames = const {},
   ByokRepository? byokRepository,
+  ExerciseDao? exerciseDao,
 }) async {
   useFixedMobileSurface(tester);
   await tester.pumpWidget(
@@ -188,10 +211,58 @@ Future<void> pumpUntilLoaded(
       _FakeOnboardingRepository(),
       exerciseNames: exerciseNames,
       byokRepository: byokRepository,
+      exerciseDao: exerciseDao,
     ),
   );
   await tester.pump();
   await tester.pump();
+}
+
+class _ExerciseSelectorTestData {
+  _ExerciseSelectorTestData._();
+
+  static Future<ExerciseDao> createSeededDao(
+    Map<int, String> exerciseNames, {
+    Map<int, List<String>> muscleGroups = const {},
+  }) async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final exerciseDao = ExerciseDao(database);
+    final now = DateTime.utc(2026);
+
+    await exerciseDao.insertExercisesBulk(
+      exerciseNames.entries
+          .map(
+            (entry) => ExercisesCompanion.insert(
+              id: Value(entry.key),
+              source: 'test',
+              name: entry.value,
+              nameNormalized: entry.value.toLowerCase(),
+              primaryMusclesJson: jsonEncode(
+                muscleGroups[entry.key] ?? const <String>[],
+              ),
+              muscleGroupsJson: jsonEncode(
+                muscleGroups[entry.key] ?? const <String>[],
+              ),
+              modality: 'strength',
+              gripsJson: '[]',
+              stepsJson: '[]',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          )
+          .toList(growable: false),
+    );
+
+    return exerciseDao;
+  }
+
+  static Finder inOpenSheet(String name) {
+    return find.descendant(
+      of: find.byType(DraggableScrollableSheet),
+      matching: find.text(name),
+    );
+  }
 }
 
 Finder assetImage(String assetName) {
@@ -239,7 +310,7 @@ Future<void> advanceToLimitations(WidgetTester tester) async {
 
 Future<void> advanceToMetrics(WidgetTester tester) async {
   await advanceToLimitations(tester);
-  await tapPrimaryButton(tester, label: AppStrings.onboardingNextStep);
+  await tapPrimaryButton(tester);
 }
 
 Future<void> advanceToByok(WidgetTester tester) async {
@@ -317,19 +388,21 @@ void main() {
 
       await advanceToExperience(tester);
 
-      final selectedGoal = find.widgetWithText(
-        OnboardingSelectionPill,
-        AppStrings.onboardingGoalBuildMuscle,
+      final selectedGoal = find.byKey(
+        ValueKey<String>(
+          'onboarding_selection_${AppStrings.onboardingGoalBuildMuscle}',
+        ),
       );
-      final unselectedGoal = find.widgetWithText(
-        OnboardingSelectionPill,
-        AppStrings.onboardingGoalLoseWeight,
+      final unselectedGoal = find.byKey(
+        ValueKey<String>(
+          'onboarding_selection_${AppStrings.onboardingGoalLoseWeight}',
+        ),
       );
       await tester.ensureVisible(selectedGoal);
       await tester.pump();
 
       expect(
-        tester.widget<OnboardingSelectionPill>(selectedGoal).selected,
+        tester.widget<Semantics>(selectedGoal).properties.selected,
         isFalse,
       );
       expect(
@@ -354,11 +427,11 @@ void main() {
       await tester.pump();
 
       expect(
-        tester.widget<OnboardingSelectionPill>(selectedGoal).selected,
+        tester.widget<Semantics>(selectedGoal).properties.selected,
         isTrue,
       );
       expect(
-        tester.widget<OnboardingSelectionPill>(unselectedGoal).selected,
+        tester.widget<Semantics>(unselectedGoal).properties.selected,
         isFalse,
       );
       expect(
@@ -386,10 +459,11 @@ void main() {
       await pumpUntilLoaded(tester);
       await advanceToExperience(tester);
 
-      expect(
-        find.text(AppStrings.onboardingExperiencePathDisplayTitle),
-        findsOneWidget,
+      final pathHeadline = find.descendant(
+        of: find.byType(OnboardingExperienceGoalsStep),
+        matching: find.text(AppStrings.onboardingExperiencePathDisplayTitle),
       );
+      expect(pathHeadline, findsOneWidget);
       expect(find.text(AppStrings.onboardingExperienceNovice), findsOneWidget);
       expect(find.text(AppStrings.onboardingExperienceAdept), findsOneWidget);
       expect(find.text(AppStrings.onboardingExperienceElite), findsOneWidget);
@@ -419,12 +493,16 @@ void main() {
         find.widgetWithText(TextButton, AppStrings.backLabel),
         findsOneWidget,
       );
-      final durationRulerMarks = find.byWidgetPredicate((widget) {
-        final key = widget.key;
-        return key is ValueKey<String> &&
-            key.value.startsWith('schedule_duration_ruler_');
-      });
-      expect(durationRulerMarks, findsNWidgets(10));
+      final durationSliderFinder = find.descendant(
+        of: find.byType(OnboardingScheduleStep),
+        matching: find.byType(Slider),
+      );
+      expect(durationSliderFinder, findsOneWidget);
+      final durationSlider = tester.widget<Slider>(durationSliderFinder);
+      expect(durationSlider.value, 60);
+      expect(durationSlider.min, 20);
+      expect(durationSlider.max, 120);
+      expect(durationSlider.divisions, 20);
       final weeklyLoadBars = find.byWidgetPredicate((widget) {
         final key = widget.key;
         return key is ValueKey<String> &&
@@ -506,7 +584,62 @@ void main() {
       expect(tester.getTopLeft(continueAction).dy, initialTop);
     });
 
-    testWidgets('measurement selector uses inset selected treatment', (
+    testWidgets('scroll position resets when onboarding step changes', (
+      tester,
+    ) async {
+      const scrollViewKey = ValueKey<String>('onboarding_step_scroll_view');
+      await pumpUntilLoaded(tester);
+      await tapPrimaryButton(
+        tester,
+        label: AppStrings.onboardingInitializeSpace,
+      );
+
+      ScrollController currentScrollController() {
+        final scrollView = tester.widget<SingleChildScrollView>(
+          find.byKey(scrollViewKey),
+        );
+        return scrollView.controller as ScrollController;
+      }
+
+      expect(
+        currentScrollController().position.maxScrollExtent,
+        greaterThan(0),
+      );
+      await tester.drag(
+        find.byKey(scrollViewKey),
+        const Offset(0, -AppSpacing.xxxl * 4),
+      );
+      await tester.pump();
+      expect(currentScrollController().offset, greaterThan(0));
+
+      await tapPrimaryButton(tester);
+      await tester.pumpAndSettle();
+      expect(find.text(AppStrings.experienceLevel), findsOneWidget);
+      expect(currentScrollController().offset, 0);
+
+      await tapVisibleText(tester, AppStrings.onboardingExperienceAdept);
+      await tapPrimaryButton(tester);
+      await tester.pumpAndSettle();
+      expect(find.text(AppStrings.onboardingRhythmTitle), findsWidgets);
+
+      expect(
+        currentScrollController().position.maxScrollExtent,
+        greaterThan(0),
+      );
+      await tester.drag(
+        find.byKey(scrollViewKey),
+        const Offset(0, -AppSpacing.xxxl * 4),
+      );
+      await tester.pump();
+      expect(currentScrollController().offset, greaterThan(0));
+
+      await tapVisibleText(tester, AppStrings.backLabel);
+      await tester.pumpAndSettle();
+      expect(find.text(AppStrings.experienceLevel), findsOneWidget);
+      expect(currentScrollController().offset, 0);
+    });
+
+    testWidgets('measurement selector slides between unit choices', (
       tester,
     ) async {
       await pumpUntilLoaded(tester);
@@ -515,36 +648,25 @@ void main() {
         label: AppStrings.onboardingInitializeSpace,
       );
 
-      AnimatedContainer choiceContainer(String label) {
-        return tester.widget<AnimatedContainer>(
-          find
-              .ancestor(
-                of: find.text(label),
-                matching: find.byType(AnimatedContainer),
-              )
-              .first,
-        );
+      const indicatorKey = ValueKey<String>(
+        'onboarding_unit_sliding_indicator',
+      );
+
+      AnimatedAlign indicator() {
+        return tester.widget<AnimatedAlign>(find.byKey(indicatorKey));
       }
 
-      final metricDecoration =
-          choiceContainer(AppStrings.onboardingMetricChoice).decoration
-              as BoxDecoration;
-      final imperialDecoration =
-          choiceContainer(AppStrings.onboardingImperialChoice).decoration
-              as BoxDecoration;
-
-      expect(metricDecoration.boxShadow, isNotEmpty);
-      expect(imperialDecoration.boxShadow, isNull);
+      expect(indicator().alignment, AlignmentDirectional.centerStart);
+      expect(indicator().duration, isNot(Duration.zero));
+      expect(indicator().curve, Curves.easeOutCubic);
 
       final imperialChoice = find.text(AppStrings.onboardingImperialChoice);
       await tester.ensureVisible(imperialChoice);
       await tester.tap(imperialChoice);
-      await tester.pumpAndSettle();
+      await tester.pump();
 
-      final selectedImperialDecoration =
-          choiceContainer(AppStrings.onboardingImperialChoice).decoration
-              as BoxDecoration;
-      expect(selectedImperialDecoration.boxShadow, isNotEmpty);
+      expect(indicator().alignment, AlignmentDirectional.centerEnd);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('continue advances to experience step', (tester) async {
@@ -593,7 +715,7 @@ void main() {
       await tapPrimaryButton(tester);
       expect(find.text(AppStrings.onboardingSafetyFirst), findsOneWidget);
 
-      await tapPrimaryButton(tester, label: AppStrings.onboardingNextStep);
+      await tapPrimaryButton(tester);
       expect(find.text(AppStrings.onboardingEliteBaselineTitle), findsWidgets);
 
       await tapPrimaryButton(tester);
@@ -615,7 +737,7 @@ void main() {
       expect(tester.takeException(), isNull, reason: 'gym environment');
       await tapPrimaryButton(tester);
       expect(tester.takeException(), isNull, reason: 'limitations');
-      await tapPrimaryButton(tester, label: AppStrings.onboardingNextStep);
+      await tapPrimaryButton(tester);
       expect(tester.takeException(), isNull, reason: 'metrics');
       await tapPrimaryButton(tester);
       expect(tester.takeException(), isNull, reason: 'BYOK');
@@ -751,7 +873,9 @@ void main() {
           (widget) =>
               widget is Text &&
               widget.data == AppStrings.onboardingPrecisionConstraintsTitle &&
-              widget.style == AppTextStyles.headlineXl,
+              widget.style?.fontSize == AppTextStyles.headlineXl.fontSize &&
+              widget.style?.fontWeight == AppTextStyles.headlineXl.fontWeight &&
+              widget.style?.height == AppTextStyles.headlineXl.height,
         ),
         findsOneWidget,
       );
@@ -760,7 +884,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.widgetWithText(FilledButton, AppStrings.onboardingNextStep),
+        find.widgetWithText(FilledButton, AppStrings.continueLabel),
         findsOneWidget,
       );
       expect(
@@ -884,16 +1008,394 @@ void main() {
       expect(find.text('2 selected'), findsOneWidget);
     });
 
+    testWidgets(
+      'step six exercise selector follows the supplied sheet design',
+      (tester) async {
+        const exerciseNames = <int, String>{
+          1: 'Bench Press',
+          2: 'Barbell Row',
+          3: 'Back Squat',
+          4: 'Shoulder Press',
+        };
+        const muscleGroups = <int, List<String>>{
+          1: ['Chest', 'Triceps'],
+          2: ['Back', 'Biceps'],
+          3: ['Quads', 'Glutes'],
+          4: ['Shoulders', 'Triceps'],
+        };
+        final exerciseDao = await _ExerciseSelectorTestData.createSeededDao(
+          exerciseNames,
+          muscleGroups: muscleGroups,
+        );
+        await pumpUntilLoaded(
+          tester,
+          exerciseNames: exerciseNames,
+          exerciseDao: exerciseDao,
+        );
+        await advanceToLimitations(tester);
+
+        await tapVisibleText(
+          tester,
+          AppStrings.onboardingFavoriteExercisesPlaceholder,
+        );
+        await tester.pumpAndSettle();
+
+        final sheet = find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_sheet'),
+        );
+        final search = find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_search'),
+        );
+        final footer = find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_footer'),
+        );
+        final confirm = find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_confirm'),
+        );
+        final benchOption = find.byKey(
+          const ValueKey<String>('onboarding_exercise_option_1'),
+        );
+        final benchInitial = find.byKey(
+          const ValueKey<String>('onboarding_exercise_initial_1'),
+        );
+        final benchSelection = find.byKey(
+          const ValueKey<String>('onboarding_exercise_selection_1'),
+        );
+        Future<void> tapFilter(String label) async {
+          final filter = find.byKey(
+            ValueKey<String>('onboarding_exercise_filter_$label'),
+          );
+          await tester.ensureVisible(filter);
+          await tester.tap(filter);
+          await tester.pumpAndSettle();
+        }
+
+        expect(sheet, findsOneWidget);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet(
+            AppStrings.onboardingSelectExercises,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: sheet,
+            matching: find.widgetWithText(
+              FilledButton,
+              AppStrings.onboardingDoneLabel,
+            ),
+          ),
+          findsNothing,
+        );
+        expect(
+          find.widgetWithText(
+            FilledButton,
+            AppStrings.onboardingAddSelectedExercises,
+          ),
+          findsOneWidget,
+        );
+
+        for (final label in const [
+          AppStrings.filterAll,
+          AppStrings.filterChest,
+          AppStrings.filterBack,
+          AppStrings.filterLegs,
+          AppStrings.filterShoulders,
+        ]) {
+          expect(
+            find.byKey(ValueKey<String>('onboarding_exercise_filter_$label')),
+            findsOneWidget,
+          );
+        }
+
+        final sheetContainer = tester.widget<Container>(sheet);
+        final sheetDecoration = sheetContainer.decoration! as BoxDecoration;
+        final sheetRadius = sheetDecoration.borderRadius! as BorderRadius;
+        final logicalHeight =
+            tester.view.physicalSize.height / tester.view.devicePixelRatio;
+        expect(sheetRadius.topLeft.x, AppRadius.xl);
+        expect(
+          tester.getSize(sheet).height,
+          lessThanOrEqualTo(
+            logicalHeight *
+                    AppSizing.onboardingExerciseSheetInitialHeightFactor +
+                0.1,
+          ),
+        );
+        expect(
+          tester.getBottomRight(footer).dy,
+          closeTo(tester.getBottomRight(sheet).dy, 0.1),
+        );
+        expect(
+          tester.getSize(search).height,
+          AppSizing.onboardingExerciseSheetSearchHeight,
+        );
+        expect(
+          tester.getSize(confirm).height,
+          AppSizing.onboardingExerciseSheetActionHeight,
+        );
+        expect(
+          tester.getSize(benchOption).height,
+          greaterThanOrEqualTo(
+            AppSizing.onboardingExerciseSheetAvatarSize + AppSpacing.xl,
+          ),
+        );
+        expect(
+          tester.getSize(benchInitial),
+          const Size(
+            AppSizing.onboardingExerciseSheetAvatarSize,
+            AppSizing.onboardingExerciseSheetAvatarSize,
+          ),
+        );
+        expect(
+          tester.getSize(benchSelection),
+          const Size(
+            AppSizing.onboardingExerciseSheetSelectionSize,
+            AppSizing.onboardingExerciseSheetSelectionSize,
+          ),
+        );
+        expect(
+          find.descendant(of: benchInitial, matching: find.text('B')),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: benchInitial, matching: find.byType(SvgPicture)),
+          findsNothing,
+        );
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Chest, Triceps'),
+          findsOneWidget,
+        );
+
+        final colorScheme = Theme.of(tester.element(sheet)).colorScheme;
+        final allFilter = tester.widget<AnimatedContainer>(
+          find.byKey(const ValueKey<String>('onboarding_exercise_filter_All')),
+        );
+        final allDecoration = allFilter.decoration! as BoxDecoration;
+        expect(allDecoration.color, colorScheme.secondary);
+
+        await tapFilter(AppStrings.filterChest);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
+          findsOneWidget,
+        );
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Barbell Row'),
+          findsNothing,
+        );
+
+        await tapFilter(AppStrings.filterShoulders);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Shoulder Press'),
+          findsOneWidget,
+        );
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
+          findsNothing,
+        );
+
+        await tapFilter(AppStrings.filterLegs);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Back Squat'),
+          findsOneWidget,
+        );
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Shoulder Press'),
+          findsNothing,
+        );
+
+        final searchField = find.descendant(
+          of: search,
+          matching: find.byType(TextField),
+        );
+        await tester.enterText(searchField, 'bench');
+        await tester.pumpAndSettle();
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet(AppStrings.noExercisesFound),
+          findsOneWidget,
+        );
+
+        await tapFilter(AppStrings.filterAll);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
+          findsOneWidget,
+        );
+        await tester.tap(benchOption);
+        await tester.pumpAndSettle();
+        expect(
+          tester.widget<Semantics>(benchOption).properties.selected,
+          isTrue,
+        );
+
+        await tester.enterText(searchField, '');
+        await tester.pumpAndSettle();
+        await tapFilter(AppStrings.filterBack);
+        expect(
+          _ExerciseSelectorTestData.inOpenSheet('Barbell Row'),
+          findsOneWidget,
+        );
+        await tapFilter(AppStrings.filterAll);
+        expect(
+          tester.widget<Semantics>(benchOption).properties.selected,
+          isTrue,
+        );
+
+        await tester.tap(confirm);
+        await tester.pumpAndSettle();
+
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(OnboardingScreen)),
+        );
+        expect(
+          container
+              .read(AppProviders.onboardingControllerProvider)
+              .requireValue
+              .draft
+              .favoriteExerciseIds,
+          [1],
+        );
+      },
+    );
+
+    testWidgets('step six exercise selectors exclude opposing selections', (
+      tester,
+    ) async {
+      const exerciseNames = <int, String>{
+        1: 'Bench Press',
+        2: 'Back Squat',
+        3: 'Deadlift',
+      };
+      final exerciseDao = await _ExerciseSelectorTestData.createSeededDao(
+        exerciseNames,
+      );
+      await pumpUntilLoaded(
+        tester,
+        exerciseNames: exerciseNames,
+        exerciseDao: exerciseDao,
+      );
+      await advanceToLimitations(tester);
+
+      await tapVisibleText(
+        tester,
+        AppStrings.onboardingFavoriteExercisesPlaceholder,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(_ExerciseSelectorTestData.inOpenSheet('Bench Press'));
+      await tester.pump();
+      await tester.tap(
+        find.descendant(
+          of: find.byType(DraggableScrollableSheet),
+          matching: find.widgetWithText(
+            FilledButton,
+            AppStrings.onboardingAddSelectedExercises,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      var container = ProviderScope.containerOf(
+        tester.element(find.byType(OnboardingScreen)),
+      );
+      expect(
+        container
+            .read(AppProviders.onboardingControllerProvider)
+            .requireValue
+            .draft
+            .favoriteExerciseIds,
+        [1],
+      );
+
+      await tapVisibleText(
+        tester,
+        AppStrings.onboardingAvoidExercisesPlaceholder,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        _ExerciseSelectorTestData.inOpenSheet(
+          AppStrings.onboardingSelectExercises,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_search'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(
+          const ValueKey<String>('onboarding_exercise_selector_confirm'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey<String>('onboarding_exercise_initial_2')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(DraggableScrollableSheet),
+          matching: find.widgetWithText(
+            FilledButton,
+            AppStrings.onboardingDoneLabel,
+          ),
+        ),
+        findsNothing,
+      );
+      expect(
+        _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
+        findsNothing,
+      );
+      expect(
+        _ExerciseSelectorTestData.inOpenSheet('Back Squat'),
+        findsOneWidget,
+      );
+      expect(_ExerciseSelectorTestData.inOpenSheet('Deadlift'), findsOneWidget);
+
+      await tester.tap(_ExerciseSelectorTestData.inOpenSheet('Back Squat'));
+      await tester.pump();
+      await tester.tap(
+        find.descendant(
+          of: find.byType(DraggableScrollableSheet),
+          matching: find.widgetWithText(
+            FilledButton,
+            AppStrings.onboardingAddSelectedExercises,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      container = ProviderScope.containerOf(
+        tester.element(find.byType(OnboardingScreen)),
+      );
+      expect(
+        container
+            .read(AppProviders.onboardingControllerProvider)
+            .requireValue
+            .draft
+            .substitutedExerciseIds,
+        [2],
+      );
+
+      await tapVisibleText(
+        tester,
+        AppStrings.onboardingFavoriteExercisesPlaceholder,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
+        findsOneWidget,
+      );
+      expect(_ExerciseSelectorTestData.inOpenSheet('Back Squat'), findsNothing);
+      expect(_ExerciseSelectorTestData.inOpenSheet('Deadlift'), findsOneWidget);
+    });
+
     testWidgets('step seven follows the elite baseline card hierarchy', (
       tester,
     ) async {
       await pumpUntilLoaded(tester);
       await advanceToMetrics(tester);
 
-      expect(
-        find.text(AppStrings.onboardingEliteBaselineEyebrow.toUpperCase()),
-        findsOneWidget,
-      );
       expect(find.text(AppStrings.onboardingEliteBaselineTitle), findsWidgets);
       expect(
         find.text(AppStrings.onboardingEliteBaselineDescription),
@@ -965,6 +1467,79 @@ void main() {
       expect(imperialHeightButtons, findsAtLeastNWidgets(2));
     });
 
+    testWidgets('step seven baseline unit toggles slide between units', (
+      tester,
+    ) async {
+      await pumpUntilLoaded(tester);
+      await advanceToMetrics(tester);
+
+      const weightIndicatorKey = ValueKey<String>(
+        'onboarding_weight_unit_sliding_indicator',
+      );
+      const weightThumbKey = ValueKey<String>(
+        'onboarding_weight_unit_sliding_thumb',
+      );
+      const heightIndicatorKey = ValueKey<String>(
+        'onboarding_height_unit_sliding_indicator',
+      );
+      const heightThumbKey = ValueKey<String>(
+        'onboarding_height_unit_sliding_thumb',
+      );
+
+      AnimatedAlign indicator(ValueKey<String> key) {
+        return tester.widget<AnimatedAlign>(find.byKey(key));
+      }
+
+      double thumbX(ValueKey<String> key) =>
+          tester.getCenter(find.byKey(key)).dx;
+
+      expect(
+        indicator(weightIndicatorKey).alignment,
+        AlignmentDirectional.centerStart,
+      );
+      expect(
+        indicator(heightIndicatorKey).alignment,
+        AlignmentDirectional.centerStart,
+      );
+      expect(
+        indicator(weightIndicatorKey).duration,
+        const Duration(milliseconds: 200),
+      );
+      expect(indicator(weightIndicatorKey).curve, Curves.easeOutCubic);
+
+      final weightStartX = thumbX(weightThumbKey);
+      final heightStartX = thumbX(heightThumbKey);
+      final weightCard = find.byKey(
+        const ValueKey<String>('onboarding_baseline_weight_card'),
+      );
+      final imperialWeightChoice = find.descendant(
+        of: weightCard,
+        matching: find.text(AppStrings.imperialWeightUnit),
+      );
+      await tester.ensureVisible(imperialWeightChoice);
+      await tester.tap(imperialWeightChoice);
+      await tester.pump();
+
+      expect(
+        indicator(weightIndicatorKey).alignment,
+        AlignmentDirectional.centerEnd,
+      );
+      expect(
+        indicator(heightIndicatorKey).alignment,
+        AlignmentDirectional.centerEnd,
+      );
+
+      await tester.pump(const Duration(milliseconds: 100));
+      final weightMidX = thumbX(weightThumbKey);
+      final heightMidX = thumbX(heightThumbKey);
+      expect(weightMidX, greaterThan(weightStartX));
+      expect(heightMidX, greaterThan(heightStartX));
+
+      await tester.pumpAndSettle();
+      expect(thumbX(weightThumbKey), greaterThan(weightMidX));
+      expect(thumbX(heightThumbKey), greaterThan(heightMidX));
+    });
+
     testWidgets('step seven max lifts matches the supplied input treatment', (
       tester,
     ) async {
@@ -983,7 +1558,7 @@ void main() {
       expect(
         tester.getTopLeft(maxLiftsCard).dy -
             tester.getBottomLeft(heightCard).dy,
-        AppSpacing.xl + AppSpacing.sm,
+        AppSpacing.xl,
       );
 
       final glassSurface = find.byKey(
@@ -1374,10 +1949,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.widgetWithText(
-          FilledButton,
-          AppStrings.onboardingSecureConnection,
-        ),
+        find.widgetWithText(FilledButton, AppStrings.onboardingConnectProvider),
         findsOneWidget,
       );
       expect(
@@ -1479,7 +2051,8 @@ void main() {
       );
 
       expect(
-        tester.getTopLeft(experienceCard).dy - tester.getBottomLeft(intro).dy,
+        tester.getTopLeft(experienceCard).dy -
+            tester.getBottomLeft(introDescription).dy,
         AppSpacing.xxl,
       );
       final cards = [
@@ -1517,7 +2090,7 @@ void main() {
           of: experienceCard,
           matching: find.text(AppStrings.modify),
         ),
-        findsOneWidget,
+        findsNothing,
       );
 
       const factTileKeys = [
@@ -1543,6 +2116,35 @@ void main() {
           findsOneWidget,
         );
       }
+
+      List<String> factTileText(String key) {
+        return tester
+            .widgetList<Text>(
+              find.descendant(
+                of: find.byKey(ValueKey<String>(key)),
+                matching: find.byType(Text),
+              ),
+            )
+            .map((widget) => widget.data)
+            .whereType<String>()
+            .toList(growable: false);
+      }
+
+      expect(factTileText('onboarding_review_tier_tile'), [
+        AppStrings.onboardingReviewTierLabel,
+        'Intermediate',
+      ]);
+      expect(factTileText('onboarding_review_duration_tile'), [
+        AppStrings.onboardingReviewDurationLabel,
+        '6 mo–2 yr',
+      ]);
+      expect(
+        find.descendant(
+          of: experienceCard,
+          matching: find.text(AppStrings.onboardingExperienceIntermediate),
+        ),
+        findsNothing,
+      );
 
       expect(
         find.descendant(of: aiCard, matching: find.text(AppStrings.modify)),
@@ -1580,7 +2182,7 @@ void main() {
       );
       expect(
         find.descendant(of: scheduleCard, matching: find.text(AppStrings.edit)),
-        findsOneWidget,
+        findsNothing,
       );
       expect(
         find.descendant(
@@ -1594,8 +2196,14 @@ void main() {
           of: equipmentCard,
           matching: find.text(AppStrings.update),
         ),
-        findsOneWidget,
+        findsNothing,
       );
+      for (final card in [experienceCard, scheduleCard, equipmentCard]) {
+        expect(
+          find.descendant(of: card, matching: find.byType(InkWell)),
+          findsWidgets,
+        );
+      }
 
       final colorScheme = Theme.of(tester.element(metricCard)).colorScheme;
       final metricDecoration =
@@ -1628,10 +2236,7 @@ void main() {
         const Size.square(AppSizing.reviewMetricIcon),
       );
       expect(
-        find.widgetWithText(
-          FilledButton,
-          AppStrings.onboardingInitializeWorkspace,
-        ),
+        find.widgetWithText(FilledButton, AppStrings.finishSetup),
         findsOneWidget,
       );
 
@@ -1724,16 +2329,13 @@ void main() {
       ]);
       await tapPrimaryButton(tester);
       await tapPrimaryButton(tester);
-      await tapPrimaryButton(tester, label: AppStrings.onboardingNextStep);
+      await tapPrimaryButton(tester);
       await tapPrimaryButton(tester);
       await tapPrimaryButton(tester);
 
       expect(find.text(AppStrings.onboardingFinalReviewTitle), findsWidgets);
 
-      await tapPrimaryButton(
-        tester,
-        label: AppStrings.onboardingInitializeWorkspace,
-      );
+      await tapPrimaryButton(tester, label: AppStrings.finishSetup);
       await tester.pump();
 
       expect(await repo.isOnboardingCompleted(), isTrue);
@@ -1773,7 +2375,7 @@ void main() {
 
       // Limitations (select none)
       await tapVisibleText(tester, AppStrings.onboardingLimitationNone);
-      await tapPrimaryButton(tester, label: AppStrings.onboardingNextStep);
+      await tapPrimaryButton(tester);
 
       // Metrics (accept optional defaults)
       await tapPrimaryButton(tester);
@@ -1783,10 +2385,7 @@ void main() {
 
       // Review -> finish
       expect(find.text(AppStrings.onboardingFinalReviewTitle), findsWidgets);
-      await tapPrimaryButton(
-        tester,
-        label: AppStrings.onboardingInitializeWorkspace,
-      );
+      await tapPrimaryButton(tester, label: AppStrings.finishSetup);
       await tester.pump();
 
       expect(await repo.isOnboardingCompleted(), isTrue);

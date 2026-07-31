@@ -11,6 +11,72 @@
 
 ## Completed Work
 
+### 2026-07-31 — Onboarding exercise preference sheet design (complete)
+
+- Extracts the Step 6 exercise picker into the imported `OnboardingExerciseSelectionSheet` and reuses it for Favorites and Substitutions/Avoid List without introducing `part` files.
+- Implements the supplied fixed-mobile bottom-sheet composition: 24px top radius, 48×6 handle, title, 48px search, horizontally scrollable All/Chest/Back/Legs/Shoulders filters, 24px list/footer spacing, 48px leading tiles, 24px selection controls, and the pinned full-width confirmation action.
+- Uses decoded exercise muscle groups for row metadata and category filtering, combines search with the active filter, retains temporary selections across filters, and preserves opposing-selector exclusion before the sheet opens.
+- Renders uppercase exercise initials instead of icons and records an owning-widget TODO for later dataset-backed exercise thumbnail integration.
+- Implements the filter chip and exercise option as private immutable `StatelessWidget` classes instead of `Widget`-returning helper methods; the parent remains the sole owner of mutable sheet state.
+- Adds seeded-DAO widget coverage for exact sheet geometry/treatment, initial-only placeholders, filter composition, selection persistence and commit, plus shared behavior across both onboarding launch points.
+- Retains the current buttonless review cards and current onboarding action copy by updating stale tests rather than restoring removed buttons.
+- Verification: `dart format .` checked 686 files; `flutter analyze` passed with no issues; onboarding presentation passed 35/35; M3 setup smoke passed 10/10; full `flutter test` passed 1117/1117.
+
+### 2026-07-31 — Elite Baseline sliding unit toggles (complete)
+
+- Replaces the independent Weight/Height unit selected fills with a stable `AnimatedAlign` underlay that physically slides between equal-width Metric and Imperial segments.
+- Uses the established 200ms `easeOutCubic` onboarding motion and animates foreground colors in sync, retaining existing theme tokens, semantics, tap behavior, and compact dimensions.
+- Keeps both baseline toggles synchronized through the existing shared `PreferredUnit` draft state without changing canonical values, ruler ranges, or conversions.
+- Keeps Experience, Schedule, and Equipment review cards buttonless and updates their assertions to validate tappable surfaces rather than visible action labels.
+- Adds a frame-level widget test that verifies both thumbs are between endpoints at 100ms and reach their destination after settling.
+- Verification: `dart format .` checked 685 files with no remaining changes; `flutter analyze` passed with no issues; all 34 onboarding presentation tests passed; full `flutter test` passed 1116/1116.
+
+### 2026-07-31 — Onboarding review experience split (complete)
+
+- Separates the review card's combined experience label so Tier contains only the tier name and Duration contains only the parenthesized date range.
+- Preserves the existing empty review placeholder when no experience value or range is available.
+- Keeps Experience, Schedule, and Equipment buttonless while retaining their tappable surfaces, alongside the requested full-card AI and Metric navigation behavior.
+- Adds Step 9 widget assertions for exact Tier/Duration values and the absence of the combined label.
+- Verification: `dart format .` checked 684 files with no remaining changes; `flutter analyze` passed with no issues; all 33 onboarding presentation tests passed; full `flutter test` passed 1115/1115.
+
+### 2026-07-31 — Exercise preference cross-filtering (complete)
+
+- Filters every favorite exercise ID out of the onboarding Avoid List selector and every avoided/substituted ID out of the Favorites selector.
+- Mirrors the same opposing-list exclusion in Profile editing, while preserving the existing draft, controller, and local persistence boundaries.
+- Keeps the onboarding picker header and Done action within the fixed 390px design surface.
+- Adds seeded in-memory `ExerciseDao` widget coverage that opens the real selectors and verifies both exclusion directions in onboarding and Profile.
+- Refreshes stale onboarding assertions for the current Step 4 slider, Step 7 hierarchy/spacing, and the M3 smoke flow's current experience, action, and Metrics copy.
+- Verification: `dart format .` passed; `flutter analyze` passed with no issues; the complete onboarding and Profile presentation test files passed 48/48 tests; full `flutter test` passed 1115/1115.
+
+### 2026-07-31 — Onboarding presentation test repair (complete)
+
+- Removed compile-time coupling to the private goal-pill widget and now verifies goal selection through stable semantics.
+- Corrected the Step 3 title finder to target the experience-step content rather than matching both header and body copy.
+- Updated Step 4 coverage to validate the current 20–120 minute, 20-division Slider contract instead of removed keyed ruler marks.
+- Verification: Superseded by the cross-filtering verification above; all 33 onboarding presentation tests now pass.
+
+### 2026-07-30 — Core Identity sliding unit selector (complete)
+
+- Reworked the Metric/Imperial selector as a single segmented track with a shared `AnimatedAlign` selected surface that moves in logical start/end direction.
+- Kept `_OnboardingUnitChoiceButton` responsible for selection semantics, ink response, and animated label color while the parent owns the physical sliding motion.
+- Preserved the existing onboarding draft update flow and visual tokens.
+- Verification: `dart format .` passed; `flutter analyze` passed with no issues; the focused measurement-selector animation test passed.
+
+### 2026-07-30 — Onboarding step scroll reset (complete)
+
+- Converted the shared onboarding step scaffold to own and dispose its primary `ScrollController`.
+- Passed the active `OnboardingStep` as the reset discriminator so forward, Back, and direct review-card step changes all start at the top of their destination content.
+- Added a stable key for the primary scroll view and focused widget coverage that verifies nonzero offsets reset to zero in both navigation directions.
+- Verification: `dart format .` passed; `flutter analyze` passed with no issues; the focused scroll-reset widget test passed. The complete onboarding presentation file passed 31 tests with the unrelated existing Step 4 duration-ruler assertion failure.
+
+### 2026-07-30 — Onboarding standalone widget extraction (complete)
+
+- Extracted every private onboarding widget into a unique standalone file under `lib/features/onboarding/presentation/widgets/onboarding/`; all 62 widget files now contain exactly one widget class, with state classes retained beside their owners.
+- Replaced screen-library privacy with public `Onboarding...` component names, direct package imports, and a 62-entry `onboarding_widgets.dart` barrel export as required for standalone Dart libraries. No `part` / `part of` directives were introduced.
+- Moved only the cross-file non-widget support needed by the extracted components, including onboarding taxonomy and BYOK form providers/state, while keeping presentation ownership and Riverpod boundaries intact.
+- Reduced `onboarding_screen.dart` from 5,848 lines to the 44-line `OnboardingScreen` entry point without changing UI, validation, navigation, persistence, or privacy behavior.
+- Verification: `dart format .` passed; `flutter analyze` passed with no issues; the focused end-to-end step-transition test passed; structural checks found no private widget declarations in the screen and exactly one widget class per exported file. The complete onboarding presentation file passed 30 tests with the unrelated existing Step 4 duration-ruler assertion failure.
+
 ### 2026-07-30 — Final Architecture Review design correction (complete)
 
 - Rebuilt the Step 9 introduction with the supplied `headlineXl` / `bodyLg` hierarchy and fixed single-column 24px bento rhythm.

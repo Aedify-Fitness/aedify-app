@@ -109,7 +109,7 @@ void main() {
 
       // Experience and Goals step
       expect(find.text(AppStrings.experienceLevel), findsOneWidget);
-      await tapVisibleText(tester, AppStrings.onboardingExperienceIntermediate);
+      await tapVisibleText(tester, AppStrings.onboardingExperienceAdept);
       await tapPrimaryButton(tester);
 
       // Schedule step
@@ -133,7 +133,7 @@ void main() {
       await tapPrimaryButton(tester);
 
       // Metrics step
-      expect(find.text(AppStrings.onboardingBodyMetricsTitle), findsOneWidget);
+      expect(find.text(AppStrings.onboardingEliteBaselineTitle), findsWidgets);
       await tapPrimaryButton(tester);
 
       // BYOK step
@@ -145,10 +145,7 @@ void main() {
 
       // Review step -> Initialize workspace
       expect(find.text(AppStrings.onboardingFinalReviewTitle), findsWidgets);
-      await tapPrimaryButton(
-        tester,
-        label: AppStrings.onboardingInitializeWorkspace,
-      );
+      await tapPrimaryButton(tester, label: AppStrings.finishSetup);
       await tester.pump();
 
       // Verify onboarding is completed in the repository
