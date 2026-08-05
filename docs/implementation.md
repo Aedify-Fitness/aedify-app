@@ -11,6 +11,13 @@
 
 ## Completed Work
 
+### 2026-08-05 — Filled bottom-navigation selection states (complete)
+
+- Keeps all five destinations outlined while inactive and uses their corresponding solid SVG assets while selected.
+- Leaves the liquid-glass treatment, user-adjusted opacity values, branch routing, color states, safe-area handling, and scroll clearance unchanged.
+- Adds asset-level navigation tests covering initial selection and selection changes between branches.
+- Verification: `dart format .` checked 691 files; `flutter analyze` passed with no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### 2026-08-05 — Floating liquid-glass navigation (complete)
 
 - Uses `Scaffold.extendBody` with a clipped `BackdropFilter` and translucent theme surfaces so destination content scrolls visibly behind the persistent five-tab bar.

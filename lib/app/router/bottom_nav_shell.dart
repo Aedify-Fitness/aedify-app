@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
@@ -10,31 +11,41 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class _BottomNavItemData {
-  const _BottomNavItemData({required this.label, required this.iconAsset});
+  const _BottomNavItemData({
+    required this.label,
+    required this.iconAsset,
+    required this.selectedIconAsset,
+  });
 
   final String label;
   final String iconAsset;
+  final String selectedIconAsset;
 
   static const items = [
     _BottomNavItemData(
       label: AppStrings.home,
       iconAsset: OutlinedSvgAssets.home,
+      selectedIconAsset: SolidSvgAssets.home,
     ),
     _BottomNavItemData(
       label: AppStrings.navLibrary,
       iconAsset: OutlinedSvgAssets.sparkles,
+      selectedIconAsset: SolidSvgAssets.sparkles,
     ),
     _BottomNavItemData(
       label: AppStrings.navPlan,
       iconAsset: OutlinedSvgAssets.clipboardDocumentList,
+      selectedIconAsset: SolidSvgAssets.clipboardDocumentList,
     ),
     _BottomNavItemData(
       label: AppStrings.navAi,
       iconAsset: OutlinedSvgAssets.chatBubbleLeft,
+      selectedIconAsset: SolidSvgAssets.chatBubbleLeft,
     ),
     _BottomNavItemData(
       label: AppStrings.navStats,
       iconAsset: OutlinedSvgAssets.chartBar,
+      selectedIconAsset: SolidSvgAssets.chartBar,
     ),
   ];
 }
@@ -142,7 +153,7 @@ class _FloatingNavigationBar extends StatelessWidget {
                       NavigationDestination(
                         icon: _NavIcon(asset: item.iconAsset, selected: false),
                         selectedIcon: _NavIcon(
-                          asset: item.iconAsset,
+                          asset: item.selectedIconAsset,
                           selected: true,
                         ),
                         label: item.label,

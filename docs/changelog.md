@@ -6,6 +6,13 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-08-05
 
+### Bottom navigation — filled selected icons
+
+- Mapped each selected bottom-navigation destination to its matching solid SVG while retaining the outlined SVG for its unselected state.
+- Preserved the existing liquid-glass surface, opacity tokens, routing, labels, colors, sizing, and accessibility behavior.
+- Added asset-level assertions for the initial Home selection and the Home-to-Plan state transition.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### Floating navigation — liquid-glass overlay and scroll clearance
 
 - Converted the five-destination shell navigation into a clipped, backdrop-blurred glass overlay with theme-derived translucent surfaces, a subtle outline/shadow, and a more opaque high-contrast treatment.

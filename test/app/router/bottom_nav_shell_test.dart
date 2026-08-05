@@ -1,9 +1,12 @@
 import 'package:aedify/app/router/bottom_nav_shell.dart';
 import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -126,6 +129,15 @@ class _BottomNavShellTestHarness {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
   }
+
+  static Finder svgAsset(String assetName) {
+    return find.byWidgetPredicate(
+      (widget) =>
+          widget is SvgPicture &&
+          widget.bytesLoader is SvgAssetLoader &&
+          (widget.bytesLoader as SvgAssetLoader).assetName == assetName,
+    );
+  }
 }
 
 void main() {
@@ -235,6 +247,15 @@ void main() {
 
       await tester.pumpWidget(_BottomNavShellTestHarness.app(router: router));
       await tester.pumpAndSettle();
+
+      expect(
+        _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+        findsOneWidget,
+      );
+      expect(
+        _BottomNavShellTestHarness.svgAsset(OutlinedSvgAssets.sparkles),
+        findsOneWidget,
+      );
       await tester.tap(find.text(AppStrings.navPlan));
       await tester.pumpAndSettle();
 
@@ -249,6 +270,20 @@ void main() {
             )
             .selectedIndex,
         2,
+      );
+      expect(
+        _BottomNavShellTestHarness.svgAsset(
+          SolidSvgAssets.clipboardDocumentList,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        _BottomNavShellTestHarness.svgAsset(OutlinedSvgAssets.home),
+        findsOneWidget,
+      );
+      expect(
+        _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+        findsNothing,
       );
     });
 

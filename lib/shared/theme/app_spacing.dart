@@ -42,8 +42,8 @@ abstract final class AppBottomNavigationTokens {
   static const double borderWidth = 1;
   static const double shadowOpacity = 0.08;
   static const double borderOpacity = 0.32;
-  static const double lightSurfaceOpacity = 0.78;
-  static const double darkSurfaceOpacity = 0.84;
+  static const double lightSurfaceOpacity = 0.3;
+  static const double darkSurfaceOpacity = 0.3;
   static const double highContrastSurfaceOpacity = 0.96;
   static const double baseContentClearance =
       height + bottomMargin + contentBreathingSpace;
