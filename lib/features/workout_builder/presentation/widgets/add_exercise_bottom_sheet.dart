@@ -18,9 +18,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class AddExerciseBottomSheet extends ConsumerStatefulWidget {
-  const AddExerciseBottomSheet({super.key, required this.onSelectExercises});
+  const AddExerciseBottomSheet({
+    super.key,
+    required this.onSelectExercises,
+    this.initialSelections = const <ExerciseReference>[],
+    this.excludedExerciseIds = const <int>[],
+  });
 
   final ValueChanged<List<ExerciseReference>> onSelectExercises;
+  final Iterable<ExerciseReference> initialSelections;
+  final Iterable<int> excludedExerciseIds;
 
   @override
   ConsumerState<AddExerciseBottomSheet> createState() =>
@@ -30,7 +37,8 @@ class AddExerciseBottomSheet extends ConsumerStatefulWidget {
 class _AddExerciseBottomSheetState
     extends ConsumerState<AddExerciseBottomSheet> {
   late final TextEditingController _searchController;
-  final _selected = <ExerciseReference>{};
+  late final Map<int, ExerciseReference> _selectedById;
+  late final Set<int> _excludedExerciseIds;
   String? _selectedMuscleGroup;
 
   static const _filterLabels = [
@@ -46,6 +54,12 @@ class _AddExerciseBottomSheetState
   @override
   void initState() {
     super.initState();
+    _excludedExerciseIds = widget.excludedExerciseIds.toSet();
+    _selectedById = {
+      for (final exercise in widget.initialSelections)
+        if (!_excludedExerciseIds.contains(exercise.exerciseId))
+          exercise.exerciseId: exercise,
+    };
     final initial = ref
         .read(AppProviders.exerciseSearchControllerProvider)
         .filters
@@ -71,7 +85,7 @@ class _AddExerciseBottomSheetState
   }
 
   bool _isSelected(ExerciseReference ex) {
-    return _selected.any((s) => s.exerciseId == ex.exerciseId);
+    return _selectedById.containsKey(ex.exerciseId);
   }
 
   void _toggle(ExerciseListItem item) {
@@ -85,17 +99,15 @@ class _AddExerciseBottomSheetState
     );
     setState(() {
       if (_isSelected(ex)) {
-        _selected.remove(
-          _selected.firstWhere((s) => s.exerciseId == ex.exerciseId),
-        );
+        _selectedById.remove(ex.exerciseId);
       } else {
-        _selected.add(ex);
+        _selectedById[ex.exerciseId] = ex;
       }
     });
   }
 
   void _clearSelection() {
-    setState(() => _selected.clear());
+    setState(() => _selectedById.clear());
   }
 
   void _showFilterSheet(BuildContext context) {
@@ -116,9 +128,12 @@ class _AddExerciseBottomSheetState
     );
     final colorScheme = context.colorScheme;
     final brightness = context.theme.brightness;
+    final availableItems = searchState.items
+        .where((item) => !_excludedExerciseIds.contains(item.id))
+        .toList(growable: false);
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.92,
+      height: MediaQuery.sizeOf(context).height * 0.9,
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: const BorderRadius.vertical(
@@ -278,7 +293,7 @@ class _AddExerciseBottomSheetState
                       ),
                     ),
                   )
-                : searchState.items.isEmpty
+                : availableItems.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -309,9 +324,9 @@ class _AddExerciseBottomSheetState
                       right: AppSpacing.md,
                       bottom: 100,
                     ),
-                    itemCount: searchState.items.length + 1,
+                    itemCount: availableItems.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == searchState.items.length) {
+                      if (index == availableItems.length) {
                         return Padding(
                           padding: const EdgeInsets.only(top: AppSpacing.sm),
                           child: _CreateCustomExerciseTile(
@@ -326,7 +341,7 @@ class _AddExerciseBottomSheetState
                           ),
                         );
                       }
-                      final item = searchState.items[index];
+                      final item = availableItems[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: ExerciseCard(
@@ -358,10 +373,10 @@ class _AddExerciseBottomSheetState
                 ),
               ),
             ),
-            height: _selected.isEmpty
+            height: _selectedById.isEmpty
                 ? 0
                 : 72 + MediaQuery.of(context).padding.bottom,
-            child: _selected.isEmpty
+            child: _selectedById.isEmpty
                 ? null
                 : Padding(
                     padding: EdgeInsets.only(
@@ -387,7 +402,9 @@ class _AddExerciseBottomSheetState
                             ),
                             child: FilledButton(
                               onPressed: () {
-                                widget.onSelectExercises(_selected.toList());
+                                widget.onSelectExercises(
+                                  _selectedById.values.toList(growable: false),
+                                );
                                 context.pop();
                               },
                               style: FilledButton.styleFrom(
@@ -405,7 +422,7 @@ class _AddExerciseBottomSheetState
                               ),
                               child: Text(
                                 AppStrings.filterConfirmSelection(
-                                  _selected.length,
+                                  _selectedById.length,
                                 ),
                                 style: AppTextStyles.labelMd.copyWith(
                                   color: colorScheme.onSecondary,
@@ -511,10 +528,14 @@ class _CreateCustomExerciseTile extends StatelessWidget {
               ),
             ),
             AppWhiteSpace.wMd,
-            Text(
-              AppStrings.createCustomExercise,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: colorScheme.onSurface,
+            Expanded(
+              child: Text(
+                AppStrings.createCustomExercise,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

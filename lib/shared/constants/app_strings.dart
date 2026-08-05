@@ -127,11 +127,8 @@ class AppStrings {
   static const onboardingLimitationHip = 'Hip';
   static const substitutions = 'Substitutions';
   static const favoriteExercises = 'Favorite exercises';
-  static const onboardingSelectExercises = 'Select Exercises';
-  static const onboardingAddSelectedExercises = 'Add Selected Exercises';
   static const onboardingPersonalDetailsTitle = 'Personal details';
   static const onboardingMaxLiftsTitle = 'Max Lifts (Optional)';
-  static const onboardingDoneLabel = 'Done';
   static const onboardingReviewExercisesSelected = 'selected';
   static String onboardingExerciseOverflow(int count) => '$count selected';
   static const pageNotFound = 'Page Not Found';

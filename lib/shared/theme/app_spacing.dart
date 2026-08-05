@@ -118,16 +118,6 @@ class AppSizing {
   static const double onboardingEquipmentImageHeight = 160;
   static const double onboardingEquipmentThumbnail = 96;
   static const double onboardingConstraintActionSize = 32;
-  static const double onboardingExerciseSheetHandleWidth = 48;
-  static const double onboardingExerciseSheetHandleHeight = 6;
-  static const double onboardingExerciseSheetSearchHeight = 48;
-  static const double onboardingExerciseSheetFilterViewportHeight = 44;
-  static const double onboardingExerciseSheetAvatarSize = 48;
-  static const double onboardingExerciseSheetSelectionSize = 24;
-  static const double onboardingExerciseSheetActionHeight = 52;
-  static const double onboardingExerciseSheetShadowBlur = 24;
-  static const double onboardingExerciseSheetInitialHeightFactor = 0.9;
-  static const double onboardingExerciseSheetMinHeightFactor = 0.5;
   static const double onboardingLimitationTileHeight = 120;
   static const double onboardingMetricValueWidth = 180;
   static const double onboardingMetricRulerHeight = 96;

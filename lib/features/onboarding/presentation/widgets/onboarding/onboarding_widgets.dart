@@ -21,4 +21,3 @@ export 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboa
 export 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_equipment_visual_card.dart';
 export 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_icon_badge.dart';
 export 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_exercise_panel.dart';
-export 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_exercise_selection_sheet.dart';

@@ -1,8 +1,11 @@
+import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_constraint_surface.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_exercise_panel.dart';
-import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_exercise_selection_sheet.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_form_field.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_intro_header.dart';
+import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,6 +56,59 @@ class OnboardingLimitationsStep extends StatelessWidget {
     (AppStrings.onboardingLimitationElbow, OutlinedSvgAssets.materialExercise),
     (AppStrings.onboardingLimitationAnkle, OutlinedSvgAssets.materialSteps),
   ];
+
+  Future<void> _showExerciseSelection({
+    required BuildContext context,
+    required WidgetRef ref,
+    required List<int> currentIds,
+    required Iterable<int> excludedIds,
+    required ValueChanged<List<int>> onDone,
+  }) async {
+    final items = await ref
+        .read(AppProviders.exerciseRepositoryProvider)
+        .searchExercises(const ExerciseFilterState());
+    if (!context.mounted) return;
+
+    final currentIdSet = currentIds.toSet();
+    final initialSelections = items
+        .where((item) => currentIdSet.contains(item.id))
+        .map(
+          (item) => ExerciseReference(
+            exerciseId: item.id,
+            name: item.name,
+            modality: item.modality.dbValue,
+            loggingType: item.loggingType.dbValue,
+            equipment: item.equipment?.dbValue,
+            isCustom: item.isCustom,
+          ),
+        )
+        .toList(growable: false);
+
+    await ref
+        .read(AppProviders.exerciseSearchControllerProvider.notifier)
+        .clearFilters();
+    if (!context.mounted) return;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => AddExerciseBottomSheet(
+        initialSelections: initialSelections,
+        excludedExerciseIds: excludedIds,
+        onSelectExercises: (exercises) {
+          onDone(
+            exercises
+                .map((exercise) => exercise.exerciseId)
+                .toList(growable: false),
+          );
+        },
+      ),
+    );
+
+    await ref
+        .read(AppProviders.exerciseSearchControllerProvider.notifier)
+        .clearFilters();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +254,7 @@ class OnboardingLimitationsStep extends StatelessWidget {
                   ),
                 );
               },
-              onTap: () => OnboardingExerciseSelectionSheet.show(
+              onTap: () => _showExerciseSelection(
                 context: context,
                 ref: ref,
                 currentIds: draft.favoriteExerciseIds,
@@ -230,7 +286,7 @@ class OnboardingLimitationsStep extends StatelessWidget {
                   ),
                 );
               },
-              onTap: () => OnboardingExerciseSelectionSheet.show(
+              onTap: () => _showExerciseSelection(
                 context: context,
                 ref: ref,
                 currentIds: draft.substitutedExerciseIds,

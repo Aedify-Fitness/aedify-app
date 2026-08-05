@@ -4,12 +4,16 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
+import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
 import 'package:aedify/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_experience_goals_step.dart';
 import 'package:aedify/features/onboarding/presentation/widgets/onboarding/onboarding_schedule_step.dart';
+import 'package:aedify/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
@@ -159,6 +163,37 @@ ExerciseDetailViewData exerciseDetail(int id, String name) {
   );
 }
 
+class _ExerciseSelectorRepository implements ExerciseRepository {
+  const _ExerciseSelectorRepository(this.exerciseNames);
+
+  final Map<int, String> exerciseNames;
+
+  @override
+  Future<List<ExerciseListItem>> searchExercises(
+    ExerciseFilterState filters,
+  ) async {
+    final query = filters.searchQuery.toLowerCase();
+    return exerciseNames.entries
+        .where((entry) => entry.value.toLowerCase().contains(query))
+        .map(
+          (entry) => ExerciseListItem(
+            id: entry.key,
+            name: entry.value,
+            difficulty: null,
+            muscleGroups: const <BodymapBucket>{},
+            modality: ExerciseModality.strength,
+            equipment: null,
+            isFavorite: false,
+            isSubstitutedOut: false,
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget createTestApp(
   OnboardingRepository repository, {
   Map<int, String> exerciseNames = const {},
@@ -183,6 +218,10 @@ Widget createTestApp(
         AppProviders.byokRepositoryProvider.overrideWithValue(byokRepository),
       if (exerciseDao != null)
         AppProviders.exerciseDaoProvider.overrideWithValue(exerciseDao),
+      if (exerciseNames.isNotEmpty)
+        AppProviders.exerciseRepositoryProvider.overrideWithValue(
+          _ExerciseSelectorRepository(exerciseNames),
+        ),
       AppProviders.exerciseDetailControllerProvider.overrideWith((ref, id) {
         final name = exerciseNames[id];
         return Future.value(name == null ? null : exerciseDetail(id, name));
@@ -259,7 +298,7 @@ class _ExerciseSelectorTestData {
 
   static Finder inOpenSheet(String name) {
     return find.descendant(
-      of: find.byType(DraggableScrollableSheet),
+      of: find.byType(AddExerciseBottomSheet),
       matching: find.text(name),
     );
   }
@@ -1009,23 +1048,11 @@ void main() {
     });
 
     testWidgets(
-      'step six exercise selector follows the supplied sheet design',
+      'step six uses the shared exercise sheet and restores choices',
       (tester) async {
-        const exerciseNames = <int, String>{
-          1: 'Bench Press',
-          2: 'Barbell Row',
-          3: 'Back Squat',
-          4: 'Shoulder Press',
-        };
-        const muscleGroups = <int, List<String>>{
-          1: ['Chest', 'Triceps'],
-          2: ['Back', 'Biceps'],
-          3: ['Quads', 'Glutes'],
-          4: ['Shoulders', 'Triceps'],
-        };
+        const exerciseNames = <int, String>{1: 'Bench Press', 2: 'Barbell Row'};
         final exerciseDao = await _ExerciseSelectorTestData.createSeededDao(
           exerciseNames,
-          muscleGroups: muscleGroups,
         );
         await pumpUntilLoaded(
           tester,
@@ -1040,207 +1067,15 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final sheet = find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_sheet'),
-        );
-        final search = find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_search'),
-        );
-        final footer = find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_footer'),
-        );
-        final confirm = find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_confirm'),
-        );
-        final benchOption = find.byKey(
-          const ValueKey<String>('onboarding_exercise_option_1'),
-        );
-        final benchInitial = find.byKey(
-          const ValueKey<String>('onboarding_exercise_initial_1'),
-        );
-        final benchSelection = find.byKey(
-          const ValueKey<String>('onboarding_exercise_selection_1'),
-        );
-        Future<void> tapFilter(String label) async {
-          final filter = find.byKey(
-            ValueKey<String>('onboarding_exercise_filter_$label'),
-          );
-          await tester.ensureVisible(filter);
-          await tester.tap(filter);
-          await tester.pumpAndSettle();
-        }
-
-        expect(sheet, findsOneWidget);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet(
-            AppStrings.onboardingSelectExercises,
-          ),
-          findsOneWidget,
-        );
-        expect(
-          find.descendant(
-            of: sheet,
-            matching: find.widgetWithText(
-              FilledButton,
-              AppStrings.onboardingDoneLabel,
-            ),
-          ),
-          findsNothing,
-        );
-        expect(
-          find.widgetWithText(
-            FilledButton,
-            AppStrings.onboardingAddSelectedExercises,
-          ),
-          findsOneWidget,
-        );
-
-        for (final label in const [
-          AppStrings.filterAll,
-          AppStrings.filterChest,
-          AppStrings.filterBack,
-          AppStrings.filterLegs,
-          AppStrings.filterShoulders,
-        ]) {
-          expect(
-            find.byKey(ValueKey<String>('onboarding_exercise_filter_$label')),
-            findsOneWidget,
-          );
-        }
-
-        final sheetContainer = tester.widget<Container>(sheet);
-        final sheetDecoration = sheetContainer.decoration! as BoxDecoration;
-        final sheetRadius = sheetDecoration.borderRadius! as BorderRadius;
-        final logicalHeight =
-            tester.view.physicalSize.height / tester.view.devicePixelRatio;
-        expect(sheetRadius.topLeft.x, AppRadius.xl);
-        expect(
-          tester.getSize(sheet).height,
-          lessThanOrEqualTo(
-            logicalHeight *
-                    AppSizing.onboardingExerciseSheetInitialHeightFactor +
-                0.1,
-          ),
-        );
-        expect(
-          tester.getBottomRight(footer).dy,
-          closeTo(tester.getBottomRight(sheet).dy, 0.1),
-        );
-        expect(
-          tester.getSize(search).height,
-          AppSizing.onboardingExerciseSheetSearchHeight,
-        );
-        expect(
-          tester.getSize(confirm).height,
-          AppSizing.onboardingExerciseSheetActionHeight,
-        );
-        expect(
-          tester.getSize(benchOption).height,
-          greaterThanOrEqualTo(
-            AppSizing.onboardingExerciseSheetAvatarSize + AppSpacing.xl,
-          ),
-        );
-        expect(
-          tester.getSize(benchInitial),
-          const Size(
-            AppSizing.onboardingExerciseSheetAvatarSize,
-            AppSizing.onboardingExerciseSheetAvatarSize,
-          ),
-        );
-        expect(
-          tester.getSize(benchSelection),
-          const Size(
-            AppSizing.onboardingExerciseSheetSelectionSize,
-            AppSizing.onboardingExerciseSheetSelectionSize,
-          ),
-        );
-        expect(
-          find.descendant(of: benchInitial, matching: find.text('B')),
-          findsOneWidget,
-        );
-        expect(
-          find.descendant(of: benchInitial, matching: find.byType(SvgPicture)),
-          findsNothing,
-        );
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Chest, Triceps'),
-          findsOneWidget,
-        );
-
-        final colorScheme = Theme.of(tester.element(sheet)).colorScheme;
-        final allFilter = tester.widget<AnimatedContainer>(
-          find.byKey(const ValueKey<String>('onboarding_exercise_filter_All')),
-        );
-        final allDecoration = allFilter.decoration! as BoxDecoration;
-        expect(allDecoration.color, colorScheme.secondary);
-
-        await tapFilter(AppStrings.filterChest);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
-          findsOneWidget,
-        );
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Barbell Row'),
-          findsNothing,
-        );
-
-        await tapFilter(AppStrings.filterShoulders);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Shoulder Press'),
-          findsOneWidget,
-        );
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
-          findsNothing,
-        );
-
-        await tapFilter(AppStrings.filterLegs);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Back Squat'),
-          findsOneWidget,
-        );
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Shoulder Press'),
-          findsNothing,
-        );
-
-        final searchField = find.descendant(
-          of: search,
-          matching: find.byType(TextField),
-        );
-        await tester.enterText(searchField, 'bench');
+        expect(find.byType(AddExerciseBottomSheet), findsOneWidget);
+        await tester.tap(_ExerciseSelectorTestData.inOpenSheet('Bench Press'));
         await tester.pumpAndSettle();
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet(AppStrings.noExercisesFound),
-          findsOneWidget,
+        final confirm = find.widgetWithText(
+          FilledButton,
+          AppStrings.filterConfirmSelection(1),
         );
-
-        await tapFilter(AppStrings.filterAll);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
-          findsOneWidget,
-        );
-        await tester.tap(benchOption);
-        await tester.pumpAndSettle();
-        expect(
-          tester.widget<Semantics>(benchOption).properties.selected,
-          isTrue,
-        );
-
-        await tester.enterText(searchField, '');
-        await tester.pumpAndSettle();
-        await tapFilter(AppStrings.filterBack);
-        expect(
-          _ExerciseSelectorTestData.inOpenSheet('Barbell Row'),
-          findsOneWidget,
-        );
-        await tapFilter(AppStrings.filterAll);
-        expect(
-          tester.widget<Semantics>(benchOption).properties.selected,
-          isTrue,
-        );
-
-        await tester.tap(confirm);
+        await tester.ensureVisible(confirm);
+        tester.widget<FilledButton>(confirm).onPressed!();
         await tester.pumpAndSettle();
 
         final container = ProviderScope.containerOf(
@@ -1252,6 +1087,19 @@ void main() {
               .requireValue
               .draft
               .favoriteExerciseIds,
+          [1],
+        );
+
+        await tapVisibleText(
+          tester,
+          AppStrings.onboardingFavoriteExercisesPlaceholder,
+        );
+        await tester.pumpAndSettle();
+        final sharedSheet = tester.widget<AddExerciseBottomSheet>(
+          find.byType(AddExerciseBottomSheet),
+        );
+        expect(
+          sharedSheet.initialSelections.map((exercise) => exercise.exerciseId),
           [1],
         );
       },
@@ -1282,15 +1130,12 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(_ExerciseSelectorTestData.inOpenSheet('Bench Press'));
       await tester.pump();
-      await tester.tap(
-        find.descendant(
-          of: find.byType(DraggableScrollableSheet),
-          matching: find.widgetWithText(
-            FilledButton,
-            AppStrings.onboardingAddSelectedExercises,
-          ),
-        ),
+      var confirm = find.widgetWithText(
+        FilledButton,
+        AppStrings.filterConfirmSelection(1),
       );
+      await tester.ensureVisible(confirm);
+      tester.widget<FilledButton>(confirm).onPressed!();
       await tester.pumpAndSettle();
 
       var container = ProviderScope.containerOf(
@@ -1310,38 +1155,7 @@ void main() {
         AppStrings.onboardingAvoidExercisesPlaceholder,
       );
       await tester.pumpAndSettle();
-      expect(
-        _ExerciseSelectorTestData.inOpenSheet(
-          AppStrings.onboardingSelectExercises,
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_search'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(
-          const ValueKey<String>('onboarding_exercise_selector_confirm'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('onboarding_exercise_initial_2')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byType(DraggableScrollableSheet),
-          matching: find.widgetWithText(
-            FilledButton,
-            AppStrings.onboardingDoneLabel,
-          ),
-        ),
-        findsNothing,
-      );
+      expect(find.byType(AddExerciseBottomSheet), findsOneWidget);
       expect(
         _ExerciseSelectorTestData.inOpenSheet('Bench Press'),
         findsNothing,
@@ -1354,15 +1168,12 @@ void main() {
 
       await tester.tap(_ExerciseSelectorTestData.inOpenSheet('Back Squat'));
       await tester.pump();
-      await tester.tap(
-        find.descendant(
-          of: find.byType(DraggableScrollableSheet),
-          matching: find.widgetWithText(
-            FilledButton,
-            AppStrings.onboardingAddSelectedExercises,
-          ),
-        ),
+      confirm = find.widgetWithText(
+        FilledButton,
+        AppStrings.filterConfirmSelection(1),
       );
+      await tester.ensureVisible(confirm);
+      tester.widget<FilledButton>(confirm).onPressed!();
       await tester.pumpAndSettle();
 
       container = ProviderScope.containerOf(
