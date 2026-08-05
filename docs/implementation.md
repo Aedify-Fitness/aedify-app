@@ -17,6 +17,7 @@
 - Keeps every destination in a stable indicator frame, renders inactive outline SVGs at 24px, and renders the selected filled SVG at 28px without reducing destination tap targets.
 - Uses `secondaryContainer`/`onSecondaryContainer` in light mode and `primaryContainer`/`onPrimaryContainer` in dark mode, switching to stronger semantic pairs when high contrast is enabled.
 - Positions one persistent backing beneath the destinations and slides it directionally over the shared 200ms navigation-selection duration, leaving the glass blur, border, safe-area behavior, scroll clearance, and user-adjusted surface opacity tokens unchanged.
+- Resolves the local navigation overlay to transparent only while pressed, removing tap ripple/highlight feedback without disabling focus semantics or changing destination callbacks.
 - Adds directional midpoint-motion assertions alongside light, dark, high-contrast, normal-width, compact-width, routing, and accessibility coverage.
 - Verification: `dart format .` checked 691 files; `flutter analyze` passed with no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
 

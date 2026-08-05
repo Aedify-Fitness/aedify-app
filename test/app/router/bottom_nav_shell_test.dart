@@ -213,6 +213,14 @@ void main() {
         ),
       );
       expect(navigationBar.indicatorColor, Colors.transparent);
+      expect(
+        navigationBar.overlayColor?.resolve({WidgetState.pressed}),
+        Colors.transparent,
+      );
+      expect(
+        navigationBar.overlayColor?.resolve({WidgetState.focused}),
+        isNull,
+      );
       final selectedDestinationSize = tester.getSize(
         find.byType(NavigationDestination).first,
       );

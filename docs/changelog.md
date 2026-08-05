@@ -11,6 +11,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - Replaced Material's small fixed selection indicator with a responsive pill-shaped backing that fills each destination inside a 6px navigation-bar edge inset and sits 6px from the bar's top and bottom edges.
 - Uses the light secondary-container and dark primary-container color pairs for solid contrast against the glass, with stronger theme pairs in high-contrast mode; selected glyphs grow to 28px while inactive glyphs retain their 24px size.
 - Added one persistent capsule that slides between destinations over a restrained 200ms transition while preserving the icon-only layout, filled selected SVGs, routing, safe-area clearance, and user-adjusted liquid-glass opacity values.
+- Suppressed the Material pressed overlay for destination taps so the sliding capsule is the sole visual selection feedback, while leaving non-pressed focus handling available.
 - Extended widget coverage for directional midpoint motion, final indicator geometry, compact containment, light/dark/high-contrast fills and foregrounds, icon sizing, and the transparent built-in Material indicator.
 - Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
 

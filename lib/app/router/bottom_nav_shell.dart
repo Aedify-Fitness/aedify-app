@@ -87,6 +87,10 @@ class _FloatingNavigationBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onDestinationSelected;
 
+  static Color? _destinationOverlayColor(Set<WidgetState> states) {
+    return states.contains(WidgetState.pressed) ? Colors.transparent : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = context.colorScheme;
@@ -195,6 +199,9 @@ class _FloatingNavigationBar extends StatelessWidget {
                               shadowColor: Colors.transparent,
                               elevation: 0,
                               indicatorColor: Colors.transparent,
+                              overlayColor: WidgetStateProperty.resolveWith(
+                                _destinationOverlayColor,
+                              ),
                               indicatorShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                   AppRadius.full,
