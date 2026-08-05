@@ -38,6 +38,7 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
+        bottom: false,
         child: asyncState.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => _ErrorView(
@@ -109,11 +110,13 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       left: AppSpacing.md,
                       top: AppSpacing.lg,
                       right: AppSpacing.md,
-                      bottom: AppSpacing.xxl,
+                      bottom: AppBottomNavigationTokens.contentClearance(
+                        context,
+                      ),
                     ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(

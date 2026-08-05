@@ -11,6 +11,15 @@
 
 ## Completed Work
 
+### 2026-08-05 — Workout Detail supplied-design alignment (complete)
+
+- Updates the shared programme/saved-workout detail screen to the supplied fixed-mobile composition without changing its data-loading or workout-session rules.
+- Uses the reference 24px gutter, uppercase hero, responsive stat rhythm, 32px flow heading, 96px exercise media placeholder, grouped superset treatment, atmospheric panel, and fixed primary action spacing.
+- Normalizes displayed goal tags and equal RPE ranges, retains truthful local exercise content, and wraps prescription metadata on compact phones to avoid overflow.
+- Protects the scrollable page with the device top safe area and centers 24px stat glyphs within their 48px presentation tiles.
+- Adds fixed 390×884 presentation coverage for hero facts, exercise prescriptions, superset grouping, atmospheric copy, CTA visibility, geometry, and rendering safety.
+- Verification: `dart format .` checked 689 files; `flutter analyze` passed with no issues; focused Workout Detail test passed 1/1; full `flutter test` passed 1131/1131 before the final safe-area/icon constraint correction, followed by another clean focused test and analysis run.
+
 ### 2026-08-05 — Custom exercise instruction-field reuse (complete)
 
 - Uses the shared `AppTextField` for every `CustomExerciseStepsEditor` cue input, retaining existing controller synchronization, callbacks, spacing, radius, typography, and focus handling.

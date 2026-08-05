@@ -6,6 +6,16 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-08-05
 
+### Workout Detail — supplied design alignment
+
+- Aligned `WorkoutDetailScreen` with the supplied HTML hierarchy: 24px centered content gutter, no blank app-bar reservation, uppercase workout hero, 48px hero-to-flow spacing, 32px Workout Flow heading, reference stat rhythm, atmospheric panel, and 24px fixed-action margins.
+- Preserved repository-backed programme/saved-workout data, session-aware Start/Resume/hidden behavior, exercise-detail routing, superset grouping, and local SVG placeholders instead of adopting remote mock imagery.
+- Matched duration and intensity presentation (`60s`, equal RPE ranges collapsed to `RPE 9`) and title-cased saved-workout goal badges.
+- Added compact-width prescription wrapping to prevent overflow beside the reference-sized 96px exercise tile while retaining inline metadata on wider layouts.
+- Kept scrollable content below the device's top safe area and centered each 24px stat SVG inside its 48px tile so parent constraints no longer enlarge the glyph.
+- Added fixed 390×884 widget coverage for the complete reference hierarchy, spacing, content, superset treatment, CTA, and overflow safety.
+- Verification: `dart format .` checked 689 files, `flutter analyze` reported no issues, the focused Workout Detail test passed 1/1, and full `flutter test` passed 1131/1131 before the final safe-area/icon constraint correction; the focused test and analysis remained clean afterward.
+
 ### Custom exercise instructions — shared text fields
 
 - Replaced the cue-list editor's bespoke `TextField` decoration with `AppTextField` while preserving its controllers, dense layout, styling, focus dismissal, and update behavior.

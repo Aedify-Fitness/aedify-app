@@ -166,6 +166,7 @@ class AppSizing {
   static const double customExerciseLoggingCardHeight = 164;
   static const double customExerciseInputFocusBlur = 20;
   static const double customExerciseActionElevation = 6;
+  static const double workoutDetailInlineMetadataMinWidth = 200;
 }
 
 class AppFontSizes {

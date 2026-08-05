@@ -185,7 +185,7 @@ class ProgrammeWorkoutDetailController {
     try {
       final tags = (jsonDecode(goalTagsJson) as List).cast<String>();
       if (tags.isEmpty) return '';
-      return tags.map((t) => t[0].toUpperCase() + t.substring(1)).join(' & ');
+      return tags.map(_capitalizeWords).join(' & ');
     } catch (_) {
       return '';
     }
@@ -240,10 +240,19 @@ class _ProgrammeWorkoutDetailFormatting {
   }
 
   static String? formatRpe(double? rpeMin, double? rpeMax, int? rir) {
-    if (rpeMin != null && rpeMax != null) return 'RPE $rpeMin-$rpeMax';
+    if (rpeMin != null && rpeMax != null) {
+      if (rpeMin == rpeMax) return 'RPE ${_formatDecimal(rpeMin)}';
+      return 'RPE ${_formatDecimal(rpeMin)}-${_formatDecimal(rpeMax)}';
+    }
     if (rpeMin != null) return 'RPE $rpeMin';
     if (rpeMax != null) return 'RPE ≤$rpeMax';
     if (rir != null) return 'RIR $rir';
     return null;
+  }
+
+  static String _formatDecimal(double value) {
+    return value == value.truncateToDouble()
+        ? value.toInt().toString()
+        : value.toString();
   }
 }

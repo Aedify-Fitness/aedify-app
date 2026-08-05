@@ -50,45 +50,62 @@ class WorkoutDetailScreen extends ConsumerWidget {
         }
 
         return Scaffold(
-          appBar: AppBar(elevation: 0),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _HeroSection(detail: detail),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: AppSpacing.xl + AppSpacing.sm,
-                    bottom: AppSpacing.lg,
+          key: const Key('workout_detail_screen'),
+          backgroundColor: context.colorScheme.surface,
+          body: SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.gutter,
+                top: AppSpacing.gutter,
+                right: AppSpacing.gutter,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: AppSpacing.containerMax,
                   ),
-                  child: Text(
-                    AppStrings.workoutFlow,
-                    style: AppTextStyles.headlineLgMobile.copyWith(
-                      color: context.colorScheme.onSurface,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeroSection(detail: detail),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: AppSpacing.xxl,
+                          bottom: AppSpacing.lg,
+                        ),
+                        child: Text(
+                          key: const Key('workout_detail_flow_heading'),
+                          AppStrings.workoutFlow,
+                          style: AppTextStyles.headlineLg.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      _ExerciseList(detail: detail),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: AppSpacing.xxxl + AppSpacing.md,
+                          bottom: AppSpacing.xxxl,
+                        ),
+                        child: _AtmosphericSection(),
+                      ),
+                    ],
                   ),
                 ),
-                _ExerciseList(detail: detail),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: AppSpacing.xxl + AppSpacing.xl,
-                    bottom: AppSpacing.xxxl,
-                  ),
-                  child: _AtmosphericSection(),
-                ),
-              ],
+              ),
             ),
           ),
           bottomNavigationBar:
               detail.buttonState != WorkoutDetailButtonState.hidden
               ? SafeArea(
                   minimum: const EdgeInsets.only(
-                    left: AppSpacing.md,
-                    right: AppSpacing.md,
-                    bottom: AppSpacing.sm,
+                    left: AppSpacing.gutter,
+                    right: AppSpacing.gutter,
+                    bottom: AppSpacing.md,
                   ),
                   child: FilledButton.icon(
+                    key: const Key('workout_detail_primary_action'),
                     onPressed: () {
                       if (detail.buttonState ==
                           WorkoutDetailButtonState.resume) {
@@ -154,6 +171,7 @@ class _HeroSection extends StatelessWidget {
     final cs = context.colorScheme;
 
     return Column(
+      key: const Key('workout_detail_hero'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (detail.programmeName != null &&
@@ -175,13 +193,13 @@ class _HeroSection extends StatelessWidget {
           AppWhiteSpace.hSm,
         ],
         Text(
-          detail.workoutName,
+          detail.workoutName.toUpperCase(),
           style: AppTextStyles.headlineXl.copyWith(color: cs.onSurface),
         ),
         AppWhiteSpace.hXl,
         Wrap(
           spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.sm,
+          runSpacing: AppSpacing.lg,
           children: [
             _StatItem(
               iconAsset: SolidSvgAssets.dumbbell,
@@ -225,17 +243,20 @@ class _StatItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
+          key: Key('workout_detail_stat_icon_$label'),
           width: AppSizing.iconXxl,
           height: AppSizing.iconXxl,
           decoration: BoxDecoration(
             color: cs.surfaceContainer,
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
-          child: SvgPicture.asset(
-            iconAsset,
-            width: AppSizing.iconMd,
-            height: AppSizing.iconMd,
-            colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+          child: Center(
+            child: SvgPicture.asset(
+              iconAsset,
+              width: AppSizing.iconMd,
+              height: AppSizing.iconMd,
+              colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+            ),
           ),
         ),
         AppWhiteSpace.custom(width: AppSpacing.sm + AppSpacing.xs),
@@ -341,6 +362,7 @@ class _SupersetGroupSection extends StatelessWidget {
     final cs = context.colorScheme;
 
     return Stack(
+      key: const Key('workout_detail_superset_group'),
       clipBehavior: Clip.none,
       children: [
         Container(
@@ -413,18 +435,13 @@ class _ExerciseCard extends StatelessWidget {
     final cs = context.colorScheme;
     final firstSet = exercise.sets.isNotEmpty ? exercise.sets.last : null;
 
-    String formatDurationValue(int seconds) {
-      if (seconds >= 60) {
-        final minutes = seconds ~/ 60;
-        final secs = seconds % 60;
-        return '$minutes:${secs.toString().padLeft(2, '0')}';
-      }
-      return '$seconds${AppStrings.secondsUnitAbbreviation}';
-    }
+    String formatDurationValue(int seconds) =>
+        '$seconds${AppStrings.secondsUnitAbbreviation}';
 
     final durationValue = firstSet?.durationSeconds;
 
     return GestureDetector(
+      key: ValueKey<String>('workout_detail_exercise_${exercise.exerciseId}'),
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
@@ -444,6 +461,7 @@ class _ExerciseCard extends StatelessWidget {
             Container(
               width: AppSizing.fieldWidthXl,
               height: AppSizing.fieldWidthXl,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: cs.surfaceContainer,
                 borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
@@ -504,40 +522,20 @@ class _ExerciseCard extends StatelessWidget {
                   if (firstSet != null)
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.sm),
-                      child: Row(
-                        spacing: AppSpacing.md,
-                        children: [
-                          _SetSummaryColumn(
-                            label:
-                                exercise.loggingType ==
-                                    ExerciseLoggingType.duration
-                                ? AppStrings.setsAndDuration
-                                : AppStrings.setsAndReps,
-                            value:
-                                exercise.loggingType ==
-                                    ExerciseLoggingType.duration
-                                ? '${exercise.sets.length} x ${durationValue != null ? formatDurationValue(durationValue) : '-'}'
-                                : '${exercise.sets.length} x ${firstSet.repsDisplay ?? '-'}',
-                          ),
-                          if (exercise.loggingType ==
-                              ExerciseLoggingType.repsWeight) ...[
-                            Container(
-                              width: AppSizing.hairlineStrokeWidth,
-                              height: AppSpacing.lg,
-                              color: cs.outlineVariant,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: AppSpacing.md,
-                              ),
-                              child: _SetSummaryColumn(
-                                label: AppStrings.intensity,
-                                value: firstSet.rpeDisplay ?? '-',
-                                valueColor: cs.secondary,
-                              ),
-                            ),
-                          ],
-                        ],
+                      child: _ExercisePrescriptionSummary(
+                        label:
+                            exercise.loggingType == ExerciseLoggingType.duration
+                            ? AppStrings.setsAndDuration
+                            : AppStrings.setsAndReps,
+                        value:
+                            exercise.loggingType == ExerciseLoggingType.duration
+                            ? '${exercise.sets.length} x ${durationValue != null ? formatDurationValue(durationValue) : '-'}'
+                            : '${exercise.sets.length} x ${firstSet.repsDisplay ?? '-'}',
+                        intensityValue:
+                            exercise.loggingType ==
+                                ExerciseLoggingType.repsWeight
+                            ? firstSet.rpeDisplay ?? '-'
+                            : null,
                       ),
                     ),
                 ],
@@ -555,6 +553,59 @@ class _ExerciseCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ExercisePrescriptionSummary extends StatelessWidget {
+  const _ExercisePrescriptionSummary({
+    required this.label,
+    required this.value,
+    this.intensityValue,
+  });
+
+  final String label;
+  final String value;
+  final String? intensityValue;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    final primary = _SetSummaryColumn(label: label, value: value);
+    final intensity = intensityValue == null
+        ? null
+        : _SetSummaryColumn(
+            label: AppStrings.intensity,
+            value: intensityValue!,
+            valueColor: cs.secondary,
+          );
+    if (intensity == null) return primary;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth <
+            AppSizing.workoutDetailInlineMetadataMinWidth) {
+          return Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.sm,
+            children: [primary, intensity],
+          );
+        }
+        return Row(
+          children: [
+            primary,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Container(
+                width: AppSizing.hairlineStrokeWidth,
+                height: AppSpacing.lg,
+                color: cs.outlineVariant,
+              ),
+            ),
+            intensity,
+          ],
+        );
+      },
     );
   }
 }
@@ -604,6 +655,7 @@ class _AtmosphericSection extends StatelessWidget {
     final cs = context.colorScheme;
 
     return Container(
+      key: const Key('workout_detail_atmospheric_section'),
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
         vertical: AppSpacing.xxl,
