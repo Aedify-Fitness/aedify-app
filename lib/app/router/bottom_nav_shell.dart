@@ -97,6 +97,11 @@ class _FloatingNavigationBar extends StatelessWidget {
             .withValues(
               alpha: AppBottomNavigationTokens.surfaceOpacity(context),
             );
+    final isDark = Theme.brightnessOf(context) == Brightness.dark;
+    final isHighContrast = MediaQuery.highContrastOf(context);
+    final selectedBackgroundColor = isHighContrast
+        ? (isDark ? cs.primary : cs.secondary)
+        : (isDark ? cs.primaryContainer : cs.secondaryContainer);
 
     return SafeArea(
       top: false,
@@ -145,36 +150,80 @@ class _FloatingNavigationBar extends StatelessWidget {
                     horizontal:
                         AppBottomNavigationTokens.selectedIndicatorEdgeInset,
                   ),
-                  child: NavigationBar(
-                    key: const ValueKey<String>('bottom_navigation_bar'),
+                  child: SizedBox(
                     height: AppBottomNavigationTokens.height,
-                    backgroundColor: Colors.transparent,
-                    surfaceTintColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    elevation: 0,
-                    indicatorColor: Colors.transparent,
-                    indicatorShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.full),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final destinationWidth =
+                            constraints.maxWidth /
+                            _BottomNavItemData.items.length;
+
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            AnimatedPositionedDirectional(
+                              key: const ValueKey<String>(
+                                'bottom_navigation_selected_indicator',
+                              ),
+                              duration: AppDurations.navigationSelection,
+                              curve: Curves.easeOutCubic,
+                              start: destinationWidth * currentIndex,
+                              top: AppBottomNavigationTokens
+                                  .selectedIndicatorEdgeInset,
+                              width: destinationWidth,
+                              height: AppBottomNavigationTokens
+                                  .selectedIndicatorHeight,
+                              child: DecoratedBox(
+                                key: const ValueKey<String>(
+                                  'bottom_navigation_selected_indicator_surface',
+                                ),
+                                decoration: BoxDecoration(
+                                  color: selectedBackgroundColor,
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.full,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            NavigationBar(
+                              key: const ValueKey<String>(
+                                'bottom_navigation_bar',
+                              ),
+                              height: AppBottomNavigationTokens.height,
+                              backgroundColor: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              elevation: 0,
+                              indicatorColor: Colors.transparent,
+                              indicatorShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.full,
+                                ),
+                              ),
+                              labelBehavior:
+                                  NavigationDestinationLabelBehavior.alwaysHide,
+                              selectedIndex: currentIndex,
+                              onDestinationSelected: onDestinationSelected,
+                              destinations: _BottomNavItemData.items
+                                  .map(
+                                    (item) => NavigationDestination(
+                                      icon: _NavIcon(
+                                        asset: item.iconAsset,
+                                        selected: false,
+                                      ),
+                                      selectedIcon: _NavIcon(
+                                        asset: item.selectedIconAsset,
+                                        selected: true,
+                                      ),
+                                      label: item.label,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                    labelBehavior:
-                        NavigationDestinationLabelBehavior.alwaysHide,
-                    selectedIndex: currentIndex,
-                    onDestinationSelected: onDestinationSelected,
-                    destinations: _BottomNavItemData.items
-                        .map(
-                          (item) => NavigationDestination(
-                            icon: _NavIcon(
-                              asset: item.iconAsset,
-                              selected: false,
-                            ),
-                            selectedIcon: _NavIcon(
-                              asset: item.selectedIconAsset,
-                              selected: true,
-                            ),
-                            label: item.label,
-                          ),
-                        )
-                        .toList(),
                   ),
                 ),
               ),
@@ -197,33 +246,22 @@ class _NavIcon extends StatelessWidget {
     final cs = context.colorScheme;
     final isDark = Theme.brightnessOf(context) == Brightness.dark;
     final isHighContrast = MediaQuery.highContrastOf(context);
-    final selectedBackgroundColor = isHighContrast
-        ? (isDark ? cs.primary : cs.secondary)
-        : (isDark ? cs.primaryContainer : cs.secondaryContainer);
     final selectedForegroundColor = isHighContrast
         ? (isDark ? cs.onPrimary : cs.onSecondary)
         : (isDark ? cs.onPrimaryContainer : cs.onSecondaryContainer);
     final color = selected ? selectedForegroundColor : cs.onSurfaceVariant;
     return LayoutBuilder(
       builder: (context, constraints) {
-        return AnimatedContainer(
-          key: const ValueKey<String>('bottom_navigation_icon_surface'),
-          duration: AppDurations.navigationSelection,
-          curve: Curves.easeOutCubic,
+        return SizedBox(
           width: constraints.maxWidth,
           height: AppBottomNavigationTokens.selectedIndicatorHeight,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected
-                ? selectedBackgroundColor
-                : selectedBackgroundColor.withValues(alpha: 0),
-            borderRadius: BorderRadius.circular(AppRadius.full),
-          ),
-          child: SvgPicture.asset(
-            asset,
-            width: selected ? AppSizing.iconLg : AppSizing.iconMd,
-            height: selected ? AppSizing.iconLg : AppSizing.iconMd,
-            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          child: Center(
+            child: SvgPicture.asset(
+              asset,
+              width: selected ? AppSizing.iconLg : AppSizing.iconMd,
+              height: selected ? AppSizing.iconLg : AppSizing.iconMd,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
           ),
         );
       },

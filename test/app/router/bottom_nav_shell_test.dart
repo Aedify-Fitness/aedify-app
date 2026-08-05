@@ -140,14 +140,13 @@ class _BottomNavShellTestHarness {
     );
   }
 
-  static Finder iconSurface(String assetName) {
-    return find.ancestor(
-      of: svgAsset(assetName),
-      matching: find.byKey(
-        const ValueKey<String>('bottom_navigation_icon_surface'),
-      ),
-    );
-  }
+  static Finder get selectedIndicator => find.byKey(
+    const ValueKey<String>('bottom_navigation_selected_indicator'),
+  );
+
+  static Finder get selectedIndicatorSurface => find.byKey(
+    const ValueKey<String>('bottom_navigation_selected_indicator_surface'),
+  );
 }
 
 void main() {
@@ -171,11 +170,14 @@ void main() {
       final navigationBar = tester.widget<NavigationBar>(
         find.byKey(const ValueKey<String>('bottom_navigation_bar')),
       );
-      final selectedIconSurface = tester.widget<AnimatedContainer>(
-        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.home),
+      final selectedIndicator = tester.widget<AnimatedPositionedDirectional>(
+        _BottomNavShellTestHarness.selectedIndicator,
       );
-      final selectedIconDecoration =
-          selectedIconSurface.decoration! as BoxDecoration;
+      final selectedIndicatorSurface = tester.widget<DecoratedBox>(
+        _BottomNavShellTestHarness.selectedIndicatorSurface,
+      );
+      final selectedIndicatorDecoration =
+          selectedIndicatorSurface.decoration as BoxDecoration;
 
       expect(shellScaffold.extendBody, isTrue);
       expect(
@@ -218,7 +220,7 @@ void main() {
         find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),
       );
       final selectedIndicatorRect = tester.getRect(
-        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.home),
+        _BottomNavShellTestHarness.selectedIndicator,
       );
       expect(
         selectedIndicatorRect.size,
@@ -252,7 +254,7 @@ void main() {
         const Size.square(AppSizing.iconMd),
       );
       expect(
-        selectedIconDecoration.color,
+        selectedIndicatorDecoration.color,
         AppTheme.lightTheme.colorScheme.secondaryContainer,
       );
       expect(
@@ -266,7 +268,7 @@ void main() {
           BlendMode.srcIn,
         ),
       );
-      expect(selectedIconSurface.duration, AppDurations.navigationSelection);
+      expect(selectedIndicator.duration, AppDurations.navigationSelection);
       expect(find.byType(NavigationDestination), findsNWidgets(5));
     });
 
@@ -299,12 +301,10 @@ void main() {
       );
       expect(
         (tester
-                    .widget<AnimatedContainer>(
-                      _BottomNavShellTestHarness.iconSurface(
-                        SolidSvgAssets.home,
-                      ),
+                    .widget<DecoratedBox>(
+                      _BottomNavShellTestHarness.selectedIndicatorSurface,
                     )
-                    .decoration!
+                    .decoration
                 as BoxDecoration)
             .color,
         AppTheme.darkTheme.colorScheme.primaryContainer,
@@ -336,12 +336,10 @@ void main() {
       );
       expect(
         (tester
-                    .widget<AnimatedContainer>(
-                      _BottomNavShellTestHarness.iconSurface(
-                        SolidSvgAssets.home,
-                      ),
+                    .widget<DecoratedBox>(
+                      _BottomNavShellTestHarness.selectedIndicatorSurface,
                     )
-                    .decoration!
+                    .decoration
                 as BoxDecoration)
             .color,
         AppTheme.darkTheme.colorScheme.primary,
@@ -395,12 +393,42 @@ void main() {
         AppStrings.navStats,
       ]);
 
+      final initialIndicatorRect = tester.getRect(
+        _BottomNavShellTestHarness.selectedIndicator,
+      );
+      final libraryDestinationRect = tester.getRect(
+        find.byType(NavigationDestination).at(1),
+      );
       await tester.tap(find.byType(NavigationDestination).at(1));
+      await tester.pump();
+      await tester.pump(AppDurations.navigationSelection * 0.5);
+
+      final midpointIndicatorRect = tester.getRect(
+        _BottomNavShellTestHarness.selectedIndicator,
+      );
+      expect(
+        midpointIndicatorRect.left,
+        greaterThan(initialIndicatorRect.left),
+      );
+      expect(midpointIndicatorRect.left, lessThan(libraryDestinationRect.left));
+      expect(
+        midpointIndicatorRect.width,
+        closeTo(initialIndicatorRect.width, 0.001),
+      );
+      expect(
+        midpointIndicatorRect.height,
+        closeTo(initialIndicatorRect.height, 0.001),
+      );
+
       await tester.pumpAndSettle();
 
       expect(
         router.routeInformationProvider.value.uri.path,
         _TestDestination.values[1].path,
+      );
+      expect(
+        tester.getRect(_BottomNavShellTestHarness.selectedIndicator).left,
+        closeTo(libraryDestinationRect.left, 0.001),
       );
       expect(
         _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.bookOpen),
@@ -448,7 +476,7 @@ void main() {
         find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),
       );
       final selectedStatsRect = tester.getRect(
-        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.chartBar),
+        _BottomNavShellTestHarness.selectedIndicator,
       );
       expect(
         glassSurfaceRect.right - selectedStatsRect.right,
@@ -480,9 +508,7 @@ void main() {
       final navigationBar = find.byKey(
         const ValueKey<String>('bottom_navigation_bar'),
       );
-      final selectedIconSurface = _BottomNavShellTestHarness.iconSurface(
-        SolidSvgAssets.home,
-      );
+      final selectedIconSurface = _BottomNavShellTestHarness.selectedIndicator;
       final navigationBarRect = tester.getRect(navigationBar);
       final glassSurfaceRect = tester.getRect(
         find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),

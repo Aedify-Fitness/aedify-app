@@ -142,7 +142,6 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: _BottomNavBar(),
     );
   }
 
@@ -644,114 +643,6 @@ class _InsightCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppRadius.md),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.colorScheme.shadow.withAlpha(10),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.only(
-        top: AppSpacing.sm,
-        bottom: AppSpacing.lg,
-        left: AppSpacing.md,
-        right: AppSpacing.md,
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _NavItem(
-              icon: OutlinedSvgAssets.calendar,
-              label: AppStrings.today,
-              isSelected: false,
-            ),
-            _NavItem(
-              icon: SolidSvgAssets.dumbbell,
-              label: 'Programs',
-              isSelected: false,
-            ),
-            _NavItem(
-              icon: OutlinedSvgAssets.clock,
-              label: AppStrings.historyTab,
-              isSelected: true,
-            ),
-            _NavItem(
-              icon: OutlinedSvgAssets.user,
-              label: AppStrings.profile,
-              isSelected: false,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-  });
-
-  final String icon;
-  final String label;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md + AppSpacing.xs,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? context.colorScheme.secondaryContainer
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            icon,
-            width: AppSizing.iconMd,
-            height: AppSizing.iconMd,
-            colorFilter: ColorFilter.mode(
-              isSelected
-                  ? context.colorScheme.onSecondaryContainer
-                  : context.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
-            ),
-          ),
-          AppWhiteSpace.hXs,
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: isSelected
-                  ? context.colorScheme.onSecondaryContainer
-                  : context.colorScheme.onSurfaceVariant,
-            ),
           ),
         ],
       ),
