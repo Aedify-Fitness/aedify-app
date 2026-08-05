@@ -9,14 +9,15 @@ import 'package:aedify/features/exercise_library/presentation/widgets/custom_exe
 import 'package:aedify/features/exercise_library/presentation/widgets/custom_exercise_steps_editor.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/delete_custom_exercise_dialog.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/discard_custom_exercise_changes_dialog.dart';
-import 'package:aedify/shared/components/app_badge.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/theme/app_durations.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
-import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,38 +45,34 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          mode == CustomExerciseEditorMode.create
-              ? AppStrings.createCustomExercise
-              : AppStrings.editCustomExercise,
-        ),
-        actions: [
-          if (mode == CustomExerciseEditorMode.edit)
-            IconButton(
-              icon: SvgPicture.asset(
-                OutlinedSvgAssets.trash,
-                width: AppSizing.iconMd,
-                height: AppSizing.iconMd,
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => DeleteCustomExerciseDialog(
-                    onConfirm: () {
-                      ref
-                          .read(
-                            AppProviders.customExerciseEditorControllerProvider(
-                              (mode: mode, exerciseId: exerciseId),
-                            ).notifier,
-                          )
-                          .delete();
-                    },
+        actions: mode == CustomExerciseEditorMode.create
+            ? null
+            : [
+                IconButton(
+                  icon: SvgPicture.asset(
+                    OutlinedSvgAssets.trash,
+                    width: AppSizing.iconMd,
+                    height: AppSizing.iconMd,
                   ),
-                );
-              },
-              tooltip: AppStrings.customExerciseDeleted,
-            ),
-        ],
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => DeleteCustomExerciseDialog(
+                        onConfirm: () {
+                          ref
+                              .read(
+                                AppProviders.customExerciseEditorControllerProvider(
+                                  (mode: mode, exerciseId: exerciseId),
+                                ).notifier,
+                              )
+                              .delete();
+                        },
+                      ),
+                    );
+                  },
+                  tooltip: AppStrings.customExerciseDelete,
+                ),
+              ],
       ),
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -160,14 +157,45 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
               exerciseId: exerciseId,
             )).notifier,
           );
+          final editorProvider =
+              AppProviders.customExerciseEditorControllerProvider((
+                mode: mode,
+                exerciseId: exerciseId,
+              ));
 
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xl,
+          void closeEditor() {
+            context.pop();
+            ref.invalidate(editorProvider);
+          }
+
+          Future<void> confirmDiscard() async {
+            final shouldDiscard = await showDialog<bool>(
+              context: context,
+              builder: (_) => DiscardCustomExerciseChangesDialog(
+                onDiscard: controller.discardChanges,
+              ),
+            );
+            if (shouldDiscard == true && context.mounted) {
+              closeEditor();
+            }
+          }
+
+          return PopScope(
+            canPop: !state.isDirty,
+            onPopInvokedWithResult: (didPop, _) async {
+              if (didPop || !state.isDirty) return;
+              await confirmDiscard();
+            },
+            child: SingleChildScrollView(
+              key: const Key('custom_exercise_editor_scroll'),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.marginMobile,
+                vertical: AppSpacing.xl,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: AppSizing.customExerciseEditorMaxWidth,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +227,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             .map((e) => e.message)
                             .firstOrNull,
                       ),
-                      AppWhiteSpace.hXl,
+                      AppWhiteSpace.hFormSectionGap,
                       CustomExerciseMuscleGroupPicker(
                         selected: state.draft.muscleGroups,
                         onToggle: (bucket) =>
@@ -213,7 +241,7 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             .map((e) => e.message)
                             .firstOrNull,
                       ),
-                      AppWhiteSpace.hXl,
+                      AppWhiteSpace.hFormSectionGap,
                       _EquipmentDifficultySection(
                         equipment: state.draft.equipment,
                         onEquipmentChanged: (value) =>
@@ -222,12 +250,12 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                         onDifficultyChanged: (value) =>
                             controller.setDifficulty(value),
                       ),
-                      AppWhiteSpace.hXl,
+                      AppWhiteSpace.hFormSectionGap,
                       CustomExerciseModalitySection(
                         modality: state.draft.modality,
                         onChanged: (value) => controller.setModality(value),
                       ),
-                      AppWhiteSpace.hXl,
+                      AppWhiteSpace.hFormSectionGap,
                       _InstructionsSection(
                         steps: state.draft.steps,
                         onAddStep: () => controller.addStep(),
@@ -235,122 +263,117 @@ class CustomExerciseEditorScreen extends ConsumerWidget {
                             controller.updateStep(index: index, value: value),
                         onRemoveStep: (index) => controller.removeStep(index),
                       ),
-                      AppWhiteSpace.hXl,
+                      AppWhiteSpace.hFormSectionGap,
                       CustomExerciseLoggingTypePicker(
                         selected: state.draft.loggingType,
                         onChanged: (value) => controller.setLoggingType(value),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppSpacing.md,
-                    right: AppSpacing.md,
-                    top: AppSpacing.sm,
-                    bottom: AppSpacing.md,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FilledButton(
-                        onPressed: state.isSaving
-                            ? null
-                            : () => controller.save(),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: context.colorScheme.secondary,
-                          foregroundColor: context.colorScheme.onSecondary,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.inputVertical,
-                          ),
-                          minimumSize: const Size.fromHeight(0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.lg),
-                          ),
-                          elevation: 6,
-                          shadowColor: context.colorScheme.secondary.withValues(
-                            alpha: 0.3,
-                          ),
-                        ),
-                        child: state.isSaving
-                            ? const SizedBox(
-                                width: AppSpacing.lg,
-                                height: AppSpacing.lg,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: AppSizing.strokeWidth,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  mode == CustomExerciseEditorMode.create
-                                      ? AppStrings.createExercise
-                                      : AppStrings.save,
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyles.headlineMd.copyWith(
-                                    color: context.colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                      ),
-                      AppWhiteSpace.hMd,
-                      OutlinedButton(
-                        onPressed: () => context.pop(),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: context.colorScheme.onSurfaceVariant,
-                          backgroundColor:
-                              context.colorScheme.surfaceContainerLowest,
-                          side: BorderSide(
-                            color: context.colorScheme.outlineVariant,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.inputVertical,
-                          ),
-                          minimumSize: const Size.fromHeight(0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.lg),
-                          ),
-                        ),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            AppStrings.customExerciseDiscard,
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.headlineMd.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
+                      AppWhiteSpace.hFormSectionGap,
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.md),
+                        child: _EditorActions(
+                          mode: mode,
+                          isSaving: state.isSaving,
+                          onSave: () => controller.save(),
+                          onDiscard: state.isDirty
+                              ? confirmDiscard
+                              : closeEditor,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              if (state.isDirty)
-                PopScope(
-                  canPop: false,
-                  onPopInvokedWithResult: (didPop, _) {
-                    if (didPop) return;
-                    showDialog(
-                      context: context,
-                      builder: (_) => DiscardCustomExerciseChangesDialog(
-                        onDiscard: () {
-                          controller.discardChanges();
-                          context.pop();
-                          context.pop();
-                        },
-                      ),
-                    );
-                  },
-                  child: const SizedBox.shrink(),
-                ),
-            ],
+            ),
           );
         },
       ),
+    );
+  }
+}
+
+class _EditorActions extends StatelessWidget {
+  const _EditorActions({
+    required this.mode,
+    required this.isSaving,
+    required this.onSave,
+    required this.onDiscard,
+  });
+
+  final CustomExerciseEditorMode mode;
+  final bool isSaving;
+  final VoidCallback onSave;
+  final VoidCallback onDiscard;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    return Column(
+      key: const Key('custom_exercise_editor_actions'),
+      children: [
+        FilledButton(
+          key: const Key('custom_exercise_primary_action'),
+          onPressed: isSaving ? null : onSave,
+          style: FilledButton.styleFrom(
+            backgroundColor: cs.secondary,
+            foregroundColor: cs.onSecondary,
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+            elevation: AppSizing.customExerciseActionElevation,
+            shadowColor: cs.secondary.withValues(alpha: 0.3),
+          ),
+          child: isSaving
+              ? SizedBox(
+                  width: AppSpacing.lg,
+                  height: AppSpacing.lg,
+                  child: CircularProgressIndicator(
+                    strokeWidth: AppSizing.strokeWidth,
+                    color: cs.onSecondary,
+                  ),
+                )
+              : SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    mode == CustomExerciseEditorMode.create
+                        ? AppStrings.createExercise
+                        : AppStrings.save,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: cs.onSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+        ),
+        AppWhiteSpace.hMd,
+        OutlinedButton(
+          key: const Key('custom_exercise_discard_action'),
+          onPressed: onDiscard,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: cs.onSurfaceVariant,
+            backgroundColor: cs.surfaceContainerLowest,
+            side: BorderSide(color: cs.outlineVariant),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+            minimumSize: const Size.fromHeight(0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              AppStrings.customExerciseDiscard,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodySm.copyWith(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -387,9 +410,42 @@ class _ExerciseNameFieldState extends State<_ExerciseNameField> {
   @override
   void didUpdateWidget(_ExerciseNameField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != oldWidget.initialValue) {
-      _controller.text = widget.initialValue;
+    if (widget.initialValue == oldWidget.initialValue ||
+        _controller.text == widget.initialValue) {
+      return;
     }
+
+    final currentValue = _controller.value;
+    final newText = widget.initialValue;
+    final selection = currentValue.selection;
+    final baseOffset = selection.baseOffset < 0
+        ? 0
+        : selection.baseOffset > newText.length
+        ? newText.length
+        : selection.baseOffset;
+    final extentOffset = selection.extentOffset < 0
+        ? 0
+        : selection.extentOffset > newText.length
+        ? newText.length
+        : selection.extentOffset;
+    final composing =
+        currentValue.composing.isValid &&
+            currentValue.composing.end <= newText.length
+        ? currentValue.composing
+        : TextRange.empty;
+
+    _controller.value = currentValue.copyWith(
+      text: newText,
+      selection: selection.isValid
+          ? TextSelection(
+              baseOffset: baseOffset,
+              extentOffset: extentOffset,
+              affinity: selection.affinity,
+              isDirectional: selection.isDirectional,
+            )
+          : TextSelection.collapsed(offset: newText.length),
+      composing: composing,
+    );
   }
 
   @override
@@ -412,8 +468,11 @@ class _ExerciseNameFieldState extends State<_ExerciseNameField> {
             style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
           ),
         ),
-        AppWhiteSpace.hSm,
-        Container(
+        AppWhiteSpace.hControlGap,
+        AnimatedContainer(
+          key: const Key('custom_exercise_name_field_surface'),
+          duration: AppDurations.formFocus,
+          curve: Curves.easeInOut,
           decoration: BoxDecoration(
             color: _isFocused
                 ? cs.surfaceContainerLowest
@@ -423,13 +482,14 @@ class _ExerciseNameFieldState extends State<_ExerciseNameField> {
                 ? [
                     BoxShadow(
                       color: cs.secondary.withValues(alpha: 0.08),
-                      offset: const Offset(0, 4),
-                      blurRadius: 20,
+                      offset: const Offset(0, AppSpacing.xs),
+                      blurRadius: AppSizing.customExerciseInputFocusBlur,
                     ),
                   ]
                 : null,
           ),
           child: TextField(
+            key: const Key('custom_exercise_name_text_field'),
             controller: _controller,
             focusNode: _focusNode,
             onChanged: widget.onChanged,
@@ -441,7 +501,7 @@ class _ExerciseNameFieldState extends State<_ExerciseNameField> {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
-                vertical: AppSpacing.inputVertical,
+                vertical: AppSpacing.formFieldVertical,
               ),
               isDense: false,
             ),
@@ -484,65 +544,7 @@ class _EquipmentDifficultySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xs),
-              child: Text(
-                AppStrings.customExerciseEquipment.toUpperCase(),
-                style: AppTextStyles.labelMd.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ),
-            AppWhiteSpace.hSm,
-            Container(
-              decoration: BoxDecoration(
-                color: cs.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<EquipmentTag>(
-                  value: equipment,
-                  isExpanded: true,
-                  hint: Text(
-                    AppStrings.customExerciseEquipmentSelect,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                  items: [
-                    ...EquipmentTag.values.map(
-                      (tag) => DropdownMenuItem<EquipmentTag>(
-                        value: tag,
-                        child: Text(
-                          _formatLabel(tag.dbValue),
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: cs.onSurface,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  onChanged: onEquipmentChanged,
-                  style: AppTextStyles.bodyMd.copyWith(color: cs.onSurface),
-                  dropdownColor: cs.surfaceContainerLowest,
-                  icon: SvgPicture.asset(
-                    OutlinedSvgAssets.chevronDown,
-                    width: AppSizing.iconSm,
-                    height: AppSizing.iconSm,
-                    colorFilter: ColorFilter.mode(
-                      cs.onSurfaceVariant,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        _EquipmentSelector(equipment: equipment, onChanged: onEquipmentChanged),
         AppWhiteSpace.hLg,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,24 +558,185 @@ class _EquipmentDifficultySection extends StatelessWidget {
                 ),
               ),
             ),
-            AppWhiteSpace.hSm,
+            AppWhiteSpace.hControlGap,
             Container(
-              padding: const EdgeInsets.all(AppSpacing.xs),
+              key: const Key('custom_exercise_difficulty_control'),
+              padding: const EdgeInsets.all(AppSpacing.inputHorizontal),
               decoration: BoxDecoration(
                 color: cs.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
-              child: Row(
-                children: ExerciseDifficulty.values.map((d) {
-                  return _DifficultySegment(
-                    label: _formatLabel(d.dbValue),
-                    isSelected: difficulty == d,
-                    onTap: () => onDifficultyChanged(d),
-                  );
-                }).toList(),
+              child: Stack(
+                children: [
+                  if (difficulty != null)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: AnimatedAlign(
+                          key: const Key(
+                            'custom_exercise_difficulty_sliding_indicator',
+                          ),
+                          alignment: _difficultyAlignment(difficulty!),
+                          duration: AppDurations.segmentedControl,
+                          curve: Curves.easeOutCubic,
+                          child: FractionallySizedBox(
+                            widthFactor: 1 / ExerciseDifficulty.values.length,
+                            heightFactor: 1,
+                            child: DecoratedBox(
+                              key: const Key(
+                                'custom_exercise_difficulty_sliding_thumb',
+                              ),
+                              decoration: BoxDecoration(
+                                color: cs.surfaceContainerLowest,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.md,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: cs.shadow.withValues(alpha: 0.04),
+                                    offset: const Offset(0, AppSpacing.xxs),
+                                    blurRadius: AppSpacing.sm,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  Row(
+                    children: ExerciseDifficulty.values.map((d) {
+                      return _DifficultySegment(
+                        label: _formatLabel(d.dbValue),
+                        isSelected: difficulty == d,
+                        onTap: () => onDifficultyChanged(d),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  String _formatLabel(String value) {
+    return value
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
+  }
+
+  AlignmentGeometry _difficultyAlignment(ExerciseDifficulty difficulty) {
+    final index = ExerciseDifficulty.values.indexOf(difficulty);
+    final lastIndex = ExerciseDifficulty.values.length - 1;
+    return AlignmentGeometry.lerp(
+      AlignmentDirectional.centerStart,
+      AlignmentDirectional.centerEnd,
+      index / lastIndex,
+    )!;
+  }
+}
+
+class _EquipmentSelector extends StatefulWidget {
+  const _EquipmentSelector({required this.equipment, required this.onChanged});
+
+  final EquipmentTag? equipment;
+  final ValueChanged<EquipmentTag?> onChanged;
+
+  @override
+  State<_EquipmentSelector> createState() => _EquipmentSelectorState();
+}
+
+class _EquipmentSelectorState extends State<_EquipmentSelector> {
+  bool _isFocused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.xs),
+          child: Text(
+            AppStrings.customExerciseEquipment.toUpperCase(),
+            style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+          ),
+        ),
+        AppWhiteSpace.hControlGap,
+        Focus(
+          onFocusChange: (isFocused) {
+            if (_isFocused == isFocused) return;
+            setState(() => _isFocused = isFocused);
+          },
+          child: AnimatedContainer(
+            key: const Key('custom_exercise_equipment_control'),
+            duration: AppDurations.formFocus,
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: _isFocused
+                  ? cs.surfaceContainerLowest
+                  : cs.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              boxShadow: _isFocused
+                  ? [
+                      BoxShadow(
+                        color: cs.secondary.withValues(alpha: 0.08),
+                        offset: const Offset(0, AppSpacing.xs),
+                        blurRadius: AppSizing.customExerciseInputFocusBlur,
+                      ),
+                    ]
+                  : null,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<EquipmentTag>(
+                value: widget.equipment,
+                isExpanded: true,
+                hint: Text(
+                  AppStrings.customExerciseEquipmentSelect,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+                items: EquipmentTag.values
+                    .map(
+                      (tag) => DropdownMenuItem<EquipmentTag>(
+                        value: tag,
+                        child: Text(
+                          _formatLabel(tag.dbValue),
+                          style: AppTextStyles.bodyMd.copyWith(
+                            color: cs.onSurface,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: widget.onChanged,
+                style: AppTextStyles.bodyMd.copyWith(color: cs.onSurface),
+                dropdownColor: cs.surfaceContainerLowest,
+                icon: SvgPicture.asset(
+                  OutlinedSvgAssets.chevronDown,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    cs.onSurfaceVariant,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -607,32 +770,24 @@ class _DifficultySegment extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.colorScheme;
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.buttonVertical,
-          ),
-          decoration: BoxDecoration(
-            color: isSelected ? cs.surfaceContainerLowest : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: cs.shadow.withValues(alpha: 0.04),
-                      offset: const Offset(0, AppSpacing.xxs),
-                      blurRadius: AppSpacing.sm,
-                    ),
-                  ]
-                : null,
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelMd.copyWith(
-              fontSize: AppFontSizes.xs,
-              color: isSelected ? cs.secondary : cs.onSurfaceVariant,
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.buttonVertical,
+            ),
+            child: AnimatedDefaultTextStyle(
+              duration: AppDurations.segmentedControl,
+              curve: Curves.easeOutCubic,
+              style: AppTextStyles.labelMd.copyWith(
+                fontSize: AppFontSizes.xs,
+                color: isSelected ? cs.secondary : cs.onSurfaceVariant,
+              ),
+              child: Text(label, textAlign: TextAlign.center),
             ),
           ),
         ),
@@ -659,39 +814,82 @@ class _InstructionsSection extends StatefulWidget {
 }
 
 class _InstructionsSectionState extends State<_InstructionsSection> {
-  TextEditingController? _textareaController;
-  bool _textareaCreated = false;
+  late final TextEditingController _textareaController;
+  late bool _showCueList;
+  late bool _hasTextStep;
 
   @override
   void initState() {
     super.initState();
-    if (widget.steps.isEmpty) {
-      _textareaController = TextEditingController();
-    }
+    _showCueList = widget.steps.length > 1;
+    _hasTextStep = widget.steps.isNotEmpty;
+    _textareaController = TextEditingController(text: widget.steps.join('\n'));
   }
 
   @override
   void didUpdateWidget(_InstructionsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.steps.length == 1 &&
-        oldWidget.steps.isEmpty &&
-        !_textareaCreated) {
-      _textareaCreated = true;
+    if (oldWidget.steps.isEmpty && widget.steps.isNotEmpty) {
+      _hasTextStep = true;
     }
   }
 
-  void _switchToText() {
-    for (var i = widget.steps.length - 1; i >= 0; i--) {
-      widget.onRemoveStep(i);
+  void _updateText(String value) {
+    if (value.trim().isEmpty) {
+      if (_hasTextStep) {
+        for (var index = widget.steps.length - 1; index >= 0; index--) {
+          widget.onRemoveStep(index);
+        }
+        _hasTextStep = false;
+      }
+      return;
     }
+
+    if (!_hasTextStep) {
+      widget.onAddStep();
+      _hasTextStep = true;
+    }
+    for (var index = widget.steps.length - 1; index > 0; index--) {
+      widget.onRemoveStep(index);
+    }
+    widget.onUpdateStep(0, value);
+  }
+
+  List<String> _normalizedTextareaSteps() {
+    return _textareaController.text
+        .split(RegExp(r'\r?\n'))
+        .map((step) => step.trim())
+        .where((step) => step.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  void _switchToCueList() {
+    final normalizedSteps = _normalizedTextareaSteps();
+    for (var index = widget.steps.length - 1; index >= 0; index--) {
+      widget.onRemoveStep(index);
+    }
+    for (var index = 0; index < normalizedSteps.length; index++) {
+      widget.onAddStep();
+      widget.onUpdateStep(index, normalizedSteps[index]);
+    }
+    _hasTextStep = normalizedSteps.isNotEmpty;
+    setState(() => _showCueList = true);
+  }
+
+  void _switchToText() {
+    _textareaController.text = widget.steps.join('\n');
+    _textareaController.selection = TextSelection.collapsed(
+      offset: _textareaController.text.length,
+    );
+    _hasTextStep = widget.steps.isNotEmpty;
     setState(() {
-      _textareaCreated = false;
+      _showCueList = false;
     });
   }
 
   @override
   void dispose() {
-    _textareaController?.dispose();
+    _textareaController.dispose();
     super.dispose();
   }
 
@@ -704,26 +902,31 @@ class _InstructionsSectionState extends State<_InstructionsSection> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xs),
-              child: Text(
-                AppStrings.customExerciseInstructionsLabel.toUpperCase(),
-                style: AppTextStyles.labelMd.copyWith(
-                  color: cs.onSurfaceVariant,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: AppSpacing.xs),
+                child: Text(
+                  AppStrings.customExerciseInstructionsLabel.toUpperCase(),
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
-            AppBadge(
-              label: AppStrings.customExerciseInstructionsOptional,
-              backgroundColor: cs.surfaceContainerLow,
-              foregroundColor: cs.outline,
-              textStyle: AppTextStyles.labelSm,
+            AppWhiteSpace.wSm,
+            Text(
+              AppStrings.customExerciseInstructionsOptional,
+              style: AppTextStyles.labelSm.copyWith(color: cs.outline),
             ),
           ],
         ),
-        AppWhiteSpace.hSm,
-        if (widget.steps.isEmpty)
-          _buildTextarea(cs)
+        AppWhiteSpace.hControlGap,
+        if (!_showCueList)
+          _InstructionsTextArea(
+            controller: _textareaController,
+            onChanged: _updateText,
+            onCueList: _switchToCueList,
+          )
         else
           CustomExerciseStepsEditor(
             steps: widget.steps,
@@ -735,73 +938,133 @@ class _InstructionsSectionState extends State<_InstructionsSection> {
       ],
     );
   }
+}
 
-  Widget _buildTextarea(ColorScheme cs) {
+class _InstructionsTextArea extends StatefulWidget {
+  const _InstructionsTextArea({
+    required this.controller,
+    required this.onChanged,
+    required this.onCueList,
+  });
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onCueList;
+
+  @override
+  State<_InstructionsTextArea> createState() => _InstructionsTextAreaState();
+}
+
+class _InstructionsTextAreaState extends State<_InstructionsTextArea> {
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_handleFocusChanged);
+  }
+
+  void _handleFocusChanged() {
+    if (_isFocused == _focusNode.hasFocus) return;
+    setState(() => _isFocused = _focusNode.hasFocus);
+  }
+
+  @override
+  void dispose() {
+    _focusNode
+      ..removeListener(_handleFocusChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colorScheme;
     return Stack(
       children: [
-        Container(
+        AnimatedContainer(
+          key: const Key('custom_exercise_instructions_surface'),
+          duration: AppDurations.formFocus,
+          curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            color: cs.surfaceContainerLow,
+            color: _isFocused
+                ? cs.surfaceContainerLowest
+                : cs.surfaceContainerLow,
             borderRadius: BorderRadius.circular(AppRadius.lg),
+            boxShadow: _isFocused
+                ? [
+                    BoxShadow(
+                      color: cs.secondary.withValues(alpha: 0.08),
+                      offset: const Offset(0, AppSpacing.xs),
+                      blurRadius: AppSizing.customExerciseInputFocusBlur,
+                    ),
+                  ]
+                : null,
           ),
-          child: TextField(
-            controller: _textareaController,
+          child: AppTextField(
+            key: const Key('custom_exercise_instructions_text_field'),
+            controller: widget.controller,
+            focusNode: _focusNode,
             maxLines: 6,
             minLines: 6,
-            decoration: InputDecoration(
-              hintText: AppStrings.customExerciseInstructionsHint,
-              hintStyle: AppTextStyles.bodyMd.copyWith(
-                color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-              ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.only(
-                left: AppSpacing.lg,
-                right: AppSpacing.lg,
-                top: AppSpacing.inputVertical,
-                bottom: AppSpacing.xxl,
-              ),
+            hintText: AppStrings.customExerciseInstructionsHint,
+            filled: false,
+            borderOverride: InputBorder.none,
+            contentPadding: const EdgeInsets.only(
+              left: AppSpacing.lg,
+              right: AppSpacing.lg,
+              top: AppSpacing.formFieldVertical,
+              bottom: AppSpacing.xxl,
             ),
             style: AppTextStyles.bodyMd.copyWith(color: cs.onSurface),
-            onTapOutside: (_) => FocusScope.of(context).unfocus(),
-            onChanged: (value) {
-              if (value.isNotEmpty && !_textareaCreated) {
-                _textareaCreated = true;
-                widget.onAddStep();
-              }
-              if (_textareaCreated) {
-                widget.onUpdateStep(0, value);
-              }
-            },
+            onChanged: widget.onChanged,
           ),
         ),
         Positioned(
           bottom: AppSpacing.md,
           right: AppSpacing.md,
-          child: GestureDetector(
-            onTap: () {
-              if (!_textareaCreated) {
-                _textareaCreated = true;
-                widget.onAddStep();
-                widget.onUpdateStep(0, _textareaController?.text ?? '');
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: cs.surfaceContainer,
-                borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
-                boxShadow: [
-                  BoxShadow(
-                    color: cs.shadow.withValues(alpha: 0.04),
-                    offset: const Offset(0, AppSpacing.xxs),
-                    blurRadius: AppSpacing.sm,
+          child: Semantics(
+            button: true,
+            label: AppStrings.customExerciseAddCueList,
+            child: Tooltip(
+              message: AppStrings.customExerciseAddCueList,
+              child: Container(
+                constraints: const BoxConstraints(
+                  minWidth: AppSizing.cardBadge,
+                  minHeight: AppSizing.cardBadge,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+                  boxShadow: [
+                    BoxShadow(
+                      color: cs.shadow.withValues(alpha: 0.04),
+                      offset: const Offset(0, AppSpacing.xxs),
+                      blurRadius: AppSpacing.sm,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: cs.surfaceContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+                  child: InkWell(
+                    key: const Key('custom_exercise_add_cue_list'),
+                    onTap: widget.onCueList,
+                    borderRadius: BorderRadius.circular(
+                      AppRadius.defaultRadius,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        OutlinedSvgAssets.listBullet,
+                        height: AppSizing.iconS,
+                        colorFilter: ColorFilter.mode(
+                          cs.secondary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
                   ),
-                ],
-              ),
-              child: SvgPicture.asset(
-                OutlinedSvgAssets.listBullet,
-                height: AppSizing.iconS,
-                colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+                ),
               ),
             ),
           ),

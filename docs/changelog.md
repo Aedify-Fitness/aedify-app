@@ -4,7 +4,56 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-08-05
+
+### Custom exercise instructions — shared text fields
+
+- Replaced the cue-list editor's bespoke `TextField` decoration with `AppTextField` while preserving its controllers, dense layout, styling, focus dismissal, and update behavior.
+- Reused `AppTextField` for the multiline instructions textarea while keeping its animated focus surface, six-line layout, cue-list switch, and draft synchronization unchanged.
+- Converts newline-separated textarea content into individual trimmed cues, ignores blank or whitespace-only lines, and prevents adding another cue until the previous cue contains text.
+- Added widget coverage confirming both instruction modes use the shared field component.
+- Verification: `dart format .` checked 688 files, `flutter analyze` reported no issues, the focused custom-exercise editor tests passed 37/37, and full `flutter test` passed 1130/1130.
+
+### Onboarding exercise selection — shared picker reuse
+
+- Replaced the onboarding-only Favorites/Substitutions picker with the existing `AddExerciseBottomSheet` used by workout and programme creation.
+- Added backward-compatible initial-selection and excluded-ID inputs so onboarding restores saved choices and keeps favorite and substitution exercises mutually exclusive.
+- Removed the obsolete onboarding selector, strings, sizing tokens, exports, and design-specific assertions.
+- Kept search filters isolated between launches and made the shared custom-exercise row responsive on compact mobile widths.
+- Verification: `dart format .` checked 688 files, `flutter analyze` reported no issues, the shared-sheet plus complete onboarding presentation tests passed 36/36, and full `flutter test` passed 1129/1129.
+
+## 2026-08-01
+
+### Custom Exercise difficulty — sliding selection motion
+
+- **Physical indicator**: Replaced the four independent selected fills with one quarter-width thumb that slides between Novice, Beginner, Intermediate, and Advanced in the direction of the selection change.
+- **Motion language**: Uses the shared 200ms segmented-control duration and `easeOutCubic` curve, with synchronized animated label colors and direction-aware alignment while preserving existing surfaces, shadows, radii, semantics, and the nullable difficulty contract.
+- **AppBar preservation**: Kept the user's create-mode AppBar change and updated the stale screen assertion to verify that it remains present without the edit-only delete action.
+- **Regression coverage**: Added fixed-390 geometry and frame assertions for exact thumb sizing, endpoint alignment, forward travel, midpoint motion, reverse travel, duration, and curve.
+- **Verification**: `dart format .` checked 688 files, `flutter analyze` reported no issues, all 6 Custom Exercise Editor screen tests passed, and full `flutter test` passed 1128/1128.
+
 ## 2026-07-31
+
+### Custom Exercise Editor — supplied design alignment
+
+- **Reference hierarchy**: Rebuilt the create flow as the supplied fixed-mobile single-column form with 16px horizontal padding, 40px section rhythm, focus-responsive input surfaces, and scroll-contained stacked actions. Create mode no longer reserves an empty app bar; edit mode retains its delete action.
+- **Selection controls**: Matched the muscle, modality, equipment, and difficulty treatments while preserving the complete controller-backed option sets, including all four supported difficulty tiers.
+- **Instructions**: Replaced the filled Optional badge with plain supporting copy and keeps free-form text in the textarea until the user explicitly switches to the cue-list editor. The textarea and cue-list are implemented as private widgets.
+- **Logging type**: Reworked the logging panel around the supplied icon-led hierarchy, two-column mobile grid, three-column wide layout, equal-height cards, and compact selected check treatment.
+- **Behavior boundary**: Preserved local create/edit/delete/discard behavior and validation. Confirmed dirty-form discards now clear state and close the dialog and editor exactly once; name updates preserve the active caret and composing state. The incompatible four-tab navigation and undefined AI action from the export were not added.
+- **Regression coverage**: Added fixed 390×884 widget coverage for create/edit composition, section order, four-tier difficulty, two-column logging geometry, scroll-contained actions, explicit textarea-to-cue-list switching, caret stability, and confirmed discard navigation.
+- **Verification**: `dart format .` checked 688 files, `flutter analyze` reported no issues, all 248 exercise-library tests passed, and full `flutter test` passed 1127/1127.
+
+### Home dashboard — supplied design alignment
+
+- **Reference hierarchy**: Reordered the fixed-mobile Home flow to greeting, plateau signal, weekly volume, active programme, today workout, and the two-column quick-action grid with 32px section rhythm.
+- **Workout hero**: Rebuilt the scheduled, ongoing, and no-workout states inside the dark 24px-radius feature surface with the blue ambient glow, prominent status badge, 40px headline, compact metadata, stacked primary action, and scheduled-workout `View Details` route. Days without a workout now show a dedicated `REST` state without workout actions.
+- **No-programme state**: Replaced the separate generic empty card with the same Scheduled Today feature surface, badge, type hierarchy, glow, minimum height, and full-width action treatment while preserving Browse Programmes navigation.
+- **Programme and actions**: Matched the dense active-programme card with week progress and remaining-session copy, made the complete card open its calendar, removed the extra Quick Actions heading, and centered the four supplied 56px-icon square tiles.
+- **Truthful local state**: Kept profile, programme, workout, duration, and exercise values provider-backed; retained honest empty/loading/error/resume states and disabled unavailable actions. The mock streak, weekly volume, and plateau figures were not hardcoded, and M5-only signal cards retain polished coming-soon states.
+- **Widget composition**: Kept every Home presentation component as a private widget class rather than introducing widget-returning builder functions, while adding Home-specific dimensions to the shared sizing tokens.
+- **Regression coverage**: Added fixed 390×844 composition coverage for the revised section order, scheduled-workout metadata/actions, programme status, the no-workout state, the Scheduled Today-styled no-programme state, FAB absence, and all quick-action labels while preserving the dominant Start CTA test.
+- **Verification**: `dart format .` checked 686 files, `flutter analyze` reported no issues, all 6 Home presentation tests passed, and full `flutter test` passed 1121/1121.
 
 ### Onboarding exercise preference sheets — supplied design alignment
 

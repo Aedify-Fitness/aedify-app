@@ -193,6 +193,21 @@ void main() {
       expect(state.isDirty, isTrue);
     });
 
+    test('discard clears dirty state before navigation', () async {
+      final container = createContainer();
+      final provider = AppProviders.customExerciseEditorControllerProvider((
+        mode: CustomExerciseEditorMode.create,
+        exerciseId: null,
+      ));
+      final controller = container.read(provider.notifier);
+      await controller.future;
+
+      await controller.rename('Discarded Exercise');
+      controller.discardChanges();
+
+      expect(container.read(provider).requireValue.isDirty, isFalse);
+    });
+
     test('setModality updates modality and marks dirty', () async {
       final container = createContainer();
       final controller = container.read(
@@ -336,31 +351,32 @@ void main() {
       expect(state.draft.muscleGroups, isEmpty);
     });
 
-    test('addStep adds an empty step', () async {
-      final container = createContainer();
-      final controller = container.read(
-        AppProviders.customExerciseEditorControllerProvider((
-          mode: CustomExerciseEditorMode.create,
-          exerciseId: null,
-        )).notifier,
-      );
-      await controller.future;
+    test(
+      'addStep blocks a new step while the previous step is empty',
+      () async {
+        final container = createContainer();
+        final controller = container.read(
+          AppProviders.customExerciseEditorControllerProvider((
+            mode: CustomExerciseEditorMode.create,
+            exerciseId: null,
+          )).notifier,
+        );
+        await controller.future;
 
-      await controller.addStep();
-      await controller.addStep();
+        await controller.addStep();
+        await controller.addStep();
 
-      final state = container
-          .read(
-            AppProviders.customExerciseEditorControllerProvider((
-              mode: CustomExerciseEditorMode.create,
-              exerciseId: null,
-            )),
-          )
-          .requireValue;
-      expect(state.draft.steps, hasLength(2));
-      expect(state.draft.steps[0], '');
-      expect(state.draft.steps[1], '');
-    });
+        final state = container
+            .read(
+              AppProviders.customExerciseEditorControllerProvider((
+                mode: CustomExerciseEditorMode.create,
+                exerciseId: null,
+              )),
+            )
+            .requireValue;
+        expect(state.draft.steps, ['']);
+      },
+    );
 
     test('updateStep updates step at given index', () async {
       final container = createContainer();
@@ -372,6 +388,7 @@ void main() {
       );
       await controller.future;
       await controller.addStep();
+      await controller.updateStep(index: 0, value: 'Set up');
       await controller.addStep();
 
       await controller.updateStep(index: 1, value: 'Lower down');
@@ -420,7 +437,9 @@ void main() {
       );
       await controller.future;
       await controller.addStep();
+      await controller.updateStep(index: 0, value: 'Set up');
       await controller.addStep();
+      await controller.updateStep(index: 1, value: 'Brace');
       await controller.addStep();
 
       await controller.removeStep(1);

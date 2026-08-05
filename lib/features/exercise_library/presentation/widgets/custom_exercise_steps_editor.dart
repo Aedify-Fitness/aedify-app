@@ -1,3 +1,4 @@
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -69,7 +70,11 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
   @override
   Widget build(BuildContext context) {
     final cs = context.colorScheme;
+    final canAddStep =
+        widget.steps.isEmpty || widget.steps.last.trim().isNotEmpty;
     return Container(
+      key: const Key('custom_exercise_cue_list'),
+      width: double.infinity,
       constraints: BoxConstraints(minHeight: AppSizing.inputFieldHeight * 6),
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
@@ -98,36 +103,20 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                         ),
                         SizedBox(width: AppSpacing.md),
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: cs.surfaceContainerLowest,
-                              border: Border.all(color: cs.outlineVariant),
-                              borderRadius: BorderRadius.circular(AppRadius.md),
+                          child: AppTextField(
+                            controller: _controllers[index],
+                            hintText: AppStrings.customExerciseStepHint,
+                            borderRadius: AppRadius.md,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm,
                             ),
-                            child: TextField(
-                              controller: _controllers[index],
-                              decoration: InputDecoration(
-                                hintText: AppStrings.customExerciseStepHint,
-                                hintStyle: AppTextStyles.bodyMd.copyWith(
-                                  color: cs.onSurfaceVariant.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.sm,
-                                ),
-                                isDense: true,
-                              ),
-                              style: AppTextStyles.bodyMd.copyWith(
-                                color: cs.onSurface,
-                              ),
-                              onChanged: (value) =>
-                                  widget.onUpdateStep(index, value),
-                              onTapOutside: (_) =>
-                                  FocusScope.of(context).unfocus(),
+                            isDense: true,
+                            style: AppTextStyles.bodyMd.copyWith(
+                              color: cs.onSurface,
                             ),
+                            onChanged: (value) =>
+                                widget.onUpdateStep(index, value),
                           ),
                         ),
                         SizedBox(width: AppSpacing.md),
@@ -155,7 +144,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                 }),
                 const SizedBox(height: AppSpacing.sm),
                 GestureDetector(
-                  onTap: widget.onAddStep,
+                  onTap: canAddStep ? widget.onAddStep : null,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -164,7 +153,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                         width: AppSizing.iconMd,
                         height: AppSizing.iconMd,
                         colorFilter: ColorFilter.mode(
-                          cs.secondary,
+                          canAddStep ? cs.secondary : cs.outline,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -172,7 +161,7 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
                       Text(
                         AppStrings.customExerciseAddStep,
                         style: AppTextStyles.labelMd.copyWith(
-                          color: cs.secondary,
+                          color: canAddStep ? cs.secondary : cs.outline,
                         ),
                       ),
                     ],
@@ -182,19 +171,19 @@ class _CustomExerciseStepsEditorState extends State<CustomExerciseStepsEditor> {
             ),
           ),
           Positioned(
-            bottom: 16,
-            right: 16,
+            bottom: AppSpacing.md,
+            right: AppSpacing.md,
             child: GestureDetector(
               onTap: widget.onSwitchToText,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: cs.secondary,
                   borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
                   boxShadow: [
                     BoxShadow(
                       color: cs.shadow.withValues(alpha: 0.04),
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, AppSpacing.xxs),
                       blurRadius: AppRadius.defaultRadius,
                     ),
                   ],

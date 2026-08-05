@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -23,40 +24,48 @@ class CustomExerciseModalitySection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: AppSpacing.xs),
           child: Text(
-            'MODALITY',
+            AppStrings.customExerciseModality.toUpperCase(),
             style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
           ),
         ),
-        AppWhiteSpace.hSm,
+        AppWhiteSpace.hMd,
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
           children: ExerciseModality.values.map((m) {
             final isSelected = m == modality;
-            return GestureDetector(
-              onTap: () => onChanged(m),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? cs.secondaryContainer
-                      : cs.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(AppRadius.full),
-                  border: Border.all(
-                    color: isSelected
-                        ? cs.secondary.withValues(alpha: 0.2)
-                        : cs.outlineVariant,
+            return Semantics(
+              button: true,
+              selected: isSelected,
+              child: GestureDetector(
+                onTap: () => onChanged(m),
+                child: Container(
+                  key: ValueKey('custom_exercise_modality_${m.name}'),
+                  constraints: const BoxConstraints(
+                    minHeight: AppSizing.cardBadge,
                   ),
-                ),
-                child: Text(
-                  _formatLabel(m.dbValue),
-                  style: AppTextStyles.labelMd.copyWith(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.formChipHorizontal,
+                    vertical: AppSpacing.formChipVertical,
+                  ),
+                  decoration: BoxDecoration(
                     color: isSelected
-                        ? cs.onSecondaryContainer
-                        : cs.onSurfaceVariant,
+                        ? cs.secondaryContainer
+                        : cs.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(AppRadius.full),
+                    border: Border.all(
+                      color: isSelected
+                          ? cs.secondary.withValues(alpha: 0.2)
+                          : cs.outlineVariant,
+                    ),
+                  ),
+                  child: Text(
+                    _formatLabel(m.dbValue),
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: isSelected
+                          ? cs.onSecondaryContainer
+                          : cs.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),

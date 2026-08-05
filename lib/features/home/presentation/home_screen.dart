@@ -3,7 +3,6 @@ import 'package:aedify/features/programmes/domain/programme_list_item.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/components/app_empty_state.dart';
-import 'package:aedify/shared/components/app_section_header.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -32,19 +31,23 @@ class HomeScreen extends ConsumerWidget {
     return weekWorkoutIds.length - completedInWeek;
   }
 
-  double _computeWeekProgress(ProgrammeSync sync, int weekNumber) {
-    final week = sync.aggregate.weeks.firstWhere(
-      (week) => week.weekNumber == weekNumber,
+  double _computeProgrammeProgress(
+    ProgrammeSync? sync,
+    int? currentWeek,
+    int totalWeeks,
+  ) {
+    if (totalWeeks <= 0) return 0;
+    if (currentWeek != null) {
+      return (currentWeek / totalWeeks).clamp(0.0, 1.0).toDouble();
+    }
+    final workouts = sync?.aggregate.workouts ?? [];
+    if (workouts.isEmpty) return 0;
+    final allWorkoutsResolved = workouts.every(
+      (workout) =>
+          workout.status == 'skipped' ||
+          sync!.resolution.completedWorkoutIds.contains(workout.id),
     );
-    final weekWorkoutIds = sync.aggregate.workouts
-        .where((workout) => workout.programWeekId == week.id)
-        .map((workout) => workout.id)
-        .toSet();
-    if (weekWorkoutIds.isEmpty) return 0;
-    final completedInWeek = weekWorkoutIds
-        .where(sync.resolution.completedWorkoutIds.contains)
-        .length;
-    return completedInWeek / weekWorkoutIds.length;
+    return allWorkoutsResolved ? 1 : 0;
   }
 
   @override
@@ -74,9 +77,11 @@ class HomeScreen extends ConsumerWidget {
     final sessionsRemaining = sync != null && currentWeek != null
         ? _computeWeekSessionsRemaining(sync, currentWeek)
         : null;
-    final weekProgress = sync != null && currentWeek != null
-        ? _computeWeekProgress(sync, currentWeek)
-        : 0.0;
+    final programmeProgress = _computeProgrammeProgress(
+      sync,
+      currentWeek,
+      activeProgramme?.weeksTotal ?? 0,
+    );
     final todayWorkoutId = sync?.resolution.todayWorkoutId;
     final todayWorkoutName = () {
       if (todayWorkoutId == null || sync == null) return '';
@@ -126,82 +131,72 @@ class HomeScreen extends ConsumerWidget {
             syncAsync?.isLoading == true);
     final displayName =
         profileState.asData?.value.profile?.displayName?.trim() ?? '';
+    final contentTopInset =
+        (AppSizing.homeContentTopOffset - MediaQuery.paddingOf(context).top)
+            .clamp(0.0, AppSizing.homeContentTopOffset)
+            .toDouble();
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(
+          key: const Key('home_scroll_view'),
+          padding: EdgeInsets.only(
+            top: contentTopInset,
+            left: AppSpacing.marginMobile,
+            right: AppSpacing.marginMobile,
             bottom: AppSizing.navBarHeight + AppSpacing.xxl,
           ),
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: AppSpacing.lg,
-                left: AppSpacing.marginMobile,
-                right: AppSpacing.marginMobile,
-              ),
-              child: _GreetingHeader(name: displayName),
-            ),
-            AppWhiteSpace.hLg,
-            if (activeSession != null)
-              _OngoingWorkoutSurface(session: activeSession)
-            else if (isWorkoutLoading)
-              const _HomeLoadingSurface()
-            else if (loadErrorMessage != null)
-              _HomeErrorSurface(
-                message: loadErrorMessage,
-                onRetry: () {
-                  ref.invalidate(
-                    AppProviders.programmeLibraryControllerProvider,
-                  );
-                  ref.invalidate(AppProviders.activeWorkoutSessionProvider);
-                  if (activeProgramme != null) {
-                    ref.invalidate(
-                      AppProviders.programmeSyncProvider(activeProgramme.id),
-                    );
-                  }
-                },
-              )
-            else
-              _TodayWorkoutSurface(
-                activeProgramme: activeProgramme,
-                todayWorkoutId: todayWorkoutId,
-                workoutName: todayWorkoutName,
-                exerciseCount: exerciseCount,
-                durationMinutes: durationMinutes,
-              ),
-            if (activeProgramme != null && sync != null) ...[
-              AppWhiteSpace.hLg,
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.marginMobile,
-                ),
-                child: _ActiveProgrammePanel(
-                  programme: activeProgramme,
-                  currentWeek: currentWeek,
-                  sessionsRemaining: sessionsRemaining,
-                  totalWeeks: activeProgramme.weeksTotal ?? 0,
-                  progress: weekProgress,
-                ),
-              ),
-            ],
+            _GreetingHeader(name: displayName),
             AppWhiteSpace.hXl,
             const _TrainingSignalsSection(),
             AppWhiteSpace.hXl,
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.marginMobile,
+            if (activeProgramme != null && sync != null) ...[
+              _ActiveProgrammePanel(
+                programme: activeProgramme,
+                currentWeek: currentWeek,
+                sessionsRemaining: sessionsRemaining,
+                totalWeeks: activeProgramme.weeksTotal ?? 0,
+                progress: programmeProgress,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSectionHeader(title: AppStrings.quickActions),
-                  AppWhiteSpace.hMd,
-                  _QuickActionGrid(),
-                ],
-              ),
+              AppWhiteSpace.hLg,
+            ],
+            KeyedSubtree(
+              key: const Key('home_workout_surface'),
+              child: activeSession != null
+                  ? _OngoingWorkoutSurface(session: activeSession)
+                  : isWorkoutLoading
+                  ? const _HomeLoadingSurface()
+                  : loadErrorMessage != null
+                  ? _HomeErrorSurface(
+                      message: loadErrorMessage,
+                      onRetry: () {
+                        ref.invalidate(
+                          AppProviders.programmeLibraryControllerProvider,
+                        );
+                        ref.invalidate(
+                          AppProviders.activeWorkoutSessionProvider,
+                        );
+                        if (activeProgramme != null) {
+                          ref.invalidate(
+                            AppProviders.programmeSyncProvider(
+                              activeProgramme.id,
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : _TodayWorkoutSurface(
+                      activeProgramme: activeProgramme,
+                      todayWorkoutId: todayWorkoutId,
+                      workoutName: todayWorkoutName,
+                      exerciseCount: exerciseCount,
+                      durationMinutes: durationMinutes,
+                    ),
             ),
+            AppWhiteSpace.hXl,
+            const _QuickActionGrid(),
           ],
         ),
       ),
@@ -226,18 +221,19 @@ class _GreetingHeader extends StatelessWidget {
     final greeting = _greeting();
     final title = name.isEmpty ? greeting : '$greeting, $name';
     return Column(
+      key: const Key('home_greeting_header'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: AppTextStyles.headlineLgMobile.copyWith(
+          style: AppTextStyles.headlineXl.copyWith(
             color: context.colorScheme.onSurface,
           ),
         ),
         AppWhiteSpace.hXs,
         Text(
           AppStrings.readyForSession,
-          style: AppTextStyles.bodyMd.copyWith(
+          style: AppTextStyles.bodyLg.copyWith(
             color: context.colorScheme.onSurfaceVariant,
           ),
         ),
@@ -255,7 +251,7 @@ class _StreakBadge extends ConsumerWidget {
     final streak = _computeStreak(ref);
     if (streak == 0) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      padding: const EdgeInsets.only(top: AppSpacing.md),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -263,7 +259,13 @@ class _StreakBadge extends ConsumerWidget {
         ),
         decoration: BoxDecoration(
           color: context.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(AppRadius.full),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: [
+            BoxShadow(
+              color: context.colorScheme.secondary.withValues(alpha: 0.3),
+              blurRadius: AppSpacing.sm,
+            ),
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -277,7 +279,7 @@ class _StreakBadge extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            AppWhiteSpace.wXs,
+            AppWhiteSpace.wControlGap,
             Text(
               '$streak ${AppStrings.dayStreak}',
               style: AppTextStyles.labelMd.copyWith(
@@ -291,8 +293,182 @@ class _StreakBadge extends ConsumerWidget {
   }
 
   int _computeStreak(WidgetRef ref) {
-    // TODO: M5 - compute actual streak from completed workout history.
+    // TODO: M5 - compute the real streak from completed workout history.
     return 0;
+  }
+}
+
+class _TrainingSignalsSection extends StatelessWidget {
+  const _TrainingSignalsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [_PlateauSignalCard(), AppWhiteSpace.hXl, _VolumeSignalCard()],
+    );
+  }
+}
+
+class _PlateauSignalCard extends StatelessWidget {
+  const _PlateauSignalCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('home_plateau_signal'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.colorScheme.errorContainer.withValues(alpha: 0.3),
+        border: Border.all(
+          color: context.colorScheme.error.withValues(alpha: 0.2),
+        ),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(0, AppSpacing.xs),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: AppSizing.homeAlertIconTile,
+                height: AppSizing.homeAlertIconTile,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+                ),
+                child: SvgPicture.asset(
+                  OutlinedSvgAssets.arrowRight,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.onErrorContainer,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              AppWhiteSpace.wControlGap,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Text(
+                    AppStrings.plateauAlert,
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: context.colorScheme.onErrorContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              AppBadge(
+                label: AppStrings.comingSoon,
+                backgroundColor: context.colorScheme.errorContainer,
+                foregroundColor: context.colorScheme.onErrorContainer,
+                borderRadius: AppRadius.full,
+              ),
+            ],
+          ),
+          AppWhiteSpace.hControlGap,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSizing.homeAlertIconTile + AppSpacing.controlGap,
+            ),
+            child: Text(
+              AppStrings.plateauComingSoon,
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VolumeSignalCard extends StatelessWidget {
+  const _VolumeSignalCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+    return Container(
+      key: const Key('home_volume_signal'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: isDark
+            ? context.colorScheme.surfaceContainerLow
+            : context.colorScheme.surfaceContainerLowest,
+        border: Border.all(color: context.colorScheme.surfaceContainerLow),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(0, AppSpacing.xs),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.volumeThisWeek,
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                AppWhiteSpace.hXs,
+                Text(
+                  AppStrings.comingSoon,
+                  style: AppTextStyles.headlineMd.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+                AppWhiteSpace.hXs,
+                Text(
+                  AppStrings.volumeTrackingComingSoon,
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          AppWhiteSpace.wMd,
+          Container(
+            width: AppSizing.homeMetricIconSize,
+            height: AppSizing.homeMetricIconSize,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: context.colorScheme.surfaceContainerLow,
+              shape: BoxShape.circle,
+            ),
+            child: SvgPicture.asset(
+              OutlinedSvgAssets.materialAnalytics,
+              width: AppSizing.iconMd,
+              height: AppSizing.iconMd,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.secondary,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -304,16 +480,48 @@ class _WorkoutFeatureSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.theme.brightness == Brightness.dark;
-    return ColoredBox(
-      color: isDark
-          ? context.colorScheme.surfaceContainerHigh
-          : context.colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.xl,
-        ),
-        child: child,
+    final background = isDark
+        ? context.colorScheme.surfaceContainerHigh
+        : context.colorScheme.primaryContainer;
+    return Container(
+      constraints: const BoxConstraints(
+        minHeight: AppSizing.homeWorkoutHeroMinHeight,
+      ),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withValues(alpha: 0.12),
+            blurRadius: AppSpacing.lg,
+            offset: const Offset(0, AppSpacing.sm),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            top: -AppSizing.homeWorkoutGlowOffset,
+            right: -AppSizing.homeWorkoutGlowOffset,
+            child: Container(
+              width: AppSizing.homeWorkoutGlowSize,
+              height: AppSizing.homeWorkoutGlowSize,
+              decoration: BoxDecoration(
+                color: context.colorScheme.secondary.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: context.colorScheme.secondary.withValues(alpha: 0.2),
+                    blurRadius: AppSizing.homeWorkoutGlowBlur,
+                    spreadRadius: AppSpacing.xl,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(padding: const EdgeInsets.all(AppSpacing.xl), child: child),
+        ],
       ),
     );
   }
@@ -338,7 +546,7 @@ class _TodayWorkoutSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     if (activeProgramme == null) return const _NoProgrammeSurface();
     if (todayWorkoutId == null) {
-      return _RestDaySurface(programme: activeProgramme!);
+      return const _NoWorkoutTodaySurface();
     }
     return _ScheduledWorkoutSurface(
       activeProgramme: activeProgramme!,
@@ -371,6 +579,9 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
     final foreground = isDark
         ? context.colorScheme.onSurface
         : context.colorScheme.onPrimary;
+    final mutedForeground = isDark
+        ? context.colorScheme.onSurfaceVariant
+        : context.colorScheme.onPrimaryContainer;
     final actionBackground = isDark
         ? context.colorScheme.primaryContainer
         : context.colorScheme.secondary;
@@ -391,7 +602,7 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
           AppWhiteSpace.hMd,
           Text(
             workoutName,
-            style: AppTextStyles.headlineLg.copyWith(color: foreground),
+            style: AppTextStyles.headlineXl.copyWith(color: foreground),
           ),
           AppWhiteSpace.hMd,
           Wrap(
@@ -400,13 +611,13 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
             children: [
               _HeroMetaItem(
                 icon: OutlinedSvgAssets.clock,
-                label: '$durationMinutes ${AppStrings.minutes}',
-                foreground: foreground,
+                label: '$durationMinutes ${AppStrings.durationUnit}',
+                foreground: mutedForeground,
               ),
               _HeroMetaItem(
-                icon: OutlinedSvgAssets.clipboardDocumentList,
+                icon: OutlinedSvgAssets.materialFitnessCenter,
                 label: '$exerciseCount ${AppStrings.exercisesCompleted}',
-                foreground: foreground,
+                foreground: mutedForeground,
               ),
             ],
           ),
@@ -415,6 +626,7 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               key: const Key('home_start_workout_button'),
+              iconAlignment: IconAlignment.end,
               onPressed: () {
                 context.pushNamed(
                   AppRoutes.workoutRunnerProgramWorkout().name,
@@ -425,7 +637,7 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
                 );
               },
               icon: SvgPicture.asset(
-                OutlinedSvgAssets.playCircle,
+                OutlinedSvgAssets.play,
                 width: AppSizing.iconSm,
                 height: AppSizing.iconSm,
                 colorFilter: ColorFilter.mode(
@@ -435,6 +647,9 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
               ),
               label: const Text(AppStrings.startWorkout),
               style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppSizing.homePrimaryActionHeight,
+                ),
                 backgroundColor: actionBackground,
                 foregroundColor: actionForeground,
                 padding: const EdgeInsets.symmetric(
@@ -442,9 +657,33 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
                   vertical: AppSpacing.buttonVertical,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
               ),
+            ),
+          ),
+          AppWhiteSpace.hControlGap,
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              key: const Key('home_view_workout_details_button'),
+              onPressed: () {
+                context.pushNamed(
+                  AppRoutes.programmeWorkoutDetail().name,
+                  pathParameters: {
+                    'programId': activeProgramme.id,
+                    'workoutId': programWorkoutId,
+                  },
+                );
+              },
+              style: TextButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppSizing.homeSecondaryActionHeight,
+                ),
+                foregroundColor: foreground,
+                shape: const StadiumBorder(),
+              ),
+              child: const Text(AppStrings.viewDetails),
             ),
           ),
         ],
@@ -453,10 +692,8 @@ class _ScheduledWorkoutSurface extends StatelessWidget {
   }
 }
 
-class _RestDaySurface extends StatelessWidget {
-  const _RestDaySurface({required this.programme});
-
-  final ProgrammeListItem programme;
+class _NoWorkoutTodaySurface extends StatelessWidget {
+  const _NoWorkoutTodaySurface();
 
   @override
   Widget build(BuildContext context) {
@@ -464,6 +701,9 @@ class _RestDaySurface extends StatelessWidget {
     final foreground = isDark
         ? context.colorScheme.onSurface
         : context.colorScheme.onPrimary;
+    final mutedForeground = isDark
+        ? context.colorScheme.onSurfaceVariant
+        : context.colorScheme.onPrimaryContainer;
     final accent = isDark
         ? context.colorScheme.primaryContainer
         : context.colorScheme.secondary;
@@ -472,6 +712,7 @@ class _RestDaySurface extends StatelessWidget {
         : context.colorScheme.onSecondary;
     return _WorkoutFeatureSurface(
       child: Column(
+        key: const Key('home_no_workout_panel'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppBadge(
@@ -482,15 +723,13 @@ class _RestDaySurface extends StatelessWidget {
           ),
           AppWhiteSpace.hMd,
           Text(
-            programme.name,
-            style: AppTextStyles.headlineLg.copyWith(color: foreground),
+            AppStrings.noWorkoutToday,
+            style: AppTextStyles.headlineXl.copyWith(color: foreground),
           ),
-          AppWhiteSpace.hSm,
+          AppWhiteSpace.hMd,
           Text(
-            AppStrings.restDay,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: foreground.withAlpha(179),
-            ),
+            AppStrings.noWorkoutTodayMessage,
+            style: AppTextStyles.bodyLg.copyWith(color: mutedForeground),
           ),
         ],
       ),
@@ -503,20 +742,77 @@ class _NoProgrammeSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surfaceContainerLow,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: AppEmptyState(
-          iconAsset: OutlinedSvgAssets.clipboardDocumentList,
-          title: AppStrings.noActiveProgramme,
-          message: AppStrings.noActiveProgrammeHint,
-          actionLabel: AppStrings.browseProgrammes,
-          onAction: () {
-            final shell = StatefulNavigationShell.of(context);
-            shell.goBranch(2);
-          },
-        ),
+    final isDark = context.theme.brightness == Brightness.dark;
+    final foreground = isDark
+        ? context.colorScheme.onSurface
+        : context.colorScheme.onPrimary;
+    final mutedForeground = isDark
+        ? context.colorScheme.onSurfaceVariant
+        : context.colorScheme.onPrimaryContainer;
+    final actionBackground = isDark
+        ? context.colorScheme.primaryContainer
+        : context.colorScheme.secondary;
+    final actionForeground = isDark
+        ? context.colorScheme.onPrimaryContainer
+        : context.colorScheme.onSecondary;
+    return _WorkoutFeatureSurface(
+      child: Column(
+        key: const Key('home_no_programme_panel'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppBadge(
+            label: AppStrings.scheduledToday.toUpperCase(),
+            backgroundColor: actionBackground,
+            foregroundColor: actionForeground,
+            borderRadius: AppRadius.full,
+          ),
+          AppWhiteSpace.hMd,
+          Text(
+            AppStrings.noActiveProgramme,
+            style: AppTextStyles.headlineXl.copyWith(color: foreground),
+          ),
+          AppWhiteSpace.hMd,
+          Text(
+            AppStrings.noActiveProgrammeHint,
+            style: AppTextStyles.bodyLg.copyWith(color: mutedForeground),
+          ),
+          AppWhiteSpace.hLg,
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const Key('home_browse_programmes_button'),
+              iconAlignment: IconAlignment.end,
+              onPressed: () {
+                final shell = StatefulNavigationShell.of(context);
+                shell.goBranch(2);
+              },
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.materialArrowForward,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                colorFilter: ColorFilter.mode(
+                  actionForeground,
+                  BlendMode.srcIn,
+                ),
+              ),
+              label: const Text(AppStrings.browseProgrammes),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppSizing.homePrimaryActionHeight,
+                ),
+                backgroundColor: actionBackground,
+                foregroundColor: actionForeground,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.buttonVertical,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -527,8 +823,12 @@ class _HomeLoadingSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surfaceContainerLow,
+    final isDark = context.theme.brightness == Brightness.dark;
+    return Material(
+      color: isDark
+          ? context.colorScheme.surfaceContainerLow
+          : context.colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       child: SizedBox(
         height: AppSizing.emptyStateHeight,
         child: Center(
@@ -559,8 +859,13 @@ class _HomeErrorSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surfaceContainerLow,
+    final isDark = context.theme.brightness == Brightness.dark;
+    return Material(
+      color: isDark
+          ? context.colorScheme.surfaceContainerLow
+          : context.colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: AppEmptyState(
@@ -595,10 +900,7 @@ class _HeroMetaItem extends StatelessWidget {
           icon,
           width: AppSizing.iconS,
           height: AppSizing.iconS,
-          colorFilter: ColorFilter.mode(
-            foreground.withAlpha(179),
-            BlendMode.srcIn,
-          ),
+          colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
         ),
         Text(label, style: AppTextStyles.labelMd.copyWith(color: foreground)),
       ],
@@ -628,6 +930,9 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
     final foreground = isDark
         ? context.colorScheme.onSurface
         : context.colorScheme.onPrimary;
+    final mutedForeground = isDark
+        ? context.colorScheme.onSurfaceVariant
+        : context.colorScheme.onPrimaryContainer;
     final actionBackground = isDark
         ? context.colorScheme.primaryContainer
         : context.colorScheme.secondary;
@@ -649,7 +954,7 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
           AppWhiteSpace.hMd,
           Text(
             session.name,
-            style: AppTextStyles.headlineLg.copyWith(color: foreground),
+            style: AppTextStyles.headlineXl.copyWith(color: foreground),
           ),
           AppWhiteSpace.hLg,
           Wrap(
@@ -658,20 +963,21 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
             children: [
               Text(
                 '$completedSets/$totalSets ${AppStrings.setsCompleted}',
-                style: AppTextStyles.labelMd.copyWith(color: foreground),
+                style: AppTextStyles.labelMd.copyWith(color: mutedForeground),
               ),
               _HeroMetaItem(
                 icon: OutlinedSvgAssets.clock,
-                label: '$elapsedMinutes ${AppStrings.minutes}',
-                foreground: foreground,
+                label: '$elapsedMinutes ${AppStrings.durationUnit}',
+                foreground: mutedForeground,
               ),
             ],
           ),
           AppWhiteSpace.hSm,
           LinearProgressIndicator(
             value: progress,
+            minHeight: AppSizing.progressBarHeight,
             color: actionBackground,
-            backgroundColor: foreground.withAlpha(51),
+            backgroundColor: foreground.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(AppRadius.full),
           ),
           AppWhiteSpace.hLg,
@@ -683,7 +989,7 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
                 context.pushNamed(AppRoutes.workoutRunnerActive().name);
               },
               icon: SvgPicture.asset(
-                OutlinedSvgAssets.playCircle,
+                OutlinedSvgAssets.play,
                 width: AppSizing.iconSm,
                 height: AppSizing.iconSm,
                 colorFilter: ColorFilter.mode(
@@ -693,14 +999,13 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
               ),
               label: const Text(AppStrings.resumeWorkout),
               style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppSizing.homePrimaryActionHeight,
+                ),
                 backgroundColor: actionBackground,
                 foregroundColor: actionForeground,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.buttonVertical,
-                ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
               ),
             ),
@@ -711,7 +1016,7 @@ class _OngoingWorkoutSurface extends ConsumerWidget {
             child: TextButton(
               onPressed: () => _discardWorkout(context, ref),
               style: TextButton.styleFrom(
-                foregroundColor: foreground.withAlpha(204),
+                foregroundColor: foreground.withValues(alpha: 0.8),
               ),
               child: const Text(AppStrings.discardWorkout),
             ),
@@ -751,222 +1056,91 @@ class _ActiveProgrammePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayedWeek = currentWeek ?? (totalWeeks > 0 ? totalWeeks : 0);
-    return Material(
-      key: const Key('home_active_programme_panel'),
-      color: context.colorScheme.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AppSectionHeader(title: AppStrings.activeProgramLabel),
-            AppWhiteSpace.hMd,
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  programme.name,
-                  style: AppTextStyles.headlineMd.copyWith(
-                    color: context.colorScheme.onSurface,
-                  ),
-                ),
-                AppBadge(
-                  label: AppStrings.programmeActive,
-                  backgroundColor: context.colorScheme.surfaceContainerHigh,
-                  foregroundColor: context.colorScheme.secondary,
-                  borderRadius: AppRadius.full,
-                ),
-              ],
-            ),
-            AppWhiteSpace.hMd,
-            Wrap(
-              spacing: AppSpacing.lg,
-              runSpacing: AppSpacing.sm,
-              children: [
-                _ProgrammeMetric(
-                  icon: OutlinedSvgAssets.calendarDays,
-                  label: AppStrings.weekOf(displayedWeek, totalWeeks),
-                ),
-                _ProgrammeMetric(
-                  icon: OutlinedSvgAssets.clipboardDocumentCheck,
-                  label:
-                      '${sessionsRemaining ?? 0} ${AppStrings.sessionsRemaining}',
-                ),
-              ],
-            ),
-            AppWhiteSpace.hMd,
-            LinearProgressIndicator(
-              value: progress,
-              color: context.colorScheme.secondary,
-              backgroundColor: context.colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(AppRadius.full),
-            ),
-            AppWhiteSpace.hSm,
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: () {
-                  context.pushNamed(
-                    AppRoutes.programmeCalendar().name,
-                    pathParameters: {'id': programme.id},
-                  );
-                },
-                iconAlignment: IconAlignment.end,
-                icon: SvgPicture.asset(
-                  OutlinedSvgAssets.arrowRight,
-                  width: AppSizing.iconS,
-                  height: AppSizing.iconS,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: const Text(AppStrings.viewDetails),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgrammeMetric extends StatelessWidget {
-  const _ProgrammeMetric({required this.icon, required this.label});
-
-  final String icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: AppSpacing.xs,
-      children: [
-        SvgPicture.asset(
-          icon,
-          width: AppSizing.iconS,
-          height: AppSizing.iconS,
-          colorFilter: ColorFilter.mode(
-            context.colorScheme.onSurfaceVariant,
-            BlendMode.srcIn,
-          ),
-        ),
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TrainingSignalsSection extends StatelessWidget {
-  const _TrainingSignalsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surfaceContainerLow,
-      child: const Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.marginMobile,
-          vertical: AppSpacing.lg,
-        ),
-        child: Column(
-          children: [
-            _UtilityPanel(
-              icon: OutlinedSvgAssets.chartBar,
-              title: AppStrings.volumeThisWeek,
-              description: AppStrings.volumeTrackingComingSoon,
-            ),
-            AppWhiteSpace.hMd,
-            _UtilityPanel(
-              icon: OutlinedSvgAssets.exclamationTriangle,
-              title: AppStrings.plateauAlert,
-              description: AppStrings.plateauComingSoon,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _UtilityPanel extends StatelessWidget {
-  const _UtilityPanel({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
-
-  final String icon;
-  final String title;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
+    final displayedWeek =
+        currentWeek ?? (progress >= 1 && totalWeeks > 0 ? totalWeeks : 1);
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      key: const Key('home_active_programme_panel'),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainer,
+        color: context.colorScheme.surfaceContainerHigh,
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
+        ),
         borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Container(
-                width: AppSizing.cardBadge,
-                height: AppSizing.cardBadge,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerHigh,
-                  shape: BoxShape.circle,
-                ),
-                child: SvgPicture.asset(
-                  icon,
-                  width: AppSizing.iconMd,
-                  height: AppSizing.iconMd,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.onSurfaceVariant,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-              Text(
-                title,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: context.colorScheme.onSurface,
-                ),
-              ),
-              AppBadge(
-                label: AppStrings.comingSoon,
-                backgroundColor: context.colorScheme.surfaceContainerHighest,
-                foregroundColor: context.colorScheme.onSurfaceVariant,
-                borderRadius: AppRadius.full,
-              ),
-            ],
-          ),
-          AppWhiteSpace.hSm,
-          Text(
-            description,
-            style: AppTextStyles.bodySm.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: AppSpacing.md,
+            offset: const Offset(0, AppSpacing.xs),
           ),
         ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            context.pushNamed(
+              AppRoutes.programmeCalendar().name,
+              pathParameters: {'id': programme.id},
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.activeProgramLabel.toUpperCase(),
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                    letterSpacing: AppSizing.homeEyebrowLetterSpacing,
+                  ),
+                ),
+                AppWhiteSpace.hSm,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        programme.name,
+                        style: AppTextStyles.headlineMd.copyWith(
+                          color: context.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    AppWhiteSpace.wSm,
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.xs),
+                      child: Text(
+                        AppStrings.weekOf(displayedWeek, totalWeeks),
+                        style: AppTextStyles.labelSm.copyWith(
+                          color: context.colorScheme.secondary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                AppWhiteSpace.hMd,
+                LinearProgressIndicator(
+                  value: progress,
+                  minHeight: AppSizing.homeProgrammeTrackHeight,
+                  color: context.colorScheme.secondary,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                ),
+                AppWhiteSpace.hControlGap,
+                Text(
+                  AppStrings.sessionsRemainingThisWeek(sessionsRemaining ?? 0),
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -983,36 +1157,41 @@ class _QuickActionGrid extends StatelessWidget {
       builder: (context, constraints) {
         final tileWidth = (constraints.maxWidth - AppSpacing.md) / _columnCount;
         return Wrap(
+          key: const Key('home_quick_actions'),
           spacing: AppSpacing.md,
           runSpacing: AppSpacing.md,
           children: [
-            SizedBox(
-              width: tileWidth,
+            SizedBox.square(
+              dimension: tileWidth,
               child: const _ActionTile(
+                key: Key('home_generate_workout_action'),
                 icon: OutlinedSvgAssets.sparkles,
                 label: AppStrings.generateWorkout,
               ),
             ),
-            SizedBox(
-              width: tileWidth,
+            SizedBox.square(
+              dimension: tileWidth,
               child: _ActionTile(
-                icon: OutlinedSvgAssets.pencilSquare,
+                key: const Key('home_manual_log_action'),
+                icon: OutlinedSvgAssets.materialEditNote,
                 label: AppStrings.manualLog,
                 onTap: () {
                   context.pushNamed(AppRoutes.workoutBuilderCreate().name);
                 },
               ),
             ),
-            SizedBox(
-              width: tileWidth,
+            SizedBox.square(
+              dimension: tileWidth,
               child: const _ActionTile(
+                key: Key('home_log_bodyweight_action'),
                 icon: OutlinedSvgAssets.scale,
                 label: AppStrings.logBodyweight,
               ),
             ),
-            SizedBox(
-              width: tileWidth,
+            SizedBox.square(
+              dimension: tileWidth,
               child: const _ActionTile(
+                key: Key('home_progress_photo_action'),
                 icon: OutlinedSvgAssets.camera,
                 label: AppStrings.progressPhoto,
               ),
@@ -1025,7 +1204,12 @@ class _QuickActionGrid extends StatelessWidget {
 }
 
 class _ActionTile extends StatelessWidget {
-  const _ActionTile({required this.icon, required this.label, this.onTap});
+  const _ActionTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   final String icon;
   final String label;
@@ -1034,66 +1218,64 @@ class _ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEnabled = onTap != null;
+    final isDark = context.theme.brightness == Brightness.dark;
     final foreground = isEnabled
         ? context.colorScheme.onSurface
-        : context.colorScheme.onSurfaceVariant.withAlpha(153);
+        : context.colorScheme.onSurfaceVariant.withValues(alpha: 0.65);
     return Semantics(
       button: true,
       enabled: isEnabled,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: AppSizing.optionCardMinHeight + AppSpacing.lg,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark
+              ? context.colorScheme.surfaceContainerLow
+              : context.colorScheme.surfaceContainerLowest,
+          border: Border.all(color: context.colorScheme.surfaceContainerLow),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: [
+            BoxShadow(
+              color: context.colorScheme.shadow.withValues(alpha: 0.04),
+              blurRadius: AppSpacing.md,
+              offset: const Offset(0, AppSpacing.xs),
+            ),
+          ],
         ),
         child: Material(
-          color: isEnabled
-              ? context.colorScheme.surfaceContainer
-              : context.colorScheme.surfaceContainerLow,
+          type: MaterialType.transparency,
           borderRadius: BorderRadius.circular(AppRadius.lg),
+          clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(AppRadius.lg),
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: AppSizing.iconXxl,
-                    height: AppSizing.iconXxl,
+                    width: AppSizing.homeQuickActionIconSize,
+                    height: AppSizing.homeQuickActionIconSize,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isEnabled
-                          ? context.colorScheme.secondary.withAlpha(26)
-                          : context.colorScheme.surfaceContainerHigh,
+                      color: context.colorScheme.surfaceContainer,
                       shape: BoxShape.circle,
                     ),
                     child: SvgPicture.asset(
                       icon,
-                      width: AppSizing.iconMd,
-                      height: AppSizing.iconMd,
+                      width: AppSizing.iconLg,
+                      height: AppSizing.iconLg,
                       colorFilter: ColorFilter.mode(
                         isEnabled ? context.colorScheme.secondary : foreground,
                         BlendMode.srcIn,
                       ),
                     ),
                   ),
-                  AppWhiteSpace.hMd,
-                  Text(
-                    label,
-                    style: AppTextStyles.labelMd.copyWith(color: foreground),
-                  ),
-                  AppWhiteSpace.hSm,
-                  Visibility(
-                    visible: !isEnabled,
-                    maintainAnimation: true,
-                    maintainSize: true,
-                    maintainState: true,
-                    child: AppBadge(
-                      label: AppStrings.comingSoon,
-                      backgroundColor: context.colorScheme.surfaceContainerHigh,
-                      foregroundColor: foreground,
-                      borderRadius: AppRadius.full,
+                  AppWhiteSpace.hControlGap,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.labelMd.copyWith(color: foreground),
                     ),
                   ),
                 ],

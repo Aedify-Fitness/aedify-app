@@ -124,6 +124,10 @@ class CustomExerciseEditorController
 
   Future<void> addStep() async {
     final current = state.requireValue;
+    if (current.draft.steps.isNotEmpty &&
+        current.draft.steps.last.trim().isEmpty) {
+      return;
+    }
     final steps = [...current.draft.steps, ''];
     state = AsyncData(
       current.copyWith(
@@ -256,6 +260,13 @@ class CustomExerciseEditorController
   }
 
   void discardChanges() {
-    // Reset dirty flag — the caller handles navigation
+    final current = state.requireValue;
+    state = AsyncData(
+      current.copyWith(
+        clearDirty: true,
+        clearErrors: true,
+        clearValidation: true,
+      ),
+    );
   }
 }

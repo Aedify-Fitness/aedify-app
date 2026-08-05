@@ -1,4 +1,5 @@
 import 'package:aedify/features/exercise_library/presentation/widgets/custom_exercise_steps_editor.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,6 +41,7 @@ void main() {
 
       expect(find.text('Step one'), findsOneWidget);
       expect(find.text('Step two'), findsOneWidget);
+      expect(find.byType(AppTextField), findsNWidgets(2));
       expect(find.byType(TextField), findsNWidgets(2));
       expect(find.byType(IconButton), findsNWidgets(2));
       expect(find.text(AppStrings.customExerciseAddStep), findsOneWidget);
@@ -62,6 +64,27 @@ void main() {
       await tester.pump();
 
       expect(added, isTrue);
+    });
+
+    testWidgets('does not add a step while the previous step is blank', (
+      tester,
+    ) async {
+      bool added = false;
+      await tester.pumpWidget(
+        _createTestApp(
+          CustomExerciseStepsEditor(
+            steps: const ['   '],
+            onAddStep: () => added = true,
+            onUpdateStep: _noOpUpdate,
+            onRemoveStep: _noOpRemove,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text(AppStrings.customExerciseAddStep));
+      await tester.pump();
+
+      expect(added, isFalse);
     });
 
     testWidgets('calls onRemoveStep when remove button is tapped', (

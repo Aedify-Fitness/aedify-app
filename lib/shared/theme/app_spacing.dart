@@ -18,6 +18,10 @@ class AppSpacing {
   static const double inputVertical = 14;
   static const double reviewActionVertical = 20;
   static const double controlGap = 12;
+  static const double formFieldVertical = 20;
+  static const double formChipHorizontal = 20;
+  static const double formChipVertical = 10;
+  static const double formSectionGap = 40;
 
   // DESIGN.md semantic layout tokens
   static const double gutter = 24;
@@ -51,6 +55,7 @@ class AppWhiteSpace {
   static const hXl = SizedBox(height: AppSpacing.xl);
   static const hXxl = SizedBox(height: AppSpacing.xxl);
   static const hXxxl = SizedBox(height: AppSpacing.xxxl);
+  static const hFormSectionGap = SizedBox(height: AppSpacing.formSectionGap);
 
   static SizedBox both(double value) => SizedBox(width: value, height: value);
   static SizedBox custom({double? width, double? height}) =>
@@ -144,6 +149,23 @@ class AppSizing {
   static const double reviewMetricIcon = 96;
   static const double reviewDecorativeIcon = 200;
   static const double reviewStatusLetterSpacing = 1.2;
+  static const double homeAlertIconTile = 40;
+  static const double homeMetricIconSize = 56;
+  static const double homeContentTopOffset = 96;
+  static const double homeWorkoutHeroMinHeight = 340;
+  static const double homeWorkoutGlowSize = 256;
+  static const double homeWorkoutGlowOffset = 64;
+  static const double homeWorkoutGlowBlur = 80;
+  static const double homePrimaryActionHeight = 56;
+  static const double homeSecondaryActionHeight = 52;
+  static const double homeProgrammeTrackHeight = 10;
+  static const double homeQuickActionIconSize = 56;
+  static const double homeEyebrowLetterSpacing = 1.2;
+  static const double customExerciseEditorMaxWidth = 768;
+  static const double customExerciseLoggingThreeColumnMinWidth = 600;
+  static const double customExerciseLoggingCardHeight = 164;
+  static const double customExerciseInputFocusBlur = 20;
+  static const double customExerciseActionElevation = 6;
 }
 
 class AppFontSizes {

@@ -16,10 +16,8 @@ class AppStrings {
   static const readyForSession = "Ready for your best session yet?";
   static const dayStreak = 'Day Streak';
   static const plateauAlert = 'Plateau Alert';
-  static const plateauComingSoon =
-      'Plateau detection coming soon — check back after M5';
-  static const volumeTrackingComingSoon =
-      'Volume tracking coming soon — check back after M5';
+  static const plateauComingSoon = 'Plateau detection is coming soon.';
+  static const volumeTrackingComingSoon = 'Volume tracking is coming soon.';
   static const scheduledToday = 'Scheduled Today';
   static const viewDetails = 'View Details';
   static const activeProgramLabel = 'Active Program';
@@ -28,7 +26,8 @@ class AppStrings {
       'Activate a programme to see today\u0027s scheduled workout.';
   static const browseProgrammes = 'Browse Programmes';
   static const restDay = 'Rest day — no workout scheduled today';
-  static const sessionsRemaining = 'sessions remaining this week';
+  static String sessionsRemainingThisWeek(int count) =>
+      '$count ${count == 1 ? 'session' : 'sessions'} remaining this week';
   static String weekOf(int current, int total) => 'Week $current of $total';
   static const volumeThisWeek = 'Volume this week';
   static const generateWorkout = 'Generate\nWorkout';
@@ -965,6 +964,7 @@ class AppStrings {
   static const customExerciseInstructionsHint =
       'Describe the movement, cues, and safety tips...';
   static const customExerciseInstructionsOptional = 'Optional';
+  static const customExerciseAddCueList = 'Add cue list';
   static const customExerciseNameLabel = 'Exercise name';
   static const customExerciseNameHintPlaceholder = 'e.g., Cable Face Pulls';
   static const customExerciseEquipmentSelect = 'Select equipment';
@@ -986,6 +986,8 @@ class AppStrings {
   static const todaysWorkout = "Today\u0027s Workout";
   static const today = 'Today';
   static const noWorkoutToday = 'No workout scheduled today';
+  static const noWorkoutTodayMessage =
+      'Use today to recover and come back ready for your next session.';
   static const startTodaysWorkout = "Start Today\u0027s Workout";
 
   // Workout runner

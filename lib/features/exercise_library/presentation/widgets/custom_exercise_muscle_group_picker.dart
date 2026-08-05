@@ -35,36 +35,44 @@ class CustomExerciseMuscleGroupPicker extends StatelessWidget {
             padding: const EdgeInsets.only(top: AppSpacing.xs),
             child: Text(errorText!, style: AppTextStyles.labelSm),
           ),
-        AppWhiteSpace.hSm,
+        AppWhiteSpace.hMd,
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
           children: BodymapBucket.values.map((bucket) {
             final isSelected = selected.contains(bucket);
-            return GestureDetector(
-              onTap: () => onToggle(bucket),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? cs.secondaryContainer
-                      : cs.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(AppRadius.full),
-                  border: Border.all(
-                    color: isSelected
-                        ? cs.secondary.withValues(alpha: 0.2)
-                        : cs.outlineVariant,
+            return Semantics(
+              button: true,
+              selected: isSelected,
+              child: GestureDetector(
+                onTap: () => onToggle(bucket),
+                child: Container(
+                  key: ValueKey('custom_exercise_muscle_${bucket.name}'),
+                  constraints: const BoxConstraints(
+                    minHeight: AppSizing.cardBadge,
                   ),
-                ),
-                child: Text(
-                  bucket.label,
-                  style: AppTextStyles.labelMd.copyWith(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.formChipHorizontal,
+                    vertical: AppSpacing.formChipVertical,
+                  ),
+                  decoration: BoxDecoration(
                     color: isSelected
-                        ? cs.onSecondaryContainer
-                        : cs.onSurfaceVariant,
+                        ? cs.secondaryContainer
+                        : cs.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(AppRadius.full),
+                    border: Border.all(
+                      color: isSelected
+                          ? cs.secondary.withValues(alpha: 0.2)
+                          : cs.outlineVariant,
+                    ),
+                  ),
+                  child: Text(
+                    bucket.label,
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: isSelected
+                          ? cs.onSecondaryContainer
+                          : cs.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),

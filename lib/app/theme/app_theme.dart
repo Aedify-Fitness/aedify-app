@@ -60,7 +60,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: AedifyLightColors.surface,
     appBarTheme: const AppBarTheme(
-      surfaceTintColor: AedifyLightColors.surface,
+      backgroundColor: AedifyLightColors.surface,
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -187,7 +187,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: AedifyDarkColors.surface,
     appBarTheme: const AppBarTheme(
-      surfaceTintColor: AedifyDarkColors.surface,
+      backgroundColor: AedifyDarkColors.surface,
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 0,
