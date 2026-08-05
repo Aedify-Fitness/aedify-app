@@ -11,6 +11,15 @@
 
 ## Completed Work
 
+### 2026-08-05 — Prominent selected navigation capsule (complete)
+
+- Replaces the unconfigurable 64×32 Material indicator with a locally drawn pill that fills each destination inside a 6px horizontal bar inset and uses a 60px height to preserve 6px top and bottom gaps within the 72px bar.
+- Keeps every destination in a stable indicator frame, renders inactive outline SVGs at 24px, and renders the selected filled SVG at 28px without reducing destination tap targets.
+- Uses `secondaryContainer`/`onSecondaryContainer` in light mode and `primaryContainer`/`onPrimaryContainer` in dark mode, switching to stronger semantic pairs when high contrast is enabled.
+- Animates the backing treatment over the shared 200ms navigation-selection duration and leaves the glass blur, border, safe-area behavior, scroll clearance, and user-adjusted surface opacity tokens unchanged.
+- Adds light, dark, high-contrast, normal-width, and compact-width assertions for the custom selected treatment alongside the existing routing and accessibility coverage.
+- Verification: `dart format .` checked 691 files; `flutter analyze` passed with no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### 2026-08-05 — Icon-only bottom navigation and Library icon (complete)
 
 - Uses the existing open-book SVG pair for Library: outlined while inactive and filled while selected, providing a plain catalog metaphor without adding assets or dependencies.

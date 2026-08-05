@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/theme/app_durations.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
@@ -107,7 +108,7 @@ class _FloatingNavigationBar extends StatelessWidget {
         ),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadius.xl),
+            borderRadius: BorderRadius.circular(AppRadius.full),
             boxShadow: [
               BoxShadow(
                 color: cs.shadow.withValues(
@@ -120,7 +121,7 @@ class _FloatingNavigationBar extends StatelessWidget {
           ),
           child: ClipRRect(
             key: const ValueKey<String>('bottom_navigation_glass_clip'),
-            borderRadius: BorderRadius.circular(AppRadius.xl),
+            borderRadius: BorderRadius.circular(AppRadius.full),
             child: BackdropFilter(
               key: const ValueKey<String>('bottom_navigation_glass_blur'),
               filter: ImageFilter.blur(
@@ -137,29 +138,44 @@ class _FloatingNavigationBar extends StatelessWidget {
                     ),
                     width: AppBottomNavigationTokens.borderWidth,
                   ),
-                  borderRadius: BorderRadius.circular(AppRadius.xl),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
-                child: NavigationBar(
-                  key: const ValueKey<String>('bottom_navigation_bar'),
-                  height: AppBottomNavigationTokens.height,
-                  backgroundColor: Colors.transparent,
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  elevation: 0,
-                  labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-                  selectedIndex: currentIndex,
-                  onDestinationSelected: onDestinationSelected,
-                  destinations: [
-                    for (final item in _BottomNavItemData.items)
-                      NavigationDestination(
-                        icon: _NavIcon(asset: item.iconAsset, selected: false),
-                        selectedIcon: _NavIcon(
-                          asset: item.selectedIconAsset,
-                          selected: true,
-                        ),
-                        label: item.label,
-                      ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal:
+                        AppBottomNavigationTokens.selectedIndicatorEdgeInset,
+                  ),
+                  child: NavigationBar(
+                    key: const ValueKey<String>('bottom_navigation_bar'),
+                    height: AppBottomNavigationTokens.height,
+                    backgroundColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    elevation: 0,
+                    indicatorColor: Colors.transparent,
+                    indicatorShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.full),
+                    ),
+                    labelBehavior:
+                        NavigationDestinationLabelBehavior.alwaysHide,
+                    selectedIndex: currentIndex,
+                    onDestinationSelected: onDestinationSelected,
+                    destinations: _BottomNavItemData.items
+                        .map(
+                          (item) => NavigationDestination(
+                            icon: _NavIcon(
+                              asset: item.iconAsset,
+                              selected: false,
+                            ),
+                            selectedIcon: _NavIcon(
+                              asset: item.selectedIconAsset,
+                              selected: true,
+                            ),
+                            label: item.label,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
               ),
             ),
@@ -179,16 +195,38 @@ class _NavIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.colorScheme;
-    final color = selected
-        ? (Theme.brightnessOf(context) == Brightness.dark
-              ? cs.onPrimaryContainer
-              : cs.onSecondaryContainer)
-        : cs.onSurfaceVariant;
-    return SvgPicture.asset(
-      asset,
-      width: AppSizing.iconMd,
-      height: AppSizing.iconMd,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+    final isDark = Theme.brightnessOf(context) == Brightness.dark;
+    final isHighContrast = MediaQuery.highContrastOf(context);
+    final selectedBackgroundColor = isHighContrast
+        ? (isDark ? cs.primary : cs.secondary)
+        : (isDark ? cs.primaryContainer : cs.secondaryContainer);
+    final selectedForegroundColor = isHighContrast
+        ? (isDark ? cs.onPrimary : cs.onSecondary)
+        : (isDark ? cs.onPrimaryContainer : cs.onSecondaryContainer);
+    final color = selected ? selectedForegroundColor : cs.onSurfaceVariant;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return AnimatedContainer(
+          key: const ValueKey<String>('bottom_navigation_icon_surface'),
+          duration: AppDurations.navigationSelection,
+          curve: Curves.easeOutCubic,
+          width: constraints.maxWidth,
+          height: AppBottomNavigationTokens.selectedIndicatorHeight,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: selected
+                ? selectedBackgroundColor
+                : selectedBackgroundColor.withValues(alpha: 0),
+            borderRadius: BorderRadius.circular(AppRadius.full),
+          ),
+          child: SvgPicture.asset(
+            asset,
+            width: selected ? AppSizing.iconLg : AppSizing.iconMd,
+            height: selected ? AppSizing.iconLg : AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
+        );
+      },
     );
   }
 }

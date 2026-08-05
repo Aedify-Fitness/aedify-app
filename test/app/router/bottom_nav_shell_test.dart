@@ -3,6 +3,7 @@ import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/theme/app_durations.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +139,15 @@ class _BottomNavShellTestHarness {
           (widget.bytesLoader as SvgAssetLoader).assetName == assetName,
     );
   }
+
+  static Finder iconSurface(String assetName) {
+    return find.ancestor(
+      of: svgAsset(assetName),
+      matching: find.byKey(
+        const ValueKey<String>('bottom_navigation_icon_surface'),
+      ),
+    );
+  }
 }
 
 void main() {
@@ -158,6 +168,14 @@ void main() {
       );
       final decoration = surface.decoration as BoxDecoration;
       final border = decoration.border! as Border;
+      final navigationBar = tester.widget<NavigationBar>(
+        find.byKey(const ValueKey<String>('bottom_navigation_bar')),
+      );
+      final selectedIconSurface = tester.widget<AnimatedContainer>(
+        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.home),
+      );
+      final selectedIconDecoration =
+          selectedIconSurface.decoration! as BoxDecoration;
 
       expect(shellScaffold.extendBody, isTrue);
       expect(
@@ -192,6 +210,63 @@ void main() {
           alpha: AppBottomNavigationTokens.borderOpacity,
         ),
       );
+      expect(navigationBar.indicatorColor, Colors.transparent);
+      final selectedDestinationSize = tester.getSize(
+        find.byType(NavigationDestination).first,
+      );
+      final glassSurfaceRect = tester.getRect(
+        find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),
+      );
+      final selectedIndicatorRect = tester.getRect(
+        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.home),
+      );
+      expect(
+        selectedIndicatorRect.size,
+        Size(
+          selectedDestinationSize.width,
+          AppBottomNavigationTokens.selectedIndicatorHeight,
+        ),
+      );
+      expect(
+        selectedIndicatorRect.width,
+        greaterThan(selectedIndicatorRect.height),
+      );
+      expect(
+        selectedIndicatorRect.top - glassSurfaceRect.top,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
+      expect(
+        selectedIndicatorRect.left - glassSurfaceRect.left,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
+      expect(
+        tester.getSize(
+          _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+        ),
+        const Size.square(AppSizing.iconLg),
+      );
+      expect(
+        tester.getSize(
+          _BottomNavShellTestHarness.svgAsset(OutlinedSvgAssets.bookOpen),
+        ),
+        const Size.square(AppSizing.iconMd),
+      );
+      expect(
+        selectedIconDecoration.color,
+        AppTheme.lightTheme.colorScheme.secondaryContainer,
+      );
+      expect(
+        tester
+            .widget<SvgPicture>(
+              _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+            )
+            .colorFilter,
+        ColorFilter.mode(
+          AppTheme.lightTheme.colorScheme.onSecondaryContainer,
+          BlendMode.srcIn,
+        ),
+      );
+      expect(selectedIconSurface.duration, AppDurations.navigationSelection);
       expect(find.byType(NavigationDestination), findsNWidgets(5));
     });
 
@@ -222,6 +297,29 @@ void main() {
           alpha: AppBottomNavigationTokens.darkSurfaceOpacity,
         ),
       );
+      expect(
+        (tester
+                    .widget<AnimatedContainer>(
+                      _BottomNavShellTestHarness.iconSurface(
+                        SolidSvgAssets.home,
+                      ),
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color,
+        AppTheme.darkTheme.colorScheme.primaryContainer,
+      );
+      expect(
+        tester
+            .widget<SvgPicture>(
+              _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+            )
+            .colorFilter,
+        ColorFilter.mode(
+          AppTheme.darkTheme.colorScheme.onPrimaryContainer,
+          BlendMode.srcIn,
+        ),
+      );
 
       await tester.pumpWidget(
         _BottomNavShellTestHarness.app(
@@ -235,6 +333,29 @@ void main() {
       expect(
         surfaceOpacity(),
         closeTo(AppBottomNavigationTokens.highContrastSurfaceOpacity, 0.001),
+      );
+      expect(
+        (tester
+                    .widget<AnimatedContainer>(
+                      _BottomNavShellTestHarness.iconSurface(
+                        SolidSvgAssets.home,
+                      ),
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color,
+        AppTheme.darkTheme.colorScheme.primary,
+      );
+      expect(
+        tester
+            .widget<SvgPicture>(
+              _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
+            )
+            .colorFilter,
+        ColorFilter.mode(
+          AppTheme.darkTheme.colorScheme.onPrimary,
+          BlendMode.srcIn,
+        ),
       );
     });
 
@@ -315,6 +436,28 @@ void main() {
         _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.home),
         findsNothing,
       );
+
+      await tester.tap(find.byType(NavigationDestination).at(4));
+      await tester.pumpAndSettle();
+
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        _TestDestination.values[4].path,
+      );
+      final glassSurfaceRect = tester.getRect(
+        find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),
+      );
+      final selectedStatsRect = tester.getRect(
+        _BottomNavShellTestHarness.iconSurface(SolidSvgAssets.chartBar),
+      );
+      expect(
+        glassSurfaceRect.right - selectedStatsRect.right,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
+      expect(
+        selectedStatsRect.top - glassSurfaceRect.top,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
     });
 
     testWidgets('keeps five destinations usable on a compact large-text view', (
@@ -334,6 +477,44 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byType(NavigationDestination), findsNWidgets(5));
+      final navigationBar = find.byKey(
+        const ValueKey<String>('bottom_navigation_bar'),
+      );
+      final selectedIconSurface = _BottomNavShellTestHarness.iconSurface(
+        SolidSvgAssets.home,
+      );
+      final navigationBarRect = tester.getRect(navigationBar);
+      final glassSurfaceRect = tester.getRect(
+        find.byKey(const ValueKey<String>('bottom_navigation_glass_surface')),
+      );
+      final selectedIconSurfaceRect = tester.getRect(selectedIconSurface);
+      final selectedDestinationRect = tester.getRect(
+        find.byType(NavigationDestination).first,
+      );
+      expect(
+        selectedIconSurfaceRect.width,
+        closeTo(selectedDestinationRect.width, 0.001),
+      );
+      expect(
+        selectedIconSurfaceRect.height,
+        AppBottomNavigationTokens.selectedIndicatorHeight,
+      );
+      expect(
+        selectedIconSurfaceRect.left,
+        greaterThanOrEqualTo(navigationBarRect.left),
+      );
+      expect(
+        selectedIconSurfaceRect.right,
+        lessThanOrEqualTo(navigationBarRect.right),
+      );
+      expect(
+        selectedIconSurfaceRect.top - glassSurfaceRect.top,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
+      expect(
+        selectedIconSurfaceRect.left - glassSurfaceRect.left,
+        closeTo(AppBottomNavigationTokens.selectedIndicatorEdgeInset, 0.001),
+      );
       for (final destination in find.byType(NavigationDestination).evaluate()) {
         final size = tester.getSize(find.byWidget(destination.widget));
         expect(size.width, greaterThanOrEqualTo(44));

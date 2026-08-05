@@ -6,6 +6,14 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-08-05
 
+### Bottom navigation — prominent selected capsule
+
+- Replaced Material's small fixed selection indicator with a responsive pill-shaped backing that fills each destination inside a 6px navigation-bar edge inset and sits 6px from the bar's top and bottom edges.
+- Uses the light secondary-container and dark primary-container color pairs for solid contrast against the glass, with stronger theme pairs in high-contrast mode; selected glyphs grow to 28px while inactive glyphs retain their 24px size.
+- Added a restrained 200ms selection transition while preserving the icon-only layout, filled selected SVGs, routing, safe-area clearance, and user-adjusted liquid-glass opacity values.
+- Extended widget coverage for indicator geometry, compact containment, light/dark/high-contrast fills and foregrounds, icon sizing, and the transparent built-in Material indicator.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### Bottom navigation — icon-only Library clarity
 
 - Replaced Library's sparkles with the matched outlined and filled open-book SVGs so the destination reads clearly as a browsable exercise and workout catalog.
