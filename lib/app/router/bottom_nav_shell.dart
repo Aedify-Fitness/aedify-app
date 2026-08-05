@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
+import 'dart:ui';
+
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class _BottomNavItemData {
   const _BottomNavItemData({required this.label, required this.iconAsset});
@@ -44,7 +47,12 @@ class BottomNavShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: navigationShell,
+      key: const ValueKey<String>('bottom_navigation_shell_scaffold'),
+      extendBody: true,
+      body: AppBottomNavigationScope(
+        bottomViewPadding: MediaQuery.viewPaddingOf(context).bottom,
+        child: navigationShell,
+      ),
       bottomNavigationBar: _FloatingNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
@@ -70,47 +78,78 @@ class _FloatingNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.colorScheme;
+    final surfaceColor =
+        (Theme.brightnessOf(context) == Brightness.dark
+                ? cs.surfaceContainerLow
+                : cs.surfaceContainerLowest)
+            .withValues(
+              alpha: AppBottomNavigationTokens.surfaceOpacity(context),
+            );
+
     return SafeArea(
       top: false,
       child: Padding(
         padding: const EdgeInsets.only(
-          left: AppSpacing.marginMobile,
-          right: AppSpacing.marginMobile,
-          bottom: AppSpacing.marginMobile,
+          left: AppBottomNavigationTokens.horizontalMargin,
+          right: AppBottomNavigationTokens.horizontalMargin,
+          bottom: AppBottomNavigationTokens.bottomMargin,
         ),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: cs.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(AppRadius.xl),
             boxShadow: [
               BoxShadow(
-                color: cs.shadow.withValues(alpha: 0.08),
+                color: cs.shadow.withValues(
+                  alpha: AppBottomNavigationTokens.shadowOpacity,
+                ),
                 blurRadius: AppSpacing.xl,
                 offset: const Offset(0, AppSpacing.sm),
               ),
             ],
           ),
           child: ClipRRect(
+            key: const ValueKey<String>('bottom_navigation_glass_clip'),
             borderRadius: BorderRadius.circular(AppRadius.xl),
-            child: NavigationBar(
-              height: AppSizing.navBarHeight,
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              elevation: 0,
-              selectedIndex: currentIndex,
-              onDestinationSelected: onDestinationSelected,
-              destinations: [
-                for (final item in _BottomNavItemData.items)
-                  NavigationDestination(
-                    icon: _NavIcon(asset: item.iconAsset, selected: false),
-                    selectedIcon: _NavIcon(
-                      asset: item.iconAsset,
-                      selected: true,
+            child: BackdropFilter(
+              key: const ValueKey<String>('bottom_navigation_glass_blur'),
+              filter: ImageFilter.blur(
+                sigmaX: AppBottomNavigationTokens.blurSigma,
+                sigmaY: AppBottomNavigationTokens.blurSigma,
+              ),
+              child: DecoratedBox(
+                key: const ValueKey<String>('bottom_navigation_glass_surface'),
+                decoration: BoxDecoration(
+                  color: surfaceColor,
+                  border: Border.all(
+                    color: cs.outlineVariant.withValues(
+                      alpha: AppBottomNavigationTokens.borderOpacity,
                     ),
-                    label: item.label,
+                    width: AppBottomNavigationTokens.borderWidth,
                   ),
-              ],
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
+                ),
+                child: NavigationBar(
+                  key: const ValueKey<String>('bottom_navigation_bar'),
+                  height: AppBottomNavigationTokens.height,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  elevation: 0,
+                  selectedIndex: currentIndex,
+                  onDestinationSelected: onDestinationSelected,
+                  destinations: [
+                    for (final item in _BottomNavItemData.items)
+                      NavigationDestination(
+                        icon: _NavIcon(asset: item.iconAsset, selected: false),
+                        selectedIcon: _NavIcon(
+                          asset: item.iconAsset,
+                          selected: true,
+                        ),
+                        label: item.label,
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

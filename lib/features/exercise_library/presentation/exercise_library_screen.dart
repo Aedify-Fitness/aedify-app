@@ -10,6 +10,7 @@ import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,18 +52,22 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
 
     return Scaffold(
       body: searchState.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppBottomNavigationContentInset(
+              child: Center(child: CircularProgressIndicator()),
+            )
           : searchState.errorCode != null
-          ? _ErrorView(
-              errorMessage: searchState.errorMessage,
-              colorScheme: colorScheme,
-              onRetry: () {
-                ref
-                    .read(
-                      AppProviders.exerciseSearchControllerProvider.notifier,
-                    )
-                    .reload();
-              },
+          ? AppBottomNavigationContentInset(
+              child: _ErrorView(
+                errorMessage: searchState.errorMessage,
+                colorScheme: colorScheme,
+                onRetry: () {
+                  ref
+                      .read(
+                        AppProviders.exerciseSearchControllerProvider.notifier,
+                      )
+                      .reload();
+                },
+              ),
             )
           : CustomScrollView(
               slivers: [
@@ -144,15 +149,29 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                       },
                     ),
                   ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.xxxl * 2),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    key: const ValueKey<String>(
+                      'exercise_library_bottom_navigation_clearance',
+                    ),
+                    height:
+                        AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
+                          context,
+                          fallback: AppSpacing.xxxl * 2,
+                        ),
+                  ),
                 ),
               ],
             ),
-      floatingActionButton: CreateActionFab(
-        onPressed: () {
-          context.pushNamed(AppRoutes.customExerciseCreate().name);
-        },
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom: AppBottomNavigationScope.floatingActionButtonLift(context),
+        ),
+        child: CreateActionFab(
+          onPressed: () {
+            context.pushNamed(AppRoutes.customExerciseCreate().name);
+          },
+        ),
       ),
     );
   }

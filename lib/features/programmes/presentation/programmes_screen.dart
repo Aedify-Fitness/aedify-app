@@ -13,6 +13,7 @@ import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,25 +41,38 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
       body: SafeArea(
         bottom: false,
         child: asyncState.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => _ErrorView(
-            message: AppStrings.programmesLoadFailed,
-            onRetry: () => ref
-                .read(AppProviders.programmeLibraryControllerProvider.notifier)
-                .reload(),
+          loading: () => const AppBottomNavigationContentInset(
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stack) => AppBottomNavigationContentInset(
+            child: _ErrorView(
+              message: AppStrings.programmesLoadFailed,
+              onRetry: () => ref
+                  .read(
+                    AppProviders.programmeLibraryControllerProvider.notifier,
+                  )
+                  .reload(),
+            ),
           ),
           data: (state) {
             if (state.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const AppBottomNavigationContentInset(
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
             if (state.errorCode != null) {
-              return _ErrorView(
-                message: state.errorMessage ?? AppStrings.programmesLoadFailed,
-                onRetry: () => ref
-                    .read(
-                      AppProviders.programmeLibraryControllerProvider.notifier,
-                    )
-                    .reload(),
+              return AppBottomNavigationContentInset(
+                child: _ErrorView(
+                  message:
+                      state.errorMessage ?? AppStrings.programmesLoadFailed,
+                  onRetry: () => ref
+                      .read(
+                        AppProviders
+                            .programmeLibraryControllerProvider
+                            .notifier,
+                      )
+                      .reload(),
+                ),
               );
             }
 
@@ -106,7 +120,7 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
                 if (items.isEmpty)
                   const SliverFillRemaining(
                     hasScrollBody: false,
-                    child: _EmptyView(),
+                    child: AppBottomNavigationContentInset(child: _EmptyView()),
                   )
                 else
                   SliverPadding(
@@ -114,8 +128,9 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
                       left: AppSpacing.md,
                       top: AppSpacing.lg,
                       right: AppSpacing.md,
-                      bottom: AppBottomNavigationTokens.contentClearance(
+                      bottom: AppBottomNavigationScope.contentClearance(
                         context,
+                        fallback: AppSpacing.xxl,
                       ),
                     ),
                     sliver: SliverList(

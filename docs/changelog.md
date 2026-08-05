@@ -6,6 +6,14 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-08-05
 
+### Floating navigation — liquid-glass overlay and scroll clearance
+
+- Converted the five-destination shell navigation into a clipped, backdrop-blurred glass overlay with theme-derived translucent surfaces, a subtle outline/shadow, and a more opaque high-contrast treatment.
+- Extended shell content behind the floating bar while preserving device safe-area insets through a shared navigation scope, so scrolling content remains visible through the glass and can finish fully above it.
+- Normalized Home, Library, Plan, AI, and Stats loading, error, empty, list, and placeholder states; shell Library FABs now clear both the glass bar and final list cards while standalone Library routes retain their previous spacing.
+- Added compact-width, 2× text-scale, light/dark/high-contrast, safe-area, routing, terminal-scroll, and FAB geometry coverage.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused navigation and destination tests passed 21/21; full `flutter test` passed 1137/1137.
+
 ### Workout Detail — supplied design alignment
 
 - Aligned `WorkoutDetailScreen` with the supplied HTML hierarchy: 24px centered content gutter, no blank app-bar reservation, uppercase workout hero, 48px hero-to-flow spacing, 32px Workout Flow heading, reference stat rhythm, atmospheric panel, and 24px fixed-action margins.

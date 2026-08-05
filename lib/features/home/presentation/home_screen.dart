@@ -9,6 +9,7 @@ import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -139,13 +140,17 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       body: SafeArea(
+        bottom: false,
         child: ListView(
           key: const Key('home_scroll_view'),
           padding: EdgeInsets.only(
             top: contentTopInset,
             left: AppSpacing.marginMobile,
             right: AppSpacing.marginMobile,
-            bottom: AppSizing.navBarHeight + AppSpacing.xxl,
+            bottom: AppBottomNavigationScope.contentClearance(
+              context,
+              fallback: AppSizing.navBarHeight + AppSpacing.xxl,
+            ),
           ),
           children: [
             _GreetingHeader(name: displayName),

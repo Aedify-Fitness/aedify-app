@@ -33,6 +33,31 @@ class AppSpacing {
   static const double stackLg = 32;
 }
 
+abstract final class AppBottomNavigationTokens {
+  static const double height = 72;
+  static const double horizontalMargin = AppSpacing.marginMobile;
+  static const double bottomMargin = AppSpacing.marginMobile;
+  static const double contentBreathingSpace = AppSpacing.marginMobile;
+  static const double blurSigma = 20;
+  static const double borderWidth = 1;
+  static const double shadowOpacity = 0.08;
+  static const double borderOpacity = 0.32;
+  static const double lightSurfaceOpacity = 0.78;
+  static const double darkSurfaceOpacity = 0.84;
+  static const double highContrastSurfaceOpacity = 0.96;
+  static const double baseContentClearance =
+      height + bottomMargin + contentBreathingSpace;
+
+  static double surfaceOpacity(BuildContext context) {
+    if (MediaQuery.highContrastOf(context)) {
+      return highContrastSurfaceOpacity;
+    }
+    return Theme.brightnessOf(context) == Brightness.dark
+        ? darkSurfaceOpacity
+        : lightSurfaceOpacity;
+  }
+}
+
 class AppWhiteSpace {
   AppWhiteSpace._();
 
@@ -113,7 +138,7 @@ class AppSizing {
   static const double hairlineStrokeWidth = 1;
   static const double inputFieldHeight = 36;
   static const double activeIndicatorHeight = 4;
-  static const double navBarHeight = 72;
+  static const double navBarHeight = AppBottomNavigationTokens.height;
   static const double deloadLineStrokeWidth = 10;
   static const double deloadLineSpacing = 40;
   static const double exerciseNumberCircle = 56;

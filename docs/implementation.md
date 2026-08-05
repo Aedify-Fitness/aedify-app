@@ -11,6 +11,14 @@
 
 ## Completed Work
 
+### 2026-08-05 — Floating liquid-glass navigation (complete)
+
+- Uses `Scaffold.extendBody` with a clipped `BackdropFilter` and translucent theme surfaces so destination content scrolls visibly behind the persistent five-tab bar.
+- Captures the device bottom inset at the shell boundary and exposes shared normal, centered-state, and FAB-aware clearance helpers without changing routing or standalone Library behavior.
+- Applies navigation-aware clearance across Home, Library, Plan, AI, and Stats root loading, error, empty, list, and placeholder states; Exercise Library and Saved Workouts lift their create FAB only inside the shell.
+- Covers glass composition and color, high contrast, destination callbacks, 320px width at 2× text scale, home-indicator spacing, exact final-item clearance, and FAB placement.
+- Verification: `dart format .` checked 691 files; `flutter analyze` passed with no issues; focused navigation and destination tests passed 21/21; full `flutter test` passed 1137/1137.
+
 ### 2026-08-05 — Workout Detail supplied-design alignment (complete)
 
 - Updates the shared programme/saved-workout detail screen to the supplied fixed-mobile composition without changing its data-loading or workout-session rules.

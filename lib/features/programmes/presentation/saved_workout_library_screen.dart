@@ -13,6 +13,7 @@ import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 
 class SavedWorkoutLibraryScreen extends ConsumerWidget {
   const SavedWorkoutLibraryScreen({super.key});
@@ -24,36 +25,53 @@ class SavedWorkoutLibraryScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      floatingActionButton: CreateActionFab(
-        onPressed: () {
-          context.pushNamed(AppRoutes.workoutBuilderCreate().name);
-        },
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom: AppBottomNavigationScope.floatingActionButtonLift(context),
+        ),
+        child: CreateActionFab(
+          onPressed: () {
+            context.pushNamed(AppRoutes.workoutBuilderCreate().name);
+          },
+        ),
       ),
       body: asyncState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => _ErrorView(
-          message: AppStrings.workoutLibraryLoadFailed,
-          onRetry: () => ref
-              .read(AppProviders.savedWorkoutLibraryControllerProvider.notifier)
-              .reload(),
+        loading: () => const AppBottomNavigationContentInset(
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (error, stack) => AppBottomNavigationContentInset(
+          child: _ErrorView(
+            message: AppStrings.workoutLibraryLoadFailed,
+            onRetry: () => ref
+                .read(
+                  AppProviders.savedWorkoutLibraryControllerProvider.notifier,
+                )
+                .reload(),
+          ),
         ),
         data: (state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppBottomNavigationContentInset(
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
           if (state.errorCode != null) {
-            return _ErrorView(
-              message:
-                  state.errorMessage ?? AppStrings.workoutLibraryLoadFailed,
-              onRetry: () => ref
-                  .read(
-                    AppProviders.savedWorkoutLibraryControllerProvider.notifier,
-                  )
-                  .reload(),
+            return AppBottomNavigationContentInset(
+              child: _ErrorView(
+                message:
+                    state.errorMessage ?? AppStrings.workoutLibraryLoadFailed,
+                onRetry: () => ref
+                    .read(
+                      AppProviders
+                          .savedWorkoutLibraryControllerProvider
+                          .notifier,
+                    )
+                    .reload(),
+              ),
             );
           }
           if (state.isEmpty) {
-            return const _EmptyView();
+            return const AppBottomNavigationContentInset(child: _EmptyView());
           }
           final activeSessionAsync = ref.watch(
             AppProviders.activeWorkoutSessionProvider,
@@ -248,11 +266,15 @@ class _ListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
         left: AppSpacing.md,
         top: AppSpacing.lg,
         right: AppSpacing.md,
-        bottom: AppSpacing.xxl + AppSpacing.xl,
+        bottom:
+            AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
+              context,
+              fallback: AppSpacing.xxl + AppSpacing.xl,
+            ),
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {

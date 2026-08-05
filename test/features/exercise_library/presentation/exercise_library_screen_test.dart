@@ -11,6 +11,8 @@ import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -73,7 +75,10 @@ class _FixedSyncNotifier extends ExerciseDatasetSyncController {
   }
 }
 
-Widget createTestApp(ExerciseRepository repository) {
+Widget createTestApp(
+  ExerciseRepository repository, {
+  bool withBottomNavigation = false,
+}) {
   return ProviderScope(
     overrides: [
       AppProviders.exerciseRepositoryProvider.overrideWithValue(repository),
@@ -81,7 +86,11 @@ Widget createTestApp(ExerciseRepository repository) {
         () => _FixedSyncNotifier(),
       ),
     ],
-    child: const MaterialApp(home: ExerciseLibraryScreen()),
+    child: MaterialApp(
+      home: withBottomNavigation
+          ? const AppBottomNavigationScope(child: ExerciseLibraryScreen())
+          : const ExerciseLibraryScreen(),
+    ),
   );
 }
 
@@ -174,6 +183,44 @@ void main() {
 
       final createFab = find.byKey(const Key('create_action_fab'));
       expect(createFab, findsOneWidget);
+    });
+
+    testWidgets('uses shell clearance for result and empty states', (
+      tester,
+    ) async {
+      mockRepository.searchResults = _benchPressItem();
+      await tester.pumpWidget(
+        createTestApp(mockRepository, withBottomNavigation: true),
+      );
+      await tester.pumpAndSettle();
+
+      final clearanceFinder = find.byKey(
+        const ValueKey<String>('exercise_library_bottom_navigation_clearance'),
+      );
+      expect(
+        tester.getSize(clearanceFinder).height,
+        AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
+          tester.element(clearanceFinder),
+          fallback: AppSpacing.xxxl * 2,
+        ),
+      );
+
+      mockRepository.searchResults = [];
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      await tester.pumpWidget(
+        createTestApp(mockRepository, withBottomNavigation: true),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('No exercises found.'), findsOneWidget);
+      expect(
+        tester.getSize(clearanceFinder).height,
+        AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
+          tester.element(clearanceFinder),
+          fallback: AppSpacing.xxxl * 2,
+        ),
+      );
     });
   });
 }

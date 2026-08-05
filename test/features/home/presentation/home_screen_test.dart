@@ -11,6 +11,7 @@ import 'package:aedify/features/programmes/domain/programme_list_item.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -240,6 +241,16 @@ void main() {
         findsNothing,
       );
       expect(find.byType(FloatingActionButton), findsNothing);
+      final homeList = tester.widget<ListView>(
+        find.byKey(const Key('home_scroll_view')),
+      );
+      expect(
+        (homeList.padding! as EdgeInsets).bottom,
+        AppBottomNavigationScope.contentClearance(
+          tester.element(find.byKey(const Key('home_scroll_view'))),
+          fallback: AppSizing.navBarHeight + AppSpacing.xxl,
+        ),
+      );
     });
 
     testWidgets('makes the scheduled workout Start CTA dominant', (
