@@ -11,6 +11,14 @@
 
 ## Completed Work
 
+### 2026-08-05 — Icon-only bottom navigation and Library icon (complete)
+
+- Uses the existing open-book SVG pair for Library: outlined while inactive and filled while selected, providing a plain catalog metaphor without adding assets or dependencies.
+- Sets the navigation label behavior to always hide while retaining all five destination labels for accessibility and preserving their existing routes and tap targets.
+- Leaves the liquid-glass treatment, user-adjusted opacity values, safe-area handling, and shared scroll clearance unchanged.
+- Adds widget assertions for hidden visual labels, retained destination labels, Library navigation, and selected Library asset state.
+- Verification: `dart format .` checked 691 files; `flutter analyze` passed with no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### 2026-08-05 — Filled bottom-navigation selection states (complete)
 
 - Keeps all five destinations outlined while inactive and uses their corresponding solid SVG assets while selected.

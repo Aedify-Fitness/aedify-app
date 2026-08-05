@@ -253,10 +253,40 @@ void main() {
         findsOneWidget,
       );
       expect(
-        _BottomNavShellTestHarness.svgAsset(OutlinedSvgAssets.sparkles),
+        _BottomNavShellTestHarness.svgAsset(OutlinedSvgAssets.bookOpen),
         findsOneWidget,
       );
-      await tester.tap(find.text(AppStrings.navPlan));
+      final navigationBar = tester.widget<NavigationBar>(
+        find.byKey(const ValueKey<String>('bottom_navigation_bar')),
+      );
+      final destinations = tester.widgetList<NavigationDestination>(
+        find.byType(NavigationDestination),
+      );
+      expect(
+        navigationBar.labelBehavior,
+        NavigationDestinationLabelBehavior.alwaysHide,
+      );
+      expect(destinations.map((destination) => destination.label), [
+        AppStrings.home,
+        AppStrings.navLibrary,
+        AppStrings.navPlan,
+        AppStrings.navAi,
+        AppStrings.navStats,
+      ]);
+
+      await tester.tap(find.byType(NavigationDestination).at(1));
+      await tester.pumpAndSettle();
+
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        _TestDestination.values[1].path,
+      );
+      expect(
+        _BottomNavShellTestHarness.svgAsset(SolidSvgAssets.bookOpen),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byType(NavigationDestination).at(2));
       await tester.pumpAndSettle();
 
       expect(

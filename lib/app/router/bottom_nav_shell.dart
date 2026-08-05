@@ -29,8 +29,8 @@ class _BottomNavItemData {
     ),
     _BottomNavItemData(
       label: AppStrings.navLibrary,
-      iconAsset: OutlinedSvgAssets.sparkles,
-      selectedIconAsset: SolidSvgAssets.sparkles,
+      iconAsset: OutlinedSvgAssets.bookOpen,
+      selectedIconAsset: SolidSvgAssets.bookOpen,
     ),
     _BottomNavItemData(
       label: AppStrings.navPlan,
@@ -146,6 +146,7 @@ class _FloatingNavigationBar extends StatelessWidget {
                   surfaceTintColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   elevation: 0,
+                  labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                   selectedIndex: currentIndex,
                   onDestinationSelected: onDestinationSelected,
                   destinations: [

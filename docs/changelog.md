@@ -6,6 +6,13 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-08-05
 
+### Bottom navigation — icon-only Library clarity
+
+- Replaced Library's sparkles with the matched outlined and filled open-book SVGs so the destination reads clearly as a browsable exercise and workout catalog.
+- Hid all visual bottom-navigation labels while retaining each destination label for accessibility; preserved routing, tap targets, safe-area behavior, selected states, and the existing glass opacity values.
+- Added coverage for icon-only presentation, retained destination labels, Library routing, and the outlined-to-filled Library icon transition.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
 ### Bottom navigation — filled selected icons
 
 - Mapped each selected bottom-navigation destination to its matching solid SVG while retaining the outlined SVG for its unselected state.
