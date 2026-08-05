@@ -354,7 +354,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **`focus`**: Required field from `goalTagsJson`, formatted via `_formatFocus` in use case.
 - **`modalities`**: Required `List<String>` from exercise lookups via `ExerciseDao.getModalityByIds(List<int>)`.
 
-### _StackedCategoryIcons — modality-driven, up to 3
+### \_StackedCategoryIcons — modality-driven, up to 3
 
 - Maps modality strings to icons (`dumbbell`/`heart`/`meditation`). `.take(3)` with progressive offsets for proper overlap.
 
@@ -374,7 +374,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 ### Exercise library screen — full redesign to match HTML design system
 
 - **ExerciseLibraryScreen rewritten** (587 lines, down from 391+185): Matches the HTML design with view toggle (List/Bodymap pill toggle using `surfaceContainerLow` bg + `AppRadius.full`), search bar (white card, `AppRadius.md`, no-border style, focused ring at `secondary/20`), horizontal scrollable muscle-group filter chips (`_MuscleGroupChips` — All/Chest/Back/Legs/Shoulders/Arms/Core/Cardio mapping to `BodymapBucket` and `ExerciseModality`), exercise list using shared `ExerciseCard` component, das
-hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateExerciseFab` (`AppRadius.lg`, secondary color, plus icon, navigates to custom exercise creation).
+  hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateExerciseFab` (`AppRadius.lg`, secondary color, plus icon, navigates to custom exercise creation).
 - **View toggle**: `_ViewToggle` and `_TogglePill` widgets — animated container with 300ms duration, selected pill uses `secondary` bg + shadow, unselected uses transparent bg. Bodymap tab icon uses `BodymapSvgAssets.front` (existing large SVG scaled to icon size).
 - **Chip-based filtering replaces filter FAB + bottom sheet**: `_MuscleGroupChips` provides quick muscle-group access inline. `_FilterChipData` static list maps 8 labels to `BodymapBucket?` + `ExerciseModality?`. `_MuscleGroupChips` `onSelected` uses `copyWith` with `clearMuscleGroup: bucket == null` and `clearModality: modality == null` to correctly clear fields when switching chips — fixes the `??` fallback pattern that prevented clearing filter values to null.
 - **Empty state redesigned**: Dashed-border container (300px, `DashedBorderPainter` with 2px stroke, 8px dash, 8px gap, `AppRadius.md`) with circle icon, headline, and subtext. Replaces centered icon + text pattern.
@@ -430,7 +430,7 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 - **Cleanup**: Removed unused `superset_grouping_policy.dart` import, `displayIndex` variable, and string interpolation warning.
 - Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
 
-### Badge unification — SupersetGroupBadge, _PhaseBadge, _DifficultyBadge all delegate to AppBadge
+### Badge unification — SupersetGroupBadge, \_PhaseBadge,\_DifficultyBadge all delegate to AppBadge
 
 - **AppBadge extended**: Added `EdgeInsetsGeometry? padding` and `TextStyle? textStyle` optional params to support custom padding and text-style overrides without losing the shared badge pattern.
 - **`SupersetGroupBadge`** (`superset_group_badge.dart`): Rewrote `build()` to delegate to `AppBadge` — passes custom padding (`xs`/`xxxs`), `borderRadius: AppRadius.xxs`, `textStyle: AppTextStyles.labelSm`, and `primaryContainer`/`onPrimaryContainer` colors. Public API (`groupId`, `order`) and test unchanged.
@@ -439,7 +439,7 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 - **6 private `_Badge`/badge-like widget definitions now consolidated into 1 shared `AppBadge`** + 2 thin public wrappers (`SupersetGroupBadge`, `_DifficultyBadge`).
 - Verification: `dart format .` — 2 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
 
-### _Badge extraction — 3 private definitions unified into shared AppBadge component
+### \_Badge extraction — 3 private definitions unified into shared AppBadge component
 
 - **New shared widget** `lib/shared/components/app_badge.dart` — `AppBadge` StatelessWidget with required `label`, optional `backgroundColor`/`foregroundColor` (defaults to `secondary`/`onSecondary`), `borderRadius` (default `AppRadius.sm`), `fontWeight`, and `letterSpacing`.
 - **Removed 3 private `_Badge` definitions** from `home_screen.dart`, `programme_list_tile.dart`, `programmes_screen.dart`.
@@ -582,8 +582,6 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 - Replaced raw-number `SizedBox(width: 40)` with `AppWhiteSpace.custom(width: AppSizing.handleWidth)` in `workout_builder_screen.dart`.
 - Files: `lib/shared/theme/app_spacing.dart` + 60 feature files.
 - Verification: `dart format .` — 0 unchanged. `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
-
-
 
 ### Workout builder screen — enhanced sets table, WEIGHT/REST columns, controller lifecycle
 
@@ -851,7 +849,7 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 
 - **Validation scope rename** (`lib/core/validation/`): `DraftValidationScope.set` → `DraftValidationScope.exerciseSet` across 5 files (service, adapters, tests).
 - **Custom exercise editor invalidation** (`custom_exercise_editor_screen.dart`): Controller invalidates provider state on "Done" — ensures fresh state on re-entry.
-- **_InfoRow extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow` helper → standalone `_InfoRow` StatelessWidget.
+- **\_InfoRow extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow` helper → standalone `_InfoRow` StatelessWidget.
 - **VSCode launch config** (`.vscode/launch.json`): Flutter debug/run configuration for IDE development.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
 
@@ -1841,6 +1839,7 @@ hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateE
 #### M0 — Implementation lock & backlog setup
 
 - Created `implementation.md` and `changelog.md` tracking files
+
 # 2026-07-29 — Final onboarding review body aligned to supplied design
 
 - Reworked `OnboardingScreen` final review into the supplied fixed mobile, single-column bento composition.
