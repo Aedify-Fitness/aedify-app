@@ -13,7 +13,7 @@
 
 ### 2026-08-05 — Prominent selected navigation capsule (complete)
 
-- Replaces the unconfigurable 64×32 Material indicator with a locally drawn pill that fills each destination inside a 6px horizontal bar inset and uses a 60px height to preserve 6px top and bottom gaps within the 72px bar.
+- Uses a 64px floating bar with a locally drawn 52px pill that fills each destination inside a 6px horizontal bar inset and preserves 6px top and bottom gaps.
 - Keeps every destination in a stable indicator frame, renders inactive outline SVGs at 24px, and renders the selected filled SVG at 28px without reducing destination tap targets.
 - Uses `secondaryContainer`/`onSecondaryContainer` in light mode and `primaryContainer`/`onPrimaryContainer` in dark mode, switching to stronger semantic pairs when high contrast is enabled.
 - Positions one persistent backing beneath the destinations and slides it directionally over the shared 200ms navigation-selection duration, leaving the glass blur, border, safe-area behavior, scroll clearance, and user-adjusted surface opacity tokens unchanged.

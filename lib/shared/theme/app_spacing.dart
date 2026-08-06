@@ -34,7 +34,7 @@ class AppSpacing {
 }
 
 abstract final class AppBottomNavigationTokens {
-  static const double height = 72;
+  static const double height = AppSpacing.xxxl;
   static const double selectedIndicatorEdgeInset = 6;
   static const double selectedIndicatorHeight =
       height - (selectedIndicatorEdgeInset * 2);

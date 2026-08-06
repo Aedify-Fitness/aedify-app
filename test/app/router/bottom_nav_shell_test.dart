@@ -230,6 +230,8 @@ void main() {
       final selectedIndicatorRect = tester.getRect(
         _BottomNavShellTestHarness.selectedIndicator,
       );
+      expect(navigationBar.height, AppBottomNavigationTokens.height);
+      expect(glassSurfaceRect.height, AppBottomNavigationTokens.height);
       expect(
         selectedIndicatorRect.size,
         Size(

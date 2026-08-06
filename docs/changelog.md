@@ -9,6 +9,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 ### Bottom navigation — prominent selected capsule
 
 - Replaced Material's small fixed selection indicator with a responsive pill-shaped backing that fills each destination inside a 6px navigation-bar edge inset and sits 6px from the bar's top and bottom edges.
+- Reduced the floating bar from 72px to 64px and its selected capsule from 60px to 52px while retaining the exact 6px vertical insets and mobile-sized destination targets.
 - Uses the light secondary-container and dark primary-container color pairs for solid contrast against the glass, with stronger theme pairs in high-contrast mode; selected glyphs grow to 28px while inactive glyphs retain their 24px size.
 - Added one persistent capsule that slides between destinations over a restrained 200ms transition while preserving the icon-only layout, filled selected SVGs, routing, safe-area clearance, and user-adjusted liquid-glass opacity values.
 - Suppressed the Material pressed overlay for destination taps so the sliding capsule is the sole visual selection feedback, while leaving non-pressed focus handling available.
