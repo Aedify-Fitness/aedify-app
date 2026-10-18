@@ -9,7 +9,128 @@
 | **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
+Latest repository verification (2026-10-17): `dart format .` checked 699 files;
+`flutter analyze` passed with no issues. Full `flutter test` passed 1185/1186,
+including the new warmup/working superset timer-separation regressions. The only
+failure remains the previously documented `workout_runner_controller_test.dart`
+"saveProgress preserves and persists a set edit made while save is pending"
+async timing test (`requireValue` observes `AsyncLoading`).
+
 ## Completed Work
+
+### 2026-10-17 — M4 independent rest and elapsed workout timers (complete)
+
+- `workout_runner_active_view.dart` uses the supplied bottom rest panel for both
+  single exercises and supersets. The panel temporarily replaces Log/Finish and
+  includes the circular countdown, ±15s controls, and skip action.
+- `workout_runner_header.dart` always renders the authoritative elapsed workout
+  clock. `rest_timer_widget.dart` no longer offers a compact header variant.
+- Superset warmup/working tests check separate timer placement, stable header
+  geometry/start time, adjustments, and restored round-specific logging after
+  skipping rest. Existing round ordering and rest-after-round policies remain.
+- Verification: `dart format .` checked 699 files; `flutter analyze` and
+  `git diff --check` passed. Full `flutter test`: 1185 passed / 1 previously
+  documented pending-save timing failure. Device smoke testing was not run.
+
+### 2026-10-17 — M4 library refresh, exit dismissal, and superset rounds (complete)
+
+- `exercise_library_screen.dart` reloads the existing search controller on
+  return from custom creation, preserving filters and covering Done, saved Back,
+  and cancellation navigation.
+- `exit_workout_sheet.dart` wires the existing dismissal callback to an
+  accessible Close control and outside-card taps; content taps and workout
+  action callbacks remain separate. System back also dismisses the modal.
+- `WorkoutRunnerBlockResolver` pairs warmup and working sets by type and round,
+  skips resolved sets, supports uneven counts, and rests only once each round
+  is resolved. Labels and contextual logging retain member identity.
+- `workout_runner_active_view.dart` renders each warmup/working round with a
+  shared active tint and vertical connector, bordered member previews with play
+  affordances, and the fixed Log/Finish tray. The independent-timer update above
+  places rest for all exercise blocks in the supplied bottom panel.
+- Runner header/spacing now follow the reference gutter and reserve scaled text
+  height, placing the timer on a second line on narrow phones with large text.
+  Existing theme tokens and honest unavailable-history/M5-insight content are
+  retained; no AI advice, illustrative history, or extra sets are fabricated.
+- Verification: `dart format .` checked 699 files; `flutter analyze` passed;
+  focused library, exit-sheet, superset resolver, and runner checks passed 51/51.
+  Full suite: 1184 passed / 1 pre-existing pending-save timing failure.
+  `git diff --check` passed.
+  A 390×1450 render was inspected; compact 320px / 2× text and light/dark
+  geometry/interaction checks are covered. Device smoke testing was not run.
+
+
+### 2026-08-22 — Workout Runner superset execution block runner (complete)
+
+- Added `WorkoutRunnerBlockResolver` to resolve the active exercise block, sort
+  superset members, compute A/B labels, render warmups before working rounds,
+  and select the first incomplete set in round-major order for supersets.
+- Refactored the active runner screen/view to render active supersets as
+  `Superset Block N` with a grouped superset card, member previews, interleaved
+  `S1 (A)` / `S1 (B)` rows, no Substitute pill, contextual `Log S1 (...)` CTA,
+  and `ADD SUPERSET` footer behavior.
+- Refined the supplied superset `Up next` button with the primary link icon,
+  title-row chevron, soft elevation, SUPerset badge, and linked-exercise row.
+- Fixed linked-exercise resolution so the second exercise name is found from the
+  whole superset group instead of only adjacent list positions.
+- Replaced tuple-style resolver rows with `WorkoutRunnerBlockSet`, exposing
+  named `exercise` and `set` fields for active selections and rendered block
+  rows.
+- Rest starts after a superset round is resolved rather than after each member
+  set; single-exercise logging/rest behavior is preserved.
+- Added `WorkoutRunnerController.addSetToExercises` so adding a superset round
+  appends one cloned incomplete set to every member exercise.
+- Files: `workout_runner_block.dart`, `workout_runner_screen.dart`,
+  `workout_runner_active_view.dart`, `workout_runner_header.dart`,
+  `workout_runner_controller.dart`, `app_strings.dart`, `app_spacing.dart`, plus
+  resolver/controller/screen tests.
+- Verification: `dart format .` checked 697 files; `flutter analyze` passed;
+  `workout_runner_block_test.dart` + `workout_runner_screen_test.dart` passed
+  21/21; `workout_runner_screen_test.dart` passed 19/19 after the supplied
+  button refinement and linked-name fix; the new focused controller helper test
+  passed 1/1; the full controller file passed 36/37 with only the known
+  unrelated save-progress pending-save timing failure.
+
+### 2026-08-06 — Workout Runner in-session exercise substitution (complete)
+
+- Added the header Substitute pill (accent `swap_horiz` glyph + uppercase SUBSTITUTE label in a bordered `surface-container-low` chip) under the exercise title, growing the runner header extent to 116px.
+- Tapping it opens the shared `AddExerciseBottomSheet` (current exercise excluded) and swaps the chosen exercise into the active session via the new `WorkoutRunnerController.substituteExercise`.
+- Completed/skipped set logs keep their per-set `exerciseId` (attribution preserved); pending sets are recreated for the replacement with prescriptions kept and actuals cleared. Persisted through the existing autosave.
+- Disables the pill while paused and guards the controller so a swap cannot reset a paused or saving phase.
+- Bundled `material_symbol_swap_horiz.svg` and registered `OutlinedSvgAssets.materialSwapHoriz`.
+- Files: `workout_runner_controller.dart`, `workout_runner_header.dart`, `workout_runner_active_view.dart`, `workout_runner_screen.dart`, `svg_assets_outlined.dart`, `app_spacing.dart`, `material_symbol_swap_horiz.svg`, plus controller and screen tests.
+- Verification: `dart format .` checked 695 files; `flutter analyze` passed with no issues; runner presentation suite passed 18/18; controller suite passed 36/37; full `flutter test` passed 1159/1160 with the single pre-existing saveProgress timing failure noted above.
+
+### 2026-08-06 — Workout Runner rest timer bottom panel (complete)
+
+- Replaced the compact floating rest pill and its modal adjustment sheet with the supplied full-width bottom rest panel: 128px accent countdown ring, uppercase REST TIME eyebrow, side-by-side −15s/+15s tonal pills, and a full-width Skip Rest & Log Next Set primary action.
+- The panel takes over the runner's fixed bottom chrome while resting, replacing the Log Set / Finish tray; skipping or countdown completion restores the action tray for logging the next set. Frosted surface, top border, safe-area padding, and max-width rhythm match the existing action tray.
+- Header keeps the authoritative elapsed workout clock; the rest countdown stays an independent per-set timer that auto-dismisses at zero, clamps adjustments to 0–300 seconds, and dismisses immediately when a logged set resolves to zero rest.
+- Added rest-panel sizing tokens to `AppWorkoutRunnerTokens` and the `skipRestAndLogNextSet` string; retired the unused `adjustRestTimer` and `skipRest` strings.
+- Also repaired two pre-existing exercise-library lint findings (`unused_element_parameter`, `use_null_aware_elements`) left by the prior unverified session so `flutter analyze` passes cleanly.
+- Files: `rest_timer_widget.dart`, `workout_runner_active_view.dart`, `app_spacing.dart`, `app_strings.dart`, `exercise_detail_screen.dart`, `exercise_video_card.dart`, `workout_runner_screen_test.dart`.
+- Verification: `dart format .` checked 695 files; `flutter analyze` passed with no issues; focused runner presentation tests passed 17/17; full `flutter test` passed 1156/1157 with the single pre-existing controller pending-save timing failure noted above.
+
+### 2026-08-06 — Exercise Details updated supplied-design alignment (implemented; verification pending)
+
+- Uses the latest supplied mobile hierarchy: close control, title/favorite, Guidance/Performance selector, horizontal labeled video carousel, initially expanded Exercise Guide, Muscles Worked/bodymaps, speaker-led instruction steps, Notes, and a fixed Substitute action with terminal scroll clearance.
+- Keeps dynamic repository content and existing offline empty/failure states; the supplied remote mock imagery is not copied into the app.
+- Persists favorite and substitution changes through `ExerciseRepository`, preserves per-step TTS, and retains the required Ask AI route in the Performance state without adding an extra Guidance action that conflicts with the supplied composition.
+- Retains truthful `Primary` and `Muscle Focus` labels because the current domain model has no authoritative primary/secondary bucket split. Keeps Notes disabled and explicitly marked coming soon because `user_notes` is not yet exposed through the detail repository contract.
+- Adds exercise-detail and video-widget coverage for hierarchy, carousel paging/overlays, guide disclosure, action persistence and fixed placement, responsive text/width behavior, notes state, and existing fallbacks.
+- Verification pending: `git diff --check` passes. `dart format .`, `flutter analyze`, focused widget tests, and full `flutter test` were blocked when the environment rejected Flutter SDK-cache escalation due to its exhausted usage quota.
+
+### 2026-08-06 — Workout Runner supplied-design alignment (complete)
+
+- Replaces the active runner presentation with the supplied mobile composition while retaining the existing Riverpod controller and local session lifecycle.
+- Keeps a fixed frosted workout/exercise/elapsed-duration header and fixed frosted Log Set / Finish tray above a safe-area-aware scroll view containing 16:9 media, the four-column set log, truthful progress insight, and derived next/superset context.
+- Preserves recovery, pause, guarded exit, early finish, final-set completion, autosave, rest defaults, and exercise-guide navigation across resume, saved-workout, and programme-workout modes.
+- Supports editable active-set KG/REPS, completion toggles, appended sets cloned from the final prescription, and persisted per-set notes. PREV remains an honest unavailable value until workout-history integration owns that data.
+- Routes programme-started runners outside `BottomNavShell`, matching the existing full-screen saved/resume runners without changing route names or paths.
+- Derives the header clock from the authoritative session start, freezes it at the accumulated duration while paused, resumes it without reset, and keeps the adjustable per-set rest countdown in a separate fixed pill above the action tray.
+- Clears and immediately persists the paused duration snapshot when a paused or recovered session resumes; exit, early finish, and normal completion now share the same duration resolver and capture the completion instant on confirmation. In-flight progress saves retain newer edits while their scheduled follow-up save persists them.
+- Adds shared runner sizing/glass tokens and responsive behavior for narrow phones, 2× text, safe areas, and light/dark themes; bottom-navigation glass opacity values remain untouched.
+- Adds controller, duration-resolver, and widget regression coverage for the supplied 390px geometry, state treatments, elapsed/rest progression, overlay clearance, actions, navigation, recovery/error states, compact accessibility, and theme resolution.
+- Verification: before the elapsed-clock correction, `dart format .` checked 692 files, `flutter analyze` passed with no issues, focused workout-runner widget/controller tests passed 49/49, router tests passed 22/22, and the full suite had passed 1145/1145. The final format/analyze/test rerun for the elapsed-clock correction was blocked by the execution environment's current usage limit; `git diff --check` remains clean.
 
 ### 2026-08-05 — Prominent selected navigation capsule (complete)
 

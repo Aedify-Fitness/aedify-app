@@ -686,6 +686,8 @@ class AppStrings {
   // V1-M4-008 — superset / execution groups
   static const supersets = 'Supersets';
   static const superset = 'Superset';
+  static const addSuperset = 'Add superset';
+  static String supersetBlockTitle(int number) => 'Superset Block $number';
   static const cancelSelection = 'Cancel Selection';
   static const createSuperset = 'Create superset';
   static const editSuperset = 'Edit superset';
@@ -996,15 +998,33 @@ class AppStrings {
       'You have an active workout session. Would you like to continue where you left off or start fresh?';
   static const inProgressLabel = 'In Progress';
   static const timeElapsed = 'Time Elapsed';
+  static String timeElapsedLabel(String value) => '$timeElapsed: $value';
   static const currentExercise = 'Current Exercise';
   static const abandonWorkout = 'Abandon Workout';
+  static const exitWorkout = 'Exit workout';
   static const progressLabel = 'Progress';
   static const finishEarly = 'Finish Early';
+  static const finish = 'Finish';
   static const logSet = 'Log Set';
+  static String logSetWithLabel(String label, String exerciseName) =>
+      'Log $label ($exerciseName)';
+  static String targetRepsLabel(String reps) => 'Target: $reps Reps';
   static const restTime = 'Rest Time';
-  static const skipRest = 'Skip rest';
+  static String restTimeRemaining(String value) => '$value remaining';
+  static const skipRestAndLogNextSet = 'Skip Rest & Log Next Set';
+  static const addNote = 'Add note';
+  static const saveNote = 'Save note';
+  static const formGuidance = 'Form Guidance';
+  static const upNext = 'Up next';
+  static const previousColumn = 'PREV';
+  static const logColumn = 'LOG';
+  static const kilogramsAbbreviation = 'KG';
+  static const warmupSetPrefix = 'W';
+  static const workingSetPrefix = 'S';
+  static const unavailableValue = '\u2014';
   static const insightForProgress = 'Insight for Progress';
-  static const insightPlaceholder = 'Insights coming soon \u2014 M5 feature';
+  static const insightPlaceholder =
+      'Personalized training insights are coming in M5. Your workout can still be logged fully offline today.';
   static const exerciseGuide = 'Exercise Guide';
   static const muscleFocus = 'Muscle Focus';
   static const executionSteps = 'Execution Steps';
@@ -1013,8 +1033,16 @@ class AppStrings {
   static const weightKg = 'Weight (kg)';
 
   // Exercise detail
+  static const close = 'Close';
   static const guidance = 'Guidance';
   static const performance = 'Performance';
+  static const musclesWorked = 'Muscles Worked';
+  static const primary = 'Primary';
+  static const secondary = 'Secondary';
+  static String exerciseStepLabel(int stepNumber) => 'Step $stepNumber';
+  static const typeYourNotesHere = 'Type your notes here';
+  static const exerciseNotesComingSoon =
+      'Personal exercise notes are coming soon.';
   static const noHistoryYet = 'No History Yet';
   static const noHistoryHint =
       'Complete this exercise in a workout to start tracking your performance metrics.';

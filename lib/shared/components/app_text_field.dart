@@ -38,6 +38,9 @@ class AppTextField extends StatefulWidget {
     this.suffixStyle,
     this.borderOverride,
     this.textAlign = TextAlign.start,
+    this.labelStyle,
+    this.floatingLabelStyle,
+    this.floatingLabelBehavior,
   });
 
   final TextEditingController controller;
@@ -69,6 +72,9 @@ class AppTextField extends StatefulWidget {
   final String? suffixText;
   final TextStyle? suffixStyle;
   final TextAlign textAlign;
+  final TextStyle? labelStyle;
+  final TextStyle? floatingLabelStyle;
+  final FloatingLabelBehavior? floatingLabelBehavior;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -118,7 +124,11 @@ class _AppTextFieldState extends State<AppTextField> {
             color: cs.onSurfaceVariant.withValues(alpha: 0.5),
           ),
       labelText: widget.labelText,
-      labelStyle: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+      labelStyle:
+          widget.labelStyle ??
+          AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+      floatingLabelStyle: widget.floatingLabelStyle,
+      floatingLabelBehavior: widget.floatingLabelBehavior,
       errorText: widget.errorText,
       errorStyle: AppTextStyles.labelSm.copyWith(color: cs.error),
       prefixIcon: widget.prefixIcon,

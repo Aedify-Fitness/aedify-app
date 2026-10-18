@@ -14,6 +14,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/theme/app_durations.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -40,14 +41,13 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
     final detailAsync = ref.watch(
       AppProviders.exerciseDetailControllerProvider(widget.exerciseId),
     );
-    final detail = detailAsync.asData?.value;
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
-            _CompactHeader(detail: detail, exerciseId: widget.exerciseId),
+            const _CompactHeader(),
             Expanded(
               child: detailAsync.when(
                 loading: () => const _LoadingView(),
@@ -71,37 +71,32 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
 }
 
 class _CompactHeader extends StatelessWidget {
-  const _CompactHeader({required this.detail, required this.exerciseId});
-
-  final ExerciseDetailViewData? detail;
-  final int exerciseId;
+  const _CompactHeader();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Tooltip(
-            message: AppStrings.backLabel,
-            child: AppIconButton(
-              asset: OutlinedSvgAssets.arrowLeft,
-              semanticLabel: AppStrings.backLabel,
-              backgroundColor: context.colorScheme.surfaceContainerLow,
-              onPressed: () {
-                if (context.canPop()) context.pop();
-              },
-            ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: AppExerciseDetailTokens.maxScreenWidth,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          child: Row(
+            children: [
+              Tooltip(
+                message: AppStrings.close,
+                child: AppIconButton(
+                  asset: OutlinedSvgAssets.xMark,
+                  semanticLabel: AppStrings.close,
+                  onPressed: () {
+                    if (context.canPop()) context.pop();
+                  },
+                ),
+              ),
+            ],
           ),
-          if (detail != null)
-            _FavoriteButton(detail: detail!, exerciseId: exerciseId)
-          else
-            AppWhiteSpace.custom(
-              width: AppSizing.iconXxl,
-              height: AppSizing.iconXxl,
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -118,16 +113,9 @@ class _FavoriteButton extends ConsumerWidget {
     return Tooltip(
       message: AppStrings.toggleFavorite,
       child: AppIconButton(
-        asset: detail.isFavorite
-            ? SolidSvgAssets.heart
-            : OutlinedSvgAssets.heart,
+        asset: detail.isFavorite ? SolidSvgAssets.star : OutlinedSvgAssets.star,
         semanticLabel: AppStrings.toggleFavorite,
-        color: detail.isFavorite
-            ? context.colorScheme.error
-            : context.colorScheme.onSurfaceVariant,
-        backgroundColor: detail.isFavorite
-            ? context.colorScheme.errorContainer
-            : context.colorScheme.surfaceContainerLow,
+        color: _ExerciseDetailColors.accent(context),
         onPressed: () async {
           try {
             final repository = ref.read(
@@ -160,97 +148,104 @@ class _DetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _ExerciseHero(detail: detail),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.md,
-            ),
-            child: _SegmentedTab(
-              tabIndex: tabIndex,
-              onTabChanged: onTabChanged,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CustomScrollView(
+            key: const Key('exercise_detail_scroll_view'),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  bottom: AppExerciseDetailTokens.contentBottomClearance,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: AppExerciseDetailTokens.maxContentWidth,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _ExerciseTitle(detail: detail),
+                          AppWhiteSpace.hMd,
+                          _SegmentedTab(
+                            tabIndex: tabIndex,
+                            onTabChanged: onTabChanged,
+                          ),
+                          AppWhiteSpace.hLg,
+                          AnimatedSwitcher(
+                            duration: MediaQuery.accessibleNavigationOf(context)
+                                ? Duration.zero
+                                : AppDurations.segmentedControl,
+                            switchInCurve: Curves.easeOutCubic,
+                            switchOutCurve: Curves.easeInCubic,
+                            child: tabIndex == 0
+                                ? _GuidanceTab(
+                                    key: const ValueKey<String>('guidance_tab'),
+                                    detail: detail,
+                                  )
+                                : const _PerformanceTab(
+                                    key: ValueKey<String>('performance_tab'),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: AppSpacing.md,
+          right: AppSpacing.md,
+          bottom: AppExerciseDetailTokens.bottomActionInset,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppExerciseDetailTokens.bottomActionMaxWidth,
+              ),
+              child: _BottomSubstituteAction(detail: detail),
             ),
           ),
-          if (tabIndex == 0) _GuidanceTab(detail: detail),
-          if (tabIndex == 1) const _PerformanceTab(),
-          _TonalSection(elevated: tabIndex == 1, child: const _ActionButtons()),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class _ExerciseHero extends StatelessWidget {
-  const _ExerciseHero({required this.detail});
+class _ExerciseTitle extends StatelessWidget {
+  const _ExerciseTitle({required this.detail});
 
   final ExerciseDetailViewData detail;
 
   @override
   Widget build(BuildContext context) {
-    final metadata = <String>[
-      if (detail.difficulty != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.difficulty!.dbValue),
-      _ExerciseDetailLabelFormatter.formatLabel(detail.modality.dbValue),
-      if (detail.equipment != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment!.dbValue),
-    ];
-
-    return Container(
-      color: context.colorScheme.surface,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.lg,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (detail.category != null && detail.category!.isNotEmpty) ...[
-            Text(
-              _ExerciseDetailLabelFormatter.formatLabel(detail.category!),
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.colorScheme.secondary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            AppWhiteSpace.hSm,
-          ],
-          Text(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
             detail.name,
+            key: const Key('exercise_detail_title'),
             style: AppTextStyles.headlineLgMobile.copyWith(
               color: context.colorScheme.onSurface,
             ),
           ),
-          if (detail.primaryMuscles.isNotEmpty) ...[
-            AppWhiteSpace.hSm,
-            Text(
-              detail.primaryMuscles.join(', '),
-              style: AppTextStyles.bodyMd.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-          if (metadata.isNotEmpty) ...[
-            AppWhiteSpace.hLg,
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: metadata
-                  .map((label) => _MetadataBadge(label: label))
-                  .toList(),
-            ),
-          ],
-        ],
-      ),
+        ),
+        AppWhiteSpace.wSm,
+        _FavoriteButton(detail: detail, exerciseId: detail.id),
+      ],
     );
   }
 }
 
 class _GuidanceTab extends StatelessWidget {
-  const _GuidanceTab({required this.detail});
+  const _GuidanceTab({super.key, required this.detail});
 
   final ExerciseDetailViewData detail;
 
@@ -259,61 +254,245 @@ class _GuidanceTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _TonalSection(
+        ExerciseVideoSection(
           key: const Key('exercise_detail_video_section'),
-          elevated: true,
-          child: ExerciseVideoSection(
-            videos: detail.videos,
-            onRetry: () {},
-            failureStates: const {},
-          ),
+          videos: detail.videos,
+          onRetry: () {},
+          failureStates: const {},
         ),
-        _TonalSection(
-          key: const Key('exercise_detail_instructions_section'),
-          child: _StepsSection(steps: detail.steps, detail: detail),
-        ),
-        _TonalSection(
-          key: const Key('exercise_detail_bodymap_section'),
-          elevated: true,
-          child: _BodymapSection(detail: detail),
-        ),
-        _TonalSection(
+        AppWhiteSpace.hMd,
+        _MetadataSection(
           key: const Key('exercise_detail_metadata_section'),
-          child: _MetadataSection(detail: detail),
+          detail: detail,
         ),
-        const _TonalSection(
-          key: Key('exercise_detail_notes_section'),
-          elevated: true,
-          child: _NotesSection(),
+        AppWhiteSpace.hMd,
+        _MusclesWorkedCard(
+          key: const Key('exercise_detail_bodymap_section'),
+          detail: detail,
         ),
+        AppWhiteSpace.hMd,
+        _StepsSection(
+          key: const Key('exercise_detail_instructions_section'),
+          steps: detail.steps,
+          detail: detail,
+        ),
+        AppWhiteSpace.hMd,
+        const _NotesSection(key: Key('exercise_detail_notes_section')),
       ],
     );
   }
 }
 
-class _TonalSection extends StatelessWidget {
-  const _TonalSection({super.key, required this.child, this.elevated = false});
+class _ExerciseDetailCard extends StatelessWidget {
+  const _ExerciseDetailCard({required this.child});
 
   final Widget child;
-  final bool elevated;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: elevated
-          ? context.colorScheme.surfaceContainerLow
-          : context.colorScheme.surface,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.xl,
+        vertical: AppSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: MediaQuery.highContrastOf(context)
+            ? Border.all(color: context.colorScheme.outlineVariant)
+            : null,
       ),
       child: child,
     );
   }
 }
 
+class _MusclesWorkedCard extends StatelessWidget {
+  const _MusclesWorkedCard({super.key, required this.detail});
+
+  final ExerciseDetailViewData detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryLabels = detail.primaryMuscles
+        .map(_ExerciseDetailLabelFormatter.formatLabel)
+        .toSet()
+        .toList();
+    final focusLabels = detail.muscleGroups
+        .map((group) => group.label)
+        .where(
+          (label) => !primaryLabels.any(
+            (primary) => primary.toLowerCase() == label.toLowerCase(),
+          ),
+        )
+        .toList();
+    final effectivePrimary = primaryLabels.isEmpty
+        ? detail.muscleGroups.map((group) => group.label).toList()
+        : primaryLabels;
+
+    return _ExerciseDetailCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppStrings.musclesWorked,
+            style: AppTextStyles.headlineMd.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+          if (effectivePrimary.isNotEmpty || focusLabels.isNotEmpty) ...[
+            AppWhiteSpace.hMd,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final stacksVertically =
+                    constraints.maxWidth <
+                        AppExerciseDetailTokens.compactContentBreakpoint ||
+                    MediaQuery.textScalerOf(context).scale(1) >=
+                        AppExerciseDetailTokens.largeTextBreakpoint;
+                final primary = _MuscleGroup(
+                  label: AppStrings.primary,
+                  muscles: effectivePrimary,
+                  emphasized: true,
+                );
+                final focus = _MuscleGroup(
+                  label: AppStrings.muscleFocus,
+                  muscles: focusLabels,
+                );
+
+                if (focusLabels.isEmpty) return primary;
+                if (stacksVertically) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [primary, AppWhiteSpace.hMd, focus],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: primary),
+                    AppWhiteSpace.wLg,
+                    Expanded(child: focus),
+                  ],
+                );
+              },
+            ),
+          ],
+          AppWhiteSpace.hMd,
+          const _BodymapStage(),
+        ],
+      ),
+    );
+  }
+}
+
+class _MuscleGroup extends StatelessWidget {
+  const _MuscleGroup({
+    required this.label,
+    required this.muscles,
+    this.emphasized = false,
+  });
+
+  final String label;
+  final List<String> muscles;
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.labelSm.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        AppWhiteSpace.hSm,
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: muscles
+              .map(
+                (muscle) => AppBadge(
+                  label: muscle.toUpperCase(),
+                  backgroundColor: emphasized
+                      ? _ExerciseDetailColors.activeFill(context)
+                      : context.colorScheme.secondaryContainer,
+                  foregroundColor: emphasized
+                      ? _ExerciseDetailColors.activeForeground(context)
+                      : context.colorScheme.onSecondaryContainer,
+                  borderRadius: AppRadius.full,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.controlGap,
+                    vertical: AppSpacing.xs,
+                  ),
+                  textStyle: AppTextStyles.labelSm,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class _BodymapStage extends StatelessWidget {
+  const _BodymapStage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: AppExerciseDetailTokens.bodymapStageHeight,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+      ),
+      child: const Row(
+        children: [
+          Expanded(child: _BodymapFigure(side: BodymapViewSide.front)),
+          AppWhiteSpace.wSm,
+          Expanded(child: _BodymapFigure(side: BodymapViewSide.back)),
+        ],
+      ),
+    );
+  }
+}
+
+class _BodymapFigure extends StatelessWidget {
+  const _BodymapFigure({required this.side});
+
+  final BodymapViewSide side;
+
+  @override
+  Widget build(BuildContext context) {
+    final isFront = side == BodymapViewSide.front;
+
+    return Semantics(
+      key: ValueKey<String>('exercise_detail_bodymap_${side.name}'),
+      image: true,
+      label: isFront ? AppStrings.bodymapFront : AppStrings.bodymapBack,
+      child: SvgPicture.asset(
+        BodymapAssetContract.assetPathForSide(side),
+        fit: BoxFit.contain,
+        colorFilter: ColorFilter.mode(
+          context.colorScheme.onSurfaceVariant.withValues(
+            alpha: AppExerciseDetailTokens.mutedBodymapOpacity,
+          ),
+          BlendMode.srcIn,
+        ),
+      ),
+    );
+  }
+}
+
 class _StepsSection extends ConsumerWidget {
-  const _StepsSection({required this.steps, required this.detail});
+  const _StepsSection({super.key, required this.steps, required this.detail});
 
   final List<String> steps;
   final ExerciseDetailViewData detail;
@@ -324,199 +503,102 @@ class _StepsSection extends ConsumerWidget {
       AppProviders.exerciseStepAudioControllerProvider,
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const AppSectionHeader(title: AppStrings.executionSteps),
-        AppWhiteSpace.hLg,
-        ...steps.asMap().entries.map((entry) {
-          final stepState =
-              audioStates['${detail.id}:${entry.key}'] ??
-              const ExerciseStepAudioState.idle();
-          final isActive = stepState.isBusy;
-
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: entry.key == steps.length - 1
-                  ? AppSpacing.xxs
-                  : AppSpacing.md,
+    return _ExerciseDetailCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppStrings.instructions,
+            style: AppTextStyles.headlineMd.copyWith(
+              color: context.colorScheme.onSurface,
             ),
-            child: AnimatedContainer(
-              key: ValueKey(
-                'exercise_step_${entry.key}_${isActive ? 'active' : 'idle'}',
+          ),
+          AppWhiteSpace.hMd,
+          if (steps.isEmpty)
+            Text(
+              AppStrings.customExerciseNoSteps,
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.md,
-              ),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? context.colorScheme.secondaryContainer
-                    : context.colorScheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: AppSpacing.lg,
-                    height: AppSpacing.lg,
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? context.colorScheme.secondary
-                          : context.colorScheme.surfaceContainerHigh,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${entry.key + 1}',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: isActive
-                            ? context.colorScheme.onSecondary
-                            : context.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+            )
+          else
+            ...steps.asMap().entries.expand((entry) {
+              final stepState =
+                  audioStates['${detail.id}:${entry.key}'] ??
+                  const ExerciseStepAudioState.idle();
+              final isActive = stepState.isBusy;
+
+              return <Widget>[
+                AnimatedContainer(
+                  key: ValueKey(
+                    'exercise_step_${entry.key}_${isActive ? 'active' : 'idle'}',
                   ),
-                  AppWhiteSpace.wMd,
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.xxs),
-                      child: Text(
-                        entry.value,
-                        style: AppTextStyles.bodyMd.copyWith(
-                          color: isActive
-                              ? context.colorScheme.onSecondaryContainer
-                              : context.colorScheme.onSurface,
+                  duration: MediaQuery.accessibleNavigationOf(context)
+                      ? Duration.zero
+                      : AppDurations.segmentedControl,
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.controlGap,
+                    vertical: AppSpacing.controlGap,
+                  ),
+                  decoration: isActive
+                      ? BoxDecoration(
+                          color: _ExerciseDetailColors.subtleActiveFill(
+                            context,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
+                        )
+                      : null,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ExerciseStepAudioButton(
+                        exerciseId: detail.id,
+                        stepIndex: entry.key,
+                        text: entry.value,
+                      ),
+                      AppWhiteSpace.wMd,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.exerciseStepLabel(entry.key + 1),
+                              style: AppTextStyles.labelSm.copyWith(
+                                color: _ExerciseDetailColors.accent(context),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            AppWhiteSpace.hXs,
+                            Text(
+                              entry.value,
+                              style: AppTextStyles.bodyMd.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                if (entry.key != steps.length - 1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.controlGap,
+                    ),
+                    child: Divider(
+                      height: AppSizing.divider,
+                      thickness: AppSizing.divider,
+                      color: context.colorScheme.outlineVariant.withValues(
+                        alpha: MediaQuery.highContrastOf(context)
+                            ? 1
+                            : AppExerciseDetailTokens.stepDividerOpacity,
+                      ),
                     ),
                   ),
-                  AppWhiteSpace.wSm,
-                  ExerciseStepAudioButton(
-                    exerciseId: detail.id,
-                    stepIndex: entry.key,
-                    text: entry.value,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-}
-
-class _BodymapSection extends StatefulWidget {
-  const _BodymapSection({required this.detail});
-
-  final ExerciseDetailViewData detail;
-
-  @override
-  State<_BodymapSection> createState() => _BodymapSectionState();
-}
-
-class _BodymapSectionState extends State<_BodymapSection> {
-  BodymapViewSide _side = BodymapViewSide.front;
-
-  @override
-  Widget build(BuildContext context) {
-    final muscleLabels = widget.detail.muscleGroups
-        .map((group) => group.label)
-        .toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const AppSectionHeader(title: AppStrings.muscleFocus),
-        AppWhiteSpace.hLg,
-        _BodymapSideToggle(
-          side: _side,
-          onChanged: (side) => setState(() => _side = side),
-        ),
-        AppWhiteSpace.hLg,
-        Center(
-          child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: AppSizing.bodymapSvgWidth,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.lg,
-            ),
-            decoration: BoxDecoration(
-              color: context.colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-            ),
-            child: AspectRatio(
-              aspectRatio:
-                  AppSizing.bodymapSvgWidth / AppSizing.bodymapSvgHeight,
-              child: SvgPicture.asset(
-                BodymapAssetContract.assetPathForSide(_side),
-                fit: BoxFit.contain,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.onSurfaceVariant,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (muscleLabels.isNotEmpty ||
-            widget.detail.primaryMuscles.isNotEmpty) ...[
-          AppWhiteSpace.hLg,
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: [
-              ...muscleLabels.map((label) => _MetadataBadge(label: label)),
-              ...widget.detail.primaryMuscles.map(
-                (label) => _MetadataBadge(label: label, emphasized: true),
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _BodymapSideToggle extends StatelessWidget {
-  const _BodymapSideToggle({required this.side, required this.onChanged});
-
-  final BodymapViewSide side;
-  final ValueChanged<BodymapViewSide> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.xs,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _PillToggle(
-              label: AppStrings.bodymapFront,
-              selected: side == BodymapViewSide.front,
-              onTap: () => onChanged(BodymapViewSide.front),
-            ),
-          ),
-          Expanded(
-            child: _PillToggle(
-              label: AppStrings.bodymapBack,
-              selected: side == BodymapViewSide.back,
-              onTap: () => onChanged(BodymapViewSide.back),
-            ),
-          ),
+              ];
+            }),
         ],
       ),
     );
@@ -524,7 +606,7 @@ class _BodymapSideToggle extends StatelessWidget {
 }
 
 class _MetadataSection extends StatefulWidget {
-  const _MetadataSection({required this.detail});
+  const _MetadataSection({super.key, required this.detail});
 
   final ExerciseDetailViewData detail;
 
@@ -533,70 +615,81 @@ class _MetadataSection extends StatefulWidget {
 }
 
 class _MetadataSectionState extends State<_MetadataSection> {
-  bool _expanded = false;
+  bool _expanded = true;
 
   @override
   Widget build(BuildContext context) {
     final detail = widget.detail;
-    final items = <String>[
-      if (detail.category != null && detail.category!.isNotEmpty)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.category!),
+    final rawItems = <String>[
+      if (detail.equipment != null)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment!.dbValue),
       if (detail.difficulty != null)
         _ExerciseDetailLabelFormatter.formatLabel(detail.difficulty!.dbValue),
       _ExerciseDetailLabelFormatter.formatLabel(detail.modality.dbValue),
-      if (detail.equipment != null)
-        _ExerciseDetailLabelFormatter.formatLabel(detail.equipment!.dbValue),
+      if (detail.category != null && detail.category!.isNotEmpty)
+        _ExerciseDetailLabelFormatter.formatLabel(detail.category!),
+      ...detail.muscleGroups.map((group) => group.label),
       if (detail.force != null)
         _ExerciseDetailLabelFormatter.formatLabel(detail.force!.dbValue),
       if (detail.mechanic != null)
         _ExerciseDetailLabelFormatter.formatLabel(detail.mechanic!.dbValue),
       ...detail.grips.map(_ExerciseDetailLabelFormatter.formatLabel),
     ];
+    final seen = <String>{};
+    final items = rawItems
+        .where((label) => seen.add(label.toLowerCase()))
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const AppSectionHeader(title: AppStrings.exerciseGuide),
         AppWhiteSpace.hMd,
-        Material(
-          color: context.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.buttonVertical,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      AppStrings.viewDetails,
-                      style: AppTextStyles.labelMd.copyWith(
-                        color: context.colorScheme.onSurface,
+        Semantics(
+          button: true,
+          expanded: _expanded,
+          child: Material(
+            color: context.colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.buttonVertical,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        AppStrings.viewDetails,
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: context.colorScheme.onSurface,
+                        ),
                       ),
                     ),
-                  ),
-                  SvgPicture.asset(
-                    _expanded
-                        ? OutlinedSvgAssets.chevronUp
-                        : OutlinedSvgAssets.chevronDown,
-                    width: AppSizing.iconSm,
-                    height: AppSizing.iconSm,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurfaceVariant,
-                      BlendMode.srcIn,
+                    SvgPicture.asset(
+                      _expanded
+                          ? OutlinedSvgAssets.chevronUp
+                          : OutlinedSvgAssets.chevronDown,
+                      width: AppSizing.iconSm,
+                      height: AppSizing.iconSm,
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
         AnimatedSize(
-          duration: const Duration(milliseconds: 200),
+          duration: MediaQuery.accessibleNavigationOf(context)
+              ? Duration.zero
+              : AppDurations.segmentedControl,
           curve: Curves.easeOutCubic,
           child: _expanded
               ? Padding(
@@ -617,7 +710,7 @@ class _MetadataSectionState extends State<_MetadataSection> {
 }
 
 class _NotesSection extends StatefulWidget {
-  const _NotesSection();
+  const _NotesSection({super.key});
 
   @override
   State<_NotesSection> createState() => _NotesSectionState();
@@ -645,16 +738,49 @@ class _NotesSectionState extends State<_NotesSection> {
       children: [
         const AppSectionHeader(title: AppStrings.notes),
         AppWhiteSpace.hMd,
-        AppTextField(
-          controller: _controller,
-          enabled: false,
-          hintText: AppStrings.comingSoon,
-          minLines: 3,
-          maxLines: 3,
-          filled: true,
-          fillColor: context.colorScheme.surfaceContainerLowest,
-          borderOverride: InputBorder.none,
-          style: AppTextStyles.bodyMd,
+        Container(
+          constraints: const BoxConstraints(
+            minHeight: AppExerciseDetailTokens.notesMinHeight,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.lg,
+          ),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: MediaQuery.highContrastOf(context)
+                ? Border.all(color: context.colorScheme.outlineVariant)
+                : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppTextField(
+                key: const Key('exercise_detail_notes_field'),
+                controller: _controller,
+                enabled: false,
+                hintText: AppStrings.typeYourNotesHere,
+                minLines: 3,
+                maxLines: 3,
+                filled: true,
+                fillColor: context.colorScheme.surfaceContainer,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xxs,
+                  vertical: AppSpacing.xxs,
+                ),
+                borderOverride: InputBorder.none,
+                style: AppTextStyles.bodyMd,
+              ),
+              AppWhiteSpace.hSm,
+              Text(
+                AppStrings.exerciseNotesComingSoon,
+                style: AppTextStyles.bodySm.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -662,21 +788,16 @@ class _NotesSectionState extends State<_NotesSection> {
 }
 
 class _MetadataBadge extends StatelessWidget {
-  const _MetadataBadge({required this.label, this.emphasized = false});
+  const _MetadataBadge({required this.label});
 
   final String label;
-  final bool emphasized;
 
   @override
   Widget build(BuildContext context) {
     return AppBadge(
       label: label,
-      backgroundColor: emphasized
-          ? context.colorScheme.secondaryContainer
-          : context.colorScheme.surfaceContainerHigh,
-      foregroundColor: emphasized
-          ? context.colorScheme.onSecondaryContainer
-          : context.colorScheme.onSurfaceVariant,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
+      foregroundColor: context.colorScheme.onSurfaceVariant,
       borderRadius: AppRadius.full,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -702,7 +823,7 @@ class _SegmentedTab extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLow,
+        color: context.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Row(
@@ -745,8 +866,8 @@ class _PillToggle extends StatelessWidget {
       selected: selected,
       child: Material(
         color: selected
-            ? context.colorScheme.secondary
-            : context.colorScheme.surfaceContainerLow,
+            ? _ExerciseDetailColors.activeFill(context)
+            : context.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadius.full),
         child: InkWell(
           onTap: onTap,
@@ -764,7 +885,7 @@ class _PillToggle extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMd.copyWith(
                     color: selected
-                        ? context.colorScheme.onSecondary
+                        ? _ExerciseDetailColors.activeForeground(context)
                         : context.colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -778,68 +899,103 @@ class _PillToggle extends StatelessWidget {
 }
 
 class _PerformanceTab extends StatelessWidget {
-  const _PerformanceTab();
+  const _PerformanceTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return _TonalSection(
-      elevated: true,
-      child: AppEmptyState(
-        key: const Key('exercise_detail_history_empty_state'),
-        iconAsset: OutlinedSvgAssets.chartBar,
-        title: AppStrings.noHistoryYet,
-        message: AppStrings.noHistoryHint,
+    return _ExerciseDetailCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppEmptyState(
+            key: const Key('exercise_detail_history_empty_state'),
+            iconAsset: OutlinedSvgAssets.chartBar,
+            title: AppStrings.noHistoryYet,
+            message: AppStrings.noHistoryHint,
+          ),
+          AppWhiteSpace.hMd,
+          FilledButton.icon(
+            onPressed: () {
+              context.pushNamed(AppRoutes.chat().name);
+            },
+            icon: SvgPicture.asset(
+              OutlinedSvgAssets.sparkles,
+              width: AppSizing.iconSm,
+              height: AppSizing.iconSm,
+              colorFilter: ColorFilter.mode(
+                _ExerciseDetailColors.activeForeground(context),
+                BlendMode.srcIn,
+              ),
+            ),
+            label: const Text(AppStrings.askAiCoach),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _ActionButtons extends StatelessWidget {
-  const _ActionButtons();
+class _BottomSubstituteAction extends ConsumerWidget {
+  const _BottomSubstituteAction({required this.detail});
+
+  final ExerciseDetailViewData detail;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Tooltip(
-          message: AppStrings.toggleSubstitution,
-          child: OutlinedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text(AppStrings.comingSoon)),
-              );
-            },
-            iconAlignment: IconAlignment.start,
-            icon: SvgPicture.asset(
-              OutlinedSvgAssets.arrowsRightLeft,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.secondary,
-                BlendMode.srcIn,
-              ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: AppStrings.toggleSubstitution,
+      child: OutlinedButton.icon(
+        key: const Key('exercise_detail_substitute_action'),
+        onPressed: () async {
+          try {
+            final repository = ref.read(
+              AppProviders.exerciseRepositoryProvider,
+            );
+            await repository.setSubstitutedOut(
+              exerciseId: detail.id,
+              isSubstitutedOut: !detail.isSubstitutedOut,
+            );
+            ref.invalidate(
+              AppProviders.exerciseDetailControllerProvider(detail.id),
+            );
+          } catch (_) {}
+        },
+        style: OutlinedButton.styleFrom(
+          backgroundColor: detail.isSubstitutedOut
+              ? _ExerciseDetailColors.subtleActiveFill(context)
+              : context.colorScheme.surfaceContainerLowest,
+          foregroundColor: context.colorScheme.onSurface,
+          minimumSize: const Size.fromHeight(
+            AppExerciseDetailTokens.bottomActionHeight,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.buttonVertical,
+          ),
+          side: BorderSide(
+            color: context.colorScheme.outlineVariant.withValues(
+              alpha: MediaQuery.highContrastOf(context)
+                  ? 1
+                  : AppExerciseDetailTokens.bottomActionBorderOpacity,
             ),
-            label: const Text(AppStrings.substitute),
+          ),
+          shape: const StadiumBorder(),
+          textStyle: AppTextStyles.labelMd.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
-        AppWhiteSpace.hMd,
-        FilledButton.icon(
-          onPressed: () {
-            context.pushNamed(AppRoutes.chat().name);
-          },
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.sparkles,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.onSecondary,
-              BlendMode.srcIn,
-            ),
+        iconAlignment: IconAlignment.start,
+        icon: SvgPicture.asset(
+          OutlinedSvgAssets.arrowsRightLeft,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(
+            _ExerciseDetailColors.accent(context),
+            BlendMode.srcIn,
           ),
-          label: const Text(AppStrings.askAiCoach),
         ),
-      ],
+        label: const Text(AppStrings.substitute),
+      ),
     );
   }
 }
@@ -913,6 +1069,38 @@ class _ErrorView extends ConsumerWidget {
         },
       ),
     );
+  }
+}
+
+class _ExerciseDetailColors {
+  _ExerciseDetailColors._();
+
+  static Color activeFill(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    return Theme.brightnessOf(context) == Brightness.dark
+        ? colorScheme.primaryContainer
+        : colorScheme.secondary;
+  }
+
+  static Color activeForeground(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    return Theme.brightnessOf(context) == Brightness.dark
+        ? colorScheme.onPrimaryContainer
+        : colorScheme.onSecondary;
+  }
+
+  static Color accent(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    return Theme.brightnessOf(context) == Brightness.dark
+        ? colorScheme.primary
+        : colorScheme.secondary;
+  }
+
+  static Color subtleActiveFill(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    return Theme.brightnessOf(context) == Brightness.dark
+        ? colorScheme.primaryContainer
+        : colorScheme.secondaryContainer;
   }
 }
 

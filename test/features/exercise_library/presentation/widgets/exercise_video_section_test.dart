@@ -1,9 +1,11 @@
 import 'package:aedify/features/exercise_library/domain/exercise_detail_video_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_card.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/exercise_video_angle.dart';
 import 'package:aedify/shared/domain/exercise_video_gender.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,11 +16,16 @@ Widget createSection({
 }) {
   return MaterialApp(
     home: Scaffold(
-      body: SingleChildScrollView(
-        child: ExerciseVideoSection(
-          videos: videos,
-          onRetry: onRetry ?? () {},
-          failureStates: failureStates,
+      body: Center(
+        child: SizedBox(
+          width: AppExerciseDetailTokens.maxContentWidth,
+          child: SingleChildScrollView(
+            child: ExerciseVideoSection(
+              videos: videos,
+              onRetry: onRetry ?? () {},
+              failureStates: failureStates,
+            ),
+          ),
         ),
       ),
     ),
@@ -39,19 +46,21 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(AppStrings.noExerciseVideos), findsOneWidget);
-      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
     });
 
-    testWidgets('renders one card per video', (tester) async {
+    testWidgets('renders video metadata over a carousel card', (tester) async {
       await tester.pumpWidget(createSection(videos: [testVideo]));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+      expect(find.byType(ExerciseVideoCard), findsOneWidget);
+      expect(find.byKey(const Key('exercise_video_carousel')), findsOneWidget);
       expect(find.text('Front'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
     });
 
-    testWidgets('renders multiple videos', (tester) async {
+    testWidgets('renders every video as a horizontally paged card', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         createSection(
           videos: [
@@ -67,10 +76,28 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(find.byType(PageView), findsOneWidget);
+      expect(find.byType(ExerciseVideoCard), findsNWidgets(2));
       expect(find.text('Front'), findsOneWidget);
       expect(find.text('Side'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
       expect(find.text('Female'), findsOneWidget);
+      expect(
+        find.byKey(
+          const ValueKey<String>('exercise_video_https://example.com/v1.mp4'),
+        ),
+        findsOneWidget,
+      );
+
+      final secondCard = find.byKey(
+        const ValueKey<String>('exercise_video_https://example.com/v2.mp4'),
+      );
+      final initialX = tester.getTopLeft(secondCard).dx;
+
+      await tester.drag(find.byType(PageView), const Offset(-300, 0));
+      await tester.pumpAndSettle();
+
+      expect(tester.getTopLeft(secondCard).dx, lessThan(initialX));
     });
 
     testWidgets('shows retry UI for failed video', (tester) async {
@@ -91,7 +118,7 @@ void main() {
       await tester.pumpWidget(createSection(videos: [testVideo]));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+      expect(find.byType(ExerciseVideoCard), findsOneWidget);
     });
   });
 }

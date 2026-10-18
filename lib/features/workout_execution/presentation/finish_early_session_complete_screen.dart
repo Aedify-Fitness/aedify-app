@@ -627,10 +627,12 @@ class _InsightCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: AppSpacing.buttonVertical),
-                  Text(
-                    AppStrings.aedifyInsight,
-                    style: AppTextStyles.headlineMd.copyWith(
-                      color: context.colorScheme.secondary,
+                  Expanded(
+                    child: Text(
+                      AppStrings.aedifyInsight,
+                      style: AppTextStyles.headlineMd.copyWith(
+                        color: context.colorScheme.secondary,
+                      ),
                     ),
                   ),
                 ],

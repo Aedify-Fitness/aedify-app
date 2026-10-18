@@ -4,6 +4,105 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-10-17
+
+### M4 — Rest timer separated from elapsed duration
+
+- Moves superset rest countdowns into the supplied full-width bottom rest panel,
+  matching single-exercise rest behavior: circular countdown, REST TIME label,
+  −15s/+15s adjustments, and Skip Rest & Log Next Set action.
+- Keeps the header clock dedicated to elapsed workout duration throughout rest.
+  Removes the compact rest variant and the header's timer-replacement option.
+- Preserves paired warmup/working round progression and restores the contextual
+  Log/Finish tray when rest is skipped or expires.
+- Adds warmup and working superset regressions for separate timer placement,
+  unchanged header clock, countdown adjustments, and skip-to-next-round behavior.
+- Verification: `dart format .` checked 699 files; `flutter analyze` and
+  `git diff --check` passed. Full `flutter test` passed 1185/1186; the only failure
+  is the previously documented pending-save controller timing test.
+
+### M4 — Exercise library refresh, dismissible exit, and paired superset rounds
+
+- Reloads the exercise library after returning from custom exercise creation,
+  including Back after saving, while retaining the current query and filters.
+- Makes the exit-workout sheet dismissible through Close, outside-card taps,
+  and system back without finishing, pausing, or abandoning the session.
+- Matches the supplied superset composition with linked member previews and
+  connected, shared-surface rounds for both warmups (`W1 (A)` / `W1 (B)`) and
+  working sets (`S1 (A)` / `S1 (B)`). Unequal counts retain only prescribed sets.
+- Advances warmup rounds in member order and starts rest after each resolved
+  warmup or working round. Supersets show rest in a compact header countdown,
+  retain the Log/Finish tray, and allow skipping rest by tapping the countdown
+  or logging the next set. The existing single-exercise rest panel remains.
+- Aligns runner gutters to the reference's 20 logical pixels and adapts the
+  fixed header for large text on narrow phones without covering the card.
+- Adds library navigation, modal dismissal, warmup ordering/rest, connected-round,
+  and light/dark small-phone regression coverage; visually inspected a rendered
+  390×1450 superset screen using local fonts and truthful session data.
+- Verification: `dart format .` checked 699 files; `flutter analyze` passed;
+  focused regression tests passed 51/51; `git diff --check` passed.
+  Full `flutter test` passed 1184/1185; the only failure
+  remains the previously documented pending-save async timing test in
+  `workout_runner_controller_test.dart`.
+
+
+## 2026-08-22
+
+### Workout Runner — superset execution block runner (supplied design)
+
+- Added a shared `WorkoutRunnerBlockResolver` so the active runner resolves a single exercise or an ordered superset block, labels members as A/B, renders warmups before working rounds, and advances working sets round-major (`S1 (A)` → `S1 (B)` → next round).
+- Refactored `WorkoutRunnerScreen` and `WorkoutRunnerActiveView` so active supersets render as a grouped `Superset Block N` card with member previews, interleaved set rows, no Substitute pill, an `ADD SUPERSET` footer action, and a contextual bottom CTA such as `Log S1 (Incline DB Press)`.
+- Tightened the supplied superset `Up next` button treatment with a primary-colored link glyph, title-row chevron placement, soft card elevation, and the existing SUPerset badge/linked-exercise hierarchy.
+- Fixed the superset `Up next` resolver so the second exercise name is pulled from the full superset group instead of only from adjacent list positions.
+- Replaced resolver tuple returns with `WorkoutRunnerBlockSet` so block rows expose named `exercise` and `set` fields instead of `$1` / `$2` record access.
+- Updated logging/rest behavior for supersets so rest starts after the current superset round is resolved, not after every individual member set. Single-exercise runner behavior remains unchanged.
+- Added `WorkoutRunnerController.addSetToExercises` so `ADD SUPERSET` appends one cloned set to every member of the current superset block.
+- Added superset runner strings/tokens and coverage for resolver ordering/rest decisions, grouped superset rendering, and adding a set to multiple exercises.
+- Verification: `dart format .` checked 697 files; `flutter analyze` passed with no issues; `flutter test test/features/workout_execution/domain/workout_runner_block_test.dart test/features/workout_execution/presentation/workout_runner_screen_test.dart` passed 21/21; `flutter test test/features/workout_execution/presentation/workout_runner_screen_test.dart` passed 19/19 after the supplied-button refinement and second-name resolver fix; `flutter test test/features/workout_execution/application/workout_runner_controller_test.dart --plain-name "appends one incomplete set to each selected exercise"` passed 1/1. The full controller file passed 36/37, still failing only the pre-existing `saveProgress preserves and persists a set edit made while save is pending` async timing test.
+
+## 2026-08-06
+
+### Workout Runner — in-session exercise substitution (supplied design)
+
+- Added the header Substitute pill from the supplied design, sitting under the exercise title: a bordered `surface-container-low` chip with an accent `swap_horiz` glyph and an uppercase SUBSTITUTE label; the runner header extent grows to 116px to fit it.
+- Tapping the pill opens the shared `AddExerciseBottomSheet` (with the current exercise excluded) and swaps the chosen exercise into the active session via the new `WorkoutRunnerController.substituteExercise`.
+- Completed or skipped set logs keep their original per-set `exerciseId`, so finished work stays attributed to the original exercise; pending sets are recreated for the replacement with their prescriptions kept and in-progress actuals cleared. The swap persists through the existing autosave.
+- Disables the pill while paused (matching the disabled training-log treatment) and guards the controller so a swap cannot reset a paused or saving phase.
+- Bundled the official Material Symbols `swap_horiz` SVG and registered it as `OutlinedSvgAssets.materialSwapHoriz`.
+- Added controller coverage for identity swap, completed-set attribution, pending-set reset, untouched-exercise preservation, same-exercise no-op, and the paused guard, plus a widget test for the picker flow and header presence.
+- Verification: `dart format .` checked 695 files; `flutter analyze` passed with no issues; the runner presentation suite passed 18/18; the controller suite passed 36/37; full `flutter test` passed 1159 with the single pre-existing `saveProgress` pending-save timing failure from the prior unverified session.
+
+### Workout Runner — rest timer bottom panel (supplied design)
+
+- Replaced the compact floating rest pill and its modal adjustment sheet with the supplied full-width bottom rest panel: a 128px circular countdown ring in the runner accent, an uppercase REST TIME eyebrow, side-by-side −15s/+15s tonal pills, and a full-width Skip Rest & Log Next Set primary action.
+- While resting, the panel takes over the runner's fixed bottom chrome in place of the Log Set / Finish tray; skipping or completing the countdown restores the action tray so the next set can be logged. The frosted surface, top border, safe-area padding, and max-width rhythm match the existing action tray.
+- Kept the header's authoritative elapsed workout clock unchanged; the rest countdown remains an independent per-set timer that auto-dismisses at zero, clamps adjustments to 0–300 seconds, and now dismisses immediately when a logged set resolves to zero rest instead of sticking on an inert 00:00 pill.
+- Added rest-panel sizing tokens to `AppWorkoutRunnerTokens` and a `skipRestAndLogNextSet` string; retired the now-unused `adjustRestTimer` and `skipRest` strings.
+- Updated runner coverage for inline −15s/+15s adjustments, rebuild survival, full-width bottom-anchored panel geometry, the action-tray swap while resting, and the skip-restores-actions flow.
+- Verification: `dart format .` checked 695 files; `flutter analyze` reported no issues (also repaired two pre-existing exercise-library lint findings from the prior unverified session); focused workout-runner presentation tests passed 17/17; full `flutter test` passed 1156/1157 — the single failure is the pre-existing `workout_runner_controller_test.dart` pending-save timing test from the prior unverified session, which imports none of the files this change touches.
+
+### Exercise Details — updated supplied-design alignment
+
+- Rebuilt the exercise-detail Guidance composition around the latest supplied design: close/title/favorite header, Guidance/Performance tabs, horizontally paged 16:9 video cards with overlaid variant badges, expanded Exercise Guide metadata, dual bodymaps, audio-led instruction rows, Notes surface, and a fixed Substitute pill.
+- Removed the superseded Optimal Technique treatment, title-level metadata chips, external video variant controls, and scroll-body action card. The locked Ask AI entry point remains available from the otherwise-unspecified Performance state.
+- Preserved provider-backed exercise content, video empty/failure states, favorite state, Performance empty state, per-step TTS, theme/dark/high-contrast behavior, and local SVG bodymaps. Substitute now persists through the existing repository instead of showing placeholder copy.
+- Kept muscle presentation data-honest by retaining `Primary` anatomical labels and `Muscle Focus` bodymap buckets rather than inventing a secondary-muscle classification that the current detail model does not expose. Notes remain visibly disabled with an honest coming-soon explanation until repository save wiring is added.
+- Added regression coverage for carousel cards and paging, overlaid video metadata, expanded/collapsible guide metadata, revised section order, persisted favorite/substitute state, fixed action placement, Notes treatment, small phones, and 2× text.
+- Verification: `git diff --check` is clean. The required `dart format .`, `flutter analyze`, focused tests, and full `flutter test` could not be executed because the environment rejected SDK-cache escalation after its usage quota was exhausted.
+
+### Workout Runner — supplied design alignment
+
+- Rebuilt the active `WorkoutRunnerScreen` around the supplied fixed-mobile hierarchy: a fixed frosted header with elapsed workout duration, 16:9 exercise media, rounded set log, progress insight, linked next-exercise preview, and a fixed frosted 2:1 Log Set / Finish action tray.
+- Preserved recovery, pause, guarded exit, early finish, normal completion, autosave, programme/saved/resume entry modes, exercise-detail routing, and set-completion behavior while making Add Set and Add Note functional.
+- Uses session prescriptions and actuals for editable KG/REPS and target summaries, an honest em dash where previous-performance history is not available, provider-backed exercise details, and current M5 placeholder copy instead of importing illustrative HTML data.
+- Added shared runner layout and glass tokens, compact-field styling hooks, safe-area-aware terminal scroll clearance, dark-theme treatment, and 320px / 2× text adaptations without changing bottom-navigation opacity values.
+- Moved the programme-workout runner to the root navigator so all three runner entry modes use the same full-screen presentation without the persistent bottom-navigation shell.
+- Corrected the connected early-completion insight heading so it wraps safely on narrow screens.
+- Made the header clock an authoritative elapsed-duration timer derived from the session start, frozen while paused, resumed from accumulated time, and formatted as MM:SS or HH:MM:SS. The adjustable rest countdown remains independent and appears above the fixed action tray after a set is logged.
+- Corrected pause/recovery continuation so its frozen duration is explicitly cleared, its rebased start time is persisted immediately, and exit/early/normal completion resolve the same authoritative duration at confirmation time. In-flight progress saves now retain newer edits while their follow-up autosave persists them.
+- Added controller, duration-resolver, fixed-390 geometry, set-state, logging, separate elapsed/rest timer, add-set, note, sticky-overlay, routing, error, pause, completion, compact/large-text, and dark-theme coverage.
+- Verification: before the elapsed-clock correction, `dart format .` checked 692 files, `flutter analyze` reported no issues, focused workout-runner widget/controller tests passed 49/49, and router tests passed 22/22; full `flutter test` had previously passed 1145/1145. The final format/analyze/test rerun for the elapsed-clock correction was blocked by the execution environment's current usage limit; `git diff --check` remains clean.
+
 ## 2026-08-05
 
 ### Bottom navigation — prominent selected capsule

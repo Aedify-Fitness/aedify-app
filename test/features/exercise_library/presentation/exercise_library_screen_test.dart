@@ -1,4 +1,5 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
@@ -6,8 +7,11 @@ import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dar
 import 'package:aedify/features/exercise_library/domain/exercise_detail_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
+import 'package:aedify/features/exercise_library/presentation/custom_exercise_editor_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_library_screen.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
@@ -16,15 +20,18 @@ import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 class _MockSearchRepository implements ExerciseRepository {
   List<ExerciseListItem> searchResults = [];
+  final searches = <ExerciseFilterState>[];
   bool shouldThrow = false;
 
   @override
   Future<List<ExerciseListItem>> searchExercises(
     ExerciseFilterState filters,
   ) async {
+    searches.add(filters);
     if (shouldThrow) throw Exception('search failed');
     return searchResults;
   }
@@ -54,7 +61,23 @@ class _MockSearchRepository implements ExerciseRepository {
   ) async => null;
 
   @override
-  Future<int> createCustomExercise(CustomExerciseSeed seed) async => -1;
+  Future<int> createCustomExercise(CustomExerciseSeed seed) async {
+    searchResults = [
+      ...searchResults,
+      ExerciseListItem(
+        id: -1,
+        name: seed.name,
+        difficulty: seed.difficulty,
+        muscleGroups: seed.muscleGroups,
+        modality: seed.modality,
+        equipment: seed.equipment,
+        isFavorite: false,
+        isSubstitutedOut: false,
+        isCustom: true,
+      ),
+    ];
+    return -1;
+  }
 
   @override
   Future<void> updateCustomExercise({
@@ -107,6 +130,43 @@ List<ExerciseListItem> _benchPressItem() => [
     isCustom: false,
   ),
 ];
+
+class _ExerciseLibraryNavigationFixtures {
+  _ExerciseLibraryNavigationFixtures._();
+
+  static ({Widget app, GoRouter router}) app(ExerciseRepository repository) {
+    final router = GoRouter(
+      initialLocation: AppRoutes.exercises().path,
+      routes: [
+        GoRoute(
+          path: AppRoutes.exercises().path,
+          name: AppRoutes.exercises().name,
+          builder: (_, _) => const ExerciseLibraryScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.customExerciseCreate().path,
+          name: AppRoutes.customExerciseCreate().name,
+          builder: (_, _) => const CustomExerciseEditorScreen.create(),
+        ),
+      ],
+    );
+    return (
+      router: router,
+      app: ProviderScope(
+        overrides: [
+          AppProviders.exerciseRepositoryProvider.overrideWithValue(repository),
+          AppProviders.exerciseDatasetSyncControllerProvider.overrideWith(
+            () => _FixedSyncNotifier(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          routerConfig: router,
+        ),
+      ),
+    );
+  }
+}
 
 void main() {
   group('ExerciseLibraryScreen', () {
@@ -183,6 +243,84 @@ void main() {
 
       final createFab = find.byKey(const Key('create_action_fab'));
       expect(createFab, findsOneWidget);
+    });
+
+    for (final returnWithBack in [false, true]) {
+      testWidgets('reloads newly created exercise and keeps filters after '
+          '${returnWithBack ? 'back' : 'Done'}', (tester) async {
+        mockRepository.searchResults = _benchPressItem();
+        final fixture = _ExerciseLibraryNavigationFixtures.app(mockRepository);
+        addTearDown(fixture.router.dispose);
+        await tester.pumpWidget(fixture.app);
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), 'Bench');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Chest').first);
+        await tester.pumpAndSettle();
+        final searchesBeforeCreate = mockRepository.searches.length;
+
+        await tester.tap(find.byKey(const Key('create_action_fab')));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const Key('custom_exercise_name_text_field')),
+          'Custom Bench Press',
+        );
+        await tester.tap(
+          find.byKey(const ValueKey('custom_exercise_muscle_chest')),
+        );
+        tester
+            .widget<TextField>(
+              find.byKey(const Key('custom_exercise_name_text_field')),
+            )
+            .focusNode!
+            .unfocus();
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(
+          find.byKey(const Key('custom_exercise_primary_action')),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const Key('custom_exercise_primary_action')),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text(AppStrings.customExerciseSaved), findsOneWidget);
+
+        await tester.tap(
+          returnWithBack ? find.byType(BackButton) : find.text(AppStrings.done),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Custom Bench Press'), findsOneWidget);
+        expect(mockRepository.searches.length, searchesBeforeCreate + 1);
+        expect(mockRepository.searches.last.searchQuery, 'Bench');
+        expect(mockRepository.searches.last.muscleGroup, BodymapBucket.chest);
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller!.text,
+          'Bench',
+        );
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('canceling exercise creation keeps existing library results', (
+      tester,
+    ) async {
+      mockRepository.searchResults = _benchPressItem();
+      final fixture = _ExerciseLibraryNavigationFixtures.app(mockRepository);
+      addTearDown(fixture.router.dispose);
+      await tester.pumpWidget(fixture.app);
+      await tester.pumpAndSettle();
+      final searchesBeforeCreate = mockRepository.searches.length;
+
+      await tester.tap(find.byKey(const Key('create_action_fab')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ExerciseLibraryScreen), findsOneWidget);
+      expect(find.text('Bench Press'), findsOneWidget);
+      expect(mockRepository.searches.length, searchesBeforeCreate + 1);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('uses shell clearance for result and empty states', (

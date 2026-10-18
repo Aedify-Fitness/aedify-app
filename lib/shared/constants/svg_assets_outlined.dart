@@ -65,6 +65,7 @@ class OutlinedSvgAssets {
   static const materialSettingsAccessibility =
       '${_materialSymbolPrefix}_settings_accessibility.svg';
   static const materialSteps = '${_materialSymbolPrefix}_steps.svg';
+  static const materialSwapHoriz = '${_materialSymbolPrefix}_swap_horiz.svg';
   static const materialSyncLock = '${_materialSymbolPrefix}_sync_lock.svg';
   static const materialTimer = '${_materialSymbolPrefix}_timer.svg';
   static const materialToggleOff = '${_materialSymbolPrefix}_toggle_off.svg';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
+import 'package:aedify/features/workout_execution/domain/workout_duration_resolver.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -164,11 +165,6 @@ class _FinishEarlyDialogState extends State<FinishEarlyDialog> {
   }
 
   Widget _buildActions(BuildContext context, int remaining) {
-    final now = DateTime.now();
-    final duration =
-        widget.session.durationSeconds ??
-        now.difference(widget.session.startedAt).inSeconds;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -176,11 +172,16 @@ class _FinishEarlyDialogState extends State<FinishEarlyDialog> {
           width: double.infinity,
           child: FilledButton(
             onPressed: () {
+              final completedAt = DateTime.now();
               widget.onComplete(
                 WorkoutRunnerCompletionDraft(
                   sessionId: widget.session.sessionId,
-                  completedAt: now,
-                  durationSeconds: duration,
+                  completedAt: completedAt,
+                  durationSeconds: WorkoutDurationResolver.elapsedSeconds(
+                    startedAt: widget.session.startedAt,
+                    accumulatedSeconds: widget.session.durationSeconds,
+                    now: completedAt,
+                  ),
                   notes: _selectedReason,
                   energyLevel: widget.session.energyLevel,
                   perceivedDifficulty: widget.session.perceivedDifficulty,

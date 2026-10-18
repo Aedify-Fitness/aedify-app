@@ -168,8 +168,15 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
           bottom: AppBottomNavigationScope.floatingActionButtonLift(context),
         ),
         child: CreateActionFab(
-          onPressed: () {
-            context.pushNamed(AppRoutes.customExerciseCreate().name);
+          onPressed: () async {
+            await context.pushNamed<bool>(
+              AppRoutes.customExerciseCreate().name,
+            );
+            if (mounted) {
+              await ref
+                  .read(AppProviders.exerciseSearchControllerProvider.notifier)
+                  .reload();
+            }
           },
         ),
       ),
@@ -513,6 +520,7 @@ class _EmptyState extends StatelessWidget {
                 AppWhiteSpace.hXs,
                 Text(
                   AppStrings.noCustomExercisesYetHint,
+                  textAlign: TextAlign.center,
                   style: AppTextStyles.labelSm.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

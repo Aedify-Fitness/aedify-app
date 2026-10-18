@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
+import 'package:aedify/features/workout_execution/domain/workout_duration_resolver.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -18,8 +19,11 @@ class CompleteWorkoutSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final duration =
-        session.durationSeconds ?? now.difference(session.startedAt).inSeconds;
+    final duration = WorkoutDurationResolver.elapsedSeconds(
+      startedAt: session.startedAt,
+      accumulatedSeconds: session.durationSeconds,
+      now: now,
+    );
     final minutes = duration ~/ 60;
     final durationLabel = '$minutes ${AppStrings.onboardingReviewMinutes}';
 
@@ -70,11 +74,16 @@ class CompleteWorkoutSheet extends StatelessWidget {
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
+                final completedAt = DateTime.now();
                 onComplete(
                   WorkoutRunnerCompletionDraft(
                     sessionId: session.sessionId,
-                    completedAt: now,
-                    durationSeconds: duration,
+                    completedAt: completedAt,
+                    durationSeconds: WorkoutDurationResolver.elapsedSeconds(
+                      startedAt: session.startedAt,
+                      accumulatedSeconds: session.durationSeconds,
+                      now: completedAt,
+                    ),
                     notes: session.notes,
                     energyLevel: session.energyLevel,
                     perceivedDifficulty: session.perceivedDifficulty,

@@ -61,6 +61,118 @@ abstract final class AppBottomNavigationTokens {
   }
 }
 
+abstract final class AppWorkoutRunnerTokens {
+  static const double maxContentWidth = 512;
+  static const double horizontalPadding = 20;
+  static const double innerMaxContentWidth =
+      maxContentWidth - (horizontalPadding * 2);
+  static const double headerExtent = 116;
+  static const double supersetHeaderExtent = 96;
+  static const double stackedHeaderBreakpoint = 360;
+  static const double largeTextBreakpoint = 1.3;
+  static const double sectionGap = AppSpacing.lg;
+  static const double contentBreathingSpace = AppSpacing.lg;
+  static const double actionBarVerticalPadding = AppSpacing.lg;
+  static const double actionBarButtonHeight = 60;
+  static const double actionBarGap = AppSpacing.md;
+  static const double actionBarExtent =
+      actionBarButtonHeight + (actionBarVerticalPadding * 2);
+  static const double mediaAspectRatio = 16 / 9;
+  static const double mediaControlSize = AppSpacing.xxl;
+  static const double mediaControlVisualSize = 40;
+  static const double timerMinWidth = 104;
+  static const double timerHeight = AppSpacing.xxl;
+  static const double restTimerRingSize = 128;
+  static const double restTimerRingBorderWidth = AppSpacing.xs;
+  static const double restTimerLabelGap = AppSpacing.sm;
+  static const double restTimerLabelLineHeight = AppSpacing.md;
+  static const double restTimerLabelLetterSpacing = 1.2;
+  static const double restPanelVerticalPadding = AppSpacing.lg;
+  static const double restPanelSectionGap = AppSpacing.lg;
+  static const double restAdjustButtonVerticalPadding =
+      AppSpacing.buttonVertical;
+  static const double restAdjustButtonLineHeight = 20;
+  static const double restSkipButtonVerticalPadding = AppSpacing.md;
+  static const double restSkipButtonLineHeight = AppSpacing.lg;
+  static const double restPanelExtent =
+      (restPanelVerticalPadding * 2) +
+      restTimerRingSize +
+      restTimerLabelGap +
+      restTimerLabelLineHeight +
+      (restPanelSectionGap * 2) +
+      (restAdjustButtonVerticalPadding * 2) +
+      restAdjustButtonLineHeight +
+      (restSkipButtonVerticalPadding * 2) +
+      restSkipButtonLineHeight;
+  static const double trainingLogHeaderVerticalPadding = AppSpacing.md;
+  static const double setRowHorizontalPadding = AppSpacing.lg;
+  static const double standardSetRowVerticalPadding = AppSpacing.lg;
+  static const double activeSetRowVerticalPadding = AppSpacing.xl;
+  static const double setGridGap = AppSpacing.sm;
+  static const double setActionSize = 40;
+  static const double activeSetActionSize = AppSpacing.xxl;
+  static const double activeRailWidth = AppSpacing.xs;
+  static const double activeRailInset = 12;
+  static const double supersetPreviewImageSize = AppSpacing.xxxl;
+  static const double supersetConnectorLeft = 38;
+  static const double supersetConnectorTop = 40;
+  static const double supersetConnectorBottom = 40;
+  static const double supersetConnectorWidth = 2;
+  static const double supersetConnectorOpacity = 0.2;
+  static const double supersetUpcomingRoundOpacity = 0.5;
+  static const double supersetSetRowVerticalPadding = AppSpacing.md;
+  static const double setInputHeight = 44;
+  static const double setInputMaxWidth = AppSizing.fieldWidthLg;
+  static const double insightIconSize = 40;
+  static const double nextExerciseIconSize = AppSpacing.xxl;
+  static const double nextExerciseMinHeight = 112;
+  static const double nextExerciseElevation = 1;
+  static const double glassBlurSigma = 12;
+  static const double headerSurfaceOpacity = 0.8;
+  static const double actionSurfaceOpacity = 0.9;
+  static const double mediaGlassSurfaceOpacity = 0.2;
+  static const double mediaGlassBorderOpacity = 0.3;
+  static const double mediaScrimOpacity = 0.48;
+  static const double activeRowSurfaceOpacity = 0.05;
+  static const double upcomingRowOpacity = 0.4;
+  static const double subtleBorderOpacity = 0.6;
+  static const double shadowOpacity = 0.08;
+  static const double shadowBlurRadius = 20;
+  static const double shadowOffsetY = AppSpacing.xs;
+  static const double eyebrowLetterSpacing = 1.2;
+  static const double edgeSwipeWidth = 30;
+  static const double edgeSwipeMinimumVelocity = 200;
+
+  static double headerExtentFor(BuildContext context) {
+    final scaledTitle = MediaQuery.textScalerOf(context).scale(AppFontSizes.lg);
+    final extraHeight = (scaledTitle - AppFontSizes.lg).clamp(0, AppSpacing.xl);
+    return headerExtent + extraHeight;
+  }
+}
+
+abstract final class AppExerciseDetailTokens {
+  static const double maxContentWidth = 398;
+  static const double maxScreenWidth = maxContentWidth + (AppSpacing.md * 2);
+  static const double mediaAspectRatio = 16 / 9;
+  static const double videoCardWidth = 288;
+  static const double videoCardGap = AppSpacing.md;
+  static const double videoScrimOpacity = 0.2;
+  static const double videoOverlaySurfaceOpacity = 0.9;
+  static const double videoBadgeVerticalPadding = 6;
+  static const double bodymapStageHeight = 192;
+  static const double compactContentBreakpoint = 300;
+  static const double largeTextBreakpoint = 1.3;
+  static const double mutedBodymapOpacity = 0.8;
+  static const double notesMinHeight = 150;
+  static const double bottomActionHeight = 56;
+  static const double bottomActionMaxWidth = 384;
+  static const double bottomActionInset = AppSpacing.lg;
+  static const double bottomActionBorderOpacity = 0.2;
+  static const double stepDividerOpacity = 0.1;
+  static const double contentBottomClearance =
+      bottomActionHeight + (bottomActionInset * 2);
+}
+
 class AppWhiteSpace {
   AppWhiteSpace._();
 

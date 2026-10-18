@@ -237,18 +237,6 @@ class AppRouter {
                         );
                       },
                     ),
-                    GoRoute(
-                      path: ':programId/workouts/:workoutId/run',
-                      name: AppRoutes.workoutRunnerProgramWorkout().name,
-                      builder: (context, state) {
-                        final programId = state.pathParameters['programId']!;
-                        final workoutId = state.pathParameters['workoutId']!;
-                        return WorkoutRunnerScreen.programWorkout(
-                          programId: programId,
-                          programWorkoutId: workoutId,
-                        );
-                      },
-                    ),
                   ],
                 ),
               ],
@@ -292,6 +280,18 @@ class AppRouter {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return WorkoutRunnerScreen.savedWorkout(savedWorkoutId: id);
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerProgramWorkout().path,
+          name: AppRoutes.workoutRunnerProgramWorkout().name,
+          builder: (context, state) {
+            final programId = state.pathParameters['programId']!;
+            final workoutId = state.pathParameters['workoutId']!;
+            return WorkoutRunnerScreen.programWorkout(
+              programId: programId,
+              programWorkoutId: workoutId,
+            );
           },
         ),
         GoRoute(

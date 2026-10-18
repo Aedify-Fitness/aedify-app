@@ -10,6 +10,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart'
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
 import 'package:aedify/features/exercise_library/presentation/exercise_detail_screen.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_step_audio_button.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
 import 'package:aedify/shared/domain/exercise_difficulty.dart';
@@ -119,6 +120,7 @@ Widget createTestApp(
   ExerciseRepository repository, {
   int exerciseId = 1,
   Map<String, ExerciseStepAudioState> audioStates = const {},
+  TextScaler? textScaler,
 }) {
   return ProviderScope(
     overrides: [
@@ -127,7 +129,17 @@ Widget createTestApp(
         () => _PreloadedAudioController(audioStates),
       ),
     ],
-    child: MaterialApp(home: ExerciseDetailScreen(exerciseId: exerciseId)),
+    child: MaterialApp(
+      builder: textScaler == null
+          ? null
+          : (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                child: child!,
+              );
+            },
+      home: ExerciseDetailScreen(exerciseId: exerciseId),
+    ),
   );
 }
 
@@ -149,7 +161,7 @@ void main() {
         force: ExerciseForce.push,
         mechanic: ExerciseMechanic.compound,
         grips: ['barbell'],
-        steps: ['Step 1', 'Step 2'],
+        steps: ['Set up on the bench.', 'Press the bar with control.'],
         videos: [
           const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
@@ -171,13 +183,15 @@ void main() {
       expect(find.text('Intermediate'), findsOneWidget);
       expect(find.text('Strength'), findsOneWidget);
       expect(find.text('Barbell'), findsOneWidget);
+      expect(find.text('Chest'), findsWidgets);
+      expect(find.text('Push'), findsOneWidget);
 
+      await tester.tap(find.text(AppStrings.viewDetails));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Intermediate'), findsNothing);
       expect(find.text('Push'), findsNothing);
-      await tester.scrollUntilVisible(
-        find.text(AppStrings.viewDetails),
-        400,
-        scrollable: find.byType(Scrollable).first,
-      );
+
       await tester.tap(find.text(AppStrings.viewDetails));
       await tester.pumpAndSettle();
 
@@ -210,6 +224,27 @@ void main() {
         find.byKey(const Key('exercise_detail_notes_section')),
         findsOneWidget,
       );
+
+      final videoTop = tester.getTopLeft(
+        find.byKey(const Key('exercise_detail_video_section')),
+      );
+      final metadataTop = tester.getTopLeft(
+        find.byKey(const Key('exercise_detail_metadata_section')),
+      );
+      final musclesTop = tester.getTopLeft(
+        find.byKey(const Key('exercise_detail_bodymap_section')),
+      );
+      final instructionsTop = tester.getTopLeft(
+        find.byKey(const Key('exercise_detail_instructions_section')),
+      );
+      final notesTop = tester.getTopLeft(
+        find.byKey(const Key('exercise_detail_notes_section')),
+      );
+
+      expect(videoTop.dy, lessThan(metadataTop.dy));
+      expect(metadataTop.dy, lessThan(musclesTop.dy));
+      expect(musclesTop.dy, lessThan(instructionsTop.dy));
+      expect(instructionsTop.dy, lessThan(notesTop.dy));
     });
 
     testWidgets('renders steps in order', (tester) async {
@@ -249,8 +284,8 @@ void main() {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.text('Videos'), findsOneWidget);
-      expect(find.text('Front'), findsWidgets);
+      expect(find.byKey(const Key('exercise_video_carousel')), findsOneWidget);
+      expect(find.text('Front'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
     });
 
@@ -261,18 +296,39 @@ void main() {
       expect(find.byTooltip(AppStrings.toggleFavorite), findsOneWidget);
     });
 
-    testWidgets('substituted toggle is shown', (tester) async {
+    testWidgets('favorite toggle persists the selected state', (tester) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip(AppStrings.toggleFavorite));
+      await tester.pumpAndSettle();
+
+      expect(mockRepository.detail!.isFavorite, isTrue);
+      expect(find.byTooltip(AppStrings.toggleFavorite), findsOneWidget);
+    });
+
+    testWidgets('substitute action persists the selected state', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
       expect(find.byTooltip(AppStrings.toggleSubstitution), findsOneWidget);
+
+      await tester.tap(
+        find.byKey(const Key('exercise_detail_substitute_action')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(mockRepository.detail!.isSubstitutedOut, isTrue);
     });
 
-    testWidgets('renders video section with header', (tester) async {
+    testWidgets('renders the exercise video carousel', (tester) async {
       await tester.pumpWidget(createTestApp(mockRepository));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+      expect(find.byType(ExerciseVideoCard), findsOneWidget);
+      expect(find.byType(PageView), findsOneWidget);
     });
 
     testWidgets('shows no-video fallback when videos are empty', (
@@ -309,7 +365,10 @@ void main() {
       // Steps should be visible alongside video section
       expect(find.text('Step 1'), findsOneWidget);
       expect(find.text('Step 2'), findsOneWidget);
-      expect(find.text(AppStrings.exerciseVideos), findsOneWidget);
+      expect(
+        find.byKey(const Key('exercise_detail_video_section')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders audio buttons alongside steps', (tester) async {
@@ -370,6 +429,77 @@ void main() {
       );
       expect(find.text(AppStrings.noHistoryYet), findsOneWidget);
       expect(find.text(AppStrings.noHistoryHint), findsOneWidget);
+      expect(find.text(AppStrings.askAiCoach), findsOneWidget);
+      expect(
+        find.byKey(const Key('exercise_detail_substitute_action')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('renders the supplied notes treatment honestly', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('exercise_detail_notes_section')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('exercise_detail_notes_field')),
+        findsOneWidget,
+      );
+      expect(find.text(AppStrings.notes), findsOneWidget);
+      expect(find.text(AppStrings.typeYourNotesHere), findsOneWidget);
+      expect(find.text(AppStrings.exerciseNotesComingSoon), findsOneWidget);
+    });
+
+    testWidgets('keeps the substitute action fixed while content scrolls', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestApp(mockRepository));
+      await tester.pumpAndSettle();
+
+      final action = find.byKey(const Key('exercise_detail_substitute_action'));
+      final initialTop = tester.getTopLeft(action).dy;
+
+      await tester.drag(
+        find.byKey(const Key('exercise_detail_scroll_view')),
+        const Offset(0, -400),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.getTopLeft(action).dy, initialTop);
+    });
+
+    testWidgets(
+      'keeps the supplied composition overflow-free on a small phone',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(320, 640);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await tester.pumpWidget(createTestApp(mockRepository));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.byKey(const Key('exercise_detail_title')), findsOneWidget);
+      },
+    );
+
+    testWidgets('reflows carousel and muscle content at large text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestApp(mockRepository, textScaler: const TextScaler.linear(2)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('exercise_video_carousel')), findsOneWidget);
+      expect(find.text(AppStrings.musclesWorked), findsOneWidget);
     });
   });
 }

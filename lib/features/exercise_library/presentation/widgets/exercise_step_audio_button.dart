@@ -35,11 +35,13 @@ class ExerciseStepAudioButton extends ConsumerWidget {
         return Tooltip(
           message: AppStrings.playStepAudio,
           child: AppIconButton(
-            asset: OutlinedSvgAssets.play,
+            asset: OutlinedSvgAssets.speakerWave,
             semanticLabel: AppStrings.playStepAudio,
             iconSize: AppSizing.iconSm,
-            color: colorScheme.onSurfaceVariant,
-            backgroundColor: colorScheme.surfaceContainerLow,
+            color: Theme.brightnessOf(context) == Brightness.dark
+                ? colorScheme.primary
+                : colorScheme.secondary,
+            backgroundColor: colorScheme.secondaryContainer,
             onPressed: () {
               ref
                   .read(

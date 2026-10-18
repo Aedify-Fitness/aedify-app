@@ -49,6 +49,7 @@ class WorkoutRunnerSessionViewData {
     String? savedWorkoutId,
     DateTime? completedAt,
     int? durationSeconds,
+    bool clearDurationSeconds = false,
     double? bodyweightKgAtSession,
     String? notes,
     int? energyLevel,
@@ -65,7 +66,9 @@ class WorkoutRunnerSessionViewData {
       programWorkoutId: programWorkoutId ?? this.programWorkoutId,
       savedWorkoutId: savedWorkoutId ?? this.savedWorkoutId,
       completedAt: completedAt ?? this.completedAt,
-      durationSeconds: durationSeconds ?? this.durationSeconds,
+      durationSeconds: clearDurationSeconds
+          ? null
+          : durationSeconds ?? this.durationSeconds,
       bodyweightKgAtSession:
           bodyweightKgAtSession ?? this.bodyweightKgAtSession,
       notes: notes ?? this.notes,

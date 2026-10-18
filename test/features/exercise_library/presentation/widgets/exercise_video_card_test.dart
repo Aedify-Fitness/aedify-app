@@ -38,6 +38,20 @@ void main() {
 
       expect(find.text('Front'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
+      final metadataOverlay = find.byKey(
+        const ValueKey<String>(
+          'exercise_video_metadata_https://example.com/v.mp4',
+        ),
+      );
+      expect(metadataOverlay, findsOneWidget);
+      expect(
+        find.descendant(of: metadataOverlay, matching: find.text('Front')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: metadataOverlay, matching: find.text('Male')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders fallback text when angle is null', (tester) async {

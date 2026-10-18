@@ -4,7 +4,9 @@ import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/router/app_router.dart';
+import 'package:aedify/app/router/bottom_nav_shell.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -267,6 +269,31 @@ void main() {
         router.routeInformationProvider.value.uri.path,
         equals(AppRoutes.workout().path),
       );
+    });
+
+    testWidgets('program workout runner opens outside bottom nav shell', (
+      tester,
+    ) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+      );
+
+      final location = router.namedLocation(
+        AppRoutes.workoutRunnerProgramWorkout().name,
+        pathParameters: const {
+          'programId': 'program-1',
+          'workoutId': 'workout-1',
+        },
+      );
+      router.go(location);
+      await tester.pumpAndSettle();
+
+      expect(router.routeInformationProvider.value.uri.path, equals(location));
+      expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+      expect(find.byType(BottomNavShell), findsNothing);
     });
 
     testWidgets('onboarding guard beats AI and draft guards', (tester) async {

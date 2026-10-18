@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -28,6 +29,7 @@ class ExitWorkoutSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onDismiss = onClose ?? () => context.pop();
     final duration = session.durationSeconds ?? 0;
     final minutes = duration ~/ 60;
     final secs = duration.remainder(60);
@@ -46,88 +48,126 @@ class ExitWorkoutSheet extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: context.colorScheme.scrim.withAlpha(102),
-      body: Stack(
-        children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-            child: Container(color: Colors.transparent),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 512),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(AppRadius.xl),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.colorScheme.secondary.withAlpha(20),
-                      blurRadius: 40,
-                      offset: Offset(0, 10),
+      body: GestureDetector(
+        onTap: onDismiss,
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        child: Stack(
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+              child: Container(color: Colors.transparent),
+            ),
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: GestureDetector(
+                  onTap: () {},
+                  excludeFromSemantics: true,
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 512),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(AppRadius.xl),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.colorScheme.secondary.withAlpha(20),
+                          blurRadius: 40,
+                          offset: Offset(0, 10),
+                        ),
+                        BoxShadow(
+                          color: context.colorScheme.secondary.withAlpha(10),
+                          blurRadius: 12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    BoxShadow(
-                      color: context.colorScheme.secondary.withAlpha(10),
-                      blurRadius: 12,
-                      offset: Offset(0, 4),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _HeaderSection(onClose: onDismiss),
+                          AppWhiteSpace.hXl,
+                          _SessionSummaryCard(
+                            timeLabel: timeLabel,
+                            completedExercises: completedExercises,
+                            totalExercises: totalExercises,
+                            progress: progress,
+                          ),
+                          AppWhiteSpace.custom(
+                            height: AppSpacing.xxl - AppSpacing.sm,
+                          ),
+                          _ActionButtons(
+                            onFinishAndSave: onFinishAndSave,
+                            onPause: onPause,
+                            onAbandon: onAbandon,
+                          ),
+                          AppWhiteSpace.hXl,
+                          _BottomNote(),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _HeaderSection(),
-                      AppWhiteSpace.hXl,
-                      _SessionSummaryCard(
-                        timeLabel: timeLabel,
-                        completedExercises: completedExercises,
-                        totalExercises: totalExercises,
-                        progress: progress,
-                      ),
-                      AppWhiteSpace.custom(
-                        height: AppSpacing.xxl - AppSpacing.sm,
-                      ),
-                      _ActionButtons(
-                        onFinishAndSave: onFinishAndSave,
-                        onPause: onPause,
-                        onAbandon: onAbandon,
-                      ),
-                      AppWhiteSpace.hXl,
-                      _BottomNote(),
-                    ],
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 class _HeaderSection extends StatelessWidget {
+  const _HeaderSection({required this.onClose});
+
+  final VoidCallback onClose;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: AppSpacing.xxxl,
+        SizedBox(
+          width: double.infinity,
           height: AppSpacing.xxxl,
-          decoration: BoxDecoration(
-            color: context.colorScheme.surfaceContainer,
-            shape: BoxShape.circle,
-          ),
-          child: SvgPicture.asset(
-            SolidSvgAssets.pauseCircle,
-            width: AppSizing.iconXxl,
-            height: AppSizing.iconXxl,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.secondary,
-              BlendMode.srcIn,
-            ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: AppSpacing.xxxl,
+                height: AppSpacing.xxxl,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.surfaceContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(
+                  SolidSvgAssets.pauseCircle,
+                  width: AppSizing.iconXxl,
+                  height: AppSizing.iconXxl,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.secondary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  tooltip: AppStrings.close,
+                  onPressed: onClose,
+                  icon: SvgPicture.asset(
+                    OutlinedSvgAssets.xMark,
+                    width: AppSizing.iconMd,
+                    height: AppSizing.iconMd,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         AppWhiteSpace.hLg,
@@ -335,8 +375,8 @@ class _ActionButtons extends StatelessWidget {
                 onPressed: onPause,
                 icon: SvgPicture.asset(
                   SolidSvgAssets.play,
-                  width: AppSizing.iconSm,
-                  height: AppSizing.iconSm,
+                  width: AppSizing.iconS,
+                  height: AppSizing.iconS,
                   colorFilter: ColorFilter.mode(
                     context.colorScheme.secondary,
                     BlendMode.srcIn,
@@ -345,6 +385,7 @@ class _ActionButtons extends StatelessWidget {
                 label: Text(
                   AppStrings.pauseWorkout,
                   style: AppTextStyles.labelMd.copyWith(
+                    fontSize: AppFontSizes.xs,
                     color: context.colorScheme.primary,
                   ),
                 ),
@@ -366,8 +407,8 @@ class _ActionButtons extends StatelessWidget {
                 onPressed: onAbandon,
                 icon: SvgPicture.asset(
                   OutlinedSvgAssets.trash,
-                  width: AppSizing.iconSm,
-                  height: AppSizing.iconSm,
+                  width: AppSizing.iconS,
+                  height: AppSizing.iconS,
                   colorFilter: ColorFilter.mode(
                     context.colorScheme.error,
                     BlendMode.srcIn,
@@ -376,6 +417,7 @@ class _ActionButtons extends StatelessWidget {
                 label: Text(
                   AppStrings.abandonSession,
                   style: AppTextStyles.labelMd.copyWith(
+                    fontSize: AppFontSizes.xs,
                     color: context.colorScheme.error,
                   ),
                 ),

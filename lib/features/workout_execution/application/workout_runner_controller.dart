@@ -5,11 +5,13 @@ import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/workout_execution/application/workout_runner_phase.dart';
 import 'package:aedify/features/workout_execution/application/workout_runner_state.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_completion_draft.dart';
+import 'package:aedify/features/workout_execution/domain/workout_duration_resolver.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_mode.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_resume_decision.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
+import 'package:uuid/uuid.dart';
 
 class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
   WorkoutRunnerController({
@@ -143,10 +145,11 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         resumeDecision: WorkoutRunnerResumeDecision.resume,
         session: session.copyWith(
           startedAt: adjustedStartedAt,
-          durationSeconds: null,
+          clearDurationSeconds: true,
         ),
       ),
     );
+    await saveProgress();
   }
 
   Future<void> discardRecoveredSession() async {
@@ -186,6 +189,155 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     final updatedExercises = session.exercises.map((e) {
       if (e.id != exerciseId) return e;
       return _replaceSet(e, setId, updatedSet);
+    }).toList();
+
+    state = AsyncData(
+      current.copyWith(session: session.copyWith(exercises: updatedExercises)),
+    );
+    _scheduleAutoSave();
+  }
+
+  Future<void> addSet({required String exerciseId}) async {
+    _logger.debug('addSet — exerciseId: $exerciseId');
+    final current = state.asData?.value;
+    if (current == null) return;
+    final session = current.session;
+    if (session == null) return;
+
+    final updatedExercises = session.exercises.map((exercise) {
+      if (exercise.id != exerciseId || exercise.sets.isEmpty) return exercise;
+      final template = exercise.sets.last;
+      final nextSetIndex = exercise.sets.fold<int>(
+        0,
+        (next, set) => set.setIndex >= next ? set.setIndex + 1 : next,
+      );
+      final addedSet = WorkoutRunnerSetItem(
+        id: const Uuid().v4(),
+        exerciseId: template.exerciseId,
+        setIndex: nextSetIndex,
+        setType: template.setType,
+        performedAt: DateTime.now(),
+        completed: false,
+        skipped: false,
+        setIntent: template.setIntent,
+        prescribedRepsMin: template.prescribedRepsMin,
+        prescribedRepsMax: template.prescribedRepsMax,
+        prescribedRepsExact: template.prescribedRepsExact,
+        prescribedWeightKg: template.prescribedWeightKg,
+        prescribedRpeMin: template.prescribedRpeMin,
+        prescribedRpeMax: template.prescribedRpeMax,
+        restSeconds: template.restSeconds,
+      );
+      return exercise.copyWith(sets: [...exercise.sets, addedSet]);
+    }).toList();
+
+    state = AsyncData(
+      current.copyWith(session: session.copyWith(exercises: updatedExercises)),
+    );
+    _scheduleAutoSave();
+  }
+
+  /// Swaps a session exercise for a replacement chosen from the library.
+  ///
+  /// Completed or skipped set logs keep their original per-set `exerciseId`
+  /// so finished work stays attributed to the original exercise. Pending sets
+  /// are recreated fresh for the replacement with their prescriptions kept
+  /// and in-progress actuals cleared.
+  Future<void> substituteExercise({
+    required String sessionExerciseId,
+    required int replacementExerciseId,
+    required String replacementExerciseName,
+  }) async {
+    _logger.info(
+      'substituteExercise — sessionExerciseId: $sessionExerciseId, '
+      'replacementExerciseId: $replacementExerciseId',
+    );
+    final current = state.asData?.value;
+    if (current == null) return;
+    // Swapping is only offered while running; autosave would otherwise reset
+    // a paused or saving phase.
+    if (current.phase != WorkoutRunnerPhase.ready) return;
+    final session = current.session;
+    if (session == null) return;
+
+    final target = session.exercises
+        .where((exercise) => exercise.id == sessionExerciseId)
+        .firstOrNull;
+    if (target == null || target.exerciseId == replacementExerciseId) return;
+
+    final updatedExercises = session.exercises.map((exercise) {
+      if (exercise.id != sessionExerciseId) return exercise;
+      return exercise.copyWith(
+        exerciseId: replacementExerciseId,
+        exerciseName: replacementExerciseName,
+        sets: [
+          for (final set in exercise.sets)
+            if (set.completed || set.skipped)
+              set
+            else
+              WorkoutRunnerSetItem(
+                id: set.id,
+                exerciseId: replacementExerciseId,
+                setIndex: set.setIndex,
+                setType: set.setType,
+                performedAt: set.performedAt,
+                completed: false,
+                skipped: false,
+                setIntent: set.setIntent,
+                prescribedRepsMin: set.prescribedRepsMin,
+                prescribedRepsMax: set.prescribedRepsMax,
+                prescribedRepsExact: set.prescribedRepsExact,
+                prescribedWeightKg: set.prescribedWeightKg,
+                prescribedRpeMin: set.prescribedRpeMin,
+                prescribedRpeMax: set.prescribedRpeMax,
+                restSeconds: set.restSeconds,
+              ),
+        ],
+      );
+    }).toList();
+
+    state = AsyncData(
+      current.copyWith(session: session.copyWith(exercises: updatedExercises)),
+    );
+    _scheduleAutoSave();
+  }
+
+  /// Appends one set to each exercise, cloning from that exercise's final set.
+  ///
+  /// Used to add a superset round so every member stays aligned.
+  Future<void> addSetToExercises({required List<String> exerciseIds}) async {
+    _logger.debug('addSetToExercises — exerciseIds: $exerciseIds');
+    final current = state.asData?.value;
+    if (current == null) return;
+    final session = current.session;
+    if (session == null) return;
+
+    final ids = exerciseIds.toSet();
+    final updatedExercises = session.exercises.map((exercise) {
+      if (!ids.contains(exercise.id) || exercise.sets.isEmpty) return exercise;
+      final template = exercise.sets.last;
+      final nextSetIndex = exercise.sets.fold<int>(
+        0,
+        (next, set) => set.setIndex >= next ? set.setIndex + 1 : next,
+      );
+      final addedSet = WorkoutRunnerSetItem(
+        id: const Uuid().v4(),
+        exerciseId: template.exerciseId,
+        setIndex: nextSetIndex,
+        setType: template.setType,
+        performedAt: DateTime.now(),
+        completed: false,
+        skipped: false,
+        setIntent: template.setIntent,
+        prescribedRepsMin: template.prescribedRepsMin,
+        prescribedRepsMax: template.prescribedRepsMax,
+        prescribedRepsExact: template.prescribedRepsExact,
+        prescribedWeightKg: template.prescribedWeightKg,
+        prescribedRpeMin: template.prescribedRpeMin,
+        prescribedRpeMax: template.prescribedRpeMax,
+        restSeconds: template.restSeconds,
+      );
+      return exercise.copyWith(sets: [...exercise.sets, addedSet]);
     }).toList();
 
     state = AsyncData(
@@ -330,10 +482,11 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         phase: WorkoutRunnerPhase.ready,
         session: session.copyWith(
           startedAt: adjustedStartedAt,
-          durationSeconds: null,
+          clearDurationSeconds: true,
         ),
       ),
     );
+    await saveProgress();
   }
 
   Future<void> saveProgress() async {
@@ -352,15 +505,21 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       );
       await saveUseCase.save(session);
       ref.invalidate(AppProviders.activeWorkoutSessionProvider);
-      state = AsyncData(current.copyWith(phase: WorkoutRunnerPhase.ready));
+      final latest = state.asData?.value;
+      if (latest != null && latest.phase == WorkoutRunnerPhase.saving) {
+        state = AsyncData(latest.copyWith(phase: WorkoutRunnerPhase.ready));
+      }
     } catch (e) {
       _logger.error('saveProgress — failed', error: e);
-      state = AsyncData(
-        current.copyWith(
-          phase: WorkoutRunnerPhase.failure,
-          errorMessage: e.toString(),
-        ),
-      );
+      final latest = state.asData?.value;
+      if (latest != null && latest.phase == WorkoutRunnerPhase.saving) {
+        state = AsyncData(
+          latest.copyWith(
+            phase: WorkoutRunnerPhase.failure,
+            errorMessage: e.toString(),
+          ),
+        );
+      }
     }
   }
 
@@ -390,7 +549,11 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
           WorkoutRunnerCompletionDraft(
             sessionId: currentSession.sessionId,
             completedAt: now,
-            durationSeconds: now.difference(currentSession.startedAt).inSeconds,
+            durationSeconds: WorkoutDurationResolver.elapsedSeconds(
+              startedAt: currentSession.startedAt,
+              accumulatedSeconds: currentSession.durationSeconds,
+              now: now,
+            ),
             notes: currentSession.notes,
             energyLevel: currentSession.energyLevel,
             perceivedDifficulty: currentSession.perceivedDifficulty,
