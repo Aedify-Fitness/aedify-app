@@ -111,6 +111,7 @@ class _HomeTestFixtures {
             programId: 'programme-1',
             templateKey: 'upper-a',
             name: 'Upper Body A',
+            goalTagsJson: '[]',
             estimatedDurationMinutes: 45,
             sortOrder: 0,
             createdAt: timestamp,

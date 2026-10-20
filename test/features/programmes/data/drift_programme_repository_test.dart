@@ -1,3 +1,15 @@
+import 'package:aedify/shared/domain/training_day.dart';
+import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_workout_repetition.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_workout_slot_draft.dart';
+import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/programmes/application/load_programme_builder_draft_use_case.dart';
+import 'package:aedify/features/programmes/application/save_programme_builder_draft_use_case.dart';
+import 'package:aedify/features/programmes/application/programme_builder_mode.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -60,6 +72,457 @@ void main() {
   });
 
   group('DriftProgrammeRepository', () {
+    test(
+      'repeated workout goals and independent assignments survive reloading',
+      () async {
+        final save = SaveProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final load = LoadProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        const template = ProgrammeBuilderTemplateDraft(
+          id: 'goal-template',
+          templateKey: 'goal-template',
+          name: 'Push',
+          goalTags: ['Strength'],
+        );
+        final draft = ProgrammeBuilderDraft(
+          id: 'goal-programme',
+          name: 'Goal programme',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.draft,
+          templates: [],
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(
+              id: 'goal-block',
+              name: 'Base',
+              weekCount: 2,
+            ),
+          ],
+          weeks: [
+            for (var i = 0; i < 2; i++)
+              ProgrammeBuilderWeekDraft(
+                id: 'goal-week-$i',
+                weekNumber: i + 1,
+                slots: [
+                  ProgrammeBuilderWorkoutSlotDraft(
+                    slotIndex: 0,
+                    scheduledDayIndex: 0,
+                    template: template.copyWith(
+                      id: 'goal-template-$i',
+                      templateKey: 'goal-template-$i',
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        );
+        await save.save(draft);
+        final restored = await load.loadForEdit(draft.id);
+        expect(ProgrammeWorkoutRepetition.repeatedSlots(restored, 0), {0});
+        expect(ProgrammeWorkoutRepetition.repeatedSlots(restored, 1), {0});
+        expect(
+          restored.weeks!.map((week) => week.slots!.single.template!.goalTags),
+          [
+            ['Strength'],
+            ['Strength'],
+          ],
+        );
+        expect(
+          restored.weeks!
+              .map((week) => week.slots!.single.template!.id)
+              .toSet(),
+          hasLength(2),
+        );
+      },
+    );
+
+    test(
+      'unfinished drafts retain unassigned days and empty weeks through save/load',
+      () async {
+        final save = SaveProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final load = LoadProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final draft = ProgrammeBuilderDraft(
+          id: 'unfinished',
+          name: 'Unfinished plan',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.draft,
+          goalTags: {},
+          templates: [],
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(
+              id: 'unfinished-block',
+              name: '',
+              weekCount: 2,
+            ),
+          ],
+          weeks: const [
+            ProgrammeBuilderWeekDraft(
+              id: 'draft-week-1',
+              weekNumber: 1,
+              slots: [
+                ProgrammeBuilderWorkoutSlotDraft(
+                  slotIndex: 0,
+                  scheduledDayIndex: 0,
+                ),
+                ProgrammeBuilderWorkoutSlotDraft(
+                  slotIndex: 1,
+                  scheduledDayIndex: 4,
+                ),
+              ],
+            ),
+            ProgrammeBuilderWeekDraft(
+              id: 'draft-week-2',
+              weekNumber: 2,
+              slots: [],
+            ),
+          ],
+        );
+        await save.save(draft);
+        final restored = await load.loadForEdit(draft.id);
+        expect(restored.status, ProgramStatus.draft);
+        expect(restored.active, isFalse);
+        expect(restored.goalTags, isEmpty);
+        expect(restored.trainingBlocks.single.name, isEmpty);
+        expect(restored.weeks!.first.slots!.map((s) => s.scheduledDayIndex), [
+          0,
+          4,
+        ]);
+        expect(
+          restored.weeks!.first.slots!.every((s) => s.template == null),
+          isTrue,
+        );
+        expect(restored.weeks!.last.slots, isEmpty);
+        await expectLater(
+          repository.activateProgramme(draft.id),
+          throwsStateError,
+        );
+        expect(
+          (await repository.getProgramme(draft.id))!.program.active,
+          isFalse,
+        );
+        await save.save(restored.copyWith(weeks: [], trainingBlocks: []));
+        final detailsOnly = await load.loadForEdit(draft.id);
+        expect(detailsOnly.name, draft.name);
+        expect(detailsOnly.status, ProgramStatus.draft);
+        expect(detailsOnly.weeks, isEmpty);
+      },
+    );
+
+    test(
+      'weekly day overrides survive reloading a block with default days',
+      () async {
+        const block = ProgrammeTrainingBlockDraft(
+          id: 'block',
+          name: 'Base',
+          weekCount: 2,
+          trainingDays: {TrainingDay.monday, TrainingDay.wednesday},
+        );
+        await repository.saveProgramme(
+          const ProgrammeDraft(
+            id: 'day-overrides',
+            name: 'Weekly overrides',
+            source: WorkoutSource.manual,
+            creationMethod: CreationMethod.manual,
+            status: ProgramStatus.inactive,
+            active: false,
+            goalTags: {GoalTag.buildMuscle},
+            equipment: {},
+            trainingBlocks: [block],
+            weeksTotal: 2,
+            weekSlotDayIndices: [
+              [0, 2],
+              [0, 4],
+            ],
+            weekSlotTemplateIds: [
+              ['workout', 'workout'],
+              ['workout', 'workout'],
+            ],
+            templates: [
+              ProgrammeWorkoutTemplateDraft(
+                id: 'workout',
+                templateKey: 'workout',
+                name: 'Workout',
+                sortOrder: 0,
+                exercises: [],
+              ),
+            ],
+          ),
+        );
+        final container = ProviderContainer(
+          overrides: [
+            AppProviders.loadProgrammeBuilderDraftUseCaseProvider
+                .overrideWithValue(
+                  LoadProgrammeBuilderDraftUseCase(
+                    programmeRepository: repository,
+                  ),
+                ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.edit,
+          programmeId: 'day-overrides',
+        ));
+        await container.read(provider.future);
+        var draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.single.trainingDays, block.trainingDays);
+        expect(draft.weeks!.first.slots!.map((s) => s.scheduledDayIndex), [
+          0,
+          2,
+        ]);
+        expect(draft.weeks!.last.slots!.map((s) => s.scheduledDayIndex), [
+          0,
+          4,
+        ]);
+        container
+            .read(provider.notifier)
+            .updateTrainingBlock('block', name: 'Renamed');
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks!.last.slots!.map((s) => s.scheduledDayIndex), [
+          0,
+          4,
+        ]);
+        expect(draft.trainingBlocks.single.trainingDays, block.trainingDays);
+      },
+    );
+
+    test(
+      'training blocks save, reload, duplicate, update and delete with a programme',
+      () async {
+        final save = SaveProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final load = LoadProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final draft = ProgrammeBuilderDraft(
+          id: 'blocks-programme',
+          name: 'Block programme',
+          source: WorkoutSource.manual,
+          creationMethod: CreationMethod.manual,
+          status: ProgramStatus.inactive,
+          templates: const [],
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(
+              id: 'volume',
+              name: 'Volume',
+              weekCount: 1,
+              focus: TrainingBlockFocus.hypertrophyBiased,
+              progressionNotes: 'Add reps',
+              trainingDays: {TrainingDay.monday, TrainingDay.wednesday},
+            ),
+            ProgrammeTrainingBlockDraft(
+              id: 'strength',
+              name: 'Strength',
+              weekCount: 2,
+              focus: TrainingBlockFocus.strengthBiased,
+              progressionNotes: 'Add load',
+            ),
+          ],
+          weeks: [
+            for (var i = 1; i <= 3; i++)
+              ProgrammeBuilderWeekDraft(
+                id: 'week-$i',
+                weekNumber: i,
+                slots: const [],
+              ),
+          ],
+        );
+        await save.save(draft);
+        var restored = await load.loadForEdit(draft.id);
+        expect(restored.trainingBlocks.map((b) => b.name), [
+          'Volume',
+          'Strength',
+        ]);
+        expect(restored.trainingBlocks.map((b) => b.weekCount), [1, 2]);
+        expect(
+          restored.trainingBlocks.last.focus,
+          TrainingBlockFocus.strengthBiased,
+        );
+        expect(restored.trainingBlocks.last.progressionNotes, 'Add load');
+        expect(restored.trainingBlocks.first.trainingDays, {
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+        });
+        final duplicate = await load.loadDuplicate(draft.id);
+        expect(
+          duplicate.trainingBlocks.first.id,
+          isNot(restored.trainingBlocks.first.id),
+        );
+        expect(duplicate.trainingBlocks.last.progressionNotes, 'Add load');
+        expect(
+          duplicate.trainingBlocks.first.trainingDays,
+          restored.trainingBlocks.first.trainingDays,
+        );
+        await save.save(
+          restored.copyWith(
+            trainingBlocks: [
+              restored.trainingBlocks.first.copyWith(name: 'Updated volume'),
+              restored.trainingBlocks.last,
+            ],
+          ),
+        );
+        restored = await load.loadForEdit(draft.id);
+        expect(restored.trainingBlocks.first.name, 'Updated volume');
+        expect(await db.select(db.programTrainingBlocks).get(), hasLength(2));
+        await repository.deleteProgramme(draft.id);
+        expect(await db.select(db.programTrainingBlocks).get(), isEmpty);
+      },
+    );
+
+    test(
+      'day-specific template targets remain independent after saving and reloading',
+      () async {
+        final programmeId = await repository.saveProgramme(
+          ProgrammeDraft(
+            id: const Uuid().v4(),
+            name: 'Day-specific programme',
+            source: WorkoutSource.manual,
+            creationMethod: CreationMethod.manual,
+            status: ProgramStatus.inactive,
+            active: false,
+            goalTags: const {GoalTag.buildMuscle},
+            equipment: {},
+            weeksTotal: 1,
+            daysPerWeek: 2,
+            slotDayIndices: const [0, 2],
+            slotTemplateIds: const ['push', 'push'],
+            templates: [
+              ProgrammeWorkoutTemplateDraft(
+                id: 'push',
+                templateKey: 'push',
+                name: 'Push Day',
+                sortOrder: 0,
+                exercises: [
+                  ProgrammeExerciseDraft(
+                    id: 'bench',
+                    exerciseId: 1,
+                    exerciseRef: 'Bench Press',
+                    sortOrder: 0,
+                    sets: [
+                      SetPrescriptionDraft(
+                        id: 'set',
+                        setIndex: 0,
+                        setType: SetType.working,
+                        prescribedRepsExact: 8,
+                        prescribedWeightKg: 40,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+        final load = LoadProgrammeBuilderDraftUseCase(
+          programmeRepository: repository,
+        );
+        final container = ProviderContainer(
+          overrides: [
+            AppProviders.loadProgrammeBuilderDraftUseCaseProvider
+                .overrideWithValue(load),
+            AppProviders.saveProgrammeBuilderDraftUseCaseProvider
+                .overrideWithValue(
+                  SaveProgrammeBuilderDraftUseCase(
+                    programmeRepository: repository,
+                  ),
+                ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.edit,
+          programmeId: programmeId,
+        ));
+        await container.read(provider.future);
+        final block = container
+            .read(provider)
+            .requireValue
+            .draft
+            .trainingBlocks
+            .single;
+        expect(block.name, isEmpty);
+        container
+            .read(provider.notifier)
+            .updateTrainingBlock(block.id, name: 'Base');
+        final slots = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .single
+            .slots!;
+        expect(slots[0].template!.id, isNot(slots[1].template!.id));
+        final wednesday = slots[1].template!;
+        final exercise = wednesday.exercises.single;
+        container
+            .read(provider.notifier)
+            .updateTemplateExercise(
+              wednesday.id,
+              exercise.copyWith(
+                sets: [
+                  exercise.sets.single.copyWith(
+                    prescribedRepsExact: 12,
+                    prescribedWeightKg: 50.0,
+                  ),
+                ],
+              ),
+            );
+        await container.read(provider.notifier).saveProgramme();
+        final reloaded = await load.loadForEdit(programmeId);
+        final savedSlots = reloaded.weeks!.single.slots!;
+        expect(savedSlots[0].template!.id, isNot(savedSlots[1].template!.id));
+        expect(
+          savedSlots[0]
+              .template!
+              .exercises
+              .single
+              .sets
+              .single
+              .prescribedRepsExact,
+          8,
+        );
+        expect(
+          savedSlots[0]
+              .template!
+              .exercises
+              .single
+              .sets
+              .single
+              .prescribedWeightKg,
+          40,
+        );
+        expect(
+          savedSlots[1]
+              .template!
+              .exercises
+              .single
+              .sets
+              .single
+              .prescribedRepsExact,
+          12,
+        );
+        expect(
+          savedSlots[1]
+              .template!
+              .exercises
+              .single
+              .sets
+              .single
+              .prescribedWeightKg,
+          50,
+        );
+      },
+    );
+
     test('getProgramme returns null for unknown id', () async {
       final result = await repository.getProgramme('nonexistent');
       expect(result, isNull);

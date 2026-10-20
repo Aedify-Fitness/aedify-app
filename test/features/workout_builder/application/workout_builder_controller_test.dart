@@ -46,6 +46,109 @@ class _FakeSavedWorkoutRepository implements SavedWorkoutRepository {
 }
 
 void main() {
+  group('WorkoutBuilderController (programme template mode)', () {
+    final provider = AppProviders.workoutBuilderControllerProvider((
+      mode: WorkoutBuilderMode.programmeTemplate,
+      savedWorkoutId: null,
+    ));
+    late ProviderContainer container;
+    late _FakeSavedWorkoutRepository repository;
+
+    setUp(() async {
+      repository = _FakeSavedWorkoutRepository();
+      container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWithValue(
+            repository,
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      await container.read(provider.future);
+    });
+
+    test('starts a separate blank programme draft', () async {
+      final state = container.read(provider).requireValue;
+      expect(state.mode, WorkoutBuilderMode.programmeTemplate);
+      expect(state.draft.name, isEmpty);
+      expect(state.isDirty, isFalse);
+      final library = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+      await library.future;
+      await library.renameWorkout('Unfinished library workout');
+      expect(container.read(provider).requireValue.draft.name, isEmpty);
+    });
+
+    test(
+      'returns validated normalized targets without saving a library workout',
+      () async {
+        final controller = container.read(provider.notifier);
+        await controller.renameWorkout('Programme Push');
+        await controller.addExercise(
+          const ExerciseReference(
+            exerciseId: 1,
+            name: 'Bench Press',
+            modality: 'strength',
+          ),
+        );
+        final exercise = container
+            .read(provider)
+            .requireValue
+            .draft
+            .exercises
+            .single;
+        await controller.updateDescription('Programme description');
+        await controller.updateRestBetweenExercises(75);
+        await controller.updateExerciseNotes(exercise.id, 'Controlled tempo');
+        await controller.addSet(exercise.id, setType: SetType.warmup);
+        final result = await controller.saveWorkout();
+        expect(result, isNotNull);
+        expect(result!.name, 'Programme Push');
+        expect(result.description, 'Programme description');
+        expect(result.restBetweenExercisesSeconds, 75);
+        expect(result.exercises.single.notes, 'Controlled tempo');
+        expect(result.exercises.single.sets.map((set) => set.setType), [
+          SetType.warmup,
+          SetType.working,
+        ]);
+        expect(result.exercises.single.sets.map((set) => set.setIndex), [0, 1]);
+        expect(result.estimatedDurationMinutes, isPositive);
+        expect(repository.lastSavedDraft, isNull);
+        expect(container.read(provider).requireValue.isDirty, isFalse);
+        expect(container.read(provider).requireValue.savedWorkoutId, isNull);
+      },
+    );
+
+    test(
+      'rejects incomplete programme workouts without a persistence call',
+      () async {
+        final controller = container.read(provider.notifier);
+        expect(await controller.saveWorkout(), isNull);
+        expect(
+          container.read(provider).requireValue.hasValidationErrors,
+          isTrue,
+        );
+        expect(repository.lastSavedDraft, isNull);
+      },
+    );
+
+    test('discard resets the programme draft without saving it', () async {
+      final controller = container.read(provider.notifier);
+      final originalId = container.read(provider).requireValue.draft.id;
+      await controller.renameWorkout('Do not keep this');
+      await controller.discardChanges();
+      final state = container.read(provider).requireValue;
+      expect(state.draft.name, isEmpty);
+      expect(state.draft.id, isNot(originalId));
+      expect(state.isDirty, isFalse);
+      expect(repository.lastSavedDraft, isNull);
+    });
+  });
+
   group('WorkoutBuilderController (create mode)', () {
     ProviderContainer createContainer({bool shouldThrowOnGet = false}) {
       return ProviderContainer(

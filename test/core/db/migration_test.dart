@@ -7,6 +7,124 @@ import 'package:path/path.dart' as p;
 
 void main() {
   group('Migration', () {
+    test('v16 upgrade retains templates with empty workout goals', () async {
+      final directory = Directory.systemTemp.createTempSync(
+        'workout_goals_migration_',
+      );
+      final file = File(p.join(directory.path, 'database.sqlite'));
+      final original = AppDatabase(NativeDatabase(file));
+      final now = DateTime(2026);
+      await original
+          .into(original.programWorkoutTemplates)
+          .insert(
+            ProgramWorkoutTemplatesCompanion.insert(
+              id: 'template',
+              programId: 'programme',
+              templateKey: 'template',
+              name: 'Push',
+              sortOrder: 0,
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await original.customStatement(
+        'ALTER TABLE program_workout_templates DROP COLUMN goal_tags_json',
+      );
+      await original.customStatement('PRAGMA user_version = 16');
+      await original.close();
+      final upgraded = AppDatabase(NativeDatabase(file));
+      final template =
+          (await upgraded.select(upgraded.programWorkoutTemplates).get())
+              .single;
+      expect(template.name, 'Push');
+      expect(template.goalTagsJson, '[]');
+      await upgraded.close();
+      await directory.delete(recursive: true);
+    });
+
+    test(
+      'v15 upgrade preserves blocks and starts with optional days unset',
+      () async {
+        final directory = Directory.systemTemp.createTempSync(
+          'block_days_migration_',
+        );
+        final file = File(p.join(directory.path, 'database.sqlite'));
+        final original = AppDatabase(NativeDatabase(file));
+        await original
+            .into(original.programTrainingBlocks)
+            .insert(
+              ProgramTrainingBlocksCompanion.insert(
+                id: 'block',
+                programId: 'programme',
+                sortOrder: 0,
+                name: 'Strength',
+                weekCount: 3,
+                focus: 'strength_biased',
+              ),
+            );
+        await original.customStatement(
+          'ALTER TABLE program_training_blocks DROP COLUMN training_days_json',
+        );
+        await original.customStatement(
+          'ALTER TABLE program_workout_templates DROP COLUMN goal_tags_json',
+        );
+        await original.customStatement('PRAGMA user_version = 15');
+        await original.close();
+        final upgraded = AppDatabase(NativeDatabase(file));
+        final block =
+            (await upgraded.select(upgraded.programTrainingBlocks).get())
+                .single;
+        expect(block.name, 'Strength');
+        expect(block.weekCount, 3);
+        expect(block.trainingDaysJson, '[]');
+        await upgraded.close();
+        await directory.delete(recursive: true);
+      },
+    );
+
+    test('v14 upgrade adds blocks and preserves existing programmes', () async {
+      final directory = Directory.systemTemp.createTempSync(
+        'blocks_migration_',
+      );
+      final file = File(p.join(directory.path, 'database.sqlite'));
+      final original = AppDatabase(NativeDatabase(file));
+      final now = DateTime.now();
+      await original
+          .into(original.programs)
+          .insert(
+            ProgramsCompanion.insert(
+              id: 'existing',
+              name: 'Existing programme',
+              source: 'manual',
+              creationMethod: 'manual',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await original.customStatement('DROP TABLE program_training_blocks');
+      await original.customStatement(
+        'ALTER TABLE program_workout_templates DROP COLUMN goal_tags_json',
+      );
+      await original.customStatement('PRAGMA user_version = 14');
+      await original.close();
+      final upgraded = AppDatabase(NativeDatabase(file));
+      expect(
+        (await upgraded.select(upgraded.programs).get()).single.name,
+        'Existing programme',
+      );
+      expect(
+        await upgraded.select(upgraded.programTrainingBlocks).get(),
+        isEmpty,
+      );
+      final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
+      expect(
+        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 17),
+        isTrue,
+      );
+      await upgraded.close();
+      await directory.delete(recursive: true);
+    });
+
     test('onCreate seeds schema_meta and logs migration', () async {
       final db = AppDatabase(NativeDatabase.memory());
 
@@ -29,7 +147,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(14));
+      expect(logRows.first.toVersion, equals(17));
 
       db.close();
     });

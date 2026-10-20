@@ -75,7 +75,9 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byTooltip(AppStrings.assignTemplate));
+      await tester.tap(find.byTooltip(AppStrings.workoutOptions));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(AppStrings.assignTemplate).last);
       expect(assigned, isTrue);
     });
 
@@ -95,7 +97,9 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byTooltip(AppStrings.removeSlot));
+      await tester.tap(find.byTooltip(AppStrings.workoutOptions));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(AppStrings.removeSlot));
       expect(removed, isTrue);
     });
   });

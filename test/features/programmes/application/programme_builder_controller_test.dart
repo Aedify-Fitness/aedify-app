@@ -1,4 +1,8 @@
+import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
+import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
+import 'package:aedify/shared/domain/set_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
@@ -19,6 +23,7 @@ import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/program_status.dart';
 import 'package:aedify/shared/domain/week_type.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 ProgrammeBuilderDraft _defaultDraft() {
   return ProgrammeBuilderDraft(
@@ -58,6 +63,9 @@ ProgrammeBuilderDraft _draftWithSlots() {
 ProgrammeBuilderDraft _draftWithTemplateExercises() {
   return _defaultDraft().copyWith(
     name: 'Test Programme',
+    trainingBlocks: const [
+      ProgrammeTrainingBlockDraft(id: 'base', name: 'Base', weekCount: 1),
+    ],
     weeks: [
       ProgrammeBuilderWeekDraft(
         id: 'week-1',
@@ -105,6 +113,9 @@ ProgrammeBuilderDraft _draftWithTemplateExercises() {
 ProgrammeBuilderDraft _validDraft() {
   return _defaultDraft().copyWith(
     name: 'Valid Programme',
+    trainingBlocks: const [
+      ProgrammeTrainingBlockDraft(id: 'base', name: 'Base', weekCount: 1),
+    ],
     weeks: [
       ProgrammeBuilderWeekDraft(
         id: 'week-1',
@@ -201,6 +212,482 @@ void main() {
   setUp(() {
     fakeLoadUseCase = _FakeLoadUseCase();
     fakeSaveUseCase = _FakeSaveUseCase();
+  });
+
+  group('Define Workouts template editing', () {
+    test(
+      'assigning a reusable template gives each workout day independent identities',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithSlots();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        final source =
+            _draftWithTemplateExercises().weeks!.first.slots!.first.template!;
+        await controller.assignTemplateToSlot(
+          weekIndex: 0,
+          slotIndex: 0,
+          template: source,
+        );
+        await controller.assignTemplateToSlot(
+          weekIndex: 0,
+          slotIndex: 1,
+          template: source,
+        );
+        final slots = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .single
+            .slots!;
+        final first = slots[0].template!;
+        final second = slots[1].template!;
+        expect(first.id, source.id);
+        expect(second.id, isNot(first.id));
+        expect(second.templateKey, isNot(first.templateKey));
+        expect(second.exercises.first.id, isNot(first.exercises.first.id));
+        controller.removeTemplateExercise(second.id, second.exercises.first.id);
+        final updated = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .single
+            .slots!;
+        expect(updated[0].template!.exercises, hasLength(3));
+        expect(updated[1].template!.exercises, hasLength(2));
+      },
+    );
+
+    test(
+      'duplicated weeks retain prescriptions and independent superset groups',
+      () async {
+        final draft = _draftWithTemplateExercises();
+        final source = draft.weeks!.first.slots!.first.template!;
+        final grouped = source.copyWith(
+          exercises: [
+            for (var i = 0; i < 2; i++)
+              source.exercises[i].copyWith(
+                supersetGroupId: 'group',
+                supersetOrder: i,
+                sets: [
+                  SetPrescriptionDraft(
+                    id: 'set-$i',
+                    setIndex: 0,
+                    setType: SetType.working,
+                    prescribedRepsExact: 8,
+                    prescribedWeightKg: 60,
+                    prescribedWeightPct1rm: 70,
+                    loadSelectionNote: 'Keep this target',
+                    isCalibrationEstimate: true,
+                    warmupWeightRuleJson: '{}',
+                  ),
+                ],
+              ),
+          ],
+        );
+        fakeLoadUseCase.draftToReturn = draft.copyWith(
+          weeks: [
+            draft.weeks!.first.copyWith(
+              slots: [
+                draft.weeks!.first.slots!.first.copyWith(template: grouped),
+              ],
+            ),
+          ],
+        );
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        await controller.duplicateWeek(0);
+        final weeks = container.read(provider).requireValue.draft.weeks!;
+        final first = weeks.first.slots!.single.template!;
+        final second = weeks.last.slots!.single.template!;
+        expect(second.id, isNot(first.id));
+        expect(
+          second.exercises.map((exercise) => exercise.supersetGroupId).toSet(),
+          hasLength(1),
+        );
+        expect(
+          second.exercises.first.supersetGroupId,
+          isNot(first.exercises.first.supersetGroupId),
+        );
+        expect(second.exercises.map((exercise) => exercise.supersetOrder), [
+          0,
+          1,
+        ]);
+        final copiedSet = second.exercises.first.sets.single;
+        expect(copiedSet.id, isNot(first.exercises.first.sets.single.id));
+        expect(copiedSet.prescribedWeightKg, 60);
+        expect(copiedSet.prescribedWeightPct1rm, 70);
+        expect(copiedSet.loadSelectionNote, 'Keep this target');
+        expect(copiedSet.isCalibrationEstimate, isTrue);
+        expect(copiedSet.warmupWeightRuleJson, '{}');
+        controller.removeTemplateExercise(second.id, second.exercises.first.id);
+        final updated = container.read(provider).requireValue.draft.weeks!;
+        expect(updated.first.slots!.single.template!.exercises, hasLength(2));
+        expect(updated.last.slots!.single.template!.exercises, hasLength(1));
+      },
+    );
+
+    test(
+      'edits one day, preserves targets on other days, and reindexes its sets',
+      () async {
+        final draft = _draftWithTemplateExercises();
+        final template = draft.weeks!.first.slots!.first.template!;
+        final set = SetPrescriptionDraft(
+          id: 'set',
+          setIndex: 0,
+          setType: SetType.working,
+          prescribedRepsExact: 8,
+          prescribedWeightKg: 60,
+          prescribedRpeMin: 8,
+          prescribedRpeMax: 9,
+          durationSeconds: 30,
+          distanceMeters: 100,
+          prescribedWeightPct1rm: 70,
+          loadSelectionNote: 'Keep the existing target',
+          isCalibrationEstimate: true,
+        );
+        final shared = template.copyWith(
+          exercises: [
+            template.exercises.first.copyWith(sets: [set]),
+          ],
+        );
+        final slot = draft.weeks!.first.slots!.first.copyWith(template: shared);
+        fakeLoadUseCase.draftToReturn = draft.copyWith(
+          weeks: [
+            draft.weeks!.first.copyWith(
+              slots: [slot, slot.copyWith(slotIndex: 1, scheduledDayIndex: 2)],
+            ),
+            ProgrammeBuilderWeekDraft(
+              id: 'week-2',
+              weekNumber: 2,
+              slots: [slot],
+            ),
+          ],
+        );
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.updateTemplateExercise(
+          't-1',
+          shared.exercises.first.copyWith(
+            notes: 'Local note',
+            sets: [
+              set.copyWith(
+                prescribedRepsExact: null,
+                prescribedRepsMin: 10,
+                prescribedRepsMax: 12,
+                prescribedWeightKg: null,
+                prescribedRpeMin: null,
+                prescribedRpeMax: null,
+              ),
+            ],
+          ),
+        );
+        controller.addTemplateSet('t-1', 'e1');
+        var state = container.read(provider).requireValue;
+        final occurrences = state.draft.weeks!
+            .expand((week) => week.slots!)
+            .map((slot) => slot.template!)
+            .toList();
+        expect(occurrences, hasLength(3));
+        for (final occurrence in occurrences.take(1)) {
+          final exercise = occurrence.exercises.single;
+          expect(exercise.notes, 'Local note');
+          expect(exercise.sets, hasLength(2));
+          expect(exercise.sets.last.id, isNot(exercise.sets.first.id));
+          for (final updated in exercise.sets) {
+            expect(updated.prescribedRepsExact, isNull);
+            expect(updated.prescribedRepsMin, 10);
+            expect(updated.prescribedRepsMax, 12);
+            expect(updated.prescribedWeightKg, isNull);
+            expect(updated.prescribedRpeMin, isNull);
+            expect(updated.prescribedRpeMax, isNull);
+            expect(updated.durationSeconds, 30);
+            expect(updated.distanceMeters, 100);
+            expect(updated.prescribedWeightPct1rm, 70);
+            expect(updated.loadSelectionNote, 'Keep the existing target');
+            expect(updated.isCalibrationEstimate, isTrue);
+          }
+        }
+        expect(occurrences.map((item) => item.id).toSet(), hasLength(3));
+        expect(
+          occurrences.map((item) => item.templateKey).toSet(),
+          hasLength(3),
+        );
+        for (final occurrence in occurrences.skip(1)) {
+          final exercise = occurrence.exercises.single;
+          expect(exercise.notes, isNull);
+          expect(exercise.sets, hasLength(1));
+          expect(exercise.sets.single.prescribedRepsExact, 8);
+          expect(exercise.sets.single.prescribedWeightKg, 60);
+          expect(exercise.sets.single.prescribedWeightPct1rm, 70);
+          expect(
+            exercise.sets.single.loadSelectionNote,
+            'Keep the existing target',
+          );
+          expect(exercise.sets.single.isCalibrationEstimate, isTrue);
+        }
+        controller.removeTemplateSet('t-1', 'e1', 'set');
+        state = container.read(provider).requireValue;
+        expect(
+          state
+              .draft
+              .weeks!
+              .first
+              .slots!
+              .first
+              .template!
+              .exercises
+              .single
+              .sets
+              .single
+              .setIndex,
+          0,
+        );
+        expect(state.isDirty, isTrue);
+        await controller.saveProgramme();
+        expect(
+          fakeSaveUseCase
+              .lastSavedDraft!
+              .weeks!
+              .last
+              .slots!
+              .first
+              .template!
+              .exercises
+              .single
+              .notes,
+          isNull,
+        );
+        expect(
+          fakeSaveUseCase
+              .lastSavedDraft!
+              .weeks!
+              .first
+              .slots!
+              .first
+              .template!
+              .exercises
+              .single
+              .notes,
+          'Local note',
+        );
+      },
+    );
+
+    test(
+      'adds references, reorders, removes exercises and dissolves a singleton superset',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.addTemplateExercises('t-1', [
+          const ExerciseReference(
+            exerciseId: -1,
+            name: 'Custom exercise',
+            modality: 'strength',
+            isCustom: true,
+          ),
+        ]);
+        var exercises = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .first
+            .slots!
+            .first
+            .template!
+            .exercises;
+        expect(exercises.last.exerciseId, -1);
+        expect(exercises.last.exerciseRef, 'Custom exercise');
+        expect(exercises.last.sets.single.setType, SetType.working);
+        expect(exercises.last.sets.single.prescribedRepsExact, isNull);
+        controller.reorderTemplateExercises('t-1', 3, 0);
+        await controller.createTemplateSuperset(
+          templateId: 't-1',
+          selectedExerciseIds: ['e1', 'e2'],
+        );
+        controller.removeTemplateExercise('t-1', 'e1');
+        exercises = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .first
+            .slots!
+            .first
+            .template!
+            .exercises;
+        expect(exercises.first.exerciseId, -1);
+        expect(exercises.map((item) => item.sortOrder), [0, 1, 2]);
+        expect(
+          exercises.firstWhere((item) => item.id == 'e2').supersetGroupId,
+          isNull,
+        );
+        expect(
+          exercises.firstWhere((item) => item.id == 'e2').supersetOrder,
+          isNull,
+        );
+      },
+    );
+  });
+
+  group('builder schedule controls', () {
+    test(
+      'addWorkoutDay adds empty weekdays only to the selected week and stops at seven',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.resizeWeeks(2);
+        await controller.addWorkoutDay(1);
+        var weeks = container.read(provider).requireValue.draft.weeks!;
+        expect(weeks.first.slots, hasLength(1));
+        expect(weeks.last.slots, hasLength(2));
+        expect(weeks.last.slots!.last.scheduledDay, TrainingDay.tuesday);
+        expect(weeks.last.slots!.last.template, isNull);
+        await controller.addWorkoutDay(1);
+        weeks = container.read(provider).requireValue.draft.weeks!;
+        expect(weeks.last.slots, hasLength(3));
+        expect(weeks.last.slots!.last.scheduledDay, TrainingDay.wednesday);
+        expect(weeks.last.slots!.last.template, isNull);
+        for (var i = 0; i < 8; i++) {
+          await controller.addWorkoutDay(1);
+        }
+        weeks = container.read(provider).requireValue.draft.weeks!;
+        expect(weeks.first.slots, hasLength(1));
+        expect(weeks.last.slots, hasLength(7));
+        expect(
+          weeks.last.slots!
+              .map((slot) => TrainingDay.values[slot.scheduledDayIndex])
+              .toSet(),
+          TrainingDay.values.toSet(),
+        );
+        expect(
+          weeks.last.slots!.skip(1).every((slot) => slot.template == null),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'extends weeks with independent assignments while preserving existing weeks',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.resizeWeeks(4);
+        final draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks!.map((week) => week.weekNumber), [1, 2, 3, 4]);
+        expect(draft.weeks!.map((week) => week.id).toSet(), hasLength(4));
+        expect(draft.weeks!.first.id, 'week-1');
+        expect(draft.weeks!.first.slots!.first.template!.id, 't-1');
+        expect(
+          draft.weeks!.map((week) => week.slots!.first.template!.id).toSet(),
+          hasLength(4),
+        );
+        controller.resizeWeeks(2);
+        expect(container.read(provider).requireValue.draft.weeks, hasLength(2));
+        expect(
+          container.read(provider).requireValue.draft.weeks!.first.id,
+          'week-1',
+        );
+      },
+    );
+
+    test(
+      'typical training days repeat across weeks and week edits stay isolated',
+      () async {
+        fakeLoadUseCase.draftToReturn = _defaultDraft().copyWith(
+          daysPerWeek: 5,
+        );
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.resizeWeeks(4);
+        controller.setTrainingDay(TrainingDay.monday, true);
+        controller.setTrainingDay(TrainingDay.monday, true);
+        controller.setTrainingDay(TrainingDay.friday, true, weekIndex: 2);
+        final weeks = container.read(provider).requireValue.draft.weeks!;
+        expect(weeks.map((week) => week.slots!.length), [1, 1, 2, 1]);
+        expect(weeks[2].slots!.last.scheduledDay, TrainingDay.friday);
+        expect(container.read(provider).requireValue.draft.daysPerWeek, 2);
+        controller.setTrainingDay(TrainingDay.monday, false, weekIndex: 2);
+        final updated = container.read(provider).requireValue.draft.weeks!;
+        expect(updated[0].slots!.first.scheduledDay, TrainingDay.monday);
+        expect(updated[2].slots!.single.slotIndex, 0);
+        expect(updated[2].slots!.single.scheduledDay, TrainingDay.friday);
+        expect(container.read(provider).requireValue.draft.daysPerWeek, 1);
+      },
+    );
+
+    test(
+      'clears a workout assignment without deleting its training day',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        container.read(provider.notifier).clearSlotTemplate(0, 0);
+        final slot = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!
+            .single
+            .slots!
+            .single;
+        expect(slot.template, isNull);
+        expect(slot.scheduledDayIndex, 0);
+        expect(container.read(provider).requireValue.isDirty, isTrue);
+      },
+    );
   });
 
   group('ProgrammeBuilderController (create mode)', () {
@@ -365,6 +852,255 @@ void main() {
       expect(state.draft.weeks![1].id, isNot(state.draft.weeks![0].id));
     });
 
+    test(
+      'block days apply only to their weeks while weekly overrides remain independent',
+      () async {
+        final original = _draftWithTemplateExercises();
+        final week = original.weeks!.single;
+        fakeLoadUseCase.draftToReturn = original.copyWith(
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(
+              id: 'first',
+              name: 'First',
+              weekCount: 2,
+            ),
+            ProgrammeTrainingBlockDraft(
+              id: 'second',
+              name: 'Second',
+              weekCount: 1,
+            ),
+          ],
+          weeks: [
+            week,
+            week.copyWith(id: 'week-2', weekNumber: 2),
+            week.copyWith(id: 'week-3', weekNumber: 3),
+          ],
+        );
+        final container = createContainer();
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final originalWeeks = container
+            .read(provider)
+            .requireValue
+            .draft
+            .weeks!;
+        controller.setBlockTrainingDay('first', TrainingDay.monday, true);
+        controller.setBlockTrainingDay('first', TrainingDay.friday, true);
+        var draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.first.trainingDays, {
+          TrainingDay.monday,
+          TrainingDay.friday,
+        });
+        expect(draft.weeks![0].slots!.map((s) => s.scheduledDayIndex), [0, 4]);
+        expect(draft.weeks![1].slots!.map((s) => s.scheduledDayIndex), [0, 4]);
+        expect(draft.weeks!.last.id, originalWeeks.last.id);
+        expect(draft.weeks!.last.slots!.single.scheduledDayIndex, 0);
+        expect(
+          draft.weeks!.last.slots!.single.template!.id,
+          originalWeeks.last.slots!.single.template!.id,
+        );
+        expect(
+          draft.weeks!.first.slots!.first.template!.id,
+          originalWeeks.first.slots!.single.template!.id,
+        );
+        controller.setTrainingDay(TrainingDay.friday, false, weekIndex: 1);
+        controller.setTrainingDay(TrainingDay.tuesday, true, weekIndex: 1);
+        controller.updateTrainingBlock(
+          'first',
+          name: 'Renamed',
+          progressionNotes: 'Notes',
+        );
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks![1].slots!.map((s) => s.scheduledDayIndex), [0, 1]);
+        expect(draft.trainingBlocks.first.trainingDays, {
+          TrainingDay.monday,
+          TrainingDay.friday,
+        });
+        controller.updateTrainingBlock('first', weekCount: 3);
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks![2].slots!.map((s) => s.scheduledDayIndex), [0, 4]);
+        expect(
+          draft.weeks![2].slots!.first.template!.id,
+          isNot(draft.weeks!.first.slots!.first.template!.id),
+        );
+        expect(draft.weeks!.last.id, originalWeeks.last.id);
+        controller.setTrainingDay(TrainingDay.monday, false, weekIndex: 0);
+        controller.updateTrainingBlock('first', weekCount: 4);
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks![3].slots!.map((s) => s.scheduledDayIndex), [0, 4]);
+        controller.setBlockTrainingDay('first', TrainingDay.monday, false);
+        draft = container.read(provider).requireValue.draft;
+        expect(
+          draft.weeks!
+              .take(4)
+              .every((w) => w.slots!.every((s) => s.scheduledDayIndex != 0)),
+          isTrue,
+        );
+        expect(draft.weeks![1].slots!.single.scheduledDayIndex, 1);
+        expect(draft.weeks!.last.slots!.single.scheduledDayIndex, 0);
+        controller.setBlockTrainingDay('missing', TrainingDay.sunday, true);
+        expect(container.read(provider).requireValue.draft, same(draft));
+      },
+    );
+
+    test(
+      'training blocks preserve later weeks when resized and removed',
+      () async {
+        final initial = _draftWithTemplateExercises();
+        final week = initial.weeks!.single;
+        fakeLoadUseCase.draftToReturn = initial.copyWith(
+          weeks: [
+            week,
+            week.copyWith(id: 'week-2', weekNumber: 2),
+          ],
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(id: 'base', name: 'Base', weekCount: 1),
+            ProgrammeTrainingBlockDraft(
+              id: 'strength',
+              name: 'Strength',
+              weekCount: 1,
+              focus: TrainingBlockFocus.strengthBiased,
+            ),
+          ],
+        );
+        final container = createContainer();
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final later = container.read(provider).requireValue.draft.weeks!.last;
+        controller.updateTrainingBlock(
+          'base',
+          weekCount: 3,
+          name: 'Volume',
+          progressionNotes: 'Add a rep each week',
+          focus: TrainingBlockFocus.hypertrophyBiased,
+        );
+        var draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.map((block) => block.weekCount), [3, 1]);
+        expect(draft.weeks, hasLength(4));
+        expect(draft.weeks!.last.id, later.id);
+        expect(
+          draft.weeks!.last.slots!.single.template!.id,
+          later.slots!.single.template!.id,
+        );
+        expect(
+          draft.weeks!.take(3).every((w) => w.weekType == WeekType.hypertrophy),
+          isTrue,
+        );
+        expect(
+          draft.weeks!
+              .expand((w) => w.slots!)
+              .map((slot) => slot.template!.id)
+              .toSet(),
+          hasLength(4),
+        );
+        controller.updateTrainingBlock('base', weekCount: 1);
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks!.last.id, later.id);
+        expect(draft.weeks!.map((w) => w.weekNumber), [1, 2]);
+        expect(
+          draft.trainingBlocks.first.progressionNotes,
+          'Add a rep each week',
+        );
+        controller.removeTrainingBlock('base');
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.weeks!.single.id, later.id);
+        expect(draft.weeks!.single.weekNumber, 1);
+        expect(draft.trainingBlocks.single.id, 'strength');
+        controller.removeTrainingBlock('strength');
+        expect(container.read(provider).requireValue.draft.weeks, isEmpty);
+        expect(
+          container.read(provider).requireValue.draft.trainingBlocks,
+          isEmpty,
+        );
+      },
+    );
+
+    test(
+      'legacy weeks receive an unnamed base block and week controls update membership',
+      () async {
+        fakeLoadUseCase.draftToReturn = _draftWithTemplateExercises().copyWith(
+          trainingBlocks: [],
+        );
+        final container = createContainer();
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .draft
+              .trainingBlocks
+              .single
+              .name,
+          isEmpty,
+        );
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .draft
+              .trainingBlocks
+              .single
+              .weekCount,
+          1,
+        );
+        await controller.duplicateWeek(0);
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .draft
+              .trainingBlocks
+              .single
+              .weekCount,
+          2,
+        );
+        await controller.removeWeek(0);
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .draft
+              .trainingBlocks
+              .single
+              .weekCount,
+          1,
+        );
+        controller.addTrainingBlock();
+        var draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.last.name, isEmpty);
+        expect(draft.trainingBlocks.map((block) => block.weekCount), [1, 4]);
+        expect(draft.weeks, hasLength(5));
+        final lastBlockId = draft.trainingBlocks.last.id;
+        controller.setBlockTrainingDay(lastBlockId, TrainingDay.thursday, true);
+        controller.setTrainingDay(TrainingDay.tuesday, true, weekIndex: 1);
+        await controller.addWeek();
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.map((block) => block.weekCount), [1, 5]);
+        expect(
+          draft.weeks!.last.slots!.single.scheduledDay,
+          TrainingDay.thursday,
+        );
+        controller.updateTrainingBlock(
+          draft.trainingBlocks.last.id,
+          weekCount: 0,
+        );
+        expect(container.read(provider).requireValue.draft, same(draft));
+      },
+    );
+
     group('slot operations with pre-populated week', () {
       test('addSlot adds slot to a week', () async {
         fakeLoadUseCase.draftToReturn = _draftWithOneWeek();
@@ -417,6 +1153,54 @@ void main() {
         expect(state.draft.weeks![0].slots![1].slotIndex, 1);
       });
 
+      test(
+        'removeSlot updates frequency and template references without changing other weeks',
+        () async {
+          final original = _draftWithTemplateExercises();
+          final week = original.weeks!.single;
+          fakeLoadUseCase.draftToReturn = original.copyWith(
+            weeks: [
+              week.copyWith(
+                slots: [
+                  week.slots!.single,
+                  week.slots!.single.copyWith(
+                    slotIndex: 1,
+                    scheduledDayIndex: 2,
+                  ),
+                ],
+              ),
+              week.copyWith(id: 'week-2', weekNumber: 2),
+            ],
+          );
+          final container = createContainer();
+          final provider = AppProviders.programmeBuilderControllerProvider((
+            mode: ProgrammeBuilderMode.create,
+            programmeId: null,
+          ));
+          final controller = container.read(provider.notifier);
+          await controller.future;
+          final otherWeek = container
+              .read(provider)
+              .requireValue
+              .draft
+              .weeks!
+              .last;
+          await controller.removeSlot(0, 0);
+          final draft = container.read(provider).requireValue.draft;
+          expect(draft.daysPerWeek, 1);
+          expect(draft.weeks!.first.slots!.single.slotIndex, 0);
+          expect(draft.weeks!.last, same(otherWeek));
+          expect(draft.templates, [
+            draft.weeks!.first.slots!.single.template!.id,
+            otherWeek.slots!.single.template!.id,
+          ]);
+          await controller.removeSlot(-1, 0);
+          await controller.removeSlot(0, -1);
+          await controller.removeSlot(0, 99);
+          expect(container.read(provider).requireValue.draft, same(draft));
+        },
+      );
+
       test('assignTemplateToSlot assigns template', () async {
         fakeLoadUseCase.draftToReturn = _defaultDraft().copyWith(
           weeks: [
@@ -464,7 +1248,189 @@ void main() {
       });
     });
 
+    test(
+      'repeating targets the same weekday only within its block and clones editable data',
+      () async {
+        final original = _draftWithTemplateExercises();
+        final source = original.weeks!.single;
+        fakeLoadUseCase.draftToReturn = original.copyWith(
+          trainingBlocks: const [
+            ProgrammeTrainingBlockDraft(id: 'a', name: 'Base', weekCount: 3),
+            ProgrammeTrainingBlockDraft(
+              id: 'b',
+              name: 'Strength',
+              weekCount: 1,
+            ),
+          ],
+          weeks: [
+            source,
+            source.copyWith(id: 'week-2', weekNumber: 2),
+            source.copyWith(
+              id: 'week-3',
+              weekNumber: 3,
+              slots: [source.slots!.single.copyWith(scheduledDayIndex: 2)],
+            ),
+            source.copyWith(id: 'week-4', weekNumber: 4),
+          ],
+        );
+        final container = createContainer();
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final before = container.read(provider).requireValue.draft;
+        controller.repeatWorkoutAcrossBlock(weekIndex: 0, slotIndex: 0);
+        final after = container.read(provider).requireValue.draft;
+        final sourceTemplate = after.weeks!.first.slots!.single.template!;
+        final repeated = after.weeks![1].slots!.single.template!;
+        expect(repeated.name, sourceTemplate.name);
+        expect(repeated.id, isNot(sourceTemplate.id));
+        expect(repeated.templateKey, isNot(sourceTemplate.templateKey));
+        expect(
+          repeated.exercises.first.id,
+          isNot(sourceTemplate.exercises.first.id),
+        );
+        expect(after.weeks![2].slots!.map((slot) => slot.scheduledDayIndex), [
+          2,
+          0,
+        ]);
+        expect(
+          after.weeks![2].slots!.first,
+          same(before.weeks![2].slots!.first),
+        );
+        expect(after.weeks![3], same(before.weeks![3]));
+        controller.updateTemplateExercise(
+          repeated.id,
+          repeated.exercises.first.copyWith(notes: 'Custom afterwards'),
+        );
+        final edited = container.read(provider).requireValue.draft;
+        expect(
+          edited.weeks!.first.slots!.single.template!.exercises.first.notes,
+          sourceTemplate.exercises.first.notes,
+        );
+        expect(
+          edited.weeks![1].slots!.single.template!.exercises.first.notes,
+          'Custom afterwards',
+        );
+        expect(container.read(provider).requireValue.isDirty, isTrue);
+      },
+    );
+
     group('save', () {
+      test(
+        'saveDraft accepts unfinished structure and persists inactive draft status',
+        () async {
+          fakeLoadUseCase.draftToReturn = _draftWithSlots().copyWith(
+            goalTags: {},
+            trainingBlocks: [
+              const ProgrammeTrainingBlockDraft(
+                id: 'block',
+                name: '',
+                weekCount: 1,
+              ),
+            ],
+          );
+          final container = createContainer();
+          final controller = container.read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.create,
+              programmeId: null,
+            )).notifier,
+          );
+          await controller.future;
+          await controller.saveProgramme();
+          expect(fakeSaveUseCase.lastSavedDraft, isNull);
+          await controller.saveDraft();
+          final saved = fakeSaveUseCase.lastSavedDraft!;
+          expect(saved.status, ProgramStatus.draft);
+          expect(saved.active, isFalse);
+          expect(saved.goalTags, isEmpty);
+          expect(saved.trainingBlocks.single.name, isEmpty);
+          expect(saved.weeks!.single.slots, hasLength(3));
+          final state = container
+              .read(
+                AppProviders.programmeBuilderControllerProvider((
+                  mode: ProgrammeBuilderMode.create,
+                  programmeId: null,
+                )),
+              )
+              .requireValue;
+          expect(state.validationErrors, isEmpty);
+          expect(state.isDirty, isFalse);
+        },
+      );
+
+      test(
+        'publishing a draft promotes it to inactive after full validation',
+        () async {
+          fakeLoadUseCase.draftToReturn = _validDraft();
+          final container = createContainer();
+          final controller = container.read(
+            AppProviders.programmeBuilderControllerProvider((
+              mode: ProgrammeBuilderMode.edit,
+              programmeId: 'test-id',
+            )).notifier,
+          );
+          await controller.future;
+          await controller.saveProgramme();
+          expect(
+            fakeSaveUseCase.lastSavedDraft!.status,
+            ProgramStatus.inactive,
+          );
+          expect(fakeSaveUseCase.lastSavedDraft!.active, isFalse);
+          expect(
+            container
+                .read(
+                  AppProviders.programmeBuilderControllerProvider((
+                    mode: ProgrammeBuilderMode.edit,
+                    programmeId: 'test-id',
+                  )),
+                )
+                .requireValue
+                .draft
+                .status,
+            ProgramStatus.inactive,
+          );
+        },
+      );
+
+      test(
+        'failed draft save retains the edited status and contents for retry',
+        () async {
+          fakeLoadUseCase.draftToReturn = _defaultDraft().copyWith(
+            status: ProgramStatus.inactive,
+          );
+          fakeSaveUseCase.shouldThrow = true;
+          final container = createContainer();
+          final provider = AppProviders.programmeBuilderControllerProvider((
+            mode: ProgrammeBuilderMode.create,
+            programmeId: null,
+          ));
+          final controller = container.read(provider.notifier);
+          await controller.future;
+          await controller.updateName('Unfinished work');
+          await controller.saveDraft();
+          expect(
+            container.read(provider).requireValue.phase,
+            ProgrammeBuilderPhase.failure,
+          );
+          expect(
+            container.read(provider).requireValue.draft.name,
+            'Unfinished work',
+          );
+          expect(
+            container.read(provider).requireValue.draft.status,
+            ProgramStatus.inactive,
+          );
+          expect(container.read(provider).requireValue.isDirty, isTrue);
+          fakeSaveUseCase.shouldThrow = false;
+          await controller.saveDraft();
+          expect(fakeSaveUseCase.lastSavedDraft!.status, ProgramStatus.draft);
+        },
+      );
+
       test('saveProgramme transitions to editing with saved id', () async {
         fakeLoadUseCase.draftToReturn = _validDraft();
         final container = createContainer();

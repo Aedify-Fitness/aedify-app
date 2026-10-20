@@ -34,10 +34,43 @@ void main() {
     expect(find.byType(FilterChip), findsNothing);
     expect(find.text(AppStrings.onboardingEquipmentDumbbells), findsOneWidget);
 
-    await tester.tap(find.text(AppStrings.onboardingGoalIncreaseStrength));
+    await tester.tap(find.text(AppStrings.strengthGoal));
     expect(
       selectedGoals,
       containsAll(<GoalTag>[GoalTag.buildMuscle, GoalTag.increaseStrength]),
     );
+  });
+  testWidgets('More goals and Notes keep borderless sections when expanded', (
+    tester,
+  ) async {
+    final name = TextEditingController();
+    final notes = TextEditingController();
+    addTearDown(name.dispose);
+    addTearDown(notes.dispose);
+    await tester.pumpWidget(
+      _wrap(
+        ProgrammeDetailsSection(
+          nameController: name,
+          onNameChanged: (_) {},
+          onGoalsChanged: (_) {},
+          descriptionController: notes,
+        ),
+      ),
+    );
+    await tester.tap(find.text(AppStrings.moreGoals));
+    await tester.pumpAndSettle();
+    final notesLabel = find.text(AppStrings.notes);
+    await tester.ensureVisible(notesLabel);
+    await tester.tap(notesLabel);
+    await tester.pumpAndSettle();
+    expect(find.text(AppStrings.onboardingGoalLoseWeight), findsOneWidget);
+    expect(find.text(AppStrings.optionalDescription), findsOneWidget);
+    for (final section in tester.widgetList<ExpansionTile>(
+      find.byType(ExpansionTile),
+    )) {
+      expect(section.shape!.dimensions, EdgeInsets.zero);
+      expect(section.collapsedShape!.dimensions, EdgeInsets.zero);
+    }
+    expect(tester.takeException(), isNull);
   });
 }

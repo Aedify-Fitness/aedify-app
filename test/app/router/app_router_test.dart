@@ -1,3 +1,5 @@
+import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
 import 'package:aedify/app/feature_flags/feature_flags.dart';
@@ -7,6 +9,7 @@ import 'package:aedify/app/router/app_router.dart';
 import 'package:aedify/app/router/bottom_nav_shell.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -268,6 +271,79 @@ void main() {
       expect(
         router.routeInformationProvider.value.uri.path,
         equals(AppRoutes.workout().path),
+      );
+    });
+
+    testWidgets(
+      'programme template workout editor opens outside the bottom navigation shell',
+      (tester) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+        router.goNamed(AppRoutes.programmeWorkoutBuilderCreate().name);
+        await tester.pumpAndSettle();
+        expect(find.byType(BottomNavShell), findsNothing);
+        expect(
+          tester
+              .widget<WorkoutBuilderScreen>(find.byType(WorkoutBuilderScreen))
+              .mode,
+          WorkoutBuilderMode.programmeTemplate,
+        );
+      },
+    );
+
+    for (final route in [
+      AppRoutes.programmeBuilderCreate(),
+      AppRoutes.programmeBuilderEdit(),
+      AppRoutes.programmeBuilderDuplicate(),
+    ]) {
+      testWidgets('${route.name} opens outside the bottom navigation shell', (
+        tester,
+      ) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+        final location = router.namedLocation(
+          route.name,
+          pathParameters: route.name == AppRoutes.programmeBuilderCreate().name
+              ? const {}
+              : const {'id': 'programme-1'},
+        );
+        router.go(location);
+        await tester.pumpAndSettle();
+        expect(router.routeInformationProvider.value.uri.path, location);
+        expect(find.byType(ProgrammeBuilderScreen), findsOneWidget);
+        expect(find.byType(BottomNavShell), findsNothing);
+      });
+    }
+
+    testWidgets('programme builder restores the Plan navigation on return', (
+      tester,
+    ) async {
+      final router = await pumpApp(
+        tester: tester,
+        onboarding: OnboardingStatus.complete,
+        ai: AiAvailability.available,
+        draft: DraftGuard.clear,
+      );
+      router.goNamed(AppRoutes.programmes().name);
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomNavShell), findsOneWidget);
+      router.pushNamed(AppRoutes.programmeBuilderCreate().name);
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomNavShell), findsNothing);
+      router.pop();
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomNavShell), findsOneWidget);
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        AppRoutes.programmes().path,
       );
     });
 
