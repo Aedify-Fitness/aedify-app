@@ -1,3 +1,4 @@
+import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/equipment_tag.dart';
@@ -12,6 +13,7 @@ import 'programme_workout_template_draft.dart';
 class ProgrammeDraft {
   const ProgrammeDraft({
     required this.id,
+    this.trainingBlocks = const [],
     required this.name,
     required this.source,
     required this.creationMethod,
@@ -36,6 +38,7 @@ class ProgrammeDraft {
     this.weekSlotTemplateIds,
   });
 
+  final List<ProgrammeTrainingBlockDraft> trainingBlocks;
   final String id;
   final String name;
   final WorkoutSource source;

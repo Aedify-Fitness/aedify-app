@@ -1,5 +1,5 @@
 import 'package:aedify/shared/domain/training_day.dart';
-import 'programme_builder_template_draft.dart';
+import 'package:aedify/features/programmes/domain/programme_builder_template_draft.dart';
 
 class ProgrammeBuilderWorkoutSlotDraft {
   const ProgrammeBuilderWorkoutSlotDraft({
@@ -22,6 +22,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
     int? slotIndex,
     int? scheduledDayIndex,
     ProgrammeBuilderTemplateDraft? template,
+    bool clearTemplate = false,
     String? name,
     int? sortOrder,
     TrainingDay? scheduledDay,
@@ -29,7 +30,7 @@ class ProgrammeBuilderWorkoutSlotDraft {
     return ProgrammeBuilderWorkoutSlotDraft(
       slotIndex: slotIndex ?? this.slotIndex,
       scheduledDayIndex: scheduledDayIndex ?? this.scheduledDayIndex,
-      template: template ?? this.template,
+      template: clearTemplate ? null : template ?? this.template,
       name: name ?? this.name,
       sortOrder: sortOrder ?? this.sortOrder,
       scheduledDay: scheduledDay ?? this.scheduledDay,

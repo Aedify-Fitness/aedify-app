@@ -22,6 +22,7 @@ import 'tables/program_workout_templates.dart';
 import 'tables/program_template_exercises.dart';
 import 'tables/program_template_exercise_sets.dart';
 import 'tables/program_weeks.dart';
+import 'package:aedify/core/db/tables/program_training_blocks.dart';
 import 'tables/program_workouts.dart';
 import 'tables/program_exercises.dart';
 import 'tables/program_exercise_sets.dart';
@@ -55,6 +56,7 @@ part 'app_database.g.dart';
     ProgramTemplateExercises,
     ProgramTemplateExerciseSets,
     ProgramWeeks,
+    ProgramTrainingBlocks,
     ProgramWorkouts,
     ProgramExercises,
     ProgramExerciseSets,
@@ -72,14 +74,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 14);
+      await _logMigration(m, fromVersion: 0, toVersion: 17);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -188,6 +190,21 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(
           savedWorkoutExercises,
           savedWorkoutExercises.loggingType,
+        );
+      }
+      if (from < 15) {
+        await m.createTable(programTrainingBlocks);
+      }
+      if (from >= 15 && from < 16) {
+        await m.addColumn(
+          programTrainingBlocks,
+          programTrainingBlocks.trainingDaysJson,
+        );
+      }
+      if (from >= 8 && from < 17) {
+        await m.addColumn(
+          programWorkoutTemplates,
+          programWorkoutTemplates.goalTagsJson,
         );
       }
       if (from < to) {

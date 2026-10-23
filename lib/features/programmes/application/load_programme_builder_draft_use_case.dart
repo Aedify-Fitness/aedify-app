@@ -1,3 +1,4 @@
+import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/features/programmes/data/programme_repository.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
@@ -55,6 +56,7 @@ class LoadProgrammeBuilderDraftUseCase {
           id: t.id,
           templateKey: t.templateKey,
           name: t.name,
+          goalTags: EnumCodec.decodeList(t.goalTagsJson, (value) => value),
           dayType: null,
           exercises: exercises,
         ),
@@ -95,6 +97,20 @@ class LoadProgrammeBuilderDraftUseCase {
 
     return ProgrammeBuilderDraft(
       id: program.id,
+      trainingBlocks: [
+        for (final block in aggregate.trainingBlocks)
+          ProgrammeTrainingBlockDraft(
+            id: block.id,
+            name: block.name,
+            weekCount: block.weekCount,
+            focus: TrainingBlockFocus.fromDb(block.focus),
+            progressionNotes: block.progressionNotes,
+            trainingDays: EnumCodec.decodeSet(
+              block.trainingDaysJson,
+              TrainingDay.fromDb,
+            ),
+          ),
+      ],
       name: program.name,
       source: WorkoutSource.fromDb(program.source)!,
       creationMethod: CreationMethod.fromDb(program.creationMethod)!,
@@ -119,6 +135,10 @@ class LoadProgrammeBuilderDraftUseCase {
     return draft.copyWith(
       id: const Uuid().v4(),
       name: '${draft.name} (Copy)',
+      trainingBlocks: [
+        for (final block in draft.trainingBlocks)
+          block.copyWith(id: const Uuid().v4()),
+      ],
       source: WorkoutSource.manual,
       creationMethod: CreationMethod.manual,
       status: ProgramStatus.draft,

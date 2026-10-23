@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_week_card.dart';
+import 'package:aedify/features/programmes/presentation/widgets/programme_week_management_section.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -23,6 +24,8 @@ class ProgrammeWeeksOverview extends StatelessWidget {
     this.onOpenSupersetEditor,
     this.onSetWeekType,
     this.onChangeSlotDay,
+    this.onAddExercises,
+    this.onEditExercise,
   });
 
   final List<ProgrammeBuilderWeekDraft> weeks;
@@ -35,6 +38,9 @@ class ProgrammeWeeksOverview extends StatelessWidget {
   final void Function(int weekIndex, int slotIndex)? onOpenSupersetEditor;
   final void Function(int weekIndex, WeekType type)? onSetWeekType;
   final void Function(int weekIndex, int slotIndex)? onChangeSlotDay;
+  final void Function(int weekIndex, int slotIndex)? onAddExercises;
+  final void Function(int weekIndex, int slotIndex, String exerciseId)?
+  onEditExercise;
 
   @override
   Widget build(BuildContext context) {
@@ -113,15 +119,16 @@ class ProgrammeWeeksOverview extends StatelessWidget {
             Expanded(
               child: Text(
                 AppStrings.programmeWeeksSectionTitle,
-                style: AppTextStyles.headlineLgMobile.copyWith(
+                style: AppTextStyles.headlineLg.copyWith(
+                  fontSize: AppFontSizes.xl,
                   color: context.colorScheme.onSurface,
                 ),
               ),
             ),
             AppBadge(
-              label: '${weeks.length} ${AppStrings.weeks}',
+              label: AppStrings.programmeDurationWeeks(weeks.length),
               backgroundColor: context.colorScheme.surfaceContainerHigh,
-              foregroundColor: context.colorScheme.onSurfaceVariant,
+              foregroundColor: context.colorScheme.secondary,
               borderRadius: AppRadius.full,
             ),
           ],
@@ -143,27 +150,22 @@ class ProgrammeWeeksOverview extends StatelessWidget {
             onSetWeekType: onSetWeekType != null
                 ? (type) => onSetWeekType!(entry.key, type)
                 : null,
+            onAddExercises: onAddExercises == null
+                ? null
+                : (slotIndex) => onAddExercises!(entry.key, slotIndex),
+            onEditExercise: onEditExercise == null
+                ? null
+                : (slotIndex, exerciseId) =>
+                      onEditExercise!(entry.key, slotIndex, exerciseId),
             onChangeSlotDay: onChangeSlotDay != null
                 ? (slotIndex) => onChangeSlotDay!(entry.key, slotIndex)
                 : null,
           ),
         ),
         AppWhiteSpace.hXs,
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: onAddWeek,
-            icon: SvgPicture.asset(
-              OutlinedSvgAssets.plus,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.secondary,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: const Text(AppStrings.addWeek),
-          ),
+        ProgrammeBuilderPillButton(
+          label: AppStrings.addWeek,
+          onPressed: onAddWeek,
         ),
       ],
     );

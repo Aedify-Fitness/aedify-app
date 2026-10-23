@@ -31,6 +31,10 @@ class ProgrammeBuilderState {
   bool get isSaving => phase == ProgrammeBuilderPhase.saving;
   bool get hasValidationErrors => validationErrors.isNotEmpty;
 
+  /// Details required before opening the programme's schedule or later steps.
+  bool get hasRequiredDetails =>
+      draft.name.trim().isNotEmpty && (draft.goalTags?.isNotEmpty ?? false);
+
   ProgrammeBuilderState copyWith({
     ProgrammeBuilderMode? mode,
     ProgrammeBuilderPhase? phase,

@@ -5,6 +5,7 @@ class AppStrings {
       'Step $currentStep of $totalSteps';
 
   static const save = 'Save';
+  static const proceed = 'Proceed';
   static const home = 'Home';
   static const navLibrary = 'Library';
   static const navPlan = 'Plan';
@@ -668,7 +669,77 @@ class AppStrings {
   static const builderProgress = 'Builder Progress';
   static const weeklySchedule = 'Weekly Schedule';
   static const trainingBlocks = 'Training Blocks';
+  static const nextTrainingBlocks = 'Next: Training Blocks';
+  static const nextWeeklySchedule = 'Next: Weekly Schedule';
+  static const addTrainingBlock = 'Add training block';
+  static const editTrainingBlocks = 'Edit training blocks';
+  static const trainingBlocksHint =
+      'Organise your programme into focused blocks of consecutive weeks.';
+  static const trainingBlockName = 'Block name';
+  static const trainingBlockFocus = 'Training focus';
+  static const trainingBlockLength = 'Length';
+  static const blockTrainingDays = 'Training days (optional)';
+  static const blockTrainingDaysHint =
+      'Choose days to apply across this block, or leave this blank to plan each week separately. You can edit any week in Weekly Schedule.';
+  static const removeBlockTrainingDay = 'Remove training day from block?';
+  static String removeBlockTrainingDayMessage(String day) =>
+      'This removes $day from every week in this block and clears any workouts assigned to that day.';
+  static const trainingBlockProgression = 'Progression notes';
+  static const trainingBlockProgressionHint =
+      'Describe how you want to progress during this block.';
+  static const trainingBlockManualHint =
+      'Progression notes guide your training. Set workout targets in Define Workouts.';
+  static const removeTrainingBlock = 'Remove training block';
+  static const removeTrainingBlockMessage =
+      'This removes the block and its weeks, including their workout assignments.';
+  static const increaseBlockWeeks = 'Add a week to this block';
+  static const decreaseBlockWeeks = 'Remove a week from this block';
+  static const trainingBlocksRequired = 'Add at least one training block.';
+  static const trainingBlockNameRequired = 'Give every training block a name.';
+  static const trainingBlockWeeksInvalid =
+      'Each block must have at least one week and together cover the programme.';
+  static const blockFocusBase = 'Base';
+  static const blockFocusAccumulation = 'Accumulation';
+  static const blockFocusHypertrophy = 'Hypertrophy';
+  static const blockFocusStrength = 'Strength';
+  static const blockFocusPeak = 'Peak';
+  static String trainingBlockNumber(int number) => 'Block $number';
+  static String trainingBlockWeekRange(int first, int last) =>
+      first == last ? 'Week $first' : 'Weeks $first–$last';
   static const reviewAndPublish = 'Review & Publish';
+  static const programmeReviewIntro =
+      'Verify your custom training structure before adding it to your library.';
+  static const programmeArchitecture = 'Programme architecture';
+  static const programmePublicationPreview = 'Publication preview';
+  static const programmePublicationHint =
+      'Publish to your personal library on this device. Your programme stays private and is available offline.';
+  static const programmeVisibility = 'Visibility';
+  static const programmePrivateLocal = 'Private (Local)';
+  static const programmeDeloadWeeks = 'Deload weeks';
+  static const programmeRpeTargets = 'RPE targets';
+  static const programmeRpePrescribed = 'Prescribed';
+  static const programmeRpeIncludesRirEstimates = 'Includes RIR estimates';
+  static const programmeAverageEstimatedRpe = 'Intensity (avg estimated RPE)';
+  static const programmeRirEstimateHint =
+      'Uses RPE targets where set; otherwise estimates RPE as 10 − RIR, limited to 1–10.';
+  static const programmeTargetsNotSet = 'Not set';
+  static const programmeWeeklyWorkload = 'Weekly workload';
+  static const programmeAverageRpe = 'Intensity (avg target RPE)';
+  static const programmeAverageWorkingSets = 'Volume (working sets / week)';
+  static const programmePhase = 'Phase';
+  static const programmePhases = 'Phases';
+  static const programmeFrequency = 'Frequency';
+  static const programmeUnique = 'Unique';
+  static const programmeReadyToPublish = 'Ready to publish';
+  static const publish = 'Publish';
+  static String programmeReviewPhase(String focus) => '$focus phase';
+  static String programmeReviewPhaseName(int number, String name) =>
+      'Phase $number: $name';
+  static String programmeReviewFrequency(int min, int max) =>
+      min == max ? '$max' : '$min–$max';
+  static String programmeReviewMoreExercises(int count) => '+$count more';
+  static String programmeReviewBusiestWeek(int sets) =>
+      'Busiest week: $sets working ${sets == 1 ? 'set' : 'sets'}';
   static const nextReviewAndPublish = 'Next: Review & Publish';
   static const dragToReorder = 'Drag to reorder';
   static const selectExerciseToConfigure = 'Select an exercise to configure';
@@ -679,6 +750,7 @@ class AppStrings {
   static const restColumn = 'REST';
   static const durationColumn = 'DURATION';
   static const durationUnit = 'min';
+  static const durationInputHint = '05:00';
   static const configLabel = 'Configuration';
   static const reorderButton = 'Reorder';
   static const defaultRestHint = 'Default rest (seconds)';
@@ -696,6 +768,13 @@ class AppStrings {
   static const deleteSuperset = 'Delete superset';
   static const supersetGroup = 'Superset group';
   static const groupedExercises = 'Grouped exercises';
+  static const supersetChooseExercises = 'Choose exercises';
+  static const supersetSelectionOrderHint =
+      'Choose exercises in the order you want to perform them.';
+  static String supersetSelectedCount(int count) => '$count selected';
+  static String supersetOrderPosition(int order) => 'Order $order';
+  static const supersetDeleteHint =
+      'Deleting the group keeps its exercises in this workout.';
   static const noSuperset = 'No superset';
   static const executionOrder = 'Execution order';
   static const moveUpInSuperset = 'Move up in superset';
@@ -746,18 +825,105 @@ class AppStrings {
   static const downloadingUpdate = 'Downloading...';
   static const importingExercises = 'Importing exercises...';
 
+  // Programme builder presentation
+  static const programmeCreateTitle = 'New Programme';
+  static const saveDraft = 'Save Draft';
+  static const programmeDraft = 'Draft';
+  static const programmeDrafts = 'Drafts';
+  static const programmeDraftSaved = 'Programme draft saved.';
+  static const programmeWorkoutScope = 'Workout scope';
+  static const programmeCustomDay = 'Custom for this day';
+  static const programmeRepeatInBlock = 'Repeat in this block';
+  static const programmeRepeatCopiesHint =
+      'Repeat on the same weekday throughout this block. Each copy can be edited separately; later changes apply only to the day being edited.';
+  static String programmeRepeatWorkoutConfirm(String day, String block) =>
+      'Copy this workout to every $day in $block? Missing training days will be added and existing workouts on that weekday will be replaced. Other days and blocks stay as they are.';
+  static const primaryGoal = 'Primary Goal';
+  static const hypertrophyGoal = 'Hypertrophy';
+  static const strengthGoal = 'Strength';
+  static const enduranceGoal = 'Endurance';
+  static const moreGoals = 'More goals';
+  static const selectProgrammeDuration = 'Select duration';
+  static String programmeDurationWeeks(int count) =>
+      '$count ${count == 1 ? 'week' : 'weeks'}';
+  static const shortenProgramme = 'Shorten programme?';
+  static const shortenProgrammeMessage =
+      'Workouts in the removed weeks will be removed from this draft.';
+  static const typicalTrainingWeek =
+      'Select your preferred training days for a typical week.';
+  static const typicalWeekChangesHint = 'Changes here apply to every week.';
+  static const buildWeeklyWorkouts = 'Build Weekly Workouts';
+  static const planYourWeek = 'Plan your week';
+  static const planYourWeekHint =
+      'Select which days you’ll be training and assign workout templates to them.';
+  static String programmeBuilderStep(int step) => 'Step $step of 5';
+  static const nextDefineWorkouts = 'Next: Define Workouts';
+  static const assignWorkoutTemplate = 'Assign Workout Template';
+  static const selectWorkoutTemplate = 'Select a workout…';
+  static const programmeRestDay = 'Rest Day';
+  static const programmeTrainingDay = 'Training day';
+  static String trainingWithWorkout(String name) => 'Training: $name';
+  static const progressionLogic = 'Progression Logic';
+  static const manualProgression = 'You control your progression';
+  static const manualProgressionHint =
+      'Adjust loads and plan deload weeks as you review your training.';
+  static const buildScienceBackedResults = 'Build Science-Backed Results';
+  static const programmePlanningHint =
+      'Plan your weeks, choose your workouts, and build a routine you can follow.';
+  static const plannedWeeks = 'Planned weeks';
+  static String programmePreparation(int assigned, int total) =>
+      '$assigned of $total workouts assigned';
+  static const reviewProgrammeHint =
+      'Review your weeks and workouts before saving locally.';
+  static const defineWorkouts = 'Define Workouts';
+  static const programmeWorkoutTemplatesHint =
+      'Choose a scheduled day to create or assign a workout template.';
+  static String programmeWeekLabel(int week) => '$weekLabelPrefix $week';
+  static String programmeWeekNeedsWorkoutDay(int week) =>
+      'Select at least one workout day for Week $week.';
+  static String programmeDayNeedsWorkout(int week, String day) =>
+      'Assign a workout to $day in Week $week.';
+  static const programmeDayWorkoutsHint =
+      'Choose a workout day to edit its exercises and targets.';
+  static String programmeDayTemplate(String day, String template) =>
+      '$day · $template';
+  static const manageTrainingWeeks = 'Manage weeks and assignments';
+  static const moveExerciseUp = 'Move exercise up';
+  static const moveExerciseDown = 'Move exercise down';
+  static String programmeExerciseCount(int count) => 'Exercises ($count)';
+  static String programmeSetCount(int count) =>
+      count == 1 ? '1 set' : '$count sets';
+  static String programmeWorkoutSlot(int week, String day) =>
+      'Week $week · $day';
+  static const defineWorkoutsHint =
+      'Build your training weeks, assign workouts, and choose deload weeks.';
+
   // Programme builder
   static const programmeBuilder = 'Programme Builder';
   static const createProgramme = 'Create programme';
   static const editProgramme = 'Edit programme';
   static const programmeName = 'Programme name';
-  static const programmeNameHint = 'My 12-Week Programme';
+  static const programmeNameHint = 'e.g. Summer Strength';
   static const addWeek = 'Add week';
   static const removeWeek = 'Remove week';
   static const duplicateWeek = 'Duplicate week';
   static const addWorkoutSlot = 'Add workout';
+  static const workoutOptions = 'Workout options';
+  static String programmeWorkoutCount(int count) =>
+      count == 1 ? '1 Workout' : '$count Workouts';
+  static const editExercise = 'Edit exercise';
+  static String workoutExerciseTotal(int count) =>
+      count == 1 ? '1 Exercise' : '$count Exercises';
+  static String workoutDurationEstimate(int minutes) =>
+      'Estimated $minutes mins';
+  static String exerciseRepsSummary(String reps) => '$reps Reps';
+  static String exerciseRestSummary(int seconds) => '${seconds}s Rest';
+  static String exerciseRpeSummary(String rpe) => 'RPE $rpe';
   static const removeSlot = 'Remove workout';
+  static String removeWorkoutDay(String day) => 'Remove $day workout';
   static const assignTemplate = 'Assign workout';
+  static const assignWorkoutHint =
+      'Create a workout or reuse one you already have.';
   static const saveProgramme = 'Save programme';
   static const discardProgrammeChanges = 'Discard changes';
   static const unsavedProgrammeChanges = 'Unsaved changes';
@@ -816,6 +982,9 @@ class AppStrings {
   static const optionalDescription = 'Optional description';
   static const addWeekContent = 'Add a new week to your programme.';
   static const createTemplate = 'Create template';
+  static const saveTemplate = 'Save template';
+  static const programmeTemplateBuilderHint =
+      'Build a workout for this programme. It will be saved with your programme.';
   static const templateName = 'Template name';
   static const templateNameHint = 'e.g. Upper Body A';
   static const selectExercisesForTemplate = 'Add exercises';

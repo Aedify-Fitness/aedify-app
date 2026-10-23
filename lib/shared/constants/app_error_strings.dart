@@ -1,5 +1,7 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const draftProgrammeRequiresPublishing =
+      'Publish the programme before activating it.';
 
   static const String storageErrorMessage = 'Storage error';
   static const String downloadFailedMessage = 'Download failed';

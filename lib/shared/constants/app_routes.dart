@@ -63,6 +63,10 @@ class AppRoutes {
       AppRoutes._(path: '/workouts/:id/edit', name: 'workoutBuilderEdit');
 
   // Programme builder
+  factory AppRoutes.programmeWorkoutBuilderCreate() => AppRoutes._(
+    path: '/programmes/workout-template/new',
+    name: 'programmeWorkoutBuilderCreate',
+  );
   factory AppRoutes.programmeBuilderCreate() =>
       AppRoutes._(path: '/programmes/new', name: 'programmeBuilderCreate');
   factory AppRoutes.programmeBuilderEdit() =>

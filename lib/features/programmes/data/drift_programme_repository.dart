@@ -27,6 +27,8 @@ import 'package:aedify/shared/domain/set_intent.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/weight_prescription_type.dart';
 import 'package:aedify/core/logging/app_logger.dart';
+import 'package:aedify/shared/domain/program_status.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 
 class DriftProgrammeRepository implements ProgrammeRepository {
   DriftProgrammeRepository({
@@ -281,6 +283,10 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
   @override
   Future<void> activateProgramme(String id) async {
+    final programme = await _programDao.getById(id);
+    if (programme?.status == ProgramStatus.draft.dbValue) {
+      throw StateError(AppErrorStrings.draftProgrammeRequiresPublishing);
+    }
     final now = DateTime.now();
     await _transactionExecutor.execute(
       operationName: 'programme.activate',
@@ -322,6 +328,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
 
     return ProgrammeAggregate(
       program: program,
+      trainingBlocks: await _programWeekDao.getBlocks(program.id),
       templates: templates,
       weeks: weeks,
       workouts: workouts,
@@ -376,6 +383,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
     }
     await _programWorkoutDao.deleteByProgramId(programId);
     await _programWeekDao.deleteByProgramId(programId);
+    await _programWeekDao.deleteBlocks(programId);
   }
 
   Future<void> _insertProgramTemplate({
@@ -442,6 +450,23 @@ class DriftProgrammeRepository implements ProgrammeRepository {
     required DateTime now,
   }) async {
     if (draft.weeksTotal == null || draft.weeksTotal! < 1) return;
+    for (var i = 0; i < draft.trainingBlocks.length; i++) {
+      final block = draft.trainingBlocks[i];
+      await _programWeekDao.insertBlock(
+        ProgramTrainingBlocksCompanion.insert(
+          id: block.id,
+          programId: programId,
+          sortOrder: i,
+          name: block.name,
+          weekCount: block.weekCount,
+          focus: block.focus.dbValue,
+          trainingDaysJson: Value(
+            EnumCodec.encodeSet(block.trainingDays, (day) => day.dbValue),
+          ),
+          progressionNotes: Value(block.progressionNotes),
+        ),
+      );
+    }
 
     for (var weekNum = 1; weekNum <= draft.weeksTotal!; weekNum++) {
       final weekId = _newId();
@@ -462,8 +487,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       final weekIdx = weekNum - 1;
       final templateMap = {for (final t in draft.templates) t.id: t};
       if (draft.weekSlotDayIndices != null &&
-          weekIdx < draft.weekSlotDayIndices!.length &&
-          draft.weekSlotDayIndices![weekIdx].isNotEmpty) {
+          weekIdx < draft.weekSlotDayIndices!.length) {
         final weekDayIndices = draft.weekSlotDayIndices![weekIdx];
         final weekTemplateIds =
             draft.weekSlotTemplateIds != null &&
@@ -476,7 +500,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
               ? weekTemplateIds[slotIdx]
               : null;
           final template = templateId != null ? templateMap[templateId] : null;
-          if (template == null) continue;
+          if (template == null && draft.status != ProgramStatus.draft) continue;
           await _insertExpandedWorkout(
             programId: programId,
             weekId: weekId,
@@ -484,6 +508,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
             slotIdx: slotIdx,
             dayIndex: dayIndex,
             template: template,
+            isDraft: draft.status == ProgramStatus.draft,
             now: now,
           );
         }
@@ -500,7 +525,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
               ? slotTemplateIds[slotIdx]
               : null;
           final template = templateId != null ? templateMap[templateId] : null;
-          if (template == null) continue;
+          if (template == null && draft.status != ProgramStatus.draft) continue;
           await _insertExpandedWorkout(
             programId: programId,
             weekId: weekId,
@@ -508,6 +533,7 @@ class DriftProgrammeRepository implements ProgrammeRepository {
             slotIdx: slotIdx,
             dayIndex: dayIndex,
             template: template,
+            isDraft: draft.status == ProgramStatus.draft,
             now: now,
           );
         }
@@ -535,7 +561,8 @@ class DriftProgrammeRepository implements ProgrammeRepository {
     required int weekNum,
     required int slotIdx,
     required int dayIndex,
-    required ProgrammeWorkoutTemplateDraft template,
+    required ProgrammeWorkoutTemplateDraft? template,
+    bool isDraft = false,
     required DateTime now,
   }) async {
     final workoutId = _newId();
@@ -546,14 +573,16 @@ class DriftProgrammeRepository implements ProgrammeRepository {
         programId: programId,
         workoutId: workoutId,
         occurrenceRef: occurrenceRef,
-        name: template.name,
+        name: template?.name ?? '',
         now: now,
         programWeekId: weekId,
-        workoutTemplateId: template.id,
+        workoutTemplateId: template?.id,
         scheduledDayIndex: dayIndex,
+        status: isDraft ? ProgramStatus.draft.dbValue : 'planned',
       ),
     );
 
+    if (template == null) return;
     final templateExercises = await _programTemplateExerciseDao
         .getByTemplateIdOrdered(template.id);
     for (final te in templateExercises) {
@@ -660,6 +689,9 @@ class DriftProgrammeRepository implements ProgrammeRepository {
       programId: Value(programId),
       templateKey: Value(template.templateKey),
       name: Value(template.name),
+      goalTagsJson: Value(
+        EnumCodec.encodeList(template.goalTags, (value) => value),
+      ),
       description: Value(template.description),
       dayType: Value(template.dayType?.dbValue),
       estimatedDurationMinutes: Value(template.estimatedDurationMinutes),

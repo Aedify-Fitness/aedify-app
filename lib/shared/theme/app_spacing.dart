@@ -61,6 +61,45 @@ abstract final class AppBottomNavigationTokens {
   }
 }
 
+abstract final class AppProgrammeBuilderTokens {
+  static const double mobileContentMaxWidth = 390;
+  static const double assignmentSheetHeightFactor = 0.85;
+  static const double supersetSheetHeightFactor = 0.85;
+  static const double actionShadowOpacity = 0.12;
+  static const double actionShadowBlur = 20;
+  static const double actionIconOpacity = 0.2;
+  static const double actionDisabledOpacity = 0.3;
+  static const double managementBorderOpacity = 0.6;
+  static const double managementDividerOpacity = 0.5;
+  static const double managementButtonBorderOpacity = 0.8;
+  static const double assignmentExerciseIconSize = 56;
+  static const double saveDraftWidth = 88;
+  static const double headerMinHeight = 64;
+  static const double backSwipeEdge = 24;
+  static const double backSwipeDistance = 64;
+  static const double backSwipeVelocity = 500;
+  static const double sectionIconSize = 40;
+  static const double sectionGap = 24;
+  static const double dayGap = 4;
+  static const double borderOpacity = 0.3;
+  static const double highlightOpacity = 0.1;
+  static const List<int> durationWeeks = [1, 4, 8, 12];
+}
+
+abstract final class AppProgrammeReviewTokens {
+  static const double heroMinHeight = 128;
+  static const double badgeOpacity = 0.2;
+  static const double borderOpacity = 0.2;
+  static const double inverseDividerOpacity = 0.1;
+  static const double workloadTrackHeight = 8;
+}
+
+abstract final class AppExerciseConfigTokens {
+  static const double tableWidth = 440;
+  static const double fieldHeight = 36;
+  static const double labelTracking = 0.5;
+}
+
 abstract final class AppWorkoutRunnerTokens {
   static const double maxContentWidth = 512;
   static const double horizontalPadding = 20;

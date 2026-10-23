@@ -5,18 +5,521 @@
 | Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Current Milestone** | M4 — Persistence Foundation + Workout Builder + Programme Builder + Workout Runner + Workout History & Programme Library + Custom Exercise Editor (Programmes, Saved Workouts, Workout Builder, Programme Builder, Workout Session Runner, Lift Log, Programme Library, Custom Exercise Management)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Workout runner/session integrity fixes landed across completion UX, duplicate-active-session repair, and guarded progress saves. SessionCompleteScreen replaces inline `_WorkoutCompletedView` with navigation-based flow, draws preferred unit from profile, formats completion percentage, and correctly distinguishes untouched exercises from completed ones. **New `WorkoutCompleteScreen`** added for normal completions with dedicated HTML-matching design (filled check_circle hero, 3-column bento stats, Aedify Insight card, exercise summary, Done + Share Summary bottom layer). **New `FinishEarlySessionCompleteScreen`** added for early-finish sessions. **New `ExitWorkoutSheet`** and **`FinishEarlyDialog`** replace inline exit/abandon UI. **ProgrammesScreen** redesigned with state-aware CTA (start/resume/hidden) via `WorkoutDetailButtonState` enum. **Schema v12** adds `prescribed_reps_exact` column to `set_logs`. Programme builder/calendar/home sync fixes landed across slot persistence, refresh flow, and shared today-workout resolution. Saved workouts are now soft-delete persisted via schema v11 (`deleted_at`). Convention sweeps remain complete — full 12-rule audit completed 2026-07-05: ~90 violations (hardcoded colors, raw spacing/radius/icon sizes, `Navigator.of(context).pop()`, commented code, `const` violations) fixed across 10 files. Zero `Color(0x...)`, raw spacing/radius values, `Navigator.pop()`, `Theme.of(context)`, `print()`, relative imports, or raw SVG paths remain in widget code. Logging remains instrumented across 59 M4-module files. Workout builder screen redesigned with expanded sets table (WEIGHT/REST columns, StatefulWidget controllers, computed dirty-state), 4-tier difficulty badges (novice/beginner/intermediate/advanced) in exercise picker with color tokens, and new `ExercisePickerFilterSheet`. Workout builder screen further redesigned with superset grouping (left-border groups, `_SupersetGroupWidget`), DropdownButton TYPE column, inline superset selection mode (replaces bottom-sheet editor), redesigned config panel header, and "Next: Review & Publish" CTA footer. Goal tags migrated from enum to raw string format across domain, persistence, and tests. The Home dashboard now follows the supplied fixed-mobile hierarchy and card treatment while retaining provider-backed workout states and honest M5 placeholders. The Custom Exercise Editor now follows the supplied fixed-mobile form hierarchy while preserving its local domain and persistence behavior; its four-tier difficulty selector uses directional sliding-thumb motion. Latest verification (2026-08-01): `dart format .` passed, `flutter analyze` passed with no issues, and `flutter test` passed **1128/1128**. |
-| **Blockers**          | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| **Pre-existing**      | Flutter 3.44.4 `ink_sparkle.frag` shader regression breaks FilledButton tap tests. Affects `complete_workout_sheet_test.dart` (mitigated with `NoSplash` in test theme) and pre-existing `programme_save_bar_test.dart`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-
-Latest repository verification (2026-10-17): `dart format .` checked 699 files;
-`flutter analyze` passed with no issues. Full `flutter test` passed 1185/1186,
-including the new warmup/working superset timer-separation regressions. The only
-failure remains the previously documented `workout_runner_controller_test.dart`
-"saveProgress preserves and persists a set edit made while save is pending"
-async timing test (`requireValue` observes `AsyncLoading`).
+| **Status**            | V1-M3-001 through V1-M3-009 complete. **V1-M4-001 through V1-M4-011 complete**. Workout runner/session integrity fixes landed across completion UX, duplicate-active-session repair, and guarded progress saves. SessionCompleteScreen replaces inline `_WorkoutCompletedView` with navigation-based flow, draws preferred unit from profile, formats completion percentage, and correctly distinguishes untouched exercises from completed ones. **New `WorkoutCompleteScreen`** added for normal completions with dedicated HTML-matching design (filled check_circle hero, 3-column bento stats, Aedify Insight card, exercise summary, Done + Share Summary bottom layer). **New `FinishEarlySessionCompleteScreen`** added for early-finish sessions. **New `ExitWorkoutSheet`** and **`FinishEarlyDialog`** replace inline exit/abandon UI. **ProgrammesScreen** redesigned with state-aware CTA (start/resume/hidden) via `WorkoutDetailButtonState` enum. **Schema v12** adds `prescribed_reps_exact` column to `set_logs`. Programme builder/calendar/home sync fixes landed across slot persistence, refresh flow, and shared today-workout resolution. Saved workouts are now soft-delete persisted via schema v11 (`deleted_at`). Convention sweeps remain complete — full 12-rule audit completed 2026-07-05: ~90 violations (hardcoded colors, raw spacing/radius/icon sizes, `Navigator.of(context).pop()`, commented code, `const` violations) fixed across 10 files. Zero `Color(0x...)`, raw spacing/radius values, `Navigator.pop()`, `Theme.of(context)`, `print()`, relative imports, or raw SVG paths remain in widget code. Logging remains instrumented across 59 M4-module files. Workout builder screen redesigned with expanded sets table (WEIGHT/REST columns, StatefulWidget controllers, computed dirty-state), 4-tier difficulty badges (novice/beginner/intermediate/advanced) in exercise picker with color tokens, and new `ExercisePickerFilterSheet`. Workout builder screen further redesigned with superset grouping (left-border groups, `_SupersetGroupWidget`), DropdownButton TYPE column, inline superset selection mode (replaces bottom-sheet editor), redesigned config panel header, and "Next: Review & Publish" CTA footer. Goal tags migrated from enum to raw string format across domain, persistence, and tests. The Home dashboard now follows the supplied fixed-mobile hierarchy and card treatment while retaining provider-backed workout states and honest M5 placeholders. The Custom Exercise Editor now follows the supplied fixed-mobile form hierarchy while preserving its local domain and persistence behavior; its four-tier difficulty selector uses directional sliding-thumb motion. Programme Builder now includes the supplied Details/Weekly Schedule stages and mobile-only Define Workouts template editor with validated local draft saving. Latest verification (2026-10-20): Both Weekly Schedule and Define Workouts hide
+Repeat in this block for workouts already matching across the block's weekday.
+Scope selection and Define Workouts repeat directly; only day-card repetition
+asks for confirmation. Repetition detection ignores copied IDs, compares workout
+configuration and survives save/reload. Formatting (726 files), plugin MCP
+analysis, `git diff --check` and all 85 focused domain/builder/repository/assignment
+tests passed. No schema change was added. Full suite/live restart were not
+repeated; save/discard any open draft and restart for the earlier schema-v17
+migration. Prior runner failures remain outside this change.
 
 ## Completed Work
+
+### 2026-10-20 — M4 repeat action availability and direct scope assignment (complete)
+
+- `ProgrammeWorkoutRepetition` derives repeated slot indices from matching
+  same-weekday workouts within the selected block, ignoring assignment/exercise/
+  set IDs and normalizing superset IDs. Target, note, grouping and other workout
+  changes make the action available again. Missing assignments are not repeated.
+- Schedule day cards and Define Workouts consume cached repetition results to
+  hide completed repeat actions. Caches refresh on draft edits, week changes,
+  focused-workout navigation and validation redirects.
+- Repeat scope applies directly for existing, imported and newly authored
+  workouts; Define Workouts also repeats without a dialog. Only day-card taps
+  request confirmation; choosing Custom cancels without changing assignments.
+- Verification: format checked 726 files; plugin MCP analysis and
+  `git diff --check` passed. All 85 focused tests passed across repetition policy,
+  builder navigation/visibility, repository roundtrips and assignment-sheet UI,
+  including copied IDs/groups, target customization, cancellation, direct scope
+  application and 320px/2x-text themes. Full suite/live restart not repeated.
+  No migration added; the earlier schema-v17 restart note remains applicable.
+
+### 2026-10-20 — M4 goal badges and block workout scope (complete)
+
+- `ProgrammeReviewSummary.goalLabel` uses the programme's first selected goal,
+  then the first nonblank workout goal. The hero uses this value instead of the
+  first block's phase label. Single programme goals take the same priority.
+- `ProgrammeWorkoutScopeSelector` adds Custom for this day / Repeat in this block
+  choices to workout assignment. Scope works for existing programme templates,
+  saved workout imports and new programme workouts. Schedule day cards and Define
+  Workouts also offer repetition of an already configured workout.
+- Controller repetition copies only the source weekday within its block, adding
+  missing day slots and replacing that weekday's workout after UI confirmation.
+  Other weekdays/blocks retain their data. New identities keep templates,
+  exercises, sets and superset groups independent. Custom cancels repetition;
+  later edits affect only that day, as explained by the UI.
+- Schema v17 adds `program_workout_templates.goal_tags_json`, defaulting to an
+  empty list. Builder/domain mappings, both workout converters, copying and
+  persistence preserve ordered workout goals. The migration retains v16 rows
+  and does not infer metadata for existing workouts.
+- Verification: build runner passed, post-generation format checked 724 files,
+  plugin MCP analysis and `git diff --check` passed. All 334 programme, database
+  and home tests passed: goal precedence/fallback, creation conversion, metadata
+  reload, v16/older migrations, repeated weekday isolation, added day slots,
+  independent edits, both assignment surfaces and 320px/2x-text controls in light
+  and dark themes. Full suite/live restart not repeated. Save/discard any open
+  draft, then restart for schema v17; prior runner failures remain unrelated.
+
+### 2026-10-20 — M4 draft-saving lifecycle correction (complete)
+
+- Added separate controller draft/publication commands. Draft saving requires a
+  programme name, but permits missing goals, unnamed blocks, incomplete schedules
+  and unassigned days. It persists draft status/active=false; publication runs
+  existing full validation and changes draft status to inactive. Failed saves do
+  not mutate the edited status/content; successful saves clear prior validation.
+- Builder Save Draft uses the dedicated command and confirmation copy. Error
+  Retry retains its last save intent. The floating Publish action is unchanged.
+- Library cards show Draft, offer a Drafts filter and reopen the builder rather
+  than the calendar. Draft activation is hidden and guarded in the repository.
+- Existing Drift tables retain blank workout assignments as draft occurrences
+  with nullable template IDs, and respect explicit empty per-week schedules.
+  No migration or new storage layer was introduced.
+- Verification: `dart format .` checked 723 files; plugin MCP analysis and
+  `git diff --check` passed. All 109 focused tests passed across controller,
+  repository, builder and library: unfinished save/reload, empty-week isolation,
+  publication promotion, preserved failure state, Retry intent, draft badges and
+  filtering, resume routing and activation protection. Full suite/live restart
+  were not repeated; prior runner failures and schema-v16 notes still apply.
+
+### 2026-10-20 — M4 final publication fact treatment (complete)
+
+- Added `_PublicationFact.isLast` and applied it to the final RPE fact, removing
+  its bottom border and bottom padding while retaining the card's outer padding.
+- Verification: formatting (722 files), plugin MCP analysis, all seven existing
+  review widget tests and `git diff --check` passed. Full suite not repeated.
+
+### 2026-10-20 — M4 informational publication preview (complete)
+
+- Removed the inline `_PublicationPreview` Publish programme button and unused
+  callback/loading parameters through `ProgrammeBuilderReview`. The floating
+  action bar retains the existing save workflow and loading state.
+- Updated existing tests to exercise only that action and verify a button-free
+  review body. Removed the unused button label from `AppStrings`.
+- Verification: format checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 52 focused review/builder-screen tests passed,
+  including publishing and small-phone large-text layouts. Full suite/live
+  restart not repeated.
+
+### 2026-10-20 — M4 action bar and back gesture navigation (complete)
+
+- Review instantiates `ProgrammeBuilderActionBar` with Step 5, Ready to publish
+  and Publish. Both it and the publication card use the existing save flow.
+  No `ProgrammeSaveBar` activation controls or cover were restored.
+- `ProgrammeBuilderScreen` shares back handling across header taps, system Back
+  and `ProgrammeBuilderBackGesture`. Steps 2–5 go back one stage; Details exits
+  cleanly or requests discard confirmation. Draft edits are preserved between
+  stages; saving prevents navigation and a guard prevents stacked exit dialogs.
+- `ProgrammeBuilderBackGesture` accepts horizontal drags only from the leading
+  edge, mirrors for RTL and ignores incomplete/reversed/cancelled swipes. Other
+  horizontal controls keep their recognizers. Added sizing/gesture tokens.
+- Verification: format checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 62 focused tests passed: per-stage swipe/back,
+  clean/dirty first-page exits, cancellation, RTL, non-edge horizontal scrolling,
+  ignored gestures, restored publish callback and 320px/2x-text safe areas in
+  both themes. Full suite/live restart were not repeated; earlier runner failure
+  and schema-v16 notes still apply.
+
+### 2026-10-20 — M4 review simplification and RIR effort estimates (complete)
+
+- Removed `_ProgrammeCover` and the `ProgrammeSaveBar` component/test. Review has
+  no bottom navigation bar; its publication card remains the save action.
+  Screen regressions now scroll to that action and check the missing footer.
+- `ProgrammeReviewSummary.hasRirEstimates` identifies RIR-derived contributions.
+  Explicit/legacy RPE targets take precedence; otherwise nonnegative prescribed
+  RIR maps to 10 − RIR, bounded to the app's 1–10 scale. Null/invalid targets do
+  not contribute. Working sets alone count, and original prescriptions remain
+  unchanged. Publication and intensity labels identify estimated values.
+- Verification: format checked 720 files, plugin MCP analysis passed and
+  `git diff --check` passed. All 51 focused tests passed, covering RIR-only and
+  mixed averages, explicit/legacy precedence, scale bounds, invalid/missing
+  values, excluded warmups, estimate labels, publish saving states, removal of
+  footer/cover and small-phone large-text cases in both themes. Full suite/live
+  restart not repeated; the previous runner failures/schema-v16 note still apply.
+
+### 2026-10-20 — M4 mobile programme review (complete)
+
+- `ProgrammeBuilderReview` implements the supplied mobile review design with a
+  two-by-two metric grid, sequential phase cards, private publication preview,
+  workload bars and an offline gym asset. No desktop or responsive variant was
+  added. Both Publish actions retain the existing validated save workflow.
+- `ProgrammeReviewSummary` derives duration, min/max workout days per week,
+  distinct exercise IDs, block ranges/previews, explicit deload weeks and working
+  set/RPE averages from the draft. RPE ranges use their midpoint; unset values
+  display Not set. No cloud syncing or automatic progression claims were added.
+- The shared action bar accepts an optional subtitle for Step 5. The review
+  footer retains dirty state/activation controls and wraps correctly with large
+  text. Earlier step footers keep their existing content.
+- Verification: `dart format .` checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 55 focused summary, review, save-bar and full
+  builder-screen tests passed, including 320px/2x-text in both themes, working
+  set calculations, empty targets, publish callbacks and disabled saving states.
+  A temporary rendering test was used for visual inspection with real fonts,
+  then removed. Full suite/live restart were not repeated; the two prior runner
+  failures and schema-v16/open-draft restart note remain unchanged.
+
+### 2026-10-20 — M4 optional block training days (complete)
+
+- `ProgrammeTrainingBlockDraft.trainingDays` stores optional weekday defaults.
+  `ProgrammeBuilderTrainingBlocks` exposes theme-aware selectable weekday chips
+  and explains that days can be edited later per week; block validation remains
+  independent of day selection.
+- `setBlockTrainingDay` updates only the block's range using the same slot-edit
+  helper as Weekly Schedule. Unaffected assignments and custom weekdays remain
+  intact. Individual-week edits keep defaults unchanged; block metadata updates
+  and load normalisation do not reapply defaults over those overrides.
+- Block length extension and Manage Weeks → Add week inherit saved defaults,
+  using independent workout copies where an assignment exists. Removing an
+  assigned block day confirms first; cancellation preserves all assignments.
+- Schema v16 adds `training_days_json` to `program_training_blocks`. The existing
+  enum codec handles save/load and block duplication preserves defaults. Tests
+  verify v15 upgrade retains prior blocks with unset defaults and older-version
+  creation avoids adding the same column twice.
+- Verification: build runner passed; post-generation format checked 718 files;
+  plugin MCP analysis passed. Full suite: 1284 passed / 2 pre-existing runner
+  failures (pending-save AsyncLoading assertion and compact touch-target size).
+  All programme/migration checks passed, covering block isolation, optional
+  defaults, weekly overrides, inheritance from both add-week paths, bulk removal
+  confirmation/cancellation, persisted overrides and existing 2x-text themes.
+  `git diff --check` passed. Live reload/restart deferred for the existing open
+  draft and schema upgrade; restart after saving/discarding the draft.
+
+### 2026-10-20 — M4 blank initial block names (complete)
+
+- New and legacy-derived blocks use an empty name in the controller. Existing
+  block names remain untouched; numbered card headings remain available.
+- Regressions assert empty draft/input values and disabled Proceed until a name
+  is entered. Valid save fixtures explicitly provide user-authored names.
+- Verification: format checked 718 files; plugin MCP analysis passed; all 144
+  programme application, persistence and screen tests passed. `git diff --check`
+  passed. Full suite/live reload not repeated; previous migration restart note
+  and the two existing runner failures still apply.
+
+### 2026-10-20 — M4 persisted training blocks and five builder stages (complete)
+
+- `ProgrammeTrainingBlockDraft` models ordered phases using stable IDs, name,
+  focus, week count and progression notes. `ProgrammeBuilderController` creates,
+  edits, resizes and removes them; counts define contiguous week ranges. Later
+  blocks retain their weeks and workout targets when preceding ranges change.
+  New repeated assignments receive independent template/exercise/set identities.
+- `ProgrammeBuilderTrainingBlocks` is the mobile second step; Details now contains
+  programme identity/goals/notes, Schedule is third, Define Workouts fourth, and
+  Review fifth. Block context appears in the scheduling/editing steps and Review
+  includes block details. Populated block shrink/removal asks for confirmation.
+- `ProgrammeBuilderStepValidator` guards all forward progress and shortcut jumps:
+  block names/coverage, at least one workout day per week, then all days assigned.
+  Previous week-management actions also adjust block sizes. Legacy weeks form a
+  single base block on editing without altering existing workout prescriptions.
+- Schema v15 adds `program_training_blocks`, owned by the existing programme
+  structure DAO/repository. Save/load and aggregate mappings retain block order,
+  focus, length and private notes. Duplicate IDs are refreshed. Update/deletion
+  uses the existing transaction boundary; v14 upgrade retains existing rows.
+- Progression notes are descriptive and local. Automatic progression/AI changes
+  were not added. The new screen uses existing theme tokens, text styles, SVGs,
+  and floating actions; flexible action constraints fix prior large-text overflow.
+- Verification: build runner completed (its deprecated deletion flag was ignored
+  by the installed version); required post-generation format checked 718 files;
+  plugin MCP analysis passed. Full suite: 1279 passed / 2 known runner failures:
+  pending-save AsyncLoading assertion and compact runner 28px control vs 48px
+  expectation. All programme and migration cases passed, including save/reload,
+  duplicate/update/delete, range edits, confirmation cancellation, five-step
+  navigation, empty/name gates and 320px/2x-text light/dark screens.
+  `git diff --check` passed. No live reload/restart: active builder draft preserved;
+  app restart is needed to reopen Drift and apply the migration.
+
+### 2026-10-20 — M4 programme step prerequisites (complete)
+
+- Adds `ProgrammeBuilderStepValidator` for step-specific week/day and assignment
+  checks, leaving final save validation intact. Unassigned days remain valid
+  while choosing the Weekly Schedule and must be filled in Training Blocks.
+- `ProgrammeBuilderScreen` disables Proceed for incomplete steps, shows messages
+  naming the week/day, and validates progress shortcuts against fresh draft state.
+  Invalid jumps select the first incomplete week; backward navigation remains
+  available. A default week is created only when leaving Details for Schedule.
+- Added seven application cases and two screen flows for absent/empty weeks,
+  per-week selection, cross-week assignment coverage, progress bypass attempts,
+  removing weeks/days, and repairing incomplete assignments. Updated the existing
+  schedule screen test to expect Review to remain blocked after clearing workouts.
+- Verification: format checked 715 files; plugin MCP analysis passed. The scoped
+  validator/controller/screen run passed 91 checks with six known failures:
+  action-bar inset expectations (2), 320px Define Workouts overflow (2 themes),
+  and small-phone Details/Schedule overflow (2 themes). All 64 application tests
+  and 27/33 screen tests passed, including the new flows. Live hot reload/runtime
+  checks and `git diff --check` passed. Full suite/device-driver checks not run.
+
+### 2026-10-18 — M4 programme superset editor redesign (complete)
+
+- `programme_superset_editor_sheet.dart` uses a bounded mobile sheet with an
+  accessible close control, scrolling exercise cards, set counts, execution
+  badges, a live selection count, and a safe-area-aware pinned create action.
+- Selecting exercises numbers them in selection order, matching the existing
+  creation callback. Edit mode sorts active members by saved superset order;
+  removal and delete callbacks retain their existing behaviour. Delete copy
+  explicitly says the exercises remain in the workout.
+- Uses shared theme tokens, SVGs, `AppStrings`, and reduced-motion-aware selection
+  transitions. Added a sheet height token and centralised copy constants.
+- Verification: format checked 713 files; MCP analysis passed; 23/23 focused
+  sheet/service/validator tests passed. Tests cover selection/deselection,
+  missing IDs, ordering/filtering, close dismissal, empty states, existing
+  callbacks, 48-pixel controls, and scrolling with pinned actions on 320-pixel
+  phones at 2x text in light/dark themes. Live reload/runtime checks and
+  `git diff --check` passed; simulator layout inspected. Full suite not rerun.
+  MCP driver screenshot was unavailable (no driver extension); used a read-only
+  simulator screenshot for visual inspection without changing the active draft.
+
+### 2026-10-18 — M4 Training Blocks day deletion (complete)
+
+- `ProgrammeBuilderWorkouts` exposes separate select and remove controls on each
+  day tab, with a day-specific accessible label and 48-pixel remove target.
+  Removing the active day resets the editor to a remaining workout; removing
+  the final day preserves the empty-state + flow.
+- `ProgrammeBuilderScreen` routes removal to `removeSlot`, which updates draft
+  slot indices, template references, and weekly frequency. Other weeks and
+  Saved Workouts are preserved; stale indices and saving state are guarded.
+- Added controller and screen regressions for assigned/empty/final-day deletion,
+  selected-week isolation, editor fallback, and final save without the deleted day.
+- Verification: format checked 713 files; plugin MCP analysis passed. Controller
+  suite 41/41 and focused screen flows 9/9 passed; live MCP reload/runtime and
+  `git diff --check` passed. Full suite not rerun; prior nine failures remain
+  outside this change. No device-driver interaction test was run.
+
+### 2026-10-18 — M4 Training Blocks add-day action (complete)
+
+- `ProgrammeBuilderController.addWorkoutDay` adds a blank assignment on the
+  selected week's next unused weekday without affecting other weeks or templates.
+  Existing empty assignments are retained; no duplicate weekday is added when
+  all seven are present.
+- The compact + action in `ProgrammeBuilderWorkouts` now means Add workout and
+  calls this operation. Its tab strip scrolls to reveal the new day labelled
+  Select a workout… while the current configuration stays open.
+- The new day opens the assignment picker when tapped. Create template remains
+  available inside that picker and retains the programme-only save flow.
+- Verification: format checked 713 files; plugin MCP analysis passed; controller
+  checks 40/40 and selected screen flows 7/7 passed. MCP reload/runtime checks and
+  `git diff --check` passed. Full suite not rerun; the previous 1242-pass/9-failure
+  result predates this correction. No device-driver interaction test was run.
+
+### 2026-10-18 — M4 day-specific Training Blocks templates (complete)
+
+- `ProgrammeBuilderWorkouts` lists every assignment in the selected week with a
+  day/template label, including placeholders for unassigned days. Adds a week
+  selector and count badge. Replaces the previous shared-template-only tab view.
+- `ProgrammeBuilderController` separates repeated assignments on load and copies
+  templates when assigned elsewhere, extended into new weeks, or duplicated.
+  Copies retain prescription metadata and internal superset relationships while
+  receiving unique template/key, exercise, set, and group identities. Editing one
+  day no longer propagates to other workout days or weeks.
+- The assignment picker continues to show one option per exercise collection;
+  choosing an option creates an independent day assignment and selects its editor.
+  New template creation uses the selected week. Normalization also supports an
+  open draft during hot reload without discarding its values.
+- Controller regressions now assert independent edits instead of the superseded
+  shared-edit behaviour. Added assignment/duplication/superset, per-day tabs,
+  week-switching, immediate editor selection, and real database round-trip checks.
+- Verification: formatting checked 713 files; plugin MCP analysis passed; core
+  checks 71/71 and selected screen flows 8/8 passed. Full suite: 1242/1251, with
+  the same 7 programme layout/copy/inset checks and 2 runner checks failing.
+  `git diff --check` passed. Live MCP tree confirmed three day tabs with three
+  independent templates. Initial stale shared-widget errors during hot reload
+  were resolved with scoped day keys and cached-draft separation; the final
+  reload/runtime check reported no errors. No device-driver test was run.
+
+### 2026-10-18 — M4 programme-only workout builder creation (complete)
+
+- Adds `WorkoutBuilderMode.programmeTemplate` and a named app route outside the
+  main navigation shell. Reuses the workout editor with programme-specific title,
+  destination hint, and Save template action. Normal create/edit persistence is
+  retained. Each programme creation starts a fresh, separate Riverpod draft.
+- `WorkoutBuilderController.saveWorkout` validates and normalizes programme
+  drafts, returning them without invoking the saved-workout save use case or
+  library refresh. PopScope observes a clean completed draft before route return.
+- `WorkoutDraftToProgrammeTemplateConverter` and the programme controller retain
+  workout identity, exercises, warm-up/working targets, rest, notes, duration,
+  roles, and supersets. Replaces the quick-create sheet entry points. New templates
+  appear in programme assignments/choices and persist on final programme save.
+  If no assignment is empty, saving from Define Workouts adds a workout slot on
+  the selected week's first unused day (next cyclic day when all seven are used).
+- Cancel keeps the editor open; Discard returns to the programme without
+  replacing/adding a template. Fixes a mobile overflow in the workout exercise
+  header using constrained text and a standard superset action button.
+- Verification: format checked 713 files; plugin MCP analysis and live
+  reload/runtime checks passed. Focused core tests 92/92 and full programme
+  creation/save/cancellation widget flows 3/3 passed. Full suite: 1237/1246;
+  remaining failures are the 7 documented programme layout/copy/inset checks,
+  runner pending-save timing, and runner compact touch-target sizing. No
+  device-driver interaction test was run. `git diff --check` passed. The new
+  route requires a fresh app launch when the router was already instantiated.
+
+### 2026-10-18 — M4 unique programme assignment choices (complete)
+
+- `ProgrammeTemplateChoices.distinctByExercises` compares sorted exercise IDs
+  while retaining repeated occurrences. Keeps the first original template per
+  collection without mutating drafts, exercise order, or set prescriptions.
+- `TemplateReassignmentBottomSheet` uses these choices for its programme cards
+  and count badge. Templates with different exercises remain independently
+  selectable even when their names match; saved-workout choices are unaffected.
+- The builder no longer relies on `toSet()` with template object identity.
+- Verification: formatting checked 711 files; plugin MCP analysis passed;
+  domain and sheet tests passed 22/22. MCP reload succeeded with no runtime
+  errors; `git diff --check` passed. Full suite not rerun; broader builder issues
+  documented in the preceding sheet redesign remain outside this correction.
+
+### 2026-10-18 — M4 mobile assignment sheet redesign (complete)
+
+- `TemplateReassignmentBottomSheet` uses the builder's blue action, bordered
+  cards, icon tiles, counted programme/saved-workout sections, and a helpful
+  saved-workout empty state. Shows actual exercise counts and stored estimates.
+- Keeps its create-result and selection callback contracts. Close and backdrop
+  dismiss without assignment. Its header remains reachable while lists scroll;
+  long names truncate visually while retaining their full text for semantics.
+- The launcher uses scroll-controlled modal height with safe top bounds. Adds
+  `AppStrings.assignWorkoutHint` and the shared assignment sheet height token.
+- Verification: formatting checked 709 files; plugin MCP analysis passed;
+  sheet tests passed 15/15, including 320px/2× text in both themes and long-list
+  selection. Two temporary mobile captures passed and were visually inspected;
+  their test file was removed. MCP reload/runtime checks and `git diff --check`
+  passed. No device-driver interaction test or full-suite rerun was performed.
+- Current broader builder tests have 7 failures unrelated to assignment-sheet
+  code: missing step copy, old inset assertions, and large-text overflow in
+  `ProgrammeBuilderSection`. Preserved those existing layouts during this task.
+
+### 2026-10-18 — M4 floating programme builder actions (complete)
+
+- `programme_builder_screen.dart` hosts Proceed and Review/Save actions in the
+  Scaffold bottom overlay with an extended body. Removes their reserved row
+  from the mobile page column; keeps the supplied inset styling.
+- Scroll padding follows the actual footer inset, including the taller Review
+  controls and phone safe area. Regressions verify the viewport extends beneath
+  each action bar, the bar remains fixed, and final content can clear it.
+- Verification: `dart format .` checked 709 files; plugin MCP analysis passed;
+  screen/save-bar tests passed 31/31. MCP reload succeeded with no runtime
+  errors. `git diff --check` passed. Full suite not rerun for this layout-only
+  correction; the preceding full result remains 1223 passed / 1 known failure.
+
+### 2026-10-18 — M4 mobile week management and shared builder actions (complete)
+
+- `ProgrammeWeekManagementSection`, `ProgrammeWeeksOverview`, week cards, and
+  workout slot cards implement the supplied management design using theme tokens
+  and SVGs. Existing week duplication/removal, type changes, assignments, exercise
+  editing, and collapse behavior remain connected to the local draft.
+- `ProgrammeBuilderActionBar` supplies the same floating action surface in
+  Details, Weekly Schedule, Define Workouts, and Review & Publish. Review retains
+  activation, dirty status, and saving feedback; forward actions retain required
+  name/goal checks. No main bottom navigation or top close action is added.
+- Removes the builder sidebar and two-column Details branch. The builder uses a
+  single stacked mobile composition, including the management section.
+- Verification: formatting checked 709 files; plugin MCP analysis passed. Focused
+  widget checks passed 44/44 and three temporary capture checks passed; inspected
+  mobile renders and removed the capture test. MCP hot reload succeeded with no
+  runtime errors. Full suite: 1223 passed / 1 previously documented workout-runner
+  pending-save timing failure. `git diff --check` passed. No device-driver
+  interaction test was run.
+
+### 2026-10-18 — M4 matching exercise panels and supplied week cards (complete)
+
+- Extracts `WorkoutExerciseConfigPanel` from the workout builder and reuses it in
+  `_ExerciseConfiguration`, replacing the separate programme set-table layout.
+  Keeps a fixed mobile table, reachable Add Set action, common notes, decimal
+  RPE display, and existing warm-up/working, RIR, and duration controls.
+- `ProgrammeExerciseConfigAdapter` maps editable fields back onto the original
+  programme prescription, preserving loading percentages, calibration metadata,
+  source rules, and other programme-only fields when optional targets are cleared.
+- `programme_week_card.dart` and `programme_workout_slot_card.dart` apply the
+  supplied white workout/tinted exercise-row treatment. Show actual set/reps/RPE/
+  rest summaries and stored estimates, with cached dataset thumbnails and fallback
+  icons. Preserve week identity, collapse/summary, week types, and scheduling tools.
+- `ProgrammeWeeksOverview` and the builder connect Add Exercise and row Edit to
+  existing selection and configuration flows. Edit scrolls the matching exercise
+  panel into view without opening the template-assignment sheet.
+- Verification: `dart format .` checked 707 files; plugin MCP analysis and
+  `git diff --check` passed. Focused tests passed 56/56; two temporary mobile render
+  checks passed and their test file was removed after inspection. Full suite:
+  1220/1221, with only the documented pending-save timing failure. The first live
+  reload reported a stale removed-widget teardown event; a subsequent reload and
+  runtime-error check were clean. No interactive device-driver test was run.
+
+
+### 2026-10-18 — M4 mobile Define Workouts editor (complete)
+
+- `programme_builder_workouts.dart` implements the third stage as a mobile-only,
+  stacked template/exercise/configuration editor. Uses real exercise names and
+  muscle labels when available, theme tokens, SVG icons, and accessible targets.
+  Set tables scroll horizontally on narrow screens; text scaling remains enabled.
+- `programme_builder_screen.dart` connects the editor to existing template
+  creation/import, exercise selection, supersets, and secondary week management.
+  It retains header Back, Save Draft, required Details, and Review & Publish.
+- `programme_builder_controller.dart` applies exercise/set/note changes across
+  all occurrences of a reused template. Reorders/reindexes exercises and sets,
+  clears singleton supersets after deletion, and avoids mutations while saving.
+  `SetPrescriptionDraft.copyWith` preserves advanced metadata and permits nulls
+  to clear optional targets.
+- Controller and screen regressions cover repeated template use, target edits,
+  metadata preservation, saving, template switching, type changes, set removal,
+  reordering, deletion, and 320px / 2× text in both themes.
+- Verification: `dart format .` checked 704 files; plugin MCP analysis and
+  `git diff --check` passed; full `flutter test` passed 1214/1215 with the existing
+  pending-save timing failure only. Mobile renders were inspected. Live MCP hot
+  reload/runtime-error checks passed; interactive driver testing was unavailable
+  because the running app does not enable the Flutter driver extension.
+
+
+### 2026-10-18 — M4 Programme Builder app-bar Back (complete)
+
+- `programme_builder_screen.dart` moves Back into the header for all stages
+  after Details, including Review & Publish, and removes it from the bottom
+  Next bar. Back retains draft contents and is disabled while saving.
+- `programme_builder_screen_test.dart` verifies header placement and return
+  navigation through all stages without saving or losing edits.
+- Verification: `dart format .` checked 703 files; `flutter analyze` and all
+  14 builder screen tests passed. Full suite and device smoke testing were not
+  rerun for this change; the previous full-suite result remains recorded below.
+
+### 2026-10-18 — M4 Programme Builder navigation/Details refinements (complete)
+
+- `app_router.dart` places all three builder modes outside `BottomNavShell`;
+  the existing route paths/names and Plan return navigation remain available.
+- `programme_builder_screen.dart` removes the header close affordance, keeps
+  system-back confirmation, and blocks every forward entry point until Details
+  contains a trimmed name and at least one goal. Blocked shortcuts reveal inline
+  errors and return the scroll position to the Details fields without adding
+  weeks. `ProgrammeBuilderState.hasRequiredDetails` supplies the shared gate.
+- `programme_builder_details_page.dart` passes required-field messages into
+  `ProgrammeDetailsSection`; More goals/Notes use borderless expanded and
+  collapsed shapes.
+- Verification: `dart format .` checked 703 files; `flutter analyze` and
+  `git diff --check` passed. Full `flutter test` passed 1206/1207; all added and
+  updated route/screen/component checks passed. The only failure remains the
+  pre-existing workout-runner pending-save timing test. Device smoke testing
+  was not run.
+
+### 2026-10-18 — M4 Programme Builder supplied design (complete)
+
+- `programme_builder_screen.dart` now provides four local builder stages, fixed
+  close/Save Draft and next-step controls, a mobile stepper, and a desktop/tablet
+  sidebar. Reuses the existing week editor and review save/activation bar.
+- `ProgrammeDetailsSection` and the new `programme_builder_details_page.dart`,
+  `programme_builder_schedule.dart`, and `programme_builder_section.dart` apply
+  the reference surfaces, headings, fields, goal choices, duration, day cards,
+  manual progression guidance, actual preparation progress, and primary actions.
+- Controller operations update optional notes, resize/repeat weeks, set training
+  days globally or per week, and clear a template while retaining its training
+  slot. Duration/week metadata remains consistent with the actual schedule.
+- Confirms shortening a populated plan; cancellation preserves the selected
+  duration. Typed provider access and current controller state preserve fast
+  dirty-exit guards and newly enabled day assignment.
+- Existing local validation, create/edit/duplicate modes, active-plan warning,
+  workout import/creation, supersets, and deload controls remain. Save Draft
+  requires a valid programme; incomplete drafts continue to show validation
+  errors. Ongoing duration and automatic progression/deload scheduling are not
+  implemented because the locked manual builder does not support them.
+- Verification: `dart format .` checked 703 files; `flutter analyze` and
+  `git diff --check` passed. Focused controller/screen/component checks passed
+  46/46; the final full suite passed 1198/1199, with only the pre-existing
+  workout-runner pending-save timing failure. A temporary visual capture test
+  passed, and rendered 390px Details/Schedule pages were inspected using the
+  local font. Device smoke testing was not run.
+
 
 ### 2026-10-17 — M4 independent rest and elapsed workout timers (complete)
 

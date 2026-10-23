@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_week_draft.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_workout_slot_draft.dart';
 import 'package:aedify/features/programmes/presentation/widgets/programme_workout_slot_card.dart';
-import 'package:aedify/shared/components/app_badge.dart';
+import 'package:aedify/features/programmes/presentation/widgets/programme_week_management_section.dart';
 import 'package:aedify/shared/components/app_icon_button.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -25,6 +25,8 @@ class ProgrammeWeekCard extends StatefulWidget {
     this.onOpenSupersetEditor,
     this.onSetWeekType,
     this.onChangeSlotDay,
+    this.onAddExercises,
+    this.onEditExercise,
   });
 
   final ProgrammeBuilderWeekDraft week;
@@ -37,6 +39,8 @@ class ProgrammeWeekCard extends StatefulWidget {
   final void Function(int slotIndex)? onOpenSupersetEditor;
   final void Function(WeekType type)? onSetWeekType;
   final void Function(int slotIndex)? onChangeSlotDay;
+  final void Function(int slotIndex)? onAddExercises;
+  final void Function(int slotIndex, String exerciseId)? onEditExercise;
 
   @override
   State<ProgrammeWeekCard> createState() => _ProgrammeWeekCardState();
@@ -54,10 +58,20 @@ class _ProgrammeWeekCardState extends State<ProgrammeWeekCard> {
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Material(
         color: context.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(
+            color: context.colorScheme.outlineVariant.withValues(
+              alpha: AppProgrammeBuilderTokens.managementBorderOpacity,
+            ),
+          ),
+        ),
         clipBehavior: Clip.antiAlias,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.md,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -83,29 +97,6 @@ class _ProgrammeWeekCardState extends State<ProgrammeWeekCard> {
                             ),
                             child: Row(
                               children: [
-                                Container(
-                                  width: AppSizing.iconXxl,
-                                  height: AppSizing.iconXxl,
-                                  decoration: BoxDecoration(
-                                    color: context
-                                        .colorScheme
-                                        .surfaceContainerHigh,
-                                    borderRadius: BorderRadius.circular(
-                                      AppRadius.md,
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: SvgPicture.asset(
-                                    OutlinedSvgAssets.clipboardDocumentList,
-                                    width: AppSizing.iconMd,
-                                    height: AppSizing.iconMd,
-                                    colorFilter: ColorFilter.mode(
-                                      context.colorScheme.secondary,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                                AppWhiteSpace.wMd,
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -113,15 +104,18 @@ class _ProgrammeWeekCardState extends State<ProgrammeWeekCard> {
                                     children: [
                                       Text(
                                         title,
-                                        style: AppTextStyles.headlineMd
+                                        style: AppTextStyles.headlineLg
                                             .copyWith(
+                                              fontSize: AppFontSizes.xl,
                                               color:
                                                   context.colorScheme.onSurface,
                                             ),
                                       ),
                                       AppWhiteSpace.hXs,
                                       Text(
-                                        '${slots.length} ${AppStrings.programmeWorkoutSlotsTitle}',
+                                        AppStrings.programmeWorkoutCount(
+                                          slots.length,
+                                        ),
                                         style: AppTextStyles.bodySm.copyWith(
                                           color: context
                                               .colorScheme
@@ -188,7 +182,12 @@ class _ProgrammeWeekCardState extends State<ProgrammeWeekCard> {
                 alignment: Alignment.topCenter,
                 child: _isExpanded
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          if (slots.isNotEmpty) ...[
+                            _CollapsedWeekSummary(slots: slots),
+                            AppWhiteSpace.hLg,
+                          ],
                           ...slots.asMap().entries.map(
                             (entry) => ProgrammeWorkoutSlotCard(
                               slot: entry.value,
@@ -202,27 +201,24 @@ class _ProgrammeWeekCardState extends State<ProgrammeWeekCard> {
                                   ? () =>
                                         widget.onOpenSupersetEditor!(entry.key)
                                   : null,
+                              onAddExercises: widget.onAddExercises == null
+                                  ? null
+                                  : () => widget.onAddExercises!(entry.key),
+                              onEditExercise: widget.onEditExercise == null
+                                  ? null
+                                  : (exerciseId) => widget.onEditExercise!(
+                                      entry.key,
+                                      exerciseId,
+                                    ),
                               onChangeDay: widget.onChangeSlotDay != null
                                   ? () => widget.onChangeSlotDay!(entry.key)
                                   : null,
                             ),
                           ),
                           AppWhiteSpace.hXs,
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              onPressed: widget.onAddSlot,
-                              icon: SvgPicture.asset(
-                                OutlinedSvgAssets.plus,
-                                width: AppSizing.iconSm,
-                                height: AppSizing.iconSm,
-                                colorFilter: ColorFilter.mode(
-                                  context.colorScheme.secondary,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              label: const Text(AppStrings.addWorkoutSlot),
-                            ),
+                          ProgrammeBuilderPillButton(
+                            label: AppStrings.addWorkoutSlot,
+                            onPressed: widget.onAddSlot,
                           ),
                         ],
                       )
@@ -246,13 +242,20 @@ class _WeekTypeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainer,
+        color: context.colorScheme.surfaceContainerHigh.withValues(
+          alpha: AppProgrammeBuilderTokens.managementBorderOpacity,
+        ),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(
+            alpha: AppProgrammeBuilderTokens.borderOpacity,
+          ),
+        ),
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs,
+          vertical: AppSpacing.sm,
         ),
         child: Row(
           children: [
@@ -268,6 +271,9 @@ class _WeekTypeSelector extends StatelessWidget {
             Expanded(
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<WeekType>(
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
                   value: value,
                   isExpanded: true,
                   borderRadius: BorderRadius.circular(AppRadius.md),
@@ -328,11 +334,43 @@ class _CollapsedWeekSummary extends StatelessWidget {
             slot.scheduledDay?.displayLabel ??
             '${AppStrings.onboardingDaySingle} ${slot.scheduledDayIndex + 1}';
         final workout = slot.template?.name ?? AppStrings.weekTemplateEmpty;
-        return AppBadge(
-          label: '$day - $workout',
-          backgroundColor: context.colorScheme.surfaceContainerHigh,
-          foregroundColor: context.colorScheme.onSurfaceVariant,
-          borderRadius: AppRadius.full,
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.controlGap,
+            vertical: AppSpacing.xs,
+          ),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(AppRadius.full),
+            border: Border.all(
+              color: context.colorScheme.outlineVariant.withValues(
+                alpha: AppProgrammeBuilderTokens.managementDividerOpacity,
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: AppSpacing.sm,
+                height: AppSpacing.sm,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.secondary,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              AppWhiteSpace.wXs,
+              Flexible(
+                child: Text(
+                  '$day - $workout',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       }).toList(),
     );

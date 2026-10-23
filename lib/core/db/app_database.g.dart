@@ -12720,6 +12720,18 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _goalTagsJsonMeta = const VerificationMeta(
+    'goalTagsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalTagsJson = GeneratedColumn<String>(
+    'goal_tags_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
   );
@@ -12803,6 +12815,7 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
     programId,
     templateKey,
     name,
+    goalTagsJson,
     description,
     dayType,
     estimatedDurationMinutes,
@@ -12854,6 +12867,15 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('goal_tags_json')) {
+      context.handle(
+        _goalTagsJsonMeta,
+        goalTagsJson.isAcceptableOrUnknown(
+          data['goal_tags_json']!,
+          _goalTagsJsonMeta,
+        ),
+      );
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -12937,6 +12959,10 @@ class $ProgramWorkoutTemplatesTable extends ProgramWorkoutTemplates
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      goalTagsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goal_tags_json'],
+      )!,
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
@@ -12980,6 +13006,7 @@ class ProgramWorkoutTemplate extends DataClass
   final String programId;
   final String templateKey;
   final String name;
+  final String goalTagsJson;
   final String? description;
   final String? dayType;
   final int? estimatedDurationMinutes;
@@ -12992,6 +13019,7 @@ class ProgramWorkoutTemplate extends DataClass
     required this.programId,
     required this.templateKey,
     required this.name,
+    required this.goalTagsJson,
     this.description,
     this.dayType,
     this.estimatedDurationMinutes,
@@ -13007,6 +13035,7 @@ class ProgramWorkoutTemplate extends DataClass
     map['program_id'] = Variable<String>(programId);
     map['template_key'] = Variable<String>(templateKey);
     map['name'] = Variable<String>(name);
+    map['goal_tags_json'] = Variable<String>(goalTagsJson);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
@@ -13035,6 +13064,7 @@ class ProgramWorkoutTemplate extends DataClass
       programId: Value(programId),
       templateKey: Value(templateKey),
       name: Value(name),
+      goalTagsJson: Value(goalTagsJson),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -13064,6 +13094,7 @@ class ProgramWorkoutTemplate extends DataClass
       programId: serializer.fromJson<String>(json['programId']),
       templateKey: serializer.fromJson<String>(json['templateKey']),
       name: serializer.fromJson<String>(json['name']),
+      goalTagsJson: serializer.fromJson<String>(json['goalTagsJson']),
       description: serializer.fromJson<String?>(json['description']),
       dayType: serializer.fromJson<String?>(json['dayType']),
       estimatedDurationMinutes: serializer.fromJson<int?>(
@@ -13085,6 +13116,7 @@ class ProgramWorkoutTemplate extends DataClass
       'programId': serializer.toJson<String>(programId),
       'templateKey': serializer.toJson<String>(templateKey),
       'name': serializer.toJson<String>(name),
+      'goalTagsJson': serializer.toJson<String>(goalTagsJson),
       'description': serializer.toJson<String?>(description),
       'dayType': serializer.toJson<String?>(dayType),
       'estimatedDurationMinutes': serializer.toJson<int?>(
@@ -13104,6 +13136,7 @@ class ProgramWorkoutTemplate extends DataClass
     String? programId,
     String? templateKey,
     String? name,
+    String? goalTagsJson,
     Value<String?> description = const Value.absent(),
     Value<String?> dayType = const Value.absent(),
     Value<int?> estimatedDurationMinutes = const Value.absent(),
@@ -13116,6 +13149,7 @@ class ProgramWorkoutTemplate extends DataClass
     programId: programId ?? this.programId,
     templateKey: templateKey ?? this.templateKey,
     name: name ?? this.name,
+    goalTagsJson: goalTagsJson ?? this.goalTagsJson,
     description: description.present ? description.value : this.description,
     dayType: dayType.present ? dayType.value : this.dayType,
     estimatedDurationMinutes: estimatedDurationMinutes.present
@@ -13138,6 +13172,9 @@ class ProgramWorkoutTemplate extends DataClass
           ? data.templateKey.value
           : this.templateKey,
       name: data.name.present ? data.name.value : this.name,
+      goalTagsJson: data.goalTagsJson.present
+          ? data.goalTagsJson.value
+          : this.goalTagsJson,
       description: data.description.present
           ? data.description.value
           : this.description,
@@ -13161,6 +13198,7 @@ class ProgramWorkoutTemplate extends DataClass
           ..write('programId: $programId, ')
           ..write('templateKey: $templateKey, ')
           ..write('name: $name, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
           ..write('description: $description, ')
           ..write('dayType: $dayType, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
@@ -13178,6 +13216,7 @@ class ProgramWorkoutTemplate extends DataClass
     programId,
     templateKey,
     name,
+    goalTagsJson,
     description,
     dayType,
     estimatedDurationMinutes,
@@ -13194,6 +13233,7 @@ class ProgramWorkoutTemplate extends DataClass
           other.programId == this.programId &&
           other.templateKey == this.templateKey &&
           other.name == this.name &&
+          other.goalTagsJson == this.goalTagsJson &&
           other.description == this.description &&
           other.dayType == this.dayType &&
           other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
@@ -13210,6 +13250,7 @@ class ProgramWorkoutTemplatesCompanion
   final Value<String> programId;
   final Value<String> templateKey;
   final Value<String> name;
+  final Value<String> goalTagsJson;
   final Value<String?> description;
   final Value<String?> dayType;
   final Value<int?> estimatedDurationMinutes;
@@ -13223,6 +13264,7 @@ class ProgramWorkoutTemplatesCompanion
     this.programId = const Value.absent(),
     this.templateKey = const Value.absent(),
     this.name = const Value.absent(),
+    this.goalTagsJson = const Value.absent(),
     this.description = const Value.absent(),
     this.dayType = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
@@ -13237,6 +13279,7 @@ class ProgramWorkoutTemplatesCompanion
     required String programId,
     required String templateKey,
     required String name,
+    this.goalTagsJson = const Value.absent(),
     this.description = const Value.absent(),
     this.dayType = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
@@ -13257,6 +13300,7 @@ class ProgramWorkoutTemplatesCompanion
     Expression<String>? programId,
     Expression<String>? templateKey,
     Expression<String>? name,
+    Expression<String>? goalTagsJson,
     Expression<String>? description,
     Expression<String>? dayType,
     Expression<int>? estimatedDurationMinutes,
@@ -13271,6 +13315,7 @@ class ProgramWorkoutTemplatesCompanion
       if (programId != null) 'program_id': programId,
       if (templateKey != null) 'template_key': templateKey,
       if (name != null) 'name': name,
+      if (goalTagsJson != null) 'goal_tags_json': goalTagsJson,
       if (description != null) 'description': description,
       if (dayType != null) 'day_type': dayType,
       if (estimatedDurationMinutes != null)
@@ -13289,6 +13334,7 @@ class ProgramWorkoutTemplatesCompanion
     Value<String>? programId,
     Value<String>? templateKey,
     Value<String>? name,
+    Value<String>? goalTagsJson,
     Value<String?>? description,
     Value<String?>? dayType,
     Value<int?>? estimatedDurationMinutes,
@@ -13303,6 +13349,7 @@ class ProgramWorkoutTemplatesCompanion
       programId: programId ?? this.programId,
       templateKey: templateKey ?? this.templateKey,
       name: name ?? this.name,
+      goalTagsJson: goalTagsJson ?? this.goalTagsJson,
       description: description ?? this.description,
       dayType: dayType ?? this.dayType,
       estimatedDurationMinutes:
@@ -13330,6 +13377,9 @@ class ProgramWorkoutTemplatesCompanion
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (goalTagsJson.present) {
+      map['goal_tags_json'] = Variable<String>(goalTagsJson.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -13369,6 +13419,7 @@ class ProgramWorkoutTemplatesCompanion
           ..write('programId: $programId, ')
           ..write('templateKey: $templateKey, ')
           ..write('name: $name, ')
+          ..write('goalTagsJson: $goalTagsJson, ')
           ..write('description: $description, ')
           ..write('dayType: $dayType, ')
           ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
@@ -16385,6 +16436,522 @@ class ProgramWeeksCompanion extends UpdateCompanion<ProgramWeek> {
           ..write('weekType: $weekType, ')
           ..write('startsOnLocal: $startsOnLocal, ')
           ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramTrainingBlocksTable extends ProgramTrainingBlocks
+    with TableInfo<$ProgramTrainingBlocksTable, ProgramTrainingBlock> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramTrainingBlocksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weekCountMeta = const VerificationMeta(
+    'weekCount',
+  );
+  @override
+  late final GeneratedColumn<int> weekCount = GeneratedColumn<int>(
+    'week_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _focusMeta = const VerificationMeta('focus');
+  @override
+  late final GeneratedColumn<String> focus = GeneratedColumn<String>(
+    'focus',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trainingDaysJsonMeta = const VerificationMeta(
+    'trainingDaysJson',
+  );
+  @override
+  late final GeneratedColumn<String> trainingDaysJson = GeneratedColumn<String>(
+    'training_days_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _progressionNotesMeta = const VerificationMeta(
+    'progressionNotes',
+  );
+  @override
+  late final GeneratedColumn<String> progressionNotes = GeneratedColumn<String>(
+    'progression_notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    programId,
+    sortOrder,
+    name,
+    weekCount,
+    focus,
+    trainingDaysJson,
+    progressionNotes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_training_blocks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramTrainingBlock> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('week_count')) {
+      context.handle(
+        _weekCountMeta,
+        weekCount.isAcceptableOrUnknown(data['week_count']!, _weekCountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weekCountMeta);
+    }
+    if (data.containsKey('focus')) {
+      context.handle(
+        _focusMeta,
+        focus.isAcceptableOrUnknown(data['focus']!, _focusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_focusMeta);
+    }
+    if (data.containsKey('training_days_json')) {
+      context.handle(
+        _trainingDaysJsonMeta,
+        trainingDaysJson.isAcceptableOrUnknown(
+          data['training_days_json']!,
+          _trainingDaysJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('progression_notes')) {
+      context.handle(
+        _progressionNotesMeta,
+        progressionNotes.isAcceptableOrUnknown(
+          data['progression_notes']!,
+          _progressionNotesMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgramTrainingBlock map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramTrainingBlock(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      weekCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}week_count'],
+      )!,
+      focus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}focus'],
+      )!,
+      trainingDaysJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}training_days_json'],
+      )!,
+      progressionNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}progression_notes'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramTrainingBlocksTable createAlias(String alias) {
+    return $ProgramTrainingBlocksTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramTrainingBlock extends DataClass
+    implements Insertable<ProgramTrainingBlock> {
+  final String id;
+  final String programId;
+  final int sortOrder;
+  final String name;
+  final int weekCount;
+  final String focus;
+  final String trainingDaysJson;
+  final String progressionNotes;
+  const ProgramTrainingBlock({
+    required this.id,
+    required this.programId,
+    required this.sortOrder,
+    required this.name,
+    required this.weekCount,
+    required this.focus,
+    required this.trainingDaysJson,
+    required this.progressionNotes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['program_id'] = Variable<String>(programId);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['name'] = Variable<String>(name);
+    map['week_count'] = Variable<int>(weekCount);
+    map['focus'] = Variable<String>(focus);
+    map['training_days_json'] = Variable<String>(trainingDaysJson);
+    map['progression_notes'] = Variable<String>(progressionNotes);
+    return map;
+  }
+
+  ProgramTrainingBlocksCompanion toCompanion(bool nullToAbsent) {
+    return ProgramTrainingBlocksCompanion(
+      id: Value(id),
+      programId: Value(programId),
+      sortOrder: Value(sortOrder),
+      name: Value(name),
+      weekCount: Value(weekCount),
+      focus: Value(focus),
+      trainingDaysJson: Value(trainingDaysJson),
+      progressionNotes: Value(progressionNotes),
+    );
+  }
+
+  factory ProgramTrainingBlock.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramTrainingBlock(
+      id: serializer.fromJson<String>(json['id']),
+      programId: serializer.fromJson<String>(json['programId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      name: serializer.fromJson<String>(json['name']),
+      weekCount: serializer.fromJson<int>(json['weekCount']),
+      focus: serializer.fromJson<String>(json['focus']),
+      trainingDaysJson: serializer.fromJson<String>(json['trainingDaysJson']),
+      progressionNotes: serializer.fromJson<String>(json['progressionNotes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'programId': serializer.toJson<String>(programId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'name': serializer.toJson<String>(name),
+      'weekCount': serializer.toJson<int>(weekCount),
+      'focus': serializer.toJson<String>(focus),
+      'trainingDaysJson': serializer.toJson<String>(trainingDaysJson),
+      'progressionNotes': serializer.toJson<String>(progressionNotes),
+    };
+  }
+
+  ProgramTrainingBlock copyWith({
+    String? id,
+    String? programId,
+    int? sortOrder,
+    String? name,
+    int? weekCount,
+    String? focus,
+    String? trainingDaysJson,
+    String? progressionNotes,
+  }) => ProgramTrainingBlock(
+    id: id ?? this.id,
+    programId: programId ?? this.programId,
+    sortOrder: sortOrder ?? this.sortOrder,
+    name: name ?? this.name,
+    weekCount: weekCount ?? this.weekCount,
+    focus: focus ?? this.focus,
+    trainingDaysJson: trainingDaysJson ?? this.trainingDaysJson,
+    progressionNotes: progressionNotes ?? this.progressionNotes,
+  );
+  ProgramTrainingBlock copyWithCompanion(ProgramTrainingBlocksCompanion data) {
+    return ProgramTrainingBlock(
+      id: data.id.present ? data.id.value : this.id,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      name: data.name.present ? data.name.value : this.name,
+      weekCount: data.weekCount.present ? data.weekCount.value : this.weekCount,
+      focus: data.focus.present ? data.focus.value : this.focus,
+      trainingDaysJson: data.trainingDaysJson.present
+          ? data.trainingDaysJson.value
+          : this.trainingDaysJson,
+      progressionNotes: data.progressionNotes.present
+          ? data.progressionNotes.value
+          : this.progressionNotes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTrainingBlock(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('name: $name, ')
+          ..write('weekCount: $weekCount, ')
+          ..write('focus: $focus, ')
+          ..write('trainingDaysJson: $trainingDaysJson, ')
+          ..write('progressionNotes: $progressionNotes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    programId,
+    sortOrder,
+    name,
+    weekCount,
+    focus,
+    trainingDaysJson,
+    progressionNotes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramTrainingBlock &&
+          other.id == this.id &&
+          other.programId == this.programId &&
+          other.sortOrder == this.sortOrder &&
+          other.name == this.name &&
+          other.weekCount == this.weekCount &&
+          other.focus == this.focus &&
+          other.trainingDaysJson == this.trainingDaysJson &&
+          other.progressionNotes == this.progressionNotes);
+}
+
+class ProgramTrainingBlocksCompanion
+    extends UpdateCompanion<ProgramTrainingBlock> {
+  final Value<String> id;
+  final Value<String> programId;
+  final Value<int> sortOrder;
+  final Value<String> name;
+  final Value<int> weekCount;
+  final Value<String> focus;
+  final Value<String> trainingDaysJson;
+  final Value<String> progressionNotes;
+  final Value<int> rowid;
+  const ProgramTrainingBlocksCompanion({
+    this.id = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.name = const Value.absent(),
+    this.weekCount = const Value.absent(),
+    this.focus = const Value.absent(),
+    this.trainingDaysJson = const Value.absent(),
+    this.progressionNotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramTrainingBlocksCompanion.insert({
+    required String id,
+    required String programId,
+    required int sortOrder,
+    required String name,
+    required int weekCount,
+    required String focus,
+    this.trainingDaysJson = const Value.absent(),
+    this.progressionNotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       programId = Value(programId),
+       sortOrder = Value(sortOrder),
+       name = Value(name),
+       weekCount = Value(weekCount),
+       focus = Value(focus);
+  static Insertable<ProgramTrainingBlock> custom({
+    Expression<String>? id,
+    Expression<String>? programId,
+    Expression<int>? sortOrder,
+    Expression<String>? name,
+    Expression<int>? weekCount,
+    Expression<String>? focus,
+    Expression<String>? trainingDaysJson,
+    Expression<String>? progressionNotes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (programId != null) 'program_id': programId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (name != null) 'name': name,
+      if (weekCount != null) 'week_count': weekCount,
+      if (focus != null) 'focus': focus,
+      if (trainingDaysJson != null) 'training_days_json': trainingDaysJson,
+      if (progressionNotes != null) 'progression_notes': progressionNotes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramTrainingBlocksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? programId,
+    Value<int>? sortOrder,
+    Value<String>? name,
+    Value<int>? weekCount,
+    Value<String>? focus,
+    Value<String>? trainingDaysJson,
+    Value<String>? progressionNotes,
+    Value<int>? rowid,
+  }) {
+    return ProgramTrainingBlocksCompanion(
+      id: id ?? this.id,
+      programId: programId ?? this.programId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      name: name ?? this.name,
+      weekCount: weekCount ?? this.weekCount,
+      focus: focus ?? this.focus,
+      trainingDaysJson: trainingDaysJson ?? this.trainingDaysJson,
+      progressionNotes: progressionNotes ?? this.progressionNotes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (weekCount.present) {
+      map['week_count'] = Variable<int>(weekCount.value);
+    }
+    if (focus.present) {
+      map['focus'] = Variable<String>(focus.value);
+    }
+    if (trainingDaysJson.present) {
+      map['training_days_json'] = Variable<String>(trainingDaysJson.value);
+    }
+    if (progressionNotes.present) {
+      map['progression_notes'] = Variable<String>(progressionNotes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramTrainingBlocksCompanion(')
+          ..write('id: $id, ')
+          ..write('programId: $programId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('name: $name, ')
+          ..write('weekCount: $weekCount, ')
+          ..write('focus: $focus, ')
+          ..write('trainingDaysJson: $trainingDaysJson, ')
+          ..write('progressionNotes: $progressionNotes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -27396,6 +27963,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProgramTemplateExerciseSetsTable programTemplateExerciseSets =
       $ProgramTemplateExerciseSetsTable(this);
   late final $ProgramWeeksTable programWeeks = $ProgramWeeksTable(this);
+  late final $ProgramTrainingBlocksTable programTrainingBlocks =
+      $ProgramTrainingBlocksTable(this);
   late final $ProgramWorkoutsTable programWorkouts = $ProgramWorkoutsTable(
     this,
   );
@@ -27441,6 +28010,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     programTemplateExercises,
     programTemplateExerciseSets,
     programWeeks,
+    programTrainingBlocks,
     programWorkouts,
     programExercises,
     programExerciseSets,
@@ -33619,6 +34189,7 @@ typedef $$ProgramWorkoutTemplatesTableCreateCompanionBuilder =
       required String programId,
       required String templateKey,
       required String name,
+      Value<String> goalTagsJson,
       Value<String?> description,
       Value<String?> dayType,
       Value<int?> estimatedDurationMinutes,
@@ -33634,6 +34205,7 @@ typedef $$ProgramWorkoutTemplatesTableUpdateCompanionBuilder =
       Value<String> programId,
       Value<String> templateKey,
       Value<String> name,
+      Value<String> goalTagsJson,
       Value<String?> description,
       Value<String?> dayType,
       Value<int?> estimatedDurationMinutes,
@@ -33670,6 +34242,11 @@ class $$ProgramWorkoutTemplatesTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -33738,6 +34315,11 @@ class $$ProgramWorkoutTemplatesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => ColumnOrderings(column),
@@ -33796,6 +34378,11 @@ class $$ProgramWorkoutTemplatesTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get goalTagsJson => $composableBuilder(
+    column: $table.goalTagsJson,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
@@ -33875,6 +34462,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 Value<String> programId = const Value.absent(),
                 Value<String> templateKey = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> goalTagsJson = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<String?> dayType = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
@@ -33888,6 +34476,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 programId: programId,
                 templateKey: templateKey,
                 name: name,
+                goalTagsJson: goalTagsJson,
                 description: description,
                 dayType: dayType,
                 estimatedDurationMinutes: estimatedDurationMinutes,
@@ -33903,6 +34492,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 required String programId,
                 required String templateKey,
                 required String name,
+                Value<String> goalTagsJson = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<String?> dayType = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
@@ -33916,6 +34506,7 @@ class $$ProgramWorkoutTemplatesTableTableManager
                 programId: programId,
                 templateKey: templateKey,
                 name: name,
+                goalTagsJson: goalTagsJson,
                 description: description,
                 dayType: dayType,
                 estimatedDurationMinutes: estimatedDurationMinutes,
@@ -35283,6 +35874,286 @@ typedef $$ProgramWeeksTableProcessedTableManager =
         BaseReferences<_$AppDatabase, $ProgramWeeksTable, ProgramWeek>,
       ),
       ProgramWeek,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramTrainingBlocksTableCreateCompanionBuilder =
+    ProgramTrainingBlocksCompanion Function({
+      required String id,
+      required String programId,
+      required int sortOrder,
+      required String name,
+      required int weekCount,
+      required String focus,
+      Value<String> trainingDaysJson,
+      Value<String> progressionNotes,
+      Value<int> rowid,
+    });
+typedef $$ProgramTrainingBlocksTableUpdateCompanionBuilder =
+    ProgramTrainingBlocksCompanion Function({
+      Value<String> id,
+      Value<String> programId,
+      Value<int> sortOrder,
+      Value<String> name,
+      Value<int> weekCount,
+      Value<String> focus,
+      Value<String> trainingDaysJson,
+      Value<String> progressionNotes,
+      Value<int> rowid,
+    });
+
+class $$ProgramTrainingBlocksTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramTrainingBlocksTable> {
+  $$ProgramTrainingBlocksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weekCount => $composableBuilder(
+    column: $table.weekCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get focus => $composableBuilder(
+    column: $table.focus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trainingDaysJson => $composableBuilder(
+    column: $table.trainingDaysJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get progressionNotes => $composableBuilder(
+    column: $table.progressionNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramTrainingBlocksTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramTrainingBlocksTable> {
+  $$ProgramTrainingBlocksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weekCount => $composableBuilder(
+    column: $table.weekCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get focus => $composableBuilder(
+    column: $table.focus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trainingDaysJson => $composableBuilder(
+    column: $table.trainingDaysJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get progressionNotes => $composableBuilder(
+    column: $table.progressionNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramTrainingBlocksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramTrainingBlocksTable> {
+  $$ProgramTrainingBlocksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get weekCount =>
+      $composableBuilder(column: $table.weekCount, builder: (column) => column);
+
+  GeneratedColumn<String> get focus =>
+      $composableBuilder(column: $table.focus, builder: (column) => column);
+
+  GeneratedColumn<String> get trainingDaysJson => $composableBuilder(
+    column: $table.trainingDaysJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get progressionNotes => $composableBuilder(
+    column: $table.progressionNotes,
+    builder: (column) => column,
+  );
+}
+
+class $$ProgramTrainingBlocksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramTrainingBlocksTable,
+          ProgramTrainingBlock,
+          $$ProgramTrainingBlocksTableFilterComposer,
+          $$ProgramTrainingBlocksTableOrderingComposer,
+          $$ProgramTrainingBlocksTableAnnotationComposer,
+          $$ProgramTrainingBlocksTableCreateCompanionBuilder,
+          $$ProgramTrainingBlocksTableUpdateCompanionBuilder,
+          (
+            ProgramTrainingBlock,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramTrainingBlocksTable,
+              ProgramTrainingBlock
+            >,
+          ),
+          ProgramTrainingBlock,
+          PrefetchHooks Function()
+        > {
+  $$ProgramTrainingBlocksTableTableManager(
+    _$AppDatabase db,
+    $ProgramTrainingBlocksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramTrainingBlocksTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgramTrainingBlocksTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgramTrainingBlocksTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> weekCount = const Value.absent(),
+                Value<String> focus = const Value.absent(),
+                Value<String> trainingDaysJson = const Value.absent(),
+                Value<String> progressionNotes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTrainingBlocksCompanion(
+                id: id,
+                programId: programId,
+                sortOrder: sortOrder,
+                name: name,
+                weekCount: weekCount,
+                focus: focus,
+                trainingDaysJson: trainingDaysJson,
+                progressionNotes: progressionNotes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String programId,
+                required int sortOrder,
+                required String name,
+                required int weekCount,
+                required String focus,
+                Value<String> trainingDaysJson = const Value.absent(),
+                Value<String> progressionNotes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramTrainingBlocksCompanion.insert(
+                id: id,
+                programId: programId,
+                sortOrder: sortOrder,
+                name: name,
+                weekCount: weekCount,
+                focus: focus,
+                trainingDaysJson: trainingDaysJson,
+                progressionNotes: progressionNotes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramTrainingBlocksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramTrainingBlocksTable,
+      ProgramTrainingBlock,
+      $$ProgramTrainingBlocksTableFilterComposer,
+      $$ProgramTrainingBlocksTableOrderingComposer,
+      $$ProgramTrainingBlocksTableAnnotationComposer,
+      $$ProgramTrainingBlocksTableCreateCompanionBuilder,
+      $$ProgramTrainingBlocksTableUpdateCompanionBuilder,
+      (
+        ProgramTrainingBlock,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramTrainingBlocksTable,
+          ProgramTrainingBlock
+        >,
+      ),
+      ProgramTrainingBlock,
       PrefetchHooks Function()
     >;
 typedef $$ProgramWorkoutsTableCreateCompanionBuilder =
@@ -40115,6 +40986,8 @@ class $AppDatabaseManager {
       );
   $$ProgramWeeksTableTableManager get programWeeks =>
       $$ProgramWeeksTableTableManager(_db, _db.programWeeks);
+  $$ProgramTrainingBlocksTableTableManager get programTrainingBlocks =>
+      $$ProgramTrainingBlocksTableTableManager(_db, _db.programTrainingBlocks);
   $$ProgramWorkoutsTableTableManager get programWorkouts =>
       $$ProgramWorkoutsTableTableManager(_db, _db.programWorkouts);
   $$ProgramExercisesTableTableManager get programExercises =>

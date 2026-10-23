@@ -57,84 +57,82 @@ class AppBottomSheet extends StatelessWidget {
       height: heightFactor != null
           ? MediaQuery.of(context).size.height * heightFactor!
           : null,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        color: colorScheme.surface,
       ),
       clipBehavior: Clip.antiAlias,
-      child: Material(
-        color: colorScheme.surface,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Center(
-                child: Container(
-                  width: AppSizing.handleWidth,
-                  height: AppSpacing.xs,
-                  decoration: BoxDecoration(
-                    color: brightness == Brightness.light
-                        ? AedifyLightColors.handleBarColor
-                        : AedifyDarkColors.handleBarColor,
-                    borderRadius: BorderRadius.circular(AppRadius.xxs),
-                  ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.sm),
+            child: Center(
+              child: Container(
+                width: AppSizing.handleWidth,
+                height: AppSpacing.xs,
+                decoration: BoxDecoration(
+                  color: brightness == Brightness.light
+                      ? AedifyLightColors.handleBarColor
+                      : AedifyDarkColors.handleBarColor,
+                  borderRadius: BorderRadius.circular(AppRadius.xxs),
                 ),
               ),
             ),
-            if (title != null || showCloseButton)
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: AppSpacing.md,
-                  right: AppSpacing.md,
-                  top: AppSpacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    if (title != null)
-                      Expanded(
-                        child: Text(
-                          title!,
-                          style: context.textTheme.headlineMedium,
-                        ),
-                      )
-                    else
-                      const Spacer(),
-                    if (showCloseButton)
-                      InkWell(
-                        borderRadius: BorderRadius.circular(AppRadius.full),
-                        onTap: () => context.pop(),
-                        child: Container(
-                          width: AppSizing.iconXxl,
-                          height: AppSizing.iconXxl,
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            OutlinedSvgAssets.xMark,
-                            width: AppSizing.iconMd,
-                            height: AppSizing.iconMd,
-                            colorFilter: ColorFilter.mode(
-                              colorScheme.onSurface,
-                              BlendMode.srcIn,
-                            ),
+          ),
+          if (title != null || showCloseButton)
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                top: AppSpacing.sm,
+              ),
+              child: Row(
+                children: [
+                  if (title != null)
+                    Expanded(
+                      child: Text(
+                        title!,
+                        style: context.textTheme.headlineMedium,
+                      ),
+                    )
+                  else
+                    const Spacer(),
+                  if (showCloseButton)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(AppRadius.full),
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: AppSizing.iconXxl,
+                        height: AppSizing.iconXxl,
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          OutlinedSvgAssets.xMark,
+                          width: AppSizing.iconMd,
+                          height: AppSizing.iconMd,
+                          colorFilter: ColorFilter.mode(
+                            colorScheme.onSurface,
+                            BlendMode.srcIn,
                           ),
                         ),
                       ),
-                  ],
-                ),
-              ),
-            Flexible(
-              child: Padding(
-                padding:
-                    padding ??
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: child,
+                    ),
+                ],
               ),
             ),
-          ],
-        ),
+          Flexible(
+            child: Padding(
+              padding:
+                  padding ??
+                  const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: child,
+            ),
+          ),
+        ],
       ),
     );
 
-    return SafeArea(top: false, child: content);
+    return SafeArea(top: false, bottom: false, child: content);
   }
 }

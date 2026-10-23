@@ -161,6 +161,31 @@ class AppRouter {
           name: AppRoutes.onboarding().name,
           builder: (context, state) => const OnboardingScreen(),
         ),
+        GoRoute(
+          path: AppRoutes.programmeWorkoutBuilderCreate().path,
+          name: AppRoutes.programmeWorkoutBuilderCreate().name,
+          builder: (context, state) =>
+              const WorkoutBuilderScreen.programmeTemplate(),
+        ),
+        GoRoute(
+          path: AppRoutes.programmeBuilderCreate().path,
+          name: AppRoutes.programmeBuilderCreate().name,
+          builder: (context, state) => ProgrammeBuilderScreen.create(),
+        ),
+        GoRoute(
+          path: AppRoutes.programmeBuilderEdit().path,
+          name: AppRoutes.programmeBuilderEdit().name,
+          builder: (context, state) => ProgrammeBuilderScreen.edit(
+            programmeId: state.pathParameters['id']!,
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.programmeBuilderDuplicate().path,
+          name: AppRoutes.programmeBuilderDuplicate().name,
+          builder: (context, state) => ProgrammeBuilderScreen.duplicate(
+            programmeId: state.pathParameters['id']!,
+          ),
+        ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) =>
               BottomNavShell(navigationShell: navigationShell),
@@ -193,30 +218,6 @@ class AppRouter {
                   name: AppRoutes.programmes().name,
                   builder: (context, state) => const ProgrammesScreen(),
                   routes: [
-                    GoRoute(
-                      path: 'new',
-                      name: AppRoutes.programmeBuilderCreate().name,
-                      builder: (context, state) =>
-                          ProgrammeBuilderScreen.create(),
-                    ),
-                    GoRoute(
-                      path: ':id/edit',
-                      name: AppRoutes.programmeBuilderEdit().name,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        return ProgrammeBuilderScreen.edit(programmeId: id);
-                      },
-                    ),
-                    GoRoute(
-                      path: ':id/duplicate',
-                      name: AppRoutes.programmeBuilderDuplicate().name,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        return ProgrammeBuilderScreen.duplicate(
-                          programmeId: id,
-                        );
-                      },
-                    ),
                     GoRoute(
                       path: ':id',
                       name: AppRoutes.programmeCalendar().name,

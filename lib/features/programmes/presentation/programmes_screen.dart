@@ -149,7 +149,10 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
                           return _ProgramCard(
                             item: item,
                             onTap: () => context.pushNamed(
-                              AppRoutes.programmeCalendar().name,
+                              (item.status == ProgramStatus.draft
+                                      ? AppRoutes.programmeBuilderEdit()
+                                      : AppRoutes.programmeCalendar())
+                                  .name,
                               pathParameters: {'id': item.id},
                             ),
                             onEdit: () => context.pushNamed(
@@ -176,6 +179,7 @@ class _ProgrammesScreenState extends ConsumerState<ProgrammesScreen> {
     if (_activeFilter == 'all') return items;
 
     return items.where((item) {
+      if (_activeFilter == 'drafts') return item.status == ProgramStatus.draft;
       if (_activeFilter == 'ai') return item.source == 'ai_generated';
       if (_activeFilter == 'custom') {
         return (item.source == 'manual' || item.source == null) &&
@@ -336,6 +340,7 @@ class _FilterPills extends StatelessWidget {
 
   static const _filters = [
     ('all', AppStrings.allFilter),
+    ('drafts', AppStrings.programmeDrafts),
     ('ai', AppStrings.aiGenerated),
     ('custom', AppStrings.custom),
     ('imported', AppStrings.imported),
@@ -409,6 +414,7 @@ class _ProgramCard extends StatelessWidget {
   }
 
   String? get _statusLabel {
+    if (item.status == ProgramStatus.draft) return AppStrings.programmeDraft;
     if (item.active) return AppStrings.programmeActive;
     if (_isCompleted) return AppStrings.completed;
     return null;
@@ -511,7 +517,9 @@ class _ProgramCard extends StatelessWidget {
                         ),
                         _CardMenu(
                           onEdit: onEdit,
-                          onToggleActive: onToggleActive,
+                          onToggleActive: item.status == ProgramStatus.draft
+                              ? null
+                              : onToggleActive,
                           onArchive: onArchive,
                           onDelete: onDelete,
                         ),
@@ -672,7 +680,7 @@ class _CardMenu extends StatelessWidget {
   });
 
   final VoidCallback onEdit;
-  final VoidCallback onToggleActive;
+  final VoidCallback? onToggleActive;
   final VoidCallback onArchive;
   final VoidCallback onDelete;
 
@@ -697,7 +705,7 @@ class _CardMenu extends StatelessWidget {
               case 'edit':
                 onEdit();
               case 'toggleActive':
-                onToggleActive();
+                onToggleActive?.call();
               case 'archive':
                 onArchive();
               case 'delete':
@@ -706,10 +714,11 @@ class _CardMenu extends StatelessWidget {
           },
           itemBuilder: (_) => [
             const PopupMenuItem(value: 'edit', child: Text(AppStrings.edit)),
-            const PopupMenuItem(
-              value: 'toggleActive',
-              child: Text(AppStrings.activateProgramme),
-            ),
+            if (onToggleActive != null)
+              const PopupMenuItem(
+                value: 'toggleActive',
+                child: Text(AppStrings.activateProgramme),
+              ),
             const PopupMenuItem(
               value: 'archive',
               child: Text(AppStrings.archiveProgramme),

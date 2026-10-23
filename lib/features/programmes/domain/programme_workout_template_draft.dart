@@ -6,6 +6,7 @@ class ProgrammeWorkoutTemplateDraft {
     required this.id,
     required this.templateKey,
     required this.name,
+    this.goalTags = const [],
     required this.sortOrder,
     required this.exercises,
     this.description,
@@ -16,6 +17,7 @@ class ProgrammeWorkoutTemplateDraft {
   final String id;
   final String templateKey;
   final String name;
+  final List<String> goalTags;
   final int sortOrder;
   final List<ProgrammeExerciseDraft> exercises;
   final String? description;

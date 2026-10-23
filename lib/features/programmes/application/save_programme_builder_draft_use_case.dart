@@ -26,6 +26,7 @@ class SaveProgrammeBuilderDraftUseCase {
   ProgrammeDraft _mapToProgrammeDraft(ProgrammeBuilderDraft builderDraft) {
     return ProgrammeDraft(
       id: builderDraft.id,
+      trainingBlocks: builderDraft.trainingBlocks,
       name: builderDraft.name,
       source: builderDraft.source,
       creationMethod: builderDraft.creationMethod,
@@ -76,6 +77,7 @@ class SaveProgrammeBuilderDraftUseCase {
               id: t.id,
               templateKey: t.templateKey,
               name: t.name,
+              goalTags: t.goalTags,
               sortOrder: result.length,
               exercises: t.exercises,
               description: t.description,

@@ -3,6 +3,7 @@ import 'package:aedify/core/db/app_database.dart';
 class ProgrammeAggregate {
   const ProgrammeAggregate({
     required this.program,
+    this.trainingBlocks = const [],
     required this.templates,
     required this.weeks,
     required this.workouts,
@@ -11,6 +12,7 @@ class ProgrammeAggregate {
     required this.revisions,
   });
 
+  final List<ProgramTrainingBlock> trainingBlocks;
   final Program program;
   final List<ProgramWorkoutTemplate> templates;
   final List<ProgramWeek> weeks;

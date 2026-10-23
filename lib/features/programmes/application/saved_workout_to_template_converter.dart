@@ -3,6 +3,7 @@ import 'package:aedify/features/programmes/domain/programme_exercise_draft.dart'
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
 import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
 import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/enum_codec.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:uuid/uuid.dart';
 import 'package:aedify/core/logging/app_logger.dart';
@@ -70,6 +71,7 @@ class SavedWorkoutToTemplateConverter {
       id: const Uuid().v4(),
       templateKey: const Uuid().v4(),
       name: sw.name,
+      goalTags: EnumCodec.decodeList(sw.goalTagsJson, (value) => value),
       description: sw.description,
       estimatedDurationMinutes: sw.estimatedDurationMinutes,
       exercises: exercises,

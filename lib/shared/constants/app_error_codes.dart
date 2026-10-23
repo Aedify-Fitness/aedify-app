@@ -70,6 +70,8 @@ class AppErrorCodes {
   static const String programmeSaveFailed = 'programme_save_failed';
   static const String programmeLoadFailed = 'programme_load_failed';
   static const String noWeeks = 'no_weeks';
+  static const String noTrainingBlocks = 'no_training_blocks';
+  static const String invalidTrainingBlocks = 'invalid_training_blocks';
   static const String noSlots = 'no_slots';
   static const String noScheduledDay = 'no_scheduled_day';
   static const String noGoals = 'no_goals';

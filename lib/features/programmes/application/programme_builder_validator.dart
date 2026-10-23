@@ -1,3 +1,4 @@
+import 'package:aedify/features/programmes/application/programme_builder_step_validator.dart';
 import 'package:aedify/core/validation/draft_validation_service.dart';
 import 'package:aedify/features/programmes/application/programme_builder_validation_adapter.dart';
 import 'package:aedify/features/programmes/domain/programme_builder_draft.dart';
@@ -28,6 +29,9 @@ class ProgrammeBuilderValidator {
 
     // Programme-builder-specific: goals must be assigned
     errors.addAll(_validateGoals(draft));
+    if (draft.trainingBlocks.isNotEmpty) {
+      errors.addAll(ProgrammeBuilderStepValidator.blocks(draft));
+    }
 
     return errors;
   }

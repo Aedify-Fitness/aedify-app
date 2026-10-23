@@ -29,10 +29,10 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     _logger.info('build — mode: $mode');
     final loadUseCase = ref.read(AppProviders.loadWorkoutDraftUseCaseProvider);
 
-    if (mode == WorkoutBuilderMode.create) {
+    if (mode != WorkoutBuilderMode.edit) {
       final draft = await loadUseCase.createEmptyDraft();
       return WorkoutBuilderState(
-        mode: WorkoutBuilderMode.create,
+        mode: mode,
         phase: WorkoutBuilderPhase.editing,
         draft: draft,
         originalDraft: draft,
@@ -338,10 +338,11 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     );
   }
 
-  Future<void> saveWorkout() async {
+  /// Saves a library workout or returns a validated programme-only draft.
+  Future<WorkoutBuilderDraft?> saveWorkout() async {
     _logger.info('saveWorkout — start');
     final current = state.asData?.value;
-    if (current == null) return;
+    if (current == null || current.isSaving) return null;
 
     final normalizedDraft = _normalizeDraftForSave(current.draft);
 
@@ -360,7 +361,19 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           validationErrors: errors,
         ),
       );
-      return;
+      return null;
+    }
+
+    if (mode == WorkoutBuilderMode.programmeTemplate) {
+      state = AsyncData(
+        current.copyWith(
+          phase: WorkoutBuilderPhase.editing,
+          draft: normalizedDraft,
+          originalDraft: normalizedDraft,
+          validationErrors: [],
+        ),
+      );
+      return normalizedDraft;
     }
 
     state = AsyncData(current.copyWith(phase: WorkoutBuilderPhase.saving));
@@ -397,6 +410,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           ),
         );
       }
+      return normalizedDraft;
     } catch (e) {
       _logger.error('saveWorkout — failure', error: e);
       state = AsyncData(
@@ -406,6 +420,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
           errorMessage: AppStrings.workoutSaveFailed,
         ),
       );
+      return null;
     }
   }
 
@@ -509,7 +524,7 @@ class WorkoutBuilderController extends AsyncNotifier<WorkoutBuilderState> {
     final current = state.asData?.value;
     if (current == null) return;
     final loadUseCase = ref.read(AppProviders.loadWorkoutDraftUseCaseProvider);
-    if (mode == WorkoutBuilderMode.create) {
+    if (mode != WorkoutBuilderMode.edit) {
       final draft = await loadUseCase.createEmptyDraft();
       state = AsyncData(
         current.copyWith(

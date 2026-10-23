@@ -1,3 +1,4 @@
+import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/program_status.dart';
@@ -11,6 +12,7 @@ import 'programme_builder_week_draft.dart';
 class ProgrammeBuilderDraft {
   const ProgrammeBuilderDraft({
     required this.id,
+    this.trainingBlocks = const [],
     required this.name,
     required this.source,
     required this.creationMethod,
@@ -32,6 +34,7 @@ class ProgrammeBuilderDraft {
     this.endDateLocal,
   });
 
+  final List<ProgrammeTrainingBlockDraft> trainingBlocks;
   final String id;
   final String name;
   final WorkoutSource source;
@@ -55,6 +58,7 @@ class ProgrammeBuilderDraft {
 
   ProgrammeBuilderDraft copyWith({
     String? id,
+    List<ProgrammeTrainingBlockDraft>? trainingBlocks,
     String? name,
     WorkoutSource? source,
     CreationMethod? creationMethod,
@@ -77,6 +81,7 @@ class ProgrammeBuilderDraft {
   }) {
     return ProgrammeBuilderDraft(
       id: id ?? this.id,
+      trainingBlocks: trainingBlocks ?? this.trainingBlocks,
       name: name ?? this.name,
       source: source ?? this.source,
       creationMethod: creationMethod ?? this.creationMethod,

@@ -4,7 +4,7 @@ import 'package:aedify/shared/domain/creation_method.dart';
 import 'package:aedify/shared/domain/saved_workout_status.dart';
 import 'package:aedify/shared/domain/workout_source.dart';
 
-enum WorkoutBuilderMode { create, edit }
+enum WorkoutBuilderMode { create, edit, programmeTemplate }
 
 enum WorkoutBuilderPhase { loading, editing, saving, saved, failure, blocked }
 

@@ -35,8 +35,8 @@ class AppIconButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(AppRadius.full),
         child: Container(
-          width: AppSizing.iconXxl,
-          height: AppSizing.iconXxl,
+          width: AppSizing.iconLg,
+          height: AppSizing.iconLg,
           decoration: backgroundColor != null
               ? BoxDecoration(color: backgroundColor, shape: BoxShape.circle)
               : null,
