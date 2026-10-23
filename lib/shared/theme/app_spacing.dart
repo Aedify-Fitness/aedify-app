@@ -198,6 +198,7 @@ abstract final class AppWorkoutRunnerTokens {
 }
 
 abstract final class AppExerciseDetailTokens {
+  static const double controlSize = 48;
   static const double maxContentWidth = 398;
   static const double maxScreenWidth = maxContentWidth + (AppSpacing.md * 2);
   static const double mediaAspectRatio = 16 / 9;

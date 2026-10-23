@@ -51,6 +51,7 @@ import 'package:aedify/features/exercise_library/application/load_custom_exercis
 import 'package:aedify/features/exercise_library/application/save_custom_exercise_use_case.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
+import 'package:aedify/features/exercise_library/application/exercise_detail_actions_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_step_audio_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_video_state_controller.dart';
@@ -307,6 +308,13 @@ class AppProviders {
         final repository = ref.read(exerciseRepositoryProvider);
         return repository.getExerciseDetail(id);
       });
+
+  static final exerciseDetailActionsControllerProvider =
+      NotifierProvider.family<
+        ExerciseDetailActionsController,
+        AsyncValue<void>,
+        int
+      >(ExerciseDetailActionsController.new);
 
   static final exerciseVideoStateControllerProvider =
       NotifierProvider<

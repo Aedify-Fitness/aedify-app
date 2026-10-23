@@ -45,6 +45,10 @@ class AppErrorStrings {
   static const String onboardingLoadFailedMessage =
       'Could not load onboarding progress.';
 
+  // Exercise library
+  static const String exercisePreferenceSaveFailed =
+      'Could not save this exercise preference. Please try again.';
+
   // TTS / Audio Cache
   static const String audioGenerationFailedMessage =
       'Could not generate step audio.';

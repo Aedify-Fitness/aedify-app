@@ -6,6 +6,28 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-10-23
 
+### M2/M4 — Exercise detail redesign
+
+- Reworked `ExerciseDetailScreen` with a quiet close/favorite header, concise
+  exercise facts, full-width media previews, audio-led instructions, progressive
+  metadata disclosure and a footer that reserves its own layout space.
+- Removed the Muscles Worked section at the user's request; the exercise's
+  underlying muscle metadata is preserved for later restoration.
+- Favorite and avoid/allow saves now run through an application controller with
+  busy states, protected refresh and recoverable inline failures. Existing local
+  persistence and optional per-step audio remain intact.
+- Media previews expose readable captions and accessible paging rather than an
+  inert play glyph. Existing preview-only media, unavailable notes and empty
+  history remain explicit; this change does not implement video playback,
+  durable notes, history queries or anatomical highlighting.
+- Verification: `dart format .` checked 731 files; `flutter analyze`,
+  `git diff --check` and all 272 exercise-library tests passed. Coverage includes
+  24 detail-screen and 18 media tests, 48px audio controls, preference failures
+  and delayed refresh, removed anatomy, and 320px/2x-text/high-contrast/reduced-
+  motion layouts in both themes. Final 390px light/dark previews were reviewed.
+  Full suite: 1350 passed, 14 failed; failure names exactly match the previously
+  confirmed baseline builder/runner failures. No schema or dependency changes.
+
 ### M4 — Programme calendar redesign
 
 - Rebuilt `ProgrammeCalendarScreen` around programme completion, the actual

@@ -4,59 +4,80 @@ import 'package:aedify/features/exercise_library/presentation/widgets/exercise_v
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/exercise_video_angle.dart';
 import 'package:aedify/shared/domain/exercise_video_gender.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget createCard({
-  ExerciseDetailVideoViewData? video,
-  ExerciseVideoPlaybackState playbackState = ExerciseVideoPlaybackState.idle,
-  VoidCallback? onRetry,
-}) {
-  return MaterialApp(
-    home: Scaffold(
-      body: ExerciseVideoCard(
-        video:
-            video ??
-            const ExerciseDetailVideoViewData(
-              url: 'https://example.com/v.mp4',
-              angle: ExerciseVideoAngle.front,
-              gender: ExerciseVideoGender.male,
-              ogImageUrl: 'https://example.com/thumb.jpg',
-            ),
-        playbackState: playbackState,
-        onRetry: onRetry ?? () {},
-      ),
-    ),
+class _VideoCardHarness {
+  _VideoCardHarness._();
+
+  static const video = ExerciseDetailVideoViewData(
+    url: 'https://example.com/v.mp4',
+    angle: ExerciseVideoAngle.front,
+    gender: ExerciseVideoGender.male,
+    ogImageUrl: null,
   );
+
+  static Widget build({
+    ExerciseDetailVideoViewData video = _VideoCardHarness.video,
+    ExerciseVideoPlaybackState playbackState = ExerciseVideoPlaybackState.idle,
+    VoidCallback? onRetry,
+    double textScale = 1,
+    Brightness brightness = Brightness.light,
+  }) {
+    return MaterialApp(
+      theme: ThemeData(brightness: brightness),
+      home: MediaQuery(
+        data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: ExerciseVideoCard(
+              video: video,
+              playbackState: playbackState,
+              onRetry: onRetry ?? () {},
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 void main() {
   group('ExerciseVideoCard', () {
-    testWidgets('renders metadata labels for angle and gender', (tester) async {
-      await tester.pumpWidget(createCard());
-      await tester.pump();
+    testWidgets('places descriptive metadata below the preview visual', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_VideoCardHarness.build());
+      await tester.pumpAndSettle();
 
+      expect(find.text(AppStrings.exerciseVideoPreview), findsOneWidget);
       expect(find.text('Front'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
-      final metadataOverlay = find.byKey(
+      final visual = find.byKey(
+        const ValueKey<String>(
+          'exercise_video_visual_https://example.com/v.mp4',
+        ),
+      );
+      final metadata = find.byKey(
         const ValueKey<String>(
           'exercise_video_metadata_https://example.com/v.mp4',
         ),
       );
-      expect(metadataOverlay, findsOneWidget);
       expect(
-        find.descendant(of: metadataOverlay, matching: find.text('Front')),
-        findsOneWidget,
+        tester.getTopLeft(metadata).dy,
+        greaterThan(tester.getBottomLeft(visual).dy),
       );
-      expect(
-        find.descendant(of: metadataOverlay, matching: find.text('Male')),
-        findsOneWidget,
-      );
+      expect(find.byType(IconButton), findsNothing);
+      expect(find.byType(FilledButton), findsNothing);
     });
 
-    testWidgets('renders fallback text when angle is null', (tester) async {
+    testWidgets('unknown angle keeps the video available as a preview', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        createCard(
+        _VideoCardHarness.build(
           video: const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
             angle: null,
@@ -65,46 +86,33 @@ void main() {
           ),
         ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.videoUnavailable), findsOneWidget);
+      expect(find.text(AppStrings.exerciseVideoPreview), findsOneWidget);
+      expect(find.text('Male'), findsOneWidget);
+      expect(find.text(AppStrings.videoUnavailable), findsNothing);
     });
 
-    testWidgets('shows failed state fallback', (tester) async {
-      await tester.pumpWidget(
-        createCard(playbackState: ExerciseVideoPlaybackState.failed),
-      );
-      await tester.pump();
-
-      expect(find.text(AppStrings.exerciseVideoLoadFailed), findsWidgets);
-    });
-
-    testWidgets('shows retry button in failed state', (tester) async {
-      await tester.pumpWidget(
-        createCard(playbackState: ExerciseVideoPlaybackState.failed),
-      );
-      await tester.pump();
-
-      expect(find.text(AppStrings.retryVideo), findsOneWidget);
-    });
-
-    testWidgets('retry button fires callback', (tester) async {
+    testWidgets('shows recovery action below a failed preview', (tester) async {
       var retried = false;
       await tester.pumpWidget(
-        createCard(
+        _VideoCardHarness.build(
           playbackState: ExerciseVideoPlaybackState.failed,
           onRetry: () => retried = true,
         ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
+      expect(find.text(AppStrings.exerciseVideoLoadFailed), findsOneWidget);
       await tester.tap(find.text(AppStrings.retryVideo));
       expect(retried, isTrue);
     });
 
-    testWidgets('shows thumbnail when hasThumbnail is true', (tester) async {
+    testWidgets('shows thumbnail while keeping metadata outside it', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        createCard(
+        _VideoCardHarness.build(
           video: const ExerciseDetailVideoViewData(
             url: 'https://example.com/v.mp4',
             angle: ExerciseVideoAngle.front,
@@ -115,26 +123,50 @@ void main() {
       );
       await tester.pump();
 
-      // Should still render metadata even with thumbnail loading
+      expect(find.byType(CachedNetworkImage), findsOneWidget);
       expect(find.text('Front'), findsOneWidget);
       expect(find.text('Male'), findsOneWidget);
     });
 
-    testWidgets('shows svg icon when hasThumbnail is false', (tester) async {
+    testWidgets('shows playback loading status', (tester) async {
       await tester.pumpWidget(
-        createCard(
-          video: const ExerciseDetailVideoViewData(
-            url: 'https://example.com/v.mp4',
-            angle: ExerciseVideoAngle.front,
-            gender: ExerciseVideoGender.male,
-            ogImageUrl: null,
-          ),
+        _VideoCardHarness.build(
+          playbackState: ExerciseVideoPlaybackState.loading,
         ),
       );
       await tester.pump();
 
-      expect(find.text('Front'), findsOneWidget);
-      expect(find.text('Male'), findsOneWidget);
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+      expect(find.text(AppStrings.exerciseVideoPreview), findsOneWidget);
     });
+
+    for (final brightness in Brightness.values) {
+      testWidgets('failed preview fits 320px with 2x text in $brightness', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          _VideoCardHarness.build(
+            playbackState: ExerciseVideoPlaybackState.failed,
+            textScale: 2,
+            brightness: brightness,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        final retryButton = find.widgetWithText(
+          FilledButton,
+          AppStrings.retryVideo,
+        );
+        expect(
+          tester.getSize(retryButton).height,
+          greaterThanOrEqualTo(AppExerciseDetailTokens.controlSize),
+        );
+      });
+    }
   });
 }

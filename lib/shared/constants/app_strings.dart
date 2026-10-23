@@ -1210,6 +1210,16 @@ class AppStrings {
   static const weightKg = 'Weight (kg)';
 
   // Exercise detail
+  static const exerciseVideoPreview = 'Video preview';
+  static const exercisePreviousVideo = 'Previous video';
+  static const exerciseNextVideo = 'Next video';
+  static String exerciseVideoPosition(int current, int total) =>
+      '$current of $total';
+  static const exerciseInstructionsAudioHint =
+      'Listen to any step as you train.';
+  static const avoidExercise = 'Avoid this exercise';
+  static const allowExercise = 'Allow this exercise';
+  static const exerciseAvoidedHint = 'This exercise is on your avoid list.';
   static const close = 'Close';
   static const guidance = 'Guidance';
   static const performance = 'Performance';

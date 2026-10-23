@@ -1,9 +1,7 @@
 import 'package:aedify/features/exercise_library/domain/exercise_detail_video_view_data.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_video_playback_state.dart';
-import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
-import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -11,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// A thumbnail preview with its descriptive details outside the image.
 class ExerciseVideoCard extends StatelessWidget {
   const ExerciseVideoCard({
     super.key,
@@ -18,6 +17,7 @@ class ExerciseVideoCard extends StatelessWidget {
     required this.playbackState,
     required this.onRetry,
     this.width,
+    this.showDetails = true,
   });
 
   final ExerciseDetailVideoViewData video;
@@ -25,68 +25,47 @@ class ExerciseVideoCard extends StatelessWidget {
   final VoidCallback onRetry;
   final double? width;
 
+  /// Allows a carousel to put the active caption below its fixed visual area.
+  final bool showDetails;
+
   @override
   Widget build(BuildContext context) {
-    final angleLabel = video.angle != null
-        ? _ExerciseVideoCardLabelFormatter.formatLabel(video.angle!.dbValue)
-        : AppStrings.videoUnavailable;
-    final genderLabel = video.gender != null
-        ? _ExerciseVideoCardLabelFormatter.formatLabel(video.gender!.dbValue)
-        : null;
-    final semanticsLabel = [
-      angleLabel,
-      ?genderLabel,
-      AppStrings.exerciseVideos,
-    ].join(', ');
-
-    final card = Semantics(
+    final preview = Semantics(
       image: true,
-      label: semanticsLabel,
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          border: MediaQuery.highContrastOf(context)
-              ? Border.all(color: context.colorScheme.outlineVariant)
-              : null,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: AspectRatio(
-          aspectRatio: AppExerciseDetailTokens.mediaAspectRatio,
+      label: AppStrings.exerciseVideoPreview,
+      child: AspectRatio(
+        key: ValueKey<String>('exercise_video_visual_${video.url}'),
+        aspectRatio: AppExerciseDetailTokens.mediaAspectRatio,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: MediaQuery.highContrastOf(context)
+                ? Border.all(color: context.colorScheme.outline)
+                : null,
+          ),
+          clipBehavior: Clip.antiAlias,
           child: playbackState == ExerciseVideoPlaybackState.failed
-              ? _FailedVideoVisual(onRetry: onRetry)
-              : Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _VideoVisual(video: video, playbackState: playbackState),
-                    ColoredBox(
-                      color: context.colorScheme.scrim.withValues(
-                        alpha: AppExerciseDetailTokens.videoScrimOpacity,
-                      ),
-                    ),
-                    const Center(child: _PlayControl()),
-                    Positioned(
-                      left: AppSpacing.md,
-                      right: AppSpacing.md,
-                      bottom: AppSpacing.md,
-                      child: Wrap(
-                        key: ValueKey<String>(
-                          'exercise_video_metadata_${video.url}',
-                        ),
-                        spacing: AppSpacing.sm,
-                        runSpacing: AppSpacing.sm,
-                        children: [
-                          _VideoMetadataBadge(label: angleLabel),
-                          if (genderLabel != null)
-                            _VideoMetadataBadge(label: genderLabel),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              ? const _FailedVideoVisual()
+              : _VideoVisual(video: video, playbackState: playbackState),
         ),
       ),
     );
+    final card = showDetails
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              preview,
+              AppWhiteSpace.hControlGap,
+              ExerciseVideoCaption(
+                video: video,
+                playbackState: playbackState,
+                onRetry: onRetry,
+              ),
+            ],
+          )
+        : preview;
 
     if (width != null) return SizedBox(width: width, child: card);
 
@@ -98,6 +77,113 @@ class ExerciseVideoCard extends StatelessWidget {
         ),
         child: card,
       ),
+    );
+  }
+}
+
+/// A scalable caption and recoverable failure state for the active preview.
+class ExerciseVideoCaption extends StatelessWidget {
+  const ExerciseVideoCaption({
+    super.key,
+    required this.video,
+    required this.playbackState,
+    required this.onRetry,
+  });
+
+  final ExerciseDetailVideoViewData video;
+  final ExerciseVideoPlaybackState playbackState;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.brightnessOf(context) == Brightness.dark;
+    final labelStyle = isDark
+        ? AppTextStylesDark.labelMd
+        : AppTextStyles.labelMd;
+    final bodyStyle = isDark ? AppTextStylesDark.bodySm : AppTextStyles.bodySm;
+    final metadata = [
+      if (video.angle case final angle?)
+        _ExerciseVideoCardLabelFormatter.formatLabel(angle.dbValue),
+      if (video.gender case final gender?)
+        _ExerciseVideoCardLabelFormatter.formatLabel(gender.dbValue),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          AppStrings.exerciseVideoPreview,
+          style: bodyStyle.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        if (metadata.isNotEmpty) ...[
+          AppWhiteSpace.hXs,
+          Wrap(
+            key: ValueKey<String>('exercise_video_metadata_${video.url}'),
+            spacing: AppSpacing.controlGap,
+            runSpacing: AppSpacing.xs,
+            children: [
+              for (final label in metadata)
+                Text(
+                  label,
+                  style: labelStyle.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+            ],
+          ),
+        ],
+        if (playbackState == ExerciseVideoPlaybackState.failed) ...[
+          AppWhiteSpace.hControlGap,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            decoration: BoxDecoration(
+              color: context.colorScheme.errorContainer,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.exerciseVideoLoadFailed,
+                  style: bodyStyle.copyWith(
+                    color: context.colorScheme.onErrorContainer,
+                  ),
+                ),
+                AppWhiteSpace.hSm,
+                FilledButton.tonalIcon(
+                  onPressed: onRetry,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(
+                      AppExerciseDetailTokens.controlSize,
+                      AppExerciseDetailTokens.controlSize,
+                    ),
+                    foregroundColor: context.colorScheme.onErrorContainer,
+                    backgroundColor: context.colorScheme.surfaceContainerLowest,
+                    textStyle: labelStyle,
+                  ),
+                  icon: SvgPicture.asset(
+                    OutlinedSvgAssets.arrowPath,
+                    width: AppSizing.iconXxs,
+                    height: AppSizing.iconXxs,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onErrorContainer,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: const Text(AppStrings.retryVideo),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -134,34 +220,6 @@ class _VideoVisual extends StatelessWidget {
   }
 }
 
-class _PlayControl extends StatelessWidget {
-  const _PlayControl();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: AppSizing.iconXxl,
-      height: AppSizing.iconXxl,
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest.withValues(
-          alpha: AppExerciseDetailTokens.videoOverlaySurfaceOpacity,
-        ),
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: SvgPicture.asset(
-        SolidSvgAssets.play,
-        width: AppSizing.iconSm,
-        height: AppSizing.iconSm,
-        colorFilter: ColorFilter.mode(
-          _ExerciseVideoCardColors.accent(context),
-          BlendMode.srcIn,
-        ),
-      ),
-    );
-  }
-}
-
 class _VideoFallbackIcon extends StatelessWidget {
   const _VideoFallbackIcon();
 
@@ -172,6 +230,7 @@ class _VideoFallbackIcon extends StatelessWidget {
         OutlinedSvgAssets.videoCamera,
         width: AppSizing.iconXxl,
         height: AppSizing.iconXxl,
+        excludeFromSemantics: true,
         colorFilter: ColorFilter.mode(
           context.colorScheme.onSurfaceVariant,
           BlendMode.srcIn,
@@ -197,94 +256,25 @@ class _VideoLoadingIndicator extends StatelessWidget {
 }
 
 class _FailedVideoVisual extends StatelessWidget {
-  const _FailedVideoVisual({required this.onRetry});
-
-  final VoidCallback onRetry;
+  const _FailedVideoVisual();
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: context.colorScheme.errorContainer,
       child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                OutlinedSvgAssets.exclamationTriangle,
-                width: AppSizing.iconLg,
-                height: AppSizing.iconLg,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.error,
-                  BlendMode.srcIn,
-                ),
-              ),
-              AppWhiteSpace.hXs,
-              Text(
-                AppStrings.exerciseVideoLoadFailed,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodySm.copyWith(
-                  color: context.colorScheme.onErrorContainer,
-                ),
-              ),
-              AppWhiteSpace.hSm,
-              FilledButton.tonalIcon(
-                onPressed: onRetry,
-                icon: SvgPicture.asset(
-                  OutlinedSvgAssets.arrowPath,
-                  width: AppSizing.iconXxs,
-                  height: AppSizing.iconXxs,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.onSecondaryContainer,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: const Text(AppStrings.retryVideo),
-              ),
-            ],
+        child: SvgPicture.asset(
+          OutlinedSvgAssets.videoCameraSlash,
+          width: AppSizing.iconXxl,
+          height: AppSizing.iconXxl,
+          excludeFromSemantics: true,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.onErrorContainer,
+            BlendMode.srcIn,
           ),
         ),
       ),
     );
-  }
-}
-
-class _VideoMetadataBadge extends StatelessWidget {
-  const _VideoMetadataBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBadge(
-      label: label,
-      backgroundColor: context.colorScheme.surfaceContainerLowest.withValues(
-        alpha: AppExerciseDetailTokens.videoOverlaySurfaceOpacity,
-      ),
-      foregroundColor: context.colorScheme.onSurface,
-      borderRadius: AppRadius.full,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.controlGap,
-        vertical: AppExerciseDetailTokens.videoBadgeVerticalPadding,
-      ),
-      textStyle: AppTextStyles.labelSm,
-      fontWeight: FontWeight.w600,
-    );
-  }
-}
-
-class _ExerciseVideoCardColors {
-  _ExerciseVideoCardColors._();
-
-  static Color accent(BuildContext context) {
-    final colorScheme = context.colorScheme;
-    return Theme.brightnessOf(context) == Brightness.dark
-        ? colorScheme.primary
-        : colorScheme.secondary;
   }
 }
 
