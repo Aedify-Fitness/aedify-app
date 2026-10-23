@@ -6,6 +6,43 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-10-23
 
+### M4 — Full-screen programme calendar and workout details
+
+- Programme calendar and programme workout detail routes now use the root
+  navigator, hiding the floating bottom navigation bar. Saved-workout details
+  already use that navigator. Route names/paths and Back to the previous screen
+  are preserved; the bar remains available on the main tabs.
+- Verification: `dart format .` checked 736 files; `flutter analyze`,
+  `git diff --check` and all 64 router, navigation-shell, workout-detail and
+  calendar-screen tests passed. Seven new routing cases cover direct entry,
+  route parameters and navigation restoration through Back. Full suite and live
+  reload were not repeated for this routing-only follow-up.
+
+### M4 — Workout detail redesign
+
+- Rebuilt `WorkoutDetailScreen` around a concise workout overview, actual
+  exercise/set totals, estimated duration and an ordered exercise flow. Light
+  and dark surfaces follow the shared design tokens; the safe-area action bar
+  reserves its own space and supports large text.
+- Numbered exercise cards separate guide navigation from set disclosure.
+  Supersets stay grouped, warm-ups are counted separately, variable repetition
+  targets are explicit, and expanded rows show available per-set load, effort,
+  rest, duration and notes without inventing missing values.
+- Moved local loading/session eligibility into `WorkoutDetailController`.
+  Conflicting active sessions hide Start, matching sessions offer Resume, and
+  scheduled occurrences retain completion/today guards. Return navigation,
+  refresh and retry reload safely, including disposal during a pending refresh.
+- Saved-workout logging types now prefer the stored occurrence snapshot, and
+  unscheduled programme occurrences no longer display an invented weekday.
+  No schema, dependency or privacy-boundary changes.
+- Verification: `dart format .` checked 736 files; `flutter analyze`,
+  `git diff --check` and all 52 workout-detail regression tests passed. Reviewed
+  rendered 390px light/dark overview, expanded-set and superset previews; tests
+  cover 320px/2x text, high contrast, reduced motion, named routes and footer
+  clearance. Full suite: 1401 passed, 14 failed; failure names exactly match
+  the previously confirmed 12 programme-builder and two runner failures.
+  No new failing tests; live reload not repeated.
+
 ### M2/M4 — Exercise detail redesign
 
 - Reworked `ExerciseDetailScreen` with a quiet close/favorite header, concise

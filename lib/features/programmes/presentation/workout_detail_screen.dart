@@ -1,23 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:aedify/app/providers/providers.dart';
-import 'package:aedify/core/db/app_database.dart';
-import 'package:aedify/features/programmes/application/programme_workout_detail_controller.dart';
-import 'package:aedify/features/programmes/application/today_workout_resolver.dart';
 import 'package:aedify/features/programmes/domain/programme_workout_detail_view_data.dart';
+import 'package:aedify/features/programmes/presentation/widgets/workout_detail_exercise_flow.dart';
+import 'package:aedify/features/programmes/presentation/widgets/workout_detail_style.dart';
+import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
-import 'package:aedify/shared/constants/svg_assets_solid.dart';
-import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/workout_detail_button_state.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
-class WorkoutDetailScreen extends ConsumerWidget {
+/// Reviews a saved or scheduled workout before starting or resuming its session.
+class WorkoutDetailScreen extends ConsumerStatefulWidget {
   const WorkoutDetailScreen({
     super.key,
     required this.workoutId,
@@ -28,662 +27,238 @@ class WorkoutDetailScreen extends ConsumerWidget {
   final String? programId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final detailAsync = ref.watch(
-      _WorkoutDetailProviders.workoutDetailProvider((
-        programId: programId,
-        workoutId: workoutId,
-      )),
-    );
-
-    return detailAsync.when(
-      loading: () =>
-          Scaffold(body: const Center(child: CircularProgressIndicator())),
-      error: (error, stack) => Scaffold(
-        body: Center(child: Text(AppStrings.workoutDetailLoadError)),
-      ),
-      data: (detail) {
-        if (detail == null) {
-          return Scaffold(
-            body: const Center(child: Text(AppStrings.missingSession)),
-          );
-        }
-
-        return Scaffold(
-          key: const Key('workout_detail_screen'),
-          backgroundColor: context.colorScheme.surface,
-          body: SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                left: AppSpacing.gutter,
-                top: AppSpacing.gutter,
-                right: AppSpacing.gutter,
-              ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: AppSpacing.containerMax,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _HeroSection(detail: detail),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppSpacing.xxl,
-                          bottom: AppSpacing.lg,
-                        ),
-                        child: Text(
-                          key: const Key('workout_detail_flow_heading'),
-                          AppStrings.workoutFlow,
-                          style: AppTextStyles.headlineLg.copyWith(
-                            color: context.colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                      _ExerciseList(detail: detail),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppSpacing.xxxl + AppSpacing.md,
-                          bottom: AppSpacing.xxxl,
-                        ),
-                        child: _AtmosphericSection(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          bottomNavigationBar:
-              detail.buttonState != WorkoutDetailButtonState.hidden
-              ? SafeArea(
-                  minimum: const EdgeInsets.only(
-                    left: AppSpacing.gutter,
-                    right: AppSpacing.gutter,
-                    bottom: AppSpacing.md,
-                  ),
-                  child: FilledButton.icon(
-                    key: const Key('workout_detail_primary_action'),
-                    onPressed: () {
-                      if (detail.buttonState ==
-                          WorkoutDetailButtonState.resume) {
-                        context.pushNamed(AppRoutes.workoutRunnerActive().name);
-                      } else if (programId != null) {
-                        context.pushNamed(
-                          AppRoutes.workoutRunnerProgramWorkout().name,
-                          pathParameters: {
-                            'programId': programId!,
-                            'workoutId': workoutId,
-                          },
-                        );
-                      } else {
-                        context.pushNamed(
-                          AppRoutes.workoutRunnerSavedWorkout().name,
-                          pathParameters: {'id': workoutId},
-                        );
-                      }
-                    },
-                    icon: SvgPicture.asset(
-                      OutlinedSvgAssets.play,
-                      width: AppSizing.iconMd,
-                      height: AppSizing.iconMd,
-                      colorFilter: ColorFilter.mode(
-                        context.colorScheme.onSecondary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    label: Text(
-                      detail.buttonState == WorkoutDetailButtonState.resume
-                          ? AppStrings.resumeWorkout
-                          : AppStrings.startWorkout,
-                      style: AppTextStyles.headlineMd.copyWith(
-                        fontSize: AppFontSizes.xl,
-                        color: context.colorScheme.onSecondary,
-                      ),
-                    ),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: context.colorScheme.secondary,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.md,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                      ),
-                    ),
-                  ),
-                )
-              : null,
-        );
-      },
-    );
-  }
+  ConsumerState<WorkoutDetailScreen> createState() =>
+      _WorkoutDetailScreenState();
 }
 
-class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.detail});
+class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
+  bool _openingRoute = false;
 
-  final ProgrammeWorkoutDetailViewData detail;
+  Future<void> _reload() => ref
+      .read(
+        AppProviders.workoutDetailControllerProvider((
+          programId: widget.programId,
+          workoutId: widget.workoutId,
+        )).notifier,
+      )
+      .reload();
 
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return Column(
-      key: const Key('workout_detail_hero'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (detail.programmeName != null &&
-            detail.programmeName!.isNotEmpty) ...[
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm + AppSpacing.xs,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: cs.secondaryContainer.withAlpha(26),
-              borderRadius: BorderRadius.circular(AppRadius.full),
-            ),
-            child: Text(
-              detail.programmeName!,
-              style: AppTextStyles.labelMd.copyWith(color: cs.secondary),
-            ),
-          ),
-          AppWhiteSpace.hSm,
-        ],
-        Text(
-          detail.workoutName.toUpperCase(),
-          style: AppTextStyles.headlineXl.copyWith(color: cs.onSurface),
-        ),
-        AppWhiteSpace.hXl,
-        Wrap(
-          spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.lg,
-          children: [
-            _StatItem(
-              iconAsset: SolidSvgAssets.dumbbell,
-              label: AppStrings.exercisesLabel,
-              value: '${detail.exercises.length} ${AppStrings.movements}',
-            ),
-            _StatItem(
-              iconAsset: OutlinedSvgAssets.clock,
-              label: AppStrings.duration,
-              value: '~${detail.durationMinutes} ${AppStrings.minutes}',
-            ),
-            if (detail.focusAreas.isNotEmpty)
-              _StatItem(
-                iconAsset: OutlinedSvgAssets.mapPin,
-                label: AppStrings.focusLabel,
-                value: detail.focusAreas,
-              ),
-          ],
-        ),
-      ],
-    );
+  void _goBack() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(AppRoutes.workout().name);
+    }
   }
-}
 
-class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.iconAsset,
-    required this.label,
-    required this.value,
-  });
-
-  final String iconAsset;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          key: Key('workout_detail_stat_icon_$label'),
-          width: AppSizing.iconXxl,
-          height: AppSizing.iconXxl,
-          decoration: BoxDecoration(
-            color: cs.surfaceContainer,
-            borderRadius: BorderRadius.circular(AppRadius.md),
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              iconAsset,
-              width: AppSizing.iconMd,
-              height: AppSizing.iconMd,
-              colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
-            ),
-          ),
-        ),
-        AppWhiteSpace.custom(width: AppSpacing.sm + AppSpacing.xs),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label.toUpperCase(),
-              style: AppTextStyles.labelSm.copyWith(color: cs.onSurfaceVariant),
-            ),
-            AppWhiteSpace.hXxs,
-            Text(
-              value,
-              style: AppTextStyles.labelMd.copyWith(color: cs.onSurface),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _ExerciseList extends StatelessWidget {
-  const _ExerciseList({required this.detail});
-
-  final ProgrammeWorkoutDetailViewData detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final exercises = detail.exercises;
-    if (exercises.isEmpty) return AppWhiteSpace.hLg;
-
-    final processedGroups = <String>{};
-    final widgets = <Widget>[];
-
-    for (var i = 0; i < exercises.length; i++) {
-      final exercise = exercises[i];
-      final groupId = exercise.supersetGroupId;
-
-      if (groupId != null) {
-        if (processedGroups.contains(groupId)) continue;
-        processedGroups.add(groupId);
-
-        final members = <ExerciseDetailItem>[];
-        for (var j = i; j < exercises.length; j++) {
-          if (exercises[j].supersetGroupId == groupId) {
-            members.add(exercises[j]);
-          }
-        }
-        members.sort(
-          (a, b) => (a.supersetOrder ?? 0).compareTo(b.supersetOrder ?? 0),
-        );
-
-        widgets.add(
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: i + members.length < exercises.length ? AppSpacing.md : 0,
-            ),
-            child: _SupersetGroupSection(
-              exercises: members,
-              onTap: (exerciseId) {
-                context.pushNamed(
-                  AppRoutes.exerciseDetail().name,
-                  pathParameters: {'id': exerciseId.toString()},
-                );
-              },
-            ),
-          ),
+  Future<void> _openRunner(WorkoutDetailButtonState buttonState) async {
+    if (_openingRoute || buttonState == WorkoutDetailButtonState.hidden) return;
+    setState(() => _openingRoute = true);
+    try {
+      if (buttonState == WorkoutDetailButtonState.resume) {
+        await context.pushNamed(AppRoutes.workoutRunnerActive().name);
+      } else if (widget.programId != null) {
+        await context.pushNamed(
+          AppRoutes.workoutRunnerProgramWorkout().name,
+          pathParameters: {
+            'programId': widget.programId!,
+            'workoutId': widget.workoutId,
+          },
         );
       } else {
-        widgets.add(
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: i < exercises.length - 1 ? AppSpacing.md : 0,
-            ),
-            child: _ExerciseCard(
-              exercise: exercise,
-              onTap: () {
-                context.pushNamed(
-                  AppRoutes.exerciseDetail().name,
-                  pathParameters: {'id': exercise.exerciseId.toString()},
-                );
-              },
-            ),
-          ),
+        await context.pushNamed(
+          AppRoutes.workoutRunnerSavedWorkout().name,
+          pathParameters: {'id': widget.workoutId},
         );
       }
+      if (mounted) await _reload();
+    } finally {
+      if (mounted) setState(() => _openingRoute = false);
     }
-
-    return Column(children: widgets);
   }
-}
 
-class _SupersetGroupSection extends StatelessWidget {
-  const _SupersetGroupSection({required this.exercises, required this.onTap});
-
-  final List<ExerciseDetailItem> exercises;
-  final void Function(int exerciseId) onTap;
+  Future<void> _openExercise(int exerciseId) async {
+    if (_openingRoute) return;
+    setState(() => _openingRoute = true);
+    try {
+      await context.pushNamed(
+        AppRoutes.exerciseDetail().name,
+        pathParameters: {'id': exerciseId.toString()},
+      );
+      if (mounted) await _reload();
+    } finally {
+      if (mounted) setState(() => _openingRoute = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.colorScheme;
+    final detailAsync = ref.watch(
+      AppProviders.workoutDetailControllerProvider((
+        programId: widget.programId,
+        workoutId: widget.workoutId,
+      )),
+    );
+    final detail = detailAsync.asData?.value;
 
-    return Stack(
-      key: const Key('workout_detail_superset_group'),
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            top: AppSpacing.md,
-            bottom: AppSpacing.md,
-          ),
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color: cs.secondaryContainer,
-                width: AppSizing.strokeWidth * 2,
-              ),
+    return Scaffold(
+      key: const Key('workout_detail_screen'),
+      backgroundColor: context.colorScheme.surface,
+      bottomNavigationBar:
+          detail == null ||
+              detail.buttonState == WorkoutDetailButtonState.hidden
+          ? null
+          : _WorkoutAction(
+              state: detail.buttonState,
+              isBusy: _openingRoute || detailAsync.isLoading,
+              onPressed: () => _openRunner(detail.buttonState),
             ),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(AppRadius.md),
-              bottomRight: Radius.circular(AppRadius.md),
+      body: SafeArea(
+        bottom: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppWorkoutDetailTokens.maxContentWidth,
             ),
-            color: cs.secondaryContainer.withValues(alpha: 0.05),
-          ),
-          child: Column(
-            children: List.generate(exercises.length, (i) {
-              return Padding(
-                padding: EdgeInsets.only(top: i > 0 ? AppSpacing.md : 0),
-                child: _ExerciseCard(
-                  exercise: exercises[i],
-                  onTap: () => onTap(exercises[i].exerciseId),
+            child: Column(
+              children: [
+                _WorkoutHeader(onBack: _goBack),
+                Expanded(
+                  child: detailAsync.when(
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: AppStrings.loading,
+                      ),
+                    ),
+                    error: (_, _) => _WorkoutMessage(
+                      icon: OutlinedSvgAssets.exclamationCircle,
+                      message: AppStrings.workoutDetailLoadError,
+                      onRetry: _reload,
+                    ),
+                    data: (detail) => detail == null
+                        ? const _WorkoutMessage(
+                            icon: OutlinedSvgAssets.informationCircle,
+                            message: AppStrings.missingSession,
+                          )
+                        : RefreshIndicator(
+                            onRefresh: _reload,
+                            child: CustomScrollView(
+                              key: const Key('workout_detail_scroll_view'),
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              slivers: [
+                                SliverPadding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.md,
+                                    vertical: AppSpacing.md,
+                                  ),
+                                  sliver: SliverToBoxAdapter(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        _WorkoutOverview(detail: detail),
+                                        AppWhiteSpace.hXl,
+                                        Semantics(
+                                          header: true,
+                                          child: Text(
+                                            AppStrings.workoutFlow,
+                                            key: const Key(
+                                              'workout_detail_flow_heading',
+                                            ),
+                                            style: WorkoutDetailStyle.heading(
+                                              context,
+                                            ),
+                                          ),
+                                        ),
+                                        AppWhiteSpace.hSm,
+                                        Text(
+                                          AppStrings.workoutFlowHint,
+                                          style: WorkoutDetailStyle.small(
+                                            context,
+                                          ),
+                                        ),
+                                        AppWhiteSpace.hLg,
+                                        if (detail.exercises.isEmpty)
+                                          const _WorkoutMessage(
+                                            icon: OutlinedSvgAssets.listBullet,
+                                            message:
+                                                AppStrings.noExercisesInWorkout,
+                                          )
+                                        else
+                                          WorkoutDetailExerciseFlow(
+                                            key: ValueKey((
+                                              widget.programId,
+                                              widget.workoutId,
+                                            )),
+                                            exercises: detail.exercises,
+                                            onExerciseTap: _openExercise,
+                                          ),
+                                        AppWhiteSpace.hLg,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
                 ),
-              );
-            }),
-          ),
-        ),
-        Positioned(
-          left: -AppSpacing.sm - AppSpacing.xs,
-          top: AppSpacing.md,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xxs,
-            ),
-            decoration: BoxDecoration(
-              color: cs.secondaryContainer,
-              borderRadius: BorderRadius.circular(AppRadius.full),
-            ),
-            child: Text(
-              AppStrings.superset.toUpperCase(),
-              style: AppTextStyles.labelSm.copyWith(
-                fontSize: AppFontSizes.xxs,
-                fontWeight: FontWeight.w700,
-                color: cs.onSecondaryContainer,
-                letterSpacing: -0.3,
-              ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
 
-class _ExerciseCard extends StatelessWidget {
-  const _ExerciseCard({required this.exercise, this.onTap});
+class _WorkoutHeader extends StatelessWidget {
+  const _WorkoutHeader({required this.onBack});
 
-  final ExerciseDetailItem exercise;
-  final VoidCallback? onTap;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-    final firstSet = exercise.sets.isNotEmpty ? exercise.sets.last : null;
-
-    String formatDurationValue(int seconds) =>
-        '$seconds${AppStrings.secondsUnitAbbreviation}';
-
-    final durationValue = firstSet?.durationSeconds;
-
-    return GestureDetector(
-      key: ValueKey<String>('workout_detail_exercise_${exercise.exerciseId}'),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          boxShadow: [
-            BoxShadow(
-              color: cs.secondary.withAlpha(20),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: AppSizing.fieldWidthXl,
-              height: AppSizing.fieldWidthXl,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: cs.surfaceContainer,
-                borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            key: const Key('workout_detail_back'),
+            tooltip: AppStrings.backLabel,
+            onPressed: onBack,
+            style: IconButton.styleFrom(
+              minimumSize: const Size.square(
+                AppWorkoutDetailTokens.controlSize,
               ),
-              child: SvgPicture.asset(
-                SolidSvgAssets.dumbbell,
-                width: AppSizing.iconMd,
-                height: AppSizing.iconMd,
-                colorFilter: ColorFilter.mode(
-                  cs.onSurfaceVariant.withAlpha(77),
-                  BlendMode.srcIn,
-                ),
-              ),
+              backgroundColor: context.colorScheme.surfaceContainerLow,
             ),
-            const SizedBox(width: AppSpacing.md + AppSpacing.xs),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            exercise.name,
-                            style: AppTextStyles.labelMd.copyWith(
-                              color: cs.onSurface,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (exercise.equipment.isNotEmpty) ...[
-                          AppWhiteSpace.wXs,
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.xxs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: cs.secondaryContainer.withAlpha(26),
-                              borderRadius: BorderRadius.circular(AppRadius.sm),
-                            ),
-                            child: Text(
-                              exercise.equipment,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: cs.secondary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  if (firstSet != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.sm),
-                      child: _ExercisePrescriptionSummary(
-                        label:
-                            exercise.loggingType == ExerciseLoggingType.duration
-                            ? AppStrings.setsAndDuration
-                            : AppStrings.setsAndReps,
-                        value:
-                            exercise.loggingType == ExerciseLoggingType.duration
-                            ? '${exercise.sets.length} x ${durationValue != null ? formatDurationValue(durationValue) : '-'}'
-                            : '${exercise.sets.length} x ${firstSet.repsDisplay ?? '-'}',
-                        intensityValue:
-                            exercise.loggingType ==
-                                ExerciseLoggingType.repsWeight
-                            ? firstSet.rpeDisplay ?? '-'
-                            : null,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            SvgPicture.asset(
-              OutlinedSvgAssets.chevronRight,
+            icon: SvgPicture.asset(
+              OutlinedSvgAssets.arrowLeft,
               width: AppSizing.iconSm,
               height: AppSizing.iconSm,
+              matchTextDirection: true,
               colorFilter: ColorFilter.mode(
-                cs.onSurfaceVariant,
+                context.colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ExercisePrescriptionSummary extends StatelessWidget {
-  const _ExercisePrescriptionSummary({
-    required this.label,
-    required this.value,
-    this.intensityValue,
-  });
-
-  final String label;
-  final String value;
-  final String? intensityValue;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-    final primary = _SetSummaryColumn(label: label, value: value);
-    final intensity = intensityValue == null
-        ? null
-        : _SetSummaryColumn(
-            label: AppStrings.intensity,
-            value: intensityValue!,
-            valueColor: cs.secondary,
-          );
-    if (intensity == null) return primary;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth <
-            AppSizing.workoutDetailInlineMetadataMinWidth) {
-          return Wrap(
-            spacing: AppSpacing.md,
-            runSpacing: AppSpacing.sm,
-            children: [primary, intensity],
-          );
-        }
-        return Row(
-          children: [
-            primary,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Container(
-                width: AppSizing.hairlineStrokeWidth,
-                height: AppSpacing.lg,
-                color: cs.outlineVariant,
-              ),
+          ),
+          AppWhiteSpace.wSm,
+          Expanded(
+            child: Text(
+              AppStrings.workoutDetail,
+              textAlign: TextAlign.center,
+              style: WorkoutDetailStyle.label(
+                context,
+              ).copyWith(color: context.colorScheme.onSurfaceVariant),
             ),
-            intensity,
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _SetSummaryColumn extends StatelessWidget {
-  const _SetSummaryColumn({
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
-
-  final String label;
-  final String value;
-  final Color? valueColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            fontSize: AppFontSizes.xxs,
-            color: cs.onSurfaceVariant,
           ),
-        ),
-        AppWhiteSpace.hXxs,
-        Text(
-          value,
-          style: AppTextStyles.labelMd.copyWith(
-            color: valueColor ?? cs.onSurface,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AtmosphericSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return Container(
-      key: const Key('workout_detail_atmospheric_section'),
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.xxl,
-        horizontal: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: cs.outlineVariant.withAlpha(77)),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            cs.secondaryContainer.withAlpha(13),
-            cs.primaryContainer.withAlpha(26),
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            AppStrings.readyToPush,
-            style: AppTextStyles.headlineMd.copyWith(color: cs.primary),
-          ),
-          AppWhiteSpace.hSm,
-          Text(
-            AppStrings.sessionInspirationMessage,
-            style: AppTextStyles.bodyMd.copyWith(color: cs.onSurfaceVariant),
-            textAlign: TextAlign.center,
+          const SizedBox(
+            width: AppWorkoutDetailTokens.controlSize + AppSpacing.sm,
           ),
         ],
       ),
@@ -691,121 +266,294 @@ class _AtmosphericSection extends StatelessWidget {
   }
 }
 
-class _WorkoutDetailProviders {
-  _WorkoutDetailProviders._();
+class _WorkoutOverview extends StatelessWidget {
+  const _WorkoutOverview({required this.detail});
 
-  static final workoutDetailProvider =
-      FutureProvider.family<
-        ProgrammeWorkoutDetailViewData?,
-        ({String? programId, String workoutId})
-      >((ref, arg) async {
-        if (arg.programId != null) {
-          return _loadProgrammeDetail(ref, arg.programId!, arg.workoutId);
-        }
-        return _loadSavedWorkoutDetail(ref, arg.workoutId);
-      });
+  final ProgrammeWorkoutDetailViewData detail;
 
-  static Future<ProgrammeWorkoutDetailViewData?> _loadProgrammeDetail(
-    Ref ref,
-    String programId,
-    String workoutId,
-  ) async {
-    ref.watch(AppProviders.homeRefreshTriggerProvider);
-    final repo = ref.read(AppProviders.programmeRepositoryProvider);
-    final aggregate = await repo.getProgramme(programId);
-    if (aggregate == null) return null;
-
-    final sessionDao = ref.read(AppProviders.workoutSessionDaoProvider);
-    final resolver = TodayWorkoutResolver(sessionDao: sessionDao);
-    final resolution = await resolver.resolve(
-      aggregate: aggregate,
-      now: DateTime.now(),
+  @override
+  Widget build(BuildContext context) {
+    final setCount = detail.exercises.fold<int>(
+      0,
+      (sum, exercise) => sum + exercise.sets.length,
     );
-
-    final isToday = resolution.todayWorkoutId == workoutId;
-    final isCompleted = resolution.completedWorkoutIds.contains(workoutId);
-
-    WorkoutDetailButtonState buttonState;
-    if (isCompleted) {
-      buttonState = WorkoutDetailButtonState.hidden;
-    } else {
-      final activeSession = await sessionDao.getActiveSession();
-      final isInProgress = activeSession?.programWorkoutId == workoutId;
-      if (isInProgress) {
-        buttonState = WorkoutDetailButtonState.resume;
-      } else if (isToday) {
-        buttonState = WorkoutDetailButtonState.start;
-      } else {
-        buttonState = WorkoutDetailButtonState.hidden;
-      }
-    }
-
-    final exerciseIds = aggregate.exercises
-        .map((e) => e.exerciseId)
-        .toSet()
-        .toList();
-    final dao = ref.read(AppProviders.exerciseDaoProvider);
-    final exerciseModels = <int, Exercise>{};
-    for (final id in exerciseIds) {
-      final row = await dao.getExerciseById(id);
-      if (row != null) {
-        exerciseModels[id] = row;
-      }
-    }
-
-    return ProgrammeWorkoutDetailController.buildWorkoutDetail(
-      aggregate,
-      workoutId,
-      exerciseModels,
-      buttonState: buttonState,
+    return Container(
+      key: const Key('workout_detail_hero'),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if ((detail.programmeName?.trim().isNotEmpty ?? false) ||
+              detail.dayLabel.trim().isNotEmpty) ...[
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (detail.programmeName?.trim().isNotEmpty ?? false)
+                  AppBadge(
+                    label: detail.programmeName!,
+                    textStyle: WorkoutDetailStyle.caption(context),
+                    backgroundColor: context.colorScheme.surfaceContainerHigh,
+                    foregroundColor: WorkoutDetailStyle.accent(context),
+                    borderRadius: AppRadius.full,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.controlGap,
+                      vertical: AppSpacing.xs,
+                    ),
+                  ),
+                if (detail.dayLabel.trim().isNotEmpty)
+                  Text(
+                    detail.dayLabel,
+                    style: WorkoutDetailStyle.small(context),
+                  ),
+              ],
+            ),
+            AppWhiteSpace.hMd,
+          ],
+          Semantics(
+            header: true,
+            child: Text(
+              detail.workoutName,
+              style: AppTextStyles.headlineLg.copyWith(
+                color: context.colorScheme.onSurface,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          AppWhiteSpace.hLg,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final largeText =
+                  MediaQuery.textScalerOf(context).scale(AppFontSizes.sm) >
+                  AppFontSizes.lg;
+              final useRow =
+                  !largeText &&
+                  constraints.maxWidth >=
+                      AppSizing.metricTileMinWidth * 3 + AppSpacing.sm * 2;
+              final tileWidth = useRow
+                  ? (constraints.maxWidth - AppSpacing.sm * 2) / 3
+                  : constraints.maxWidth;
+              return Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.md,
+                children: [
+                  _WorkoutMetric(
+                    width: tileWidth,
+                    value: detail.exercises.length.toString(),
+                    label: AppStrings.movements,
+                  ),
+                  _WorkoutMetric(
+                    width: tileWidth,
+                    value: setCount.toString(),
+                    label: AppStrings.workoutTotalSets,
+                  ),
+                  _WorkoutMetric(
+                    width: tileWidth,
+                    value: detail.durationMinutes > 0
+                        ? '${detail.durationMinutes} ${AppStrings.durationUnit}'
+                        : AppStrings.unavailableValue,
+                    label: AppStrings.workoutEstimatedDuration,
+                  ),
+                ],
+              );
+            },
+          ),
+          if (detail.focusAreas.trim().isNotEmpty) ...[
+            AppWhiteSpace.hLg,
+            Text(
+              '${AppStrings.focusLabel}: ${detail.focusAreas}',
+              style: WorkoutDetailStyle.small(context),
+            ),
+          ],
+        ],
+      ),
     );
   }
+}
 
-  static Future<ProgrammeWorkoutDetailViewData?> _loadSavedWorkoutDetail(
-    Ref ref,
-    String workoutId,
-  ) async {
-    ref.watch(AppProviders.homeRefreshTriggerProvider);
-    ref.watch(AppProviders.activeWorkoutSessionProvider);
-    final savedWorkoutRepo = ref.read(
-      AppProviders.savedWorkoutRepositoryProvider,
+class _WorkoutMetric extends StatelessWidget {
+  const _WorkoutMetric({
+    required this.width,
+    required this.value,
+    required this.label,
+  });
+
+  final double width;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(value, style: WorkoutDetailStyle.heading(context)),
+          AppWhiteSpace.hXs,
+          Text(label, style: WorkoutDetailStyle.caption(context)),
+        ],
+      ),
     );
-    final aggregates = await savedWorkoutRepo.listSavedWorkouts();
-    final aggregate = aggregates
-        .where((a) => a.savedWorkout.id == workoutId)
-        .firstOrNull;
-    if (aggregate == null) return null;
+  }
+}
 
-    final sessionDao = ref.read(AppProviders.workoutSessionDaoProvider);
-    final activeSession = await sessionDao.getActiveSession();
-    final isInProgress = activeSession?.savedWorkoutId == workoutId;
+class _WorkoutAction extends StatelessWidget {
+  const _WorkoutAction({
+    required this.state,
+    required this.isBusy,
+    required this.onPressed,
+  });
 
-    final WorkoutDetailButtonState buttonState;
-    if (isInProgress) {
-      buttonState = WorkoutDetailButtonState.resume;
-    } else if (activeSession != null) {
-      buttonState = WorkoutDetailButtonState.hidden;
-    } else {
-      buttonState = WorkoutDetailButtonState.start;
-    }
+  final WorkoutDetailButtonState state;
+  final bool isBusy;
+  final VoidCallback onPressed;
 
-    final exerciseIds = aggregate.exercises
-        .map((e) => e.exerciseId)
-        .toSet()
-        .toList();
-    final dao = ref.read(AppProviders.exerciseDaoProvider);
-    final exerciseModels = <int, Exercise>{};
-    for (final id in exerciseIds) {
-      final row = await dao.getExerciseById(id);
-      if (row != null) {
-        exerciseModels[id] = row;
-      }
-    }
+  @override
+  Widget build(BuildContext context) {
+    final foreground = WorkoutDetailStyle.actionForeground(context);
+    return ColoredBox(
+      color: context.colorScheme.surface,
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Center(
+          heightFactor: 1,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppWorkoutDetailTokens.maxContentWidth,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
+              ),
+              child: FilledButton(
+                key: const Key('workout_detail_primary_action'),
+                onPressed: isBusy ? null : onPressed,
+                style: FilledButton.styleFrom(
+                  backgroundColor: WorkoutDetailStyle.actionFill(context),
+                  foregroundColor: foreground,
+                  disabledBackgroundColor:
+                      context.colorScheme.surfaceContainerHigh,
+                  disabledForegroundColor: context.colorScheme.onSurfaceVariant,
+                  minimumSize: const Size.fromHeight(
+                    AppWorkoutDetailTokens.controlSize + AppSpacing.sm,
+                  ),
+                  textStyle: WorkoutDetailStyle.label(
+                    context,
+                  ).copyWith(inherit: false),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.md,
+                  ),
+                  shape: const StadiumBorder(),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (isBusy)
+                      SizedBox(
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                        child: CircularProgressIndicator(
+                          strokeWidth: AppSizing.strokeWidth,
+                          color: context.colorScheme.onSurfaceVariant,
+                          semanticsLabel: AppStrings.loading,
+                        ),
+                      )
+                    else
+                      SvgPicture.asset(
+                        OutlinedSvgAssets.play,
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                        colorFilter: ColorFilter.mode(
+                          foreground,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    AppWhiteSpace.wSm,
+                    Flexible(
+                      child: Text(
+                        state == WorkoutDetailButtonState.resume
+                            ? AppStrings.resumeWorkout
+                            : AppStrings.startWorkout,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-    return ProgrammeWorkoutDetailController.buildSavedWorkoutDetail(
-      aggregate,
-      exerciseModels,
-      buttonState: buttonState,
+class _WorkoutMessage extends StatelessWidget {
+  const _WorkoutMessage({
+    required this.icon,
+    required this.message,
+    this.onRetry,
+  });
+
+  final String icon;
+  final String message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xl,
+      ),
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            icon,
+            width: AppSizing.iconXxl,
+            height: AppSizing.iconXxl,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
+            ),
+          ),
+          AppWhiteSpace.hMd,
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: WorkoutDetailStyle.body(context),
+          ),
+          if (onRetry != null) ...[
+            AppWhiteSpace.hMd,
+            FilledButton(
+              onPressed: onRetry,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppWorkoutDetailTokens.controlSize,
+                ),
+                foregroundColor: WorkoutDetailStyle.actionForeground(context),
+                backgroundColor: WorkoutDetailStyle.actionFill(context),
+                textStyle: WorkoutDetailStyle.label(
+                  context,
+                ).copyWith(inherit: false),
+              ),
+              child: const Text(AppStrings.retry),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

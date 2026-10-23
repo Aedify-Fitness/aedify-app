@@ -221,6 +221,12 @@ abstract final class AppExerciseDetailTokens {
       bottomActionHeight + (bottomActionInset * 2);
 }
 
+abstract final class AppWorkoutDetailTokens {
+  static const double maxContentWidth = 640;
+  static const double controlSize = 48;
+  static const double exerciseNumberSize = 36;
+}
+
 class AppWhiteSpace {
   AppWhiteSpace._();
 

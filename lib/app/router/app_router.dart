@@ -80,8 +80,10 @@ class AppRouter {
     final aiAvailability = ref.watch(AppProviders.aiAvailabilityProvider);
     final draftGuard = ref.watch(AppProviders.draftGuardProvider);
     final featureFlags = ref.watch(AppProviders.featureFlagsProvider);
+    final rootNavigatorKey = GlobalKey<NavigatorState>();
 
     return GoRouter(
+      navigatorKey: rootNavigatorKey,
       initialLocation: AppRoutes.initialRoute,
       redirect: (context, state) {
         final location = state.matchedLocation;
@@ -221,6 +223,7 @@ class AppRouter {
                     GoRoute(
                       path: ':id',
                       name: AppRoutes.programmeCalendar().name,
+                      parentNavigatorKey: rootNavigatorKey,
                       builder: (context, state) {
                         final id = state.pathParameters['id']!;
                         return ProgrammeCalendarScreen(programmeId: id);
@@ -229,6 +232,7 @@ class AppRouter {
                     GoRoute(
                       path: ':programId/workouts/:workoutId',
                       name: AppRoutes.programmeWorkoutDetail().name,
+                      parentNavigatorKey: rootNavigatorKey,
                       builder: (context, state) {
                         final programId = state.pathParameters['programId']!;
                         final workoutId = state.pathParameters['workoutId']!;

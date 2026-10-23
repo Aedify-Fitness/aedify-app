@@ -129,6 +129,8 @@ import 'package:aedify/features/lift_log/data/workout_history_repository.dart';
 import 'package:aedify/features/programmes/application/list_programmes_use_case.dart';
 import 'package:aedify/features/programmes/application/list_saved_workouts_use_case.dart';
 import 'package:aedify/features/programmes/application/programme_calendar_controller.dart';
+import 'package:aedify/features/programmes/application/workout_detail_controller.dart';
+import 'package:aedify/features/programmes/domain/programme_workout_detail_view_data.dart';
 import 'package:aedify/features/programmes/application/programme_calendar_state.dart';
 import 'package:aedify/features/programmes/application/programme_library_controller.dart';
 import 'package:aedify/features/programmes/application/programme_library_state.dart';
@@ -761,6 +763,13 @@ class AppProviders {
         ProgrammeCalendarState,
         String
       >((arg) => ProgrammeCalendarController(arg));
+
+  static final workoutDetailControllerProvider =
+      AsyncNotifierProvider.family<
+        WorkoutDetailController,
+        ProgrammeWorkoutDetailViewData?,
+        ({String? programId, String workoutId})
+      >((arg) => WorkoutDetailController(arg));
 
   // V1-M4-005 — history & library providers
   static final workoutHistoryRepositoryProvider =

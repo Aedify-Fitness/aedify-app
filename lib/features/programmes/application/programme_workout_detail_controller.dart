@@ -23,8 +23,10 @@ class ProgrammeWorkoutDetailController {
     );
     if (workout == null) return null;
 
-    final dayIdx = workout.scheduledDayIndex ?? 0;
-    final dayLabel = TrainingDay.values[dayIdx].fullDisplayLabel;
+    final dayIdx = workout.scheduledDayIndex;
+    final dayLabel = dayIdx == null
+        ? ''
+        : TrainingDay.values[dayIdx].fullDisplayLabel;
 
     final template = aggregate.templates
         .cast<ProgramWorkoutTemplate?>()
@@ -110,7 +112,7 @@ class ProgrammeWorkoutDetailController {
     Map<int, Exercise> exerciseModels, {
     WorkoutDetailButtonState buttonState = WorkoutDetailButtonState.start,
   }) {
-    final exercises = aggregate.exercises
+    final exercises = List<SavedWorkoutExercise>.of(aggregate.exercises)
       ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
     final allMuscles = <String>{};
@@ -160,9 +162,11 @@ class ProgrammeWorkoutDetailController {
           equipment: equipment,
           supersetGroupId: ex.supersetGroupId,
           supersetOrder: ex.supersetOrder,
-          loggingType: exerciseModel?.loggingType != null
-              ? ExerciseLoggingType.fromDb(exerciseModel!.loggingType!)
-              : ExerciseLoggingType.repsWeight,
+          loggingType: ExerciseLoggingType.fromDbWithDefault(
+            ex.loggingType?.isNotEmpty == true
+                ? ex.loggingType
+                : exerciseModel?.loggingType,
+          ),
         ),
       );
     }

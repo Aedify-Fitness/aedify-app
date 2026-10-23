@@ -10,6 +10,9 @@ import 'package:aedify/app/router/bottom_nav_shell.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
+import 'package:aedify/features/programmes/presentation/programme_calendar_screen.dart';
+import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
+import 'package:aedify/features/programmes/presentation/workout_detail_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -346,6 +349,151 @@ void main() {
         AppRoutes.programmes().path,
       );
     });
+
+    for (final detail in [
+      (
+        route: AppRoutes.programmeCalendar(),
+        parameters: const {'id': 'programme-1'},
+        programmeId: 'programme-1',
+        workoutId: null,
+      ),
+      (
+        route: AppRoutes.programmeWorkoutDetail(),
+        parameters: const {
+          'programId': 'programme-1',
+          'workoutId': 'workout-1',
+        },
+        programmeId: 'programme-1',
+        workoutId: 'workout-1',
+      ),
+      (
+        route: AppRoutes.workoutDetail(),
+        parameters: const {'workoutId': 'workout-1'},
+        programmeId: null,
+        workoutId: 'workout-1',
+      ),
+    ]) {
+      testWidgets('${detail.route.name} opens without floating navigation', (
+        tester,
+      ) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+
+        router.goNamed(detail.route.name, pathParameters: detail.parameters);
+        await tester.pumpAndSettle();
+
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          router.namedLocation(
+            detail.route.name,
+            pathParameters: detail.parameters,
+          ),
+        );
+        if (detail.workoutId == null) {
+          final screen = tester.widget<ProgrammeCalendarScreen>(
+            find.byType(ProgrammeCalendarScreen),
+          );
+          expect(screen.programmeId, detail.programmeId);
+        } else {
+          final screen = tester.widget<WorkoutDetailScreen>(
+            find.byType(WorkoutDetailScreen),
+          );
+          expect(screen.programId, detail.programmeId);
+          expect(screen.workoutId, detail.workoutId);
+        }
+        expect(find.byType(BottomNavShell), findsNothing);
+        expect(find.byType(NavigationBar), findsNothing);
+      });
+
+      testWidgets('${detail.route.name} restores Plan navigation on return', (
+        tester,
+      ) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+        router.goNamed(AppRoutes.programmes().name);
+        await tester.pumpAndSettle();
+        expect(find.byType(ProgrammesScreen), findsOneWidget);
+        expect(find.byType(NavigationBar), findsOneWidget);
+
+        router.pushNamed(detail.route.name, pathParameters: detail.parameters);
+        await tester.pumpAndSettle();
+        expect(find.byType(BottomNavShell), findsNothing);
+        expect(find.byType(NavigationBar), findsNothing);
+
+        router.pop();
+        await tester.pumpAndSettle();
+        expect(find.byType(ProgrammesScreen), findsOneWidget);
+        expect(find.byType(BottomNavShell), findsOneWidget);
+        expect(
+          tester
+              .widget<NavigationBar>(find.byType(NavigationBar))
+              .selectedIndex,
+          2,
+        );
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          AppRoutes.programmes().path,
+        );
+      });
+    }
+
+    testWidgets(
+      'calendar and workout detail keep navigation hidden until Plan',
+      (tester) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+        router.goNamed(AppRoutes.programmes().name);
+        await tester.pumpAndSettle();
+
+        router.pushNamed(
+          AppRoutes.programmeCalendar().name,
+          pathParameters: const {'id': 'programme-1'},
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(ProgrammeCalendarScreen), findsOneWidget);
+        expect(find.byType(NavigationBar), findsNothing);
+
+        router.pushNamed(
+          AppRoutes.programmeWorkoutDetail().name,
+          pathParameters: const {
+            'programId': 'programme-1',
+            'workoutId': 'workout-1',
+          },
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(WorkoutDetailScreen), findsOneWidget);
+        expect(find.byType(NavigationBar), findsNothing);
+
+        router.pop();
+        await tester.pumpAndSettle();
+        expect(find.byType(ProgrammeCalendarScreen), findsOneWidget);
+        expect(find.byType(WorkoutDetailScreen), findsNothing);
+        expect(find.byType(NavigationBar), findsNothing);
+
+        router.pop();
+        await tester.pumpAndSettle();
+        expect(find.byType(ProgrammesScreen), findsOneWidget);
+        expect(find.byType(BottomNavShell), findsOneWidget);
+        expect(
+          tester
+              .widget<NavigationBar>(find.byType(NavigationBar))
+              .selectedIndex,
+          2,
+        );
+      },
+    );
 
     testWidgets('program workout runner opens outside bottom nav shell', (
       tester,

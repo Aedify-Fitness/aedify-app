@@ -656,6 +656,7 @@ class _AvoidAction extends StatelessWidget {
       color: context.colorScheme.surface,
       child: SafeArea(
         top: false,
+        bottom: false,
         child: Center(
           heightFactor: 1,
           child: ConstrainedBox(

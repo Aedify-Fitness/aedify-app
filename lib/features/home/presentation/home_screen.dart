@@ -489,9 +489,6 @@ class _WorkoutFeatureSurface extends StatelessWidget {
         ? context.colorScheme.surfaceContainerHigh
         : context.colorScheme.primaryContainer;
     return Container(
-      constraints: const BoxConstraints(
-        minHeight: AppSizing.homeWorkoutHeroMinHeight,
-      ),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -525,7 +522,7 @@ class _WorkoutFeatureSurface extends StatelessWidget {
               ),
             ),
           ),
-          Padding(padding: const EdgeInsets.all(AppSpacing.xl), child: child),
+          Padding(padding: const EdgeInsets.all(AppSpacing.lg), child: child),
         ],
       ),
     );
@@ -1091,7 +1088,7 @@ class _ActiveProgrammePanel extends StatelessWidget {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

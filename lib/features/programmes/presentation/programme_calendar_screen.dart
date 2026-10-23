@@ -150,6 +150,7 @@ class _ProgrammeCalendarScreenState
 
         return Scaffold(
           body: SafeArea(
+            bottom: false,
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(

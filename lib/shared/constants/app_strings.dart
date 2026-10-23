@@ -1315,6 +1315,19 @@ class AppStrings {
   static const rpeHint = 'RPE 8-9';
 
   // Programme workout detail
+  static const workoutViewSets = 'View sets';
+  static const workoutHideSets = 'Hide sets';
+  static const workoutVariableTargets = 'Targets vary by set';
+  static const workoutFlowHint =
+      'Review your exercises and targets before you begin.';
+  static const workoutTotalSets = 'Total sets';
+  static const workoutEstimatedDuration = 'Est. duration';
+  static String workoutWorkingSets(int count) =>
+      '$count working ${count == 1 ? 'set' : 'sets'}';
+  static String workoutWarmupSets(int count) =>
+      '$count warm-up ${count == 1 ? 'set' : 'sets'}';
+  static String workoutSetDetailsLabel(int number, String type) =>
+      'Set $number · $type';
   static const workoutFlow = 'Workout Flow';
   static const movements = 'Movements';
   static const minutes = 'Minutes';
