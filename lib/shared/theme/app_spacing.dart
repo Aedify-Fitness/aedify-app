@@ -94,6 +94,14 @@ abstract final class AppProgrammeReviewTokens {
   static const double workloadTrackHeight = 8;
 }
 
+abstract final class AppProgrammeCalendarTokens {
+  static const double maxContentWidth = 640;
+  static const double controlSize = 48;
+  static const double weekWidth = 80;
+  static const double dayRailWidth = 48;
+  static const double progressTrackHeight = 6;
+}
+
 abstract final class AppExerciseConfigTokens {
   static const double tableWidth = 440;
   static const double fieldHeight = 36;

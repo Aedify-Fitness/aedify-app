@@ -972,6 +972,7 @@ class AppStrings {
   static const custom = 'Custom';
   static const imported = 'Imported';
   static const completed = 'Completed';
+  static const replaced = 'Replaced';
   static const weeks = 'Weeks';
   static const daysPerWeek = 'Days/Wk';
   static const goal = 'Goal';
@@ -1145,6 +1146,13 @@ class AppStrings {
 
   // Programme calendar
   static const programmeCalendar = 'Programme Calendar';
+  static const programmeProgress = 'Programme progress';
+  static const programmeScheduleHint = 'Your training, one week at a time.';
+  static const programmeCurrentWeek = 'Current week';
+  static const programmeEmptyScheduleHint =
+      'Edit your programme to add weeks and schedule your workouts.';
+  static String programmeWorkoutCompletion(int completed, int total) =>
+      '$completed of $total workouts completed';
   static const activeRecovery = 'Active Recovery';
   static const currentPhase = 'Current Phase';
   static const weekDeload = 'Deload';

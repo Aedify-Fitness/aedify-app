@@ -5,11 +5,12 @@ import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/domain/program_workout_status.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
-import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// A scheduled workout or quiet recovery stop in the programme agenda.
 class ProgrammeDayCard extends StatelessWidget {
   const ProgrammeDayCard({super.key, required this.day, this.onTap});
 
@@ -18,8 +19,61 @@ class ProgrammeDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (day.isRestDay) return _RestDayCell(day: day);
-    return _WorkoutDayCell(day: day, onTap: onTap);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _DayRail(day: day),
+        AppWhiteSpace.wSm,
+        Expanded(
+          child: day.isRestDay
+              ? _RestDayCell(day: day)
+              : _WorkoutDayCell(day: day, onTap: onTap),
+        ),
+      ],
+    );
+  }
+}
+
+class _DayRail extends StatelessWidget {
+  const _DayRail({required this.day});
+
+  final DayViewData day;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = context.theme.brightness == Brightness.dark
+        ? context.colorScheme.primary
+        : context.colorScheme.secondary;
+    final foreground = day.isToday || day.isCompleted
+        ? accent
+        : context.colorScheme.onSurfaceVariant;
+
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: AppProgrammeCalendarTokens.dayRailWidth,
+        child: Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.md),
+          child: Container(
+            width: AppSpacing.xl,
+            height: AppSpacing.xl,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: context.colorScheme.surface,
+              shape: BoxShape.circle,
+              border: day.isToday
+                  ? Border.all(color: accent, width: AppSizing.strokeWidth)
+                  : null,
+            ),
+            child: SvgPicture.asset(
+              _DayPresentation.asset(day),
+              width: AppSizing.iconSm,
+              height: AppSizing.iconSm,
+              colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -30,78 +84,24 @@ class _RestDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
+    return Padding(
       key: ValueKey('programme_day_rest_${day.scheduledDayIndex}'),
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-      child: CustomPaint(
-        foregroundPainter: DashedBorderPainter(
-          color: context.colorScheme.outlineVariant,
-          strokeWidth: AppSizing.hairlineStrokeWidth,
-          dashWidth: AppSpacing.sm,
-          gapWidth: AppSpacing.sm,
-          borderRadius: AppRadius.lg,
-        ),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.md),
-          color: context.colorScheme.surfaceContainerLow,
-          child: Row(
-            children: [
-              _DayIcon(
-                asset: SolidSvgAssets.meditation,
-                backgroundColor: context.colorScheme.surfaceContainerHigh,
-                foregroundColor: context.colorScheme.onSurfaceVariant,
-              ),
-              AppWhiteSpace.wMd,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: AppSpacing.xs,
-                      runSpacing: AppSpacing.xs,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          day.dayLabel,
-                          style: context.textTheme.labelSmall?.copyWith(
-                            color: context.colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        _DayBadge(
-                          label: AppStrings.rest,
-                          backgroundColor:
-                              context.colorScheme.surfaceContainerHigh,
-                          foregroundColor: context.colorScheme.onSurfaceVariant,
-                        ),
-                        if (day.isToday)
-                          _DayBadge(
-                            key: ValueKey(
-                              'programme_day_today_badge_${day.scheduledDayIndex}',
-                            ),
-                            label: AppStrings.today,
-                            backgroundColor:
-                                context.colorScheme.secondaryContainer,
-                            foregroundColor:
-                                context.colorScheme.onSecondaryContainer,
-                          ),
-                      ],
-                    ),
-                    AppWhiteSpace.hXs,
-                    Text(
-                      day.title,
-                      style: context.textTheme.bodyLarge?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.controlGap,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DayHeading(day: day),
+          AppWhiteSpace.hXs,
+          Text(
+            day.title,
+            style: _DayPresentation.bodyStyle(
+              context,
+            ).copyWith(color: context.colorScheme.onSurfaceVariant),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -115,166 +115,75 @@ class _WorkoutDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSkipped = day.status == ProgramWorkoutStatus.skipped;
-    final isStarted = day.status == ProgramWorkoutStatus.started;
-    final backgroundColor = day.isToday
-        ? context.colorScheme.surfaceContainerLowest
-        : context.colorScheme.surfaceContainerLow;
+    final accent = context.theme.brightness == Brightness.dark
+        ? context.colorScheme.primary
+        : context.colorScheme.secondary;
 
     return Semantics(
       button: onTap != null,
       child: Material(
         key: ValueKey('programme_day_workout_${day.scheduledDayIndex}'),
-        color: backgroundColor,
+        color: day.isToday
+            ? context.colorScheme.surfaceContainer
+            : context.theme.brightness == Brightness.dark
+            ? context.colorScheme.surfaceContainerLow
+            : context.colorScheme.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(
-            color: day.isToday
-                ? context.colorScheme.secondary
-                : context.colorScheme.outlineVariant,
-            width: day.isToday
-                ? AppSizing.strokeWidth
-                : AppSizing.hairlineStrokeWidth,
-          ),
+          side: day.isToday
+              ? BorderSide(color: accent, width: AppSizing.hairlineStrokeWidth)
+              : BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _DayIcon(
-                  asset: day.isCompleted
-                      ? SolidSvgAssets.checkCircle
-                      : isSkipped
-                      ? OutlinedSvgAssets.noSymbol
-                      : SolidSvgAssets.dumbbell,
-                  backgroundColor: day.isToday
-                      ? context.colorScheme.secondaryContainer
-                      : context.colorScheme.surfaceContainerHigh,
-                  foregroundColor: day.isToday
-                      ? context.colorScheme.secondary
-                      : context.colorScheme.onSurfaceVariant,
-                ),
-                AppWhiteSpace.wMd,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        spacing: AppSpacing.xs,
-                        runSpacing: AppSpacing.xs,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            day.dayLabel,
-                            style: context.textTheme.labelSmall?.copyWith(
-                              color: day.isToday
-                                  ? context.colorScheme.secondary
-                                  : context.colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (day.isToday)
-                            _DayBadge(
-                              key: ValueKey(
-                                'programme_day_today_badge_${day.scheduledDayIndex}',
-                              ),
-                              label: AppStrings.today,
-                              backgroundColor:
-                                  context.colorScheme.secondaryContainer,
-                              foregroundColor:
-                                  context.colorScheme.onSecondaryContainer,
-                            ),
-                          if (day.isCompleted)
-                            _DayBadge(
-                              key: ValueKey(
-                                'programme_day_completed_badge_${day.scheduledDayIndex}',
-                              ),
-                              label: AppStrings.completed,
-                              backgroundColor:
-                                  context.colorScheme.secondaryContainer,
-                              foregroundColor:
-                                  context.colorScheme.onSecondaryContainer,
-                            )
-                          else if (isSkipped)
-                            _DayBadge(
-                              key: ValueKey(
-                                'programme_day_skipped_badge_${day.scheduledDayIndex}',
-                              ),
-                              label: AppStrings.skipped,
-                              backgroundColor:
-                                  context.colorScheme.surfaceContainerHighest,
-                              foregroundColor:
-                                  context.colorScheme.onSurfaceVariant,
-                            )
-                          else if (isStarted)
-                            _DayBadge(
-                              label: AppStrings.inProgressLabel,
-                              backgroundColor:
-                                  context.colorScheme.surfaceContainerHighest,
-                              foregroundColor: context.colorScheme.onSurface,
-                            ),
-                        ],
-                      ),
-                      AppWhiteSpace.hXs,
-                      Text(
-                        day.title,
-                        style: context.textTheme.bodyLarge?.copyWith(
-                          color: context.colorScheme.onSurface,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      AppWhiteSpace.hSm,
-                      Wrap(
-                        spacing: AppSpacing.md,
-                        runSpacing: AppSpacing.xs,
-                        children: [
-                          _DayMeta(
-                            asset: OutlinedSvgAssets.listBullet,
-                            label:
-                                '${day.exerciseCount} ${AppStrings.movements}',
-                          ),
-                          if (day.durationMinutes > 0)
-                            _DayMeta(
-                              asset: OutlinedSvgAssets.clock,
-                              label:
-                                  '${day.durationMinutes}${AppStrings.durationMinutesAbbreviation}',
-                            ),
-                        ],
-                      ),
-                      if (day.isToday && day.exercisePreview.isNotEmpty) ...[
-                        AppWhiteSpace.hMd,
-                        for (final name in day.exercisePreview.take(2))
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSpacing.xs,
-                            ),
-                            child: _ExercisePreview(name: name),
-                          ),
-                      ],
-                    ],
+                _DayHeading(day: day),
+                AppWhiteSpace.hSm,
+                Text(
+                  day.title,
+                  style: _DayPresentation.titleStyle(context).copyWith(
+                    color: context.colorScheme.onSurface,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                AppWhiteSpace.wSm,
-                Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.sm),
-                  child: SvgPicture.asset(
-                    day.isCompleted
-                        ? SolidSvgAssets.checkCircle
-                        : OutlinedSvgAssets.chevronRight,
-                    width: AppSizing.iconSm,
-                    height: AppSizing.iconSm,
-                    colorFilter: ColorFilter.mode(
-                      day.isCompleted
-                          ? context.colorScheme.secondary
-                          : context.colorScheme.onSurfaceVariant,
-                      BlendMode.srcIn,
+                AppWhiteSpace.hSm,
+                Wrap(
+                  spacing: AppSpacing.controlGap,
+                  runSpacing: AppSpacing.xs,
+                  children: [
+                    _DayMeta(
+                      asset: OutlinedSvgAssets.listBullet,
+                      label: '${day.exerciseCount} ${AppStrings.movements}',
                     ),
-                  ),
+                    if (day.durationMinutes > 0)
+                      _DayMeta(
+                        asset: OutlinedSvgAssets.clock,
+                        label:
+                            '${day.durationMinutes}${AppStrings.durationMinutesAbbreviation}',
+                      ),
+                  ],
                 ),
+                if (day.isToday && day.exercisePreview.isNotEmpty) ...[
+                  AppWhiteSpace.hMd,
+                  for (final name in day.exercisePreview.take(2))
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                      child: Text(
+                        name,
+                        style: _DayPresentation.bodyStyle(
+                          context,
+                        ).copyWith(color: context.colorScheme.onSurfaceVariant),
+                      ),
+                    ),
+                ],
               ],
             ),
           ),
@@ -284,57 +193,58 @@ class _WorkoutDayCell extends StatelessWidget {
   }
 }
 
-class _DayBadge extends StatelessWidget {
-  const _DayBadge({
-    super.key,
-    required this.label,
-    required this.backgroundColor,
-    required this.foregroundColor,
-  });
+class _DayHeading extends StatelessWidget {
+  const _DayHeading({required this.day});
 
-  final String label;
-  final Color backgroundColor;
-  final Color foregroundColor;
+  final DayViewData day;
 
   @override
   Widget build(BuildContext context) {
-    return AppBadge(
-      label: label,
-      backgroundColor: backgroundColor,
-      foregroundColor: foregroundColor,
-      borderRadius: AppRadius.full,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-    );
-  }
-}
+    final accent = context.theme.brightness == Brightness.dark
+        ? context.colorScheme.primary
+        : context.colorScheme.secondary;
+    final labelStyle = _DayPresentation.labelStyle(context);
 
-class _DayIcon extends StatelessWidget {
-  const _DayIcon({
-    required this.asset,
-    required this.backgroundColor,
-    required this.foregroundColor,
-  });
-
-  final String asset;
-  final Color backgroundColor;
-  final Color foregroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: AppSizing.iconXxl,
-      height: AppSizing.iconXxl,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
-      child: SvgPicture.asset(
-        asset,
-        width: AppSizing.iconSm,
-        height: AppSizing.iconSm,
-        colorFilter: ColorFilter.mode(foregroundColor, BlendMode.srcIn),
-      ),
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          day.dayLabel,
+          style: labelStyle.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        if (day.isToday)
+          AppBadge(
+            key: ValueKey('programme_day_today_badge_${day.scheduledDayIndex}'),
+            label: AppStrings.today,
+            backgroundColor: context.colorScheme.surfaceContainerHigh,
+            foregroundColor: accent,
+            textStyle: labelStyle,
+            borderRadius: AppRadius.full,
+          ),
+        if (day.isRestDay)
+          Text(
+            AppStrings.rest,
+            style: labelStyle.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          )
+        else if (day.status != ProgramWorkoutStatus.planned)
+          Text(
+            _DayPresentation.status(day),
+            key: ValueKey(
+              'programme_day_${day.status.name}_badge_${day.scheduledDayIndex}',
+            ),
+            style: labelStyle.copyWith(
+              color: day.isCompleted
+                  ? accent
+                  : context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+      ],
     );
   }
 }
@@ -354,16 +264,19 @@ class _DayMeta extends StatelessWidget {
           asset,
           width: AppSizing.iconXs,
           height: AppSizing.iconXs,
+          excludeFromSemantics: true,
           colorFilter: ColorFilter.mode(
             context.colorScheme.onSurfaceVariant,
             BlendMode.srcIn,
           ),
         ),
         AppWhiteSpace.wXs,
-        Text(
-          label,
-          style: context.textTheme.labelSmall?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
+        Flexible(
+          child: Text(
+            label,
+            style: _DayPresentation.labelStyle(
+              context,
+            ).copyWith(color: context.colorScheme.onSurfaceVariant),
           ),
         ),
       ],
@@ -371,37 +284,38 @@ class _DayMeta extends StatelessWidget {
   }
 }
 
-class _ExercisePreview extends StatelessWidget {
-  const _ExercisePreview({required this.name});
-
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: AppSpacing.sm),
-          child: Container(
-            width: AppSpacing.xs,
-            height: AppSpacing.xs,
-            decoration: BoxDecoration(
-              color: context.colorScheme.secondary,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        AppWhiteSpace.wSm,
-        Expanded(
-          child: Text(
-            name,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ],
-    );
+abstract final class _DayPresentation {
+  static String asset(DayViewData day) {
+    if (day.isRestDay) return SolidSvgAssets.meditation;
+    return switch (day.status) {
+      ProgramWorkoutStatus.completed => SolidSvgAssets.checkCircle,
+      ProgramWorkoutStatus.skipped => OutlinedSvgAssets.noSymbol,
+      ProgramWorkoutStatus.started => OutlinedSvgAssets.playCircle,
+      ProgramWorkoutStatus.planned => SolidSvgAssets.dumbbell,
+      ProgramWorkoutStatus.replaced => OutlinedSvgAssets.arrowPath,
+    };
   }
+
+  static String status(DayViewData day) => switch (day.status) {
+    ProgramWorkoutStatus.completed => AppStrings.completed,
+    ProgramWorkoutStatus.skipped => AppStrings.skipped,
+    ProgramWorkoutStatus.started => AppStrings.inProgressLabel,
+    ProgramWorkoutStatus.planned => AppStrings.planned,
+    ProgramWorkoutStatus.replaced => AppStrings.replaced,
+  };
+
+  static TextStyle titleStyle(BuildContext context) =>
+      context.theme.brightness == Brightness.dark
+      ? AppTextStylesDark.bodyLg
+      : AppTextStyles.bodyLg;
+
+  static TextStyle bodyStyle(BuildContext context) =>
+      context.theme.brightness == Brightness.dark
+      ? AppTextStylesDark.bodySm
+      : AppTextStyles.bodySm;
+
+  static TextStyle labelStyle(BuildContext context) =>
+      context.theme.brightness == Brightness.dark
+      ? AppTextStylesDark.labelSm
+      : AppTextStyles.labelSm;
 }

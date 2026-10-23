@@ -4,6 +4,28 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-10-23
+
+### M4 — Programme calendar redesign
+
+- Rebuilt `ProgrammeCalendarScreen` around programme completion, the actual
+  scheduled workout and a selected-week agenda. Numbered week navigation reveals
+  distant current weeks reliably, offers a return to the current week and retains
+  selection through refresh; removed weeks and programme changes reset safely.
+- Refined `ProgrammeCalendarHeader`, `ProgrammeWeekSection` and `ProgrammeDayCard`
+  with a seven-day overview, connected agenda, compact recovery rows, explicit
+  workout statuses and distinct deload treatment. Shared tokens/copy, light/dark
+  surfaces, accessible progress and 48px controls follow the design system.
+- Preserved named edit/detail/runner routes, reload on return, start/resume session
+  guards, local data ownership and offline behavior. No dependencies or schema
+  changes.
+- Verification: `dart format .` checked 728 files; `flutter analyze`,
+  `git diff --check` and all 35 calendar regressions passed, including 320px/2x
+  text in both themes, distant-week selection, session conflicts, routes,
+  refresh/retry and overview taps. Light/dark 390px previews rendered/reviewed.
+  Full `flutter test`: 1337 passed, 14 failed. The identical 14 builder/runner
+  failures reproduce in an isolated archive of unchanged HEAD `0d4788e`.
+
 ## 2026-10-20
 
 ### M4 — Repeat visibility and confirmation rules
