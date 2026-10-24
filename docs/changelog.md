@@ -4,6 +4,31 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-10-24
+
+### M4 — Custom exercise editor redesign
+
+- Rebuilt `CustomExerciseEditorScreen` with a clear create/edit heading,
+  grouped exercise details, training setup and tracking, and a fixed Save/Discard
+  footer that respects safe areas, large text and the keyboard.
+- Extracted reusable equipment/difficulty and instruction sections. All muscle,
+  modality, difficulty and tracking choices remain available through accessible
+  48px controls; tracking uses full-width rows and difficulty wraps naturally.
+- Numbered cue cards and explicit text/list actions preserve normalization,
+  cursor/composition state, deletion identity and validation feedback. Required
+  fields and optional instruction behavior are unchanged.
+- Save/delete now block concurrent operations and draft changes while pending,
+  ignore completions after disposal and clear stale operation errors. Failure
+  Retry repeats the failed operation. Dirty exit confirmation, successful route
+  results and library refresh/filter behavior remain intact.
+- Verification: `dart format .` checked 741 files; `flutter analyze`,
+  `git diff --check` and all 311 exercise-library tests passed, including editor
+  lifecycle, library returns and 320px/2x-text/keyboard accessibility cases.
+  Reviewed real-font 390px light/dark overview, setup, tracking and instruction
+  previews. Full suite: 1447 passed, 14 failed; the failure names exactly match
+  the previously confirmed 12 programme-builder and two runner failures.
+  No new failures, dependencies, schema or storage changes. Live reload not repeated.
+
 ## 2026-10-23
 
 ### M4 — Full-screen programme calendar and workout details

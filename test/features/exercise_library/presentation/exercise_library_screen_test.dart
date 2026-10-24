@@ -265,15 +265,14 @@ void main() {
           find.byKey(const Key('custom_exercise_name_text_field')),
           'Custom Bench Press',
         );
-        await tester.tap(
-          find.byKey(const ValueKey('custom_exercise_muscle_chest')),
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        final chest = find.byKey(
+          const ValueKey('custom_exercise_muscle_chest'),
         );
-        tester
-            .widget<TextField>(
-              find.byKey(const Key('custom_exercise_name_text_field')),
-            )
-            .focusNode!
-            .unfocus();
+        await tester.ensureVisible(chest);
+        await tester.pumpAndSettle();
+        await tester.tap(chest);
         await tester.pumpAndSettle();
         await tester.ensureVisible(
           find.byKey(const Key('custom_exercise_primary_action')),
@@ -286,7 +285,9 @@ void main() {
         expect(find.text(AppStrings.customExerciseSaved), findsOneWidget);
 
         await tester.tap(
-          returnWithBack ? find.byType(BackButton) : find.text(AppStrings.done),
+          returnWithBack
+              ? find.byKey(const Key('custom_exercise_back_action'))
+              : find.text(AppStrings.done),
         );
         await tester.pumpAndSettle();
 
@@ -314,7 +315,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('create_action_fab')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byKey(const Key('custom_exercise_back_action')));
       await tester.pumpAndSettle();
 
       expect(find.byType(ExerciseLibraryScreen), findsOneWidget);

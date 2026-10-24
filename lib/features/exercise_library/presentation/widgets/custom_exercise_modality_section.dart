@@ -1,8 +1,7 @@
+import 'package:aedify/features/exercise_library/presentation/widgets/custom_exercise_editor_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
-import 'package:aedify/shared/theme/app_text_styles.dart';
-import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class CustomExerciseModalitySection extends StatelessWidget {
@@ -10,62 +9,45 @@ class CustomExerciseModalitySection extends StatelessWidget {
     super.key,
     required this.modality,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final ExerciseModality modality;
   final ValueChanged<ExerciseModality> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: AppSpacing.xs),
+        Semantics(
+          header: true,
           child: Text(
-            AppStrings.customExerciseModality.toUpperCase(),
-            style: AppTextStyles.labelMd.copyWith(color: cs.onSurfaceVariant),
+            AppStrings.customExerciseModality,
+            style: CustomExerciseEditorStyle.label(context),
           ),
         ),
         AppWhiteSpace.hMd,
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
-          children: ExerciseModality.values.map((m) {
-            final isSelected = m == modality;
-            return Semantics(
-              button: true,
-              selected: isSelected,
-              child: GestureDetector(
-                onTap: () => onChanged(m),
-                child: Container(
-                  key: ValueKey('custom_exercise_modality_${m.name}'),
-                  constraints: const BoxConstraints(
-                    minHeight: AppSizing.cardBadge,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.formChipHorizontal,
-                    vertical: AppSpacing.formChipVertical,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? cs.secondaryContainer
-                        : cs.surfaceContainerLowest,
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    border: Border.all(
-                      color: isSelected
-                          ? cs.secondary.withValues(alpha: 0.2)
-                          : cs.outlineVariant,
-                    ),
+          children: ExerciseModality.values.map((value) {
+            final isSelected = value == modality;
+            return MergeSemantics(
+              child: Semantics(
+                selected: isSelected,
+                enabled: enabled,
+                inMutuallyExclusiveGroup: true,
+                child: TextButton(
+                  key: ValueKey('custom_exercise_modality_${value.name}'),
+                  onPressed: enabled ? () => onChanged(value) : null,
+                  style: CustomExerciseEditorStyle.choiceStyle(
+                    context,
+                    selected: isSelected,
                   ),
                   child: Text(
-                    _formatLabel(m.dbValue),
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: isSelected
-                          ? cs.onSecondaryContainer
-                          : cs.onSurfaceVariant,
-                    ),
+                    CustomExerciseEditorStyle.formatLabel(value.dbValue),
                   ),
                 ),
               ),
@@ -74,17 +56,5 @@ class CustomExerciseModalitySection extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _formatLabel(String value) {
-    return value
-        .replaceAll('_', ' ')
-        .split(' ')
-        .map(
-          (word) => word.isEmpty
-              ? ''
-              : '${word[0].toUpperCase()}${word.substring(1)}',
-        )
-        .join(' ');
   }
 }

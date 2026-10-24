@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/application/custom_exercise_editor_phase.dart';
@@ -50,9 +52,14 @@ class _FakeSaveUseCase implements SaveCustomExerciseUseCase {
   CustomExerciseDraft? lastCreatedDraft;
   int? lastUpdatedId;
   CustomExerciseDraft? lastUpdatedDraft;
+  Completer<void>? pending;
+  int createCalls = 0;
+  int updateCalls = 0;
 
   @override
   Future<int> create(CustomExerciseDraft draft) async {
+    createCalls++;
+    if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('save failed');
     lastCreatedDraft = draft;
     return createResult;
@@ -63,6 +70,8 @@ class _FakeSaveUseCase implements SaveCustomExerciseUseCase {
     required int exerciseId,
     required CustomExerciseDraft draft,
   }) async {
+    updateCalls++;
+    if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('save failed');
     lastUpdatedId = exerciseId;
     lastUpdatedDraft = draft;
@@ -72,9 +81,13 @@ class _FakeSaveUseCase implements SaveCustomExerciseUseCase {
 class _FakeDeleteUseCase implements DeleteCustomExerciseUseCase {
   bool shouldThrow = false;
   int? lastDeletedId;
+  Completer<void>? pending;
+  int calls = 0;
 
   @override
   Future<void> delete(int exerciseId) async {
+    calls++;
+    if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('delete failed');
     lastDeletedId = exerciseId;
   }
@@ -701,6 +714,152 @@ void main() {
       expect(state.phase, CustomExerciseEditorPhase.failure);
       expect(state.errorCode, 'delete_failed');
     });
+  });
+
+  group('persistence lifecycle', () {
+    const args = (mode: CustomExerciseEditorMode.edit, exerciseId: 42);
+
+    test(
+      'busy save ignores edits and duplicate or cross-operation calls',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.customExerciseEditorControllerProvider(
+          args,
+        );
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        await controller.rename('Retained draft');
+        final pending = Completer<void>();
+        fakeSaveUseCase.pending = pending;
+        final saving = controller.save();
+        await controller.save();
+        await controller.delete();
+        await controller.rename('Unexpected change');
+        controller.discardChanges();
+        expect(fakeSaveUseCase.updateCalls, 1);
+        expect(fakeDeleteUseCase.calls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          CustomExerciseEditorPhase.saving,
+        );
+        expect(
+          container.read(provider).requireValue.draft.name,
+          'Retained draft',
+        );
+        expect(container.read(provider).requireValue.isDirty, isTrue);
+        pending.complete();
+        await saving;
+        await controller.save();
+        await controller.delete();
+        expect(fakeSaveUseCase.updateCalls, 1);
+        expect(fakeDeleteUseCase.calls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          CustomExerciseEditorPhase.saved,
+        );
+      },
+    );
+
+    test(
+      'busy delete ignores edits and duplicate or cross-operation calls',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.customExerciseEditorControllerProvider(
+          args,
+        );
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final originalName = container.read(provider).requireValue.draft.name;
+        final pending = Completer<void>();
+        fakeDeleteUseCase.pending = pending;
+        final deleting = controller.delete();
+        await controller.delete();
+        await controller.save();
+        await controller.rename('Unexpected change');
+        expect(fakeDeleteUseCase.calls, 1);
+        expect(fakeSaveUseCase.updateCalls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          CustomExerciseEditorPhase.deleting,
+        );
+        expect(container.read(provider).requireValue.draft.name, originalName);
+        pending.complete();
+        await deleting;
+        await controller.delete();
+        expect(fakeDeleteUseCase.calls, 1);
+        expect(
+          container.read(provider).requireValue.phase,
+          CustomExerciseEditorPhase.deleted,
+        );
+      },
+    );
+
+    for (final deleting in [false, true]) {
+      for (final fails in [false, true]) {
+        test(
+          '${deleting ? 'delete' : 'save'} ${fails ? 'failure' : 'success'} can settle after disposal',
+          () async {
+            final container = createContainer();
+            final provider =
+                AppProviders.customExerciseEditorControllerProvider(args);
+            final controller = container.read(provider.notifier);
+            await controller.future;
+            final pending = Completer<void>();
+            if (deleting) {
+              fakeDeleteUseCase.pending = pending;
+              fakeDeleteUseCase.shouldThrow = fails;
+            } else {
+              fakeSaveUseCase.pending = pending;
+              fakeSaveUseCase.shouldThrow = fails;
+            }
+            final operation = deleting
+                ? controller.delete()
+                : controller.save();
+            container.dispose();
+            pending.complete();
+            await expectLater(operation, completes);
+          },
+        );
+      }
+
+      test(
+        '${deleting ? 'delete' : 'save'} retry clears stale errors during progress and success',
+        () async {
+          final container = createContainer();
+          addTearDown(container.dispose);
+          final provider = AppProviders.customExerciseEditorControllerProvider(
+            args,
+          );
+          final controller = container.read(provider.notifier);
+          await controller.future;
+          if (deleting) {
+            fakeDeleteUseCase.shouldThrow = true;
+            await controller.delete();
+            fakeDeleteUseCase.shouldThrow = false;
+          } else {
+            fakeSaveUseCase.shouldThrow = true;
+            await controller.save();
+            fakeSaveUseCase.shouldThrow = false;
+          }
+          expect(container.read(provider).requireValue.errorMessage, isNotNull);
+          final pending = Completer<void>();
+          if (deleting) {
+            fakeDeleteUseCase.pending = pending;
+          } else {
+            fakeSaveUseCase.pending = pending;
+          }
+          final operation = deleting ? controller.delete() : controller.save();
+          expect(container.read(provider).requireValue.errorCode, isNull);
+          expect(container.read(provider).requireValue.errorMessage, isNull);
+          pending.complete();
+          await operation;
+          expect(container.read(provider).requireValue.errorCode, isNull);
+          expect(container.read(provider).requireValue.errorMessage, isNull);
+        },
+      );
+    }
   });
 
   group('clearValidationErrors', () {

@@ -1091,6 +1091,15 @@ class AppStrings {
   static const customExercises = 'Custom exercises';
   static const createCustomExercise = 'Create custom exercise';
   static const editCustomExercise = 'Edit custom exercise';
+  static const customExerciseEditorHint =
+      'Make it yours. Define the movement, then choose how to track it.';
+  static const customExerciseEditHint =
+      'Refine the details you use each time you train.';
+  static const customExerciseSetup = 'Training setup';
+  static const customExerciseMuscleGroupsHint =
+      'Choose one or more areas this exercise trains.';
+  static const customExerciseNameAndMusclesRequired =
+      'An exercise name and muscle group are required.';
   static const customExerciseName = 'Exercise name';
   static const customExerciseNameHint = 'Single-arm landmine press';
   static const customExerciseSaved = 'Custom exercise saved.';
@@ -1121,26 +1130,27 @@ class AppStrings {
   static const customExerciseDelete = 'Delete exercise';
   static const customExerciseDiscard = 'Discard';
   static const customExerciseRemoveStep = 'Remove step';
-  static const customExerciseLoggingType = 'Logging Type';
+  static const customExerciseLoggingType = 'Tracking';
   static const customExerciseLoggingTypeDesc =
       'How would you like to track this exercise?';
-  static const customExerciseLoggingTypeRepsOnly = 'Reps Only';
+  static const customExerciseLoggingTypeRepsOnly = 'Reps only';
   static const customExerciseLoggingTypeRepsOnlyDesc = 'Simple volume tracking';
-  static const customExerciseLoggingTypeWeightReps = 'Weight & Reps';
+  static const customExerciseLoggingTypeWeightReps = 'Weight & reps';
   static const customExerciseLoggingTypeWeightRepsDesc =
       'Standard strength tracking';
   static const customExerciseLoggingTypeDuration = 'Duration';
   static const customExerciseLoggingTypeDurationDesc = 'Time-based tracking';
-  static const createExercise = 'Create Exercise';
+  static const createExercise = 'Create exercise';
   static const customExercisePrimaryMuscleGroup = 'Primary Muscle Group';
   static const customExerciseInstructionsHint =
       'Describe the movement, cues, and safety tips...';
   static const customExerciseInstructionsOptional = 'Optional';
   static const customExerciseAddCueList = 'Add cue list';
+  static const customExerciseUseText = 'Use free text';
   static const customExerciseNameLabel = 'Exercise name';
   static const customExerciseNameHintPlaceholder = 'e.g., Cable Face Pulls';
   static const customExerciseEquipmentSelect = 'Select equipment';
-  static const customExerciseInstructionsLabel = 'Instructions & Form Notes';
+  static const customExerciseInstructionsLabel = 'Instructions & form notes';
   static const customExerciseStepHint =
       'e.g., Stand with feet shoulder-width apart';
 

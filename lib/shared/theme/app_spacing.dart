@@ -227,6 +227,13 @@ abstract final class AppWorkoutDetailTokens {
   static const double exerciseNumberSize = 36;
 }
 
+abstract final class AppCustomExerciseEditorTokens {
+  static const double maxContentWidth = 640;
+  static const double controlSize = 48;
+  static const double ordinalSize = 32;
+  static const double largeTextBreakpoint = 1.3;
+}
+
 class AppWhiteSpace {
   AppWhiteSpace._();
 
