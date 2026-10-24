@@ -168,6 +168,12 @@ class AppStrings {
   static const byokSetup = 'Bring your own AI key';
   static const imperialHeightLabel = 'Height (in)';
   static const exerciseLibrary = 'Exercise Library';
+  static const libraryHubSubtitle =
+      'Exercises and workouts, ready when you are.';
+  static String exerciseLibraryResults(int count) =>
+      count == 1 ? '1 exercise' : '$count exercises';
+  static const exerciseLibraryEmptyHint =
+      'Try another exercise name or clear the selected filters.';
   static const experienceLevel = 'Experience level';
   static const strictRedaction = 'Strict redaction';
   static const imperialWeightLabel = 'Weight (lbs)';

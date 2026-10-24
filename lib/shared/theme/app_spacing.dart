@@ -208,6 +208,20 @@ abstract final class AppWorkoutRunnerTokens {
   }
 }
 
+abstract final class AppLibraryTokens {
+  static const double maxContentWidth = 640;
+  static const double controlSize = 48;
+  static const double largeTextBreakpoint = 1.3;
+  static const double stackedActionsBreakpoint = 320;
+}
+
+abstract final class AppExerciseLibraryTokens {
+  static const double controlSize = AppLibraryTokens.controlSize;
+  static const double maxContentWidth = AppLibraryTokens.maxContentWidth;
+  static const double largeTextBreakpoint =
+      AppLibraryTokens.largeTextBreakpoint;
+}
+
 abstract final class AppExerciseDetailTokens {
   static const double controlSize = 48;
   static const double maxContentWidth = 398;

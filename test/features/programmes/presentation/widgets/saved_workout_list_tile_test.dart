@@ -64,7 +64,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.tap(find.byTooltip(AppStrings.workoutOptions));
     await tester.pumpAndSettle();
 
     expect(find.text(AppStrings.editWorkout), findsOneWidget);
@@ -98,7 +98,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.tap(find.byTooltip(AppStrings.workoutOptions));
     await tester.pumpAndSettle();
     await tester.tap(find.text(AppStrings.archiveWorkout));
     await tester.pumpAndSettle();

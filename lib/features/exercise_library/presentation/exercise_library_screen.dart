@@ -1,24 +1,24 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_card.dart';
-import 'package:aedify/shared/components/create_action_fab.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_library_style.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_bodymap.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
-import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:aedify/shared/widgets/app_bottom_navigation_scope.dart';
-import 'package:aedify/shared/widgets/dashed_border_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+/// Browses local exercises as a standalone page or inside the library hub.
 class ExerciseLibraryScreen extends ConsumerStatefulWidget {
-  const ExerciseLibraryScreen({super.key});
+  const ExerciseLibraryScreen({super.key, this.embedded = false});
+  final bool embedded;
 
   @override
   ConsumerState<ExerciseLibraryScreen> createState() =>
@@ -26,346 +26,343 @@ class ExerciseLibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
-  bool _isListView = true;
   late final TextEditingController _searchController;
+  final _searchFocus = FocusNode();
+  bool _creating = false;
+  bool _openingBodymap = false;
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();
+    _searchController = TextEditingController(
+      text: ref
+          .read(AppProviders.exerciseSearchControllerProvider)
+          .filters
+          .searchQuery,
+    );
   }
 
   @override
   void dispose() {
+    _searchFocus.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
+  Future<void> _createExercise() async {
+    if (_creating) return;
+    setState(() => _creating = true);
+    try {
+      await context.pushNamed<bool>(AppRoutes.customExerciseCreate().name);
+      if (mounted) {
+        await ref
+            .read(AppProviders.exerciseSearchControllerProvider.notifier)
+            .reload();
+      }
+    } finally {
+      if (mounted) setState(() => _creating = false);
+    }
+  }
+
+  Future<void> _openBodymap() async {
+    if (_openingBodymap) return;
+    setState(() => _openingBodymap = true);
+    try {
+      await context.pushNamed(AppRoutes.bodymap().name);
+    } finally {
+      if (mounted) setState(() => _openingBodymap = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final searchState = ref.watch(
-      AppProviders.exerciseSearchControllerProvider,
+    ref.listen(AppProviders.exerciseSearchControllerProvider, (previous, next) {
+      final query = next.filters.searchQuery;
+      if (previous?.filters.searchQuery != query &&
+          !_searchFocus.hasFocus &&
+          _searchController.text != query) {
+        _searchController.value = TextEditingValue(
+          text: query,
+          selection: TextSelection.collapsed(offset: query.length),
+        );
+      }
+    });
+    final search = ref.watch(AppProviders.exerciseSearchControllerProvider);
+    final notifier = ref.read(
+      AppProviders.exerciseSearchControllerProvider.notifier,
     );
-    final colorScheme = context.colorScheme;
-
-    _syncSearchController(searchState.filters.searchQuery);
-
-    return Scaffold(
-      body: searchState.isLoading
-          ? const AppBottomNavigationContentInset(
-              child: Center(child: CircularProgressIndicator()),
-            )
-          : searchState.errorCode != null
-          ? AppBottomNavigationContentInset(
-              child: _ErrorView(
-                errorMessage: searchState.errorMessage,
-                colorScheme: colorScheme,
-                onRetry: () {
-                  ref
-                      .read(
-                        AppProviders.exerciseSearchControllerProvider.notifier,
-                      )
-                      .reload();
-                },
+    final clearance = widget.embedded
+        ? AppBottomNavigationScope.contentClearance(
+            context,
+            fallback: AppSpacing.lg,
+          )
+        : AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
+            context,
+            fallback: AppSpacing.xxxl * 2,
+          );
+    final content = SafeArea(
+      top: !widget.embedded,
+      bottom: false,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: AppExerciseLibraryTokens.maxContentWidth,
+          ),
+          child: CustomScrollView(
+            key: const ValueKey('exercise_library_scroll'),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppWhiteSpace.hMd,
+                      if (!widget.embedded) ...[
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            AppStrings.exerciseLibrary,
+                            style: ExerciseLibraryStyle.heading(context),
+                          ),
+                        ),
+                        AppWhiteSpace.hMd,
+                      ],
+                      _SearchField(
+                        controller: _searchController,
+                        focusNode: _searchFocus,
+                        onChanged: notifier.updateSearchQuery,
+                      ),
+                      AppWhiteSpace.hSm,
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: AppSpacing.md,
+                        children: [
+                          Text(
+                            AppStrings.browseByMuscle,
+                            style: ExerciseLibraryStyle.label(context),
+                          ),
+                          TextButton.icon(
+                            key: const ValueKey('exercise_library_bodymap'),
+                            onPressed: _openingBodymap ? null : _openBodymap,
+                            style: TextButton.styleFrom(
+                              foregroundColor: ExerciseLibraryStyle.accent(
+                                context,
+                              ),
+                              minimumSize: const Size(
+                                AppExerciseLibraryTokens.controlSize,
+                                AppExerciseLibraryTokens.controlSize,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.controlGap,
+                                vertical: AppSpacing.controlGap,
+                              ),
+                              textStyle: ExerciseLibraryStyle.label(
+                                context,
+                              ).copyWith(inherit: false),
+                            ),
+                            icon: SvgPicture.asset(
+                              BodymapSvgAssets.front,
+                              width: AppSizing.iconMd,
+                              height: AppSizing.iconMd,
+                              colorFilter: ColorFilter.mode(
+                                ExerciseLibraryStyle.accent(context),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            label: const Text(AppStrings.bodymap),
+                          ),
+                        ],
+                      ),
+                      AppWhiteSpace.hSm,
+                      _MuscleGroupChips(
+                        selectedBucket: search.filters.muscleGroup,
+                        selectedModality: search.filters.modality,
+                        onSelected: (bucket, modality) =>
+                            notifier.updateFilters(
+                              search.filters.copyWith(
+                                muscleGroup: bucket,
+                                modality: modality,
+                                clearMuscleGroup: bucket == null,
+                                clearModality: modality == null,
+                              ),
+                            ),
+                      ),
+                      AppWhiteSpace.hMd,
+                      if (!search.isLoading &&
+                          search.errorCode == null &&
+                          !search.isEmpty) ...[
+                        Text(
+                          AppStrings.exerciseLibraryResults(
+                            search.items.length,
+                          ),
+                          style: ExerciseLibraryStyle.caption(context),
+                        ),
+                        AppWhiteSpace.hMd,
+                      ],
+                    ],
+                  ),
+                ),
               ),
-            )
-          : CustomScrollView(
-              slivers: [
+              if (search.isLoading)
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: AppSpacing.xxxl * 2,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: AppStrings.loading,
+                      ),
+                    ),
+                  ),
+                )
+              else if (search.errorCode != null)
+                SliverToBoxAdapter(
+                  child: _LibraryMessage(
+                    title: AppStrings.exerciseLibraryLoadFailed,
+                    icon: OutlinedSvgAssets.exclamationCircle,
+                    actionLabel: AppStrings.tryAgain,
+                    onAction: notifier.reload,
+                  ),
+                )
+              else if (search.isEmpty)
+                SliverToBoxAdapter(
+                  child: _LibraryMessage(
+                    title: AppStrings.noExercisesFound,
+                    message: AppStrings.exerciseLibraryEmptyHint,
+                    icon: OutlinedSvgAssets.magnifyingGlass,
+                    actionLabel: search.filters.hasActiveFilters
+                        ? AppStrings.clearFilters
+                        : null,
+                    onAction: search.filters.hasActiveFilters
+                        ? notifier.clearFilters
+                        : null,
+                  ),
+                )
+              else
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppWhiteSpace.hLg,
-                        _SearchBar(
-                          controller: _searchController,
-                          onChanged: (query) {
-                            ref
-                                .read(
-                                  AppProviders
-                                      .exerciseSearchControllerProvider
-                                      .notifier,
-                                )
-                                .updateSearchQuery(query);
-                          },
-                        ),
-                        AppWhiteSpace.hMd,
-                        _ViewToggle(
-                          isListView: _isListView,
-                          onToggle: (isListView) {
-                            setState(() => _isListView = isListView);
-                          },
-                        ),
-                        AppWhiteSpace.hXl,
-                        _MuscleGroupChips(
-                          selectedBucket: searchState.filters.muscleGroup,
-                          selectedModality: searchState.filters.modality,
-                          onSelected: (bucket, modality) {
-                            final updatedFilters = searchState.filters.copyWith(
-                              muscleGroup: bucket,
-                              modality: modality,
-                              clearMuscleGroup: bucket == null,
-                              clearModality: modality == null,
-                            );
-                            ref
-                                .read(
-                                  AppProviders
-                                      .exerciseSearchControllerProvider
-                                      .notifier,
-                                )
-                                .updateFilters(updatedFilters);
-                          },
-                        ),
-                        AppWhiteSpace.hLg,
-                      ],
+                  sliver: SliverList.separated(
+                    itemCount: search.items.length,
+                    separatorBuilder: (_, _) => AppWhiteSpace.hMd,
+                    itemBuilder: (context, index) => ExerciseCard(
+                      item: search.items[index],
+                      onTap: () => context.pushNamed(
+                        AppRoutes.exerciseDetail().name,
+                        pathParameters: {'id': '${search.items[index].id}'},
+                      ),
                     ),
                   ),
                 ),
-                if (searchState.isEmpty)
-                  SliverToBoxAdapter(child: _EmptyState())
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                    ),
-                    sliver: SliverList.separated(
-                      itemCount: searchState.items.length,
-                      separatorBuilder: (_, _) => AppWhiteSpace.hLg,
-                      itemBuilder: (context, index) {
-                        return ExerciseCard(
-                          item: searchState.items[index],
-                          onTap: () {
-                            context.pushNamed(
-                              AppRoutes.exerciseDetail().name,
-                              pathParameters: {
-                                'id': '${searchState.items[index].id}',
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  key: const ValueKey(
+                    'exercise_library_bottom_navigation_clearance',
                   ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    key: const ValueKey<String>(
-                      'exercise_library_bottom_navigation_clearance',
-                    ),
-                    height:
-                        AppBottomNavigationScope.contentClearanceWithFloatingActionButton(
-                          context,
-                          fallback: AppSpacing.xxxl * 2,
-                        ),
-                  ),
+                  height: clearance,
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (widget.embedded) return content;
+    return Scaffold(
+      backgroundColor: context.colorScheme.surface,
+      body: content,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(
           bottom: AppBottomNavigationScope.floatingActionButtonLift(context),
         ),
-        child: CreateActionFab(
-          onPressed: () async {
-            await context.pushNamed<bool>(
-              AppRoutes.customExerciseCreate().name,
-            );
-            if (mounted) {
-              await ref
-                  .read(AppProviders.exerciseSearchControllerProvider.notifier)
-                  .reload();
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  void _syncSearchController(String query) {
-    final current = _searchController.text;
-    if (current != query) {
-      _searchController.text = query;
-    }
-  }
-}
-
-class _ViewToggle extends StatelessWidget {
-  const _ViewToggle({required this.isListView, required this.onToggle});
-
-  final bool isListView;
-  final ValueChanged<bool> onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.xxs),
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(AppRadius.full),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _TogglePill(
-              label: AppStrings.exerciseLibrary,
-              iconAsset: OutlinedSvgAssets.listBullet,
-              isSelected: isListView,
-              onTap: () => onToggle(true),
+        child: FloatingActionButton(
+          key: const Key('create_action_fab'),
+          tooltip: AppStrings.createCustomExercise,
+          onPressed: _creating ? null : _createExercise,
+          backgroundColor: ExerciseLibraryStyle.actionFill(context),
+          foregroundColor: ExerciseLibraryStyle.actionForeground(context),
+          elevation: 0,
+          child: SvgPicture.asset(
+            OutlinedSvgAssets.plusSmall,
+            width: AppSizing.iconMd,
+            height: AppSizing.iconMd,
+            colorFilter: ColorFilter.mode(
+              ExerciseLibraryStyle.actionForeground(context),
+              BlendMode.srcIn,
             ),
-            _TogglePill(
-              label: AppStrings.bodymap,
-              iconAsset: BodymapSvgAssets.front,
-              isSelected: !isListView,
-              onTap: () => onToggle(false),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _TogglePill extends StatelessWidget {
-  const _TogglePill({
-    required this.label,
-    required this.iconAsset,
-    required this.isSelected,
-    required this.onTap,
+class _SearchField extends StatelessWidget {
+  const _SearchField({
+    required this.controller,
+    required this.focusNode,
+    required this.onChanged,
   });
-
-  final String label;
-  final String iconAsset;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? colorScheme.secondary : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadius.full),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: colorScheme.secondary.withValues(alpha: 0.3),
-                    blurRadius: AppSpacing.sm,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              iconAsset,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
-              colorFilter: ColorFilter.mode(
-                isSelected
-                    ? colorScheme.onSecondary
-                    : colorScheme.onSurfaceVariant,
-                BlendMode.srcIn,
-              ),
-            ),
-            AppWhiteSpace.wSm,
-            Text(
-              label,
-              style: AppTextStyles.labelMd.copyWith(
-                color: isSelected
-                    ? colorScheme.onSecondary
-                    : colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchBar extends StatelessWidget {
-  const _SearchBar({required this.controller, required this.onChanged});
-
   final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.04),
-            blurRadius: AppSpacing.sm,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      borderSide: BorderSide.none,
+    );
+    return Semantics(
+      label: AppStrings.searchExercises,
       child: TextField(
+        key: const ValueKey('exercise_library_search'),
         controller: controller,
+        focusNode: focusNode,
         onChanged: onChanged,
-        style: AppTextStyles.bodyMd.copyWith(color: colorScheme.onSurface),
+        onSubmitted: (_) => focusNode.unfocus(),
+        onTapOutside: (_) => focusNode.unfocus(),
+        textInputAction: TextInputAction.search,
+        style: ExerciseLibraryStyle.body(context),
         decoration: InputDecoration(
           hintText: AppStrings.searchExercises,
-          hintStyle: AppTextStyles.bodyMd.copyWith(
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(
-              left: AppSpacing.md,
-              right: AppSpacing.sm,
-            ),
-            child: SvgPicture.asset(
-              OutlinedSvgAssets.magnifyingGlass,
-              width: AppSizing.iconSm,
-              height: AppSizing.iconSm,
-              colorFilter: ColorFilter.mode(
-                colorScheme.outline,
-                BlendMode.srcIn,
+          hintStyle: ExerciseLibraryStyle.body(
+            context,
+          ).copyWith(color: context.colorScheme.onSurfaceVariant),
+          prefixIcon: ExcludeSemantics(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.controlGap,
+              ),
+              child: SvgPicture.asset(
+                OutlinedSvgAssets.magnifyingGlass,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                colorFilter: ColorFilter.mode(
+                  context.colorScheme.onSurfaceVariant,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
           prefixIconConstraints: const BoxConstraints(
-            minWidth: 0,
-            minHeight: 0,
+            minWidth: AppExerciseLibraryTokens.controlSize,
+            minHeight: AppExerciseLibraryTokens.controlSize,
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md),
+          border: border,
+          enabledBorder: border,
+          focusedBorder: border.copyWith(
             borderSide: BorderSide(
-              color: colorScheme.secondary.withValues(alpha: 0.2),
-              width: 2,
+              color: ExerciseLibraryStyle.accent(context),
+              width: AppSizing.strokeWidth,
             ),
           ),
           filled: true,
-          fillColor: colorScheme.surfaceContainerLowest,
+          fillColor: ExerciseLibraryStyle.panel(context),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.md,
@@ -382,20 +379,40 @@ class _FilterChipData {
     this.muscleBucket,
     this.modality,
   });
-
   final String label;
   final BodymapBucket? muscleBucket;
   final ExerciseModality? modality;
 
-  static const List<_FilterChipData> items = [
-    _FilterChipData(label: 'All'),
-    _FilterChipData(label: 'Chest', muscleBucket: BodymapBucket.chest),
-    _FilterChipData(label: 'Back', muscleBucket: BodymapBucket.back),
-    _FilterChipData(label: 'Legs', muscleBucket: BodymapBucket.quads),
-    _FilterChipData(label: 'Shoulders', muscleBucket: BodymapBucket.shoulders),
-    _FilterChipData(label: 'Arms', muscleBucket: BodymapBucket.biceps),
-    _FilterChipData(label: 'Core', muscleBucket: BodymapBucket.core),
-    _FilterChipData(label: 'Cardio', modality: ExerciseModality.cardio),
+  static const items = [
+    _FilterChipData(label: AppStrings.filterAll),
+    _FilterChipData(
+      label: AppStrings.filterChest,
+      muscleBucket: BodymapBucket.chest,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterBack,
+      muscleBucket: BodymapBucket.back,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterLegs,
+      muscleBucket: BodymapBucket.quads,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterShoulders,
+      muscleBucket: BodymapBucket.shoulders,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterArms,
+      muscleBucket: BodymapBucket.biceps,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterCore,
+      muscleBucket: BodymapBucket.core,
+    ),
+    _FilterChipData(
+      label: AppStrings.filterCardio,
+      modality: ExerciseModality.cardio,
+    ),
   ];
 }
 
@@ -405,171 +422,146 @@ class _MuscleGroupChips extends StatelessWidget {
     required this.selectedModality,
     required this.onSelected,
   });
-
   final BodymapBucket? selectedBucket;
   final ExerciseModality? selectedModality;
   final void Function(BodymapBucket?, ExerciseModality?) onSelected;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-
-    return SizedBox(
-      height: AppSpacing.xl + AppSpacing.sm,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
-        itemCount: _FilterChipData.items.length,
-        separatorBuilder: (_, _) => AppWhiteSpace.wSm,
-        itemBuilder: (context, index) {
-          final chip = _FilterChipData.items[index];
-          final isSelected = chip.muscleBucket == null && chip.modality == null
-              ? selectedBucket == null && selectedModality == null
-              : chip.muscleBucket == selectedBucket &&
-                    chip.modality == selectedModality;
-
-          return GestureDetector(
-            onTap: () => onSelected(chip.muscleBucket, chip.modality),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
+    final choices = _FilterChipData.items.map((chip) {
+      final selected =
+          chip.muscleBucket == selectedBucket &&
+          chip.modality == selectedModality;
+      return MergeSemantics(
+        child: Semantics(
+          selected: selected,
+          inMutuallyExclusiveGroup: true,
+          child: TextButton(
+            key: ValueKey('exercise_library_filter_${chip.label}'),
+            onPressed: () => onSelected(chip.muscleBucket, chip.modality),
+            style: TextButton.styleFrom(
+              foregroundColor: selected
+                  ? ExerciseLibraryStyle.actionForeground(context)
+                  : context.colorScheme.onSurfaceVariant,
+              backgroundColor: selected
+                  ? ExerciseLibraryStyle.actionFill(context)
+                  : ExerciseLibraryStyle.panel(context),
+              minimumSize: const Size(
+                AppExerciseLibraryTokens.controlSize,
+                AppExerciseLibraryTokens.controlSize,
+              ),
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.sm,
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.controlGap,
               ),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? colorScheme.secondary
-                    : colorScheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(AppRadius.full),
-                border: isSelected
-                    ? null
-                    : Border.all(color: colorScheme.outlineVariant),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: colorScheme.secondary.withValues(alpha: 0.3),
-                          blurRadius: AppSpacing.sm,
-                          offset: const Offset(0, 2),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Text(
-                chip.label,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: isSelected
-                      ? colorScheme.onSecondary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ),
+              textStyle: ExerciseLibraryStyle.label(
+                context,
+              ).copyWith(inherit: false),
+              shape: const StadiumBorder(),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: SizedBox(
-        height: AppSizing.emptyStateHeight,
-        child: CustomPaint(
-          painter: DashedBorderPainter(
-            color: colorScheme.outlineVariant,
-            strokeWidth: 2,
-            dashWidth: AppSpacing.sm,
-            gapWidth: AppSpacing.sm,
-            borderRadius: AppRadius.md,
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: AppSpacing.xxl,
-                  height: AppSpacing.xxl,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLow,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      OutlinedSvgAssets.plusSmall,
-                      width: AppSizing.iconMd,
-                      height: AppSizing.iconMd,
-                      colorFilter: ColorFilter.mode(
-                        colorScheme.outline,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                ),
-                AppWhiteSpace.hMd,
-                Text(
-                  AppStrings.noExercisesFound,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                AppWhiteSpace.hXs,
-                Text(
-                  AppStrings.noCustomExercisesYetHint,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
+            child: Text(chip.label),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({
-    required this.errorMessage,
-    required this.colorScheme,
-    required this.onRetry,
-  });
-
-  final String? errorMessage;
-  final ColorScheme colorScheme;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              OutlinedSvgAssets.exclamationCircle,
-              width: AppSpacing.xxl,
-              height: AppSpacing.xxl,
-              colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
-            ),
-            AppWhiteSpace.hMd,
-            Text(
-              errorMessage ?? AppStrings.exerciseLibraryLoadFailed,
-              textAlign: TextAlign.center,
-              style: context.textTheme.bodyLarge,
-            ),
-            AppWhiteSpace.hMd,
-            FilledButton(onPressed: onRetry, child: Text(AppStrings.tryAgain)),
+      );
+    }).toList();
+    final largeText =
+        MediaQuery.textScalerOf(context).scale(AppFontSizes.sm) >
+        AppFontSizes.sm * AppExerciseLibraryTokens.largeTextBreakpoint;
+    if (largeText) {
+      return Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: choices,
+      );
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var index = 0; index < choices.length; index++) ...[
+            if (index > 0) AppWhiteSpace.wSm,
+            choices[index],
           ],
-        ),
+        ],
       ),
     );
   }
+}
+
+class _LibraryMessage extends StatelessWidget {
+  const _LibraryMessage({
+    required this.title,
+    required this.icon,
+    this.message,
+    this.actionLabel,
+    this.onAction,
+  });
+  final String title;
+  final String icon;
+  final String? message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.lg,
+      vertical: AppSpacing.lg,
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ExcludeSemantics(
+          child: SvgPicture.asset(
+            icon,
+            width: AppSizing.iconXxl,
+            height: AppSizing.iconXxl,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+        AppWhiteSpace.hMd,
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: ExerciseLibraryStyle.title(context),
+          ),
+        ),
+        if (message != null) ...[
+          AppWhiteSpace.hSm,
+          Text(
+            message!,
+            textAlign: TextAlign.center,
+            style: ExerciseLibraryStyle.small(context),
+          ),
+        ],
+        if (onAction != null && actionLabel != null) ...[
+          AppWhiteSpace.hMd,
+          TextButton(
+            onPressed: onAction,
+            style: TextButton.styleFrom(
+              foregroundColor: ExerciseLibraryStyle.accent(context),
+              minimumSize: const Size.fromHeight(
+                AppExerciseLibraryTokens.controlSize,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.controlGap,
+              ),
+              textStyle: ExerciseLibraryStyle.label(
+                context,
+              ).copyWith(inherit: false),
+            ),
+            child: Text(actionLabel!, textAlign: TextAlign.center),
+          ),
+        ],
+      ],
+    ),
+  );
 }

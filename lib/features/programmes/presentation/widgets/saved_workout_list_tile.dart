@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/programmes/domain/saved_workout_list_item.dart';
+import 'package:aedify/features/programmes/presentation/widgets/saved_workout_library_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
-import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
-import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+/// Reviews a saved workout and exposes its available session action.
 class SavedWorkoutListTile extends StatelessWidget {
   const SavedWorkoutListTile({
     super.key,
@@ -19,6 +19,7 @@ class SavedWorkoutListTile extends StatelessWidget {
     required this.onArchive,
     required this.onDelete,
     this.activeSessionWorkoutId,
+    this.hasActiveSession = false,
   });
 
   final SavedWorkoutListItem item;
@@ -29,357 +30,298 @@ class SavedWorkoutListTile extends StatelessWidget {
   final VoidCallback onArchive;
   final VoidCallback onDelete;
   final String? activeSessionWorkoutId;
+  final bool hasActiveSession;
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(
-            color: cs.surfaceContainer,
-            width: AppSizing.hairlineStrokeWidth,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: cs.shadow.withValues(alpha: 0.03),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (item.focus.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                          child: Text(
-                            item.focus.toUpperCase(),
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: cs.secondary,
-                              fontSize: AppFontSizes.xxs,
-                              letterSpacing: AppFontSizes.xxs * 0.05,
-                            ),
+    final isActive = activeSessionWorkoutId == item.id;
+    final blocked =
+        !isActive && (hasActiveSession || activeSessionWorkoutId != null);
+    final duration = item.estimatedDurationMinutes;
+    final modalities = item.modalities
+        .map((value) => value.trim())
+        .where(
+          (value) =>
+              value.isNotEmpty &&
+              value.toLowerCase() != item.focus.trim().toLowerCase(),
+        )
+        .toSet();
+    return Material(
+      key: ValueKey('saved_workout_card_${item.id}'),
+      color: SavedWorkoutLibraryStyle.panel(context),
+      clipBehavior: Clip.antiAlias,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            button: true,
+            child: InkWell(
+              key: ValueKey('saved_workout_open_${item.id}'),
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.md,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (item.focus.trim().isNotEmpty) ...[
+                                Text(
+                                  item.focus,
+                                  style: SavedWorkoutLibraryStyle.label(context)
+                                      .copyWith(
+                                        color: SavedWorkoutLibraryStyle.accent(
+                                          context,
+                                        ),
+                                      ),
+                                ),
+                                AppWhiteSpace.hSm,
+                              ],
+                              Text(
+                                item.name,
+                                style: SavedWorkoutLibraryStyle.title(context),
+                              ),
+                            ],
                           ),
                         ),
-                      Text(
-                        item.name,
-                        style: AppTextStyles.bodyLg.copyWith(
-                          color: cs.onSurface,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      AppWhiteSpace.hSm,
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            OutlinedSvgAssets.listBullet,
-                            width: AppSizing.iconS,
-                            height: AppSizing.iconS,
-                            colorFilter: ColorFilter.mode(
-                              cs.onSurfaceVariant,
-                              BlendMode.srcIn,
+                        AppWhiteSpace.wSm,
+                        PopupMenuButton<_WorkoutAction>(
+                          key: ValueKey('saved_workout_menu_${item.id}'),
+                          tooltip: AppStrings.workoutOptions,
+                          style: IconButton.styleFrom(
+                            minimumSize: const Size.square(
+                              AppLibraryTokens.controlSize,
                             ),
                           ),
-                          AppWhiteSpace.wXs,
-                          Text(
-                            '${item.exerciseCount} ${AppStrings.exercisesLabel}',
-                            style: AppTextStyles.labelMd.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.sm,
                           ),
-                          if (item.estimatedDurationMinutes != null) ...[
-                            AppWhiteSpace.wMd,
-                            SvgPicture.asset(
-                              OutlinedSvgAssets.clock,
-                              width: AppSizing.iconS,
-                              height: AppSizing.iconS,
-                              colorFilter: ColorFilter.mode(
-                                cs.onSurfaceVariant,
-                                BlendMode.srcIn,
+                          color: context.colorScheme.surfaceContainerHigh,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                          ),
+                          popUpAnimationStyle:
+                              MediaQuery.disableAnimationsOf(context)
+                              ? AnimationStyle.noAnimation
+                              : null,
+                          icon: const _LibraryIcon(
+                            asset: OutlinedSvgAssets.ellipsisVertical,
+                          ),
+                          itemBuilder: (_) => [
+                            PopupMenuItem(
+                              value: _WorkoutAction.edit,
+                              height: AppLibraryTokens.controlSize,
+                              child: _MenuLabel(
+                                label: AppStrings.editWorkout,
+                                asset: OutlinedSvgAssets.pencil,
                               ),
                             ),
-                            AppWhiteSpace.wXs,
-                            Text(
-                              '${item.estimatedDurationMinutes} ${AppStrings.onboardingReviewMinutes}',
-                              style: AppTextStyles.labelMd.copyWith(
-                                color: cs.onSurfaceVariant,
+                            PopupMenuItem(
+                              value: _WorkoutAction.archive,
+                              height: AppLibraryTokens.controlSize,
+                              child: _MenuLabel(
+                                label: AppStrings.archiveWorkout,
+                                asset: OutlinedSvgAssets.archiveBox,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: _WorkoutAction.delete,
+                              height: AppLibraryTokens.controlSize,
+                              child: _MenuLabel(
+                                label: AppStrings.deleteWorkout,
+                                asset: OutlinedSvgAssets.trash,
+                                destructive: true,
                               ),
                             ),
                           ],
+                          onSelected: (action) {
+                            switch (action) {
+                              case _WorkoutAction.edit:
+                                onEdit();
+                              case _WorkoutAction.archive:
+                                onArchive();
+                              case _WorkoutAction.delete:
+                                onDelete();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    AppWhiteSpace.hMd,
+                    Wrap(
+                      spacing: AppSpacing.md,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        _Metadata(
+                          label: AppStrings.workoutExerciseTotal(
+                            item.exerciseCount,
+                          ),
+                          asset: OutlinedSvgAssets.listBullet,
+                        ),
+                        if (duration != null && duration > 0)
+                          _Metadata(
+                            label: AppStrings.workoutDurationEstimate(duration),
+                            asset: OutlinedSvgAssets.clock,
+                          ),
+                      ],
+                    ),
+                    if (modalities.isNotEmpty) ...[
+                      AppWhiteSpace.hSm,
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        children: [
+                          for (final modality in modalities)
+                            Text(
+                              SavedWorkoutLibraryStyle.formatLabel(modality),
+                              style: SavedWorkoutLibraryStyle.small(context),
+                            ),
                         ],
                       ),
                     ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              bottom: AppSpacing.md,
+            ),
+            child: FilledButton(
+              key: ValueKey('saved_workout_action_${item.id}'),
+              onPressed: blocked
+                  ? null
+                  : isActive
+                  ? onResume
+                  : onPlay,
+              style: FilledButton.styleFrom(
+                backgroundColor: SavedWorkoutLibraryStyle.actionFill(context),
+                foregroundColor: SavedWorkoutLibraryStyle.actionForeground(
+                  context,
+                ),
+                disabledBackgroundColor:
+                    context.colorScheme.surfaceContainerHigh,
+                disabledForegroundColor: context.colorScheme.onSurfaceVariant,
+                minimumSize: const Size.fromHeight(
+                  AppLibraryTokens.controlSize,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.buttonVertical,
+                ),
+                textStyle: SavedWorkoutLibraryStyle.label(
+                  context,
+                ).copyWith(inherit: false),
+                shape: const StadiumBorder(),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _LibraryIcon(
+                    asset: OutlinedSvgAssets.play,
+                    color: blocked
+                        ? context.colorScheme.onSurfaceVariant
+                        : SavedWorkoutLibraryStyle.actionForeground(context),
                   ),
-                ),
-                Transform.translate(
-                  offset: const Offset(AppSpacing.sm, 0),
-                  child: PopupMenuButton<String>(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    offset: const Offset(0, AppSpacing.xl + AppSpacing.md),
-                    color: cs.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.defaultRadius,
-                      ),
+                  AppWhiteSpace.wSm,
+                  Flexible(
+                    child: Text(
+                      isActive
+                          ? AppStrings.resumeWorkout
+                          : AppStrings.startWorkout,
+                      textAlign: TextAlign.center,
                     ),
-                    icon: SvgPicture.asset(
-                      OutlinedSvgAssets.ellipsisVertical,
-                      width: AppSizing.iconSm,
-                      height: AppSizing.iconSm,
-                      colorFilter: ColorFilter.mode(
-                        cs.outline,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              OutlinedSvgAssets.pencil,
-                              width: AppSizing.iconSm,
-                              height: AppSizing.iconSm,
-                            ),
-                            AppWhiteSpace.wSm,
-                            Text(AppStrings.editWorkout),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'archive',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              OutlinedSvgAssets.archiveBox,
-                              width: AppSizing.iconSm,
-                              height: AppSizing.iconSm,
-                            ),
-                            AppWhiteSpace.wSm,
-                            Text(AppStrings.archiveWorkout),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              OutlinedSvgAssets.trash,
-                              width: AppSizing.iconSm,
-                              height: AppSizing.iconSm,
-                              colorFilter: ColorFilter.mode(
-                                context.colorScheme.error,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            AppWhiteSpace.wSm,
-                            Text(
-                              AppStrings.deleteWorkout,
-                              style: context.textTheme.labelLarge?.copyWith(
-                                color: context.colorScheme.error,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          onEdit();
-                        case 'archive':
-                          onArchive();
-                        case 'delete':
-                          onDelete();
-                      }
-                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            AppWhiteSpace.hLg,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _StackedCategoryIcons(modalities: item.modalities, cs: cs),
-                _PlayButton(
-                  activeSessionWorkoutId: activeSessionWorkoutId,
-                  workoutId: item.id,
-                  onPlay: onPlay,
-                  onResume: onResume,
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _StackedCategoryIcons extends StatelessWidget {
-  const _StackedCategoryIcons({required this.modalities, required this.cs});
+enum _WorkoutAction { edit, archive, delete }
 
-  final List<String> modalities;
-  final ColorScheme cs;
+class _Metadata extends StatelessWidget {
+  const _Metadata({required this.label, required this.asset});
+  final String label;
+  final String asset;
 
   @override
-  Widget build(BuildContext context) {
-    final icons = _resolveIcons(modalities).take(3).toList();
-    if (icons.isEmpty) {
-      icons.add(_iconForModality(''));
-    }
-
-    final backgrounds = [
-      cs.surfaceContainer,
-      cs.surfaceContainerLow,
-      cs.surfaceContainerLow,
-    ];
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(icons.length, (i) {
-        final child = _CategoryIconCircle(
-          assetPath: icons[i],
-          backgroundColor: backgrounds[i],
-          borderColor: cs.surfaceContainerLowest,
-        );
-        if (i == 0) return child;
-        return Transform.translate(
-          offset: Offset(-AppSpacing.sm * i, 0),
-          child: child,
-        );
-      }),
-    );
-  }
-
-  List<String> _resolveIcons(List<String> modalities) {
-    final seen = <String>{};
-    final icons = <String>[];
-    for (final m in modalities) {
-      final icon = _iconForModality(m);
-      if (seen.add(icon)) icons.add(icon);
-    }
-    return icons;
-  }
-
-  String _iconForModality(String modality) {
-    final lower = modality.toLowerCase();
-    if (lower.contains('strength') || lower.contains('power')) {
-      return SolidSvgAssets.dumbbell;
-    }
-    if (lower.contains('cardio') || lower.contains('endurance')) {
-      return OutlinedSvgAssets.heart;
-    }
-    if (lower.contains('flexibility') ||
-        lower.contains('mobility') ||
-        lower.contains('recovery')) {
-      return SolidSvgAssets.meditation;
-    }
-    return SolidSvgAssets.dumbbell;
-  }
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      _LibraryIcon(asset: asset),
+      AppWhiteSpace.wXs,
+      Flexible(
+        child: Text(label, style: SavedWorkoutLibraryStyle.small(context)),
+      ),
+    ],
+  );
 }
 
-class _CategoryIconCircle extends StatelessWidget {
-  const _CategoryIconCircle({
-    required this.assetPath,
-    required this.backgroundColor,
-    required this.borderColor,
+class _MenuLabel extends StatelessWidget {
+  const _MenuLabel({
+    required this.label,
+    required this.asset,
+    this.destructive = false,
   });
-
-  final String assetPath;
-  final Color backgroundColor;
-  final Color borderColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.sm + AppSpacing.xxs),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: backgroundColor,
-        border: Border.all(color: borderColor, width: AppSizing.strokeWidth),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          assetPath,
-          width: AppSizing.iconXs + 2,
-          height: AppSizing.iconXs + 2,
-        ),
-      ),
-    );
-  }
-}
-
-class _PlayButton extends StatelessWidget {
-  const _PlayButton({
-    required this.activeSessionWorkoutId,
-    required this.workoutId,
-    required this.onPlay,
-    required this.onResume,
-  });
-
-  final String? activeSessionWorkoutId;
-  final String workoutId;
-  final VoidCallback onPlay;
-  final VoidCallback onResume;
+  final String label;
+  final String asset;
+  final bool destructive;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = context.colorScheme;
-    final isActive = activeSessionWorkoutId == workoutId;
-    final isBlocked =
-        activeSessionWorkoutId != null && activeSessionWorkoutId != workoutId;
-
-    final bgColor = isBlocked ? cs.surfaceContainerHigh : cs.secondary;
-    final iconColor = isBlocked ? cs.onSurfaceVariant : cs.onSecondary;
-    final effectiveOnTap = isBlocked ? null : (isActive ? onResume : onPlay);
-    final effectiveShadow = isBlocked
-        ? null
-        : [
-            BoxShadow(
-              color: cs.secondary.withValues(alpha: 0.2),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ];
-
-    return GestureDetector(
-      onTap: effectiveOnTap,
-      child: Container(
-        width: AppSizing.iconXxl,
-        height: AppSizing.iconXxl,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          boxShadow: effectiveShadow,
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            SolidSvgAssets.play,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+  Widget build(BuildContext context) => Row(
+    children: [
+      _LibraryIcon(
+        asset: asset,
+        color: destructive ? context.colorScheme.error : null,
+      ),
+      AppWhiteSpace.wSm,
+      Expanded(
+        child: Text(
+          label,
+          style: SavedWorkoutLibraryStyle.body(context).copyWith(
+            color: destructive
+                ? context.colorScheme.error
+                : context.colorScheme.onSurface,
           ),
         ),
       ),
-    );
-  }
+    ],
+  );
+}
+
+class _LibraryIcon extends StatelessWidget {
+  const _LibraryIcon({required this.asset, this.color});
+  final String asset;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: SvgPicture.asset(
+      asset,
+      width: AppSizing.iconSm,
+      height: AppSizing.iconSm,
+      colorFilter: ColorFilter.mode(
+        color ?? context.colorScheme.onSurfaceVariant,
+        BlendMode.srcIn,
+      ),
+    ),
+  );
 }

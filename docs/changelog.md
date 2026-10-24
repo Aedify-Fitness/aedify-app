@@ -6,6 +6,26 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-10-24
 
+### M4 — Library hub redesign
+
+- Refined `LibraryHubScreen` with a clear heading, accessible Exercises/Workouts
+  controls and a contextual Create action. Search, filters, scroll positions and
+  the selected pane survive navigation; embedded libraries avoid duplicate FABs.
+- Updated exercise browsing controls, Bodymap entry, filtered result counts and
+  loading/error/empty states. Saved workout cards expose separate detail, menu
+  and Start/Resume actions, respecting the existing active-session boundary.
+- Restored the original `ExerciseCard` design per user preference. Its background
+  now matches `SavedWorkoutListTile` in both themes; metadata wraps and the
+  difficulty badge moves below it for large text.
+- Verification: `dart format .` checked 750 files; `flutter analyze`, diff checks
+  and all 76 Library/browsing/saved-workout/router tests passed. Reviewed real-font
+  light/dark renders and compact, large-text, keyboard and navigation clearance
+  cases. Full suite: 1491 passed, 42 failed. All failures reproduce in an untouched
+  checkout of the current commit (12 programme-builder and 30 runner cases); no
+  new failures. Updated existing menu tests to use the public tooltip rather than
+  the internal menu value type. No schema/package changes or code generation;
+  live reload not repeated.
+
 ### M4 — Resume banner header removed
 
 - Removed the parent navigation header above `WorkoutRunnerResumeBanner`,

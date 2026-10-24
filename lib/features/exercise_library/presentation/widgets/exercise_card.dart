@@ -24,6 +24,9 @@ class ExerciseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
+    final largeText =
+        MediaQuery.textScalerOf(context).scale(AppFontSizes.sm) >
+        AppFontSizes.sm * AppExerciseLibraryTokens.largeTextBreakpoint;
 
     return GestureDetector(
       onTap: onTap,
@@ -34,7 +37,9 @@ class ExerciseCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? colorScheme.surfaceContainer
-              : colorScheme.surface,
+              : context.theme.brightness == Brightness.dark
+              ? colorScheme.surfaceContainerLow
+              : colorScheme.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(AppRadius.defaultRadius),
           border: Border.all(
             color: isSelected ? colorScheme.secondary : Colors.transparent,
@@ -109,7 +114,9 @@ class ExerciseCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppWhiteSpace.hXs,
-                  Row(
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
                     children: [
                       _TagChip(
                         label: item.muscleGroups.isNotEmpty
@@ -117,18 +124,23 @@ class ExerciseCard extends StatelessWidget {
                             : item.modality.dbValue,
                       ),
                       if (item.equipment != null) ...[
-                        AppWhiteSpace.wSm,
                         _TagChip(
                           label: _formatEquipment(item.equipment!.dbValue),
                         ),
                       ],
                     ],
                   ),
+                  if (largeText) ...[
+                    AppWhiteSpace.hXs,
+                    _DifficultyBadge(difficulty: item.difficulty),
+                  ],
                 ],
               ),
             ),
-            AppWhiteSpace.wSm,
-            _DifficultyBadge(difficulty: item.difficulty),
+            if (!largeText) ...[
+              AppWhiteSpace.wSm,
+              _DifficultyBadge(difficulty: item.difficulty),
+            ],
           ],
         ),
       ),
