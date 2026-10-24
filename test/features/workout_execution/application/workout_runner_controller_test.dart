@@ -116,10 +116,12 @@ class _FakeSaveUseCase implements SaveWorkoutSessionProgressUseCase {
   int saveCallCount = 0;
   WorkoutRunnerSessionViewData? lastSavedSession;
   Completer<void>? pendingSave;
+  final snapshots = <WorkoutRunnerSessionViewData>[];
 
   @override
   Future<void> save(WorkoutRunnerSessionViewData session) async {
     saveCallCount++;
+    snapshots.add(session);
     lastSavedSession = session;
     final pending = pendingSave;
     if (pending != null) await pending.future;
@@ -129,9 +131,15 @@ class _FakeSaveUseCase implements SaveWorkoutSessionProgressUseCase {
 
 class _FakeCompleteUseCase implements CompleteWorkoutSessionUseCase {
   bool shouldThrow = false;
+  int calls = 0;
+  WorkoutRunnerCompletionDraft? lastDraft;
+  Completer<void>? pending;
 
   @override
   Future<void> complete(WorkoutRunnerCompletionDraft draft) async {
+    calls++;
+    lastDraft = draft;
+    if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('complete failed');
   }
 }
@@ -139,9 +147,13 @@ class _FakeCompleteUseCase implements CompleteWorkoutSessionUseCase {
 class _FakeAbandonUseCase implements AbandonWorkoutSessionUseCase {
   bool shouldThrow = false;
   String? lastAbandonedId;
+  int calls = 0;
+  Completer<void>? pending;
 
   @override
   Future<void> abandon(String sessionId) async {
+    calls++;
+    if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('abandon failed');
     lastAbandonedId = sessionId;
   }
@@ -621,6 +633,11 @@ void main() {
           programId: null,
           programWorkoutId: null,
         );
+        final subscription = container.listen(
+          AppProviders.workoutRunnerControllerProvider(argument),
+          (_, _) {},
+        );
+        addTearDown(subscription.close);
         final controller = container.read(
           AppProviders.workoutRunnerControllerProvider(argument).notifier,
         );
@@ -871,6 +888,11 @@ void main() {
           programId: null,
           programWorkoutId: null,
         );
+        final subscription = container.listen(
+          AppProviders.workoutRunnerControllerProvider(argument),
+          (_, _) {},
+        );
+        addTearDown(subscription.close);
         final controller = container.read(
           AppProviders.workoutRunnerControllerProvider(argument).notifier,
         );
@@ -1272,6 +1294,431 @@ void main() {
       expect(state.session, isNull);
       expect(fakeAbandon.lastAbandonedId, isNull);
     });
+  });
+
+  group('persistence ordering and recovery', () {
+    const args = (
+      mode: WorkoutRunnerMode.savedWorkout,
+      savedWorkoutId: 'sw-1',
+      programId: null,
+      programWorkoutId: null,
+    );
+
+    test(
+      'completeWorkout waits for pending progress and saves latest edits once',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final pending = Completer<void>();
+        fakeSave.pendingSave = pending;
+        final firstSave = controller.saveProgress();
+        final set = _sampleSession().exercises.first.sets.first;
+        await controller.updateSet(
+          exerciseId: 'ex-1',
+          setId: set.id,
+          updatedSet: set.copyWith(actualReps: 11),
+        );
+        final completing = controller.completeWorkout();
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.completing,
+        );
+        expect(fakeSave.saveCallCount, 1);
+        expect(fakeComplete.calls, 0);
+        await controller.completeWorkout();
+        await controller.cancelWorkout();
+        await controller.updateSet(
+          exerciseId: 'ex-1',
+          setId: set.id,
+          updatedSet: set.copyWith(actualReps: 999),
+        );
+        pending.complete();
+        await firstSave;
+        await completing;
+        expect(fakeSave.saveCallCount, 2);
+        expect(
+          fakeSave.lastSavedSession!.exercises.first.sets.first.actualReps,
+          11,
+        );
+        expect(fakeComplete.calls, 1);
+        expect(fakeAbandon.calls, 0);
+        expect(
+          container.read(provider).requireValue.session!.status,
+          WorkoutSessionStatus.completed,
+        );
+      },
+    );
+
+    test('concurrent progress saves write snapshots in order', () async {
+      final container = createContainer();
+      addTearDown(container.dispose);
+      final provider = AppProviders.workoutRunnerControllerProvider(args);
+      container.listen(provider, (_, _) {});
+      final controller = container.read(provider.notifier);
+      await controller.future;
+      final pending = Completer<void>();
+      fakeSave.pendingSave = pending;
+      final first = controller.saveProgress();
+      final set = _sampleSession().exercises.first.sets.first;
+      await controller.updateSet(
+        exerciseId: 'ex-1',
+        setId: set.id,
+        updatedSet: set.copyWith(actualReps: 12),
+      );
+      final second = controller.saveProgress();
+      expect(fakeSave.saveCallCount, 1);
+      pending.complete();
+      await Future.wait([first, second]);
+      expect(fakeSave.snapshots.length, 2);
+      expect(
+        fakeSave.snapshots.first.exercises.first.sets.first.actualReps,
+        isNull,
+      );
+      expect(fakeSave.snapshots.last.exercises.first.sets.first.actualReps, 12);
+    });
+
+    test(
+      'failed final progress save prevents completion and retries the same metadata',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final draft = WorkoutRunnerCompletionDraft(
+          sessionId: 'session-1',
+          completedAt: DateTime(2026, 10, 24),
+          durationSeconds: 300,
+          notes: 'Controlled tempo',
+          energyLevel: 4,
+          perceivedDifficulty: 3,
+        );
+        fakeSave.shouldThrow = true;
+        await controller.completeWorkout(draft);
+        expect(fakeComplete.calls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.failure,
+        );
+        fakeSave.shouldThrow = false;
+        await controller.retryFailedOperation();
+        expect(fakeComplete.calls, 1);
+        expect(fakeComplete.lastDraft, same(draft));
+        expect(fakeSave.lastSavedSession!.notes, 'Controlled tempo');
+        expect(fakeSave.lastSavedSession!.energyLevel, 4);
+        expect(fakeSave.lastSavedSession!.perceivedDifficulty, 3);
+        expect(container.read(provider).requireValue.errorMessage, isNull);
+      },
+    );
+
+    test(
+      'pending completion rejects edits and duplicate or cross-operation persistence',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final pending = Completer<void>();
+        fakeComplete.pending = pending;
+        final completing = controller.completeWorkout();
+        await Future<void>.delayed(Duration.zero);
+        await controller.completeWorkout();
+        await controller.cancelWorkout();
+        await controller.pauseWorkout();
+        await controller.addSet(exerciseId: 'ex-1');
+        expect(fakeComplete.calls, 1);
+        expect(fakeAbandon.calls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.completing,
+        );
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first
+              .sets
+              .length,
+          2,
+        );
+        pending.complete();
+        await completing;
+        await controller.completeWorkout();
+        await controller.cancelWorkout();
+        expect(fakeComplete.calls, 1);
+        expect(fakeAbandon.calls, 0);
+      },
+    );
+
+    test(
+      'abandon waits for a pending save and cannot race completion',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        final pending = Completer<void>();
+        fakeSave.pendingSave = pending;
+        final saving = controller.saveProgress();
+        final cancelling = controller.cancelWorkout();
+        await controller.completeWorkout();
+        expect(fakeAbandon.calls, 0);
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.cancelling,
+        );
+        pending.complete();
+        await saving;
+        await cancelling;
+        expect(fakeAbandon.calls, 1);
+        expect(fakeComplete.calls, 0);
+        expect(
+          container.read(provider).requireValue.session!.status,
+          WorkoutSessionStatus.abandoned,
+        );
+      },
+    );
+
+    test(
+      'failed completion retries completion and retains its draft',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        fakeComplete.shouldThrow = true;
+        final draft = WorkoutRunnerCompletionDraft(
+          sessionId: 'session-1',
+          completedAt: DateTime(2026, 10, 24),
+          durationSeconds: 120,
+          notes: 'Retained note',
+        );
+        await controller.completeWorkout(draft);
+        expect(
+          container.read(provider).requireValue.errorCode,
+          'complete_failed',
+        );
+        fakeComplete.shouldThrow = false;
+        await controller.retryFailedOperation();
+        expect(fakeComplete.calls, 2);
+        expect(fakeComplete.lastDraft, same(draft));
+        expect(fakeAbandon.calls, 0);
+        expect(
+          container.read(provider).requireValue.session!.notes,
+          'Retained note',
+        );
+      },
+    );
+
+    test(
+      'failed abandon retries abandon without completing the session',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        fakeAbandon.shouldThrow = true;
+        await controller.cancelWorkout();
+        fakeAbandon.shouldThrow = false;
+        await controller.retryFailedOperation();
+        expect(fakeAbandon.calls, 2);
+        expect(fakeComplete.calls, 0);
+        expect(container.read(provider).requireValue.errorMessage, isNull);
+      },
+    );
+
+    test(
+      'pause save failure stays recoverable and preserves frozen duration',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        fakeSave.shouldThrow = true;
+        await controller.pauseWorkout();
+        final frozen = container
+            .read(provider)
+            .requireValue
+            .session!
+            .durationSeconds;
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.failure,
+        );
+        fakeSave.shouldThrow = false;
+        await controller.retryFailedOperation();
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.paused,
+        );
+        expect(
+          container.read(provider).requireValue.session!.durationSeconds,
+          frozen,
+        );
+      },
+    );
+
+    for (final completing in [false, true]) {
+      for (final fails in [false, true]) {
+        test(
+          '${completing ? 'complete' : 'abandon'} ${fails ? 'failure' : 'success'} settles after disposal',
+          () async {
+            final container = createContainer();
+            final provider = AppProviders.workoutRunnerControllerProvider(args);
+            container.listen(provider, (_, _) {});
+            final controller = container.read(provider.notifier);
+            await controller.future;
+            final pending = Completer<void>();
+            if (completing) {
+              fakeComplete.pending = pending;
+              fakeComplete.shouldThrow = fails;
+            } else {
+              fakeAbandon.pending = pending;
+              fakeAbandon.shouldThrow = fails;
+            }
+            final operation = completing
+                ? controller.completeWorkout()
+                : controller.cancelWorkout();
+            await Future<void>.delayed(Duration.zero);
+            container.dispose();
+            pending.complete();
+            await expectLater(operation, completes);
+          },
+        );
+      }
+    }
+  });
+
+  group('pause transition and recovered discard', () {
+    test('explicit pause blocks edits and finalization while saving', () async {
+      final container = createContainer();
+      addTearDown(container.dispose);
+      const args = (
+        mode: WorkoutRunnerMode.savedWorkout,
+        savedWorkoutId: 'sw-1',
+        programId: null,
+        programWorkoutId: null,
+      );
+      final provider = AppProviders.workoutRunnerControllerProvider(args);
+      container.listen(provider, (_, _) {});
+      final controller = container.read(provider.notifier);
+      await controller.future;
+      final pending = Completer<void>();
+      fakeSave.pendingSave = pending;
+      final pausing = controller.pauseWorkout();
+      expect(
+        container.read(provider).requireValue.isChangingPauseState,
+        isTrue,
+      );
+      await controller.addSet(exerciseId: 'ex-1');
+      await controller.completeWorkout();
+      await controller.cancelWorkout();
+      expect(
+        container
+            .read(provider)
+            .requireValue
+            .session!
+            .exercises
+            .first
+            .sets
+            .length,
+        2,
+      );
+      expect(fakeComplete.calls, 0);
+      expect(fakeAbandon.calls, 0);
+      pending.complete();
+      await pausing;
+      expect(
+        container.read(provider).requireValue.phase,
+        WorkoutRunnerPhase.paused,
+      );
+      expect(
+        container.read(provider).requireValue.isChangingPauseState,
+        isFalse,
+      );
+    });
+
+    test('failed pause clears its busy flag before retry', () async {
+      final container = createContainer();
+      addTearDown(container.dispose);
+      const args = (
+        mode: WorkoutRunnerMode.savedWorkout,
+        savedWorkoutId: 'sw-1',
+        programId: null,
+        programWorkoutId: null,
+      );
+      final provider = AppProviders.workoutRunnerControllerProvider(args);
+      container.listen(provider, (_, _) {});
+      final controller = container.read(provider.notifier);
+      await controller.future;
+      fakeSave.shouldThrow = true;
+      await controller.pauseWorkout();
+      expect(
+        container.read(provider).requireValue.isChangingPauseState,
+        isFalse,
+      );
+      fakeSave.shouldThrow = false;
+      await controller.retryFailedOperation();
+      expect(
+        container.read(provider).requireValue.phase,
+        WorkoutRunnerPhase.paused,
+      );
+    });
+
+    test(
+      'recovered discard failure retains recovery and retries abandonment',
+      () async {
+        fakeLoad.sessionToReturn = _sampleSession();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        const args = (
+          mode: WorkoutRunnerMode.resume,
+          savedWorkoutId: null,
+          programId: null,
+          programWorkoutId: null,
+        );
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        fakeAbandon.shouldThrow = true;
+        await controller.discardRecoveredSession();
+        expect(
+          container.read(provider).requireValue.hasRecoveredSession,
+          isTrue,
+        );
+        expect(
+          container.read(provider).requireValue.phase,
+          WorkoutRunnerPhase.failure,
+        );
+        fakeAbandon.shouldThrow = false;
+        await controller.retryFailedOperation();
+        expect(fakeAbandon.calls, 2);
+        expect(fakeComplete.calls, 0);
+        expect(container.read(provider).requireValue.session, isNull);
+        expect(
+          container.read(provider).requireValue.resumeDecision,
+          WorkoutRunnerResumeDecision.discard,
+        );
+      },
+    );
   });
 
   group('updateSessionNotes', () {

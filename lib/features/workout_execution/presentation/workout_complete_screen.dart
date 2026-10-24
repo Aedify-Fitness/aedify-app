@@ -582,6 +582,7 @@ class _BottomActionsLayer extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
+        bottom: false,
         child: Padding(
           padding: const EdgeInsets.only(
             left: AppSpacing.md,

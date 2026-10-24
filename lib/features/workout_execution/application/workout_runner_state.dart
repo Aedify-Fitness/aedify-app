@@ -12,6 +12,7 @@ class WorkoutRunnerState {
     this.errorCode,
     this.errorMessage,
     this.resumeDecision,
+    this.isChangingPauseState = false,
   });
 
   final WorkoutRunnerMode mode;
@@ -21,6 +22,7 @@ class WorkoutRunnerState {
   final String? errorCode;
   final String? errorMessage;
   final WorkoutRunnerResumeDecision? resumeDecision;
+  final bool isChangingPauseState;
 
   bool get isLoading => phase == WorkoutRunnerPhase.loading;
   bool get isSaving => phase == WorkoutRunnerPhase.saving;
@@ -35,15 +37,18 @@ class WorkoutRunnerState {
     String? errorCode,
     String? errorMessage,
     WorkoutRunnerResumeDecision? resumeDecision,
+    bool clearErrors = false,
+    bool? isChangingPauseState,
   }) {
     return WorkoutRunnerState(
       mode: mode ?? this.mode,
       phase: phase ?? this.phase,
       session: session ?? this.session,
       hasRecoveredSession: hasRecoveredSession ?? this.hasRecoveredSession,
-      errorCode: errorCode ?? this.errorCode,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorCode: clearErrors ? null : errorCode ?? this.errorCode,
+      errorMessage: clearErrors ? null : errorMessage ?? this.errorMessage,
       resumeDecision: resumeDecision ?? this.resumeDecision,
+      isChangingPauseState: isChangingPauseState ?? this.isChangingPauseState,
     );
   }
 

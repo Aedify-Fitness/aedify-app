@@ -6,6 +6,54 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-10-24
 
+### M4 — Resume banner header removed
+
+- Removed the parent navigation header above `WorkoutRunnerResumeBanner`,
+  retaining its safe-area layout and the native iOS swipe to the previous route.
+  Leaving the recovered session does not save, complete or abandon it.
+- Verification: `dart format .` checked 746 files; analysis, diff checks and all
+  209 workout-execution/router tests passed. Two pushed-route iOS gesture cases
+  verify header-free recovery exits and the active runner's guarded exit sheet.
+  Full suite and live reload not repeated for this navigation-only follow-up.
+
+### M4 — Original workout resume banner restored
+
+- Restored `WorkoutRunnerResumeBanner`'s original Session in Progress heading,
+  centered subtitle, raised summary card, elapsed/exercise tiles, current-focus
+  progress row and rectangular Resume/Abandon buttons, per user preference.
+- Retained guarded async resume/discard/retry and inline failure recovery. Small
+  screens and large text stack the summary content; completed-exercise counts
+  require every set completed and current focus follows superset execution order.
+- Verification: `dart format .` checked 746 files; analysis, diff checks and all
+  168 workout-execution tests passed, including five resume-banner cases. Reviewed
+  real-font light/dark banner renders. Full suite: 1498 passed, 12 failed; failure
+  names match the existing programme-builder baseline, with no new failures.
+  No schema/packages/code generation; live reload not repeated.
+
+### M4 — Original workout runner layout refined
+
+- Restored `WorkoutRunnerScreen`'s exercise/context header, large 16:9 media
+  preview, compact training table, paired Log Set/Finish actions and circular
+  rest countdown. Refined mode typography, tonal surfaces, active-row emphasis
+  and 48px controls retain the original screen's character.
+- The table separates prescribed targets from editable actual KG/reps and
+  completed results. Superset members and warm-up/working rounds remain ordered;
+  Add Set, notes, completion undo, skip/restore and guide navigation remain
+  functional. Progress reflects actual session data without invented history.
+- Header/body/footer use natural layout heights. On short screens or large text,
+  the header scrolls and rows stack; the rest panel scrolls within a bounded
+  region. Keyboard and safe-area clearance are reserved without fixed overlays.
+- Progress saves are serialized with guarded pause/finalization and operation-
+  specific retries. Failed operations preserve drafts; completion includes notes,
+  energy and difficulty. Loading/recovery/error exits and duplicate actions are
+  guarded, and timers dismiss once and stop after disposal.
+- Verification: `dart format .` checked 745 files; `flutter analyze`,
+  `git diff --check` and all 163 workout-execution tests passed. Reviewed real-font
+  390px light/dark single-exercise, superset, log and rest previews. Full suite:
+  1493 passed, 12 failed. All failures match the previously confirmed programme-
+  builder baseline; no new failures and the two prior runner failures now pass.
+  No schema/package changes or code generation; live reload not repeated.
+
 ### M4 — Custom exercise editor redesign
 
 - Rebuilt `CustomExerciseEditorScreen` with a clear create/edit heading,

@@ -1012,6 +1012,8 @@ class AppStrings {
   static const workoutRunnerLoadFailed = 'Could not load the workout session.';
   static const workoutRunnerSaveFailed = 'Could not save workout progress.';
   static const workoutRunnerCompleteFailed = 'Could not complete the workout.';
+  static const workoutRunnerAbandonFailed =
+      'Could not discard the workout session.';
   static const noActiveWorkout = 'No active workout.';
   static const noSetsYet = 'No sets yet.';
   static const markCompleted = 'Mark completed';
@@ -1193,6 +1195,21 @@ class AppStrings {
   static const finishEarly = 'Finish Early';
   static const finish = 'Finish';
   static const logSet = 'Log Set';
+  static const runnerTrainingLog = 'Training log';
+  static const runnerLive = 'LIVE';
+  static const runnerActiveSet = 'Current set';
+  static const runnerUndoSet = 'Undo completion';
+  static const runnerRestoreSet = 'Restore set';
+  static const skipRest = 'Skip rest';
+  static String runnerRound(int number, String type) => '$type round $number';
+  static String runnerSetProgress(int completed, int total) =>
+      '$completed of $total sets logged';
+  static String runnerSkippedSets(int count) => '$count skipped';
+  static String runnerExerciseFraction(int completed, int total) =>
+      '$completed of $total';
+  static String runnerExerciseTotal(int total) => 'of $total';
+  static String runnerProgressPercent(int percent) =>
+      '$percent% $progressLabel';
   static String logSetWithLabel(String label, String exerciseName) =>
       'Log $label ($exerciseName)';
   static String targetRepsLabel(String reps) => 'Target: $reps Reps';

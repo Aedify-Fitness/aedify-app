@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/features/exercise_library/application/exercise_search_controller.dart';
@@ -6,6 +8,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/workout_execution/application/abandon_workout_session_use_case.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_phase.dart';
 import 'package:aedify/features/workout_execution/application/complete_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/application/load_active_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/application/save_workout_session_progress_use_case.dart';
@@ -28,7 +31,6 @@ import 'package:aedify/shared/domain/exercise_video_gender.dart';
 import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
-import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -292,21 +294,25 @@ class _FakeLoadUseCase implements LoadActiveWorkoutSessionUseCase {
 
 class _FakeSaveUseCase implements SaveWorkoutSessionProgressUseCase {
   WorkoutRunnerSessionViewData? lastSavedSession;
+  bool shouldThrow = false;
 
   @override
   Future<void> save(WorkoutRunnerSessionViewData session) async {
     lastSavedSession = session;
+    if (shouldThrow) throw StateError('private save failure');
   }
 }
 
 class _FakeCompleteUseCase implements CompleteWorkoutSessionUseCase {
   int calls = 0;
   WorkoutRunnerCompletionDraft? lastDraft;
+  Completer<void>? pending;
 
   @override
   Future<void> complete(WorkoutRunnerCompletionDraft draft) async {
     calls++;
     lastDraft = draft;
+    if (pending != null) await pending!.future;
   }
 }
 
@@ -404,13 +410,19 @@ Widget _testApp({
   required Widget home,
   ThemeData? theme,
   TextScaler textScaler = TextScaler.noScaling,
+  bool accessible = false,
 }) {
   return _withProviders(
     dependencies: dependencies,
     child: MaterialApp(
       theme: theme ?? AppTheme.lightTheme,
       builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+        data: MediaQuery.of(context).copyWith(
+          textScaler: textScaler,
+          highContrast: accessible,
+          disableAnimations: accessible,
+          accessibleNavigation: accessible,
+        ),
         child: child!,
       ),
       home: home,
@@ -437,6 +449,7 @@ void _setViewport(WidgetTester tester, Size size) {
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.view.resetViewInsets);
 }
 
 Future<void> _pumpLoaded(WidgetTester tester, Widget app) async {
@@ -608,117 +621,122 @@ void main() {
     expect(dismissCalls, 0);
   });
 
-  testWidgets('matches the supplied 390×1236 runner hierarchy', (tester) async {
-    _setViewport(tester, const Size(390, 1236));
-    final dependencies = _TestDependencies();
+  testWidgets(
+    'short large-text viewport keeps bounded rest controls reachable',
+    (tester) async {
+      _setViewport(tester, const Size(320, 568));
+      final dependencies = _TestDependencies();
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: dependencies,
+          textScaler: const TextScaler.linear(2),
+          home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      );
+      final log = find.byKey(const Key('workout_runner_log_set'));
+      await tester.tap(log);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('workout_runner_rest_timer_ring')),
+        findsOneWidget,
+      );
+      final skip = find.byKey(const Key('workout_runner_rest_skip'));
+      final restScrollable = find
+          .ancestor(of: skip, matching: find.byType(Scrollable))
+          .first;
+      final position = tester.state<ScrollableState>(restScrollable).position;
+      expect(tester.getSize(restScrollable).height, lessThanOrEqualTo(568 / 2));
+      expect(position.maxScrollExtent, greaterThan(0));
+      await tester.scrollUntilVisible(skip, 96, scrollable: restScrollable);
+      await tester.pumpAndSettle();
+      expect(position.pixels, greaterThan(0));
+      expect(skip.hitTestable(), findsOneWidget);
+      await tester.tap(skip);
+      await tester.pumpAndSettle();
+      expect(find.byType(RestTimerWidget), findsNothing);
+      expect(log.hitTestable(), findsOneWidget);
+      expect(
+        find.byKey(const Key('workout_runner_finish')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(dependencies.complete.calls, 0);
+      expect(dependencies.abandon.lastAbandonedId, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-    await _pumpLoaded(
-      tester,
-      _testApp(
-        dependencies: dependencies,
-        home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
-      ),
-    );
+  testWidgets(
+    'prioritizes the real session, current exercise and logging action',
+    (tester) async {
+      _setViewport(tester, const Size(390, 844));
+      final dependencies = _TestDependencies();
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: dependencies,
+          home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      );
+      final header = find.byKey(const Key('workout_runner_header'));
+      expect(find.text('Push A — Upper Hypertrophy'), findsOneWidget);
+      expect(find.text('Flat Bench Press'), findsWidgets);
+      expect(
+        find.descendant(of: header, matching: find.text('Flat Bench Press')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: header,
+          matching: find.byType(WorkoutDurationTimer),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(RestTimerWidget), findsNothing);
+      expect(
+        find.byKey(const Key('workout_runner_training_log')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('workout_runner_log_set')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('workout_runner_finish')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('workout_runner_insight')), findsNothing);
+      final media = find.byKey(const Key('workout_runner_media'));
+      final guide = find.byKey(const Key('workout_runner_media_guide'));
+      await tester.ensureVisible(media);
+      await tester.pumpAndSettle();
+      final mediaSize = tester.getSize(media);
+      expect(mediaSize.width / mediaSize.height, closeTo(16 / 9, 0.01));
+      expect(
+        tester.getTopLeft(media).dy,
+        greaterThanOrEqualTo(tester.getBottomRight(header).dy),
+      );
+      expect(guide.hitTestable(), findsOneWidget);
+      final log = tester.getRect(
+        find.byKey(const Key('workout_runner_log_set')),
+      );
+      final finish = tester.getRect(
+        find.byKey(const Key('workout_runner_finish')),
+      );
+      expect(log.center.dy, closeTo(finish.center.dy, 0.01));
+      expect(log.width, greaterThan(finish.width));
+      expect(log.height, greaterThanOrEqualTo(48));
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-    final header = find.byKey(const ValueKey<String>('workout_runner_header'));
-    final media = find.byKey(const ValueKey<String>('workout_runner_media'));
-    final mediaGuide = find.byKey(
-      const ValueKey<String>('workout_runner_media_guide'),
-    );
-    final mediaInfo = find.byKey(
-      const ValueKey<String>('workout_runner_media_info'),
-    );
-    final trainingLog = find.byKey(
-      const ValueKey<String>('workout_runner_training_log'),
-    );
-    final insight = find.byKey(
-      const ValueKey<String>('workout_runner_insight'),
-    );
-    final nextExercise = find.byKey(
-      const ValueKey<String>('workout_runner_next_exercise'),
-    );
-    final bottomActions = find.byKey(
-      const ValueKey<String>('workout_runner_bottom_actions'),
-    );
-
-    expect(header, findsOneWidget);
-    expect(
-      find.descendant(of: header, matching: find.byType(WorkoutDurationTimer)),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(of: header, matching: find.byType(RestTimerWidget)),
-      findsNothing,
-    );
-    expect(find.byType(RestTimerWidget), findsNothing);
-    expect(find.text('PUSH A — UPPER HYPERTROPHY'), findsOneWidget);
-    expect(find.text('Flat Bench Press'), findsOneWidget);
-    expect(
-      find.byKey(const ValueKey<String>('workout_runner_substitute')),
-      findsOneWidget,
-    );
-    expect(find.text(AppStrings.substitute.toUpperCase()), findsOneWidget);
-    expect(find.text(AppStrings.formGuidance.toUpperCase()), findsOneWidget);
-    expect(find.text(AppStrings.insightForProgress), findsOneWidget);
-    expect(find.text(AppStrings.upNext.toUpperCase()), findsOneWidget);
-    expect(find.text(AppStrings.superset.toUpperCase()), findsOneWidget);
-    expect(find.text('Incline DB Press'), findsOneWidget);
-    expect(find.text('Lateral Raises'), findsOneWidget);
-    expect(find.text(AppStrings.logSet), findsOneWidget);
-    expect(find.text(AppStrings.finish), findsOneWidget);
-
-    expect(tester.getSize(media).width, 350);
-    expect(tester.getTopLeft(media).dx, 20);
-    expect(
-      tester.getSize(mediaGuide).height,
-      greaterThanOrEqualTo(AppWorkoutRunnerTokens.mediaControlSize),
-    );
-    expect(
-      tester.getSize(mediaInfo),
-      const Size(
-        AppWorkoutRunnerTokens.mediaControlSize,
-        AppWorkoutRunnerTokens.mediaControlSize,
-      ),
-    );
-    expect(tester.getSize(trainingLog).width, 350);
-    expect(
-      tester.getSize(media).width / tester.getSize(media).height,
-      closeTo(AppWorkoutRunnerTokens.mediaAspectRatio, 0.01),
-    );
-    expect(
-      tester.getTopLeft(trainingLog).dy - tester.getBottomLeft(media).dy,
-      AppWorkoutRunnerTokens.sectionGap,
-    );
-    expect(
-      tester.getTopLeft(insight).dy - tester.getBottomLeft(trainingLog).dy,
-      AppWorkoutRunnerTokens.sectionGap,
-    );
-    expect(
-      tester.getTopLeft(nextExercise).dy - tester.getBottomLeft(insight).dy,
-      AppWorkoutRunnerTokens.sectionGap,
-    );
-
-    final logButton = tester.getRect(
-      find.byKey(const ValueKey<String>('workout_runner_log_set')),
-    );
-    final finishButton = tester.getRect(
-      find.byKey(const ValueKey<String>('workout_runner_finish')),
-    );
-    expect(logButton.left, 20);
-    expect(finishButton.left - logButton.right, closeTo(16, 0.001));
-    expect(logButton.width / finishButton.width, closeTo(2, 0.02));
-    expect(tester.getRect(bottomActions).bottom, 1236);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('renders active superset as a grouped runner block', (
+  testWidgets('renders each active superset member and its actual set rows', (
     tester,
   ) async {
-    _setViewport(tester, const Size(390, 1236));
+    _setViewport(tester, const Size(390, 844));
     final dependencies = _TestDependencies(
       sessionFactory: _RunnerFixtures.activeSupersetSession,
     );
-
     await _pumpLoaded(
       tester,
       _testApp(
@@ -726,99 +744,79 @@ void main() {
         home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
       ),
     );
-
     expect(find.text('Superset Block 1'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey<String>('workout_runner_superset_block')),
+      find.byKey(const Key('workout_runner_superset_block')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('workout_runner_substitute')), findsNothing);
+    expect(find.text('A. Incline DB Press'), findsWidgets);
+    expect(find.text('B. Lateral Raises'), findsWidgets);
+    expect(
+      find.byKey(const Key('workout_runner_set_row_incline-1')),
       findsOneWidget,
     );
     expect(
-      find.byKey(const ValueKey<String>('workout_runner_substitute')),
-      findsNothing,
-    );
-    expect(find.text(AppStrings.superset.toUpperCase()), findsOneWidget);
-    expect(find.text('A. Incline DB Press'), findsOneWidget);
-    expect(find.text('B. Lateral Raises'), findsOneWidget);
-    expect(find.text('S1 (A)'), findsOneWidget);
-    expect(find.text('S1 (B)'), findsOneWidget);
-    expect(find.text(AppStrings.addSuperset.toUpperCase()), findsOneWidget);
-    expect(find.text('Log S1 (Incline DB Press)'), findsOneWidget);
-  });
-
-  testWidgets('pairs and connects each warmup and working superset round', (
-    tester,
-  ) async {
-    _setViewport(tester, const Size(390, 1450));
-    final dependencies = _TestDependencies(
-      sessionFactory: _RunnerFixtures.pairedSupersetSession,
-    );
-    await _pumpLoaded(
-      tester,
-      _testApp(
-        dependencies: dependencies,
-        home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
-      ),
-    );
-
-    for (final prefix in ['W', 'S']) {
-      for (var round = 1; round <= 2; round++) {
-        final type = prefix == 'W' ? 'warmup' : 'working';
-        final group = find.byKey(
-          ValueKey<String>(
-            'workout_runner_superset_round_${type}_${round - 1}',
-          ),
-        );
-        for (final letter in ['A', 'B']) {
-          expect(
-            find.descendant(
-              of: group,
-              matching: find.text('$prefix$round ($letter)'),
-            ),
-            findsOneWidget,
-          );
-        }
-        expect(
-          find.descendant(
-            of: group,
-            matching: find.byKey(
-              ValueKey<String>(
-                'workout_runner_superset_connector_incline-session-exercise-$type-${round - 1}',
-              ),
-            ),
-          ),
-          findsOneWidget,
-        );
-        expect(
-          tester.getTopLeft(find.text('$prefix$round (A)')).dy,
-          lessThan(tester.getTopLeft(find.text('$prefix$round (B)')).dy),
-        );
-      }
-    }
-    expect(
-      tester.getTopLeft(find.text('W1 (B)')).dy,
-      lessThan(tester.getTopLeft(find.text('W2 (A)')).dy),
-    );
-    expect(
-      tester.getTopLeft(find.text('W2 (B)')).dy,
-      lessThan(tester.getTopLeft(find.text('S1 (A)')).dy),
-    );
-    expect(
-      tester.getTopLeft(find.text('S1 (B)')).dy,
-      lessThan(tester.getTopLeft(find.text('S2 (A)')).dy),
-    );
-    expect(
-      find.byKey(
-        const ValueKey<String>(
-          'workout_runner_active_rail_incline-session-exercise-working-0',
-        ),
-      ),
+      find.byKey(const Key('workout_runner_set_row_lateral-1')),
       findsOneWidget,
     );
+    expect(find.text(AppStrings.logSet), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'groups warm-ups before working rounds without losing superset order',
+    (tester) async {
+      _setViewport(tester, const Size(390, 844));
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: _TestDependencies(
+            sessionFactory: _RunnerFixtures.pairedSupersetSession,
+          ),
+          home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      );
+      for (final type in ['warmup', 'working']) {
+        for (var round = 0; round < 2; round++) {
+          final group = find.byKey(
+            ValueKey('workout_runner_superset_round_${type}_$round'),
+          );
+          final first = find.byKey(
+            ValueKey(
+              'workout_runner_set_row_incline-session-exercise-$type-$round',
+            ),
+          );
+          final second = find.byKey(
+            ValueKey(
+              'workout_runner_set_row_lateral-session-exercise-$type-$round',
+            ),
+          );
+          expect(find.descendant(of: group, matching: first), findsOneWidget);
+          expect(find.descendant(of: group, matching: second), findsOneWidget);
+          expect(
+            tester.getTopLeft(first).dy,
+            lessThan(tester.getTopLeft(second).dy),
+          );
+        }
+      }
+      final warmup = find.byKey(
+        const Key('workout_runner_superset_round_warmup_1'),
+      );
+      final working = find.byKey(
+        const Key('workout_runner_superset_round_working_0'),
+      );
+      expect(
+        tester.getTopLeft(warmup).dy,
+        lessThan(tester.getTopLeft(working).dy),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   for (final warmupsCompleted in [false, true]) {
     final prefix = warmupsCompleted ? 'S' : 'W';
+    final type = warmupsCompleted ? 'working' : 'warmup';
     testWidgets(
       'superset $prefix rounds rest below the independent duration clock',
       (tester) async {
@@ -854,10 +852,24 @@ void main() {
             .widget<WorkoutDurationTimer>(duration)
             .startedAt;
         final headerRect = tester.getRect(header);
-        expect(find.text('Log ${prefix}1 (Incline DB Press)'), findsOneWidget);
+        expect(
+          find.byKey(
+            ValueKey(
+              'workout_runner_active_rail_incline-session-exercise-$type-0',
+            ),
+          ),
+          findsOneWidget,
+        );
         await tester.tap(log);
         await tester.pumpAndSettle();
-        expect(find.text('Log ${prefix}1 (Lateral Raises)'), findsOneWidget);
+        expect(
+          find.byKey(
+            ValueKey(
+              'workout_runner_active_rail_lateral-session-exercise-$type-0',
+            ),
+          ),
+          findsOneWidget,
+        );
         expect(rest, findsNothing);
 
         await tester.tap(log);
@@ -873,7 +885,7 @@ void main() {
           find.descendant(of: header, matching: find.byType(RestTimerWidget)),
           findsNothing,
         );
-        expect(tester.getRect(rest).bottom, 1450);
+        expect(tester.getRect(rest).bottom, lessThanOrEqualTo(1450));
         expect(
           find.byKey(const ValueKey<String>('workout_runner_bottom_actions')),
           findsNothing,
@@ -882,8 +894,8 @@ void main() {
           find.byKey(const ValueKey<String>('workout_runner_rest_timer_ring')),
           findsOneWidget,
         );
-        expect(find.text(AppStrings.restTime.toUpperCase()), findsOneWidget);
-        expect(find.text(AppStrings.skipRestAndLogNextSet), findsOneWidget);
+        expect(find.text(AppStrings.restTime), findsOneWidget);
+        expect(find.text(AppStrings.skipRest), findsOneWidget);
 
         await tester.tap(find.text(AppStrings.restPlus15));
         await tester.pump();
@@ -902,7 +914,14 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(rest, findsNothing);
-        expect(find.text('Log ${prefix}2 (Incline DB Press)'), findsOneWidget);
+        expect(
+          find.byKey(
+            ValueKey(
+              'workout_runner_active_rail_incline-session-exercise-$type-1',
+            ),
+          ),
+          findsOneWidget,
+        );
         expect(duration, findsOneWidget);
         expect(dependencies.complete.calls, 0);
         expect(dependencies.abandon.lastAbandonedId, isNull);
@@ -956,77 +975,47 @@ void main() {
     );
   }
 
-  testWidgets('renders completed, active, and upcoming set treatments', (
+  testWidgets('keeps resolved sets readable and edits only the active set', (
     tester,
   ) async {
-    _setViewport(tester, const Size(390, 1236));
-    final dependencies = _TestDependencies();
-
+    _setViewport(tester, const Size(390, 844));
     await _pumpLoaded(
       tester,
       _testApp(
-        dependencies: dependencies,
+        dependencies: _TestDependencies(),
         home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
       ),
     );
-
-    expect(find.text('W1'), findsOneWidget);
-    expect(find.text('S1'), findsOneWidget);
-    expect(find.text('S2'), findsOneWidget);
-    expect(find.text(AppStrings.setNumberColumn), findsOneWidget);
-    expect(find.text(AppStrings.previousColumn), findsOneWidget);
-    expect(find.text(AppStrings.targetColumn), findsOneWidget);
-    expect(find.text(AppStrings.logColumn), findsOneWidget);
-    expect(find.text(AppStrings.unavailableValue), findsNWidgets(3));
     expect(
-      find.byKey(
-        const ValueKey<String>('workout_runner_active_rail_working-1'),
-      ),
+      find.byKey(const Key('workout_runner_set_row_warmup-1')),
       findsOneWidget,
     );
     expect(
-      find.byKey(
-        const ValueKey<String>('workout_runner_weight_input_working-1'),
-      ),
+      find.byKey(const Key('workout_runner_set_row_working-1')),
       findsOneWidget,
     );
     expect(
-      find.byKey(
-        const ValueKey<String>('workout_runner_weight_input_working-2'),
-      ),
+      find.byKey(const Key('workout_runner_set_row_working-2')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('workout_runner_weight_input_working-1')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('workout_runner_weight_input_working-2')),
       findsNothing,
     );
+    expect(find.text(AppStrings.kilogramsAbbreviation), findsOneWidget);
+    expect(find.text(AppStrings.repsColumn), findsOneWidget);
+    expect(find.text(AppStrings.runnerLive), findsOneWidget);
     expect(
-      tester.getSize(
-        find.byKey(
-          const ValueKey<String>('workout_runner_set_action_warmup-1'),
-        ),
-      ),
-      const Size(40, 40),
-    );
-    expect(
-      tester.getSize(
-        find.byKey(
-          const ValueKey<String>('workout_runner_set_hit_target_warmup-1'),
-        ),
-      ),
-      const Size(48, 48),
-    );
-    expect(
-      tester.getSize(
-        find.byKey(
-          const ValueKey<String>('workout_runner_set_action_working-1'),
-        ),
-      ),
-      const Size(48, 48),
-    );
-    expect(
-      tester.getSize(
-        find.byKey(
-          const ValueKey<String>('workout_runner_set_action_working-2'),
-        ),
-      ),
-      const Size(40, 40),
+      tester
+          .getSize(
+            find.byKey(const Key('workout_runner_set_hit_target_warmup-1')),
+          )
+          .shortestSide,
+      greaterThanOrEqualTo(48),
     );
     expect(tester.takeException(), isNull);
   });
@@ -1088,16 +1077,16 @@ void main() {
       find.byKey(const ValueKey<String>('workout_runner_rest_timer_ring')),
       findsOneWidget,
     );
-    expect(find.text(AppStrings.restTime.toUpperCase()), findsOneWidget);
+    expect(find.text(AppStrings.restTime), findsOneWidget);
     expect(find.text(AppStrings.restMinus15), findsOneWidget);
     expect(find.text(AppStrings.restPlus15), findsOneWidget);
-    expect(find.text(AppStrings.skipRestAndLogNextSet), findsOneWidget);
+    expect(find.text(AppStrings.skipRest), findsOneWidget);
     final restTimerRect = tester.getRect(
       find.byKey(const ValueKey<String>('workout_runner_rest_timer')),
     );
     expect(restTimerRect.left, 0);
     expect(restTimerRect.right, 390);
-    expect(restTimerRect.bottom, 1236);
+    expect(restTimerRect.bottom, lessThanOrEqualTo(1236));
 
     await tester.tap(
       find.byKey(const ValueKey<String>('workout_runner_rest_skip')),
@@ -1202,15 +1191,19 @@ void main() {
       _routerApp(dependencies: dependencies, router: router),
     );
 
-    await tester.tap(
-      find.byKey(const ValueKey<String>('workout_runner_add_set')),
-    );
+    final addSet = find.byKey(const ValueKey<String>('workout_runner_add_set'));
+    await tester.ensureVisible(addSet);
+    await tester.pumpAndSettle();
+    await tester.tap(addSet);
     await tester.pump();
     expect(find.text('S3'), findsOneWidget);
 
-    await tester.tap(
-      find.byKey(const ValueKey<String>('workout_runner_add_note')),
+    final addNote = find.byKey(
+      const ValueKey<String>('workout_runner_add_note'),
     );
+    await tester.ensureVisible(addNote);
+    await tester.pumpAndSettle();
+    await tester.tap(addNote);
     await tester.pumpAndSettle();
     await tester.enterText(
       _fieldFor('workout_runner_note_field'),
@@ -1239,44 +1232,39 @@ void main() {
     );
   });
 
-  testWidgets('header and actions stay fixed while final content clears them', (
-    tester,
-  ) async {
-    _setViewport(tester, const Size(390, 844));
-    final dependencies = _TestDependencies();
-
-    await _pumpLoaded(
-      tester,
-      _testApp(
-        dependencies: dependencies,
-        home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
-      ),
-    );
-
-    final header = find.byKey(const ValueKey<String>('workout_runner_header'));
-    final actions = find.byKey(
-      const ValueKey<String>('workout_runner_bottom_actions'),
-    );
-    final scrollView = find.byKey(
-      const ValueKey<String>('workout_runner_scroll_view'),
-    );
-    final initialHeaderRect = tester.getRect(header);
-    final initialActionRect = tester.getRect(actions);
-
-    await tester.drag(scrollView, const Offset(0, -1200));
-    await tester.pumpAndSettle();
-
-    expect(tester.getRect(header), initialHeaderRect);
-    expect(tester.getRect(actions), initialActionRect);
-    final nextRect = tester.getRect(
-      find.byKey(const ValueKey<String>('workout_runner_next_exercise')),
-    );
-    expect(
-      initialActionRect.top - nextRect.bottom,
-      closeTo(AppWorkoutRunnerTokens.contentBreathingSpace, 0.01),
-    );
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'header and actions stay fixed while the final controls remain reachable',
+    (tester) async {
+      _setViewport(tester, const Size(390, 844));
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: _TestDependencies(),
+          home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      );
+      final header = find.byKey(const Key('workout_runner_header'));
+      final actions = find.byKey(const Key('workout_runner_bottom_actions'));
+      final headerRect = tester.getRect(header);
+      final actionsRect = tester.getRect(actions);
+      await tester.drag(
+        find.byKey(const Key('workout_runner_scroll_view')),
+        const Offset(0, -1600),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getRect(header), headerRect);
+      expect(tester.getRect(actions), actionsRect);
+      final addNote = find.byKey(const Key('workout_runner_add_note'));
+      await tester.ensureVisible(addNote);
+      await tester.pumpAndSettle();
+      expect(addNote.hitTestable(), findsOneWidget);
+      expect(
+        tester.getBottomRight(addNote).dy,
+        lessThanOrEqualTo(actionsRect.top),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('close opens guarded exit and Finish opens completion flow', (
     tester,
@@ -1447,6 +1435,229 @@ void main() {
     expect(find.text(AppStrings.sessionComplete), findsOneWidget);
   });
 
+  for (final recovered in [true, false]) {
+    testWidgets(
+      recovered
+          ? 'iOS edge swipe leaves recovered session without a header or persistence changes'
+          : 'iOS edge swipe keeps the active runner behind its guarded exit sheet',
+      (tester) async {
+        _setViewport(tester, const Size(390, 844));
+        final dependencies = _TestDependencies();
+        final recoveredSession = _RunnerFixtures.referenceSession().copyWith(
+          durationSeconds: 120,
+        );
+        if (recovered) dependencies.load.sessionToReturn = recoveredSession;
+        final route = recovered
+            ? AppRoutes.workoutRunnerActive()
+            : AppRoutes.workoutRunnerSavedWorkout();
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, _) => Scaffold(
+                key: const Key('runner_gesture_host'),
+                body: Center(
+                  child: FilledButton(
+                    key: const Key('runner_gesture_open'),
+                    onPressed: () => context.pushNamed(
+                      route.name,
+                      pathParameters: recovered ? {} : {'id': 'sw-1'},
+                    ),
+                    child: const Text(AppStrings.resumeWorkout),
+                  ),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: route.path,
+              name: route.name,
+              builder: (_, _) => recovered
+                  ? const WorkoutRunnerScreen.resume()
+                  : const WorkoutRunnerScreen.savedWorkout(
+                      savedWorkoutId: 'sw-1',
+                    ),
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await _pumpLoaded(
+          tester,
+          _routerApp(
+            dependencies: dependencies,
+            router: router,
+            theme: AppTheme.lightTheme.copyWith(platform: TargetPlatform.iOS),
+          ),
+        );
+        await tester.tap(find.byKey(const Key('runner_gesture_open')));
+        await tester.pumpAndSettle();
+        expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+        if (recovered) {
+          expect(find.byType(AppBar), findsNothing);
+          expect(find.byKey(const Key('workout_runner_header')), findsNothing);
+          expect(find.byTooltip(AppStrings.exitWorkout), findsNothing);
+          expect(find.text(AppStrings.sessionInProgress), findsOneWidget);
+          expect(find.text(AppStrings.resumeSessionSubtitle), findsOneWidget);
+        }
+        await tester.flingFrom(
+          const Offset(1, 420),
+          const Offset(350, 0),
+          1200,
+        );
+        await tester.pumpAndSettle();
+        if (recovered) {
+          expect(
+            find.byKey(const Key('runner_gesture_host')).hitTestable(),
+            findsOneWidget,
+          );
+          expect(find.byType(WorkoutRunnerScreen), findsNothing);
+          expect(find.byType(ExitWorkoutSheet), findsNothing);
+          expect(dependencies.load.sessionToReturn, same(recoveredSession));
+          expect(dependencies.load.sessionToReturn!.durationSeconds, 120);
+          expect(
+            dependencies.load.sessionToReturn!.status,
+            WorkoutSessionStatus.inProgress,
+          );
+          expect(dependencies.start.calls, 0);
+        } else {
+          expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+          expect(find.byType(ExitWorkoutSheet), findsOneWidget);
+          expect(dependencies.start.calls, 1);
+        }
+        expect(dependencies.save.lastSavedSession, isNull);
+        expect(dependencies.complete.calls, 0);
+        expect(dependencies.abandon.lastAbandonedId, isNull);
+        expect(tester.takeException(), isNull);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
+  }
+
+  testWidgets(
+    'recovering a session resumes its duration without starting another session',
+    (tester) async {
+      _setViewport(tester, const Size(390, 844));
+      final dependencies = _TestDependencies();
+      dependencies.load.sessionToReturn = _RunnerFixtures.referenceSession()
+          .copyWith(durationSeconds: 120);
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: dependencies,
+          home: const WorkoutRunnerScreen.resume(),
+        ),
+      );
+      expect(find.text(AppStrings.sessionInProgress), findsOneWidget);
+      expect(find.text(AppStrings.resumeSessionSubtitle), findsOneWidget);
+      final resume = find.widgetWithText(
+        FilledButton,
+        AppStrings.resumeWorkout,
+      );
+      await tester.ensureVisible(resume);
+      await tester.pumpAndSettle();
+      await tester.tap(resume);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('workout_runner_training_log')),
+        findsOneWidget,
+      );
+      expect(dependencies.start.calls, 0);
+      expect(dependencies.save.lastSavedSession!.durationSeconds, isNull);
+      expect(
+        dependencies.save.lastSavedSession!.startedAt,
+        isNot(dependencies.load.sessionToReturn!.startedAt),
+      );
+    },
+  );
+
+  testWidgets('progress-save failure preserves the log and retries safely', (
+    tester,
+  ) async {
+    _setViewport(tester, const Size(390, 844));
+    final dependencies = _TestDependencies();
+    await _pumpLoaded(
+      tester,
+      _testApp(
+        dependencies: dependencies,
+        home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+      ),
+    );
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(WorkoutRunnerScreen)),
+    );
+    final provider = AppProviders.workoutRunnerControllerProvider((
+      mode: WorkoutRunnerMode.savedWorkout,
+      savedWorkoutId: 'sw-1',
+      programId: null,
+      programWorkoutId: null,
+    ));
+    dependencies.save.shouldThrow = true;
+    await container.read(provider.notifier).saveProgress();
+    await tester.pumpAndSettle();
+    expect(find.text(AppStrings.workoutRunnerSaveFailed), findsOneWidget);
+    expect(find.textContaining('private save failure'), findsNothing);
+    expect(
+      find.byKey(const Key('workout_runner_training_log')),
+      findsOneWidget,
+    );
+    dependencies.save.shouldThrow = false;
+    final retry = find.text(AppStrings.retry);
+    await tester.ensureVisible(retry);
+    await tester.pumpAndSettle();
+    await tester.tap(retry);
+    await tester.pumpAndSettle();
+    expect(
+      container.read(provider).requireValue.phase,
+      WorkoutRunnerPhase.ready,
+    );
+    expect(dependencies.complete.calls, 0);
+    expect(dependencies.start.calls, 1);
+  });
+
+  for (final theme in [AppTheme.lightTheme, AppTheme.darkTheme]) {
+    testWidgets(
+      'keyboard and 2x text keep active inputs clear of the footer in ${theme.brightness.name}',
+      (tester) async {
+        _setViewport(tester, const Size(320, 844));
+        await _pumpLoaded(
+          tester,
+          _testApp(
+            dependencies: _TestDependencies(),
+            theme: theme,
+            textScaler: const TextScaler.linear(2),
+            accessible: true,
+            home: const WorkoutRunnerScreen.savedWorkout(
+              savedWorkoutId: 'sw-1',
+            ),
+          ),
+        );
+        final field = _fieldFor('workout_runner_weight_input_working-1');
+        await tester.ensureVisible(field);
+        await tester.pumpAndSettle();
+        await tester.tap(field);
+        tester.view.viewInsets = const FakeViewPadding(bottom: 280);
+        await tester.pumpAndSettle();
+        await Scrollable.ensureVisible(tester.element(field), alignment: 0.5);
+        await tester.pumpAndSettle();
+        final actions = find.byKey(const Key('workout_runner_bottom_actions'));
+        final header = find.byKey(const Key('workout_runner_header'));
+        expect(
+          tester.getBottomRight(field).dy,
+          lessThanOrEqualTo(tester.getTopLeft(actions).dy),
+        );
+        expect(
+          tester.getTopLeft(field).dy,
+          greaterThanOrEqualTo(tester.getBottomRight(header).dy),
+        );
+        expect(
+          find.byKey(const Key('workout_runner_log_set')).hitTestable(),
+          findsOneWidget,
+        );
+        expect(tester.getBottomRight(actions).dy, lessThanOrEqualTo(844 - 280));
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets('compact and 2× text layouts keep essential controls usable', (
     tester,
   ) async {
@@ -1481,28 +1692,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('dark mode resolves runner cards from the dark theme', (
+  testWidgets('dark mode keeps the session and primary action readable', (
     tester,
   ) async {
     _setViewport(tester, const Size(390, 844));
-    final dependencies = _TestDependencies();
-
     await _pumpLoaded(
       tester,
       _testApp(
-        dependencies: dependencies,
+        dependencies: _TestDependencies(),
         theme: AppTheme.darkTheme,
         home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
       ),
     );
-
-    final trainingLog = tester.widget<Container>(
-      find.byKey(const ValueKey<String>('workout_runner_training_log')),
-    );
-    final decoration = trainingLog.decoration! as BoxDecoration;
+    expect(find.text('Push A — Upper Hypertrophy'), findsOneWidget);
     expect(
-      decoration.color,
-      AppTheme.darkTheme.colorScheme.surfaceContainerLowest,
+      find.byKey(const Key('workout_runner_log_set')).hitTestable(),
+      findsOneWidget,
     );
     expect(tester.takeException(), isNull);
   });

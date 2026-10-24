@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:aedify/features/workout_execution/domain/workout_duration_resolver.dart';
+import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
-import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -110,16 +110,12 @@ class _WorkoutDurationTimerState extends State<WorkoutDurationTimer>
             child: Container(
               key: const ValueKey<String>('workout_runner_duration_timer'),
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
+                horizontal: AppSpacing.controlGap,
                 vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
                 color: context.colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(AppRadius.full),
-                border: Border.all(
-                  color: context.colorScheme.outlineVariant,
-                  width: AppSizing.divider,
-                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -137,7 +133,7 @@ class _WorkoutDurationTimerState extends State<WorkoutDurationTimer>
                   AppWhiteSpace.wSm,
                   Text(
                     timerLabel,
-                    style: AppTextStyles.bodyMd.copyWith(
+                    style: WorkoutRunnerStyle.label(context).copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),

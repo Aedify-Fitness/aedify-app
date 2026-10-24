@@ -726,7 +726,7 @@ class _NoWorkoutTodaySurface extends StatelessWidget {
           AppWhiteSpace.hMd,
           Text(
             AppStrings.noWorkoutToday,
-            style: AppTextStyles.headlineXl.copyWith(color: foreground),
+            style: AppTextStyles.headlineLgMobile.copyWith(color: foreground),
           ),
           AppWhiteSpace.hMd,
           Text(

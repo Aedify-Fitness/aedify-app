@@ -744,30 +744,28 @@ class _ExerciseListPanel extends StatelessWidget {
               ),
             ),
             AppWhiteSpace.wSm,
-            Flexible(
-              child: TextButton.icon(
-                onPressed: isSupersetSelectionMode
-                    ? onCancelSupersetSelection
-                    : onOpenSupersetSelection,
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(0, AppSizing.iconXxl),
-                ),
-                icon: SvgPicture.asset(
-                  isSupersetSelectionMode
-                      ? OutlinedSvgAssets.xMark
-                      : OutlinedSvgAssets.link,
-                  width: AppSizing.iconXs,
-                  height: AppSizing.iconXs,
-                  colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
-                ),
-                label: Text(
-                  isSupersetSelectionMode
-                      ? AppStrings.cancelSelection
-                      : AppStrings.createSuperset,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: cs.secondary,
-                    fontWeight: FontWeight.w700,
-                  ),
+            TextButton.icon(
+              onPressed: isSupersetSelectionMode
+                  ? onCancelSupersetSelection
+                  : onOpenSupersetSelection,
+              style: TextButton.styleFrom(
+                minimumSize: const Size(0, AppSizing.iconXxl),
+              ),
+              icon: SvgPicture.asset(
+                isSupersetSelectionMode
+                    ? OutlinedSvgAssets.xMark
+                    : OutlinedSvgAssets.link,
+                width: AppSizing.iconXs,
+                height: AppSizing.iconXs,
+                colorFilter: ColorFilter.mode(cs.secondary, BlendMode.srcIn),
+              ),
+              label: Text(
+                isSupersetSelectionMode
+                    ? AppStrings.cancelSelection
+                    : AppStrings.createSuperset,
+                style: AppTextStyles.labelSm.copyWith(
+                  color: cs.secondary,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

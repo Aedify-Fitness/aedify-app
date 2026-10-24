@@ -109,6 +109,17 @@ abstract final class AppExerciseConfigTokens {
 }
 
 abstract final class AppWorkoutRunnerTokens {
+  static const double controlSize = 48;
+  static const double progressTrackHeight = 6;
+  static const double tableSetWidth = 36;
+  static const double tableWeightWidth = 56;
+  static const double tableRepsWidth = 48;
+  static const double tableBreakpoint = 300;
+  static const double compactViewportHeight = 640;
+  static const double restMaxHeightFactor = 0.5;
+  static const double resumeMaxContentWidth = 600;
+  static const double resumeSubtleOpacity = 0.5;
+  static const double resumeBorderOpacity = 160 / 255;
   static const double maxContentWidth = 512;
   static const double horizontalPadding = 20;
   static const double innerMaxContentWidth =

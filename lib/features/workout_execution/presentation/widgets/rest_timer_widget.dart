@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:ui';
 
+import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
-import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// Full-width bottom rest panel shown after a set is logged.
-///
-/// Matches the supplied design: a large circular countdown, a REST TIME
-/// eyebrow label, -15s/+15s adjustments, and a full-width skip action that
-/// returns the runner to the log-set action bar.
+/// A circular rest countdown with adjustments and a full-width skip action.
 class RestTimerWidget extends StatefulWidget {
   const RestTimerWidget({
     super.key,
@@ -32,6 +27,7 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
 
   late final ValueNotifier<int> _remaining;
   Timer? _timer;
+  bool _dismissed = false;
 
   @override
   void initState() {
@@ -39,10 +35,6 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
     _remaining = ValueNotifier<int>(
       widget.seconds.clamp(0, _maximumRestSeconds),
     );
-    if (widget.seconds <= 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _finishTimer());
-      return;
-    }
     _startTimer();
   }
 
@@ -57,21 +49,29 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
 
   void _startTimer() {
     _timer?.cancel();
+    _dismissed = false;
+    if (_remaining.value == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _remaining.value == 0) _finishTimer();
+      });
+      return;
+    }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
-      final next = _remaining.value - 1;
-      _remaining.value = next.clamp(0, _maximumRestSeconds);
+      _remaining.value = (_remaining.value - 1).clamp(0, _maximumRestSeconds);
       if (_remaining.value == 0) _finishTimer();
     });
   }
 
   void _finishTimer() {
     _timer?.cancel();
-    if (!mounted) return;
+    if (!mounted || _dismissed) return;
+    _dismissed = true;
     widget.onDismiss();
   }
 
   void _adjust(int delta) {
+    if (_dismissed) return;
     final next = (_remaining.value + delta).clamp(0, _maximumRestSeconds);
     _remaining.value = next;
     if (next == 0) _finishTimer();
@@ -86,49 +86,28 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
-    final accent = _RestTimerColors.accent(context);
-    final onAccent = _RestTimerColors.onAccent(context);
-
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: AppWorkoutRunnerTokens.glassBlurSigma,
-          sigmaY: AppWorkoutRunnerTokens.glassBlurSigma,
-        ),
-        child: Container(
-          key: const ValueKey<String>('workout_runner_rest_timer'),
-          padding: EdgeInsets.only(
-            left: AppWorkoutRunnerTokens.horizontalPadding,
-            top: AppWorkoutRunnerTokens.restPanelVerticalPadding,
-            right: AppWorkoutRunnerTokens.horizontalPadding,
-            bottom:
-                bottomInset + AppWorkoutRunnerTokens.restPanelVerticalPadding,
-          ),
-          decoration: BoxDecoration(
-            color: context.colorScheme.surface.withValues(
-              alpha: AppWorkoutRunnerTokens.actionSurfaceOpacity,
+    return ColoredBox(
+      key: const ValueKey<String>('workout_runner_rest_timer'),
+      color: context.colorScheme.surface,
+      child: SafeArea(
+        top: false,
+        child: Center(
+          heightFactor: 1,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppWorkoutRunnerTokens.maxContentWidth,
             ),
-            border: Border(
-              top: BorderSide(
-                color: context.colorScheme.outlineVariant,
-                width: AppSizing.divider,
-              ),
-            ),
-          ),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppWorkoutRunnerTokens.maxContentWidth,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppWorkoutRunnerTokens.horizontalPadding,
+                vertical: AppSpacing.md,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _RestTimerRing(remaining: _remaining, accent: accent),
-                  const SizedBox(
-                    height: AppWorkoutRunnerTokens.restPanelSectionGap,
-                  ),
+                  _RestTimerRing(remaining: _remaining),
+                  AppWhiteSpace.hMd,
                   Row(
                     children: [
                       Expanded(
@@ -140,7 +119,7 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                           onPressed: () => _adjust(-15),
                         ),
                       ),
-                      AppWhiteSpace.wMd,
+                      AppWhiteSpace.wSm,
                       Expanded(
                         child: _RestAdjustButton(
                           key: const ValueKey<String>(
@@ -152,32 +131,30 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: AppWorkoutRunnerTokens.restPanelSectionGap,
-                  ),
+                  AppWhiteSpace.hControlGap,
                   FilledButton(
                     key: const ValueKey<String>('workout_runner_rest_skip'),
-                    onPressed: widget.onDismiss,
+                    onPressed: _finishTimer,
                     style: FilledButton.styleFrom(
-                      backgroundColor: accent,
-                      foregroundColor: onAccent,
-                      elevation: 0,
-                      shape: const StadiumBorder(),
+                      backgroundColor: WorkoutRunnerStyle.actionFill(context),
+                      foregroundColor: WorkoutRunnerStyle.actionForeground(
+                        context,
+                      ),
+                      minimumSize: const Size.fromHeight(
+                        AppWorkoutRunnerTokens.controlSize,
+                      ),
                       padding: const EdgeInsets.symmetric(
-                        vertical: AppWorkoutRunnerTokens
-                            .restSkipButtonVerticalPadding,
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.controlGap,
                       ),
+                      textStyle: WorkoutRunnerStyle.label(
+                        context,
+                      ).copyWith(inherit: false),
+                      shape: const StadiumBorder(),
                     ),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        AppStrings.skipRestAndLogNextSet,
-                        maxLines: 1,
-                        style: AppTextStyles.headlineMd.copyWith(
-                          color: onAccent,
-                          fontSize: AppFontSizes.lg,
-                        ),
-                      ),
+                    child: const Text(
+                      AppStrings.skipRest,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
@@ -191,10 +168,9 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
 }
 
 class _RestTimerRing extends StatelessWidget {
-  const _RestTimerRing({required this.remaining, required this.accent});
+  const _RestTimerRing({required this.remaining});
 
   final ValueListenable<int> remaining;
-  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -205,49 +181,54 @@ class _RestTimerRing extends StatelessWidget {
           valueListenable: remaining,
           builder: (context, value, _) {
             final timerLabel = _RestTimerFormatter.format(value);
+            final clockStyle = WorkoutRunnerStyle.heading(context).copyWith(
+              color: WorkoutRunnerStyle.accent(context),
+              fontFeatures: const [FontFeature.tabularFigures()],
+            );
+            final painter = TextPainter(
+              text: TextSpan(text: timerLabel, style: clockStyle),
+              textDirection: Directionality.of(context),
+              textScaler: MediaQuery.textScalerOf(context),
+              maxLines: 1,
+            )..layout();
+            final diameter =
+                (painter.width +
+                        (AppSpacing.xs * 2) +
+                        (AppWorkoutRunnerTokens.restTimerRingBorderWidth * 2))
+                    .ceilToDouble()
+                    .clamp(
+                      AppWorkoutRunnerTokens.restTimerRingSize,
+                      double.infinity,
+                    );
+            painter.dispose();
             return Semantics(
               label: AppStrings.restTimeRemaining(timerLabel),
               child: ExcludeSemantics(
                 child: Container(
                   key: const ValueKey<String>('workout_runner_rest_timer_ring'),
-                  width: AppWorkoutRunnerTokens.restTimerRingSize,
-                  height: AppWorkoutRunnerTokens.restTimerRingSize,
-                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  width: diameter,
+                  height: diameter,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xs,
+                    vertical: AppSpacing.xs,
+                  ),
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: accent.withValues(
-                      alpha: AppWorkoutRunnerTokens.activeRowSurfaceOpacity,
-                    ),
+                    color: context.colorScheme.surfaceContainerLow,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: accent,
+                      color: WorkoutRunnerStyle.accent(context),
                       width: AppWorkoutRunnerTokens.restTimerRingBorderWidth,
                     ),
                   ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      timerLabel,
-                      maxLines: 1,
-                      style: AppTextStyles.headlineLg.copyWith(
-                        color: accent,
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                      ),
-                    ),
-                  ),
+                  child: Text(timerLabel, maxLines: 1, style: clockStyle),
                 ),
               ),
             );
           },
         ),
-        const SizedBox(height: AppWorkoutRunnerTokens.restTimerLabelGap),
-        Text(
-          AppStrings.restTime.toUpperCase(),
-          maxLines: 1,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-            letterSpacing: AppWorkoutRunnerTokens.restTimerLabelLetterSpacing,
-          ),
-        ),
+        AppWhiteSpace.hSm,
+        Text(AppStrings.restTime, style: WorkoutRunnerStyle.caption(context)),
       ],
     );
   }
@@ -271,37 +252,26 @@ class _RestAdjustButton extends StatelessWidget {
         foregroundColor: context.colorScheme.onSurface,
         backgroundColor: context.colorScheme.surfaceContainerLow,
         side: BorderSide(color: context.colorScheme.outlineVariant),
+        minimumSize: const Size(
+          AppWorkoutRunnerTokens.controlSize,
+          AppWorkoutRunnerTokens.controlSize,
+        ),
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(
-          vertical: AppWorkoutRunnerTokens.restAdjustButtonVerticalPadding,
+          horizontal: AppSpacing.controlGap,
+          vertical: AppSpacing.controlGap,
         ),
-        textStyle: AppTextStyles.labelMd,
+        textStyle: WorkoutRunnerStyle.label(context).copyWith(inherit: false),
       ),
-      child: FittedBox(fit: BoxFit.scaleDown, child: Text(label)),
+      child: Text(label, textAlign: TextAlign.center),
     );
   }
 }
 
-class _RestTimerColors {
-  _RestTimerColors._();
-
-  static Color accent(BuildContext context) =>
-      Theme.brightnessOf(context) == Brightness.dark
-      ? context.colorScheme.primary
-      : context.colorScheme.secondary;
-
-  static Color onAccent(BuildContext context) =>
-      Theme.brightnessOf(context) == Brightness.dark
-      ? context.colorScheme.onPrimary
-      : context.colorScheme.onSecondary;
-}
-
-class _RestTimerFormatter {
-  _RestTimerFormatter._();
-
+abstract final class _RestTimerFormatter {
   static String format(int totalSeconds) {
-    final minutes = totalSeconds ~/ 60;
-    final seconds = totalSeconds.remainder(60);
+    final minutes = totalSeconds ~/ Duration.secondsPerMinute;
+    final seconds = totalSeconds.remainder(Duration.secondsPerMinute);
     return '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}';
   }
