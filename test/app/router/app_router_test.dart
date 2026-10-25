@@ -9,6 +9,7 @@ import 'package:aedify/app/router/app_router.dart';
 import 'package:aedify/app/router/bottom_nav_shell.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/workout_execution/domain/workout_launch_strings.dart';
 import 'package:aedify/features/programmes/presentation/programme_builder_screen.dart';
 import 'package:aedify/features/programmes/presentation/programme_calendar_screen.dart';
 import 'package:aedify/features/programmes/presentation/programmes_screen.dart';
@@ -85,6 +86,42 @@ void main() {
         equals(AppRoutes.home().path),
       );
     });
+
+    testWidgets(
+      'Home Manual log starts a persisted standalone session through the real router',
+      (tester) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+        );
+        await tester.pumpAndSettle();
+        final manualLog = find.byKey(const Key('home_manual_log_action'));
+        await tester.scrollUntilVisible(
+          manualLog,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(manualLog);
+        await tester.pumpAndSettle();
+        await tester.tap(manualLog);
+        await tester.pumpAndSettle();
+        expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+        expect(router.canPop(), isTrue);
+        expect(find.text(WorkoutLaunchStrings.emptyTitle), findsOneWidget);
+        expect(find.text(WorkoutLaunchStrings.addExercises), findsOneWidget);
+        expect(find.byType(WorkoutBuilderScreen), findsNothing);
+        final sessions = await testDatabase
+            .select(testDatabase.workoutSessions)
+            .get();
+        expect(sessions, hasLength(1));
+        expect(sessions.single.source, 'standalone');
+        expect(sessions.single.status, 'in_progress');
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('redirects unresolved onboarding status to startup', (
       tester,

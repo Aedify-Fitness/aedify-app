@@ -1,3 +1,5 @@
+import 'package:aedify/features/lift_log/domain/exercise_history_session.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_correction.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/lift_log/data/workout_history_repository.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_detail_view_data.dart';
@@ -7,6 +9,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeWorkoutHistoryRepository implements WorkoutHistoryRepository {
+  @override
+  Future<List<ExerciseHistorySession>> listExerciseHistory(
+    int exerciseId,
+  ) async => [];
+
+  @override
+  Future<void> correctSession({
+    required String sessionId,
+    required List<WorkoutHistorySetCorrection> corrections,
+  }) async => throw UnimplementedError();
+
   _FakeWorkoutHistoryRepository({this.shouldThrow = false});
 
   final bool shouldThrow;

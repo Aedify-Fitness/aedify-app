@@ -517,7 +517,8 @@ class _TemplateTab extends StatelessWidget {
               onPressed: onRemove,
               style: IconButton.styleFrom(
                 foregroundColor: foreground,
-                minimumSize: const Size.square(AppSizing.iconXxs),
+                minimumSize: const Size.square(AppSizing.iconXxl),
+                visualDensity: VisualDensity.standard,
               ),
               icon: SvgPicture.asset(
                 OutlinedSvgAssets.xMark,

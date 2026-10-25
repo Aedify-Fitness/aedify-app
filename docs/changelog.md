@@ -4,7 +4,53 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ---
 
+## 2026-10-25
+
+### M4 — Exercise-card navigation and logged-set corrections
+
+- Full and finish-early completion summaries now open saved workout logs when an exercise with logged sets is tapped. Partially completed exercises remain editable for their completed logged sets; pending, skipped and empty sets have no correction controls. Local validation enforces the same boundary.
+- Exercise-history cards open the workout log directly; workout name/date headings are plain labels. Partial exercises in finished sessions contribute only completed actual logs to exercise history. Active sessions remain excluded.
+- Correction editors follow logging type: reps + weight, reps only, or duration + optional distance, plus RPE and notes. RIR remains derived internally. Hidden historical values are preserved; completion metrics refresh after saving a correction.
+- Verification: formatting (778 files), clean analysis, all **1,590 tests passed**, zero skips. Native exercise-card → saved log → type-specific correction → repeat flows passed on iOS and Android; editor screenshots visually checked and normal app entrypoints restored. No Home shortcut was added, and no schema/package changes were needed.
+
+### M4 — Remove RIR from the runner table
+
+- Removed RIR from every logging-type table header and row, including supersets. RIR-only target summaries now display the equivalent RPE, leaving no RIR labels in the table. RPE entry and internal RIR calculation/persistence remain intact.
+- Updated existing table-schema, empty-result and mixed-superset tests; all logging-type cases assert RIR is absent and RIR-only targets display RPE.
+- Verification: `dart format .` (777 files), clean analysis, full suite **1,585 passed**. Native checks were not repeated for this table-only change; no schema/package changes.
+
+### M4 — RPE-only entry, linked superset types and standalone launch fixes
+
+- RPE is the only editable effort input in the runner and history corrections; RIR is derived and read-only. RIR-only prescriptions initialize editable RPE (`10 − RIR`) in new saved/programme/repeated workouts and added sets; existing actual RIR-only sessions also populate RPE. Weight/reps/time remain explicit actual inputs.
+- Superset type toggles now update the corresponding linked round together, preserving both members, set identities, other rounds, results and unrelated exercises. Restored sessions use stable member ordering when no explicit superset order exists.
+- Fixed Home's Manual log action, which still opened the template builder. It now starts the standalone launch flow. The previous native fixture started at Lift Log and missed that Home entry point; native acceptance now starts from the real Home screen.
+- Verification: formatting (777 files), clean analysis, **1,585 passing tests**, zero skips, and native Home-to-standalone/offline/reopen/history/correction/repeat flows on iOS and Android. Reviewed both themes on both platforms; normal app entrypoints restored. No schema/package changes.
+
+### M4 — Logging-type tables and completed exercise history
+
+- Removed the runner set-details expansion. Headers and inline actual fields now follow each exercise's logging type, including mixed supersets: weighted reps, reps only, or duration with optional distance. RPE/RIR are inline for every type; targets remain separate from actuals.
+- Each set's Warm-up/Working label toggles its type on tap without clearing results or metadata. Shared horizontal scrolling keeps headers and fields aligned at narrow widths and large text; the iOS scrollbar stays below the rows.
+- Exercise history excludes active sessions and unfinished exercise occurrences, then displays only completed, non-skipped sets with actual results. Empty occurrences disappear; full session history retains every original set. Duration corrections require time while preserving older distance-only logs without a logging-type snapshot.
+- Verification: `dart format .` checked 774 files; analysis clean; all **1,581 tests passed**, zero skips. Updated the stale superset nesting assertion to verify visible round/member order. The native iOS offline/recovery/history/correction/repeat flow passed; final light/dark screenshots were reviewed. The normal app entrypoint was restored. Android native/OS-termination checks remain from the original M4 closure.
+
+### M4 — Closed after functionality and native acceptance verification
+
+- Added standalone workouts, independent repeats, complete actual-set inputs, controlled history corrections and live exercise history. Completion now refreshes cached histories. Preserved snapshots and attribution across source edits, deletions and exercise swaps.
+- Schema v18 retains time/distance/RIR targets and logging mode. Fixed pre-M4 upgrade guards and added real file-backed migration/reopen/failed-write coverage.
+- Resolved all 42 previously recorded UI failures through current UI expectations and actual layout/touch/input fixes. No tests were skipped or deleted to obtain a pass.
+- Native build compatibility now uses `health` 13.3.2 within the approved stack, Android API 26 minimum with notification desugaring, and the existing iOS 15 minimum across CocoaPods targets. Health permission requests/sync remain disabled.
+- Verification: code generation, formatting (773 files), clean analysis and **1,573 passing tests**. Native offline UI plus deliberate OS-termination/recovery passed on both platforms; normal `lib/main.dart` apps restored and launched. Details and complete file inventory: [M4 closure](m4-closure.md).
+
 ## 2026-10-24
+
+### M4 — Functional gap implementation
+
+- Added standalone workout launch and repeat from completed session snapshots with fresh identities, explicit actual inputs, and active-session conflict handling.
+- Added controlled transactional history corrections and completed per-exercise history with preserved exercise attribution across mid-workout swaps.
+- Schema v18 retains prescribed time, distance, RIR and session exercise logging type. Active logging supports strength, bodyweight and timed exercise actuals plus warm-up labels.
+- Updated stale UI expectations and fixed real narrow-layout, touch-target and input-state defects. Added real SQLite recovery/rollback and diagnostic privacy acceptance tests.
+- Implementation verification continued into 2026-10-25; the closure entry above records the final results.
+
 
 ### M4 — Library hub redesign
 

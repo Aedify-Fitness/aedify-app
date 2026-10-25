@@ -74,14 +74,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 17);
+      await _logMigration(m, fromVersion: 0, toVersion: 18);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -126,7 +126,7 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(setLogs);
         await m.createTable(programRevisions);
       }
-      if (from < 9) {
+      if (from >= 8 && from < 9) {
         await customStatement(
           'ALTER TABLE saved_workouts '
           'ADD COLUMN rest_between_exercises_seconds INTEGER',
@@ -144,19 +144,19 @@ class AppDatabase extends _$AppDatabase {
           'ADD COLUMN rest_between_exercises_seconds INTEGER',
         );
       }
-      if (from < 10) {
+      if (from >= 8 && from < 10) {
         await m.addColumn(setLogs, setLogs.restSeconds);
         await m.addColumn(
           workoutSessionExercises,
           workoutSessionExercises.restBetweenExercisesSeconds,
         );
       }
-      if (from < 11) {
+      if (from >= 8 && from < 11) {
         await customStatement(
           'ALTER TABLE saved_workouts ADD COLUMN deleted_at TEXT NULL',
         );
       }
-      if (from < 12) {
+      if (from >= 8 && from < 12) {
         await customStatement(
           'ALTER TABLE set_logs ADD COLUMN prescribed_reps_exact INTEGER',
         );
@@ -186,7 +186,7 @@ class AppDatabase extends _$AppDatabase {
           WHERE logging_type IS NULL
         ''');
       }
-      if (from < 14) {
+      if (from >= 8 && from < 14) {
         await m.addColumn(
           savedWorkoutExercises,
           savedWorkoutExercises.loggingType,
@@ -205,6 +205,15 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(
           programWorkoutTemplates,
           programWorkoutTemplates.goalTagsJson,
+        );
+      }
+      if (from >= 8 && from < 18) {
+        await m.addColumn(setLogs, setLogs.prescribedRir);
+        await m.addColumn(setLogs, setLogs.prescribedDurationSeconds);
+        await m.addColumn(setLogs, setLogs.prescribedDistanceMeters);
+        await m.addColumn(
+          workoutSessionExercises,
+          workoutSessionExercises.loggingType,
         );
       }
       if (from < to) {

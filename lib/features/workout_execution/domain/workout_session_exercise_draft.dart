@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'set_log_draft.dart';
 
 class WorkoutSessionExerciseDraft {
@@ -12,6 +13,7 @@ class WorkoutSessionExerciseDraft {
     this.supersetGroupId,
     this.restBetweenExercisesSeconds,
     this.notes,
+    this.loggingType,
   });
 
   final String id;
@@ -24,4 +26,5 @@ class WorkoutSessionExerciseDraft {
   final String? supersetGroupId;
   final int? restBetweenExercisesSeconds;
   final String? notes;
+  final ExerciseLoggingType? loggingType;
 }

@@ -44,6 +44,7 @@ class WorkoutRunnerActiveView extends ConsumerStatefulWidget {
     required this.onShowExercise,
     required this.onFinish,
     this.onToggleSkipped,
+    this.onAddExercise,
     this.errorMessage,
     this.onRetry,
   });
@@ -77,6 +78,7 @@ class WorkoutRunnerActiveView extends ConsumerStatefulWidget {
   onToggleSkipped;
   final Future<void> Function() onLogSet;
   final VoidCallback onAddSet;
+  final VoidCallback? onAddExercise;
   final void Function(String exerciseId, WorkoutRunnerSetItem set) onAddNote;
   final ValueChanged<int> onShowExercise;
   final VoidCallback onFinish;
@@ -164,6 +166,27 @@ class _WorkoutRunnerActiveViewState
             onAddNote: widget.onAddNote,
             onShowExercise: widget.onShowExercise,
           ),
+          if (widget.onAddExercise != null) ...[
+            AppWhiteSpace.hSm,
+            TextButton(
+              key: const Key('workout_runner_add_exercise'),
+              onPressed: enabled ? widget.onAddExercise : null,
+              style: TextButton.styleFrom(
+                minimumSize: const Size.fromHeight(
+                  AppWorkoutRunnerTokens.controlSize,
+                ),
+                foregroundColor: WorkoutRunnerStyle.accent(context),
+              ),
+              child: Text(
+                AppStrings.addExercise,
+                style: WorkoutRunnerStyle.label(context).copyWith(
+                  color: enabled
+                      ? WorkoutRunnerStyle.accent(context)
+                      : context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
           if (next != null) ...[
             AppWhiteSpace.hLg,
             _NextBlockCard(

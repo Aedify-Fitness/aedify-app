@@ -10,6 +10,7 @@ class WorkoutSessionExercises extends Table {
   IntColumn get sortOrder => integer()();
   IntColumn get restBetweenExercisesSeconds => integer().nullable()();
   TextColumn get supersetGroupId => text().nullable()();
+  TextColumn get loggingType => text().nullable()();
   TextColumn get notes => text().nullable()();
 
   @override

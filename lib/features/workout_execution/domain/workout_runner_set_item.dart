@@ -17,6 +17,9 @@ class WorkoutRunnerSetItem {
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
+    this.prescribedRir,
+    this.prescribedDurationSeconds,
+    this.prescribedDistanceMeters,
     this.actualReps,
     this.actualWeightKg,
     this.actualDurationSeconds,
@@ -41,6 +44,9 @@ class WorkoutRunnerSetItem {
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? prescribedDurationSeconds;
+  final double? prescribedDistanceMeters;
   final int? actualReps;
   final double? actualWeightKg;
   final int? actualDurationSeconds;
@@ -65,12 +71,17 @@ class WorkoutRunnerSetItem {
     double? prescribedWeightKg,
     double? prescribedRpeMin,
     double? prescribedRpeMax,
+    int? prescribedRir,
+    int? prescribedDurationSeconds,
+    double? prescribedDistanceMeters,
     int? actualReps,
     double? actualWeightKg,
     int? actualDurationSeconds,
     double? actualDistanceMeters,
     double? actualRpe,
     int? actualRir,
+    bool clearActualRpe = false,
+    bool clearActualRir = false,
     int? restSeconds,
     String? notes,
   }) {
@@ -89,13 +100,18 @@ class WorkoutRunnerSetItem {
       prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
       prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
       prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      prescribedRir: prescribedRir ?? this.prescribedRir,
+      prescribedDurationSeconds:
+          prescribedDurationSeconds ?? this.prescribedDurationSeconds,
+      prescribedDistanceMeters:
+          prescribedDistanceMeters ?? this.prescribedDistanceMeters,
       actualReps: actualReps ?? this.actualReps,
       actualWeightKg: actualWeightKg ?? this.actualWeightKg,
       actualDurationSeconds:
           actualDurationSeconds ?? this.actualDurationSeconds,
       actualDistanceMeters: actualDistanceMeters ?? this.actualDistanceMeters,
-      actualRpe: actualRpe ?? this.actualRpe,
-      actualRir: actualRir ?? this.actualRir,
+      actualRpe: clearActualRpe ? null : actualRpe ?? this.actualRpe,
+      actualRir: clearActualRir ? null : actualRir ?? this.actualRir,
       restSeconds: restSeconds ?? this.restSeconds,
       notes: notes ?? this.notes,
     );

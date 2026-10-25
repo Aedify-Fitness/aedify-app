@@ -77,6 +77,12 @@ class AppRoutes {
   );
 
   // Workout runner
+  factory AppRoutes.workoutRunnerStandalone() =>
+      AppRoutes._(path: '/workout/new', name: 'workoutRunnerStandalone');
+  factory AppRoutes.workoutRunnerRepeat() => AppRoutes._(
+    path: '/lift-log/:sessionId/repeat',
+    name: 'workoutRunnerRepeat',
+  );
   factory AppRoutes.workoutRunnerActive() =>
       AppRoutes._(path: '/workout/active', name: 'workoutRunnerActive');
   factory AppRoutes.workoutRunnerSavedWorkout() =>

@@ -100,6 +100,13 @@ class _HistoryHeader extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
           ),
+          AppWhiteSpace.hMd,
+          FilledButton(
+            key: const Key('lift_log_standalone_workout'),
+            onPressed: () =>
+                context.pushNamed(AppRoutes.workoutRunnerStandalone().name),
+            child: const Text(AppStrings.logWorkout),
+          ),
         ],
       ),
     );

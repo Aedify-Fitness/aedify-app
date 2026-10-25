@@ -77,6 +77,27 @@ class AppErrorStrings {
   static const String providerCapabilityLoadFailedMessage =
       'Could not load provider capability information.';
 
+  // Workout execution and history
+  static const workoutHistoryCorrectionInvalid =
+      'Keep the required reps and weight, or timed result, for completed sets. Use positive reps, seconds and distance, non-negative weight, RPE 1–10 and RIR 0–5.';
+  static const workoutHistoryCorrectionFailed =
+      'Could not save the correction. Try again.';
+  static const workoutHistoryCorrectionConflict =
+      'This log has changed. Close this editor and reopen it to use the latest results.';
+  static const workoutHistoryCorrectionMissing =
+      'This completed session is no longer available. Close this editor and refresh history.';
+  static const workoutStartFailed = 'Could not start the workout. Try again.';
+  static const workoutCannotRepeat =
+      'This completed workout is no longer available to repeat.';
+  static const workoutNoCompletedSets =
+      'Log at least one set before finishing. You can pause or discard '
+      'this workout instead.';
+  static const workoutInvalidCompletedSets =
+      'Check the actual results for your completed sets before finishing.';
+  static const workoutActualsInvalid =
+      'Use positive reps, time and distance, weight of zero or more, '
+      'RPE from 1 to 10, and RIR from 0 to 5.';
+
   // Workout builder
   static String workoutNotFoundWithId(String savedWorkoutId) =>
       'Saved workout not found: $savedWorkoutId';

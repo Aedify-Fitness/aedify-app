@@ -4,9 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/set_effort.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 
 class WorkoutRunnerSetRow extends StatefulWidget {
@@ -66,8 +68,8 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
         widget.set.actualWeightKg?.toStringAsFixed(1) ?? '';
     _repsController.text = widget.set.actualReps?.toString() ?? '';
     _notesController.text = widget.set.notes ?? '';
-    _rpe = widget.set.actualRpe;
-    _rir = widget.set.actualRir;
+    _rpe = widget.set.actualRpe ?? SetEffort.rpeFromRir(widget.set.actualRir);
+    _rir = SetEffort.rirFromRpe(_rpe);
     _isSyncingFromWidget = false;
   }
 
@@ -93,24 +95,26 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
         prescribedWeightKg: s.prescribedWeightKg,
         prescribedRpeMin: s.prescribedRpeMin,
         prescribedRpeMax: s.prescribedRpeMax,
+        prescribedRir: s.prescribedRir,
+        prescribedDurationSeconds: s.prescribedDurationSeconds,
+        prescribedDistanceMeters: s.prescribedDistanceMeters,
         actualReps: int.tryParse(_repsController.text),
         actualWeightKg: double.tryParse(_weightController.text),
         actualDurationSeconds: s.actualDurationSeconds,
         actualDistanceMeters: s.actualDistanceMeters,
         actualRpe: _rpe,
         actualRir: _rir,
+        restSeconds: s.restSeconds,
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
       ),
     );
   }
 
   void _setRpe(double? v) {
-    _rpe = v;
-    _emitChanged();
-  }
-
-  void _setRir(int? v) {
-    _rir = v;
+    setState(() {
+      _rpe = v;
+      _rir = SetEffort.rirFromRpe(v);
+    });
     _emitChanged();
   }
 
@@ -246,26 +250,10 @@ class _WorkoutRunnerSetRowState extends State<WorkoutRunnerSetRow> {
                 AppWhiteSpace.wXxs,
                 SizedBox(
                   width: AppSizing.fieldWidthXs,
-                  child: DropdownButtonFormField<int?>(
-                    key: const ValueKey('rir_dropdown'),
-                    initialValue: _rir,
-                    isExpanded: true,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.actualRir,
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: AppSpacing.inputHorizontal,
-                        vertical: AppSpacing.sm,
-                      ),
-                    ),
-                    items: [
-                      const DropdownMenuItem(value: null, child: Text('-')),
-                      ...List.generate(
-                        6,
-                        (i) => DropdownMenuItem(value: i, child: Text('$i')),
-                      ),
-                    ],
-                    onChanged: _setRir,
+                  child: Text(
+                    '${AppStrings.rir}: ${_rir ?? AppStrings.unavailableValue}',
+                    key: const ValueKey('derived_rir'),
+                    style: AppTextStyles.labelMd,
                   ),
                 ),
               ],

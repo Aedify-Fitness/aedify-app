@@ -269,6 +269,7 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
           exercise.restBetweenExercisesSeconds,
         ),
         notes: Value(exercise.notes),
+        loggingType: Value(exercise.loggingType?.dbValue),
       ),
     );
 
@@ -506,6 +507,9 @@ class DriftWorkoutSessionRepository implements WorkoutSessionRepository {
       prescribedWeightKg: Value(setLog.prescribedWeightKg),
       prescribedRpeMin: Value(setLog.prescribedRpeMin),
       prescribedRpeMax: Value(setLog.prescribedRpeMax),
+      prescribedRir: Value(setLog.prescribedRir),
+      prescribedDurationSeconds: Value(setLog.prescribedDurationSeconds),
+      prescribedDistanceMeters: Value(setLog.prescribedDistanceMeters),
       actualReps: Value(setLog.actualReps),
       actualWeightKg: Value(setLog.actualWeightKg),
       actualDurationSeconds: Value(setLog.actualDurationSeconds),

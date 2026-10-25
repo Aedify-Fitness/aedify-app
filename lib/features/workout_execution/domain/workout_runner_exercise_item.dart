@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_set_policy.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 
 class WorkoutRunnerExerciseItem {
@@ -12,6 +14,7 @@ class WorkoutRunnerExerciseItem {
     this.sourceProgramExerciseId,
     this.sourceSavedWorkoutExerciseId,
     this.notes,
+    this.loggingType,
     this.restBetweenExercisesSeconds,
   });
 
@@ -25,7 +28,18 @@ class WorkoutRunnerExerciseItem {
   final String? sourceProgramExerciseId;
   final String? sourceSavedWorkoutExerciseId;
   final String? notes;
+  final ExerciseLoggingType? loggingType;
   final int? restBetweenExercisesSeconds;
+
+  bool get isCompleted =>
+      sets.isNotEmpty && sets.every((set) => set.completed && !set.skipped);
+
+  bool get canCorrectLogs => sets.any(
+    (set) => WorkoutRunnerSetPolicy.hasCompletedLog(
+      set,
+      loggingType: set.exerciseId == exerciseId ? loggingType : null,
+    ),
+  );
 
   WorkoutRunnerExerciseItem copyWith({
     String? id,
@@ -38,6 +52,7 @@ class WorkoutRunnerExerciseItem {
     String? sourceProgramExerciseId,
     String? sourceSavedWorkoutExerciseId,
     String? notes,
+    ExerciseLoggingType? loggingType,
     int? restBetweenExercisesSeconds,
   }) {
     return WorkoutRunnerExerciseItem(
@@ -53,6 +68,7 @@ class WorkoutRunnerExerciseItem {
       sourceSavedWorkoutExerciseId:
           sourceSavedWorkoutExerciseId ?? this.sourceSavedWorkoutExerciseId,
       notes: notes ?? this.notes,
+      loggingType: loggingType ?? this.loggingType,
       restBetweenExercisesSeconds:
           restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
     );

@@ -44,9 +44,12 @@ class WorkoutRunnerBlockResolver {
     final members = exercises
         .where((exercise) => exercise.supersetGroupId == groupId)
         .toList();
-    members.sort(
-      (a, b) => (a.supersetOrder ?? 0).compareTo(b.supersetOrder ?? 0),
-    );
+    members.sort((a, b) {
+      final order = (a.supersetOrder ?? a.sortOrder).compareTo(
+        b.supersetOrder ?? b.sortOrder,
+      );
+      return order != 0 ? order : a.sortOrder.compareTo(b.sortOrder);
+    });
     return WorkoutRunnerBlock(members: members);
   }
 

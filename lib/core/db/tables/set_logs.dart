@@ -14,6 +14,9 @@ class SetLogs extends Table {
   RealColumn get prescribedWeightKg => real().nullable()();
   RealColumn get prescribedRpeMin => real().nullable()();
   RealColumn get prescribedRpeMax => real().nullable()();
+  IntColumn get prescribedRir => integer().nullable()();
+  IntColumn get prescribedDurationSeconds => integer().nullable()();
+  RealColumn get prescribedDistanceMeters => real().nullable()();
   IntColumn get actualReps => integer().nullable()();
   RealColumn get actualWeightKg => real().nullable()();
   IntColumn get actualDurationSeconds => integer().nullable()();

@@ -10,6 +10,7 @@ class WorkoutHistoryController extends AsyncNotifier<WorkoutHistoryState> {
 
   @override
   Future<WorkoutHistoryState> build() async {
+    ref.watch(AppProviders.homeRefreshTriggerProvider);
     _logger.info('build');
     return _load();
   }

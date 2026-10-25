@@ -1,4 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
@@ -20,15 +22,25 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final session =
+        ref
+            .watch(
+              WorkoutHistoryProviders.completedSessionProvider(
+                this.session.sessionId,
+              ),
+            )
+            .asData
+            ?.value ??
+        this.session;
     final completedAt = session.completedAt ?? DateTime.now();
     final durationSeconds =
         session.durationSeconds ??
         completedAt.difference(session.startedAt).inSeconds;
-    final totalVolume = _computeTotalVolume();
-    final completedExCount = _computeCompletedExercises();
+    final totalVolume = _computeTotalVolume(session);
+    final completedExCount = _computeCompletedExercises(session);
     final totalExCount = session.exercises.length;
     final progress = totalExCount > 0 ? completedExCount / totalExCount : 0.0;
-    final percentage = _computePercentage();
+    final percentage = _computePercentage(session);
     final preferredUnit =
         ref
             .watch(AppProviders.profileControllerProvider)
@@ -114,6 +126,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
             ),
             AppWhiteSpace.hXxl,
             _WorkoutSummarySection(
+              sessionId: session.sessionId,
               exercises: session.exercises,
               weightUnit: weightUnit,
             ),
@@ -145,7 +158,7 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
     );
   }
 
-  double _computeTotalVolume() {
+  double _computeTotalVolume(WorkoutRunnerSessionViewData session) {
     var volume = 0.0;
     for (final exercise in session.exercises) {
       for (final set in exercise.sets) {
@@ -159,20 +172,11 @@ class FinishEarlySessionCompleteScreen extends ConsumerWidget {
     return volume;
   }
 
-  int _computeCompletedExercises() {
-    var count = 0;
-    for (final exercise in session.exercises) {
-      for (final set in exercise.sets) {
-        if (set.completed) {
-          count++;
-          break;
-        }
-      }
-    }
-    return count;
+  int _computeCompletedExercises(WorkoutRunnerSessionViewData session) {
+    return session.exercises.where((exercise) => exercise.isCompleted).length;
   }
 
-  int _computePercentage() {
+  int _computePercentage(WorkoutRunnerSessionViewData session) {
     var allHavePrescribed = true;
     var plannedVolume = 0.0;
     var completedVolume = 0.0;
@@ -370,10 +374,12 @@ class _StatCard extends StatelessWidget {
 
 class _WorkoutSummarySection extends StatelessWidget {
   const _WorkoutSummarySection({
+    required this.sessionId,
     required this.exercises,
     required this.weightUnit,
   });
 
+  final String sessionId;
   final List<WorkoutRunnerExerciseItem> exercises;
   final String weightUnit;
 
@@ -413,6 +419,12 @@ class _WorkoutSummarySection extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
             child: _CompletedExerciseCard(
+              onTap: exercise.canCorrectLogs
+                  ? () => context.pushNamed(
+                      AppRoutes.workoutHistoryDetail().name,
+                      pathParameters: {'sessionId': sessionId},
+                    )
+                  : null,
               exercise: exercise,
               volume: _exerciseVolume(exercise),
               weightUnit: weightUnit,
@@ -426,6 +438,7 @@ class _WorkoutSummarySection extends StatelessWidget {
 
 class _CompletedExerciseCard extends StatelessWidget {
   const _CompletedExerciseCard({
+    this.onTap,
     required this.exercise,
     required this.volume,
     required this.weightUnit,
@@ -435,70 +448,82 @@ class _CompletedExerciseCard extends StatelessWidget {
   final double volume;
   final String weightUnit;
 
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        key: ValueKey('completion_exercise_${exercise.id}'),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        boxShadow: [
-          BoxShadow(
-            color: context.colorScheme.shadow.withAlpha(8),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+        child: Ink(
+          padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            boxShadow: [
+              BoxShadow(
+                color: context.colorScheme.shadow.withAlpha(8),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: AppSizing.handleWidth,
-            height: AppSizing.handleWidth,
-            decoration: BoxDecoration(
-              color: context.colorScheme.secondary.withAlpha(26),
-              borderRadius: BorderRadius.circular(AppRadius.full),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                SolidSvgAssets.checkCircle,
-                width: AppSizing.iconSm,
-                height: AppSizing.iconSm,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.secondary,
-                  BlendMode.srcIn,
+          child: Row(
+            children: [
+              Container(
+                width: AppSizing.handleWidth,
+                height: AppSizing.handleWidth,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.secondary.withAlpha(26),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    SolidSvgAssets.checkCircle,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.secondary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          AppWhiteSpace.wMd,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  exercise.exerciseName,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.colorScheme.onSurface,
-                  ),
+              AppWhiteSpace.wMd,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      exercise.exerciseName,
+                      style: AppTextStyles.labelMd.copyWith(
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                    AppWhiteSpace.hXs,
+                    Text(
+                      '${exercise.sets.length} sets \u2022 ${_formatVolume(volume)} $weightUnit volume',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
-                AppWhiteSpace.hXs,
-                Text(
-                  '${exercise.sets.length} sets \u2022 ${_formatVolume(volume)} $weightUnit volume',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
+              ),
+              Text(
+                exercise.isCompleted
+                    ? AppStrings.done
+                    : AppStrings.inProgressLabel,
+                style: AppTextStyles.labelSm.copyWith(
+                  color: context.colorScheme.secondary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Text(
-            AppStrings.done,
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.colorScheme.secondary,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -9,9 +10,10 @@ import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutHistorySetRow extends StatelessWidget {
-  const WorkoutHistorySetRow({super.key, required this.item});
+  const WorkoutHistorySetRow({super.key, required this.item, this.onEdit});
 
   final WorkoutHistorySetItem item;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,12 @@ class WorkoutHistorySetRow extends StatelessWidget {
                   foregroundColor: _statusForeground(context),
                   borderRadius: AppRadius.full,
                 ),
+                if (onEdit != null)
+                  TextButton(
+                    key: ValueKey('history_correct_${item.id}'),
+                    onPressed: onEdit,
+                    child: const Text(WorkoutHistoryStrings.correctSet),
+                  ),
               ],
             ),
             if (actualValues.isNotEmpty) ...[
@@ -104,6 +112,10 @@ class WorkoutHistorySetRow extends StatelessWidget {
       if (item.actualWeightKg != null)
         '${item.actualWeightKg!.toStringAsFixed(1)} '
             '${AppStrings.metricWeightUnit}',
+      if (item.actualDurationSeconds != null)
+        '${item.actualDurationSeconds}${AppStrings.secondsUnitAbbreviation}',
+      if (item.actualDistanceMeters != null)
+        '${item.actualDistanceMeters} ${WorkoutHistoryStrings.metersUnit}',
       if (item.actualRpe != null)
         '${AppStrings.rpe} ${item.actualRpe!.toStringAsFixed(1)}',
       if (item.actualRir != null) '${AppStrings.rir} ${item.actualRir}',
@@ -117,10 +129,16 @@ class WorkoutHistorySetRow extends StatelessWidget {
       if (item.prescribedWeightKg != null)
         '${item.prescribedWeightKg!.toStringAsFixed(1)} '
             '${AppStrings.metricWeightUnit}',
+      if (item.prescribedDurationSeconds != null)
+        '${item.prescribedDurationSeconds}${AppStrings.secondsUnitAbbreviation}',
+      if (item.prescribedDistanceMeters != null)
+        '${item.prescribedDistanceMeters} ${WorkoutHistoryStrings.metersUnit}',
+      if (item.prescribedRir != null) '${AppStrings.rir} ${item.prescribedRir}',
     ];
   }
 
   String? _prescribedReps() {
+    if (item.prescribedRepsExact != null) return '${item.prescribedRepsExact}';
     final minimum = item.prescribedRepsMin;
     final maximum = item.prescribedRepsMax;
     if (minimum == null && maximum == null) return null;

@@ -22,6 +22,7 @@ import 'package:aedify/features/exercise_library/presentation/exercise_detail_sc
 import 'package:aedify/features/bodymap/presentation/bodymap_screen.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_launch_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/finish_early_session_complete_screen.dart';
 import 'package:aedify/features/workout_execution/presentation/workout_complete_screen.dart';
 import 'package:aedify/features/workout_builder/presentation/workout_builder_screen.dart';
@@ -270,6 +271,18 @@ class AppRouter {
         ),
         // Non-shell routes (no bottom nav)
         GoRoute(
+          path: AppRoutes.workoutRunnerStandalone().path,
+          name: AppRoutes.workoutRunnerStandalone().name,
+          builder: (context, state) => const WorkoutLaunchScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.workoutRunnerRepeat().path,
+          name: AppRoutes.workoutRunnerRepeat().name,
+          builder: (context, state) => WorkoutLaunchScreen(
+            sourceSessionId: state.pathParameters['sessionId']!,
+          ),
+        ),
+        GoRoute(
           path: AppRoutes.workout().path,
           name: AppRoutes.workout().name,
           builder: (context, state) => const WorkoutRunnerScreen.resume(),
@@ -277,7 +290,11 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.workoutRunnerActive().path,
           name: AppRoutes.workoutRunnerActive().name,
-          builder: (context, state) => const WorkoutRunnerScreen.resume(),
+          builder: (context, state) => WorkoutRunnerScreen.resume(
+            launchedSessionId: state.extra is String
+                ? state.extra as String
+                : null,
+          ),
         ),
         GoRoute(
           path: AppRoutes.workoutRunnerSavedWorkout().path,

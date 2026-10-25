@@ -55,6 +55,7 @@ class AppStrings {
   static const aiChat = 'AI Chat';
   static const backLabel = 'Back';
   static const workout = 'Workout';
+  static const logWorkout = 'Log a workout';
   static const profile = 'Profile';
   static const sharing = 'Sharing';
   static const filters = 'Filters';
@@ -755,6 +756,9 @@ class AppStrings {
   static const weightColumn = 'WEIGHT';
   static const restColumn = 'REST';
   static const durationColumn = 'DURATION';
+  static const distanceColumn = 'DISTANCE';
+  static String toggleSetTypeLabel(String setLabel, String nextType) =>
+      'Change $setLabel to $nextType';
   static const durationUnit = 'min';
   static const durationInputHint = '05:00';
   static const configLabel = 'Configuration';

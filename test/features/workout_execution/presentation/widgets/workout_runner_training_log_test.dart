@@ -7,6 +7,7 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_set_item
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_training_log.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/set_intent.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -54,10 +55,12 @@ class _LogFixtures {
     int exerciseId = 1,
     int order = 0,
     String? name,
+    ExerciseLoggingType? loggingType,
   }) => WorkoutRunnerExerciseItem(
     id: id,
     exerciseId: exerciseId,
     exerciseName: name ?? 'Exercise $exerciseId',
+    loggingType: loggingType,
     sortOrder: order,
     supersetGroupId: 'paired',
     supersetOrder: order,
@@ -368,7 +371,7 @@ void main() {
         of: row,
         matching: find.text(AppStrings.unavailableValue),
       ),
-      findsNWidgets(2),
+      findsNWidgets(3),
     );
     expect(find.descendant(of: row, matching: find.text('80')), findsNothing);
     expect(find.descendant(of: row, matching: find.text('5')), findsNothing);
@@ -376,40 +379,42 @@ void main() {
     expect(find.byKey(const Key('active_weight_field')), findsNothing);
   });
 
-  testWidgets('390px retains compact columns, inline inputs and live status', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await _LogFixtures.pump(
-      tester,
-      _LogHarness(initialBlock: _LogFixtures.single()),
-    );
-    expect(
-      find.byKey(const Key('workout_runner_table_columns')),
-      findsOneWidget,
-    );
-    for (final label in [
-      AppStrings.setNumberColumn,
-      AppStrings.targetColumn,
-      AppStrings.kilogramsAbbreviation,
-      AppStrings.repsColumn,
-      AppStrings.logColumn,
-      AppStrings.runnerLive,
-    ]) {
-      expect(find.text(label), findsOneWidget);
-    }
-    final weight = find.byKey(const Key('active_weight_field'));
-    final reps = find.byKey(const Key('active_reps_field'));
-    expect(tester.getTopLeft(weight).dy, tester.getTopLeft(reps).dy);
-    expect(
-      tester.getSize(weight).height,
-      greaterThanOrEqualTo(AppWorkoutRunnerTokens.controlSize),
-    );
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    '390px exposes scrollable columns, inline effort and live status',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await _LogFixtures.pump(
+        tester,
+        _LogHarness(initialBlock: _LogFixtures.single()),
+      );
+      expect(
+        find.byKey(const Key('workout_runner_table_columns')),
+        findsOneWidget,
+      );
+      for (final label in [
+        AppStrings.setNumberColumn,
+        AppStrings.targetColumn,
+        AppStrings.kilogramsAbbreviation,
+        AppStrings.repsColumn,
+        AppStrings.rpe,
+        AppStrings.logColumn,
+        AppStrings.runnerLive,
+      ]) {
+        expect(find.text(label), findsOneWidget);
+      }
+      final weight = find.byKey(const Key('active_weight_field'));
+      final reps = find.byKey(const Key('active_reps_field'));
+      expect(tester.getTopLeft(weight).dy, tester.getTopLeft(reps).dy);
+      expect(
+        tester.getSize(weight).height,
+        greaterThanOrEqualTo(AppWorkoutRunnerTokens.controlSize),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('groups asymmetric warm-up and working rounds in member order', (
     tester,
@@ -449,25 +454,101 @@ void main() {
       const Key('workout_runner_superset_round_warmup_1'),
     );
     expect(
-      find.descendant(of: secondWarmup, matching: find.text('W2 (A)')),
-      findsOneWidget,
+      tester.getTopLeft(secondWarmup).dy,
+      lessThan(tester.getTopLeft(find.text('W2 (A)')).dy),
     );
-    expect(
-      find.descendant(of: secondWarmup, matching: find.text('W2 (B)')),
-      findsNothing,
-    );
+    expect(find.text('W2 (B)'), findsNothing);
     final finalWorking = find.byKey(
       const Key('workout_runner_superset_round_working_2'),
     );
     expect(
-      find.descendant(of: finalWorking, matching: find.text('S3 (B)')),
-      findsOneWidget,
+      tester.getTopLeft(finalWorking).dy,
+      lessThan(tester.getTopLeft(find.text('S3 (B)')).dy),
     );
     expect(
       find.text(AppStrings.runnerRound(1, AppStrings.warmupSet)),
       findsOneWidget,
     );
   });
+
+  testWidgets(
+    'mixed superset rows follow each member type and type taps preserve ownership',
+    (tester) async {
+      final key = GlobalKey<_LogHarnessState>();
+      await _LogFixtures.pump(
+        tester,
+        _LogHarness(
+          key: key,
+          initialBlock: WorkoutRunnerBlock(
+            members: [
+              _LogFixtures.member('strength', [
+                _LogFixtures.set('weighted'),
+              ], loggingType: ExerciseLoggingType.repsWeight),
+              _LogFixtures.member(
+                'bodyweight',
+                [_LogFixtures.set('bodyweight', exerciseId: 2)],
+                exerciseId: 2,
+                order: 1,
+                loggingType: ExerciseLoggingType.repsOnly,
+              ),
+              _LogFixtures.member(
+                'timed',
+                [_LogFixtures.set('timed', exerciseId: 3)],
+                exerciseId: 3,
+                order: 2,
+                loggingType: ExerciseLoggingType.duration,
+              ),
+            ],
+          ),
+        ),
+      );
+      final headers = find.byKey(const Key('workout_runner_table_columns'));
+      expect(headers, findsNWidgets(3));
+      final headings = [
+        for (final header in headers.evaluate())
+          tester
+              .widgetList<Text>(
+                find.descendant(
+                  of: find.byWidget(header.widget),
+                  matching: find.byType(Text),
+                ),
+              )
+              .map((text) => text.data)
+              .toList(),
+      ];
+      expect(
+        headings[0],
+        containsAllInOrder([
+          AppStrings.kilogramsAbbreviation,
+          AppStrings.repsColumn,
+          AppStrings.rpe,
+        ]),
+      );
+      expect(headings[1], isNot(contains(AppStrings.kilogramsAbbreviation)));
+      expect(headings[1], contains(AppStrings.repsColumn));
+      expect(
+        headings[2],
+        containsAllInOrder([
+          AppStrings.durationColumn,
+          AppStrings.distanceColumn,
+          AppStrings.rpe,
+        ]),
+      );
+      expect(headings[2], isNot(contains(AppStrings.repsColumn)));
+      await _LogFixtures.tap(tester, 'workout_runner_set_type_bodyweight');
+      expect(key.currentState!.updatedExercise, 'bodyweight');
+      expect(key.currentState!.updated!.setType, SetType.warmup);
+      expect(key.currentState!.updated!.actualReps, 10);
+      expect(key.currentState!.updated!.actualRpe, 8.5);
+      expect(
+        key.currentState!.block.members.first.sets.single.setType,
+        SetType.working,
+      );
+      await _LogFixtures.tap(tester, 'workout_runner_set_type_bodyweight');
+      expect(key.currentState!.updated!.setType, SetType.working);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'guides, notes, add set, undo, skip and restore use correct ownership',
@@ -620,7 +701,7 @@ void main() {
         );
         expect(
           find.byKey(const Key('workout_runner_table_columns')),
-          findsNothing,
+          findsOneWidget,
         );
         expect(tester.takeException(), isNull);
         final weight = find.byKey(const Key('active_weight_field'));

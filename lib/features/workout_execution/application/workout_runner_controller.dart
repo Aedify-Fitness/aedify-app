@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'package:aedify/shared/domain/set_effort.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_block.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_set_policy.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +17,9 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_resume_d
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
+import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/set_type.dart';
 import 'package:uuid/uuid.dart';
 
 class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
@@ -196,15 +203,95 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     final session = current.session;
     if (session == null) return;
 
-    final updatedExercises = session.exercises.map((e) {
-      if (e.id != exerciseId) return e;
-      return _replaceSet(e, setId, updatedSet);
-    }).toList();
+    final exercise = session.exercises
+        .where((item) => item.id == exerciseId)
+        .firstOrNull;
+    final previous = exercise?.sets.where((set) => set.id == setId).firstOrNull;
+    if (exercise == null ||
+        previous == null ||
+        updatedSet.id != setId ||
+        updatedSet.exerciseId != previous.exerciseId) {
+      return;
+    }
+    final rir = SetEffort.rirFromRpe(updatedSet.actualRpe);
+    final normalized = updatedSet.copyWith(
+      actualRir: rir,
+      clearActualRir: rir == null,
+    );
+    final linked = <String>{};
+    if (previous.setType != normalized.setType) {
+      const resolver = WorkoutRunnerBlockResolver();
+      final block = resolver.blockFor(session.exercises, exercise);
+      final round = resolver.roundIndex(exercise, previous);
+      final rows = previous.setType == SetType.warmup
+          ? resolver.warmupRoundSets(block, round)
+          : resolver.workingRoundSets(block, round);
+      linked.addAll(rows.map((row) => row.set.id));
+    }
+    final updatedExercises = session.exercises
+        .map(
+          (member) => member.copyWith(
+            sets: [
+              for (final set in member.sets)
+                if (member.id == exerciseId && set.id == setId)
+                  normalized
+                else if (linked.contains(set.id))
+                  set.copyWith(setType: normalized.setType)
+                else
+                  set,
+            ],
+          ),
+        )
+        .toList();
 
     state = AsyncData(
       current.copyWith(session: session.copyWith(exercises: updatedExercises)),
     );
     _scheduleAutoSave();
+  }
+
+  /// Adds selected exercises without requiring a saved workout template.
+  Future<void> addExercises(List<ExerciseReference> selections) async {
+    final current = _editableState;
+    final session = current?.session;
+    if (current == null || session == null || selections.isEmpty) return;
+    final ids = session.exercises.map((e) => e.exerciseId).toSet();
+    const uuid = Uuid();
+    final additions = <WorkoutRunnerExerciseItem>[];
+    for (final selection in selections) {
+      if (!ids.add(selection.exerciseId)) continue;
+      additions.add(
+        WorkoutRunnerExerciseItem(
+          id: uuid.v4(),
+          exerciseId: selection.exerciseId,
+          exerciseName: selection.name,
+          sortOrder: session.exercises.length + additions.length,
+          loggingType: ExerciseLoggingType.fromDbWithDefault(
+            selection.loggingType,
+          ),
+          sets: [
+            WorkoutRunnerSetItem(
+              id: uuid.v4(),
+              exerciseId: selection.exerciseId,
+              setIndex: 0,
+              setType: SetType.working,
+              performedAt: DateTime.now(),
+              completed: false,
+              skipped: false,
+            ),
+          ],
+        ),
+      );
+    }
+    if (additions.isEmpty) return;
+    state = AsyncData(
+      current.copyWith(
+        session: session.copyWith(
+          exercises: [...session.exercises, ...additions],
+        ),
+      ),
+    );
+    await saveProgress();
   }
 
   Future<void> addSet({required String exerciseId}) async {
@@ -223,7 +310,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       );
       final addedSet = WorkoutRunnerSetItem(
         id: const Uuid().v4(),
-        exerciseId: template.exerciseId,
+        exerciseId: exercise.exerciseId,
         setIndex: nextSetIndex,
         setType: template.setType,
         performedAt: DateTime.now(),
@@ -236,6 +323,21 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         prescribedWeightKg: template.prescribedWeightKg,
         prescribedRpeMin: template.prescribedRpeMin,
         prescribedRpeMax: template.prescribedRpeMax,
+        prescribedRir: template.prescribedRir,
+        actualRpe: SetEffort.initialRpe(
+          rir: template.prescribedRir,
+          rpeMin: template.prescribedRpeMin,
+          rpeMax: template.prescribedRpeMax,
+        ),
+        actualRir: SetEffort.rirFromRpe(
+          SetEffort.initialRpe(
+            rir: template.prescribedRir,
+            rpeMin: template.prescribedRpeMin,
+            rpeMax: template.prescribedRpeMax,
+          ),
+        ),
+        prescribedDurationSeconds: template.prescribedDurationSeconds,
+        prescribedDistanceMeters: template.prescribedDistanceMeters,
         restSeconds: template.restSeconds,
       );
       return exercise.copyWith(sets: [...exercise.sets, addedSet]);
@@ -257,6 +359,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     required String sessionExerciseId,
     required int replacementExerciseId,
     required String replacementExerciseName,
+    ExerciseLoggingType? replacementLoggingType,
   }) async {
     _logger.info(
       'substituteExercise — sessionExerciseId: $sessionExerciseId, '
@@ -280,6 +383,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       return exercise.copyWith(
         exerciseId: replacementExerciseId,
         exerciseName: replacementExerciseName,
+        loggingType: replacementLoggingType,
         sets: [
           for (final set in exercise.sets)
             if (set.completed || set.skipped)
@@ -300,6 +404,9 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
                 prescribedWeightKg: set.prescribedWeightKg,
                 prescribedRpeMin: set.prescribedRpeMin,
                 prescribedRpeMax: set.prescribedRpeMax,
+                prescribedRir: set.prescribedRir,
+                prescribedDurationSeconds: set.prescribedDurationSeconds,
+                prescribedDistanceMeters: set.prescribedDistanceMeters,
                 restSeconds: set.restSeconds,
               ),
         ],
@@ -332,7 +439,7 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       );
       final addedSet = WorkoutRunnerSetItem(
         id: const Uuid().v4(),
-        exerciseId: template.exerciseId,
+        exerciseId: exercise.exerciseId,
         setIndex: nextSetIndex,
         setType: template.setType,
         performedAt: DateTime.now(),
@@ -345,6 +452,21 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
         prescribedWeightKg: template.prescribedWeightKg,
         prescribedRpeMin: template.prescribedRpeMin,
         prescribedRpeMax: template.prescribedRpeMax,
+        prescribedRir: template.prescribedRir,
+        actualRpe: SetEffort.initialRpe(
+          rir: template.prescribedRir,
+          rpeMin: template.prescribedRpeMin,
+          rpeMax: template.prescribedRpeMax,
+        ),
+        actualRir: SetEffort.rirFromRpe(
+          SetEffort.initialRpe(
+            rir: template.prescribedRir,
+            rpeMin: template.prescribedRpeMin,
+            rpeMax: template.prescribedRpeMax,
+          ),
+        ),
+        prescribedDurationSeconds: template.prescribedDurationSeconds,
+        prescribedDistanceMeters: template.prescribedDistanceMeters,
         restSeconds: template.restSeconds,
       );
       return exercise.copyWith(sets: [...exercise.sets, addedSet]);
@@ -373,6 +495,14 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
       if (e.id != exerciseId) return e;
       final updatedSets = e.sets.map((s) {
         if (s.id != setId) return s;
+        if (completed &&
+            !WorkoutRunnerSetPolicy.canComplete(
+              s,
+              loggingType: e.loggingType,
+              currentExerciseId: e.exerciseId,
+            )) {
+          return s;
+        }
         return s.copyWith(
           completed: completed,
           skipped: completed ? false : s.skipped,
@@ -593,6 +723,29 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     final session = current.session;
     if (session == null) return;
     if (draft != null && draft.sessionId != session.sessionId) return;
+    final completedSets = [
+      for (final exercise in session.exercises)
+        for (final set in exercise.sets)
+          if (set.completed && !set.skipped) (exercise, set),
+    ];
+    if (completedSets.isEmpty ||
+        completedSets.any(
+          (entry) => !WorkoutRunnerSetPolicy.canComplete(
+            entry.$2,
+            loggingType: entry.$1.loggingType,
+            currentExerciseId: entry.$1.exerciseId,
+          ),
+        )) {
+      state = AsyncData(
+        current.copyWith(
+          errorCode: 'invalid_completed_sets',
+          errorMessage: completedSets.isEmpty
+              ? AppErrorStrings.workoutNoCompletedSets
+              : AppErrorStrings.workoutInvalidCompletedSets,
+        ),
+      );
+      return;
+    }
     _finalizing = true;
     _autoSaveTimer?.cancel();
     final now = DateTime.now();
@@ -799,18 +952,6 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     energyLevel: draft.energyLevel,
     perceivedDifficulty: draft.perceivedDifficulty,
   );
-
-  WorkoutRunnerExerciseItem _replaceSet(
-    WorkoutRunnerExerciseItem exercise,
-    String setId,
-    WorkoutRunnerSetItem updatedSet,
-  ) {
-    final updatedSets = exercise.sets.map((s) {
-      if (s.id != setId) return s;
-      return updatedSet;
-    }).toList();
-    return exercise.copyWith(sets: updatedSets);
-  }
 }
 
 enum _RunnerFailedOperation { save, complete, cancel, discardRecovered, pause }

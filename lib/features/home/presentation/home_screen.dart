@@ -1178,7 +1178,7 @@ class _QuickActionGrid extends StatelessWidget {
                 icon: OutlinedSvgAssets.materialEditNote,
                 label: AppStrings.manualLog,
                 onTap: () {
-                  context.pushNamed(AppRoutes.workoutBuilderCreate().name);
+                  context.pushNamed(AppRoutes.workoutRunnerStandalone().name);
                 },
               ),
             ),

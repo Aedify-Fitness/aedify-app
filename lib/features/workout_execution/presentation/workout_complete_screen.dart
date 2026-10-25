@@ -1,4 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/constants/svg_assets_solid.dart';
@@ -20,13 +22,23 @@ class WorkoutCompleteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final session =
+        ref
+            .watch(
+              WorkoutHistoryProviders.completedSessionProvider(
+                this.session.sessionId,
+              ),
+            )
+            .asData
+            ?.value ??
+        this.session;
     final completedAt = session.completedAt ?? DateTime.now();
     final durationSeconds =
         session.durationSeconds ??
         completedAt.difference(session.startedAt).inSeconds;
-    final totalVolume = _computeTotalVolume();
-    final completedSets = _computeCompletedSets();
-    final totalSets = _computeTotalSets();
+    final totalVolume = _computeTotalVolume(session);
+    final completedSets = _computeCompletedSets(session);
+    final totalSets = _computeTotalSets(session);
     final preferredUnit =
         ref
             .watch(AppProviders.profileControllerProvider)
@@ -89,6 +101,7 @@ class WorkoutCompleteScreen extends ConsumerWidget {
             _InsightCard(),
             AppWhiteSpace.hLg,
             _ExerciseSummarySection(
+              sessionId: session.sessionId,
               exercises: session.exercises,
               weightUnit: weightUnit,
             ),
@@ -103,7 +116,7 @@ class WorkoutCompleteScreen extends ConsumerWidget {
     );
   }
 
-  double _computeTotalVolume() {
+  double _computeTotalVolume(WorkoutRunnerSessionViewData session) {
     var volume = 0.0;
     for (final exercise in session.exercises) {
       for (final set in exercise.sets) {
@@ -117,7 +130,7 @@ class WorkoutCompleteScreen extends ConsumerWidget {
     return volume;
   }
 
-  int _computeCompletedSets() {
+  int _computeCompletedSets(WorkoutRunnerSessionViewData session) {
     var count = 0;
     for (final exercise in session.exercises) {
       for (final set in exercise.sets) {
@@ -127,7 +140,7 @@ class WorkoutCompleteScreen extends ConsumerWidget {
     return count;
   }
 
-  int _computeTotalSets() {
+  int _computeTotalSets(WorkoutRunnerSessionViewData session) {
     var count = 0;
     for (final exercise in session.exercises) {
       count += exercise.sets.length;
@@ -425,10 +438,12 @@ class _InsightCard extends StatelessWidget {
 
 class _ExerciseSummarySection extends StatelessWidget {
   const _ExerciseSummarySection({
+    required this.sessionId,
     required this.exercises,
     required this.weightUnit,
   });
 
+  final String sessionId;
   final List<WorkoutRunnerExerciseItem> exercises;
   final String weightUnit;
 
@@ -474,6 +489,13 @@ class _ExerciseSummarySection extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
             child: _ExerciseCard(
+              onTap: exercise.canCorrectLogs
+                  ? () => context.pushNamed(
+                      AppRoutes.workoutHistoryDetail().name,
+                      pathParameters: {'sessionId': sessionId},
+                    )
+                  : null,
+              id: exercise.id,
               name: exercise.exerciseName,
               completedSets: completedCount,
               totalSets: exercise.sets.length,
@@ -497,6 +519,8 @@ String _formatVolume(double volume) {
 
 class _ExerciseCard extends StatelessWidget {
   const _ExerciseCard({
+    this.onTap,
+    required this.id,
     required this.name,
     required this.completedSets,
     required this.totalSets,
@@ -504,60 +528,72 @@ class _ExerciseCard extends StatelessWidget {
     required this.weightUnit,
   });
 
+  final String id;
   final String name;
   final int completedSets;
   final int totalSets;
   final String formattedVolume;
   final String weightUnit;
 
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        key: ValueKey('completion_exercise_$id'),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: context.colorScheme.surfaceContainer),
-        boxShadow: [
-          BoxShadow(
-            color: context.colorScheme.shadow.withAlpha(5),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+        child: Ink(
+          padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(color: context.colorScheme.surfaceContainer),
+            boxShadow: [
+              BoxShadow(
+                color: context.colorScheme.shadow.withAlpha(5),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.colorScheme.onSurface,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: AppTextStyles.labelMd.copyWith(
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                    AppWhiteSpace.hXs,
+                    Text(
+                      '$completedSets sets \u2022 $formattedVolume $weightUnit volume',
+                      style: AppTextStyles.bodyMd.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                SvgPicture.asset(
+                  OutlinedSvgAssets.chevronRight,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.outlineVariant,
+                    BlendMode.srcIn,
                   ),
                 ),
-                AppWhiteSpace.hXs,
-                Text(
-                  '$completedSets sets \u2022 $formattedVolume $weightUnit volume',
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
-          SvgPicture.asset(
-            OutlinedSvgAssets.chevronRight,
-            width: AppSizing.iconMd,
-            height: AppSizing.iconMd,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.outlineVariant,
-              BlendMode.srcIn,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

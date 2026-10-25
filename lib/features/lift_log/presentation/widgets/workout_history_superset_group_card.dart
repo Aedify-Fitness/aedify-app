@@ -1,4 +1,5 @@
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -13,10 +14,12 @@ class WorkoutHistorySupersetGroupCard extends StatelessWidget {
     super.key,
     required this.group,
     required this.exercises,
+    this.onEditSet,
   });
 
   final SupersetGroupSummary group;
   final List<WorkoutHistoryExerciseItem> exercises;
+  final ValueChanged<WorkoutHistorySetItem>? onEditSet;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +78,7 @@ class WorkoutHistorySupersetGroupCard extends StatelessWidget {
                 item: exercises[index],
                 isInSuperset: true,
                 positionLabel: AppStrings.exerciseNumberLabel(index + 1),
+                onEditSet: exercises[index].canCorrectLogs ? onEditSet : null,
               ),
               if (index < exercises.length - 1) AppWhiteSpace.hSm,
             ],

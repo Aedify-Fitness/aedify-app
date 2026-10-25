@@ -272,6 +272,14 @@ class _Harness {
 
 class _Driver {
   _Driver._();
+
+  static Finder workoutDays(String weekId) => find.byWidgetPredicate((widget) {
+    final key = widget.key;
+    return widget is KeyedSubtree &&
+        key is ValueKey<String> &&
+        key.value.startsWith('programme_workout_day_${weekId}_');
+  });
+
   static void viewport(WidgetTester tester, Size size) {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -809,7 +817,7 @@ void main() {
       final harness = _Harness(draft: _Fixtures.draft(assigned: true));
       await _Driver.load(tester, harness);
       await _Driver.next(tester);
-      expect(find.text(AppStrings.trainingBlocks), findsNWidgets(2));
+      expect(find.text(AppStrings.trainingBlocks), findsOneWidget);
       expect(find.text(AppStrings.nextWeeklySchedule), findsOneWidget);
       final blockId = harness.current(tester).trainingBlocks.single.id;
       final name = find.byKey(ValueKey('training_block_name_$blockId'));
@@ -825,10 +833,10 @@ void main() {
       await tester.enterText(notes, 'Add load when all reps are complete');
       await tester.pumpAndSettle();
       await _Driver.next(tester);
-      expect(find.text(AppStrings.planYourWeek), findsOneWidget);
+      expect(find.text(AppStrings.weeklySchedule), findsOneWidget);
       expect(find.text(AppStrings.nextDefineWorkouts), findsOneWidget);
       await _Driver.next(tester);
-      expect(find.text(AppStrings.defineWorkouts), findsNWidgets(2));
+      expect(find.text(AppStrings.defineWorkouts), findsOneWidget);
       expect(find.text(AppStrings.nextReviewAndPublish), findsOneWidget);
       await _Driver.next(tester);
       expect(
@@ -916,7 +924,7 @@ void main() {
       expect(harness.current(tester).trainingBlocks, hasLength(1));
       expect(harness.current(tester).weeks, hasLength(5));
       await _Driver.next(tester);
-      expect(find.text(AppStrings.planYourWeek), findsOneWidget);
+      expect(find.text(AppStrings.weeklySchedule), findsOneWidget);
       expect(tester.widget<FilledButton>(next).onPressed, isNull);
       expect(tester.takeException(), isNull);
     },
@@ -972,7 +980,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.widget<FilledButton>(next).onPressed, isNotNull);
       await _Driver.next(tester);
-      expect(find.text(AppStrings.defineWorkouts), findsNWidgets(2));
+      expect(find.text(AppStrings.defineWorkouts), findsOneWidget);
       expect(tester.widget<FilledButton>(next).onPressed, isNull);
       expect(
         find.text(AppStrings.programmeDayNeedsWorkout(2, 'Tuesday')),
@@ -1077,7 +1085,7 @@ void main() {
       );
       await tester.tap(schedule);
       await tester.pumpAndSettle();
-      expect(find.text(AppStrings.planYourWeek), findsOneWidget);
+      expect(find.text(AppStrings.weeklySchedule), findsOneWidget);
       expect(tester.widget<FilledButton>(next).onPressed, isNull);
       expect(tester.takeException(), isNull);
     },
@@ -1106,7 +1114,7 @@ void main() {
       final slots = harness.current(tester).weeks!.single.slots!;
       expect(slots, hasLength(1));
       expect(slots.single.scheduledDay, TrainingDay.monday);
-      expect(find.text(AppStrings.programmeWorkoutCount(1)), findsOneWidget);
+      expect(_Driver.workoutDays('week'), findsOneWidget);
       expect(
         find.byKey(const ValueKey('programme_config_exercise')),
         findsOneWidget,
@@ -1168,7 +1176,7 @@ void main() {
       final weeks = harness.current(tester).weeks!;
       expect(weeks.first.slots, hasLength(1));
       expect(weeks.last.slots, isEmpty);
-      expect(find.text(AppStrings.programmeWorkoutCount(0)), findsOneWidget);
+      expect(_Driver.workoutDays('week-2'), findsNothing);
       expect(find.byType(WorkoutBuilderScreen), findsNothing);
       final plus = find.byWidgetPredicate(
         (widget) =>
@@ -1248,7 +1256,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.text(AppStrings.programmeWorkoutCount(3)), findsOneWidget);
+      expect(_Driver.workoutDays('week-2'), findsNWidgets(3));
       expect(find.byType(WorkoutBuilderScreen), findsNothing);
       expect(find.byType(TemplateReassignmentBottomSheet), findsNothing);
       expect(harness.workouts.saveCalls, 0);
@@ -1295,7 +1303,7 @@ void main() {
           findsOneWidget,
         );
       }
-      expect(find.text(AppStrings.programmeWorkoutCount(3)), findsOneWidget);
+      expect(_Driver.workoutDays('week'), findsNWidgets(3));
       var weeks = harness.current(tester).weeks!;
       expect(
         weeks.first.slots!.map((slot) => slot.template!.id).toSet(),
@@ -1751,7 +1759,7 @@ void main() {
       final harness = _Harness(draft: _Fixtures.draft(assigned: true));
       await _Driver.load(tester, harness);
       await _Driver.openSchedule(tester);
-      expect(find.text(AppStrings.planYourWeek), findsOneWidget);
+      expect(find.text(AppStrings.weeklySchedule), findsOneWidget);
       await tester.tap(find.text('Monday'));
       await tester.pumpAndSettle();
       await tester.tap(find.text(AppStrings.clearSelection));
@@ -1774,7 +1782,7 @@ void main() {
         TrainingDay.tuesday,
       );
       await _Driver.next(tester);
-      expect(find.text(AppStrings.defineWorkouts), findsNWidgets(2));
+      expect(find.text(AppStrings.defineWorkouts), findsOneWidget);
       expect(
         tester
             .widget<FilledButton>(
@@ -1998,7 +2006,7 @@ void main() {
       final harness = _Harness(draft: _Fixtures.workouts());
       await _Driver.load(tester, harness);
       await _Driver.openWorkouts(tester);
-      expect(find.text(AppStrings.defineWorkouts), findsNWidgets(2));
+      expect(find.text(AppStrings.defineWorkouts), findsOneWidget);
       expect(
         find.text(AppStrings.programmeExerciseCount(2).toUpperCase()),
         findsOneWidget,
@@ -2341,7 +2349,7 @@ void main() {
         );
         await _Driver.load(tester, harness);
         await _Driver.openWorkouts(tester);
-        expect(find.text(AppStrings.defineWorkouts), findsNWidgets(2));
+        expect(find.text(AppStrings.defineWorkouts), findsOneWidget);
         expect(tester.takeException(), isNull);
         await tester.ensureVisible(
           find.byKey(const ValueKey('exercise_config_add_set')),

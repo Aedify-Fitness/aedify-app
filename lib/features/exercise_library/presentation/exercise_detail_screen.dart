@@ -3,6 +3,7 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_detail_instructions.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_detail_style.dart';
 import 'package:aedify/features/exercise_library/presentation/widgets/exercise_video_section.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/exercise_history_section.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
@@ -265,7 +266,11 @@ class _DetailContent extends StatelessWidget {
                           detail: detail,
                           key: const ValueKey('guidance_tab'),
                         )
-                      : const _Performance(key: ValueKey('performance_tab')),
+                      : ExerciseHistorySection(
+                          key: const ValueKey('performance_tab'),
+                          exerciseId: detail.id,
+                          emptyState: const _Performance(),
+                        ),
                 ),
                 AppWhiteSpace.hLg,
               ],
@@ -572,7 +577,7 @@ class _NotesSectionState extends State<_NotesSection> {
 }
 
 class _Performance extends StatelessWidget {
-  const _Performance({super.key});
+  const _Performance();
 
   @override
   Widget build(BuildContext context) {

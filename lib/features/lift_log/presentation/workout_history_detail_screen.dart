@@ -1,6 +1,10 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_detail_view_data.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/workout_history_correction_sheet.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/history_error_banner.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_superset_group_card.dart';
@@ -173,10 +177,30 @@ class _DetailContent extends ConsumerWidget {
     final groups = ref
         .watch(AppProviders.workoutHistoryGroupingMapperProvider)
         .buildGroups(detail.exercises);
-    final exerciseWidgets = _buildExerciseWidgets(detail.exercises, groups);
+    final exerciseWidgets = _buildExerciseWidgets(
+      context,
+      detail.exercises,
+      groups,
+    );
 
     return CustomScrollView(
       slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: FilledButton(
+              key: const Key('history_repeat_workout'),
+              onPressed: () => context.pushNamed(
+                AppRoutes.workoutRunnerRepeat().name,
+                pathParameters: {'sessionId': detail.sessionId},
+              ),
+              child: const Text(WorkoutHistoryStrings.repeatWorkout),
+            ),
+          ),
+        ),
         SliverPadding(
           padding: const EdgeInsets.only(
             left: AppSpacing.md,
@@ -227,6 +251,7 @@ class _DetailContent extends ConsumerWidget {
   }
 
   List<Widget> _buildExerciseWidgets(
+    BuildContext context,
     List<WorkoutHistoryExerciseItem> exercises,
     List<SupersetGroupSummary> groups,
   ) {
@@ -239,7 +264,14 @@ class _DetailContent extends ConsumerWidget {
     final seenGroups = <String>{};
     for (final exercise in exercises) {
       if (!groupedIds.contains(exercise.id)) {
-        widgets.add(WorkoutHistoryExerciseCard(item: exercise));
+        widgets.add(
+          WorkoutHistoryExerciseCard(
+            item: exercise,
+            onEditSet: exercise.canCorrectLogs
+                ? (set) => _editSet(context, set)
+                : null,
+          ),
+        );
         continue;
       }
 
@@ -253,10 +285,24 @@ class _DetailContent extends ConsumerWidget {
         WorkoutHistorySupersetGroupCard(
           group: group,
           exercises: groupExercises,
+          onEditSet: (set) => _editSet(context, set),
         ),
       );
     }
     return widgets;
+  }
+
+  Future<void> _editSet(BuildContext context, WorkoutHistorySetItem set) async {
+    if (!set.hasCompletedLog) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      useSafeArea: true,
+      builder: (_) =>
+          WorkoutHistoryCorrectionSheet(sessionId: detail.sessionId, item: set),
+    );
   }
 }
 

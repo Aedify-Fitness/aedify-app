@@ -25184,6 +25184,17 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _loggingTypeMeta = const VerificationMeta(
+    'loggingType',
+  );
+  @override
+  late final GeneratedColumn<String> loggingType = GeneratedColumn<String>(
+    'logging_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -25204,6 +25215,7 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
     sortOrder,
     restBetweenExercisesSeconds,
     supersetGroupId,
+    loggingType,
     notes,
   ];
   @override
@@ -25297,6 +25309,15 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
         ),
       );
     }
+    if (data.containsKey('logging_type')) {
+      context.handle(
+        _loggingTypeMeta,
+        loggingType.isAcceptableOrUnknown(
+          data['logging_type']!,
+          _loggingTypeMeta,
+        ),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -25348,6 +25369,10 @@ class $WorkoutSessionExercisesTable extends WorkoutSessionExercises
         DriftSqlType.string,
         data['${effectivePrefix}superset_group_id'],
       ),
+      loggingType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}logging_type'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -25372,6 +25397,7 @@ class WorkoutSessionExercise extends DataClass
   final int sortOrder;
   final int? restBetweenExercisesSeconds;
   final String? supersetGroupId;
+  final String? loggingType;
   final String? notes;
   const WorkoutSessionExercise({
     required this.id,
@@ -25383,6 +25409,7 @@ class WorkoutSessionExercise extends DataClass
     required this.sortOrder,
     this.restBetweenExercisesSeconds,
     this.supersetGroupId,
+    this.loggingType,
     this.notes,
   });
   @override
@@ -25411,6 +25438,9 @@ class WorkoutSessionExercise extends DataClass
     if (!nullToAbsent || supersetGroupId != null) {
       map['superset_group_id'] = Variable<String>(supersetGroupId);
     }
+    if (!nullToAbsent || loggingType != null) {
+      map['logging_type'] = Variable<String>(loggingType);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -25438,6 +25468,9 @@ class WorkoutSessionExercise extends DataClass
       supersetGroupId: supersetGroupId == null && nullToAbsent
           ? const Value.absent()
           : Value(supersetGroupId),
+      loggingType: loggingType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(loggingType),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -25467,6 +25500,7 @@ class WorkoutSessionExercise extends DataClass
         json['restBetweenExercisesSeconds'],
       ),
       supersetGroupId: serializer.fromJson<String?>(json['supersetGroupId']),
+      loggingType: serializer.fromJson<String?>(json['loggingType']),
       notes: serializer.fromJson<String?>(json['notes']),
     );
   }
@@ -25489,6 +25523,7 @@ class WorkoutSessionExercise extends DataClass
         restBetweenExercisesSeconds,
       ),
       'supersetGroupId': serializer.toJson<String?>(supersetGroupId),
+      'loggingType': serializer.toJson<String?>(loggingType),
       'notes': serializer.toJson<String?>(notes),
     };
   }
@@ -25503,6 +25538,7 @@ class WorkoutSessionExercise extends DataClass
     int? sortOrder,
     Value<int?> restBetweenExercisesSeconds = const Value.absent(),
     Value<String?> supersetGroupId = const Value.absent(),
+    Value<String?> loggingType = const Value.absent(),
     Value<String?> notes = const Value.absent(),
   }) => WorkoutSessionExercise(
     id: id ?? this.id,
@@ -25522,6 +25558,7 @@ class WorkoutSessionExercise extends DataClass
     supersetGroupId: supersetGroupId.present
         ? supersetGroupId.value
         : this.supersetGroupId,
+    loggingType: loggingType.present ? loggingType.value : this.loggingType,
     notes: notes.present ? notes.value : this.notes,
   );
   WorkoutSessionExercise copyWithCompanion(
@@ -25551,6 +25588,9 @@ class WorkoutSessionExercise extends DataClass
       supersetGroupId: data.supersetGroupId.present
           ? data.supersetGroupId.value
           : this.supersetGroupId,
+      loggingType: data.loggingType.present
+          ? data.loggingType.value
+          : this.loggingType,
       notes: data.notes.present ? data.notes.value : this.notes,
     );
   }
@@ -25569,6 +25609,7 @@ class WorkoutSessionExercise extends DataClass
           ..write('sortOrder: $sortOrder, ')
           ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('loggingType: $loggingType, ')
           ..write('notes: $notes')
           ..write(')'))
         .toString();
@@ -25585,6 +25626,7 @@ class WorkoutSessionExercise extends DataClass
     sortOrder,
     restBetweenExercisesSeconds,
     supersetGroupId,
+    loggingType,
     notes,
   );
   @override
@@ -25602,6 +25644,7 @@ class WorkoutSessionExercise extends DataClass
           other.restBetweenExercisesSeconds ==
               this.restBetweenExercisesSeconds &&
           other.supersetGroupId == this.supersetGroupId &&
+          other.loggingType == this.loggingType &&
           other.notes == this.notes);
 }
 
@@ -25616,6 +25659,7 @@ class WorkoutSessionExercisesCompanion
   final Value<int> sortOrder;
   final Value<int?> restBetweenExercisesSeconds;
   final Value<String?> supersetGroupId;
+  final Value<String?> loggingType;
   final Value<String?> notes;
   final Value<int> rowid;
   const WorkoutSessionExercisesCompanion({
@@ -25628,6 +25672,7 @@ class WorkoutSessionExercisesCompanion
     this.sortOrder = const Value.absent(),
     this.restBetweenExercisesSeconds = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
+    this.loggingType = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -25641,6 +25686,7 @@ class WorkoutSessionExercisesCompanion
     required int sortOrder,
     this.restBetweenExercisesSeconds = const Value.absent(),
     this.supersetGroupId = const Value.absent(),
+    this.loggingType = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -25658,6 +25704,7 @@ class WorkoutSessionExercisesCompanion
     Expression<int>? sortOrder,
     Expression<int>? restBetweenExercisesSeconds,
     Expression<String>? supersetGroupId,
+    Expression<String>? loggingType,
     Expression<String>? notes,
     Expression<int>? rowid,
   }) {
@@ -25675,6 +25722,7 @@ class WorkoutSessionExercisesCompanion
       if (restBetweenExercisesSeconds != null)
         'rest_between_exercises_seconds': restBetweenExercisesSeconds,
       if (supersetGroupId != null) 'superset_group_id': supersetGroupId,
+      if (loggingType != null) 'logging_type': loggingType,
       if (notes != null) 'notes': notes,
       if (rowid != null) 'rowid': rowid,
     });
@@ -25690,6 +25738,7 @@ class WorkoutSessionExercisesCompanion
     Value<int>? sortOrder,
     Value<int?>? restBetweenExercisesSeconds,
     Value<String?>? supersetGroupId,
+    Value<String?>? loggingType,
     Value<String?>? notes,
     Value<int>? rowid,
   }) {
@@ -25706,6 +25755,7 @@ class WorkoutSessionExercisesCompanion
       restBetweenExercisesSeconds:
           restBetweenExercisesSeconds ?? this.restBetweenExercisesSeconds,
       supersetGroupId: supersetGroupId ?? this.supersetGroupId,
+      loggingType: loggingType ?? this.loggingType,
       notes: notes ?? this.notes,
       rowid: rowid ?? this.rowid,
     );
@@ -25749,6 +25799,9 @@ class WorkoutSessionExercisesCompanion
     if (supersetGroupId.present) {
       map['superset_group_id'] = Variable<String>(supersetGroupId.value);
     }
+    if (loggingType.present) {
+      map['logging_type'] = Variable<String>(loggingType.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -25772,6 +25825,7 @@ class WorkoutSessionExercisesCompanion
           ..write('sortOrder: $sortOrder, ')
           ..write('restBetweenExercisesSeconds: $restBetweenExercisesSeconds, ')
           ..write('supersetGroupId: $supersetGroupId, ')
+          ..write('loggingType: $loggingType, ')
           ..write('notes: $notes, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -25925,6 +25979,39 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _prescribedRirMeta = const VerificationMeta(
+    'prescribedRir',
+  );
+  @override
+  late final GeneratedColumn<int> prescribedRir = GeneratedColumn<int>(
+    'prescribed_rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescribedDurationSecondsMeta =
+      const VerificationMeta('prescribedDurationSeconds');
+  @override
+  late final GeneratedColumn<int> prescribedDurationSeconds =
+      GeneratedColumn<int>(
+        'prescribed_duration_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _prescribedDistanceMetersMeta =
+      const VerificationMeta('prescribedDistanceMeters');
+  @override
+  late final GeneratedColumn<double> prescribedDistanceMeters =
+      GeneratedColumn<double>(
+        'prescribed_distance_meters',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _actualRepsMeta = const VerificationMeta(
     'actualReps',
   );
@@ -26101,6 +26188,9 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
     prescribedWeightKg,
     prescribedRpeMin,
     prescribedRpeMax,
+    prescribedRir,
+    prescribedDurationSeconds,
+    prescribedDistanceMeters,
     actualReps,
     actualWeightKg,
     actualDurationSeconds,
@@ -26234,6 +26324,33 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         prescribedRpeMax.isAcceptableOrUnknown(
           data['prescribed_rpe_max']!,
           _prescribedRpeMaxMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_rir')) {
+      context.handle(
+        _prescribedRirMeta,
+        prescribedRir.isAcceptableOrUnknown(
+          data['prescribed_rir']!,
+          _prescribedRirMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_duration_seconds')) {
+      context.handle(
+        _prescribedDurationSecondsMeta,
+        prescribedDurationSeconds.isAcceptableOrUnknown(
+          data['prescribed_duration_seconds']!,
+          _prescribedDurationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescribed_distance_meters')) {
+      context.handle(
+        _prescribedDistanceMetersMeta,
+        prescribedDistanceMeters.isAcceptableOrUnknown(
+          data['prescribed_distance_meters']!,
+          _prescribedDistanceMetersMeta,
         ),
       );
     }
@@ -26401,6 +26518,18 @@ class $SetLogsTable extends SetLogs with TableInfo<$SetLogsTable, SetLog> {
         DriftSqlType.double,
         data['${effectivePrefix}prescribed_rpe_max'],
       ),
+      prescribedRir: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_rir'],
+      ),
+      prescribedDurationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prescribed_duration_seconds'],
+      ),
+      prescribedDistanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prescribed_distance_meters'],
+      ),
       actualReps: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}actual_reps'],
@@ -26480,6 +26609,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? prescribedDurationSeconds;
+  final double? prescribedDistanceMeters;
   final int? actualReps;
   final double? actualWeightKg;
   final int? actualDurationSeconds;
@@ -26508,6 +26640,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
+    this.prescribedRir,
+    this.prescribedDurationSeconds,
+    this.prescribedDistanceMeters,
     this.actualReps,
     this.actualWeightKg,
     this.actualDurationSeconds,
@@ -26554,6 +26689,19 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     }
     if (!nullToAbsent || prescribedRpeMax != null) {
       map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax);
+    }
+    if (!nullToAbsent || prescribedRir != null) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir);
+    }
+    if (!nullToAbsent || prescribedDurationSeconds != null) {
+      map['prescribed_duration_seconds'] = Variable<int>(
+        prescribedDurationSeconds,
+      );
+    }
+    if (!nullToAbsent || prescribedDistanceMeters != null) {
+      map['prescribed_distance_meters'] = Variable<double>(
+        prescribedDistanceMeters,
+      );
     }
     if (!nullToAbsent || actualReps != null) {
       map['actual_reps'] = Variable<int>(actualReps);
@@ -26619,6 +26767,16 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       prescribedRpeMax: prescribedRpeMax == null && nullToAbsent
           ? const Value.absent()
           : Value(prescribedRpeMax),
+      prescribedRir: prescribedRir == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedRir),
+      prescribedDurationSeconds:
+          prescribedDurationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedDurationSeconds),
+      prescribedDistanceMeters: prescribedDistanceMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prescribedDistanceMeters),
       actualReps: actualReps == null && nullToAbsent
           ? const Value.absent()
           : Value(actualReps),
@@ -26679,6 +26837,13 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       ),
       prescribedRpeMin: serializer.fromJson<double?>(json['prescribedRpeMin']),
       prescribedRpeMax: serializer.fromJson<double?>(json['prescribedRpeMax']),
+      prescribedRir: serializer.fromJson<int?>(json['prescribedRir']),
+      prescribedDurationSeconds: serializer.fromJson<int?>(
+        json['prescribedDurationSeconds'],
+      ),
+      prescribedDistanceMeters: serializer.fromJson<double?>(
+        json['prescribedDistanceMeters'],
+      ),
       actualReps: serializer.fromJson<int?>(json['actualReps']),
       actualWeightKg: serializer.fromJson<double?>(json['actualWeightKg']),
       actualDurationSeconds: serializer.fromJson<int?>(
@@ -26718,6 +26883,13 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       'prescribedWeightKg': serializer.toJson<double?>(prescribedWeightKg),
       'prescribedRpeMin': serializer.toJson<double?>(prescribedRpeMin),
       'prescribedRpeMax': serializer.toJson<double?>(prescribedRpeMax),
+      'prescribedRir': serializer.toJson<int?>(prescribedRir),
+      'prescribedDurationSeconds': serializer.toJson<int?>(
+        prescribedDurationSeconds,
+      ),
+      'prescribedDistanceMeters': serializer.toJson<double?>(
+        prescribedDistanceMeters,
+      ),
       'actualReps': serializer.toJson<int?>(actualReps),
       'actualWeightKg': serializer.toJson<double?>(actualWeightKg),
       'actualDurationSeconds': serializer.toJson<int?>(actualDurationSeconds),
@@ -26749,6 +26921,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     Value<double?> prescribedWeightKg = const Value.absent(),
     Value<double?> prescribedRpeMin = const Value.absent(),
     Value<double?> prescribedRpeMax = const Value.absent(),
+    Value<int?> prescribedRir = const Value.absent(),
+    Value<int?> prescribedDurationSeconds = const Value.absent(),
+    Value<double?> prescribedDistanceMeters = const Value.absent(),
     Value<int?> actualReps = const Value.absent(),
     Value<double?> actualWeightKg = const Value.absent(),
     Value<int?> actualDurationSeconds = const Value.absent(),
@@ -26790,6 +26965,15 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     prescribedRpeMax: prescribedRpeMax.present
         ? prescribedRpeMax.value
         : this.prescribedRpeMax,
+    prescribedRir: prescribedRir.present
+        ? prescribedRir.value
+        : this.prescribedRir,
+    prescribedDurationSeconds: prescribedDurationSeconds.present
+        ? prescribedDurationSeconds.value
+        : this.prescribedDurationSeconds,
+    prescribedDistanceMeters: prescribedDistanceMeters.present
+        ? prescribedDistanceMeters.value
+        : this.prescribedDistanceMeters,
     actualReps: actualReps.present ? actualReps.value : this.actualReps,
     actualWeightKg: actualWeightKg.present
         ? actualWeightKg.value
@@ -26846,6 +27030,15 @@ class SetLog extends DataClass implements Insertable<SetLog> {
       prescribedRpeMax: data.prescribedRpeMax.present
           ? data.prescribedRpeMax.value
           : this.prescribedRpeMax,
+      prescribedRir: data.prescribedRir.present
+          ? data.prescribedRir.value
+          : this.prescribedRir,
+      prescribedDurationSeconds: data.prescribedDurationSeconds.present
+          ? data.prescribedDurationSeconds.value
+          : this.prescribedDurationSeconds,
+      prescribedDistanceMeters: data.prescribedDistanceMeters.present
+          ? data.prescribedDistanceMeters.value
+          : this.prescribedDistanceMeters,
       actualReps: data.actualReps.present
           ? data.actualReps.value
           : this.actualReps,
@@ -26891,6 +27084,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           ..write('prescribedWeightKg: $prescribedWeightKg, ')
           ..write('prescribedRpeMin: $prescribedRpeMin, ')
           ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('prescribedDurationSeconds: $prescribedDurationSeconds, ')
+          ..write('prescribedDistanceMeters: $prescribedDistanceMeters, ')
           ..write('actualReps: $actualReps, ')
           ..write('actualWeightKg: $actualWeightKg, ')
           ..write('actualDurationSeconds: $actualDurationSeconds, ')
@@ -26924,6 +27120,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
     prescribedWeightKg,
     prescribedRpeMin,
     prescribedRpeMax,
+    prescribedRir,
+    prescribedDurationSeconds,
+    prescribedDistanceMeters,
     actualReps,
     actualWeightKg,
     actualDurationSeconds,
@@ -26956,6 +27155,9 @@ class SetLog extends DataClass implements Insertable<SetLog> {
           other.prescribedWeightKg == this.prescribedWeightKg &&
           other.prescribedRpeMin == this.prescribedRpeMin &&
           other.prescribedRpeMax == this.prescribedRpeMax &&
+          other.prescribedRir == this.prescribedRir &&
+          other.prescribedDurationSeconds == this.prescribedDurationSeconds &&
+          other.prescribedDistanceMeters == this.prescribedDistanceMeters &&
           other.actualReps == this.actualReps &&
           other.actualWeightKg == this.actualWeightKg &&
           other.actualDurationSeconds == this.actualDurationSeconds &&
@@ -26986,6 +27188,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
   final Value<double?> prescribedWeightKg;
   final Value<double?> prescribedRpeMin;
   final Value<double?> prescribedRpeMax;
+  final Value<int?> prescribedRir;
+  final Value<int?> prescribedDurationSeconds;
+  final Value<double?> prescribedDistanceMeters;
   final Value<int?> actualReps;
   final Value<double?> actualWeightKg;
   final Value<int?> actualDurationSeconds;
@@ -27015,6 +27220,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.prescribedWeightKg = const Value.absent(),
     this.prescribedRpeMin = const Value.absent(),
     this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.prescribedDurationSeconds = const Value.absent(),
+    this.prescribedDistanceMeters = const Value.absent(),
     this.actualReps = const Value.absent(),
     this.actualWeightKg = const Value.absent(),
     this.actualDurationSeconds = const Value.absent(),
@@ -27045,6 +27253,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     this.prescribedWeightKg = const Value.absent(),
     this.prescribedRpeMin = const Value.absent(),
     this.prescribedRpeMax = const Value.absent(),
+    this.prescribedRir = const Value.absent(),
+    this.prescribedDurationSeconds = const Value.absent(),
+    this.prescribedDistanceMeters = const Value.absent(),
     this.actualReps = const Value.absent(),
     this.actualWeightKg = const Value.absent(),
     this.actualDurationSeconds = const Value.absent(),
@@ -27081,6 +27292,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Expression<double>? prescribedWeightKg,
     Expression<double>? prescribedRpeMin,
     Expression<double>? prescribedRpeMax,
+    Expression<int>? prescribedRir,
+    Expression<int>? prescribedDurationSeconds,
+    Expression<double>? prescribedDistanceMeters,
     Expression<int>? actualReps,
     Expression<double>? actualWeightKg,
     Expression<int>? actualDurationSeconds,
@@ -27114,6 +27328,11 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
         'prescribed_weight_kg': prescribedWeightKg,
       if (prescribedRpeMin != null) 'prescribed_rpe_min': prescribedRpeMin,
       if (prescribedRpeMax != null) 'prescribed_rpe_max': prescribedRpeMax,
+      if (prescribedRir != null) 'prescribed_rir': prescribedRir,
+      if (prescribedDurationSeconds != null)
+        'prescribed_duration_seconds': prescribedDurationSeconds,
+      if (prescribedDistanceMeters != null)
+        'prescribed_distance_meters': prescribedDistanceMeters,
       if (actualReps != null) 'actual_reps': actualReps,
       if (actualWeightKg != null) 'actual_weight_kg': actualWeightKg,
       if (actualDurationSeconds != null)
@@ -27148,6 +27367,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     Value<double?>? prescribedWeightKg,
     Value<double?>? prescribedRpeMin,
     Value<double?>? prescribedRpeMax,
+    Value<int?>? prescribedRir,
+    Value<int?>? prescribedDurationSeconds,
+    Value<double?>? prescribedDistanceMeters,
     Value<int?>? actualReps,
     Value<double?>? actualWeightKg,
     Value<int?>? actualDurationSeconds,
@@ -27179,6 +27401,11 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
       prescribedWeightKg: prescribedWeightKg ?? this.prescribedWeightKg,
       prescribedRpeMin: prescribedRpeMin ?? this.prescribedRpeMin,
       prescribedRpeMax: prescribedRpeMax ?? this.prescribedRpeMax,
+      prescribedRir: prescribedRir ?? this.prescribedRir,
+      prescribedDurationSeconds:
+          prescribedDurationSeconds ?? this.prescribedDurationSeconds,
+      prescribedDistanceMeters:
+          prescribedDistanceMeters ?? this.prescribedDistanceMeters,
       actualReps: actualReps ?? this.actualReps,
       actualWeightKg: actualWeightKg ?? this.actualWeightKg,
       actualDurationSeconds:
@@ -27241,6 +27468,19 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
     }
     if (prescribedRpeMax.present) {
       map['prescribed_rpe_max'] = Variable<double>(prescribedRpeMax.value);
+    }
+    if (prescribedRir.present) {
+      map['prescribed_rir'] = Variable<int>(prescribedRir.value);
+    }
+    if (prescribedDurationSeconds.present) {
+      map['prescribed_duration_seconds'] = Variable<int>(
+        prescribedDurationSeconds.value,
+      );
+    }
+    if (prescribedDistanceMeters.present) {
+      map['prescribed_distance_meters'] = Variable<double>(
+        prescribedDistanceMeters.value,
+      );
     }
     if (actualReps.present) {
       map['actual_reps'] = Variable<int>(actualReps.value);
@@ -27310,6 +27550,9 @@ class SetLogsCompanion extends UpdateCompanion<SetLog> {
           ..write('prescribedWeightKg: $prescribedWeightKg, ')
           ..write('prescribedRpeMin: $prescribedRpeMin, ')
           ..write('prescribedRpeMax: $prescribedRpeMax, ')
+          ..write('prescribedRir: $prescribedRir, ')
+          ..write('prescribedDurationSeconds: $prescribedDurationSeconds, ')
+          ..write('prescribedDistanceMeters: $prescribedDistanceMeters, ')
           ..write('actualReps: $actualReps, ')
           ..write('actualWeightKg: $actualWeightKg, ')
           ..write('actualDurationSeconds: $actualDurationSeconds, ')
@@ -39681,6 +39924,7 @@ typedef $$WorkoutSessionExercisesTableCreateCompanionBuilder =
       required int sortOrder,
       Value<int?> restBetweenExercisesSeconds,
       Value<String?> supersetGroupId,
+      Value<String?> loggingType,
       Value<String?> notes,
       Value<int> rowid,
     });
@@ -39695,6 +39939,7 @@ typedef $$WorkoutSessionExercisesTableUpdateCompanionBuilder =
       Value<int> sortOrder,
       Value<int?> restBetweenExercisesSeconds,
       Value<String?> supersetGroupId,
+      Value<String?> loggingType,
       Value<String?> notes,
       Value<int> rowid,
     });
@@ -39750,6 +39995,11 @@ class $$WorkoutSessionExercisesTableFilterComposer
 
   ColumnFilters<String> get supersetGroupId => $composableBuilder(
     column: $table.supersetGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -39814,6 +40064,11 @@ class $$WorkoutSessionExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -39868,6 +40123,11 @@ class $$WorkoutSessionExercisesTableAnnotationComposer
 
   GeneratedColumn<String> get supersetGroupId => $composableBuilder(
     column: $table.supersetGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get loggingType => $composableBuilder(
+    column: $table.loggingType,
     builder: (column) => column,
   );
 
@@ -39931,6 +40191,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionExercisesCompanion(
@@ -39943,6 +40204,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 sortOrder: sortOrder,
                 restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 supersetGroupId: supersetGroupId,
+                loggingType: loggingType,
                 notes: notes,
                 rowid: rowid,
               ),
@@ -39958,6 +40220,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 required int sortOrder,
                 Value<int?> restBetweenExercisesSeconds = const Value.absent(),
                 Value<String?> supersetGroupId = const Value.absent(),
+                Value<String?> loggingType = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionExercisesCompanion.insert(
@@ -39970,6 +40233,7 @@ class $$WorkoutSessionExercisesTableTableManager
                 sortOrder: sortOrder,
                 restBetweenExercisesSeconds: restBetweenExercisesSeconds,
                 supersetGroupId: supersetGroupId,
+                loggingType: loggingType,
                 notes: notes,
                 rowid: rowid,
               ),
@@ -40017,6 +40281,9 @@ typedef $$SetLogsTableCreateCompanionBuilder =
       Value<double?> prescribedWeightKg,
       Value<double?> prescribedRpeMin,
       Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> prescribedDurationSeconds,
+      Value<double?> prescribedDistanceMeters,
       Value<int?> actualReps,
       Value<double?> actualWeightKg,
       Value<int?> actualDurationSeconds,
@@ -40048,6 +40315,9 @@ typedef $$SetLogsTableUpdateCompanionBuilder =
       Value<double?> prescribedWeightKg,
       Value<double?> prescribedRpeMin,
       Value<double?> prescribedRpeMax,
+      Value<int?> prescribedRir,
+      Value<int?> prescribedDurationSeconds,
+      Value<double?> prescribedDistanceMeters,
       Value<int?> actualReps,
       Value<double?> actualWeightKg,
       Value<int?> actualDurationSeconds,
@@ -40136,6 +40406,21 @@ class $$SetLogsTableFilterComposer
 
   ColumnFilters<double> get prescribedRpeMax => $composableBuilder(
     column: $table.prescribedRpeMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prescribedDurationSeconds => $composableBuilder(
+    column: $table.prescribedDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get prescribedDistanceMeters => $composableBuilder(
+    column: $table.prescribedDistanceMeters,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -40284,6 +40569,21 @@ class $$SetLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prescribedDurationSeconds => $composableBuilder(
+    column: $table.prescribedDurationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get prescribedDistanceMeters => $composableBuilder(
+    column: $table.prescribedDistanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get actualReps => $composableBuilder(
     column: $table.actualReps,
     builder: (column) => ColumnOrderings(column),
@@ -40421,6 +40721,21 @@ class $$SetLogsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get prescribedRir => $composableBuilder(
+    column: $table.prescribedRir,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prescribedDurationSeconds => $composableBuilder(
+    column: $table.prescribedDurationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get prescribedDistanceMeters => $composableBuilder(
+    column: $table.prescribedDistanceMeters,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get actualReps => $composableBuilder(
     column: $table.actualReps,
     builder: (column) => column,
@@ -40517,6 +40832,9 @@ class $$SetLogsTableTableManager
                 Value<double?> prescribedWeightKg = const Value.absent(),
                 Value<double?> prescribedRpeMin = const Value.absent(),
                 Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> prescribedDurationSeconds = const Value.absent(),
+                Value<double?> prescribedDistanceMeters = const Value.absent(),
                 Value<int?> actualReps = const Value.absent(),
                 Value<double?> actualWeightKg = const Value.absent(),
                 Value<int?> actualDurationSeconds = const Value.absent(),
@@ -40546,6 +40864,9 @@ class $$SetLogsTableTableManager
                 prescribedWeightKg: prescribedWeightKg,
                 prescribedRpeMin: prescribedRpeMin,
                 prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                prescribedDurationSeconds: prescribedDurationSeconds,
+                prescribedDistanceMeters: prescribedDistanceMeters,
                 actualReps: actualReps,
                 actualWeightKg: actualWeightKg,
                 actualDurationSeconds: actualDurationSeconds,
@@ -40577,6 +40898,9 @@ class $$SetLogsTableTableManager
                 Value<double?> prescribedWeightKg = const Value.absent(),
                 Value<double?> prescribedRpeMin = const Value.absent(),
                 Value<double?> prescribedRpeMax = const Value.absent(),
+                Value<int?> prescribedRir = const Value.absent(),
+                Value<int?> prescribedDurationSeconds = const Value.absent(),
+                Value<double?> prescribedDistanceMeters = const Value.absent(),
                 Value<int?> actualReps = const Value.absent(),
                 Value<double?> actualWeightKg = const Value.absent(),
                 Value<int?> actualDurationSeconds = const Value.absent(),
@@ -40606,6 +40930,9 @@ class $$SetLogsTableTableManager
                 prescribedWeightKg: prescribedWeightKg,
                 prescribedRpeMin: prescribedRpeMin,
                 prescribedRpeMax: prescribedRpeMax,
+                prescribedRir: prescribedRir,
+                prescribedDurationSeconds: prescribedDurationSeconds,
+                prescribedDistanceMeters: prescribedDistanceMeters,
                 actualReps: actualReps,
                 actualWeightKg: actualWeightKg,
                 actualDurationSeconds: actualDurationSeconds,

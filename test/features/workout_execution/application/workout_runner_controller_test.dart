@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/workout_execution/application/workout_runner_controller.dart';
 import 'package:aedify/features/workout_execution/application/workout_runner_phase.dart';
 import 'package:aedify/features/workout_execution/application/start_workout_session_use_case.dart';
 import 'package:aedify/features/workout_execution/application/load_active_workout_session_use_case.dart';
@@ -85,6 +86,14 @@ class _FakeStartUseCase implements StartWorkoutSessionUseCase {
   bool shouldThrow = false;
 
   @override
+  Future<WorkoutRunnerSessionViewData> startStandalone() =>
+      startFromSavedWorkout('standalone');
+
+  @override
+  Future<WorkoutRunnerSessionViewData> repeatCompleted(String sessionId) =>
+      startFromSavedWorkout(sessionId);
+
+  @override
   Future<WorkoutRunnerSessionViewData> startFromSavedWorkout(
     String savedWorkoutId,
   ) async {
@@ -156,6 +165,26 @@ class _FakeAbandonUseCase implements AbandonWorkoutSessionUseCase {
     if (pending != null) await pending!.future;
     if (shouldThrow) throw Exception('abandon failed');
     lastAbandonedId = sessionId;
+  }
+}
+
+class _CompletionSetup {
+  _CompletionSetup._();
+
+  static Future<void> recordFirstSet(WorkoutRunnerController controller) async {
+    await controller.updateSet(
+      exerciseId: 'ex-1',
+      setId: 'set-1',
+      updatedSet: _sampleSession().exercises.first.sets.first.copyWith(
+        actualReps: 10,
+        actualWeightKg: 60,
+      ),
+    );
+    await controller.toggleSetCompleted(
+      exerciseId: 'ex-1',
+      setId: 'set-1',
+      completed: true,
+    );
   }
 }
 
@@ -643,6 +672,14 @@ void main() {
         );
         await controller.future;
 
+        await controller.updateSet(
+          exerciseId: 'ex-1',
+          setId: 'set-1',
+          updatedSet: _sampleSession().exercises.first.sets.first.copyWith(
+            actualReps: 10,
+            actualWeightKg: 60,
+          ),
+        );
         await controller.toggleSetCompleted(
           exerciseId: 'ex-1',
           setId: 'set-1',
@@ -695,6 +732,79 @@ void main() {
         expect(untouched.sets.single.exerciseId, 2);
       },
     );
+
+    for (final addRound in [false, true]) {
+      test(
+        '${addRound ? 'adding a round' : 'adding a set'} after a completed-exercise swap attributes new work to the replacement',
+        () async {
+          final container = createContainer();
+          addTearDown(container.dispose);
+          const argument = (
+            mode: WorkoutRunnerMode.savedWorkout,
+            savedWorkoutId: 'sw-1',
+            programId: null,
+            programWorkoutId: null,
+          );
+          final provider = AppProviders.workoutRunnerControllerProvider(
+            argument,
+          );
+          container.listen(provider, (_, _) {});
+          final controller = container.read(provider.notifier);
+          await controller.future;
+          for (final set in _sampleSession().exercises.first.sets) {
+            await controller.updateSet(
+              exerciseId: 'ex-1',
+              setId: set.id,
+              updatedSet: set.copyWith(actualReps: 8, actualWeightKg: 60),
+            );
+            await controller.toggleSetCompleted(
+              exerciseId: 'ex-1',
+              setId: set.id,
+              completed: true,
+            );
+          }
+          final original = container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first
+              .sets;
+
+          await controller.substituteExercise(
+            sessionExerciseId: 'ex-1',
+            replacementExerciseId: 99,
+            replacementExerciseName: 'Dumbbell Bench Press',
+          );
+          if (addRound) {
+            await controller.addSetToExercises(exerciseIds: ['ex-1']);
+          } else {
+            await controller.addSet(exerciseId: 'ex-1');
+          }
+
+          final exercise = container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first;
+          expect(exercise.exerciseId, 99);
+          expect(exercise.sets, hasLength(3));
+          expect(exercise.sets.take(2), original);
+          expect(
+            original.every((set) => set.completed && set.exerciseId == 1),
+            isTrue,
+          );
+          final added = exercise.sets.last;
+          expect(added.exerciseId, 99);
+          expect(added.completed, isFalse);
+          expect(added.skipped, isFalse);
+          expect(added.actualReps, isNull);
+          expect(added.actualWeightKg, isNull);
+          expect(added.setIndex, 2);
+        },
+      );
+    }
 
     test('does nothing for the same exercise or a paused session', () async {
       final container = createContainer();
@@ -755,6 +865,14 @@ void main() {
       );
       await controller.future;
 
+      await controller.updateSet(
+        exerciseId: 'ex-1',
+        setId: 'set-1',
+        updatedSet: _sampleSession().exercises.first.sets.first.copyWith(
+          actualReps: 10,
+          actualWeightKg: 60,
+        ),
+      );
       await controller.toggleSetCompleted(
         exerciseId: 'ex-1',
         setId: 'set-1',
@@ -1122,6 +1240,81 @@ void main() {
   });
 
   group('completeWorkout', () {
+    test('untouched session cannot be saved as a completed workout', () async {
+      final container = createContainer();
+      addTearDown(container.dispose);
+      const args = (
+        mode: WorkoutRunnerMode.savedWorkout,
+        savedWorkoutId: 'sw-1',
+        programId: null,
+        programWorkoutId: null,
+      );
+      final provider = AppProviders.workoutRunnerControllerProvider(args);
+      container.listen(provider, (_, _) {});
+      final controller = container.read(provider.notifier);
+      await controller.future;
+
+      await controller.completeWorkout();
+
+      final state = container.read(provider).requireValue;
+      expect(state.errorCode, 'invalid_completed_sets');
+      expect(state.phase, WorkoutRunnerPhase.ready);
+      expect(state.session!.status, WorkoutSessionStatus.inProgress);
+      expect(state.session!.completedAt, isNull);
+      expect(fakeSave.saveCallCount, 0);
+      expect(fakeComplete.calls, 0);
+      expect(fakeAbandon.calls, 0);
+    });
+
+    test(
+      'completed flag with missing actuals blocks persistence until corrected',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        const args = (
+          mode: WorkoutRunnerMode.savedWorkout,
+          savedWorkoutId: 'sw-1',
+          programId: null,
+          programWorkoutId: null,
+        );
+        final provider = AppProviders.workoutRunnerControllerProvider(args);
+        container.listen(provider, (_, _) {});
+        final controller = container.read(provider.notifier);
+        await controller.future;
+        await controller.updateSet(
+          exerciseId: 'ex-1',
+          setId: 'set-1',
+          updatedSet: _sampleSession().exercises.first.sets.first.copyWith(
+            completed: true,
+            actualReps: 10,
+          ),
+        );
+
+        await controller.completeWorkout();
+
+        final blocked = container.read(provider).requireValue;
+        expect(blocked.errorCode, 'invalid_completed_sets');
+        expect(blocked.session!.status, WorkoutSessionStatus.inProgress);
+        expect(blocked.session!.completedAt, isNull);
+        expect(fakeSave.saveCallCount, 0);
+        expect(fakeComplete.calls, 0);
+        expect(fakeAbandon.calls, 0);
+
+        await _CompletionSetup.recordFirstSet(controller);
+        await controller.completeWorkout();
+
+        expect(fakeComplete.calls, 1);
+        expect(
+          container.read(provider).requireValue.session!.status,
+          WorkoutSessionStatus.completed,
+        );
+        expect(
+          fakeSave.lastSavedSession!.exercises.first.sets.first.actualWeightKg,
+          60,
+        );
+      },
+    );
+
     test('completes session and sets phase to completed', () async {
       final container = createContainer();
       final controller = container.read(
@@ -1133,6 +1326,7 @@ void main() {
         )).notifier,
       );
       await controller.future;
+      await _CompletionSetup.recordFirstSet(controller);
 
       await controller.completeWorkout();
 
@@ -1146,6 +1340,7 @@ void main() {
             )),
           )
           .requireValue;
+      expect(fakeComplete.calls, 1);
       expect(state.phase, WorkoutRunnerPhase.completed);
       expect(state.session!.status, WorkoutSessionStatus.completed);
       expect(state.session!.completedAt, isNotNull);
@@ -1164,6 +1359,7 @@ void main() {
         )).notifier,
       );
       await controller.future;
+      await _CompletionSetup.recordFirstSet(controller);
 
       await controller.completeWorkout();
 
@@ -1177,6 +1373,7 @@ void main() {
             )),
           )
           .requireValue;
+      expect(fakeComplete.calls, 1);
       expect(state.phase, WorkoutRunnerPhase.failure);
     });
 
@@ -1192,6 +1389,7 @@ void main() {
         )).notifier,
       );
       await controller.future;
+      await _CompletionSetup.recordFirstSet(controller);
 
       await controller.completeWorkout();
 
@@ -1205,6 +1403,7 @@ void main() {
             )),
           )
           .requireValue;
+      expect(fakeComplete.calls, 1);
       expect(state.phase, WorkoutRunnerPhase.failure);
       expect(state.session!.status, WorkoutSessionStatus.inProgress);
     });
@@ -1313,10 +1512,18 @@ void main() {
         container.listen(provider, (_, _) {});
         final controller = container.read(provider.notifier);
         await controller.future;
+        await _CompletionSetup.recordFirstSet(controller);
         final pending = Completer<void>();
         fakeSave.pendingSave = pending;
         final firstSave = controller.saveProgress();
-        final set = _sampleSession().exercises.first.sets.first;
+        final set = container
+            .read(provider)
+            .requireValue
+            .session!
+            .exercises
+            .first
+            .sets
+            .first;
         await controller.updateSet(
           exerciseId: 'ex-1',
           setId: set.id,
@@ -1390,6 +1597,7 @@ void main() {
         container.listen(provider, (_, _) {});
         final controller = container.read(provider.notifier);
         await controller.future;
+        await _CompletionSetup.recordFirstSet(controller);
         final draft = WorkoutRunnerCompletionDraft(
           sessionId: 'session-1',
           completedAt: DateTime(2026, 10, 24),
@@ -1425,6 +1633,7 @@ void main() {
         container.listen(provider, (_, _) {});
         final controller = container.read(provider.notifier);
         await controller.future;
+        await _CompletionSetup.recordFirstSet(controller);
         final pending = Completer<void>();
         fakeComplete.pending = pending;
         final completing = controller.completeWorkout();
@@ -1499,6 +1708,7 @@ void main() {
         container.listen(provider, (_, _) {});
         final controller = container.read(provider.notifier);
         await controller.future;
+        await _CompletionSetup.recordFirstSet(controller);
         fakeComplete.shouldThrow = true;
         final draft = WorkoutRunnerCompletionDraft(
           sessionId: 'session-1',
@@ -1585,6 +1795,7 @@ void main() {
             container.listen(provider, (_, _) {});
             final controller = container.read(provider.notifier);
             await controller.future;
+            if (completing) await _CompletionSetup.recordFirstSet(controller);
             final pending = Completer<void>();
             if (completing) {
               fakeComplete.pending = pending;

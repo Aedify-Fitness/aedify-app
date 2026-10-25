@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_set_policy.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart';
 import 'package:aedify/features/workout_execution/application/workout_runner_controller.dart';
@@ -9,6 +11,7 @@ import 'package:aedify/features/workout_execution/domain/workout_runner_exercise
 import 'package:aedify/features/workout_execution/domain/workout_runner_mode.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
+import 'package:aedify/features/workout_execution/domain/workout_launch_strings.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/exit_workout_sheet.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/finish_early_dialog.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_active_view.dart';
@@ -20,6 +23,7 @@ import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/rest_resolver.dart';
+import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -30,7 +34,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class WorkoutRunnerScreen extends ConsumerStatefulWidget {
-  const WorkoutRunnerScreen.resume({super.key})
+  const WorkoutRunnerScreen.resume({super.key, this.launchedSessionId})
     : mode = WorkoutRunnerMode.resume,
       savedWorkoutId = null,
       programId = null,
@@ -40,6 +44,7 @@ class WorkoutRunnerScreen extends ConsumerStatefulWidget {
     super.key,
     required this.savedWorkoutId,
   }) : mode = WorkoutRunnerMode.savedWorkout,
+       launchedSessionId = null,
        programId = null,
        programWorkoutId = null;
 
@@ -48,12 +53,14 @@ class WorkoutRunnerScreen extends ConsumerStatefulWidget {
     required this.programId,
     required this.programWorkoutId,
   }) : mode = WorkoutRunnerMode.programWorkout,
+       launchedSessionId = null,
        savedWorkoutId = null;
 
   final WorkoutRunnerMode mode;
   final String? savedWorkoutId;
   final String? programId;
   final String? programWorkoutId;
+  final String? launchedSessionId;
 
   @override
   ConsumerState<WorkoutRunnerScreen> createState() =>
@@ -66,6 +73,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   int _restTimerSerial = 0;
   bool _hasNavigatedToCompletion = false;
   bool _exitSheetOpen = false;
+  bool _hasResumedLaunch = false;
 
   ({
     WorkoutRunnerMode mode,
@@ -115,6 +123,22 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       AppProviders.workoutRunnerControllerProvider(argument),
     );
     final currentState = stateAsync.asData?.value;
+
+    if (!_hasResumedLaunch &&
+        widget.launchedSessionId != null &&
+        currentState?.hasRecoveredSession == true &&
+        currentState?.session?.sessionId == widget.launchedSessionId) {
+      _hasResumedLaunch = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(
+                AppProviders.workoutRunnerControllerProvider(argument).notifier,
+              )
+              .resumeRecoveredSession();
+        }
+      });
+    }
 
     if (currentState?.phase == WorkoutRunnerPhase.completed &&
         currentState?.session?.status == WorkoutSessionStatus.completed &&
@@ -420,10 +444,38 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       return const _RunnerStatePage(child: _NoActiveWorkoutView());
     }
 
+    if (session.exercises.isEmpty) {
+      return _EmptyWorkoutView(
+        errorMessage: state.errorMessage,
+        onAdd: () => _showAddExercisePicker(context, ref, controller, session),
+        onClose: () => onExitRequested(session, controller),
+      );
+    }
+
     const blockResolver = WorkoutRunnerBlockResolver();
-    final leadExercise = blockResolver.firstIncompleteExercise(
-      session.exercises,
-    );
+    final leadExercise =
+        blockResolver.firstIncompleteExercise(session.exercises) ??
+        session.exercises
+            .where(
+              (exercise) => exercise.sets.any(
+                (set) =>
+                    set.completed &&
+                    !set.skipped &&
+                    !WorkoutRunnerSetPolicy.canComplete(
+                      set,
+                      loggingType: exercise.loggingType,
+                      currentExerciseId: exercise.exerciseId,
+                    ),
+              ),
+            )
+            .firstOrNull ??
+        (session.source == SessionSource.standalone ||
+                !session.exercises.any(
+                  (exercise) =>
+                      exercise.sets.any((set) => set.completed && !set.skipped),
+                )
+            ? session.exercises.lastOrNull
+            : null);
     if (leadExercise == null) {
       if (state.phase == WorkoutRunnerPhase.failure) {
         return _RunnerStatePage(
@@ -447,31 +499,17 @@ class _WorkoutRunnerBody extends ConsumerWidget {
     final activeSelection = blockResolver.firstIncompleteSet(block);
     final activeExercise = activeSelection?.exercise ?? leadExercise;
     final activeSet = activeSelection?.set;
-    final effectiveWeight =
-        activeSet?.actualWeightKg ?? activeSet?.prescribedWeightKg;
-    final effectiveReps =
-        activeSet?.actualReps ??
-        activeSet?.prescribedRepsExact ??
-        activeSet?.prescribedRepsMin ??
-        activeSet?.prescribedRepsMax;
     final canLogSet =
-        activeSet != null && effectiveWeight != null && effectiveReps != null;
+        activeSet != null &&
+        WorkoutRunnerSetPolicy.canComplete(
+          activeSet,
+          loggingType: activeExercise.loggingType,
+        );
 
     Future<void> logActiveSet() async {
       final set = activeSet;
       if (set == null || !canLogSet) return;
-      var setToComplete = set;
-      if (set.actualWeightKg == null || set.actualReps == null) {
-        setToComplete = set.copyWith(
-          actualWeightKg: effectiveWeight,
-          actualReps: effectiveReps,
-        );
-        await controller.updateSet(
-          exerciseId: activeExercise.id,
-          setId: set.id,
-          updatedSet: setToComplete,
-        );
-      }
+      final setToComplete = set;
       await controller.toggleSetCompleted(
         exerciseId: activeExercise.id,
         setId: setToComplete.id,
@@ -516,9 +554,7 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       restSeconds: restSeconds,
       restTimerSerial: restTimerSerial,
       isPaused: state.phase == WorkoutRunnerPhase.paused,
-      errorMessage: state.phase == WorkoutRunnerPhase.failure
-          ? state.errorMessage
-          : null,
+      errorMessage: state.errorMessage,
       onRetry: retryOperation,
       canLogSet: canLogSet,
       onClose: () => onExitRequested(session, controller),
@@ -556,12 +592,36 @@ class _WorkoutRunnerBody extends ConsumerWidget {
         );
         _showSetNoteSheet(context, controller, exercise, set);
       },
+      onAddExercise: () =>
+          _showAddExercisePicker(context, ref, controller, session),
       onShowExercise: (exerciseId) => context.pushNamed(
         AppRoutes.exerciseDetail().name,
         pathParameters: {'id': exerciseId.toString()},
       ),
       onFinish: () => _showFinishEarlyDialog(context, session, controller),
     );
+  }
+
+  void _showAddExercisePicker(
+    BuildContext context,
+    WidgetRef ref,
+    WorkoutRunnerController controller,
+    WorkoutRunnerSessionViewData session,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => AddExerciseBottomSheet(
+        excludedExerciseIds: session.exercises.map((e) => e.exerciseId),
+        onSelectExercises: controller.addExercises,
+      ),
+    ).then((_) {
+      if (context.mounted) {
+        ref
+            .read(AppProviders.exerciseSearchControllerProvider.notifier)
+            .clearFilters();
+      }
+    });
   }
 
   void _showSubstitutePicker(
@@ -582,6 +642,9 @@ class _WorkoutRunnerBody extends ConsumerWidget {
             sessionExerciseId: exercise.id,
             replacementExerciseId: replacement.exerciseId,
             replacementExerciseName: replacement.name,
+            replacementLoggingType: ExerciseLoggingType.fromDbWithDefault(
+              replacement.loggingType,
+            ),
           );
         },
       ),
@@ -634,6 +697,67 @@ class _WorkoutRunnerBody extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _EmptyWorkoutView extends StatelessWidget {
+  const _EmptyWorkoutView({
+    required this.onAdd,
+    required this.onClose,
+    this.errorMessage,
+  });
+  final VoidCallback onAdd;
+  final VoidCallback onClose;
+  final String? errorMessage;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    child: Column(
+      children: [
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton(
+            onPressed: onClose,
+            child: const Text(AppStrings.close),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.xl,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    WorkoutLaunchStrings.emptyTitle,
+                    style: context.textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  AppWhiteSpace.hMd,
+                  Text(
+                    WorkoutLaunchStrings.emptyMessage,
+                    style: context.textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                  if (errorMessage != null) ...[
+                    AppWhiteSpace.hMd,
+                    WorkoutRunnerErrorBanner(message: errorMessage!),
+                  ],
+                  AppWhiteSpace.hLg,
+                  FilledButton(
+                    onPressed: onAdd,
+                    child: const Text(WorkoutLaunchStrings.addExercises),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _AutoCompleteWorkoutGuard extends ConsumerStatefulWidget {
@@ -770,6 +894,9 @@ class _WorkoutRunnerSetMutations {
       prescribedWeightKg: set.prescribedWeightKg,
       prescribedRpeMin: set.prescribedRpeMin,
       prescribedRpeMax: set.prescribedRpeMax,
+      prescribedRir: set.prescribedRir,
+      prescribedDurationSeconds: set.prescribedDurationSeconds,
+      prescribedDistanceMeters: set.prescribedDistanceMeters,
       actualReps: set.actualReps,
       actualWeightKg: set.actualWeightKg,
       actualDurationSeconds: set.actualDurationSeconds,

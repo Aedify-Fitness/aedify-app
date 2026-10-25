@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/set_effort.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/workout_execution/domain/set_log_draft.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -32,6 +34,9 @@ class WorkoutRunnerMapper {
         exerciseId: e.exerciseId,
         exerciseName: e.exerciseNameSnapshot,
         sortOrder: e.sortOrder,
+        loggingType: e.loggingType == null
+            ? null
+            : ExerciseLoggingType.fromDb(e.loggingType!),
         sourceProgramExerciseId: e.sourceProgramExerciseId,
         sourceSavedWorkoutExerciseId: e.sourceSavedWorkoutExerciseId,
         sets: logs.map((l) {
@@ -47,12 +52,17 @@ class WorkoutRunnerMapper {
             prescribedWeightKg: l.prescribedWeightKg,
             prescribedRpeMin: l.prescribedRpeMin,
             prescribedRpeMax: l.prescribedRpeMax,
+            prescribedRir: l.prescribedRir,
+            prescribedDurationSeconds: l.prescribedDurationSeconds,
+            prescribedDistanceMeters: l.prescribedDistanceMeters,
             actualReps: l.actualReps,
             actualWeightKg: l.actualWeightKg,
             actualDurationSeconds: l.actualDurationSeconds,
             actualDistanceMeters: l.actualDistanceMeters,
-            actualRpe: l.actualRpe,
-            actualRir: l.actualRir,
+            actualRpe: l.actualRpe ?? SetEffort.rpeFromRir(l.actualRir),
+            actualRir: l.actualRpe == null
+                ? l.actualRir
+                : SetEffort.rirFromRpe(l.actualRpe),
             restSeconds: l.restSeconds,
             performedAt: l.performedAt,
             completed: l.completed,
@@ -98,6 +108,7 @@ class WorkoutRunnerMapper {
           exerciseId: e.exerciseId,
           exerciseNameSnapshot: e.exerciseName,
           sortOrder: e.sortOrder,
+          loggingType: e.loggingType,
           setLogs: e.sets.map((s) {
             return SetLogDraft(
               id: s.id,
@@ -111,6 +122,9 @@ class WorkoutRunnerMapper {
               prescribedWeightKg: s.prescribedWeightKg,
               prescribedRpeMin: s.prescribedRpeMin,
               prescribedRpeMax: s.prescribedRpeMax,
+              prescribedRir: s.prescribedRir,
+              prescribedDurationSeconds: s.prescribedDurationSeconds,
+              prescribedDistanceMeters: s.prescribedDistanceMeters,
               actualReps: s.actualReps,
               actualWeightKg: s.actualWeightKg,
               actualDurationSeconds: s.actualDurationSeconds,

@@ -1,4 +1,5 @@
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_set_row.dart';
 import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/components/app_section_header.dart';
@@ -14,11 +15,15 @@ class WorkoutHistoryExerciseCard extends StatelessWidget {
     required this.item,
     this.isInSuperset = false,
     this.positionLabel,
+    this.onEditSet,
+    this.onTap,
   });
 
   final WorkoutHistoryExerciseItem item;
   final bool isInSuperset;
   final String? positionLabel;
+  final ValueChanged<WorkoutHistorySetItem>? onEditSet;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -34,82 +39,98 @@ class WorkoutHistoryExerciseCard extends StatelessWidget {
             : context.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.md,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (positionLabel != null) ...[
-              Text(
-                positionLabel!,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: context.colorScheme.secondary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              AppWhiteSpace.hXs,
-            ],
-            Text(
-              item.exerciseName,
-              style: AppTextStyles.bodyLg.copyWith(
-                color: context.colorScheme.onSurface,
-                fontWeight: FontWeight.w700,
-              ),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: ValueKey('history_exercise_${item.id}'),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
             ),
-            if (item.sets.isNotEmpty) ...[
-              AppWhiteSpace.hSm,
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.xs,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  AppBadge(
-                    label: _statusLabel(),
-                    backgroundColor: _statusBackground(context),
-                    foregroundColor: _statusForeground(context),
-                    borderRadius: AppRadius.full,
-                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (positionLabel != null) ...[
                   Text(
-                    '$completedSets/${item.sets.length} '
-                    '${AppStrings.setsLabel}',
+                    positionLabel!,
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: context.colorScheme.secondary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  AppWhiteSpace.hXs,
+                ],
+                Text(
+                  item.exerciseName,
+                  style: AppTextStyles.bodyLg.copyWith(
+                    color: context.colorScheme.onSurface,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (item.sets.isNotEmpty) ...[
+                  AppWhiteSpace.hSm,
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      AppBadge(
+                        label: _statusLabel(),
+                        backgroundColor: _statusBackground(context),
+                        foregroundColor: _statusForeground(context),
+                        borderRadius: AppRadius.full,
+                      ),
+                      Text(
+                        '$completedSets/${item.sets.length} '
+                        '${AppStrings.setsLabel}',
+                        style: AppTextStyles.labelSm.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (item.notes != null && item.notes!.isNotEmpty) ...[
+                  AppWhiteSpace.hMd,
+                  Text(
+                    AppStrings.notes,
                     style: AppTextStyles.labelSm.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  AppWhiteSpace.hXs,
+                  Text(
+                    item.notes!,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
                 ],
-              ),
-            ],
-            if (item.notes != null && item.notes!.isNotEmpty) ...[
-              AppWhiteSpace.hMd,
-              Text(
-                AppStrings.notes,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              AppWhiteSpace.hXs,
-              Text(
-                item.notes!,
-                style: AppTextStyles.bodySm.copyWith(
-                  color: context.colorScheme.onSurface,
-                ),
-              ),
-            ],
-            if (item.sets.isNotEmpty) ...[
-              AppWhiteSpace.hLg,
-              const AppSectionHeader(title: AppStrings.historySetList),
-              AppWhiteSpace.hSm,
-              ...item.sets.map(
-                (set) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: WorkoutHistorySetRow(item: set),
-                ),
-              ),
-            ],
-          ],
+                if (item.sets.isNotEmpty) ...[
+                  AppWhiteSpace.hLg,
+                  const AppSectionHeader(title: AppStrings.historySetList),
+                  AppWhiteSpace.hSm,
+                  ...item.sets.map(
+                    (set) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      child: WorkoutHistorySetRow(
+                        item: set,
+                        onEdit:
+                            !item.canCorrectLogs ||
+                                !set.hasCompletedLog ||
+                                onEditSet == null
+                            ? null
+                            : () => onEditSet!(set),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );

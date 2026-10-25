@@ -21,6 +21,8 @@ class WorkoutHistoryExerciseItem {
   final int? supersetOrder;
   final String? notes;
 
+  bool get canCorrectLogs => sets.any((set) => set.hasCompletedLog);
+
   WorkoutHistoryExerciseItem copyWith({
     String? id,
     int? exerciseId,

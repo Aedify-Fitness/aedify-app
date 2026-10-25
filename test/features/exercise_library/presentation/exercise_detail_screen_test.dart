@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
 import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/application/exercise_step_audio_controller.dart';
@@ -146,6 +147,9 @@ class _ExerciseDetailTestApp {
   }) {
     return ProviderScope(
       overrides: [
+        WorkoutHistoryProviders.exerciseHistoryProvider.overrideWith(
+          (ref, id) async => [],
+        ),
         AppProviders.exerciseRepositoryProvider.overrideWithValue(repository),
         AppProviders.exerciseStepAudioControllerProvider.overrideWith(
           () => _PreloadedAudioController(audioStates),

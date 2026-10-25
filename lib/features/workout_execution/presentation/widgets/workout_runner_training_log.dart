@@ -1,9 +1,17 @@
+import 'dart:math' as math;
+
+import 'package:aedify/shared/domain/set_effort.dart';
+
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_block.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_set_item.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_set_policy.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_runner_strings.dart';
 import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +55,13 @@ class WorkoutRunnerTrainingLog extends StatefulWidget {
 class _WorkoutRunnerTrainingLogState extends State<WorkoutRunnerTrainingLog> {
   static const _resolver = WorkoutRunnerBlockResolver();
   bool _logging = false;
+  final _tableScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _tableScrollController.dispose();
+    super.dispose();
+  }
 
   bool get _enabled => widget.enabled && !_logging;
 
@@ -60,30 +75,6 @@ class _WorkoutRunnerTrainingLogState extends State<WorkoutRunnerTrainingLog> {
     }
   }
 
-  Widget _setRow(WorkoutRunnerBlockSet row, {required bool stacked}) {
-    final active = row.set.id == widget.activeSet?.id;
-    return _RunnerSetRow(
-      key: ValueKey('workout_runner_set_row_${row.set.id}'),
-      row: row,
-      label: widget.block.isSuperset
-          ? _resolver.setLabel(widget.block, row.exercise, row.set)
-          : _resolver.shortSetLabel(row.exercise, row.set),
-      showExercise: widget.block.isSuperset,
-      active: active,
-      stacked: stacked,
-      enabled: _enabled,
-      canLogSet: widget.canLogSet,
-      logging: _logging && active,
-      onUpdate: (set) => widget.onUpdateSet(row.exercise.id, set),
-      onCompleted: (value) =>
-          widget.onToggleCompleted(row.exercise.id, row.set, value),
-      onLog: _logSet,
-      onRestore: widget.onToggleSkipped == null
-          ? null
-          : () => widget.onToggleSkipped!(row.exercise.id, row.set, false),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final rows = _resolver.orderedSets(widget.block);
@@ -92,11 +83,24 @@ class _WorkoutRunnerTrainingLogState extends State<WorkoutRunnerTrainingLog> {
         .firstOrNull;
     return LayoutBuilder(
       builder: (context, constraints) {
+        final textScale = math.max(
+          1.0,
+          MediaQuery.textScalerOf(context).scale(AppFontSizes.md) /
+              AppFontSizes.md,
+        );
         final stacked =
-            constraints.maxWidth - AppSpacing.controlGap * 2 <
-                AppWorkoutRunnerTokens.tableBreakpoint ||
-            MediaQuery.textScalerOf(context).scale(AppFontSizes.md) >
-                AppFontSizes.md * AppWorkoutRunnerTokens.largeTextBreakpoint;
+            constraints.maxWidth < AppWorkoutRunnerTokens.tableBreakpoint ||
+            textScale > AppWorkoutRunnerTokens.largeTextBreakpoint;
+        final tableWidth = rows.fold<double>(
+          constraints.maxWidth,
+          (width, row) => math.max(
+            width,
+            _RunnerTableLayout.minimumWidth(
+              _RunnerTableLayout.loggingType(row),
+              textScale,
+            ),
+          ),
+        );
         final addSet = _RunnerTextAction(
           key: const Key('workout_runner_add_set'),
           label: widget.block.isSuperset
@@ -173,80 +177,36 @@ class _WorkoutRunnerTrainingLogState extends State<WorkoutRunnerTrainingLog> {
                   ],
                 ),
               ),
-              if (!stacked) const _TableHeader(),
-              if (widget.block.isSuperset)
-                Column(
-                  key: const Key('workout_runner_superset_block'),
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: AppSpacing.sm,
-                      ),
-                      child: Text(
-                        AppStrings.superset,
-                        style: WorkoutRunnerStyle.label(
-                          context,
-                        ).copyWith(color: WorkoutRunnerStyle.accent(context)),
+              MediaQuery.removePadding(
+                context: context,
+                removeBottom: true,
+                child: Scrollbar(
+                  controller: _tableScrollController,
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    key: const Key('workout_runner_table_scroll'),
+                    controller: _tableScrollController,
+                    scrollDirection: Axis.horizontal,
+                    primary: false,
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: SizedBox(
+                      width: tableWidth,
+                      child: _RunnerTableRows(
+                        block: widget.block,
+                        activeSet: widget.activeSet,
+                        enabled: _enabled,
+                        canLogSet: widget.canLogSet,
+                        logging: _logging,
+                        textScale: textScale,
+                        onUpdateSet: widget.onUpdateSet,
+                        onToggleCompleted: widget.onToggleCompleted,
+                        onToggleSkipped: widget.onToggleSkipped,
+                        onLogSet: _logSet,
                       ),
                     ),
-                    for (final type in SetType.values)
-                      for (
-                        var round = 0;
-                        round <
-                            (type == SetType.warmup
-                                ? _resolver.maxWarmupRounds(widget.block)
-                                : _resolver.maxWorkingRounds(widget.block));
-                        round++
-                      )
-                        Column(
-                          key: ValueKey(
-                            'workout_runner_superset_round_${type.name}_$round',
-                          ),
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _SetGroupLabel(
-                              label: AppStrings.runnerRound(
-                                round + 1,
-                                type == SetType.warmup
-                                    ? AppStrings.warmupSet
-                                    : AppStrings.workingSet,
-                              ),
-                            ),
-                            for (final row
-                                in type == SetType.warmup
-                                    ? _resolver.warmupRoundSets(
-                                        widget.block,
-                                        round,
-                                      )
-                                    : _resolver.workingRoundSets(
-                                        widget.block,
-                                        round,
-                                      ))
-                              KeyedSubtree(
-                                key: ValueKey(
-                                  'workout_runner_superset_set_row_${row.set.id}',
-                                ),
-                                child: _setRow(row, stacked: stacked),
-                              ),
-                          ],
-                        ),
-                  ],
-                )
-              else
-                for (final type in SetType.values)
-                  if (rows.any((row) => row.set.setType == type)) ...[
-                    _SetGroupLabel(
-                      label: type == SetType.warmup
-                          ? AppStrings.warmupSet
-                          : AppStrings.workingSet,
-                    ),
-                    for (final row in rows.where(
-                      (row) => row.set.setType == type,
-                    ))
-                      _setRow(row, stacked: stacked),
-                  ],
+                  ),
+                ),
+              ),
               if (rows.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -360,8 +320,179 @@ class _LiveIndicator extends StatelessWidget {
   );
 }
 
+enum _RunnerColumn { set, target, weight, reps, duration, distance, rpe, log }
+
+abstract final class _RunnerTableLayout {
+  static ExerciseLoggingType loggingType(WorkoutRunnerBlockSet row) =>
+      WorkoutRunnerSetPolicy.loggingType(
+        row.set,
+        snapshot: row.set.exerciseId == row.exercise.exerciseId
+            ? row.exercise.loggingType
+            : null,
+      );
+
+  static List<_RunnerColumn> columns(ExerciseLoggingType type) => [
+    _RunnerColumn.set,
+    _RunnerColumn.target,
+    ...switch (type) {
+      ExerciseLoggingType.repsWeight => [
+        _RunnerColumn.weight,
+        _RunnerColumn.reps,
+      ],
+      ExerciseLoggingType.repsOnly => [_RunnerColumn.reps],
+      ExerciseLoggingType.duration => [
+        _RunnerColumn.duration,
+        _RunnerColumn.distance,
+      ],
+    },
+    _RunnerColumn.rpe,
+    _RunnerColumn.log,
+  ];
+
+  static double width(_RunnerColumn column) => switch (column) {
+    _RunnerColumn.set => AppWorkoutRunnerTokens.tableSetWidth,
+    _RunnerColumn.target => AppWorkoutRunnerTokens.tableTargetWidth,
+    _RunnerColumn.weight => AppWorkoutRunnerTokens.tableWeightWidth,
+    _RunnerColumn.reps => AppWorkoutRunnerTokens.tableRepsWidth,
+    _RunnerColumn.duration => AppWorkoutRunnerTokens.tableDurationWidth,
+    _RunnerColumn.distance => AppWorkoutRunnerTokens.tableDistanceWidth,
+    _RunnerColumn.rpe => AppWorkoutRunnerTokens.tableEffortWidth,
+    _RunnerColumn.log => AppWorkoutRunnerTokens.controlSize,
+  };
+
+  static double minimumWidth(ExerciseLoggingType type, double scale) {
+    final schema = columns(type);
+    return schema.fold<double>(
+          0,
+          (total, column) => total + width(column) * scale,
+        ) +
+        AppSpacing.xs * (schema.length - 1) +
+        AppSpacing.controlGap * 2;
+  }
+
+  static String heading(_RunnerColumn column) => switch (column) {
+    _RunnerColumn.set => AppStrings.setNumberColumn,
+    _RunnerColumn.target => AppStrings.targetColumn,
+    _RunnerColumn.weight => AppStrings.kilogramsAbbreviation,
+    _RunnerColumn.reps => AppStrings.repsColumn,
+    _RunnerColumn.duration => AppStrings.durationColumn,
+    _RunnerColumn.distance => AppStrings.distanceColumn,
+    _RunnerColumn.rpe => AppStrings.rpe,
+    _RunnerColumn.log => AppStrings.logColumn,
+  };
+}
+
+class _RunnerTableRows extends StatelessWidget {
+  const _RunnerTableRows({
+    required this.block,
+    required this.activeSet,
+    required this.enabled,
+    required this.canLogSet,
+    required this.logging,
+    required this.textScale,
+    required this.onUpdateSet,
+    required this.onToggleCompleted,
+    required this.onToggleSkipped,
+    required this.onLogSet,
+  });
+  final WorkoutRunnerBlock block;
+  final WorkoutRunnerSetItem? activeSet;
+  final bool enabled;
+  final bool canLogSet;
+  final bool logging;
+  final double textScale;
+  final void Function(String, WorkoutRunnerSetItem) onUpdateSet;
+  final void Function(String, WorkoutRunnerSetItem, bool) onToggleCompleted;
+  final void Function(String, WorkoutRunnerSetItem, bool)? onToggleSkipped;
+  final Future<void> Function() onLogSet;
+
+  @override
+  Widget build(BuildContext context) {
+    const resolver = WorkoutRunnerBlockResolver();
+    final rows = resolver.orderedSets(block);
+    return Column(
+      key: block.isSuperset ? const Key('workout_runner_superset_block') : null,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (block.isSuperset)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            child: Text(
+              AppStrings.superset,
+              style: WorkoutRunnerStyle.label(context),
+            ),
+          ),
+        for (final entry in rows.indexed) ...[
+          if (block.isSuperset &&
+              (entry.$1 == 0 ||
+                  rows[entry.$1 - 1].set.setType != entry.$2.set.setType ||
+                  resolver.roundIndex(
+                        rows[entry.$1 - 1].exercise,
+                        rows[entry.$1 - 1].set,
+                      ) !=
+                      resolver.roundIndex(entry.$2.exercise, entry.$2.set)))
+            Padding(
+              key: ValueKey(
+                'workout_runner_superset_round_${entry.$2.set.setType.name}_${resolver.roundIndex(entry.$2.exercise, entry.$2.set)}',
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              child: Text(
+                AppStrings.runnerRound(
+                  resolver.roundIndex(entry.$2.exercise, entry.$2.set) + 1,
+                  entry.$2.set.setType == SetType.warmup
+                      ? AppStrings.warmupSet
+                      : AppStrings.workingSet,
+                ),
+                style: WorkoutRunnerStyle.caption(context),
+              ),
+            ),
+          if (entry.$1 == 0 ||
+              _RunnerTableLayout.loggingType(rows[entry.$1 - 1]) !=
+                  _RunnerTableLayout.loggingType(entry.$2))
+            _TableHeader(
+              loggingType: _RunnerTableLayout.loggingType(entry.$2),
+              textScale: textScale,
+            ),
+          _RunnerSetRow(
+            key: ValueKey('workout_runner_set_row_${entry.$2.set.id}'),
+            row: entry.$2,
+            label: block.isSuperset
+                ? resolver.setLabel(block, entry.$2.exercise, entry.$2.set)
+                : resolver.shortSetLabel(entry.$2.exercise, entry.$2.set),
+            showExercise: block.isSuperset,
+            active: entry.$2.set.id == activeSet?.id,
+            enabled: enabled,
+            canLogSet: canLogSet,
+            logging: logging && entry.$2.set.id == activeSet?.id,
+            textScale: textScale,
+            onUpdate: (set) => onUpdateSet(entry.$2.exercise.id, set),
+            onCompleted: (value) =>
+                onToggleCompleted(entry.$2.exercise.id, entry.$2.set, value),
+            onLog: onLogSet,
+            onRestore: onToggleSkipped == null
+                ? null
+                : () => onToggleSkipped!(
+                    entry.$2.exercise.id,
+                    entry.$2.set,
+                    false,
+                  ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _TableHeader extends StatelessWidget {
-  const _TableHeader();
+  const _TableHeader({required this.loggingType, required this.textScale});
+  final ExerciseLoggingType loggingType;
+  final double textScale;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -373,29 +504,18 @@ class _TableHeader extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       child: _SetTableGrid(
-        set: Text(
-          AppStrings.setNumberColumn,
-          style: WorkoutRunnerStyle.caption(context),
-        ),
-        target: Text(
-          AppStrings.targetColumn,
-          style: WorkoutRunnerStyle.caption(context),
-        ),
-        weight: Text(
-          AppStrings.kilogramsAbbreviation,
-          textAlign: TextAlign.center,
-          style: WorkoutRunnerStyle.caption(context),
-        ),
-        reps: Text(
-          AppStrings.repsColumn,
-          textAlign: TextAlign.center,
-          style: WorkoutRunnerStyle.caption(context),
-        ),
-        action: Text(
-          AppStrings.logColumn,
-          textAlign: TextAlign.center,
-          style: WorkoutRunnerStyle.caption(context),
-        ),
+        loggingType: loggingType,
+        textScale: textScale,
+        cells: [
+          for (final column in _RunnerTableLayout.columns(loggingType))
+            Text(
+              _RunnerTableLayout.heading(column),
+              textAlign: column == _RunnerColumn.target
+                  ? TextAlign.start
+                  : TextAlign.center,
+              style: WorkoutRunnerStyle.caption(context),
+            ),
+        ],
       ),
     ),
   );
@@ -403,48 +523,75 @@ class _TableHeader extends StatelessWidget {
 
 class _SetTableGrid extends StatelessWidget {
   const _SetTableGrid({
-    required this.set,
-    required this.target,
-    required this.weight,
-    required this.reps,
-    required this.action,
+    required this.loggingType,
+    required this.textScale,
+    required this.cells,
   });
-
-  final Widget set;
-  final Widget target;
-  final Widget weight;
-  final Widget reps;
-  final Widget action;
+  final ExerciseLoggingType loggingType;
+  final double textScale;
+  final List<Widget> cells;
 
   @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      SizedBox(width: AppWorkoutRunnerTokens.tableSetWidth, child: set),
-      AppWhiteSpace.wXs,
-      Expanded(child: target),
-      AppWhiteSpace.wXs,
-      SizedBox(width: AppWorkoutRunnerTokens.tableWeightWidth, child: weight),
-      AppWhiteSpace.wXs,
-      SizedBox(width: AppWorkoutRunnerTokens.tableRepsWidth, child: reps),
-      AppWhiteSpace.wXs,
-      SizedBox(width: AppWorkoutRunnerTokens.controlSize, child: action),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final schema = _RunnerTableLayout.columns(loggingType);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        for (final entry in schema.indexed) ...[
+          if (entry.$2 == _RunnerColumn.target)
+            Expanded(child: cells[entry.$1])
+          else
+            SizedBox(
+              width: _RunnerTableLayout.width(entry.$2) * textScale,
+              child: cells[entry.$1],
+            ),
+          if (entry.$1 < schema.length - 1) AppWhiteSpace.wXs,
+        ],
+      ],
+    );
+  }
 }
 
 class _SetGroupLabel extends StatelessWidget {
-  const _SetGroupLabel({required this.label});
-
+  const _SetGroupLabel({
+    required this.set,
+    required this.label,
+    required this.onPressed,
+  });
+  final WorkoutRunnerSetItem set;
   final String label;
+  final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(
-      horizontal: AppSpacing.md,
-      vertical: AppSpacing.sm,
+  Widget build(BuildContext context) => TextButton(
+    key: ValueKey('workout_runner_set_type_${set.id}'),
+    onPressed: onPressed,
+    style: TextButton.styleFrom(
+      minimumSize: const Size.square(AppWorkoutRunnerTokens.controlSize),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
     ),
-    child: Text(label, style: WorkoutRunnerStyle.caption(context)),
+    child: Semantics(
+      label: AppStrings.toggleSetTypeLabel(
+        label,
+        set.setType == SetType.working
+            ? AppStrings.warmupSet
+            : AppStrings.workingSet,
+      ),
+      child: Text(
+        set.setType == SetType.warmup
+            ? AppStrings.warmupSet
+            : AppStrings.workingSet,
+        textAlign: TextAlign.center,
+        style: WorkoutRunnerStyle.caption(context).copyWith(
+          color: onPressed == null
+              ? context.colorScheme.onSurfaceVariant
+              : WorkoutRunnerStyle.accent(context),
+        ),
+      ),
+    ),
   );
 }
 
@@ -455,67 +602,33 @@ class _RunnerSetRow extends StatelessWidget {
     required this.label,
     required this.showExercise,
     required this.active,
-    required this.stacked,
     required this.enabled,
     required this.canLogSet,
     required this.logging,
+    required this.textScale,
     required this.onUpdate,
     required this.onCompleted,
     required this.onLog,
     required this.onRestore,
   });
-
   final WorkoutRunnerBlockSet row;
   final String label;
   final bool showExercise;
   final bool active;
-  final bool stacked;
   final bool enabled;
   final bool canLogSet;
   final bool logging;
+  final double textScale;
   final ValueChanged<WorkoutRunnerSetItem> onUpdate;
   final ValueChanged<bool> onCompleted;
   final Future<void> Function() onLog;
   final VoidCallback? onRestore;
 
-  Widget _field({required bool weight}) {
-    final set = row.set;
-    return _RunnerNumberInput(
-      key: ValueKey(
-        'workout_runner_${weight ? 'weight' : 'reps'}_input_${set.id}',
-      ),
-      fieldKey: Key(weight ? 'active_weight_field' : 'active_reps_field'),
-      label: weight
-          ? '${AppStrings.actualWeight} (${AppStrings.metricWeightUnit})'
-          : AppStrings.actualReps,
-      actual: weight
-          ? (set.actualWeightKg == null
-                ? null
-                : _RunnerSetFormatting.number(set.actualWeightKg!))
-          : set.actualReps?.toString(),
-      fallback: weight
-          ? (set.prescribedWeightKg == null
-                ? ''
-                : _RunnerSetFormatting.number(set.prescribedWeightKg!))
-          : (set.prescribedRepsExact ??
-                        set.prescribedRepsMin ??
-                        set.prescribedRepsMax)
-                    ?.toString() ??
-                '',
-      enabled: enabled,
-      decimal: weight,
-      compact: !stacked,
-      onChanged: (value) => onUpdate(
-        weight
-            ? _RunnerSetFormatting.withActuals(set, weight: value)
-            : _RunnerSetFormatting.withActuals(set, reps: value),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final set = row.set;
+    final type = _RunnerTableLayout.loggingType(row);
+    final schema = _RunnerTableLayout.columns(type);
     final action = _SetCompletionAction(
       set: set,
       active: active,
@@ -533,41 +646,6 @@ class _RunnerSetRow extends StatelessWidget {
           ? onRestore
           : null,
     );
-    final completion = set.skipped
-        ? SizedBox(
-            key: ValueKey('workout_runner_skip_set_${set.id}'),
-            child: action,
-          )
-        : action;
-    final valueStyle = WorkoutRunnerStyle.label(context).copyWith(
-      color: set.completed
-          ? context.colorScheme.onSurfaceVariant
-          : context.colorScheme.onSurface,
-    );
-    final target = Text(
-      stacked
-          ? '${AppStrings.targetColumn}: ${_RunnerSetFormatting.target(set)}'
-          : _RunnerSetFormatting.target(set),
-      style: stacked
-          ? WorkoutRunnerStyle.small(context)
-          : WorkoutRunnerStyle.caption(context),
-    );
-    final weight = active
-        ? _field(weight: true)
-        : Text(
-            set.actualWeightKg == null
-                ? AppStrings.unavailableValue
-                : _RunnerSetFormatting.number(set.actualWeightKg!),
-            textAlign: TextAlign.center,
-            style: valueStyle,
-          );
-    final reps = active
-        ? _field(weight: false)
-        : Text(
-            set.actualReps?.toString() ?? AppStrings.unavailableValue,
-            textAlign: TextAlign.center,
-            style: valueStyle,
-          );
     return DecoratedBox(
       decoration: BoxDecoration(
         color: active
@@ -591,7 +669,7 @@ class _RunnerSetRow extends StatelessWidget {
         children: [
           if (active)
             Positioned(
-              left: 0,
+              left: AppSpacing.zero,
               top: AppSpacing.sm,
               bottom: AppSpacing.sm,
               width: AppWorkoutRunnerTokens.activeRailWidth,
@@ -610,62 +688,74 @@ class _RunnerSetRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (stacked) ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Wrap(
-                          spacing: AppSpacing.sm,
-                          runSpacing: AppSpacing.xs,
+                if (showExercise) ...[
+                  Text(
+                    row.exercise.exerciseName,
+                    style: WorkoutRunnerStyle.label(context),
+                  ),
+                  AppWhiteSpace.hSm,
+                ],
+                _SetTableGrid(
+                  loggingType: type,
+                  textScale: textScale,
+                  cells: [
+                    for (final column in schema)
+                      if (column == _RunnerColumn.set)
+                        Column(
                           children: [
-                            Text(label, style: valueStyle),
                             Text(
-                              active
-                                  ? AppStrings.runnerActiveSet
-                                  : set.completed
-                                  ? AppStrings.setCompleted
-                                  : set.skipped
-                                  ? AppStrings.skipped
-                                  : set.setType == SetType.warmup
-                                  ? AppStrings.warmupSet
-                                  : AppStrings.workingSet,
-                              style: WorkoutRunnerStyle.caption(context),
+                              label,
+                              style: WorkoutRunnerStyle.label(context),
+                            ),
+                            _SetGroupLabel(
+                              set: set,
+                              label: label,
+                              onPressed: enabled
+                                  ? () => onUpdate(
+                                      set.copyWith(
+                                        setType: set.setType == SetType.working
+                                            ? SetType.warmup
+                                            : SetType.working,
+                                      ),
+                                    )
+                                  : null,
                             ),
                           ],
+                        )
+                      else if (column == _RunnerColumn.target)
+                        Text(
+                          _RunnerSetFormatting.target(set),
+                          style: WorkoutRunnerStyle.caption(context),
+                        )
+                      else if (column == _RunnerColumn.log)
+                        set.skipped
+                            ? SizedBox(
+                                key: ValueKey(
+                                  'workout_runner_skip_set_${set.id}',
+                                ),
+                                child: action,
+                              )
+                            : action
+                      else
+                        _RunnerMetricCell(
+                          column: column,
+                          set: set,
+                          editable: active,
+                          enabled: enabled,
+                          onUpdate: onUpdate,
                         ),
-                      ),
-                      AppWhiteSpace.wSm,
-                      completion,
-                    ],
-                  ),
-                  if (showExercise) ...[
-                    AppWhiteSpace.hXs,
-                    Text(
-                      row.exercise.exerciseName,
-                      style: WorkoutRunnerStyle.label(context),
-                    ),
                   ],
-                  AppWhiteSpace.hSm,
-                  target,
-                  if (active) ...[
-                    AppWhiteSpace.hMd,
-                    _StackedActualInputs(weight: weight, reps: reps),
-                  ] else if (set.completed) ...[
-                    AppWhiteSpace.hSm,
-                    Text(
-                      '${AppStrings.actual}: ${_RunnerSetFormatting.actual(set)}',
-                      style: WorkoutRunnerStyle.small(context),
-                    ),
-                  ],
-                ] else
-                  _SetTableGrid(
-                    set: Text(label, style: valueStyle),
-                    target: target,
-                    weight: weight,
-                    reps: reps,
-                    action: completion,
+                ),
+                if (active && !WorkoutRunnerSetPolicy.hasValidActuals(set)) ...[
+                  AppWhiteSpace.hXs,
+                  Text(
+                    AppErrorStrings.workoutActualsInvalid,
+                    style: WorkoutRunnerStyle.small(
+                      context,
+                    ).copyWith(color: context.colorScheme.error),
                   ),
-                if (set.skipped && !stacked) ...[
+                ],
+                if (set.skipped) ...[
                   AppWhiteSpace.hXs,
                   Text(
                     AppStrings.skipped,
@@ -685,29 +775,92 @@ class _RunnerSetRow extends StatelessWidget {
   }
 }
 
-class _StackedActualInputs extends StatelessWidget {
-  const _StackedActualInputs({required this.weight, required this.reps});
-  final Widget weight;
-  final Widget reps;
+class _RunnerMetricCell extends StatelessWidget {
+  const _RunnerMetricCell({
+    required this.column,
+    required this.set,
+    required this.editable,
+    required this.enabled,
+    required this.onUpdate,
+  });
+  final _RunnerColumn column;
+  final WorkoutRunnerSetItem set;
+  final bool editable;
+  final bool enabled;
+  final ValueChanged<WorkoutRunnerSetItem> onUpdate;
 
   @override
   Widget build(BuildContext context) {
-    final large =
-        MediaQuery.textScalerOf(context).scale(AppFontSizes.md) >
-        AppFontSizes.md * AppWorkoutRunnerTokens.largeTextBreakpoint;
-    if (large) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [weight, AppWhiteSpace.hMd, reps],
+    final actual = switch (column) {
+      _RunnerColumn.weight => set.actualWeightKg,
+      _RunnerColumn.reps => set.actualReps,
+      _RunnerColumn.duration => set.actualDurationSeconds,
+      _RunnerColumn.distance => set.actualDistanceMeters,
+      _RunnerColumn.rpe => set.actualRpe,
+      _ => null,
+    };
+    if (!editable) {
+      return Text(
+        actual == null
+            ? AppStrings.unavailableValue
+            : _RunnerSetFormatting.number(actual),
+        textAlign: TextAlign.center,
+        style: WorkoutRunnerStyle.label(context),
       );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: weight),
-        AppWhiteSpace.wSm,
-        Expanded(child: reps),
-      ],
+    final fallback = switch (column) {
+      _RunnerColumn.weight => set.prescribedWeightKg,
+      _RunnerColumn.reps =>
+        set.prescribedRepsExact ??
+            set.prescribedRepsMin ??
+            set.prescribedRepsMax,
+      _RunnerColumn.duration => set.prescribedDurationSeconds,
+      _RunnerColumn.distance => set.prescribedDistanceMeters,
+      _RunnerColumn.rpe => set.prescribedRpeMin ?? set.prescribedRpeMax,
+      _ => null,
+    };
+    final name = switch (column) {
+      _RunnerColumn.weight => AppStrings.actualWeight,
+      _RunnerColumn.reps => AppStrings.actualReps,
+      _RunnerColumn.duration =>
+        '${AppStrings.actualDuration} (${AppStrings.secondsUnitAbbreviation})',
+      _RunnerColumn.distance =>
+        '${AppStrings.actualDistance} (${WorkoutRunnerStrings.meters})',
+      _RunnerColumn.rpe => AppStrings.actualRpe,
+      _ => AppStrings.unavailableValue,
+    };
+    return _RunnerNumberInput(
+      key: ValueKey('workout_runner_${column.name}_input_${set.id}'),
+      fieldKey: Key('active_${column.name}_field'),
+      label: name,
+      actual: actual == null ? null : _RunnerSetFormatting.number(actual),
+      fallback: fallback == null ? '' : _RunnerSetFormatting.number(fallback),
+      enabled: enabled,
+      decimal:
+          column == _RunnerColumn.weight ||
+          column == _RunnerColumn.distance ||
+          column == _RunnerColumn.rpe,
+      compact: true,
+      onChanged: (value) => onUpdate(switch (column) {
+        _RunnerColumn.weight => _RunnerSetFormatting.withActuals(
+          set,
+          weight: value,
+        ),
+        _RunnerColumn.reps => _RunnerSetFormatting.withActuals(
+          set,
+          reps: value,
+        ),
+        _RunnerColumn.duration => _RunnerSetFormatting.withActuals(
+          set,
+          duration: value,
+        ),
+        _RunnerColumn.distance => _RunnerSetFormatting.withActuals(
+          set,
+          distance: value,
+        ),
+        _RunnerColumn.rpe => _RunnerSetFormatting.withActuals(set, rpe: value),
+        _ => set,
+      }),
     );
   }
 }
@@ -811,12 +964,14 @@ class _RunnerNumberInput extends StatefulWidget {
 
 class _RunnerNumberInputState extends State<_RunnerNumberInput> {
   late final TextEditingController _controller;
+  // Keep field scrolling independent of the table's horizontal position.
+  final _scrollController = ScrollController(keepScrollOffset: false);
   String? _lastEdit;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.actual ?? widget.fallback);
+    _controller = TextEditingController(text: widget.actual ?? '');
   }
 
   @override
@@ -833,7 +988,7 @@ class _RunnerNumberInputState extends State<_RunnerNumberInput> {
         (widget.fallback == oldWidget.fallback || edit != null)) {
       return;
     }
-    final text = widget.actual ?? widget.fallback;
+    final text = widget.actual ?? '';
     if (text == _controller.text) return;
     final selection = _controller.selection;
     _controller.value = TextEditingValue(
@@ -852,6 +1007,7 @@ class _RunnerNumberInputState extends State<_RunnerNumberInput> {
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -871,6 +1027,7 @@ class _RunnerNumberInputState extends State<_RunnerNumberInput> {
           child: TextField(
             key: widget.fieldKey,
             controller: _controller,
+            scrollController: _scrollController,
             enabled: widget.enabled,
             keyboardType: TextInputType.numberWithOptions(
               decimal: widget.decimal,
@@ -882,8 +1039,12 @@ class _RunnerNumberInputState extends State<_RunnerNumberInput> {
                 TextInputFormatter.withFunction(
                   _RunnerSetFormatting.weightInput,
                 )
-              else
+              else ...[
                 FilteringTextInputFormatter.digitsOnly,
+                TextInputFormatter.withFunction(
+                  _RunnerSetFormatting.integerInput,
+                ),
+              ],
             ],
             onChanged: (value) {
               _lastEdit = value;
@@ -894,7 +1055,9 @@ class _RunnerNumberInputState extends State<_RunnerNumberInput> {
               fontWeight: FontWeight.w600,
             ),
             decoration: InputDecoration(
-              hintText: AppStrings.unavailableValue,
+              hintText: widget.fallback.isEmpty
+                  ? AppStrings.unavailableValue
+                  : widget.fallback,
               hintStyle: WorkoutRunnerStyle.body(
                 context,
               ).copyWith(color: context.colorScheme.onSurfaceVariant),
@@ -968,12 +1131,14 @@ class _RunnerTextAction extends StatelessWidget {
               : WorkoutRunnerStyle.accent(context),
         ),
         AppWhiteSpace.wSm,
-        Text(
-          label,
-          style: WorkoutRunnerStyle.label(context).copyWith(
-            color: onPressed == null
-                ? context.colorScheme.onSurfaceVariant
-                : WorkoutRunnerStyle.accent(context),
+        Flexible(
+          child: Text(
+            label,
+            style: WorkoutRunnerStyle.label(context).copyWith(
+              color: onPressed == null
+                  ? context.colorScheme.onSurfaceVariant
+                  : WorkoutRunnerStyle.accent(context),
+            ),
           ),
         ),
       ],
@@ -1024,29 +1189,24 @@ abstract final class _RunnerSetFormatting {
     final weight = set.prescribedWeightKg;
     final rpeMin = set.prescribedRpeMin;
     final rpeMax = set.prescribedRpeMax;
+    final rpeFromRir = SetEffort.rpeFromRir(set.prescribedRir);
     final parts = <String>[
       if (weight != null) '${number(weight)} ${AppStrings.metricWeightUnit}',
       if (reps != null) AppStrings.exerciseRepsSummary(reps),
+      if (set.prescribedDurationSeconds != null)
+        '${set.prescribedDurationSeconds}${AppStrings.secondsUnitAbbreviation}',
+      if (set.prescribedDistanceMeters != null)
+        '${number(set.prescribedDistanceMeters!)} ${WorkoutRunnerStrings.meters}',
       if (rpeMin != null && rpeMax != null)
         '${AppStrings.rpe} ${number(rpeMin)}${rpeMin == rpeMax ? '' : '–${number(rpeMax)}'}'
       else if (rpeMin != null)
         '${AppStrings.rpe} ≥${number(rpeMin)}'
       else if (rpeMax != null)
-        '${AppStrings.rpe} ≤${number(rpeMax)}',
+        '${AppStrings.rpe} ≤${number(rpeMax)}'
+      else if (rpeFromRir != null)
+        '${AppStrings.rpe} ${number(rpeFromRir)}',
       if (set.restSeconds != null)
         '${AppStrings.rest}: ${set.restSeconds}${AppStrings.secondsUnitAbbreviation}',
-    ];
-    return parts.isEmpty ? AppStrings.unavailableValue : parts.join(' · ');
-  }
-
-  static String actual(WorkoutRunnerSetItem set) {
-    final parts = <String>[
-      if (set.actualWeightKg != null)
-        '${number(set.actualWeightKg!)} ${AppStrings.metricWeightUnit}',
-      if (set.actualReps != null)
-        AppStrings.exerciseRepsSummary('${set.actualReps}'),
-      if (set.actualRpe != null) '${AppStrings.rpe} ${number(set.actualRpe!)}',
-      if (set.actualRir != null) '${AppStrings.rir} ${set.actualRir}',
     ];
     return parts.isEmpty ? AppStrings.unavailableValue : parts.join(' · ');
   }
@@ -1054,12 +1214,25 @@ abstract final class _RunnerSetFormatting {
   static TextEditingValue weightInput(
     TextEditingValue previous,
     TextEditingValue next,
-  ) => RegExp(r'^\d*(?:\.\d{0,2})?$').hasMatch(next.text) ? next : previous;
+  ) =>
+      next.text.isEmpty ||
+          RegExp(r'^\d+(?:\.\d{0,2})?$').hasMatch(next.text) &&
+              (double.tryParse(next.text)?.isFinite ?? false)
+      ? next
+      : previous;
+
+  static TextEditingValue integerInput(
+    TextEditingValue previous,
+    TextEditingValue next,
+  ) => next.text.isEmpty || int.tryParse(next.text) != null ? next : previous;
 
   static WorkoutRunnerSetItem withActuals(
     WorkoutRunnerSetItem set, {
     String? weight,
     String? reps,
+    String? duration,
+    String? distance,
+    String? rpe,
   }) => WorkoutRunnerSetItem(
     id: set.id,
     exerciseId: set.exerciseId,
@@ -1075,14 +1248,23 @@ abstract final class _RunnerSetFormatting {
     prescribedWeightKg: set.prescribedWeightKg,
     prescribedRpeMin: set.prescribedRpeMin,
     prescribedRpeMax: set.prescribedRpeMax,
+    prescribedRir: set.prescribedRir,
+    prescribedDurationSeconds: set.prescribedDurationSeconds,
+    prescribedDistanceMeters: set.prescribedDistanceMeters,
     actualReps: reps == null ? set.actualReps : int.tryParse(reps),
     actualWeightKg: weight == null
         ? set.actualWeightKg
         : double.tryParse(weight),
-    actualDurationSeconds: set.actualDurationSeconds,
-    actualDistanceMeters: set.actualDistanceMeters,
-    actualRpe: set.actualRpe,
-    actualRir: set.actualRir,
+    actualDurationSeconds: duration == null
+        ? set.actualDurationSeconds
+        : int.tryParse(duration),
+    actualDistanceMeters: distance == null
+        ? set.actualDistanceMeters
+        : double.tryParse(distance),
+    actualRpe: rpe == null ? set.actualRpe : double.tryParse(rpe),
+    actualRir: rpe == null
+        ? set.actualRir
+        : SetEffort.rirFromRpe(double.tryParse(rpe)),
     restSeconds: set.restSeconds,
     notes: set.notes,
   );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppSpacing {
   AppSpacing._();
 
+  static const double zero = 0;
   static const double baseUnit = 4;
   static const double xxxs = 1;
   static const double xxs = 2;
@@ -111,7 +112,11 @@ abstract final class AppExerciseConfigTokens {
 abstract final class AppWorkoutRunnerTokens {
   static const double controlSize = 48;
   static const double progressTrackHeight = 6;
-  static const double tableSetWidth = 36;
+  static const double tableSetWidth = 80;
+  static const double tableTargetWidth = 96;
+  static const double tableDurationWidth = 96;
+  static const double tableDistanceWidth = 96;
+  static const double tableEffortWidth = 56;
   static const double tableWeightWidth = 56;
   static const double tableRepsWidth = 48;
   static const double tableBreakpoint = 300;

@@ -33,13 +33,12 @@ abstract final class _TimerFixtures {
   }
 
   static WorkoutRunnerHeader header({
-    String title = 'Upper strength',
     String exerciseTitle = 'Incline dumbbell press',
     required VoidCallback onClose,
     bool showSubstitute = false,
     VoidCallback? onSubstitute,
   }) => WorkoutRunnerHeader(
-    workoutTitle: title,
+    workoutTitle: 'Upper strength',
     exerciseTitle: exerciseTitle,
     workoutStartedAt: startedAt,
     isPaused: true,
@@ -52,7 +51,7 @@ abstract final class _TimerFixtures {
 
 void main() {
   testWidgets(
-    'header restores workout context, exercise title and a single substitute action',
+    'header shows current exercise, session duration and a single substitute action',
     (tester) async {
       _TimerFixtures.surface(tester, const Size(390, 844));
       var closed = 0;
@@ -61,15 +60,15 @@ void main() {
           _TimerFixtures.header(onClose: () => closed++, showSubstitute: true),
         ),
       );
-      expect(find.text('Upper strength'), findsOneWidget);
-      expect(find.text('UPPER STRENGTH'), findsNothing);
       expect(find.text('Incline dumbbell press'), findsOneWidget);
       expect(find.text('01:02:03'), findsOneWidget);
       expect(find.byType(BackdropFilter), findsNothing);
       expect(_TimerFixtures.key('workout_runner_substitute'), findsOneWidget);
       expect(
-        tester.getRect(find.text('Upper strength')).top,
-        lessThan(tester.getRect(find.text('Incline dumbbell press')).top),
+        tester.getRect(find.text('Incline dumbbell press')).bottom,
+        lessThan(
+          tester.getRect(_TimerFixtures.key('workout_runner_substitute')).top,
+        ),
       );
       final close = _TimerFixtures.key('workout_runner_close_button');
       expect(tester.getSize(close).shortestSide, greaterThanOrEqualTo(48));
@@ -101,13 +100,13 @@ void main() {
 
   for (final dark in [false, true]) {
     testWidgets(
-      'header wraps its title and stacks the timer at 320px/2x in ${dark ? 'dark' : 'light'}',
+      'header wraps the exercise title and stacks the timer at 320px/2x in ${dark ? 'dark' : 'light'}',
       (tester) async {
         _TimerFixtures.surface(tester, const Size(320, 568));
-        const title = 'A long upper body strength and conditioning session';
+        const title = 'Single arm dumbbell overhead press with seated support';
         await tester.pumpWidget(
           _TimerFixtures.app(
-            _TimerFixtures.header(title: title, onClose: () {}),
+            _TimerFixtures.header(exerciseTitle: title, onClose: () {}),
             dark: dark,
             scale: 2,
           ),
@@ -122,13 +121,6 @@ void main() {
         expect(tester.widget<Text>(find.text(title)).maxLines, isNull);
         expect(
           tester.widget<Text>(find.text(title)).style!.fontFamily,
-          dark ? 'Inter' : 'Manrope',
-        );
-        expect(
-          tester
-              .widget<Text>(find.text('Incline dumbbell press'))
-              .style!
-              .fontFamily,
           'Manrope',
         );
       },

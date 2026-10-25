@@ -15,6 +15,9 @@ class SetLogDraft {
     this.prescribedWeightKg,
     this.prescribedRpeMin,
     this.prescribedRpeMax,
+    this.prescribedRir,
+    this.prescribedDurationSeconds,
+    this.prescribedDistanceMeters,
     this.actualReps,
     this.actualWeightKg,
     this.actualDurationSeconds,
@@ -41,6 +44,9 @@ class SetLogDraft {
   final double? prescribedWeightKg;
   final double? prescribedRpeMin;
   final double? prescribedRpeMax;
+  final int? prescribedRir;
+  final int? prescribedDurationSeconds;
+  final double? prescribedDistanceMeters;
   final int? actualReps;
   final double? actualWeightKg;
   final int? actualDurationSeconds;

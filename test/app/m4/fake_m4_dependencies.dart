@@ -8,6 +8,8 @@ import 'package:aedify/features/exercise_library/domain/exercise_detail_view_dat
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
 import 'package:aedify/features/lift_log/data/workout_history_repository.dart';
+import 'package:aedify/features/lift_log/domain/exercise_history_session.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_correction.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_detail_view_data.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_list_item.dart';
@@ -293,6 +295,35 @@ class FakeWorkoutSessionRepository implements WorkoutSessionRepository {
 class FakeWorkoutHistoryRepository implements WorkoutHistoryRepository {
   final List<WorkoutHistoryListItem> items = [];
   final Map<String, WorkoutHistoryDetailViewData> details = {};
+
+  @override
+  Future<List<ExerciseHistorySession>> listExerciseHistory(
+    int exerciseId,
+  ) async => details.values
+      .where(
+        (detail) => detail.exercises.any((e) => e.exerciseId == exerciseId),
+      )
+      .map(
+        (detail) => ExerciseHistorySession(
+          sessionId: detail.sessionId,
+          workoutName: detail.name,
+          completedAt: detail.completedAt ?? detail.startedAt,
+          exercises: detail.exercises
+              .where((e) => e.exerciseId == exerciseId)
+              .toList(),
+        ),
+      )
+      .toList();
+
+  @override
+  Future<void> correctSession({
+    required String sessionId,
+    required List<WorkoutHistorySetCorrection> corrections,
+  }) async {
+    throw UnimplementedError(
+      'Use the real Drift fixture for correction tests.',
+    );
+  }
 
   @override
   Future<List<WorkoutHistoryListItem>> listCompletedSessions() async => items;

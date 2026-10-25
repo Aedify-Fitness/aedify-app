@@ -40,6 +40,21 @@ import 'package:go_router/go_router.dart';
 class _RunnerFixtures {
   _RunnerFixtures._();
 
+  static WorkoutRunnerSessionViewData currentSession(WidgetTester tester) =>
+      ProviderScope.containerOf(
+            tester.element(find.byType(WorkoutRunnerScreen)),
+          )
+          .read(
+            AppProviders.workoutRunnerControllerProvider((
+              mode: WorkoutRunnerMode.savedWorkout,
+              savedWorkoutId: 'sw-1',
+              programId: null,
+              programWorkoutId: null,
+            )),
+          )
+          .requireValue
+          .session!;
+
   static WorkoutRunnerSessionViewData referenceSession() {
     final now = DateTime.now().subtract(const Duration(minutes: 12));
     return WorkoutRunnerSessionViewData(
@@ -258,6 +273,14 @@ class _FakeStartUseCase implements StartWorkoutSessionUseCase {
   bool shouldThrow = false;
   bool returnUniqueSessions = false;
   int calls = 0;
+
+  @override
+  Future<WorkoutRunnerSessionViewData> startStandalone() =>
+      startFromSavedWorkout('standalone');
+
+  @override
+  Future<WorkoutRunnerSessionViewData> repeatCompleted(String sessionId) =>
+      startFromSavedWorkout(sessionId);
 
   @override
   Future<WorkoutRunnerSessionViewData> startFromSavedWorkout(
@@ -667,7 +690,7 @@ void main() {
   );
 
   testWidgets(
-    'prioritizes the real session, current exercise and logging action',
+    'prioritizes the current exercise, session duration and logging action',
     (tester) async {
       _setViewport(tester, const Size(390, 844));
       final dependencies = _TestDependencies();
@@ -679,7 +702,7 @@ void main() {
         ),
       );
       final header = find.byKey(const Key('workout_runner_header'));
-      expect(find.text('Push A — Upper Hypertrophy'), findsOneWidget);
+      expect(header, findsOneWidget);
       expect(find.text('Flat Bench Press'), findsWidgets);
       expect(
         find.descendant(of: header, matching: find.text('Flat Bench Press')),
@@ -777,6 +800,7 @@ void main() {
           home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
         ),
       );
+      double? previousRoundBottom;
       for (final type in ['warmup', 'working']) {
         for (var round = 0; round < 2; round++) {
           final group = find.byKey(
@@ -792,12 +816,19 @@ void main() {
               'workout_runner_set_row_lateral-session-exercise-$type-$round',
             ),
           );
-          expect(find.descendant(of: group, matching: first), findsOneWidget);
-          expect(find.descendant(of: group, matching: second), findsOneWidget);
+          expect(group, findsOneWidget);
+          expect(first, findsOneWidget);
+          expect(second, findsOneWidget);
+          final headingTop = tester.getTopLeft(group).dy;
+          if (previousRoundBottom != null) {
+            expect(headingTop, greaterThanOrEqualTo(previousRoundBottom));
+          }
+          expect(headingTop, lessThan(tester.getTopLeft(first).dy));
           expect(
             tester.getTopLeft(first).dy,
             lessThan(tester.getTopLeft(second).dy),
           );
+          previousRoundBottom = tester.getBottomLeft(second).dy;
         }
       }
       final warmup = find.byKey(
@@ -860,6 +891,15 @@ void main() {
           ),
           findsOneWidget,
         );
+        await tester.enterText(
+          find.byKey(const Key('active_weight_field')),
+          warmupsCompleted ? '30' : '5',
+        );
+        await tester.enterText(
+          find.byKey(const Key('active_reps_field')),
+          warmupsCompleted ? '10' : '12',
+        );
+        await tester.pump();
         await tester.tap(log);
         await tester.pumpAndSettle();
         expect(
@@ -872,6 +912,15 @@ void main() {
         );
         expect(rest, findsNothing);
 
+        await tester.enterText(
+          find.byKey(const Key('active_weight_field')),
+          warmupsCompleted ? '10' : '5',
+        );
+        await tester.enterText(
+          find.byKey(const Key('active_reps_field')),
+          '12',
+        );
+        await tester.pump();
         await tester.tap(log);
         await tester.pumpAndSettle();
         expect(rest, findsOneWidget);
@@ -1355,6 +1404,187 @@ void main() {
     expect(find.text(AppStrings.noActiveWorkout), findsOneWidget);
   });
 
+  testWidgets('standalone logging stays open to add sets and exercises', (
+    tester,
+  ) async {
+    _setViewport(tester, const Size(390, 1236));
+    final dependencies = _TestDependencies(
+      sessionFactory: () => _RunnerFixtures.finalSetSession().copyWith(
+        source: SessionSource.standalone,
+      ),
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) =>
+              const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await _pumpLoaded(
+      tester,
+      _routerApp(dependencies: dependencies, router: router),
+    );
+
+    await tester.tap(find.byKey(const Key('workout_runner_log_set')));
+    await tester.pumpAndSettle();
+
+    expect(dependencies.complete.calls, 0);
+    expect(find.byType(WorkoutRunnerScreen), findsOneWidget);
+    expect(
+      _RunnerFixtures.currentSession(
+        tester,
+      ).exercises.single.sets.single.completed,
+      isTrue,
+    );
+    final addSet = find.byKey(const Key('workout_runner_add_set'));
+    await tester.ensureVisible(addSet);
+    await tester.tap(addSet);
+    await tester.pumpAndSettle();
+    final sets = _RunnerFixtures.currentSession(tester).exercises.single.sets;
+    expect(sets, hasLength(2));
+    expect(sets.first.completed, isTrue);
+    expect(sets.last.completed, isFalse);
+    expect(sets.last.actualReps, isNull);
+    expect(sets.last.actualWeightKg, isNull);
+    expect(find.byKey(const Key('active_reps_field')), findsOneWidget);
+
+    final addExercise = find.byKey(const Key('workout_runner_add_exercise'));
+    await tester.ensureVisible(addExercise);
+    await tester.tap(addExercise);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dumbbell Bench Press'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppStrings.filterConfirmSelection(1)));
+    await tester.pumpAndSettle();
+
+    final session = _RunnerFixtures.currentSession(tester);
+    expect(session.status, WorkoutSessionStatus.inProgress);
+    expect(session.exercises.map((exercise) => exercise.exerciseId), [1, 42]);
+    expect(session.exercises.last.sets.single.completed, isFalse);
+    expect(dependencies.start.calls, 1);
+    expect(dependencies.complete.calls, 0);
+    expect(
+      find.byKey(const Key('workout_runner_finish')).hitTestable(),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('skipping the final set keeps Restore actionable', (
+    tester,
+  ) async {
+    _setViewport(tester, const Size(390, 1236));
+    final dependencies = _TestDependencies(
+      sessionFactory: _RunnerFixtures.finalSetSession,
+    );
+    await _pumpLoaded(
+      tester,
+      _testApp(
+        dependencies: dependencies,
+        home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+      ),
+    );
+    final skip = find.byKey(const Key('workout_runner_skip_set_final-set'));
+    await tester.ensureVisible(skip);
+    await tester.tap(skip);
+    await tester.pumpAndSettle();
+
+    expect(dependencies.complete.calls, 0);
+    expect(
+      _RunnerFixtures.currentSession(
+        tester,
+      ).exercises.single.sets.single.skipped,
+      isTrue,
+    );
+    final restore = find.byTooltip(AppStrings.runnerRestoreSet);
+    await tester.ensureVisible(restore);
+    expect(restore.hitTestable(), findsOneWidget);
+    expect(find.byKey(const Key('workout_runner_add_set')), findsOneWidget);
+    await tester.tap(restore);
+    await tester.pumpAndSettle();
+
+    final restored = _RunnerFixtures.currentSession(
+      tester,
+    ).exercises.single.sets.single;
+    expect(restored.skipped, isFalse);
+    expect(restored.completed, isFalse);
+    expect(restored.actualReps, 8);
+    expect(restored.actualWeightKg, 80);
+    expect(find.byKey(const Key('active_reps_field')), findsOneWidget);
+    expect(dependencies.complete.calls, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'legacy completed set without actuals can be undone and corrected',
+    (tester) async {
+      _setViewport(tester, const Size(390, 1236));
+      final dependencies = _TestDependencies(
+        sessionFactory: () {
+          final session = _RunnerFixtures.finalSetSession();
+          final exercise = session.exercises.single;
+          return session.copyWith(
+            exercises: [
+              exercise.copyWith(
+                sets: [
+                  WorkoutRunnerSetItem(
+                    id: 'final-set',
+                    exerciseId: 1,
+                    setIndex: 0,
+                    setType: SetType.working,
+                    performedAt: session.startedAt,
+                    completed: true,
+                    skipped: false,
+                    prescribedRepsExact: 8,
+                    prescribedWeightKg: 80,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+      await _pumpLoaded(
+        tester,
+        _testApp(
+          dependencies: dependencies,
+          home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
+        ),
+      );
+
+      expect(dependencies.complete.calls, 0);
+      expect(find.byKey(const Key('active_reps_field')), findsNothing);
+      final undo = find.byTooltip(AppStrings.runnerUndoSet);
+      await tester.ensureVisible(undo);
+      await tester.tap(undo);
+      await tester.pumpAndSettle();
+
+      final weight = find.byKey(const Key('active_weight_field'));
+      final reps = find.byKey(const Key('active_reps_field'));
+      expect(tester.widget<TextField>(weight).controller!.text, isEmpty);
+      expect(tester.widget<TextField>(reps).controller!.text, isEmpty);
+      final action = find.byKey(
+        const Key('workout_runner_set_action_final-set'),
+      );
+      expect(tester.widget<IconButton>(action).onPressed, isNull);
+      await tester.enterText(weight, '82.5');
+      await tester.enterText(reps, '8');
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<IconButton>(action).onPressed, isNotNull);
+      final session = _RunnerFixtures.currentSession(tester);
+      expect(session.status, WorkoutSessionStatus.inProgress);
+      expect(session.exercises.single.sets.single.completed, isFalse);
+      expect(session.exercises.single.sets.single.actualWeightKg, 82.5);
+      expect(session.exercises.single.sets.single.actualReps, 8);
+      expect(dependencies.complete.calls, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('final Log Set completes once without starting another session', (
     tester,
   ) async {
@@ -1704,7 +1934,13 @@ void main() {
         home: const WorkoutRunnerScreen.savedWorkout(savedWorkoutId: 'sw-1'),
       ),
     );
-    expect(find.text('Push A — Upper Hypertrophy'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('workout_runner_header')),
+        matching: find.text('Flat Bench Press'),
+      ),
+      findsOneWidget,
+    );
     expect(
       find.byKey(const Key('workout_runner_log_set')).hitTestable(),
       findsOneWidget,
