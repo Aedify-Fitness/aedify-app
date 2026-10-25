@@ -6,6 +6,19 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ## 2026-10-25
 
+### M4 — Align empty-session and correction actions with the theme
+
+- Add exercises and Save correction now share `AppButtonStyles.primary`, using the approved secondary/onSecondary roles in light mode and primaryContainer/onPrimaryContainer roles in dark mode. Labels inherit theme-specific action typography, and the Add icon matches the foreground color.
+- Preserved the approved pill shape, touch sizes, keyboard clearance and save/disabled behavior. No global theme, data or navigation changes.
+- Verification: formatting (780 files), clean analysis and all 10 focused layout/correction tests passed. Native iOS acceptance passed, light/dark previews were visually reviewed and the normal app entrypoint restored. The full suite and Android native flow were not repeated for this styling-only follow-up.
+
+### M4 — Workout entry and training-history redesign
+
+- Redesigned the empty session with a clear Add exercises footer, a calm introduction and two short guidance rows. History entries use readable date/workout headings and tappable exercise cards with prominent actual results, quiet targets and explicit unlogged states.
+- Rebuilt workout details around a session overview and responsive metric strip, with Repeat workout as a secondary action. Supersets use a shared tonal container and numbered members instead of heavy badges and runner instructions.
+- Redesigned correction sheets with exercise/set context, logging-type-specific result fields, separate effort/notes, and persistent Save/Cancel actions. Validation errors scroll into view; large text and keyboard insets no longer overflow. Editing eligibility and persistence behavior remain intact.
+- Verification: formatting (779 files), clean analysis and **1,596 passing tests**, zero skips. Native iOS/Android offline and redesign-preview acceptance passed, including light/dark weighted and timed editors; native images reviewed and normal app entrypoints restored. No schema/package changes.
+
 ### M4 — Exercise-card navigation and logged-set corrections
 
 - Full and finish-early completion summaries now open saved workout logs when an exercise with logged sets is tapped. Partially completed exercises remain editable for their completed logged sets; pending, skipped and empty sets have no correction controls. Local validation enforces the same boundary.

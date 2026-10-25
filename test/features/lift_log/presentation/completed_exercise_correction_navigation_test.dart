@@ -9,6 +9,12 @@ import 'package:aedify/features/workout_execution/presentation/finish_early_sess
 import 'package:aedify/features/workout_execution/presentation/workout_complete_screen.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/features/lift_log/domain/exercise_history_session.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/exercise_history_section.dart';
+import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
+import 'package:aedify/features/workout_execution/domain/workout_launch_strings.dart';
+import 'package:aedify/features/workout_execution/presentation/workout_runner_screen.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
@@ -98,6 +104,14 @@ abstract final class _CorrectionFixture {
   }
 
   static Future<void> tap(WidgetTester tester, Finder finder) async {
+    if (finder.evaluate().isEmpty) {
+      await tester.scrollUntilVisible(
+        finder,
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await pumpFrames(tester);
+    }
     await tester.ensureVisible(finder);
     await pumpFrames(tester);
     await tester.tap(finder);
@@ -106,6 +120,212 @@ abstract final class _CorrectionFixture {
 }
 
 void main() {
+  for (final dark in [false, true]) {
+    testWidgets(
+      'history and corrections adapt to 320px, 2x text and keyboard in ${dark ? 'dark' : 'light'}',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 720);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetViewInsets);
+        final db = AppDatabase(NativeDatabase.memory());
+        final container = ProviderContainer(
+          overrides: [AppProviders.appDatabaseProvider.overrideWithValue(db)],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await db.close();
+        });
+        await _CorrectionFixture.seed(db, mixed: true);
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, _) =>
+                  const WorkoutHistoryDetailScreen(sessionId: 'session'),
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp.router(
+              theme: dark ? AppTheme.darkTheme : AppTheme.lightTheme,
+              routerConfig: router,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(2)),
+                child: child!,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await _CorrectionFixture.tap(
+          tester,
+          find.byKey(const ValueKey('history_correct_complete-0')),
+        );
+        expect(tester.takeException(), isNull);
+        final reps = find.byKey(
+          ValueKey('history_correction_${AppStrings.actualReps}'),
+        );
+        final weight = find.byKey(
+          ValueKey('history_correction_${AppStrings.actualWeight}'),
+        );
+        expect(tester.getTopLeft(reps).dx, tester.getTopLeft(weight).dx);
+        expect(tester.getTopLeft(reps).dy, isNot(tester.getTopLeft(weight).dy));
+        tester.view.viewInsets = const FakeViewPadding(bottom: 220);
+        await tester.pumpAndSettle();
+        final rpe = find.byKey(
+          ValueKey('history_correction_${AppStrings.actualRpe}'),
+        );
+        await tester.ensureVisible(rpe);
+        await tester.enterText(rpe, '11');
+        await tester.pumpAndSettle();
+        final save = find.byKey(const Key('history_save_correction'));
+        await _CorrectionFixture.tap(tester, save);
+        expect(
+          find.text(AppErrorStrings.workoutHistoryCorrectionInvalid),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+        await tester.ensureVisible(rpe);
+        await tester.enterText(rpe, '9');
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        await _CorrectionFixture.tap(tester, save);
+        expect(find.byType(WorkoutHistoryCorrectionSheet), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'empty workout keeps Add exercises reachable with 2x text and keyboard in ${dark ? 'dark' : 'light'}',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 720);
+        tester.view.devicePixelRatio = 1;
+        tester.view.viewInsets = const FakeViewPadding(bottom: 220);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetViewInsets);
+        final db = AppDatabase(NativeDatabase.memory());
+        final container = ProviderContainer(
+          overrides: [AppProviders.appDatabaseProvider.overrideWithValue(db)],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await db.close();
+        });
+        final session = await container
+            .read(AppProviders.startWorkoutSessionUseCaseProvider)
+            .startStandalone();
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp(
+              theme: dark ? AppTheme.darkTheme : AppTheme.lightTheme,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(2)),
+                child: child!,
+              ),
+              home: WorkoutRunnerScreen.resume(
+                launchedSessionId: session.sessionId,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text(WorkoutLaunchStrings.emptyTitle), findsOneWidget);
+        final add = find.byKey(const Key('empty_workout_add_exercises'));
+        expect(add.hitTestable(), findsOneWidget);
+        expect(tester.getSize(add).height, greaterThanOrEqualTo(48));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'exercise history cards wrap at 320px and 2x text in ${dark ? 'dark' : 'light'}',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 720);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final db = AppDatabase(NativeDatabase.memory());
+        final container = ProviderContainer(
+          overrides: [AppProviders.appDatabaseProvider.overrideWithValue(db)],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await db.close();
+        });
+        await _CorrectionFixture.seed(db, mixed: true);
+        final detail = (await container
+            .read(AppProviders.workoutHistoryRepositoryProvider)
+            .getSessionDetail('session'))!;
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              WorkoutHistoryProviders.exerciseHistoryProvider.overrideWith(
+                (ref, id) async => [
+                  ExerciseHistorySession(
+                    sessionId: detail.sessionId,
+                    workoutName: detail.name,
+                    completedAt: detail.completedAt!,
+                    exercises: detail.exercises,
+                  ),
+                ],
+              ),
+            ],
+            child: MaterialApp(
+              theme: dark ? AppTheme.darkTheme : AppTheme.lightTheme,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(2)),
+                child: child!,
+              ),
+              home: const Scaffold(
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: ExerciseHistorySection(
+                      exerciseId: 7,
+                      emptyState: Text('Empty'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('history_exercise_complete')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('history_exercise_partial')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('history_exercise_skipped')),
+          findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final early in [false, true]) {
     testWidgets(
       '${early ? 'early' : 'full'} summary opens completed exercise logs and refreshes corrected results',

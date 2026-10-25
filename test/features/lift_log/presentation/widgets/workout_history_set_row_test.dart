@@ -1,6 +1,7 @@
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_set_row.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,13 +30,13 @@ void main() {
 
       expect(find.text(AppStrings.setNumberLabel(1)), findsOneWidget);
       expect(find.text(AppStrings.workingSet), findsOneWidget);
-      expect(find.text(AppStrings.completed), findsOneWidget);
-      expect(find.text(AppStrings.actual), findsOneWidget);
+      expect(find.text(WorkoutHistoryStrings.notLogged), findsNothing);
       expect(find.text('10 reps'), findsOneWidget);
       expect(find.text('100.0 kg'), findsOneWidget);
-      expect(find.text(AppStrings.planned), findsOneWidget);
-      expect(find.text('8-10 reps'), findsOneWidget);
-      expect(find.text('90.0 kg'), findsOneWidget);
+      expect(
+        find.text('${AppStrings.planned} · 8–10 reps · 90.0 kg'),
+        findsOneWidget,
+      );
       expect(find.text(AppStrings.warmupSet), findsNothing);
     });
 
@@ -114,8 +115,8 @@ void main() {
       await tester.pumpWidget(_wrap(WorkoutHistorySetRow(item: item)));
 
       expect(find.text(AppStrings.setNumberLabel(2)), findsOneWidget);
-      expect(find.text(AppStrings.inProgressLabel), findsOneWidget);
-      expect(find.text('6 reps'), findsOneWidget);
+      expect(find.text(WorkoutHistoryStrings.notLogged), findsOneWidget);
+      expect(find.text('${AppStrings.planned} · 6 reps'), findsOneWidget);
     });
   });
 }

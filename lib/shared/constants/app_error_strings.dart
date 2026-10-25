@@ -79,7 +79,7 @@ class AppErrorStrings {
 
   // Workout execution and history
   static const workoutHistoryCorrectionInvalid =
-      'Keep the required reps and weight, or timed result, for completed sets. Use positive reps, seconds and distance, non-negative weight, RPE 1–10 and RIR 0–5.';
+      'Check the logged results: reps, duration and distance must be positive, weight cannot be negative, and RPE must be 1–10.';
   static const workoutHistoryCorrectionFailed =
       'Could not save the correction. Try again.';
   static const workoutHistoryCorrectionConflict =

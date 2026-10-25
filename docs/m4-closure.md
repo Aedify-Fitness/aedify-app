@@ -11,6 +11,20 @@ Date: 2026-10-25. Status: **M4 complete** (implementation began 2026-10-24).
 - Completed-history corrections are explicit, locally validated and transactional. Identity, prescription, set type, attribution and completion metadata are preserved. Stale edits, cross-session writes, invalid numbers and interrupted writes fail safely.
 - Basic per-exercise history reads completed local sessions, including original exercise attribution after a mid-session swap. Repeats use new identities and clear prior actuals, actual set/session notes and derived PR/e1RM results.
 
+## Primary-action theme alignment (2026-10-25)
+
+Add exercises and Save correction now share `AppButtonStyles.primary`, explicitly selecting DESIGN.md's blue light/dark action roles and corresponding foregrounds. Label typography comes from the theme-specific action style; the Add icon shares its foreground. Existing sizing, shape, keyboard layout and guarded callbacks remain intact.
+
+Formatting (780 files), analysis and 10 focused UI tests passed. Native iOS acceptance passed; light/dark action previews were reviewed and the normal app entrypoint restored. The last full suite remains 1,596 passing tests, and Android native acceptance remains from the preceding redesign. No full-suite or Android native rerun for this styling-only follow-up. Evidence: `/private/tmp/aedify-action-buttons-{analyze.log,tests.log,ios.log,ios-restore.log}` and synthetic `/private/tmp/aedify-action-buttons/{empty_light,editor_light,editor_dark}.png` previews.
+
+## Workout/history redesign (2026-10-25)
+
+The six requested entry/history/correction views now share the approved typography and tonal surfaces. Empty sessions keep Add exercises in a safe footer; history cards prioritize actual results and quiet targets; supersets use restrained grouping. The detail page has a responsive overview with secondary Repeat action. Correction sheets retain logging-type-specific fields and scroll context/errors above persistent actions, including at 320px, 2x text and keyboard insets.
+
+A feature-owned `history_visuals.dart` shares presentation patterns; sizing tokens remain centralized. Correction ownership, partial logged-set eligibility, hidden-value preservation and async guards remain tested. Formatting (779 files), analysis and all **1,596 tests** passed, with zero skips. Native iOS and Android offline/redesign acceptance passed; previews cover the empty session, exercise history, light/dark grouped details and weighted/timed correction sheets. Native renders were reviewed and normal `lib/main.dart` entrypoints restored.
+
+Latest evidence: `/private/tmp/aedify-history-redesign-{full-suite.json,analyze.log,layout.log,ios.log,android.log,ios-restore.log,android-restore.log}`. Synthetic native previews live in `/private/tmp/aedify-history-redesign-ios/` and `/private/tmp/aedify-history-redesign-android/` (`empty_light.png`, `exercise_dark.png`, and `detail_`, `superset_`, `editor_`, `timed_editor_` light/dark variants). Six new responsive cases cover 320px/2x-text layouts and keyboard/error/save behavior. Five stale UI expectations were updated; existing business/privacy/storage checks remain enabled.
+
 ## Exercise-card correction flow (2026-10-25)
 
 Completion summaries (full and finish-early) now link exercises with logged sets to the saved workout log. Partial exercises allow correction of completed actual logs only. The editor follows logging type, preserves hidden historical values and derives RIR from RPE. Saving refreshes the completion summary metrics. Exercise history now opens from the exercise card, with a non-interactive name/date heading; partial exercises contribute completed logs from finished sessions. Active sessions, pending, skipped and empty sets remain excluded from editing.
@@ -42,7 +56,7 @@ Affected files: `lib/features/workout_execution/presentation/widgets/workout_run
 
 ## Automated acceptance
 
-`dart format .` checked 778 files with no pending changes. `flutter analyze` reported no issues. The latest full `flutter test` suite passed **1,590 tests**, with no failures or skips. The original closure baseline passed 1,573 tests; the runner/history refinements add seventeen regressions. All original native checks below also passed.
+`dart format .` checked 779 files with no pending changes. `flutter analyze` reported no issues. The latest full `flutter test` suite passed **1,596 tests**, with no failures or skips. The original closure baseline passed 1,573 tests; the runner/history refinements add twenty-three regressions. All original native checks below also passed.
 
 Relevant new suites:
 
@@ -122,6 +136,7 @@ lib/features/lift_log/domain/workout_history_set_correction.dart
 lib/features/lift_log/domain/workout_history_set_item.dart
 lib/features/lift_log/presentation/lift_log_screen.dart
 lib/features/lift_log/presentation/widgets/exercise_history_section.dart
+lib/features/lift_log/presentation/widgets/history_visuals.dart
 lib/features/lift_log/presentation/widgets/workout_history_correction_sheet.dart
 lib/features/lift_log/presentation/widgets/workout_history_exercise_card.dart
 lib/features/lift_log/presentation/widgets/workout_history_set_row.dart
@@ -153,6 +168,7 @@ lib/shared/constants/app_error_strings.dart
 lib/shared/constants/app_routes.dart
 lib/shared/constants/app_strings.dart
 lib/shared/theme/app_spacing.dart
+lib/shared/theme/app_button_styles.dart
 lib/shared/domain/set_effort.dart
 pubspec.lock
 pubspec.yaml
@@ -170,6 +186,9 @@ test/features/lift_log/domain/workout_history_set_item_test.dart
 test/features/lift_log/presentation/exercise_history_section_test.dart
 test/features/lift_log/presentation/completed_exercise_correction_navigation_test.dart
 test/features/lift_log/presentation/history_correction_flow_test.dart
+test/features/lift_log/presentation/widgets/workout_history_superset_group_card_test.dart
+test/features/lift_log/presentation/widgets/workout_history_set_row_test.dart
+test/features/lift_log/presentation/widgets/workout_history_exercise_card_test.dart
 test/features/lift_log/presentation/lift_log_screen_test.dart
 test/features/lift_log/presentation/workout_history_detail_screen_test.dart
 test/features/programmes/presentation/programme_builder_screen_test.dart

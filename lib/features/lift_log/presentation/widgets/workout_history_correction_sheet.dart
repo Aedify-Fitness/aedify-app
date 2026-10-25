@@ -1,5 +1,8 @@
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/domain/set_effort.dart';
+import 'package:aedify/shared/domain/set_type.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/history_visuals.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_set_correction.dart';
@@ -8,6 +11,7 @@ import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_button_styles.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +24,12 @@ class WorkoutHistoryCorrectionSheet extends ConsumerStatefulWidget {
     super.key,
     required this.sessionId,
     required this.item,
+    this.exerciseName,
   });
 
   final String sessionId;
   final WorkoutHistorySetItem item;
+  final String? exerciseName;
 
   @override
   ConsumerState<WorkoutHistoryCorrectionSheet> createState() =>
@@ -34,6 +40,7 @@ class _WorkoutHistoryCorrectionSheetState
     extends ConsumerState<WorkoutHistoryCorrectionSheet> {
   late final Map<String, TextEditingController> _fields;
   String? _validation;
+  final _errorKey = GlobalKey();
 
   @override
   void initState() {
@@ -113,6 +120,7 @@ class _WorkoutHistoryCorrectionSheetState
       setState(
         () => _validation = AppErrorStrings.workoutHistoryCorrectionInvalid,
       );
+      _revealError();
       return;
     }
     setState(() => _validation = null);
@@ -124,6 +132,16 @@ class _WorkoutHistoryCorrectionSheetState
         )
         .save(correction);
     if (saved && mounted) context.pop();
+    if (!saved && mounted) _revealError();
+  }
+
+  void _revealError() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final errorContext = _errorKey.currentContext;
+      if (mounted && errorContext != null) {
+        Scrollable.ensureVisible(errorContext);
+      }
+    });
   }
 
   @override
@@ -133,74 +151,280 @@ class _WorkoutHistoryCorrectionSheetState
     );
     final saving = state.isLoading;
     final error = _validation ?? state.asData?.value;
+    final metrics = _fields.entries
+        .where(
+          (entry) =>
+              entry.key != AppStrings.actualRpe &&
+              entry.key != AppStrings.setNotes,
+        )
+        .toList();
     return PopScope(
       canPop: !saving,
       child: SafeArea(
-        child: SingleChildScrollView(
+        top: false,
+        child: Padding(
           padding: EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            top: AppSpacing.lg,
-            bottom: MediaQuery.viewInsetsOf(context).bottom + AppSpacing.lg,
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                WorkoutHistoryStrings.correctSet,
-                style: AppTextStyles.headlineMd,
-              ),
-              AppWhiteSpace.hSm,
-              Text(
-                WorkoutHistoryStrings.correctionHint,
-                style: AppTextStyles.bodySm,
-              ),
-              AppWhiteSpace.hMd,
-              for (final entry in _fields.entries) ...[
-                AppTextField(
-                  key: ValueKey('history_correction_${entry.key}'),
-                  controller: entry.value,
-                  labelText: entry.key == AppStrings.actualWeight
-                      ? '${entry.key} (${AppStrings.metricWeightUnit})'
-                      : entry.key,
-                  enabled: !saving,
-                  keyboardType: entry.key == AppStrings.setNotes
-                      ? TextInputType.multiline
-                      : const TextInputType.numberWithOptions(decimal: true),
-                  maxLines: entry.key == AppStrings.setNotes ? 3 : 1,
-                ),
-                AppWhiteSpace.hMd,
-              ],
-              if (error != null) ...[
-                Semantics(
-                  liveRegion: true,
-                  child: Text(
-                    error,
-                    style: AppTextStyles.bodySm.copyWith(
-                      color: context.colorScheme.error,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight:
+                  MediaQuery.sizeOf(context).height *
+                  AppWorkoutHistoryTokens.sheetHeightFactor,
+              maxWidth: AppWorkoutHistoryTokens.maxWidth,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                  child: SingleChildScrollView(
+                    key: const Key('history_correction_scroll'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.sm,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      WorkoutHistoryStrings.correctSet,
+                                      style: AppTextStyles.headlineMd.copyWith(
+                                        color: context.colorScheme.onSurface,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: saving
+                                        ? null
+                                        : () => context.pop(),
+                                    tooltip: AppStrings.close,
+                                    style: IconButton.styleFrom(
+                                      minimumSize: const Size.square(
+                                        AppWorkoutHistoryTokens.controlSize,
+                                      ),
+                                    ),
+                                    icon: const HistoryIcon(
+                                      asset: OutlinedSvgAssets.xMark,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (widget.exerciseName != null) ...[
+                                AppWhiteSpace.hXs,
+                                Text(
+                                  widget.exerciseName!,
+                                  style: AppTextStyles.bodyMd.copyWith(
+                                    color: context.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                              AppWhiteSpace.hSm,
+                              Wrap(
+                                spacing: AppSpacing.sm,
+                                runSpacing: AppSpacing.sm,
+                                children: [
+                                  HistoryPill(
+                                    label: AppStrings.setNumberLabel(
+                                      widget.item.setIndex + 1,
+                                    ),
+                                    emphasized: true,
+                                  ),
+                                  HistoryPill(
+                                    label: widget.item.setType == SetType.warmup
+                                        ? AppStrings.warmupSet
+                                        : AppStrings.workingSet,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Text(
+                          WorkoutHistoryStrings.correctionHint,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        if (error != null) ...[
+                          Semantics(
+                            key: _errorKey,
+                            liveRegion: true,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.controlGap,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.colorScheme.errorContainer,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.md,
+                                ),
+                              ),
+                              child: Text(
+                                error,
+                                style: AppTextStyles.bodySm.copyWith(
+                                  color: context.colorScheme.onErrorContainer,
+                                ),
+                              ),
+                            ),
+                          ),
+                          AppWhiteSpace.hMd,
+                        ],
+                        AppWhiteSpace.hLg,
+                        Text(
+                          WorkoutHistoryStrings.results,
+                          style: AppTextStyles.labelMd.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                        AppWhiteSpace.hMd,
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final paired =
+                                constraints.maxWidth >=
+                                    AppWorkoutHistoryTokens.formPairMinWidth &&
+                                MediaQuery.textScalerOf(
+                                          context,
+                                        ).scale(AppFontSizes.md) /
+                                        AppFontSizes.md <=
+                                    AppWorkoutHistoryTokens.largeTextScale &&
+                                metrics.length == 2;
+                            final width = paired
+                                ? (constraints.maxWidth -
+                                          AppSpacing.controlGap) /
+                                      2
+                                : constraints.maxWidth;
+                            return Wrap(
+                              spacing: AppSpacing.controlGap,
+                              runSpacing: AppSpacing.md,
+                              children: [
+                                for (final entry in metrics)
+                                  SizedBox(
+                                    width: width,
+                                    child: _CorrectionInput(
+                                      label: entry.key,
+                                      controller: entry.value,
+                                      enabled: !saving,
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                        AppWhiteSpace.hLg,
+                        Text(
+                          WorkoutHistoryStrings.effort,
+                          style: AppTextStyles.labelMd.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                        AppWhiteSpace.hMd,
+                        _CorrectionInput(
+                          label: AppStrings.actualRpe,
+                          controller: _fields[AppStrings.actualRpe]!,
+                          enabled: !saving,
+                        ),
+                        AppWhiteSpace.hLg,
+                        _CorrectionInput(
+                          label: AppStrings.setNotes,
+                          controller: _fields[AppStrings.setNotes]!,
+                          enabled: !saving,
+                        ),
+                        AppWhiteSpace.hSm,
+                      ],
                     ),
                   ),
                 ),
-                AppWhiteSpace.hMd,
-              ],
-              FilledButton(
-                key: const Key('history_save_correction'),
-                onPressed: saving ? null : _save,
-                child: Text(
-                  saving
-                      ? AppStrings.loading
-                      : WorkoutHistoryStrings.saveCorrection,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton(
+                        key: const Key('history_save_correction'),
+                        onPressed: saving ? null : _save,
+                        style: AppButtonStyles.primary(
+                          context,
+                          minimumHeight: AppSizing.homePrimaryActionHeight,
+                        ),
+                        child: Text(
+                          saving
+                              ? AppStrings.loading
+                              : WorkoutHistoryStrings.saveCorrection,
+                        ),
+                      ),
+                      AppWhiteSpace.hXs,
+                      TextButton(
+                        onPressed: saving ? null : () => context.pop(),
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size.fromHeight(
+                            AppWorkoutHistoryTokens.controlSize,
+                          ),
+                        ),
+                        child: const Text(
+                          AppStrings.cancel,
+                          style: AppTextStyles.labelMd,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: saving ? null : () => context.pop(),
-                child: const Text(AppStrings.cancel),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+class _CorrectionInput extends StatelessWidget {
+  const _CorrectionInput({
+    required this.label,
+    required this.controller,
+    required this.enabled,
+  });
+  final String label;
+  final TextEditingController controller;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) => AppTextField(
+    key: ValueKey('history_correction_$label'),
+    controller: controller,
+    labelText: label == AppStrings.actualWeight
+        ? '$label (${AppStrings.metricWeightUnit})'
+        : label,
+    suffixText: label == AppStrings.actualRpe
+        ? WorkoutHistoryStrings.rpeRange
+        : label == WorkoutHistoryStrings.meters
+        ? AppStrings.customExerciseInstructionsOptional
+        : null,
+    enabled: enabled,
+    filled: true,
+    fillColor: context.colorScheme.surfaceContainerLow,
+    keyboardType: label == AppStrings.setNotes
+        ? TextInputType.multiline
+        : const TextInputType.numberWithOptions(decimal: true),
+    textInputAction: label == AppStrings.setNotes
+        ? TextInputAction.newline
+        : TextInputAction.next,
+    maxLines: label == AppStrings.setNotes ? 3 : 1,
+  );
 }

@@ -23,6 +23,7 @@ import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:drift/native.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +79,7 @@ void main() {
       await tester.tap(manualLog);
       await tester.pumpAndSettle();
       expect(find.text(WorkoutLaunchStrings.emptyTitle), findsOneWidget);
+      await _M4DeviceHarness.capture(tester, 'aedify_history_empty_light.png');
       await tester.tap(find.text(WorkoutLaunchStrings.addExercises));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Device push-up'));
@@ -249,6 +251,13 @@ void main() {
         ))!.exercises.single.sets.single.actualReps,
         14,
       );
+      await _M4DeviceHarness.previewHistory(
+        tester,
+        container,
+        router,
+        db,
+        exerciseId,
+      );
       expect(tester.takeException(), isNull);
       expect(blockedNetwork.attempts, 0);
       await tester.pumpWidget(const SizedBox.shrink());
@@ -262,6 +271,181 @@ void main() {
 
 class _M4DeviceHarness {
   const _M4DeviceHarness._();
+
+  static Future<void> previewHistory(
+    WidgetTester tester,
+    ProviderContainer container,
+    GoRouter router,
+    AppDatabase db,
+    int originalExerciseId,
+  ) async {
+    router.pushNamed(
+      AppRoutes.exerciseDetail().name,
+      pathParameters: {'id': '$originalExerciseId'},
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppStrings.performance));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('exercise_history_sessions')),
+    );
+    await tester.pumpAndSettle();
+    await capture(tester, 'aedify_history_exercise_dark.png');
+    final at = DateTime(2026, 10, 25, 8);
+    await db
+        .into(db.workoutSessions)
+        .insert(
+          WorkoutSessionsCompanion.insert(
+            id: 'design-history',
+            source: 'standalone',
+            name: 'Strength & conditioning',
+            startedAt: at,
+            completedAt: Value(at.add(const Duration(minutes: 45))),
+            status: 'completed',
+            durationSeconds: const Value(2700),
+            energyLevel: const Value(8),
+            perceivedDifficulty: const Value(7),
+            notes: const Value('Kept the tempo controlled throughout.'),
+            createdAt: at,
+            updatedAt: at,
+          ),
+        );
+    for (var member = 0; member < 2; member++) {
+      final timed = member == 1;
+      final id = await container
+          .read(AppProviders.exerciseRepositoryProvider)
+          .createCustomExercise(
+            CustomExerciseSeed(
+              name: timed ? 'Bike intervals' : 'Dumbbell bench press',
+              muscleGroups: {timed ? BodymapBucket.quads : BodymapBucket.chest},
+              modality: timed
+                  ? ExerciseModality.cardio
+                  : ExerciseModality.strength,
+              loggingType: timed
+                  ? ExerciseLoggingType.duration
+                  : ExerciseLoggingType.repsWeight,
+              steps: const ['Move with control.'],
+            ),
+          );
+      await db
+          .into(db.workoutSessionExercises)
+          .insert(
+            WorkoutSessionExercisesCompanion.insert(
+              id: 'design-member-$member',
+              workoutSessionId: 'design-history',
+              exerciseId: id,
+              exerciseNameSnapshot: timed
+                  ? 'Bike intervals'
+                  : 'Dumbbell bench press',
+              sortOrder: member,
+              supersetGroupId: const Value('design-pair'),
+              loggingType: Value(timed ? 'duration' : 'repsWeight'),
+            ),
+          );
+      for (var set = 0; set < 3; set++) {
+        final logged = !(timed && set == 2);
+        await db
+            .into(db.setLogs)
+            .insert(
+              SetLogsCompanion.insert(
+                id: 'design-set-$member-$set',
+                workoutSessionExerciseId: 'design-member-$member',
+                exerciseId: id,
+                performedAt: at,
+                setIndex: set,
+                setType: Value(!timed && set == 0 ? 'warmup' : 'working'),
+                prescribedRepsExact: timed
+                    ? const Value.absent()
+                    : const Value(8),
+                prescribedWeightKg: timed
+                    ? const Value.absent()
+                    : Value(set == 0 ? 20.0 : 35.0),
+                prescribedDurationSeconds: timed
+                    ? const Value(60)
+                    : const Value.absent(),
+                prescribedRir: const Value(2),
+                actualReps: timed
+                    ? const Value.absent()
+                    : Value(set == 2 ? 7 : 8),
+                actualWeightKg: timed
+                    ? const Value.absent()
+                    : Value(set == 0 ? 20.0 : 35.0),
+                actualDurationSeconds: timed && logged
+                    ? Value(60 + set * 5)
+                    : const Value.absent(),
+                actualDistanceMeters: timed && logged
+                    ? Value(250.0 + set * 25)
+                    : const Value.absent(),
+                actualRpe: logged ? const Value(8) : const Value.absent(),
+                actualRir: logged ? const Value(2) : const Value.absent(),
+                completed: Value(logged),
+                createdAt: at,
+                updatedAt: at,
+              ),
+            );
+      }
+    }
+    for (final dark in [false, true]) {
+      router.pushNamed(
+        AppRoutes.workoutHistoryDetail().name,
+        pathParameters: {'sessionId': 'design-history'},
+      );
+      await pump(tester, container, router, dark: dark);
+      final mode = dark ? 'dark' : 'light';
+      await capture(tester, 'aedify_history_detail_$mode.png');
+      final edit = find.byKey(const ValueKey('history_correct_design-set-0-0'));
+      if (edit.evaluate().isEmpty) {
+        await tester.scrollUntilVisible(
+          edit,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+      }
+      await tester.ensureVisible(edit);
+      await tester.pumpAndSettle();
+      await capture(tester, 'aedify_history_superset_$mode.png');
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(ValueKey('history_correction_${AppStrings.actualWeight}')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(
+          ValueKey('history_correction_${WorkoutHistoryStrings.seconds}'),
+        ),
+        findsNothing,
+      );
+      await capture(tester, 'aedify_history_editor_$mode.png');
+      await tester.tap(find.text(AppStrings.cancel));
+      await tester.pumpAndSettle();
+      final timedEdit = find.byKey(
+        const ValueKey('history_correct_design-set-1-0'),
+      );
+      await tester.ensureVisible(timedEdit);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('history_correct_design-set-1-2')),
+        findsNothing,
+      );
+      await tester.tap(timedEdit);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(
+          ValueKey('history_correction_${WorkoutHistoryStrings.seconds}'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(ValueKey('history_correction_${AppStrings.actualReps}')),
+        findsNothing,
+      );
+      await capture(tester, 'aedify_history_timed_editor_$mode.png');
+      await tester.tap(find.text(AppStrings.cancel));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+  }
 
   static GoRouter router() => GoRouter(
     routes: [

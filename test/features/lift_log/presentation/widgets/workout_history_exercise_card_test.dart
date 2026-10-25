@@ -2,6 +2,7 @@ import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.da
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,8 +34,8 @@ void main() {
     await tester.pumpWidget(_wrap(WorkoutHistoryExerciseCard(item: item)));
 
     expect(find.text('Bench Press'), findsOneWidget);
-    expect(find.text(AppStrings.historySetList), findsOneWidget);
-    expect(find.text(AppStrings.completed), findsNWidgets(2));
+    expect(find.text(WorkoutHistoryStrings.setCount(1, 1)), findsOneWidget);
+    expect(find.byKey(const ValueKey('history_exercise_e1')), findsOneWidget);
     expect(find.text(AppStrings.workingSet), findsOneWidget);
     expect(find.text('10 reps'), findsOneWidget);
     expect(find.text('100.0 kg'), findsOneWidget);

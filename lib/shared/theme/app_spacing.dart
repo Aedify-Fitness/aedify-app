@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 
+abstract final class AppWorkoutHistoryTokens {
+  static const double controlSize = 48;
+  static const double iconTileSize = 40;
+  static const double heroIconSize = 72;
+  static const double metricMinWidth = 80;
+  static const double maxWidth = 640;
+  static const double formPairMinWidth = 320;
+  static const double largeTextScale = 1.4;
+  static const double tintOpacity = 0.10;
+  static const double sheetHeightFactor = 0.92;
+  static const double borderOpacity = 0.45;
+}
+
 class AppSpacing {
   AppSpacing._();
 

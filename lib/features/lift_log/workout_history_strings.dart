@@ -11,6 +11,15 @@ class WorkoutHistoryStrings {
   static const metersUnit = 'm';
   static const refreshHistory = 'Refresh history';
   static const repeatWorkout = 'Repeat workout';
+  static const historyHint = 'Tap an exercise to review its logged sets.';
+  static const loggedSets = 'Logged sets';
+  static const results = 'Results';
+  static const effort = 'Effort';
+  static const rpeRange = '1–10';
+  static const notLogged = 'Not logged';
+
+  static String setCount(int logged, int total) => '$logged/$total sets logged';
+  static String exerciseCount(int count) => '$count exercises';
 
   static String exerciseReference(int id) => 'Exercise ID $id';
 }

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class _FakeWorkoutHistoryRepository implements WorkoutHistoryRepository {
   @override
@@ -102,7 +103,12 @@ void main() {
     expect(find.byType(AppBar), findsNothing);
     expect(find.text('Upper Strength'), findsOneWidget);
     expect(find.text(AppStrings.sourceSavedWorkout), findsOneWidget);
-    expect(find.text('${AppStrings.completedOn}: 2026-07-24'), findsOneWidget);
+    expect(
+      find.text(
+        '${AppStrings.completedOn}: ${DateFormat.yMMMd().format(DateTime(2026, 7, 24))}',
+      ),
+      findsOneWidget,
+    );
     expect(find.text('1h 5m'), findsOneWidget);
     expect(find.text('2'), findsOneWidget);
     expect(find.text('0/0'), findsOneWidget);

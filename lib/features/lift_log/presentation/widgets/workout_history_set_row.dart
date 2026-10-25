@@ -1,8 +1,10 @@
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/history_visuals.dart';
 import 'package:aedify/features/lift_log/workout_history_strings.dart';
-import 'package:aedify/features/workout_builder/presentation/widgets/set_type_chip.dart';
-import 'package:aedify/shared/components/app_badge.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/set_effort.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -11,177 +13,163 @@ import 'package:flutter/material.dart';
 
 class WorkoutHistorySetRow extends StatelessWidget {
   const WorkoutHistorySetRow({super.key, required this.item, this.onEdit});
-
   final WorkoutHistorySetItem item;
   final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
-    final isWarmup = item.setType == SetType.warmup;
-    final actualValues = _actualValues();
-    final plannedValues = _plannedValues();
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: isWarmup
-            ? context.colorScheme.tertiaryContainer.withValues(alpha: 0.18)
-            : context.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final actual = _actualValues();
+    final planned = _plannedValues();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.xs,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.xs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  AppStrings.setNumberLabel(item.setIndex + 1),
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: isWarmup ? FontWeight.w500 : FontWeight.w700,
-                  ),
-                ),
-                SetTypeChip(setType: item.setType),
-                AppBadge(
-                  label: _statusLabel(),
-                  backgroundColor: _statusBackground(context),
-                  foregroundColor: _statusForeground(context),
-                  borderRadius: AppRadius.full,
-                ),
-                if (onEdit != null)
-                  TextButton(
-                    key: ValueKey('history_correct_${item.id}'),
-                    onPressed: onEdit,
-                    child: const Text(WorkoutHistoryStrings.correctSet),
-                  ),
-              ],
+            Text(
+              AppStrings.setNumberLabel(item.setIndex + 1),
+              style: AppTextStyles.labelMd.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
             ),
-            if (actualValues.isNotEmpty) ...[
-              AppWhiteSpace.hSm,
-              _SetValues(label: AppStrings.actual, values: actualValues),
-            ],
-            if (plannedValues.isNotEmpty) ...[
-              AppWhiteSpace.hSm,
-              _SetValues(label: AppStrings.planned, values: plannedValues),
-            ],
-            if (item.notes != null && item.notes!.isNotEmpty) ...[
-              AppWhiteSpace.hSm,
+            HistoryPill(
+              label: item.setType == SetType.warmup
+                  ? AppStrings.warmupSet
+                  : AppStrings.workingSet,
+            ),
+            if (!item.hasCompletedLog)
               Text(
-                '${AppStrings.setNotes}: ${item.notes}',
-                style: AppTextStyles.bodySm.copyWith(
+                item.skipped
+                    ? AppStrings.skipped
+                    : WorkoutHistoryStrings.notLogged,
+                style: AppTextStyles.labelSm.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
-                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            if (onEdit != null)
+              TextButton.icon(
+                key: ValueKey('history_correct_${item.id}'),
+                onPressed: onEdit,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(
+                    AppWorkoutHistoryTokens.controlSize,
+                    AppWorkoutHistoryTokens.controlSize,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
+                ),
+                icon: HistoryIcon(
+                  asset: OutlinedSvgAssets.pencil,
+                  color: context.colorScheme.secondary,
+                  size: AppSizing.iconS,
+                ),
+                label: const Text(
+                  WorkoutHistoryStrings.correctSet,
+                  style: AppTextStyles.labelMd,
+                ),
+              ),
+          ],
+        ),
+        if (actual.isNotEmpty) ...[
+          AppWhiteSpace.hSm,
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.sm,
+            children: [
+              for (final value in actual)
+                Text(
+                  value,
+                  style: AppTextStyles.bodyLg.copyWith(
+                    color: context.colorScheme.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+            ],
+          ),
+        ],
+        if (planned.isNotEmpty) ...[
+          AppWhiteSpace.hSm,
+          Text(
+            '${AppStrings.planned} · ${planned.join(' · ')}',
+            style: AppTextStyles.bodySm.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+        if (item.notes?.trim().isNotEmpty ?? false) ...[
+          AppWhiteSpace.hSm,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HistoryIcon(
+                asset: OutlinedSvgAssets.chatBubbleLeft,
+                size: AppSizing.iconS,
+              ),
+              AppWhiteSpace.wSm,
+              Expanded(
+                child: Text(
+                  item.notes!,
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],
-          ],
-        ),
-      ),
+          ),
+        ],
+      ],
     );
   }
 
-  String _statusLabel() {
-    if (item.skipped) return AppStrings.skipped;
-    if (item.completed) return AppStrings.completed;
-    return AppStrings.inProgressLabel;
-  }
-
-  Color _statusBackground(BuildContext context) {
-    if (item.skipped) return context.colorScheme.surfaceContainerHighest;
-    if (item.completed) return context.colorScheme.secondaryContainer;
-    return context.colorScheme.tertiaryContainer;
-  }
-
-  Color _statusForeground(BuildContext context) {
-    if (item.skipped) return context.colorScheme.onSurfaceVariant;
-    if (item.completed) return context.colorScheme.onSecondaryContainer;
-    return context.colorScheme.onTertiaryContainer;
-  }
-
   List<String> _actualValues() {
+    if (!item.hasCompletedLog) return [];
+    final rpe = item.actualRpe ?? SetEffort.rpeFromRir(item.actualRir);
     return [
-      if (item.actualReps != null)
+      if (item.resolvedLoggingType != ExerciseLoggingType.duration &&
+          item.actualReps != null)
         '${item.actualReps} ${AppStrings.repsLabel.toLowerCase()}',
-      if (item.actualWeightKg != null)
-        '${item.actualWeightKg!.toStringAsFixed(1)} '
-            '${AppStrings.metricWeightUnit}',
-      if (item.actualDurationSeconds != null)
+      if (item.resolvedLoggingType == ExerciseLoggingType.repsWeight &&
+          item.actualWeightKg != null)
+        '${item.actualWeightKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
+      if (item.resolvedLoggingType == ExerciseLoggingType.duration &&
+          item.actualDurationSeconds != null)
         '${item.actualDurationSeconds}${AppStrings.secondsUnitAbbreviation}',
-      if (item.actualDistanceMeters != null)
+      if (item.resolvedLoggingType == ExerciseLoggingType.duration &&
+          item.actualDistanceMeters != null)
         '${item.actualDistanceMeters} ${WorkoutHistoryStrings.metersUnit}',
-      if (item.actualRpe != null)
-        '${AppStrings.rpe} ${item.actualRpe!.toStringAsFixed(1)}',
-      if (item.actualRir != null) '${AppStrings.rir} ${item.actualRir}',
+      if (rpe != null) '${AppStrings.rpe} ${rpe.toStringAsFixed(1)}',
     ];
   }
 
   List<String> _plannedValues() {
     final reps = _prescribedReps();
+    final rpe = SetEffort.rpeFromRir(item.prescribedRir);
     return [
-      if (reps != null) '$reps ${AppStrings.repsLabel.toLowerCase()}',
-      if (item.prescribedWeightKg != null)
-        '${item.prescribedWeightKg!.toStringAsFixed(1)} '
-            '${AppStrings.metricWeightUnit}',
-      if (item.prescribedDurationSeconds != null)
+      if (item.resolvedLoggingType != ExerciseLoggingType.duration &&
+          reps != null)
+        '$reps ${AppStrings.repsLabel.toLowerCase()}',
+      if (item.resolvedLoggingType == ExerciseLoggingType.repsWeight &&
+          item.prescribedWeightKg != null)
+        '${item.prescribedWeightKg!.toStringAsFixed(1)} ${AppStrings.metricWeightUnit}',
+      if (item.resolvedLoggingType == ExerciseLoggingType.duration &&
+          item.prescribedDurationSeconds != null)
         '${item.prescribedDurationSeconds}${AppStrings.secondsUnitAbbreviation}',
-      if (item.prescribedDistanceMeters != null)
+      if (item.resolvedLoggingType == ExerciseLoggingType.duration &&
+          item.prescribedDistanceMeters != null)
         '${item.prescribedDistanceMeters} ${WorkoutHistoryStrings.metersUnit}',
-      if (item.prescribedRir != null) '${AppStrings.rir} ${item.prescribedRir}',
+      if (rpe != null) '${AppStrings.rpe} ${rpe.toStringAsFixed(0)}',
     ];
   }
 
   String? _prescribedReps() {
     if (item.prescribedRepsExact != null) return '${item.prescribedRepsExact}';
-    final minimum = item.prescribedRepsMin;
-    final maximum = item.prescribedRepsMax;
-    if (minimum == null && maximum == null) return null;
-    if (minimum == null) return '$maximum';
-    if (maximum == null || minimum == maximum) return '$minimum';
-    return '$minimum-$maximum';
-  }
-}
-
-class _SetValues extends StatelessWidget {
-  const _SetValues({required this.label, required this.values});
-
-  final String label;
-  final List<String> values;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        AppWhiteSpace.hXxs,
-        Wrap(
-          spacing: AppSpacing.md,
-          runSpacing: AppSpacing.xxs,
-          children: values
-              .map(
-                (value) => Text(
-                  value,
-                  style: AppTextStyles.bodySm.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      ],
-    );
+    final min = item.prescribedRepsMin;
+    final max = item.prescribedRepsMax;
+    if (min != null && max != null) return min == max ? '$min' : '$min–$max';
+    return min?.toString() ?? max?.toString();
   }
 }

@@ -10,4 +10,9 @@ class WorkoutLaunchStrings {
   static const emptyTitle = 'Build this session as you go';
   static const emptyMessage =
       'Choose an exercise, log your sets, and add more whenever you need.';
+  static const chooseExercises = 'Choose your exercises';
+  static const chooseExercisesHint = 'Pick from your library or use your own.';
+  static const logAtYourPace = 'Log at your own pace';
+  static const logAtYourPaceHint =
+      'Add sets and exercises as your session unfolds.';
 }

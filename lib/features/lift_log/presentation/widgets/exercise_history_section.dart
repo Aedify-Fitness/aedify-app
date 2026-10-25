@@ -5,6 +5,9 @@ import 'package:aedify/features/lift_log/presentation/widgets/history_error_bann
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_exercise_card.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/history_visuals.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -48,13 +51,38 @@ class ExerciseHistorySection extends ConsumerWidget {
                 key: const Key('exercise_history_sessions'),
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: TextButton(
-                      onPressed: () => ref.invalidate(provider),
-                      child: const Text(WorkoutHistoryStrings.refreshHistory),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppStrings.workoutHistory,
+                          style: AppTextStyles.bodyLg.copyWith(
+                            color: context.colorScheme.onSurface,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => ref.invalidate(provider),
+                        tooltip: WorkoutHistoryStrings.refreshHistory,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size.square(
+                            AppWorkoutHistoryTokens.controlSize,
+                          ),
+                        ),
+                        icon: const HistoryIcon(
+                          asset: OutlinedSvgAssets.arrowPath,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    WorkoutHistoryStrings.historyHint,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  AppWhiteSpace.hLg,
                   for (final item in items) _ExerciseHistoryEntry(item: item),
                 ],
               );
@@ -72,15 +100,40 @@ class _ExerciseHistoryEntry extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Align(
+      Padding(
         key: ValueKey('exercise_history_session_${item.sessionId}'),
-        alignment: AlignmentDirectional.centerStart,
-        child: Text(
-          '${item.workoutName} · ${DateFormat.yMMMd().format(item.completedAt)}',
-          style: AppTextStyles.labelMd,
+        padding: const EdgeInsets.only(bottom: AppSpacing.controlGap),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HistoryIcon(
+              asset: OutlinedSvgAssets.calendarDays,
+              size: AppSizing.iconS,
+            ),
+            AppWhiteSpace.wSm,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat.yMMMd().format(item.completedAt),
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
+                  AppWhiteSpace.hXxs,
+                  Text(
+                    item.workoutName,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-      AppWhiteSpace.hXs,
       for (final exercise in item.exercises)
         WorkoutHistoryExerciseCard(
           item: exercise,

@@ -26,6 +26,8 @@ import 'package:aedify/shared/domain/rest_resolver.dart';
 import 'package:aedify/shared/domain/session_source.dart';
 import 'package:aedify/shared/domain/workout_session_status.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_button_styles.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
@@ -713,11 +715,42 @@ class _EmptyWorkoutView extends StatelessWidget {
   Widget build(BuildContext context) => SafeArea(
     child: Column(
       children: [
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TextButton(
-            onPressed: onClose,
-            child: const Text(AppStrings.close),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: onClose,
+                tooltip: AppStrings.close,
+                style: IconButton.styleFrom(
+                  minimumSize: const Size.square(
+                    AppWorkoutHistoryTokens.controlSize,
+                  ),
+                  backgroundColor: context.colorScheme.surfaceContainerLow,
+                ),
+                icon: SvgPicture.asset(
+                  OutlinedSvgAssets.xMark,
+                  width: AppSizing.iconSm,
+                  height: AppSizing.iconSm,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              AppWhiteSpace.wSm,
+              Expanded(
+                child: Text(
+                  WorkoutLaunchStrings.standaloneName,
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -725,38 +758,174 @@ class _EmptyWorkoutView extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
-                vertical: AppSpacing.xl,
+                vertical: AppSpacing.lg,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    WorkoutLaunchStrings.emptyTitle,
-                    style: context.textTheme.headlineSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  AppWhiteSpace.hMd,
-                  Text(
-                    WorkoutLaunchStrings.emptyMessage,
-                    style: context.textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  if (errorMessage != null) ...[
-                    AppWhiteSpace.hMd,
-                    WorkoutRunnerErrorBanner(message: errorMessage!),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: AppWorkoutHistoryTokens.maxWidth,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Container(
+                        width: AppWorkoutHistoryTokens.heroIconSize,
+                        height: AppWorkoutHistoryTokens.heroIconSize,
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.secondary.withValues(
+                            alpha: AppWorkoutHistoryTokens.tintOpacity,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                        ),
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          OutlinedSvgAssets.documentPlus,
+                          width: AppSizing.iconLg,
+                          height: AppSizing.iconLg,
+                          colorFilter: ColorFilter.mode(
+                            context.colorScheme.secondary,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                    AppWhiteSpace.hLg,
+                    Text(
+                      WorkoutLaunchStrings.emptyTitle,
+                      style: AppTextStyles.headlineLgMobile.copyWith(
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                    AppWhiteSpace.hSm,
+                    Text(
+                      WorkoutLaunchStrings.emptyMessage,
+                      style: AppTextStyles.bodyMd.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    AppWhiteSpace.hXl,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.lg,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(AppRadius.xl),
+                      ),
+                      child: const Column(
+                        children: [
+                          _EmptyWorkoutStep(
+                            asset: OutlinedSvgAssets.bookOpen,
+                            title: WorkoutLaunchStrings.chooseExercises,
+                            message: WorkoutLaunchStrings.chooseExercisesHint,
+                          ),
+                          AppWhiteSpace.hLg,
+                          _EmptyWorkoutStep(
+                            asset: OutlinedSvgAssets.pencilSquare,
+                            title: WorkoutLaunchStrings.logAtYourPace,
+                            message: WorkoutLaunchStrings.logAtYourPaceHint,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (errorMessage != null) ...[
+                      AppWhiteSpace.hLg,
+                      WorkoutRunnerErrorBanner(message: errorMessage!),
+                    ],
                   ],
-                  AppWhiteSpace.hLg,
-                  FilledButton(
-                    onPressed: onAdd,
-                    child: const Text(WorkoutLaunchStrings.addExercises),
-                  ),
-                ],
+                ),
               ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const Key('empty_workout_add_exercises'),
+              onPressed: onAdd,
+              style: AppButtonStyles.primary(
+                context,
+                minimumHeight: AppSizing.homePrimaryActionHeight,
+              ),
+              icon: SvgPicture.asset(
+                OutlinedSvgAssets.plus,
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                colorFilter: ColorFilter.mode(
+                  AppButtonStyles.primaryForeground(context),
+                  BlendMode.srcIn,
+                ),
+              ),
+              label: const Text(WorkoutLaunchStrings.addExercises),
             ),
           ),
         ),
       ],
     ),
+  );
+}
+
+class _EmptyWorkoutStep extends StatelessWidget {
+  const _EmptyWorkoutStep({
+    required this.asset,
+    required this.title,
+    required this.message,
+  });
+  final String asset;
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        width: AppWorkoutHistoryTokens.iconTileSize,
+        height: AppWorkoutHistoryTokens.iconTileSize,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        child: SvgPicture.asset(
+          asset,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.secondary,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+      AppWhiteSpace.wMd,
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: AppTextStyles.labelMd.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
+            ),
+            AppWhiteSpace.hXs,
+            Text(
+              message,
+              style: AppTextStyles.bodySm.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
   );
 }
 

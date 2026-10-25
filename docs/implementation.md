@@ -6,12 +6,24 @@
 | --- | --- |
 | Current milestone | **M4 — Manual Programmes, Workouts and Logging: closed (2026-10-25).** |
 | Implemented | Standalone sessions, independent repeat from history, logging-type tables with RPE-only effort display, internal RIR derivation and linked-round set-type toggles, exercise-card navigation to logging-type-specific corrections, partial logged-set editing and saved per-exercise history. Existing manual builders, programmes, supersets, warm-ups and saved histories remain available offline. |
-| Verification | Drift code generation complete; formatting checked 778 files; analysis clean; full suite **1,590 passed, zero failures/skips**. Native offline UI and deliberate OS-termination/recovery checks passed on iOS and Android. Home-to-standalone, RPE entry, reopen, completion-card navigation, logging-type-specific correction and repeat were rechecked on both platforms; correction-editor renders were reviewed. Normal `lib/main.dart` debug apps restored and launched successfully on the test devices. |
+| Verification | Latest button follow-up: formatting checked 780 files, analysis clean, 10 focused UI tests and native iOS acceptance passed; light/dark previews reviewed. Last full suite: **1,596 passed, zero failures/skips**. The preceding redesign passed native iOS/Android acceptance. Normal app entrypoints restored. |
 | Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26). |
 | Next milestone | **M5 planned, not started** — Analytics, PRs and Plateau Base Logic. |
 | Evidence | [M4 closure report](m4-closure.md), including changed files, test coverage, commands and native boundary. |
 
 ## Completed Work
+
+### 2026-10-25 — M4 primary-action theme alignment (complete)
+
+- `_EmptyWorkoutView` and `WorkoutHistoryCorrectionSheet` use the new shared `AppButtonStyles.primary` helper instead of default FilledButton colors. Fill, foreground, padding and light/dark label typography follow DESIGN.md and the existing blue action treatment. The Add icon uses the same foreground role.
+- Formatting checked 780 files; analysis clean; all 10 existing focused correction/navigation/320px/2x-text/keyboard tests passed. Native iOS acceptance passed, light/dark action previews were reviewed and the normal entrypoint restored. Last full regression suite remains 1,596 passing tests; no full-suite or Android native rerun for this styling-only change.
+
+### 2026-10-25 — M4 workout/history redesign (complete)
+
+- Redesigned `_EmptyWorkoutView`, `ExerciseHistorySection`, `WorkoutHistoryExerciseCard`, `WorkoutHistoryDetailScreen`, `WorkoutHistorySupersetGroupCard` and `WorkoutHistoryCorrectionSheet` using DESIGN.md typography, tonal surfaces, spacing and SVG assets. A feature-owned `history_visuals.dart` shares icon, pill and metric patterns; history tokens live in `app_spacing.dart`.
+- Empty-session Add exercises stays reachable; history cards emphasize logged actuals and subdued targets. Session overview metrics wrap naturally, Repeat is secondary, and grouped history retains member order. Correction sheets group the matching results, RPE and notes; context/form/errors scroll above pinned actions. Source values and correction safeguards remain intact.
+- Added small-screen/2x-text/light/dark/keyboard coverage for empty entry, history cards, grouped details and correction validation/save. Updated five stale UI expectations. Native synthetic previews now exercise empty entry, per-exercise history, grouped details and weighted/timed correction sheets in both themes.
+- Verification: `dart format .` checked 779 files; analysis clean; all **1,596 tests passed**, zero skips. Native acceptance passed on iOS and Android, including synthetic light/dark detail/superset/weighted/timed-editor previews, exercise history and empty entry. Native renders reviewed; normal `lib/main.dart` entrypoints restored. No schema, dependency or code-generation changes.
 
 ### 2026-10-25 — M4 exercise-card correction flow (complete)
 

@@ -1,9 +1,10 @@
 import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.dart';
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
+import 'package:aedify/features/lift_log/presentation/widgets/history_visuals.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_set_row.dart';
-import 'package:aedify/shared/components/app_badge.dart';
-import 'package:aedify/shared/components/app_section_header.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
@@ -18,7 +19,6 @@ class WorkoutHistoryExerciseCard extends StatelessWidget {
     this.onEditSet,
     this.onTap,
   });
-
   final WorkoutHistoryExerciseItem item;
   final bool isInSuperset;
   final String? positionLabel;
@@ -27,106 +27,110 @@ class WorkoutHistoryExerciseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final completedSets = item.sets.where((set) => set.completed).length;
-
-    return Container(
-      margin: isInSuperset
-          ? EdgeInsets.zero
-          : const EdgeInsets.only(bottom: AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isInSuperset
-            ? context.colorScheme.surfaceContainerLowest
-            : context.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+    final logged = item.sets.where((set) => set.hasCompletedLog).length;
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: isInSuperset ? AppSpacing.zero : AppSpacing.md,
       ),
       child: Material(
-        type: MaterialType.transparency,
+        color: context.colorScheme.surfaceContainerLowest,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          side: BorderSide(
+            color: context.colorScheme.outlineVariant.withValues(
+              alpha: AppWorkoutHistoryTokens.borderOpacity,
+            ),
+            width: AppSizing.hairlineStrokeWidth,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           key: ValueKey('history_exercise_${item.id}'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
-              vertical: AppSpacing.md,
+              vertical: AppSpacing.lg,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (positionLabel != null) ...[
                   Text(
                     positionLabel!,
                     style: AppTextStyles.labelSm.copyWith(
                       color: context.colorScheme.secondary,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  AppWhiteSpace.hXs,
-                ],
-                Text(
-                  item.exerciseName,
-                  style: AppTextStyles.bodyLg.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (item.sets.isNotEmpty) ...[
                   AppWhiteSpace.hSm,
-                  Wrap(
-                    spacing: AppSpacing.sm,
-                    runSpacing: AppSpacing.xs,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      AppBadge(
-                        label: _statusLabel(),
-                        backgroundColor: _statusBackground(context),
-                        foregroundColor: _statusForeground(context),
-                        borderRadius: AppRadius.full,
-                      ),
-                      Text(
-                        '$completedSets/${item.sets.length} '
-                        '${AppStrings.setsLabel}',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
-                if (item.notes != null && item.notes!.isNotEmpty) ...[
-                  AppWhiteSpace.hMd,
-                  Text(
-                    AppStrings.notes,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.exerciseName,
+                            style: AppTextStyles.bodyLg.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.colorScheme.onSurface,
+                            ),
+                          ),
+                          AppWhiteSpace.hXs,
+                          Text(
+                            WorkoutHistoryStrings.setCount(
+                              logged,
+                              item.sets.length,
+                            ),
+                            style: AppTextStyles.bodySm.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  AppWhiteSpace.hXs,
+                    if (onTap != null) ...[
+                      AppWhiteSpace.wSm,
+                      const HistoryIcon(asset: OutlinedSvgAssets.chevronRight),
+                    ],
+                  ],
+                ),
+                if (item.notes?.trim().isNotEmpty ?? false) ...[
+                  AppWhiteSpace.hMd,
                   Text(
                     item.notes!,
                     style: AppTextStyles.bodySm.copyWith(
-                      color: context.colorScheme.onSurface,
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
                 if (item.sets.isNotEmpty) ...[
                   AppWhiteSpace.hLg,
-                  const AppSectionHeader(title: AppStrings.historySetList),
-                  AppWhiteSpace.hSm,
-                  ...item.sets.map(
-                    (set) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: WorkoutHistorySetRow(
-                        item: set,
-                        onEdit:
-                            !item.canCorrectLogs ||
-                                !set.hasCompletedLog ||
-                                onEditSet == null
-                            ? null
-                            : () => onEditSet!(set),
+                  for (final entry in item.sets.indexed) ...[
+                    if (entry.$1 > 0)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.controlGap,
+                        ),
+                        child: Divider(
+                          height: AppSizing.divider,
+                          color: context.colorScheme.outlineVariant.withValues(
+                            alpha: AppWorkoutHistoryTokens.borderOpacity,
+                          ),
+                        ),
                       ),
+                    WorkoutHistorySetRow(
+                      item: entry.$2,
+                      onEdit: entry.$2.hasCompletedLog && onEditSet != null
+                          ? () => onEditSet!(entry.$2)
+                          : null,
                     ),
-                  ),
+                  ],
+                ] else ...[
+                  AppWhiteSpace.hMd,
+                  const Text(AppStrings.noSetsYet, style: AppTextStyles.bodySm),
                 ],
               ],
             ),
@@ -134,33 +138,5 @@ class WorkoutHistoryExerciseCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _statusLabel() {
-    if (item.sets.any((set) => !set.completed && !set.skipped)) {
-      return AppStrings.inProgressLabel;
-    }
-    if (item.sets.every((set) => set.skipped)) return AppStrings.skipped;
-    return AppStrings.completed;
-  }
-
-  Color _statusBackground(BuildContext context) {
-    if (item.sets.any((set) => !set.completed && !set.skipped)) {
-      return context.colorScheme.tertiaryContainer;
-    }
-    if (item.sets.every((set) => set.skipped)) {
-      return context.colorScheme.surfaceContainerHighest;
-    }
-    return context.colorScheme.secondaryContainer;
-  }
-
-  Color _statusForeground(BuildContext context) {
-    if (item.sets.any((set) => !set.completed && !set.skipped)) {
-      return context.colorScheme.onTertiaryContainer;
-    }
-    if (item.sets.every((set) => set.skipped)) {
-      return context.colorScheme.onSurfaceVariant;
-    }
-    return context.colorScheme.onSecondaryContainer;
   }
 }

@@ -2,6 +2,7 @@ import 'package:aedify/features/lift_log/domain/workout_history_exercise_item.da
 import 'package:aedify/features/lift_log/domain/workout_history_set_item.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_superset_group_card.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/features/lift_log/workout_history_strings.dart';
 import 'package:aedify/shared/domain/set_type.dart';
 import 'package:aedify/shared/domain/superset_group_summary.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +71,8 @@ void main() {
       );
 
       expect(find.text(AppStrings.supersetHistoryLabel), findsOneWidget);
-      expect(find.text('2 ${AppStrings.exercisesLabel}'), findsOneWidget);
-      expect(find.text(AppStrings.supersetRunnerHint), findsOneWidget);
+      expect(find.text(WorkoutHistoryStrings.exerciseCount(2)), findsOneWidget);
+      expect(find.byKey(const ValueKey('history_superset_g1')), findsOneWidget);
       expect(find.text(AppStrings.exerciseNumberLabel(1)), findsOneWidget);
       expect(find.text(AppStrings.exerciseNumberLabel(2)), findsOneWidget);
       expect(find.text('Bench Press'), findsOneWidget);
