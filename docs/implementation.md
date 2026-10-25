@@ -6,12 +6,24 @@
 | --- | --- |
 | Current milestone | **M4 — Manual Programmes, Workouts and Logging: closed (2026-10-25).** |
 | Implemented | Standalone sessions, independent repeat from history, logging-type tables with RPE-only effort display, internal RIR derivation and linked-round set-type toggles, exercise-card navigation to logging-type-specific corrections, partial logged-set editing and saved per-exercise history. Existing manual builders, programmes, supersets, warm-ups and saved histories remain available offline. |
-| Verification | Latest button follow-up: formatting checked 780 files, analysis clean, 10 focused UI tests and native iOS acceptance passed; light/dark previews reviewed. Last full suite: **1,596 passed, zero failures/skips**. The preceding redesign passed native iOS/Android acceptance. Normal app entrypoints restored. |
+| Verification | M1–M4 closure follow-up: formatting checked 791 Dart files, analysis clean, full suite **1,630 passed, zero failures/skips**. Native M1/M3 storage/onboarding/BYOK, fixture-based M2 offline library, new BYOK UI and existing M4 offline flow pass on both platforms. Normal app entrypoints restored/launched. Live Firebase and successful real-key BYOK acceptance remain pending. |
 | Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26). |
 | Next milestone | **M5 planned, not started** — Analytics, PRs and Plateau Base Logic. |
-| Evidence | [M4 closure report](m4-closure.md), including changed files, test coverage, commands and native boundary. |
+| Evidence | [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md), including changed files, coverage, commands and native/live boundaries. |
+
+## M1–M4 closure review — 2026-10-25
+
+All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-25 — M1–M4 implementation gap closure
+
+- M1: route global crash errors through the redaction wrapper, honor collection flags, preserve old keys on failed rotation, redact Google key transport and avoid post-dispose network emissions.
+- M2: prevent failed/empty first syncs being shown as offline success, recheck connectivity on refresh, validate schema before version short-circuit and sanitize unexpected failure text.
+- M3: correct provider metadata/auth requests, check selected models, populate/refresh capabilities, validate and compensate key changes, reject stale responses and expose saved-provider editing/capability navigation. Correct Anthropic model IDs and affected pricing estimates. Make onboarding completion transactional and profile impact detection effective without changing existing programmes automatically.
+- Verification: format (791 Dart files), clean analysis, full suite 1,630 passing tests without skips; native storage/onboarding/BYOK, fixture-based offline library, BYOK UI and M4 regression pass on iOS/Android. No schema/dependency/code-generation changes. Live Firebase acceptance is pending during the confirmed outage; successful real-provider authentication remains unverified because no test keys are configured. Details and file inventory: [closure evidence](m1-m4-gap-closure.md).
+
 
 ### 2026-10-25 — M4 primary-action theme alignment (complete)
 

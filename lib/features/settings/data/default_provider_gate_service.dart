@@ -1,3 +1,4 @@
+import 'package:aedify/shared/domain/provider_validation_status.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/network/network_status.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
@@ -40,7 +41,8 @@ class DefaultProviderGateService implements ProviderGateService {
     }
 
     final hasKey = await _byokRepository.hasKey(activeConfig.id);
-    if (!hasKey) {
+    if (!hasKey ||
+        activeConfig.lastValidationStatus == ProviderValidationStatus.invalid) {
       _logger.debug(
         'evaluate — provider: ${activeConfig.providerName.name}, operation: ${operation.name}, result: false',
       );

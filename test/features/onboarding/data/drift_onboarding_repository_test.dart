@@ -122,6 +122,23 @@ void main() {
       expect(loaded.bodyweightKg, isNull);
     });
 
+    test(
+      'completion rolls back the profile and anchors if an anchor write fails',
+      () async {
+        await db.readiness();
+        await db.customStatement(
+          "CREATE TEMP TRIGGER fail_onboarding_anchor BEFORE INSERT ON strength_anchors WHEN NEW.exercise_id = 5 BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END",
+        );
+        await expectLater(
+          repository.completeOnboarding(makeDraft()),
+          throwsA(anything),
+        );
+        expect(await db.select(db.userProfile).get(), isEmpty);
+        expect(await db.select(db.strengthAnchors).get(), isEmpty);
+        expect(await repository.isOnboardingCompleted(), isFalse);
+      },
+    );
+
     test('completeOnboarding persists completion flag and data', () async {
       final draft = makeDraft();
 

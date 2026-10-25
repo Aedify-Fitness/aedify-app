@@ -1,12 +1,61 @@
+import 'package:aedify/features/settings/data/provider_capability_repository.dart';
+import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/features/settings/data/provider_key_validator.dart';
+import 'package:aedify/features/settings/domain/provider_model_capabilities.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/ai_provider_config_dao.dart';
 import 'package:aedify/core/storage/secure_storage_service.dart';
 import 'package:drift/native.dart';
 
+class FakeProviderKeyValidator extends ProviderKeyValidator {
+  @override
+  Future<KeyValidationResult> checkKey({
+    required AiProviderName providerName,
+    required String apiKey,
+  }) async => const KeyValidationResult(isValid: true);
+  @override
+  Future<ProviderCapabilityViewData> inspectModel({
+    required AiProviderName providerName,
+    required String apiKey,
+    required String modelName,
+  }) async => ProviderModelCapabilities.fromMetadata(providerName, modelName, {
+    'supportedGenerationMethods': ['generateContent'],
+  });
+}
+
+class FakeProviderCapabilityRepository implements ProviderCapabilityRepository {
+  final _cache = <String, ProviderCapabilityViewData>{};
+  @override
+  Future<ProviderCapabilityViewData?> getCapability({
+    required AiProviderName providerName,
+    required String modelName,
+  }) async => _cache['${providerName.name}:$modelName'];
+  @override
+  Future<void> saveCapability(ProviderCapabilityViewData capability) async {
+    _cache['${capability.providerName.name}:${capability.modelName}'] =
+        capability;
+  }
+
+  @override
+  Future<void> clearCapability({
+    required AiProviderName providerName,
+    required String modelName,
+  }) async {
+    _cache.remove('${providerName.name}:$modelName');
+  }
+}
+
 class FakeConfigDao extends AiProviderConfigDao {
   FakeConfigDao() : super(AppDatabase(NativeDatabase.memory()));
 
   final _store = <String, Map<String, dynamic>>{};
+
+  @override
+  Future<T> transaction<T>(
+    Future<T> Function() action, {
+    bool requireNew = false,
+  }) => action();
 
   @override
   Future<List<AiProviderConfig>> getAllConfigs() async {
@@ -102,6 +151,7 @@ class FakeSecureStorage extends SecureStorageService {
   FakeSecureStorage() : super();
 
   final _keys = <String, String>{};
+  Map<String, String> get keysForTest => Map.unmodifiable(_keys);
 
   @override
   Future<void> saveProviderApiKey(String alias, String value) async {

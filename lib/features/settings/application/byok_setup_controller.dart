@@ -111,7 +111,8 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     final current = state.requireValue;
     final draft = current.editDraft;
 
-    if (draft?.apiKey == null || draft!.apiKey!.isEmpty) {
+    if (draft == null ||
+        ((draft.apiKey?.trim().isEmpty ?? true) && draft.configId == null)) {
       state = AsyncData(
         current.copyWith(
           validationMessage: AppErrorStrings.byokEmptyKeyValidation,
@@ -136,10 +137,12 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
     try {
       final repository = ref.read(AppProviders.byokRepositoryProvider);
-      final isValid = await repository.validateKey(
-        providerName: draft.providerName!,
-        apiKey: draft.apiKey!,
-      );
+      final isValid =
+          (draft.apiKey?.trim().isEmpty ?? true) && draft.configId != null ||
+          await repository.validateKey(
+            providerName: draft.providerName!,
+            apiKey: draft.apiKey!.trim(),
+          );
 
       if (!isValid) {
         _logger.info(
@@ -160,7 +163,12 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       final configs = await repository.getConfigs();
       _logger.info('saveConfig — success: ${draft.providerName!.name}');
       state = AsyncData(
-        current.copyWith(isSaving: false, configs: configs, clearDraft: true),
+        current.copyWith(
+          isSaving: false,
+          configs: configs,
+          clearDraft: true,
+          clearValidationMessage: true,
+        ),
       );
     } catch (e) {
       _logger.error(

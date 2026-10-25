@@ -39,6 +39,7 @@ class Redaction {
   static const _sensitiveHeaderPrefixes = [
     'authorization',
     'x-api-key',
+    'x-goog-api-key',
     'set-cookie',
     'cookie',
     'x-auth-token',
@@ -101,7 +102,9 @@ class Redaction {
 
   static Map<String, Object?> queryParameters(Map<String, Object?> input) {
     return input.map((key, value) {
-      if (key.toLowerCase() == 'api_key' || key.toLowerCase() == 'token') {
+      if (key.toLowerCase() == 'api_key' ||
+          key.toLowerCase() == 'token' ||
+          key.toLowerCase() == 'key') {
         return MapEntry(key, sensitive(value.toString()));
       }
       return MapEntry(key, value);

@@ -1,5 +1,13 @@
 # Aedify — Changelog
 
+## 2026-10-25 — M1–M4 implementation gaps fixed; live acceptance pending
+
+- Fixed global crash redaction/flag handling, Google key redaction and destructive key rotation (M1).
+- Fixed empty-cache/offline sync recovery, stale connectivity and future-schema shortcut handling (M2).
+- Implemented selected-model validation, capability cache population/refresh, safe key replacement/compensation, saved-provider editing and capability navigation (M3). Corrected model IDs/pricing, transactional onboarding and active-programme profile impact detection.
+- Added 34 request-contract, real-SQLite rollback/race, privacy and UI regressions. Formatting (791 Dart files), analysis and the full suite (1,630 tests, zero failures/skips) pass. Native storage/onboarding/BYOK, fixture-based offline library, BYOK UI and M4 offline regressions pass on iOS and Android. Normal app entrypoints restored/launched on both platforms. Firebase is down and no live BYOK test keys are configured; live acceptance remains separate from deterministic checks. Final results: [M1–M4 closure evidence](m1-m4-gap-closure.md).
+
+
 All meaningful project changes are recorded here in reverse chronological order.
 
 ---

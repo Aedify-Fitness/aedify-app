@@ -5,6 +5,7 @@ import '../../support/privacy/privacy_sentinel_values.dart';
 
 class _FakeFlutterSecureStorage extends FlutterSecureStorage {
   final _store = <String, String>{};
+  bool failWrites = false;
 
   @override
   Future<void> write({
@@ -17,6 +18,7 @@ class _FakeFlutterSecureStorage extends FlutterSecureStorage {
     WindowsOptions? wOptions,
     WebOptions? webOptions,
   }) async {
+    if (failWrites) throw StateError('synthetic write failure');
     if (value != null) {
       _store[key] = value;
     }
@@ -143,6 +145,19 @@ void main() {
       await service.saveProviderApiKey('openai', 'to-delete');
       await service.deleteProviderApiKey('openai');
       expect(await service.hasProviderApiKey('openai'), isFalse);
+    });
+
+    test('failed key rotation preserves the previous secure value', () async {
+      await service.saveProviderApiKey('acceptance', 'synthetic-old-key');
+      fakeStorage.failWrites = true;
+      await expectLater(
+        service.rotateProviderApiKey('acceptance', 'synthetic-new-key'),
+        throwsA(isA<SecureStorageFailure>()),
+      );
+      expect(
+        await service.readProviderApiKey('acceptance'),
+        'synthetic-old-key',
+      );
     });
 
     test('rotateProviderApiKey replaces key', () async {

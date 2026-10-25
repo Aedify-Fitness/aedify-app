@@ -16,7 +16,10 @@ class _ValidatingFakeRepository extends DriftByokRepository {
     required super.secureStorageService,
     this.shouldThrowOnSave = false,
     this.shouldThrowOnRotate = false,
-  });
+  }) : super(
+         keyValidator: FakeProviderKeyValidator(),
+         capabilityRepository: FakeProviderCapabilityRepository(),
+       );
 
   final bool shouldThrowOnSave;
   final bool shouldThrowOnRotate;

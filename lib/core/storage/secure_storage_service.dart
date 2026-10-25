@@ -58,7 +58,6 @@ class SecureStorageService {
   Future<void> rotateProviderApiKey(String alias, String newValue) async {
     await _run('secure_storage_rotate_failed', () async {
       final key = _aliasKey(alias);
-      await _storage.delete(key: key);
       await _storage.write(key: key, value: newValue);
     });
   }

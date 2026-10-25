@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/logging/app_logger.dart';
@@ -77,7 +78,7 @@ class BootstrapController extends Notifier<BootstrapState> {
       state = BootstrapState.failure(
         BootstrapFailure(
           code: AppErrorCodes.startupError,
-          message: e.toString(),
+          message: AppErrorStrings.unexpectedStatusMessage,
           retryable: true,
         ),
       );

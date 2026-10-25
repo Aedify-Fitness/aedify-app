@@ -1,3 +1,5 @@
+import 'package:aedify/features/settings/data/provider_key_validator.dart';
+import 'package:aedify/features/settings/data/provider_capability_refresh_service.dart';
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -165,7 +167,9 @@ class AppProviders {
   AppProviders._();
 
   static final firebaseBootstrapProvider = Provider<FirebaseBootstrap>((ref) {
-    return FirebaseBootstrap();
+    return FirebaseBootstrap(
+      crashlyticsService: ref.read(crashlyticsServiceProvider),
+    );
   });
 
   static final appDatabaseProvider = Provider<AppDatabase>((ref) {
@@ -435,6 +439,18 @@ class AppProviders {
       );
 
   // BYOK
+  static final providerKeyValidatorProvider = Provider<ProviderKeyValidator>(
+    (ref) => ProviderKeyValidator(),
+  );
+  static final providerCapabilityRefreshServiceProvider =
+      Provider<ProviderCapabilityRefreshService>((ref) {
+        return ProviderCapabilityRefreshService(
+          configDao: ref.read(aiProviderConfigDaoProvider),
+          secureStorage: ref.read(secureStorageProvider),
+          repository: ref.read(providerCapabilityRepositoryProvider),
+          validator: ref.read(providerKeyValidatorProvider),
+        );
+      });
   static final aiProviderConfigDaoProvider = Provider<AiProviderConfigDao>((
     ref,
   ) {
@@ -445,6 +461,8 @@ class AppProviders {
     return DriftByokRepository(
       configDao: ref.read(aiProviderConfigDaoProvider),
       secureStorageService: ref.read(secureStorageProvider),
+      keyValidator: ref.read(providerKeyValidatorProvider),
+      capabilityRepository: ref.read(providerCapabilityRepositoryProvider),
     );
   });
 

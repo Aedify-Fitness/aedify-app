@@ -34,12 +34,14 @@ class ProviderCapabilityScreen extends ConsumerWidget {
     );
 
     void retry() {
-      ref.invalidate(
-        AppProviders.providerCapabilityControllerProvider((
-          providerName: provider,
-          modelName: modelName,
-        )),
-      );
+      ref
+          .read(
+            AppProviders.providerCapabilityControllerProvider((
+              providerName: provider,
+              modelName: modelName,
+            )).notifier,
+          )
+          .reload();
     }
 
     return Scaffold(
@@ -63,7 +65,26 @@ class ProviderCapabilityScreen extends ConsumerWidget {
               onRetry: retry,
             );
           }
-          return _CapabilityContentView(capability: state.capability!);
+          return Column(
+            children: [
+              Expanded(
+                child: _CapabilityContentView(capability: state.capability!),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: TextButton(
+                    onPressed: retry,
+                    child: const Text(AppStrings.refreshCapabilities),
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       ),
     );

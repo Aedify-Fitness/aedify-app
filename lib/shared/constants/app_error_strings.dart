@@ -1,5 +1,7 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const datasetUpdateRequired =
+      'Update Aedify to use this exercise dataset.';
   static const draftProgrammeRequiresPublishing =
       'Publish the programme before activating it.';
 

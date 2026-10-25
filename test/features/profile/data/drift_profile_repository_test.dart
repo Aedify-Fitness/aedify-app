@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/core/db/app_database.dart';
@@ -171,6 +172,52 @@ void main() {
         final profile = await repository.getProfile();
         expect(profile, isNotNull);
         expect(profile!.bodyweightKg, equals(80));
+      },
+    );
+
+    test(
+      'training edits warn about an active programme while name and units edits do not',
+      () async {
+        const draft = ProfileEditDraft(
+          experienceLevel: ExperienceLevel.intermediate,
+          goals: {GoalTag.buildMuscle},
+          equipmentAccess: {EquipmentTag.dumbbell},
+          preferredUnits: PreferredUnit.metric,
+        );
+        await repository.saveProfile(draft);
+        final now = DateTime.now();
+        await db
+            .into(db.programs)
+            .insert(
+              ProgramsCompanion.insert(
+                id: 'active',
+                name: 'Synthetic programme',
+                source: 'manual',
+                creationMethod: 'manual',
+                active: const Value(true),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        expect(
+          await repository.evaluateSaveImpact(draft),
+          ProfileSaveImpact.none,
+        );
+        expect(
+          await repository.evaluateSaveImpact(
+            draft.copyWith(
+              displayName: 'New name',
+              preferredUnits: PreferredUnit.imperial,
+            ),
+          ),
+          ProfileSaveImpact.none,
+        );
+        expect(
+          await repository.evaluateSaveImpact(
+            draft.copyWith(equipmentAccess: {EquipmentTag.barbell}),
+          ),
+          ProfileSaveImpact.mayAffectActiveProgrammes,
+        );
       },
     );
 

@@ -1,3 +1,4 @@
+import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
@@ -20,7 +21,10 @@ class _ValidatingFakeRepository extends DriftByokRepository {
   _ValidatingFakeRepository({
     required super.configDao,
     required super.secureStorageService,
-  });
+  }) : super(
+         keyValidator: FakeProviderKeyValidator(),
+         capabilityRepository: FakeProviderCapabilityRepository(),
+       );
 
   @override
   Future<bool> validateKey({
@@ -78,6 +82,39 @@ void main() {
       secureStorageService: secureStorage,
     );
   });
+
+  testWidgets(
+    'saved provider can be edited without adding a second configuration',
+    (tester) async {
+      final id = await repository.saveConfig(
+        const ByokEditDraft(
+          providerName: AiProviderName.openai,
+          selectedModel: 'gpt-4o',
+          apiKey: 'synthetic-key',
+        ),
+      );
+      await tester.pumpWidget(createTestApp(repository: repository));
+      await tester.pumpAndSettle();
+      final edit = find.byKey(ValueKey('byok-edit-$id'));
+      await tester.ensureVisible(edit);
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('byok-model-gpt-4o-selected')),
+        findsOneWidget,
+      );
+      final keyField = find.byType(TextField);
+      await tester.ensureVisible(keyField.first);
+      await tester.enterText(keyField.first, 'synthetic-new-key');
+      final save = find.text(AppStrings.saveKey);
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(await repository.getConfigs(), hasLength(1));
+      expect(await secureStorage.readProviderApiKey(id), 'synthetic-new-key');
+      expect(find.byKey(ValueKey('byok-capabilities-$id')), findsOneWidget);
+    },
+  );
 
   testWidgets('renders loading then empty state', (tester) async {
     await tester.pumpWidget(createTestApp(repository: repository));

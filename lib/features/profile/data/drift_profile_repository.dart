@@ -152,9 +152,35 @@ class DriftProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<ProfileSaveImpact> evaluateSaveImpact(ProfileEditDraft draft) {
-    return Future.value(ProfileSaveImpact.none);
+  Future<ProfileSaveImpact> evaluateSaveImpact(ProfileEditDraft draft) async {
+    final active = await (_database.select(
+      _database.programs,
+    )..where((row) => row.active.equals(true))).getSingleOrNull();
+    final current = await getProfile();
+    if (active == null || current == null) return ProfileSaveImpact.none;
+    final changed =
+        current.experienceLevel != draft.experienceLevel ||
+        !_sameValues(current.goals, draft.goals) ||
+        !_sameValues(current.equipmentAccess, draft.equipmentAccess) ||
+        !_sameValues(current.trainingDays, draft.trainingDays) ||
+        current.targetSessionLengthMinutes !=
+            draft.targetSessionLengthMinutes ||
+        !_sameValues(
+          current.substitutedExerciseIds,
+          draft.substitutedExerciseIds,
+        ) ||
+        !_sameValues(current.injuriesLimitations, draft.injuriesLimitations) ||
+        current.bodyweightKg != draft.bodyweightKg ||
+        current.bench1RmKg != draft.bench1RmKg ||
+        current.squat1RmKg != draft.squat1RmKg ||
+        current.deadlift1RmKg != draft.deadlift1RmKg;
+    return changed
+        ? ProfileSaveImpact.mayAffectActiveProgrammes
+        : ProfileSaveImpact.none;
   }
+
+  static bool _sameValues<T>(Iterable<T> first, Iterable<T> second) =>
+      first.length == second.length && first.toSet().containsAll(second);
 
   List<int> _decodeIntList(String json) {
     final list = jsonDecode(json) as List<dynamic>;

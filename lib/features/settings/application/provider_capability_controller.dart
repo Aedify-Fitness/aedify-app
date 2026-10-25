@@ -34,6 +34,21 @@ class ProviderCapabilityController
 
   Future<void> reload() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(build);
+    try {
+      final capability = await ref
+          .read(AppProviders.providerCapabilityRefreshServiceProvider)
+          .refresh(providerName: _providerName, modelName: _modelName);
+      state = AsyncData(
+        ProviderCapabilityState(isLoading: false, capability: capability),
+      );
+    } catch (_) {
+      state = const AsyncData(
+        ProviderCapabilityState(
+          isLoading: false,
+          errorCode: AppErrorCodes.capabilityLoadFailed,
+          errorMessage: AppErrorStrings.providerCapabilityLoadFailedMessage,
+        ),
+      );
+    }
   }
 }

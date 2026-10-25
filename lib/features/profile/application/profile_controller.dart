@@ -86,6 +86,7 @@ class ProfileController extends AsyncNotifier<ProfileState> {
           goals: profile.goals,
           equipmentAccess: profile.equipmentAccess,
           trainingDaysPerWeek: profile.trainingDaysPerWeek,
+          trainingDays: profile.trainingDays,
           targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
           preferredUnits: profile.preferredUnits,
           heightCm: profile.heightCm,

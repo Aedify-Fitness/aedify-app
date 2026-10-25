@@ -82,28 +82,30 @@ class DriftOnboardingRepository implements OnboardingRepository {
   Future<void> completeOnboarding(OnboardingDraft draft) async {
     _logger.info('complete');
     final now = DateTime.now();
-    await saveOnboardingDraft(draft);
+    await _dao.transaction(() async {
+      await saveOnboardingDraft(draft);
 
-    final existingAnchors = await _strengthAnchorDao.getAllAnchors();
-    for (final entry in _oneRmEntries(draft)) {
-      final existingAnchor = existingAnchors
-          .where((a) => a.id == entry.id)
-          .firstOrNull;
-      await _strengthAnchorDao.upsertAnchor(
-        StrengthAnchorsCompanion(
-          id: Value(entry.id),
-          exerciseId: Value(entry.exerciseId),
-          anchorType: Value(StrengthAnchorType.known1rm.dbValue),
-          weightKg: Value(entry.weightKg),
-          source: Value(StrengthAnchorSource.userEntered.dbValue),
-          loggedAt: Value(entry.weightKg != null ? now : null),
-          createdAt: Value(existingAnchor?.createdAt ?? now),
-          updatedAt: Value(now),
-        ),
-      );
-    }
+      final existingAnchors = await _strengthAnchorDao.getAllAnchors();
+      for (final entry in _oneRmEntries(draft)) {
+        final existingAnchor = existingAnchors
+            .where((a) => a.id == entry.id)
+            .firstOrNull;
+        await _strengthAnchorDao.upsertAnchor(
+          StrengthAnchorsCompanion(
+            id: Value(entry.id),
+            exerciseId: Value(entry.exerciseId),
+            anchorType: Value(StrengthAnchorType.known1rm.dbValue),
+            weightKg: Value(entry.weightKg),
+            source: Value(StrengthAnchorSource.userEntered.dbValue),
+            loggedAt: Value(entry.weightKg != null ? now : null),
+            createdAt: Value(existingAnchor?.createdAt ?? now),
+            updatedAt: Value(now),
+          ),
+        );
+      }
 
-    await _dao.markOnboardingCompleted(completedAt: now);
+      await _dao.markOnboardingCompleted(completedAt: now);
+    });
   }
 
   List<_OneRmEntry> _oneRmEntries(OnboardingDraft draft) => [

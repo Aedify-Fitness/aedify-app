@@ -600,6 +600,8 @@ class AppStrings {
   static const String providerSetupRequired =
       'Set up an AI provider to use this feature.';
   static const String providerKeyRequired = 'Add an API key to continue.';
+  static const editProvider = 'Edit provider';
+  static const refreshCapabilities = 'Refresh capabilities';
   static const String providerCapabilityTitle = 'Provider Capability';
   static const String capabilityTextInput = 'Text Input';
   static const String capabilityImageInput = 'Image Input';

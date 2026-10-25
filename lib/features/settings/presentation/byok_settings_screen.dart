@@ -1,3 +1,4 @@
+import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/byok_setup_controller.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
@@ -132,6 +133,23 @@ class _ByokContentView extends ConsumerWidget {
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: _ConfigCard(
                   config: config,
+                  onEdit: () => controller.updateDraft(
+                    ByokEditDraft(
+                      configId: config.id,
+                      providerName: config.providerName,
+                      selectedModel: config.selectedModel,
+                      makeActive: config.isActive,
+                    ),
+                  ),
+                  onCapabilities: config.selectedModel == null
+                      ? null
+                      : () => context.pushNamed(
+                          AppRoutes.providerCapabilities().name,
+                          pathParameters: {
+                            'provider': config.providerName.dbValue,
+                            'model': config.selectedModel!,
+                          },
+                        ),
                   onSetActive: () => controller.setActiveConfig(config.id),
                   onDelete: () =>
                       _confirmDelete(context, config.id, controller),
@@ -161,6 +179,8 @@ class _ByokContentView extends ConsumerWidget {
                     providerName: option.providerName,
                     selectedModel: option.models.firstOrNull?.id,
                     clearSelectedModel: option.models.isEmpty,
+                    clearConfigId: draft.providerName != option.providerName,
+                    clearApiKey: draft.providerName != option.providerName,
                   ),
                 );
               },
@@ -291,11 +311,15 @@ class _ConfigCard extends StatelessWidget {
     required this.config,
     required this.onSetActive,
     required this.onDelete,
+    required this.onEdit,
+    required this.onCapabilities,
   });
 
   final ByokConfigViewData config;
   final VoidCallback onSetActive;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
+  final VoidCallback? onCapabilities;
 
   @override
   Widget build(BuildContext context) {
@@ -346,6 +370,28 @@ class _ConfigCard extends StatelessWidget {
                   color: context.colorScheme.error,
                   onPressed: onDelete,
                 ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
+            child: Wrap(
+              spacing: AppSpacing.sm,
+              children: [
+                TextButton(
+                  key: ValueKey('byok-edit-${config.id}'),
+                  onPressed: onEdit,
+                  child: const Text(AppStrings.editProvider),
+                ),
+                if (onCapabilities != null)
+                  TextButton(
+                    key: ValueKey('byok-capabilities-${config.id}'),
+                    onPressed: onCapabilities,
+                    child: const Text(AppStrings.providerCapabilityTitle),
+                  ),
               ],
             ),
           ),

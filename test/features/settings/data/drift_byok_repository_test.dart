@@ -20,6 +20,7 @@ void main() {
     repository = DriftByokRepository(
       configDao: configDao,
       secureStorageService: secureStorage,
+      keyValidator: FakeProviderKeyValidator(),
     );
   });
 

@@ -80,6 +80,7 @@ class AppErrorCodes {
   static const String nonSequentialWeek = 'non_sequential_week';
 
   // Key Validation
+  static const String unsupportedModel = 'unsupported_model';
   static const String unsupportedProvider = 'unsupported_provider';
   static const String invalidKey = 'invalid_key';
   static const String validationFailed = 'validation_failed';

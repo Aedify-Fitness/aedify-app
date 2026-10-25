@@ -25,7 +25,7 @@ class NetworkStatus {
     } on SocketException {
       _isOnline = false;
     }
-    _controller.add(_isOnline);
+    if (!_controller.isClosed) _controller.add(_isOnline);
   }
 
   Future<bool> check() async {

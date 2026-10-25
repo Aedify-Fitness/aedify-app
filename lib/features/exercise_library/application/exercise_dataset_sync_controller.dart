@@ -1,3 +1,6 @@
+import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/shared/constants/db_constants.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,15 +57,16 @@ class ExerciseDatasetSyncController
   }
 
   Future<void> refresh() async {
-    final current = await future;
-    if (current.isOffline) return;
+    await future;
     await _runSync();
   }
 
   Future<void> clearFailure() async {
     final dao = ref.read(AppProviders.libraryMetaDaoProvider);
     final current = await future;
-    if (current.isSynced) return;
+    if (current.isSynced || !_hasLocalDataset(await dao.getLibraryMeta())) {
+      return;
+    }
     await dao.setSyncStatus(syncStatus: LibrarySyncStatus.synced);
     state = AsyncData(
       current.copyWith(
@@ -71,6 +75,12 @@ class ExerciseDatasetSyncController
       ),
     );
   }
+
+  bool _hasLocalDataset(LibraryMetaData? meta) =>
+      meta != null &&
+      meta.exerciseCount > 0 &&
+      meta.libraryVersion != null &&
+      meta.schemaVersion == DbConstants.supportedExerciseDatasetSchemaVersion;
 
   Future<void> _runSync() async {
     _logger.info('_runSync — start');
@@ -86,7 +96,7 @@ class ExerciseDatasetSyncController
     if (!isOnline) {
       _logger.info('_runSync — offline, checking local meta');
       final meta = await dao.getLibraryMeta();
-      if (meta == null) {
+      if (!_hasLocalDataset(meta)) {
         state = AsyncData(
           const ExerciseDatasetSyncState(
             phase: ExerciseDatasetSyncPhase.unavailableOffline,
@@ -98,7 +108,7 @@ class ExerciseDatasetSyncController
       state = AsyncData(
         ExerciseDatasetSyncState(
           phase: ExerciseDatasetSyncPhase.synced,
-          libraryVersion: meta.libraryVersion,
+          libraryVersion: meta!.libraryVersion,
           schemaVersion: meta.schemaVersion,
           exerciseCount: meta.exerciseCount,
           isOffline: true,
@@ -119,8 +129,19 @@ class ExerciseDatasetSyncController
       final manifest = await downloadService.fetchManifest();
       final meta = await dao.getLibraryMeta();
 
+      if (!downloadService.hasCompatibleMinimumAppSchema(manifest) ||
+          manifest.active.schemaVersion !=
+              DbConstants.supportedExerciseDatasetSchemaVersion) {
+        throw const ExerciseDatasetDownloadFailure(
+          code: ExerciseDatasetDownloadFailureCode.unsupportedAppSchema,
+          message: AppErrorStrings.datasetUpdateRequired,
+          retryable: false,
+        );
+      }
+
       // Short-circuit if the local dataset version matches the manifest version
-      if (meta != null && meta.libraryVersion == manifest.datasetVersion) {
+      if (_hasLocalDataset(meta) &&
+          meta!.libraryVersion == manifest.datasetVersion) {
         _logger.info(
           '_runSync — local version matches manifest, skipping download',
         );
@@ -160,7 +181,8 @@ class ExerciseDatasetSyncController
 
       final dataset = parser.parse(
         rawJson: rawJson,
-        supportedSchemaVersion: 1,
+        supportedSchemaVersion:
+            DbConstants.supportedExerciseDatasetSchemaVersion,
         minimumSupportedAppSchemaVersion:
             downloadResult.manifest.active.minimumSupportedAppSchemaVersion,
       );
@@ -217,7 +239,7 @@ class ExerciseDatasetSyncController
       await dao.setSyncStatus(
         syncStatus: LibrarySyncStatus.failed,
         errorCode: AppErrorCodes.unknown,
-        errorMessage: e.toString(),
+        errorMessage: AppErrorStrings.downloadFailedMessage,
       );
 
       state = AsyncData(
@@ -225,7 +247,7 @@ class ExerciseDatasetSyncController
           phase: ExerciseDatasetSyncPhase.failed,
           failure: ExerciseDatasetSyncFailure(
             code: AppErrorCodes.unknown,
-            message: e.toString(),
+            message: AppErrorStrings.downloadFailedMessage,
             retryable: true,
           ),
         ),

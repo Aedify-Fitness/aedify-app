@@ -1,3 +1,4 @@
+import 'package:aedify/features/settings/presentation/provider_capability_screen.dart';
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/guard/guard_state.dart';
 import 'package:aedify/app/diagnostics/developer_diagnostics_screen.dart';
@@ -493,6 +494,14 @@ class AppRouter {
           path: AppRoutes.byokSettings().path,
           name: AppRoutes.byokSettings().name,
           builder: (context, state) => const ByokSettingsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.providerCapabilities().path,
+          name: AppRoutes.providerCapabilities().name,
+          builder: (context, state) => ProviderCapabilityScreen(
+            providerName: state.pathParameters['provider']!,
+            modelName: state.pathParameters['model']!,
+          ),
         ),
         GoRoute(
           path: AppRoutes.share().path,
