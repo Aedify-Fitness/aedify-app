@@ -11,6 +11,9 @@ enum PersonalRecordType {
 
   /// Maximum single-set volume in kg × reps.
   volume,
+
+  /// Maximum standard-confidence Epley estimate in kg from 1–10 reps.
+  estimatedOneRepMax,
 }
 
 /// A local record achievement tied to its source set and completed session.

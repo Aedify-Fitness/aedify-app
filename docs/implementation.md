@@ -2,20 +2,28 @@
 
 ## Current Status
 
-| Field             | Value                                                                                                                                                                                                                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-002 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                       |
-| Implemented       | M5 completed-log query layer plus deterministic weight, reps-at-weight, reps-only and single-set-volume PR detection. Source corrections/deletions refresh current records and achievement history.                                                                             |
-| Verification      | V1-M5-002 (2026-10-26): format checked 813 files, analysis clean, all **1,708 tests passed**, zero failures/skips, including 49 analytics tests (31 new PR cases). No native UI rerun for this service-only ticket. Live Firebase and real-key BYOK acceptance remain separate. |
-| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                            |
-| Next ticket       | **V1-M5-003 — e1RM estimation service: not started.** Await explicit user go-ahead after V1-M5-002 review.                                                                                                                                                                      |
-| Evidence          | [PR policy, changed files and verification](pr-detection.md); V1-M5-001 details below. Prior [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md) retain native/live boundaries.                                                                    |
+| Field             | Value                                                                                                                                                                                                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-003 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                             |
+| Implemented       | M5 completed-log queries, deterministic PRs and Epley e1RM with confidence, insufficient-data state and future-anchor candidates. Corrections/deletions refresh records and estimates locally.                                                                                        |
+| Verification      | V1-M5-003 (2026-10-26): format checked 818 files, analysis clean, all **1,738 tests passed**, zero failures/skips, including 79 analytics tests (30 new e1RM cases). Native UI checks were not repeated for this service-only ticket; live Firebase/BYOK acceptance remains separate. |
+| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                                  |
+| Next ticket       | **V1-M5-004 — Plateau detection base logic: not started.** Await explicit user go-ahead after V1-M5-003 review.                                                                                                                                                                       |
+| Evidence          | [e1RM policy, changed files and verification](e1rm-estimation.md), [PR policy](pr-detection.md) and completed-ticket entries below. Prior [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md) retain native/live boundaries.                             |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — V1-M5-003 e1RM estimation service
+
+- Added pure Epley estimation (`weight × (1 + reps / 30)`), immutable confidence-bearing evidence and summaries, insufficient-data state, standard-confidence future-anchor candidates and Riverpod access. Uses completed working-set actuals; no RPE adjustment, rounding or stored-flag dependency. [Policy and changed files](e1rm-estimation.md).
+- Standard confidence covers 1–10 reps. Higher reps retain low-confidence estimates and are excluded from e1RM PRs/anchor candidates. Reps-only, timed/cardio, bodyweight-only equipment without a load model, unknown metadata, missing/invalid actuals and overflow are excluded.
+- Extended PR detection with standard-confidence e1RM records and shared stable chronology. Source corrections, deletions and metadata changes refresh results through the existing read-only stream. No schema/dependency/generated-code/UI changes or derived writes to logs. Future AI payload selection and anchor recency rules remain in their owning milestones.
+- Verification: formatting checked 818 files and all 79 analytics tests passed (30 new e1RM cases). `flutter analyze` is clean and the full suite passed all 1,738 tests with zero failures/skips; native UI checks were not repeated for this service-only ticket.
+- **Stop after V1-M5-003 for user review; V1-M5-004 (plateau detection base logic) requires the user's go-ahead.**
 
 ### 2026-10-26 — V1-M5-002 PR detection service
 

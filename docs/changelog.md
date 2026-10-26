@@ -1,5 +1,11 @@
 # Aedify — Changelog
 
+## 2026-10-26 — M5 e1RM estimation (V1-M5-003)
+
+- Added exact PRD Epley estimation, confidence metadata, an explicit insufficient-data summary and minimal future-anchor candidates. Positive weighted strength actuals qualify; unsupported/bodyweight-only/non-finite evidence is excluded. Estimates above 10 reps remain available as low confidence and cannot establish e1RM PRs or anchors.
+- PR detection now includes standard-confidence e1RM records and shares deterministic source ordering with estimation. Both derive from local queries and refresh after corrections/deletions. No source-log writes, schema/dependency changes, AI calls or UI changes.
+- Format checked 818 files; all 79 analytics tests passed, including 30 new e1RM cases. Final analysis is clean; all 1,738 full-suite tests passed with zero failures/skips. [Policy and changed files](e1rm-estimation.md). Pause before V1-M5-004.
+
 ## 2026-10-26 — M5 PR detection service (V1-M5-002)
 
 - Added pure Dart detection for maximum load, reps at the same load, reps-only strength and single-set volume, with immutable current/history DTOs and documented baseline/tie rules. Canonical/custom IDs and all workout sources share deterministic comparisons.

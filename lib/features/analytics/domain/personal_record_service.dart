@@ -1,4 +1,6 @@
 import 'package:aedify/features/analytics/domain/analytics_set_log.dart';
+import 'package:aedify/features/analytics/domain/analytics_set_log_order.dart';
+import 'package:aedify/features/analytics/domain/estimated_one_rep_max_service.dart';
 import 'package:aedify/features/analytics/domain/personal_record.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
@@ -13,16 +15,18 @@ import 'package:aedify/shared/domain/exercise_modality.dart';
 /// sets contribute rep records only. Reps-only strength uses a separate rep
 /// record and ignores residual hidden load fields. Unknown modes/modalities,
 /// timed/cardio exercises and invalid actuals cannot produce strength records.
-/// e1RM records are reserved for the e1RM ticket.
+/// e1RM records use the shared Epley service and its reliable 1–10-rep range.
 class PersonalRecordService {
   const PersonalRecordService();
+
+  static const _estimator = EstimatedOneRepMaxService();
 
   /// Detects records without mutating [logs] or persisting derived flags.
   ///
   /// Ordering uses performance time, session, membership, set index and set ID
   /// so equal timestamps produce the same result regardless of input order.
   PersonalRecordSummary detect(Iterable<AnalyticsSetLog> logs) {
-    final ordered = logs.toList()..sort(_compareLogs);
+    final ordered = logs.toList()..sort(AnalyticsSetLogOrder.compare);
     final best =
         <
           ({int exerciseId, PersonalRecordType type, double? weightKg}),
@@ -79,18 +83,15 @@ class PersonalRecordService {
       if (volume.isFinite && volume > 0) {
         consider(log, PersonalRecordType.volume, volume);
       }
+      final estimate = _estimator.estimate(log);
+      if (estimate != null && estimate.isAnchorCandidate) {
+        consider(
+          log,
+          PersonalRecordType.estimatedOneRepMax,
+          estimate.estimatedWeightKg,
+        );
+      }
     }
     return PersonalRecordSummary(current: best.values, history: history);
-  }
-
-  static int _compareLogs(AnalyticsSetLog left, AnalyticsSetLog right) {
-    var order = left.performedAt.compareTo(right.performedAt);
-    if (order != 0) return order;
-    order = left.sessionId.compareTo(right.sessionId);
-    if (order != 0) return order;
-    order = left.sessionExerciseId.compareTo(right.sessionExerciseId);
-    if (order != 0) return order;
-    order = left.setIndex.compareTo(right.setIndex);
-    return order != 0 ? order : left.id.compareTo(right.id);
   }
 }

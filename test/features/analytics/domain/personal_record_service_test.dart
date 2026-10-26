@@ -52,6 +52,66 @@ void main() {
     (record) => record.type == type && record.comparisonWeightKg == atWeight,
   );
 
+  test('reliable e1RM increases can set records even at a lighter load', () {
+    final summary = service.detect([
+      log('old'),
+      log('new', day: 1, weight: 95, reps: 8),
+    ]);
+    final record = current(summary, PersonalRecordType.estimatedOneRepMax);
+    expect(record.setLogId, 'new');
+    expect(record.value, closeTo(120.33333333333333, 1e-10));
+    expect(record.previousValue, closeTo(116.66666666666667, 1e-10));
+    expect(current(summary, PersonalRecordType.maxWeight).setLogId, 'old');
+  });
+  test('low-confidence high-rep estimates cannot establish e1RM records', () {
+    final summary = service.detect([
+      log('reliable'),
+      log('high-reps', day: 1, reps: 30),
+    ]);
+    expect(
+      current(summary, PersonalRecordType.estimatedOneRepMax).setLogId,
+      'reliable',
+    );
+    expect(
+      service
+          .detect([log('high-only', reps: 11)])
+          .current
+          .any(
+            (record) => record.type == PersonalRecordType.estimatedOneRepMax,
+          ),
+      isFalse,
+    );
+  });
+  test(
+    'e1RM ties and corrections rebuild the same deterministic record timeline',
+    () {
+      final tied = service.detect([log('a'), log('b', day: 1)]);
+      expect(
+        tied.history.where(
+          (record) => record.type == PersonalRecordType.estimatedOneRepMax,
+        ),
+        hasLength(1),
+      );
+      final initial = service.detect([log('a'), log('b', day: 1, weight: 110)]);
+      expect(
+        current(initial, PersonalRecordType.estimatedOneRepMax).setLogId,
+        'b',
+      );
+      final corrected = service.detect([
+        log('a', weight: 120),
+        log('b', day: 1, weight: 110),
+      ]);
+      expect(
+        current(corrected, PersonalRecordType.estimatedOneRepMax).setLogId,
+        'a',
+      );
+      final deleted = service.detect([log('b', day: 1, weight: 110)]);
+      expect(
+        current(deleted, PersonalRecordType.estimatedOneRepMax).isBaseline,
+        isTrue,
+      );
+    },
+  );
   test('empty evidence gives immutable empty current and history lists', () {
     final summary = service.detect([]);
     expect(summary.current, isEmpty);
@@ -62,7 +122,7 @@ void main() {
 
   test('first weighted performance establishes baselines from actuals', () {
     final summary = service.detect([log('first')]);
-    expect(summary.current, hasLength(3));
+    expect(summary.current, hasLength(4));
     expect(summary.history.every((record) => record.isBaseline), isTrue);
     expect(current(summary, PersonalRecordType.maxWeight).value, 100);
     expect(
@@ -159,7 +219,7 @@ void main() {
     'ties retain the first achievement without duplicate history events',
     () {
       final summary = service.detect([log('a'), log('b', day: 1)]);
-      expect(summary.history, hasLength(3));
+      expect(summary.history, hasLength(4));
       expect(summary.current.every((record) => record.setLogId == 'a'), isTrue);
     },
   );
@@ -179,7 +239,7 @@ void main() {
       log('canonical'),
       log('custom', exerciseId: -1, weight: 50),
     ]);
-    expect(summary.current, hasLength(6));
+    expect(summary.current, hasLength(8));
     expect(
       summary.current
           .where((record) => record.exerciseId == -1)

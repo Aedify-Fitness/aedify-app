@@ -1,9 +1,9 @@
 # M5 PR detection — V1-M5-002
 
-Implemented 2026-10-26. This is the implementation policy for the PR service,
-within the locked roadmap's weight, rep and volume PR scope. e1RM estimation
-and e1RM records belong to V1-M5-003; analytics presentation belongs to later
-M5 tickets.
+Implemented 2026-10-26 in V1-M5-002, with e1RM records added in V1-M5-003.
+This is the implementation policy for the PR service within the locked
+roadmap's weight, rep, e1RM and volume scope. Analytics presentation belongs
+to later M5 tickets.
 
 ## Record comparisons
 
@@ -13,6 +13,7 @@ M5 tickets.
 | `maxRepsAtWeight` | Strength, weighted-reps mode, positive reps and finite non-negative load | reps | Exercise + exact canonical kg load |
 | `maxReps` | Strength, reps-only mode, positive reps | reps | Exercise |
 | `volume` | Eligible weighted set with positive finite kg × reps | kg × reps | Exercise, single-set volume |
+| `estimatedOneRepMax` | Eligible standard-confidence Epley estimate from 1–10 reps | Estimated kg | Exercise |
 
 The first eligible performance for each comparison establishes a baseline
 (`isBaseline = true`, `previousValue = null`). Strict improvements add record
@@ -30,6 +31,10 @@ Completed actual performance is used even when it falls short of a prescribed
 target. Pending, skipped and failed/incomplete sets do not qualify. Targets,
 stored `is_pr` flags and stored e1RM estimates never determine these records.
 Values remain canonical kg without display-unit conversion or rounding.
+
+e1RM records use the shared estimator and exclude low-confidence high-rep
+estimates and bodyweight-only equipment lacking a total-load model. See
+[e1RM policy](e1rm-estimation.md) for formula, eligibility and confidence rules.
 
 ## Source and lifecycle
 
@@ -56,7 +61,7 @@ dynamic PR option. There are no cache tables, schema/dependency changes or
 derived writes to source logs. Results contain no notes or body measurements;
 the service emits no logs, network requests, exports or crash reports.
 
-## Changed files and verification
+## V1-M5-002 files and verification
 
 - `lib/features/analytics/domain/personal_record.dart`
 - `lib/features/analytics/domain/personal_record_service.dart`
@@ -72,4 +77,7 @@ correction, hard/soft deletion, safe failures and retry. The full suite passed
 all 1,708 tests with zero failures/skips. Native UI checks are not applicable to this service-only ticket;
 no screens or completion-summary widgets were changed.
 
-V1-M5-003 must wait for the user's review and explicit go-ahead.
+V1-M5-003 adds the e1RM service, confidence-aware record eligibility and shared
+chronology helper. Its current file inventory and verification are recorded in
+[e1RM estimation](e1rm-estimation.md). V1-M5-004 must wait for user review and
+explicit go-ahead.
