@@ -1,5 +1,11 @@
 # Aedify — Changelog
 
+## 2026-10-26 — M5 first ticket: completed-log analytics queries
+
+- V1-M5-001 adds read-only analytics repositories, immutable evidence/query types and Riverpod access under `lib/features/analytics/`. Default evidence includes completed working sets from finished sessions, preserving canonical units and source identity while excluding warm-ups, skipped/incomplete sets and inactive/deleted/orphaned sessions.
+- Streams refresh on corrections, deletions and source metadata changes. Archived/missing exercise metadata retains history; database failures expose safe codes without private error contents. No cache, schema, dependency or UI changes.
+- Verification: `dart format .` checked 809 files, `flutter analyze` clean, 18 focused SQLite/Riverpod regressions and all 1,677 full-suite tests passed, zero failures/skips. Native UI checks were not repeated for this data-only ticket. Ticket-by-ticket review is required before V1-M5-002 begins.
+
 ## 2026-10-26 — Match CI to the local Flutter SDK
 
 - Pinned `.github/workflows/foundation.yml` to Flutter 3.44.4 stable (bundled Dart 3.12.2), matching the installed local SDK so CI uses the same formatter version.
