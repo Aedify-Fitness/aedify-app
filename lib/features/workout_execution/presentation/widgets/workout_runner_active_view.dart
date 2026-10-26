@@ -1,3 +1,6 @@
+import 'package:aedify/features/workout_execution/application/weight_suggestion_providers.dart';
+import 'package:aedify/features/workout_execution/domain/weight_suggestion.dart';
+import 'package:aedify/features/workout_execution/presentation/widgets/workout_runner_weight_suggestion.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_block.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
@@ -44,11 +47,13 @@ class WorkoutRunnerActiveView extends ConsumerStatefulWidget {
     required this.onShowExercise,
     required this.onFinish,
     this.onToggleSkipped,
+    this.onUseSuggestedWeight,
     this.onAddExercise,
     this.errorMessage,
     this.onRetry,
   });
 
+  final ValueChanged<WeightSuggestion>? onUseSuggestedWeight;
   final WorkoutRunnerSessionViewData session;
   final WorkoutRunnerBlock block;
   final WorkoutRunnerExerciseItem activeExercise;
@@ -109,6 +114,13 @@ class _WorkoutRunnerActiveViewState
 
   @override
   Widget build(BuildContext context) {
+    // Keep chosen standalone estimate targets for the lifetime of this runner,
+    // including while another exercise in a superset becomes active.
+    if (widget.onUseSuggestedWeight != null) {
+      ref.watch(
+        WeightSuggestionProviders.targetsProvider(widget.session.sessionId),
+      );
+    }
     final enabled = !widget.isPaused && !_logging;
     final next = _NextBlock.find(widget.session, widget.block);
     return _RunnerLayout(
@@ -153,6 +165,17 @@ class _WorkoutRunnerActiveViewState
           AppWhiteSpace.hLg,
           _SessionProgress(session: widget.session),
           AppWhiteSpace.hMd,
+          if (widget.activeSet != null && widget.onUseSuggestedWeight != null)
+            WorkoutRunnerWeightSuggestion(
+              key: ValueKey(
+                'weight_suggestion_${widget.session.sessionId}_${widget.activeSet!.id}',
+              ),
+              session: widget.session,
+              exercise: widget.activeExercise,
+              set: widget.activeSet!,
+              enabled: enabled,
+              onUse: widget.onUseSuggestedWeight!,
+            ),
           WorkoutRunnerTrainingLog(
             block: widget.block,
             activeSet: widget.activeSet,

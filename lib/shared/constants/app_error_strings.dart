@@ -1,5 +1,9 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const weightSuggestionUnavailable =
+      'Could not load a weight estimate. You can still log manually.';
+  static const weightSuggestionTargetInvalid =
+      'Enter 1–10 reps and an RPE from 6 to 10.';
   static const datasetUpdateRequired =
       'Update Aedify to use this exercise dataset.';
   static const draftProgrammeRequiresPublishing =

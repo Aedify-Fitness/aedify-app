@@ -6,7 +6,7 @@
 | --- | --- |
 | Current milestone | **M4 — Manual Programmes, Workouts and Logging: closed (2026-10-25).** |
 | Implemented | Standalone sessions, independent repeat from history, logging-type tables with RPE-only effort display, internal RIR derivation and linked-round set-type toggles, exercise-card navigation to logging-type-specific corrections, partial logged-set editing and saved per-exercise history. Existing manual builders, programmes, supersets, warm-ups and saved histories remain available offline. |
-| Verification | M1–M4 closure follow-up: formatting checked 791 Dart files, analysis clean, full suite **1,630 passed, zero failures/skips**. Native M1/M3 storage/onboarding/BYOK, fixture-based M2 offline library, new BYOK UI and existing M4 offline flow pass on both platforms. Normal app entrypoints restored/launched. Live Firebase and successful real-key BYOK acceptance remain pending. |
+| Verification | Latest weight-suggestion follow-up (2026-10-26): format checked 802 Dart files, analysis clean, all **1,659 tests passed**, zero failures/skips, including programme-day defaults. Native weight-suggestion offline acceptance and light/dark review pass on iOS/Android. Live Firebase and successful real-key BYOK acceptance remain pending separately. |
 | Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26). |
 | Next milestone | **M5 planned, not started** — Analytics, PRs and Plateau Base Logic. |
 | Evidence | [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md), including changed files, coverage, commands and native/live boundaries. |
@@ -16,6 +16,19 @@
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — Optional runner weight suggestions (complete)
+
+- The user-approved runner enhancement provides an optional local estimate, explicit Use weight, standalone reps/RPE targets retained during the open runner, source/calculation explanation and next-set adjustment from logged working sets. Existing weights, prescribed targets, logging completion and linked members remain protected.
+- A shared pure estimator and feature-owned policy select recent valid working-set evidence, with a recent user-entered maximum as fallback. Read-only Drift evidence refreshes after corrections/deletions. No schema, dependency or analytics e1RM/PR changes; M5 charts, PRs and plateau logic remain planned.
+- Verification: formatting checked 802 Dart files, analysis clean, all 1,659 tests passed with zero failures/skips. The 22 new regressions cover arithmetic, eligibility, history/correction streams, controller guards and responsive UI. Native offline acceptance passed on iOS and Android; synthetic light/dark runner and explanation renders reviewed, normal app entrypoints restored/launched on both. See [weight-suggestion policy, files and evidence](weight-suggestions.md).
+
+### 2026-10-25 — Profile workout-day defaults in programme creation (complete)
+
+- `ProgrammeBuilderController` reads profile workout days once when a fresh programme draft opens. Adding a training block copies those defaults and creates matching workout-day slots across its weeks, with the weekly day count kept in sync.
+- User changes remain local to the block/programme. Saved edit/duplicate schedules retain their own days. Missing, empty or unavailable profiles keep manual day selection available.
+- Unit/widget regressions verify the visible selected chips, editable days, week/slot consistency, independent block defaults, draft-save payload and saved-schedule preservation. Formatting (791 files), clean analysis and all 364 programme tests passed, zero failures/skips. The prior full suite (1,630) and native results predate this change; no full/native rerun, schema/dependency change or code generation was needed.
+
 
 ### 2026-10-25 — M1–M4 implementation gap closure
 

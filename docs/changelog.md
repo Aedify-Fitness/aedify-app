@@ -1,5 +1,19 @@
 # Aedify — Changelog
 
+## 2026-10-26 — Optional workout weight suggestions complete
+
+- Added a local RPE-based weight suggestion above the active set grid, with explicit Use weight, standalone target selection, source/calculation explanation and next-set recalculation.
+- Eligible recent working sets and user-entered 1RM anchors provide evidence; warm-ups, incomplete/unlogged sets, incompatible load types and stale history are excluded. Corrections refresh suggestions through local table updates.
+- Suggestions do not change prescribed targets, complete sets or write analytics e1RM/PR values. Prior programme-day changes remain intact. Policy, boundaries and acceptance evidence: [weight suggestions](weight-suggestions.md).
+- Verification: formatting checked 802 Dart files, analysis clean, all 1,659 tests passed with zero failures/skips. Native offline acceptance and synthetic light/dark/source-explanation review passed on iOS and Android; normal app entrypoints restored/launched on both. No schema/dependency/code-generation changes.
+
+
+## 2026-10-25 — Prefill programme workout days from the profile
+
+- New programme training blocks preselect the profile's chosen workout days and create matching, chronologically ordered workout slots for every block week. Days remain editable; empty/unavailable profiles leave the choices empty. Editing/duplicating a saved programme preserves its schedule.
+- Updated `programme_builder_controller.dart` and its unit/widget tests. Verification: `dart format .` checked 791 files, `flutter analyze` clean, all 364 programme tests passed (seven new regressions), zero failures/skips. No schema/dependency changes; full-suite and native checks were not repeated for this follow-up.
+
+
 ## 2026-10-25 — M1–M4 implementation gaps fixed; live acceptance pending
 
 - Fixed global crash redaction/flag handling, Google key redaction and destructive key rotation (M1).

@@ -580,6 +580,7 @@ class _WorkoutRunnerBody extends ConsumerWidget {
             skipped: skipped,
           ),
       onLogSet: logActiveSet,
+      onUseSuggestedWeight: controller.useWeightSuggestion,
       onSubstitute: () =>
           _showSubstitutePicker(context, ref, controller, activeExercise),
       onAddSet: () => block.isSuperset

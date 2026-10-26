@@ -1,3 +1,5 @@
+import 'package:aedify/features/workout_execution/domain/weight_suggestion.dart';
+import 'package:aedify/shared/domain/rpe_load_estimator.dart';
 import 'dart:async';
 import 'package:aedify/shared/domain/set_effort.dart';
 import 'package:aedify/features/workout_execution/domain/workout_runner_block.dart';
@@ -190,6 +192,52 @@ class WorkoutRunnerController extends AsyncNotifier<WorkoutRunnerState> {
     final current = _editableState;
     if (current == null || !current.hasRecoveredSession) return;
     await _cancelWorkout(discardRecovered: true);
+  }
+
+  /// Applies only to the still-active, empty weight input. Proposals never log
+  /// a set or modify prescriptions, effort, repetitions or linked members.
+  Future<void> useWeightSuggestion(WeightSuggestion suggestion) async {
+    final current = _editableState;
+    final session = current?.session;
+    if (current == null ||
+        session == null ||
+        current.phase == WorkoutRunnerPhase.paused ||
+        suggestion.sessionId != session.sessionId ||
+        !suggestion.weightKg.isFinite ||
+        suggestion.weightKg <= 0 ||
+        !RpeLoadEstimator.validTarget(
+          suggestion.target.reps,
+          suggestion.target.rpe,
+        )) {
+      return;
+    }
+    final lead = session.exercises
+        .where(
+          (member) => member.sets.any((set) => !set.completed && !set.skipped),
+        )
+        .firstOrNull;
+    if (lead == null) return;
+    const resolver = WorkoutRunnerBlockResolver();
+    final active = resolver.firstIncompleteSet(
+      resolver.blockFor(session.exercises, lead),
+    );
+    if (active == null ||
+        active.set.id != suggestion.setId ||
+        active.set.exerciseId != suggestion.exerciseId ||
+        active.set.setType != SetType.working ||
+        active.set.actualWeightKg != null ||
+        WorkoutRunnerSetPolicy.loggingType(
+              active.set,
+              snapshot: active.exercise.loggingType,
+            ) !=
+            ExerciseLoggingType.repsWeight) {
+      return;
+    }
+    await updateSet(
+      exerciseId: active.exercise.id,
+      setId: active.set.id,
+      updatedSet: active.set.copyWith(actualWeightKg: suggestion.weightKg),
+    );
   }
 
   Future<void> updateSet({

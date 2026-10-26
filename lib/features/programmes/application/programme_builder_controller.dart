@@ -33,6 +33,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
 
   final ProgrammeBuilderMode mode;
   final String? programmeId;
+  Set<TrainingDay> _profileTrainingDays = const {};
 
   @override
   Future<ProgrammeBuilderState> build() async {
@@ -45,6 +46,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       ProgrammeBuilderDraft draft;
       if (mode == ProgrammeBuilderMode.create) {
         draft = await loadUseCase.createEmptyDraft();
+        _profileTrainingDays = await _loadProfileTrainingDays();
       } else if (mode == ProgrammeBuilderMode.duplicate) {
         draft = await loadUseCase.loadDuplicate(programmeId!);
       } else {
@@ -76,6 +78,18 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
         errorCode: AppErrorCodes.loadFailed,
         errorMessage: AppStrings.programmeLoadFailed,
       );
+    }
+  }
+
+  Future<Set<TrainingDay>> _loadProfileTrainingDays() async {
+    try {
+      final profile = await ref
+          .read(AppProviders.profileRepositoryProvider)
+          .getProfile();
+      return Set<TrainingDay>.of(profile?.trainingDays ?? const []);
+    } catch (error) {
+      _logger.warn('Profile training days unavailable', error: error);
+      return const {};
     }
   }
 
@@ -111,6 +125,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
       id: _newId(),
       name: '',
       weekCount: 4,
+      trainingDays: Set<TrainingDay>.of(_profileTrainingDays),
     );
     final weeks = List<ProgrammeBuilderWeekDraft>.of(current.draft.weeks ?? []);
     for (var i = 0; i < block.weekCount; i++) {
@@ -118,7 +133,7 @@ class ProgrammeBuilderController extends AsyncNotifier<ProgrammeBuilderState> {
         ProgrammeBuilderWeekDraft(
           id: _newId(),
           weekNumber: weeks.length + 1,
-          slots: const [],
+          slots: _newBlockWeekSlots(block, null),
           weekType: block.focus.weekType,
         ),
       );

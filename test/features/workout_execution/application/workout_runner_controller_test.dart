@@ -1,3 +1,4 @@
+import 'package:aedify/features/workout_execution/domain/weight_suggestion.dart';
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -222,6 +223,132 @@ void main() {
     fakeSave = _FakeSaveUseCase();
     fakeComplete = _FakeCompleteUseCase();
     fakeAbandon = _FakeAbandonUseCase();
+  });
+
+  group('weight suggestion application', () {
+    WeightSuggestion proposal({
+      String setId = 'set-1',
+      String sessionId = 'session-1',
+    }) => WeightSuggestion(
+      sessionId: sessionId,
+      setId: setId,
+      exerciseId: 1,
+      target: const WeightSuggestionTarget(5, 8),
+      weightKg: 95,
+      reference: LoadReference(
+        id: 'source',
+        exerciseId: 1,
+        weightKg: 100,
+        reps: 5,
+        rpe: 9,
+        performedAt: DateTime.now(),
+        source: LoadReferenceSource.history,
+      ),
+      referenceCount: 1,
+    );
+    test(
+      'fills only active actual weight, preserving targets and completion state',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider((
+          mode: WorkoutRunnerMode.savedWorkout,
+          savedWorkoutId: 'sw-1',
+          programId: null,
+          programWorkoutId: null,
+        ));
+        final before = await container.read(provider.future);
+        await container.read(provider.notifier).useWeightSuggestion(proposal());
+        final session = container.read(provider).requireValue.session!;
+        final set = session.exercises.first.sets.first;
+        expect(set.actualWeightKg, 95);
+        expect(set.actualReps, isNull);
+        expect(set.actualRpe, isNull);
+        expect(set.completed, isFalse);
+        expect(set.skipped, isFalse);
+        expect(
+          set.prescribedWeightKg,
+          before.session!.exercises.first.sets.first.prescribedWeightKg,
+        );
+        expect(set.prescribedRepsMin, 8);
+        expect(set.prescribedRepsMax, 12);
+        expect(
+          session.exercises.last.sets.single,
+          same(before.session!.exercises.last.sets.single),
+        );
+        await container.read(provider.notifier).useWeightSuggestion(proposal());
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first
+              .sets
+              .first
+              .actualWeightKg,
+          95,
+        );
+      },
+    );
+    test(
+      'foreign sessions, inactive sets, paused sessions and entered weights are protected',
+      () async {
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.workoutRunnerControllerProvider((
+          mode: WorkoutRunnerMode.savedWorkout,
+          savedWorkoutId: 'sw-1',
+          programId: null,
+          programWorkoutId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        await controller.useWeightSuggestion(proposal(sessionId: 'foreign'));
+        await controller.useWeightSuggestion(proposal(setId: 'set-2'));
+        await controller.pauseWorkout();
+        await controller.useWeightSuggestion(proposal());
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first
+              .sets
+              .first
+              .actualWeightKg,
+          isNull,
+        );
+        await controller.continueWorkout();
+        final set = container
+            .read(provider)
+            .requireValue
+            .session!
+            .exercises
+            .first
+            .sets
+            .first;
+        await controller.updateSet(
+          exerciseId: 'ex-1',
+          setId: 'set-1',
+          updatedSet: set.copyWith(actualWeightKg: 42),
+        );
+        await controller.useWeightSuggestion(proposal());
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .session!
+              .exercises
+              .first
+              .sets
+              .first
+              .actualWeightKg,
+          42,
+        );
+      },
+    );
   });
 
   group('build (resume mode)', () {

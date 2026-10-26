@@ -1,3 +1,5 @@
+import '../../../app/m3/fake_m3_dependencies.dart';
+import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
@@ -201,6 +203,7 @@ class _Harness {
   final _Load load;
   final save = _Save();
   final workouts = _ProgrammeWorkoutRepository();
+  final profile = FakeProfileRepository();
   final bool dark;
   final double scale;
   late final router = GoRouter(
@@ -225,6 +228,7 @@ class _Harness {
   );
   Widget app() => ProviderScope(
     overrides: [
+      AppProviders.profileRepositoryProvider.overrideWithValue(profile),
       AppProviders.savedWorkoutRepositoryProvider.overrideWithValue(workouts),
       AppProviders.loadWorkoutDraftUseCaseProvider.overrideWithValue(
         LoadWorkoutDraftUseCase(savedWorkoutRepository: workouts),
@@ -628,6 +632,58 @@ void main() {
         isNot(after.weeks![1].slots!.single.template!.id),
       );
       expect(directRepeat.weeks![2], same(beforeDirectRepeat.weeks![2]));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'new programme visibly preselects profile workout days and allows changing them',
+    (tester) async {
+      _Driver.viewport(tester, const Size(390, 1000));
+      final harness = _Harness(
+        draft: _Fixtures.draft().copyWith(name: 'New programme'),
+      );
+      await harness.profile.saveProfile(
+        const ProfileEditDraft(
+          trainingDays: [TrainingDay.tuesday, TrainingDay.thursday],
+        ),
+      );
+      await _Driver.load(tester, harness);
+      await _Driver.next(tester);
+      final add = find.byKey(const ValueKey('programme_add_training_block'));
+      await tester.ensureVisible(add);
+      await tester.tap(add);
+      await tester.pumpAndSettle();
+      final blockId = harness.current(tester).trainingBlocks.single.id;
+      for (final day in TrainingDay.values) {
+        final chip = find.byKey(
+          ValueKey('training_block_day_${blockId}_${day.name}'),
+        );
+        expect(
+          tester.widget<FilterChip>(chip).selected,
+          [TrainingDay.tuesday, TrainingDay.thursday].contains(day),
+        );
+      }
+      final tuesday = find.byKey(
+        ValueKey('training_block_day_${blockId}_tuesday'),
+      );
+      await tester.ensureVisible(tuesday);
+      await tester.tap(tuesday);
+      await tester.pumpAndSettle();
+      expect(tester.widget<FilterChip>(tuesday).selected, isFalse);
+      expect(
+        harness
+            .current(tester)
+            .weeks!
+            .every(
+              (week) => week.slots!.single.scheduledDay == TrainingDay.thursday,
+            ),
+        isTrue,
+      );
+      expect((await harness.profile.getProfile())!.trainingDays, [
+        TrainingDay.tuesday,
+        TrainingDay.thursday,
+      ]);
       expect(tester.takeException(), isNull);
     },
   );

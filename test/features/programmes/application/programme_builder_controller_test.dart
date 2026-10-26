@@ -1,3 +1,6 @@
+import '../../../app/m3/fake_m3_dependencies.dart';
+import 'package:aedify/features/profile/domain/profile_edit_draft.dart';
+import 'package:aedify/features/profile/domain/profile_view_data.dart';
 import 'package:aedify/features/programmes/domain/programme_training_block_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aedify/features/programmes/domain/set_prescription_draft.dart';
@@ -185,9 +188,16 @@ class _FakeSaveUseCase implements SaveProgrammeBuilderDraftUseCase {
   }
 }
 
+class _UnavailableProfileRepository extends FakeProfileRepository {
+  @override
+  Future<ProfileViewData?> getProfile() async =>
+      throw StateError('unavailable');
+}
+
 void main() {
   late _FakeLoadUseCase fakeLoadUseCase;
   late _FakeSaveUseCase fakeSaveUseCase;
+  late FakeProfileRepository profileRepository;
   final validator = ProgrammeBuilderValidator(
     validationService: const DefaultDraftValidationService(),
     adapter: const ProgrammeBuilderValidationAdapter(),
@@ -196,6 +206,9 @@ void main() {
   ProviderContainer createContainer() {
     return ProviderContainer(
       overrides: [
+        AppProviders.profileRepositoryProvider.overrideWithValue(
+          profileRepository,
+        ),
         AppProviders.loadProgrammeBuilderDraftUseCaseProvider.overrideWithValue(
           fakeLoadUseCase,
         ),
@@ -212,6 +225,171 @@ void main() {
   setUp(() {
     fakeLoadUseCase = _FakeLoadUseCase();
     fakeSaveUseCase = _FakeSaveUseCase();
+    profileRepository = FakeProfileRepository();
+  });
+
+  group('profile workout-day defaults', () {
+    test(
+      'new blocks preselect profile days and create matching slots in every week',
+      () async {
+        await profileRepository.saveProfile(
+          const ProfileEditDraft(
+            trainingDays: [
+              TrainingDay.friday,
+              TrainingDay.monday,
+              TrainingDay.wednesday,
+            ],
+          ),
+        );
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        await container.read(provider.future);
+        final controller = container.read(provider.notifier);
+        controller.addTrainingBlock();
+        var draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.single.trainingDays, {
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+          TrainingDay.friday,
+        });
+        expect(draft.daysPerWeek, 3);
+        expect(draft.weeks, hasLength(4));
+        for (final week in draft.weeks!) {
+          expect(week.slots!.map((slot) => slot.scheduledDay), [
+            TrainingDay.monday,
+            TrainingDay.wednesday,
+            TrainingDay.friday,
+          ]);
+          expect(week.slots!.map((slot) => slot.scheduledDayIndex), [0, 2, 4]);
+          expect(week.slots!.map((slot) => slot.slotIndex), [0, 1, 2]);
+          expect(week.slots!.every((slot) => slot.template == null), isTrue);
+        }
+        controller.setBlockTrainingDay(
+          draft.trainingBlocks.single.id,
+          TrainingDay.monday,
+          false,
+        );
+        controller.addTrainingBlock();
+        draft = container.read(provider).requireValue.draft;
+        expect(draft.trainingBlocks.first.trainingDays, {
+          TrainingDay.wednesday,
+          TrainingDay.friday,
+        });
+        expect(draft.trainingBlocks.last.trainingDays, {
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+          TrainingDay.friday,
+        });
+        expect((await profileRepository.getProfile())!.trainingDays, [
+          TrainingDay.friday,
+          TrainingDay.monday,
+          TrainingDay.wednesday,
+        ]);
+        await controller.saveDraft();
+        expect(
+          fakeSaveUseCase.lastSavedDraft!.trainingBlocks.last.trainingDays,
+          {TrainingDay.monday, TrainingDay.wednesday, TrainingDay.friday},
+        );
+      },
+    );
+
+    for (final emptyProfile in [false, true]) {
+      test(
+        'no chosen profile days leaves new block days empty: profile=$emptyProfile',
+        () async {
+          if (emptyProfile) {
+            await profileRepository.saveProfile(const ProfileEditDraft());
+          }
+          final container = createContainer();
+          addTearDown(container.dispose);
+          final provider = AppProviders.programmeBuilderControllerProvider((
+            mode: ProgrammeBuilderMode.create,
+            programmeId: null,
+          ));
+          await container.read(provider.future);
+          container.read(provider.notifier).addTrainingBlock();
+          final draft = container.read(provider).requireValue.draft;
+          expect(draft.trainingBlocks.single.trainingDays, isEmpty);
+          expect(draft.weeks!.every((week) => week.slots!.isEmpty), isTrue);
+        },
+      );
+    }
+
+    for (final mode in [
+      ProgrammeBuilderMode.edit,
+      ProgrammeBuilderMode.duplicate,
+    ]) {
+      test(
+        '$mode preserves saved workout days instead of using profile defaults',
+        () async {
+          await profileRepository.saveProfile(
+            const ProfileEditDraft(trainingDays: [TrainingDay.sunday]),
+          );
+          fakeLoadUseCase.draftToReturn = _draftWithSlots().copyWith(
+            trainingBlocks: const [
+              ProgrammeTrainingBlockDraft(
+                id: 'block',
+                name: 'Saved block',
+                weekCount: 1,
+                trainingDays: {
+                  TrainingDay.monday,
+                  TrainingDay.tuesday,
+                  TrainingDay.wednesday,
+                },
+              ),
+            ],
+          );
+          final container = createContainer();
+          addTearDown(container.dispose);
+          final provider = AppProviders.programmeBuilderControllerProvider((
+            mode: mode,
+            programmeId: 'saved',
+          ));
+          final state = await container.read(provider.future);
+          expect(state.draft.trainingBlocks.single.trainingDays, {
+            TrainingDay.monday,
+            TrainingDay.tuesday,
+            TrainingDay.wednesday,
+          });
+          expect(
+            state.draft.weeks!.single.slots!.map(
+              (slot) => slot.scheduledDayIndex,
+            ),
+            [0, 1, 2],
+          );
+        },
+      );
+    }
+
+    test(
+      'unavailable profile does not block manual programme creation',
+      () async {
+        profileRepository = _UnavailableProfileRepository();
+        final container = createContainer();
+        addTearDown(container.dispose);
+        final provider = AppProviders.programmeBuilderControllerProvider((
+          mode: ProgrammeBuilderMode.create,
+          programmeId: null,
+        ));
+        final state = await container.read(provider.future);
+        expect(state.phase, ProgrammeBuilderPhase.editing);
+        container.read(provider.notifier).addTrainingBlock();
+        expect(
+          container
+              .read(provider)
+              .requireValue
+              .draft
+              .trainingBlocks
+              .single
+              .trainingDays,
+          isEmpty,
+        );
+      },
+    );
   });
 
   group('Define Workouts template editing', () {
