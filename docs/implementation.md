@@ -2,20 +2,27 @@
 
 ## Current Status
 
-| Field             | Value                                                                                                                                                                                                                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-001 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                     |
-| Implemented       | M5 read-only completed-working-set queries, canonical-unit DTOs, exercise/time filters, correction/deletion streams and safe retryable failures. Existing M4 offline workout logging/history and weight suggestions remain available.                                         |
-| Verification      | V1-M5-001 (2026-10-26): `dart format .` checked 809 files, analysis clean, all **1,677 tests passed**, zero failures/skips, including 18 new analytics regressions. No native UI rerun for this data-only ticket. Live Firebase and real-key BYOK acceptance remain separate. |
-| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                          |
-| Next ticket       | **V1-M5-002 — PR detection service: not started.** Await explicit user go-ahead after V1-M5-001 review.                                                                                                                                                                       |
-| Evidence          | V1-M5-001 scope and verification below; [analytics query regressions](../test/features/analytics/data/drift_analytics_repository_test.dart). Prior [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md) retain native/live boundaries.            |
+| Field             | Value                                                                                                                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-002 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                       |
+| Implemented       | M5 completed-log query layer plus deterministic weight, reps-at-weight, reps-only and single-set-volume PR detection. Source corrections/deletions refresh current records and achievement history.                                                                             |
+| Verification      | V1-M5-002 (2026-10-26): format checked 813 files, analysis clean, all **1,708 tests passed**, zero failures/skips, including 49 analytics tests (31 new PR cases). No native UI rerun for this service-only ticket. Live Firebase and real-key BYOK acceptance remain separate. |
+| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                            |
+| Next ticket       | **V1-M5-003 — e1RM estimation service: not started.** Await explicit user go-ahead after V1-M5-002 review.                                                                                                                                                                      |
+| Evidence          | [PR policy, changed files and verification](pr-detection.md); V1-M5-001 details below. Prior [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md) retain native/live boundaries.                                                                    |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — V1-M5-002 PR detection service
+
+- Implemented `PersonalRecordService`, current/history DTOs and feature-owned `PersonalRecordProviders`. Records cover max weight, reps at an exact canonical load, reps-only strength and single-set kg × reps volume. First performances establish labeled baselines; strict improvements record prior values; ties retain the earliest evidence.
+- Computes from complete exercise history through V1-M5-001, preserving source identity and privacy. Corrections/deletions rebuild the timeline and restore prior records. No schema/dependency changes, stored flags, caches or UI changes. Unknown modes/modalities and timed/cardio evidence cannot create strength records. [Policy, boundaries and changed files](pr-detection.md).
+- Verification: `dart format .` checked 813 files, analysis clean, all 49 analytics tests passed, including 31 new rule/SQLite/provider cases. The full suite passed all 1,708 tests with zero failures/skips. Native UI checks do not apply to this service-only ticket.
+- **Stop after V1-M5-002 for user review; V1-M5-003 (e1RM estimation) requires the user's go-ahead.**
 
 ### 2026-10-26 — V1-M5-001 analytics query layer
 

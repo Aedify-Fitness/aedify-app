@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/features/analytics/application/analytics_providers.dart';
+import 'package:aedify/features/analytics/application/personal_record_providers.dart';
 import 'package:aedify/features/analytics/data/analytics_repository.dart';
 import 'package:aedify/features/analytics/data/drift_analytics_repository.dart';
 import 'package:aedify/features/analytics/domain/analytics_log_query.dart';
 import 'package:aedify/features/analytics/domain/analytics_query_failure.dart';
 import 'package:aedify/features/analytics/domain/analytics_set_log.dart';
+import 'package:aedify/features/analytics/domain/personal_record.dart';
+import 'package:aedify/features/analytics/domain/personal_record_service.dart';
+import 'package:aedify/features/lift_log/domain/workout_history_set_correction.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/domain/session_source.dart';
@@ -126,6 +130,212 @@ void main() {
           ),
         );
   }
+
+  group('PR source integration', () {
+    test(
+      'only eligible source logs create records, including custom exercises',
+      () async {
+        await seed('valid');
+        await seed('custom', exerciseId: -1, weight: 60);
+        await seed('warmup', setType: 'warmup', weight: 900);
+        await seed('pending', completed: false, weight: 900);
+        await seed('skipped', skipped: true, weight: 900);
+        for (final status in [
+          'in_progress',
+          'cancelled',
+          'abandoned',
+          'deleted',
+        ]) {
+          await seed(status, status: status, weight: 900);
+        }
+        await seed(
+          'cardio',
+          exerciseId: 2,
+          loggingType: 'duration',
+          reps: null,
+          weight: null,
+          duration: 200,
+        );
+        final before = (await db.select(db.setLogs).get())
+            .map((row) => row.toJson())
+            .toList();
+        final summary = const PersonalRecordService().detect(
+          await repository.loadCompletedWorkingSets(),
+        );
+        expect(summary.current, hasLength(6));
+        expect(summary.history.map((record) => record.setLogId).toSet(), {
+          'set-valid',
+          'set-custom',
+        });
+        expect(summary.history.toString(), isNot(contains(sentinel)));
+        expect(
+          (await db.select(db.setLogs).get())
+              .map((row) => row.toJson())
+              .toList(),
+          before,
+        );
+      },
+    );
+
+    test(
+      'record provider recalculates after real history correction and source deletion',
+      () async {
+        await seed('old');
+        await seed(
+          'new',
+          time: performedAt.add(const Duration(days: 1)),
+          weight: 110,
+        );
+        final container = ProviderContainer(
+          overrides: [AppProviders.appDatabaseProvider.overrideWithValue(db)],
+        );
+        addTearDown(container.dispose);
+        final provider = PersonalRecordProviders.recordsProvider(1);
+        final keepAlive = container.listen(provider, (_, _) {});
+        addTearDown(keepAlive.close);
+        Future<PersonalRecordSummary> until(
+          bool Function(PersonalRecordSummary) condition,
+        ) async {
+          final completer = Completer<PersonalRecordSummary>();
+          final subscription = container.listen(provider, (_, state) {
+            final data = state.asData?.value;
+            if (data != null && condition(data) && !completer.isCompleted) {
+              completer.complete(data);
+            }
+          }, fireImmediately: true);
+          try {
+            return await completer.future.timeout(const Duration(seconds: 5));
+          } finally {
+            subscription.close();
+          }
+        }
+
+        PersonalRecord weight(PersonalRecordSummary summary) =>
+            summary.current.singleWhere(
+              (record) => record.type == PersonalRecordType.maxWeight,
+            );
+        expect(container.read(provider).isLoading, isTrue);
+        expect(
+          weight(await until((summary) => summary.current.isNotEmpty)).value,
+          110,
+        );
+        final history = container.read(
+          AppProviders.workoutHistoryRepositoryProvider,
+        );
+        final detail = (await history.getSessionDetail('old'))!;
+        await history.correctSession(
+          sessionId: 'old',
+          corrections: [
+            WorkoutHistorySetCorrection(
+              expected: detail.exercises.single.sets.single,
+              actualReps: 5,
+              actualWeightKg: 120,
+              actualRpe: 8,
+              actualRir: 2,
+              notes: sentinel,
+            ),
+          ],
+        );
+        final corrected = await until(
+          (summary) => weight(summary).value == 120,
+        );
+        expect(weight(corrected).setLogId, 'set-old');
+        expect(
+          corrected.history.where(
+            (record) => record.type == PersonalRecordType.maxWeight,
+          ),
+          hasLength(1),
+        );
+        await db.transaction(() async {
+          await (db.delete(
+            db.setLogs,
+          )..where((row) => row.id.equals('set-old'))).go();
+          await (db.delete(
+            db.workoutSessionExercises,
+          )..where((row) => row.id.equals('member-old'))).go();
+          await (db.delete(
+            db.workoutSessions,
+          )..where((row) => row.id.equals('old'))).go();
+        });
+        final restored = await until((summary) => weight(summary).value == 110);
+        expect(weight(restored).setLogId, 'set-new');
+        expect(weight(restored).isBaseline, isTrue);
+        await (db.update(db.workoutSessions)
+              ..where((row) => row.id.equals('new')))
+            .write(const WorkoutSessionsCompanion(status: Value('deleted')));
+        expect(
+          (await until((summary) => summary.current.isEmpty)).history,
+          isEmpty,
+        );
+      },
+    );
+
+    test(
+      'record provider includes earlier evidence before any display window',
+      () async {
+        await seed(
+          'old-best',
+          time: performedAt.subtract(const Duration(days: 60)),
+          weight: 120,
+        );
+        await seed('recent', weight: 100);
+        await seed('custom', exerciseId: -1, weight: 900);
+        final container = ProviderContainer(
+          overrides: [AppProviders.appDatabaseProvider.overrideWithValue(db)],
+        );
+        addTearDown(container.dispose);
+        final provider = PersonalRecordProviders.recordsProvider(1);
+        final subscription = container.listen(provider, (_, _) {});
+        addTearDown(subscription.close);
+        await container.read(
+          AnalyticsProviders.completedWorkingSetsProvider(
+            const AnalyticsLogQuery(exerciseId: 1),
+          ).future,
+        );
+        final summary = container.read(provider).requireValue;
+        final weight = summary.current.singleWhere(
+          (record) => record.type == PersonalRecordType.maxWeight,
+        );
+        expect(weight.setLogId, 'set-old-best');
+        expect(weight.value, 120);
+        expect(
+          summary.current.every((record) => record.exerciseId == 1),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'record provider preserves safe failures and recovers on query retry',
+      () async {
+        final retrying = _RetryingAnalyticsRepository(repository);
+        final container = ProviderContainer(
+          overrides: [
+            AnalyticsProviders.repositoryProvider.overrideWithValue(retrying),
+          ],
+        );
+        addTearDown(container.dispose);
+        final provider = PersonalRecordProviders.recordsProvider(null);
+        final source = AnalyticsProviders.completedWorkingSetsProvider(
+          const AnalyticsLogQuery(),
+        );
+        final subscription = container.listen(provider, (_, _) {});
+        addTearDown(subscription.close);
+        await expectLater(
+          container.read(source.future),
+          throwsA(AnalyticsQueryFailure.unavailable),
+        );
+        expect(
+          container.read(provider).error,
+          AnalyticsQueryFailure.unavailable,
+        );
+        retrying.shouldFail = false;
+        container.invalidate(source);
+        await container.read(source.future);
+        expect(container.read(provider).requireValue.current, isEmpty);
+      },
+    );
+  });
 
   test('empty local database returns an immutable empty result', () async {
     final result = await repository.loadCompletedWorkingSets();

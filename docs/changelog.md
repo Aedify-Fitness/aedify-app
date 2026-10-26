@@ -1,5 +1,11 @@
 # Aedify — Changelog
 
+## 2026-10-26 — M5 PR detection service (V1-M5-002)
+
+- Added pure Dart detection for maximum load, reps at the same load, reps-only strength and single-set volume, with immutable current/history DTOs and documented baseline/tie rules. Canonical/custom IDs and all workout sources share deterministic comparisons.
+- Riverpod derives records from full completed-working-set history and automatically rebuilds after corrections/deletions. No source-log flags, cache, schema, dependency or UI changes. e1RM remains V1-M5-003.
+- Format (813 files), clean analysis and 49 focused analytics tests pass, including 31 new PR regressions. All 1,708 full-suite tests passed, zero failures/skips. Policy and files: [PR detection](pr-detection.md). Pause for review before V1-M5-003.
+
 ## 2026-10-26 — M5 first ticket: completed-log analytics queries
 
 - V1-M5-001 adds read-only analytics repositories, immutable evidence/query types and Riverpod access under `lib/features/analytics/`. Default evidence includes completed working sets from finished sessions, preserving canonical units and source identity while excluding warm-ups, skipped/incomplete sets and inactive/deleted/orphaned sessions.
