@@ -2,20 +2,27 @@
 
 ## Current Status
 
-| Field             | Value                                                                                                                                                                                                                                                                                 |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-003 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                             |
-| Implemented       | M5 completed-log queries, deterministic PRs and Epley e1RM with confidence, insufficient-data state and future-anchor candidates. Corrections/deletions refresh records and estimates locally.                                                                                        |
-| Verification      | V1-M5-003 (2026-10-26): format checked 818 files, analysis clean, all **1,738 tests passed**, zero failures/skips, including 79 analytics tests (30 new e1RM cases). Native UI checks were not repeated for this service-only ticket; live Firebase/BYOK acceptance remains separate. |
-| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                                  |
-| Next ticket       | **V1-M5-004 — Plateau detection base logic: not started.** Await explicit user go-ahead after V1-M5-003 review.                                                                                                                                                                       |
-| Evidence          | [e1RM policy, changed files and verification](e1rm-estimation.md), [PR policy](pr-detection.md) and completed-ticket entries below. Prior [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md) retain native/live boundaries.                             |
+| Field             | Value                                                                                                                                                                                                                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-004 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                                              |
+| Implemented       | M5 completed-log queries, PR/e1RM services and deterministic plateau detection with local flags, durable 14-day dismissal, source reconciliation and Riverpod workflows. Dashboard and app-wide recomputation integration remain in M5-005/006.                                                        |
+| Verification      | V1-M5-004 (2026-10-26): generation completed, format checked 826 files, analysis clean, all **1,773 tests passed**, zero failures/skips, including 35 new plateau cases. Migration/rollback/restart fixtures pass; native UI checks were not repeated. Live Firebase/BYOK acceptance remains separate. |
+| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+.                                                                         |
+| Next ticket       | **V1-M5-005 — Analytics dashboard and exercise history screens: not started.** Await explicit user go-ahead after V1-M5-004 review.                                                                                                                                                                    |
+| Evidence          | [Plateau policy, changed files and verification](plateau-detection.md), [e1RM policy](e1rm-estimation.md), [PR policy](pr-detection.md) and completed-ticket entries below. Prior M1–M4 reports retain native/live boundaries.                                                                         |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — V1-M5-004 plateau detection base logic
+
+- Implemented `PlateauDetectionService` and minimal derived evidence DTOs: at least four reliable sessions in the last 28 days, slope over the latest three, non-positive trend trigger, deload/unknown-context suppression and explicit insufficient/inactive/unsupported outcomes. Missed targets/high effort produce reason codes without AI advice. [Policy and changed files](plateau-detection.md).
+- Extended analytics evidence with ownership-checked programme-week context and current exercise eligibility. Schema v19 adds local `plateau_flags`; transactional reconciliation creates/resolves flags without mutating logs, and durable dismissal suppresses retriggering for exactly 14 days. Active watches refresh after source/dismissal changes and once a minute for clock expiry. Riverpod provides safe async evaluation/dismissal workflows.
+- Verification: approved generation completed and formatting checked 826 files. Analysis is clean and all 1,773 full-suite tests passed, zero failures/skips. The 35 new plateau cases cover rules, rollback/privacy sentinels, source changes, migration and disk restart. No dependency or UI changes; native checks were not repeated.
+- M5-005 owns dashboard presentation; M5-006 owns app-wide recomputation integration. Notification/AI flows remain in their later milestones. **Stop after V1-M5-004 for user review; V1-M5-005 requires the user's go-ahead.**
 
 ### 2026-10-26 — V1-M5-003 e1RM estimation service
 

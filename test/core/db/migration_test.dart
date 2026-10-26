@@ -109,11 +109,11 @@ void main() {
         expect(
           (await upgraded.customSelect('PRAGMA user_version').getSingle())
               .read<int>('user_version'),
-          18,
+          19,
         );
         final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
         expect(
-          logs.any((log) => log.fromVersion == 7 && log.toVersion == 18),
+          logs.any((log) => log.fromVersion == 7 && log.toVersion == 19),
           isTrue,
         );
       },
@@ -167,7 +167,7 @@ void main() {
           await upgraded.select(upgraded.workoutSessionExercises).get(),
           isEmpty,
         );
-        expect(upgraded.schemaVersion, 18);
+        expect(upgraded.schemaVersion, 19);
       },
     );
 
@@ -285,7 +285,7 @@ void main() {
       );
       final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
       expect(
-        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 18),
+        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 19),
         isTrue,
       );
       await upgraded.close();
@@ -314,7 +314,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(18));
+      expect(logRows.first.toVersion, equals(19));
 
       db.close();
     });
@@ -376,7 +376,9 @@ void main() {
 }
 
 abstract final class _MigrationFixtures {
+  // Training fixtures also remove dependent M5 state when simulating v7.
   static const m4Tables = [
+    'plateau_flags',
     'set_logs',
     'workout_session_exercises',
     'workout_sessions',
@@ -396,6 +398,7 @@ abstract final class _MigrationFixtures {
   ];
 
   static Future<void> removeV18Columns(AppDatabase db) async {
+    await db.customStatement('DROP TABLE plateau_flags');
     for (final column in [
       'prescribed_rir',
       'prescribed_duration_seconds',

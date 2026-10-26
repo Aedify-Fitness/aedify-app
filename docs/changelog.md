@@ -1,5 +1,11 @@
 # Aedify — Changelog
 
+## 2026-10-26 — M5 plateau detection base logic (V1-M5-004)
+
+- Added the locked 28-day/four-session/rolling-three Epley slope detector, with explicit insufficient-history/deload/inactive/unsupported outcomes and derived missed-target/high-effort evidence codes. Programme-week context is ownership checked; missing context fails closed.
+- Schema v19 adds transactional local plateau flags, idempotent reconciliation, durable 14-day dismissal and resolution after source changes. Riverpod exposes live evaluation/dismissal workflows. Source logs remain unchanged; no UI, AI, notification or dependency changes.
+- Code generation and formatting (826 files) completed; analysis is clean and all 1,773 full-suite tests passed, zero failures/skips, including 35 new plateau regressions. [Policy, boundaries and files](plateau-detection.md). Pause before V1-M5-005.
+
 ## 2026-10-26 — M5 e1RM estimation (V1-M5-003)
 
 - Added exact PRD Epley estimation, confidence metadata, an explicit insufficient-data summary and minimal future-anchor candidates. Positive weighted strength actuals qualify; unsupported/bodyweight-only/non-finite evidence is excluded. Estimates above 10 reps remain available as low confidence and cannot establish e1RM PRs or anchors.

@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:aedify/shared/constants/db_constants.dart';
+import 'package:aedify/core/db/tables/plateau_flags.dart';
 import 'tables/schema_meta.dart';
 import 'tables/exercises.dart';
 import 'tables/local_file_records.dart';
@@ -67,6 +68,7 @@ part 'app_database.g.dart';
     WorkoutSessionExercises,
     SetLogs,
     ProgramRevisions,
+    PlateauFlags,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -74,14 +76,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 18);
+      await _logMigration(m, fromVersion: 0, toVersion: 19);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -215,6 +217,9 @@ class AppDatabase extends _$AppDatabase {
           workoutSessionExercises,
           workoutSessionExercises.loggingType,
         );
+      }
+      if (from < 19) {
+        await m.createTable(plateauFlags);
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

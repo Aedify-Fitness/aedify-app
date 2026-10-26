@@ -6,6 +6,7 @@ import 'package:aedify/features/analytics/domain/analytics_set_log.dart';
 import 'package:aedify/shared/domain/exercise_logging_type.dart';
 import 'package:aedify/shared/domain/exercise_modality.dart';
 import 'package:aedify/shared/domain/session_source.dart';
+import 'package:aedify/shared/domain/week_type.dart';
 import 'package:drift/drift.dart';
 
 /// Computes evidence on read; the join also excludes orphaned source logs.
@@ -47,6 +48,8 @@ class DriftAnalyticsRepository implements AnalyticsRepository {
     final members = _db.workoutSessionExercises;
     final sessions = _db.workoutSessions;
     final exercises = _db.exercises;
+    final workouts = _db.programWorkouts;
+    final weeks = _db.programWeeks;
     final statement =
         _db.select(logs).join([
             innerJoin(
@@ -59,6 +62,16 @@ class DriftAnalyticsRepository implements AnalyticsRepository {
             ),
             // Archived/missing catalogue entries must not erase completed history.
             leftOuterJoin(exercises, exercises.id.equalsExp(logs.exerciseId)),
+            leftOuterJoin(
+              workouts,
+              workouts.id.equalsExp(sessions.programWorkoutId) &
+                  workouts.programId.equalsExp(sessions.programId),
+            ),
+            leftOuterJoin(
+              weeks,
+              weeks.id.equalsExp(workouts.programWeekId) &
+                  weeks.programId.equalsExp(workouts.programId),
+            ),
           ])
           ..where(
             sessions.status.equals('completed') &
@@ -92,6 +105,7 @@ class DriftAnalyticsRepository implements AnalyticsRepository {
       final member = row.readTable(_db.workoutSessionExercises);
       final session = row.readTable(_db.workoutSessions);
       final exercise = row.readTableOrNull(_db.exercises);
+      final week = row.readTableOrNull(_db.programWeeks);
       // A swapped member's current logging mode describes a different exercise.
       final loggingValue = member.exerciseId == log.exerciseId
           ? member.loggingType ?? exercise?.loggingType
@@ -120,9 +134,31 @@ class DriftAnalyticsRepository implements AnalyticsRepository {
         prescribedRepsMax: log.prescribedRepsMax,
         prescribedRepsExact: log.prescribedRepsExact,
         prescribedWeightKg: log.prescribedWeightKg,
+        isDeload: _isDeload(session, week),
+        isPlateauEligible:
+            exercise != null &&
+            exercise.deletedAt == null &&
+            !exercise.isSubstitutedOut,
       );
     }),
   );
+
+  static bool? _isDeload(WorkoutSession session, ProgramWeek? week) {
+    if (session.source == SessionSource.standalone.dbValue ||
+        session.source == SessionSource.savedWorkout.dbValue) {
+      return false;
+    }
+    if (session.source != SessionSource.program.dbValue || week == null) {
+      return null;
+    }
+    if (week.weekType == null) {
+      return false;
+    }
+    if (!WeekType.values.any((type) => type.dbValue == week.weekType)) {
+      return null;
+    }
+    return week.weekType == WeekType.deload.dbValue;
+  }
 
   static ExerciseModality? _modality(String? value) {
     for (final modality in ExerciseModality.values) {

@@ -31,6 +31,8 @@ class AnalyticsSetLog {
     this.prescribedRepsMax,
     this.prescribedRepsExact,
     this.prescribedWeightKg,
+    this.isDeload = false,
+    this.isPlateauEligible = true,
   });
 
   final String id;
@@ -57,4 +59,10 @@ class AnalyticsSetLog {
   final int? prescribedRepsMax;
   final int? prescribedRepsExact;
   final double? prescribedWeightKg;
+
+  /// Whether the owning programme week is a deload; `null` means unknown context.
+  final bool? isDeload;
+
+  /// Whether current catalogue metadata permits plateau evaluation.
+  final bool isPlateauEligible;
 }
