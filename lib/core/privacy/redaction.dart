@@ -18,16 +18,28 @@ class Redaction {
     'injury_note',
     'injuries',
     'notes',
+    'programme_description',
+    'workout_notes',
+    'session_notes',
+    'exercise_name_snapshot',
+    'program_revision_summary',
     'screenshot_path',
     'source_file_excerpt',
     'local_database_dump',
     'prompt_text',
     'ai_response_json',
+    'workout_session_notes',
+    'saved_workout_notes',
+    'set_log_notes',
+    'exercise_notes',
+    'exercise_cues',
+    'workout_name_snapshot',
   };
 
   static const _sensitiveHeaderPrefixes = [
     'authorization',
     'x-api-key',
+    'x-goog-api-key',
     'set-cookie',
     'cookie',
     'x-auth-token',
@@ -90,7 +102,9 @@ class Redaction {
 
   static Map<String, Object?> queryParameters(Map<String, Object?> input) {
     return input.map((key, value) {
-      if (key.toLowerCase() == 'api_key' || key.toLowerCase() == 'token') {
+      if (key.toLowerCase() == 'api_key' ||
+          key.toLowerCase() == 'token' ||
+          key.toLowerCase() == 'key') {
         return MapEntry(key, sensitive(value.toString()));
       }
       return MapEntry(key, value);

@@ -212,7 +212,7 @@
       "modality": "strength",
       "equipment": "bodyweight",
       "mechanic": "isolation",
-      "force": "static",
+      "force": "hold",
       "grips": [],
       "steps": [
         "Start in a forearm plank position.",

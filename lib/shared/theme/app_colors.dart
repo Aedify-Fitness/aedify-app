@@ -51,6 +51,21 @@ abstract final class AedifyLightColors {
   static const background = Color(0xFFf8f9ff);
   static const onBackground = Color(0xFF0b1c30);
   static const surfaceVariant = Color(0xFFd3e4fe);
+  static const errorSurface = Color(0x19ba1a1a);
+  static const handleBarColor = Color(0x5044474c);
+  static const surfaceVariantFaded = Color(0x6644474c);
+  static const secondaryBorder = Color(0x3F0051d5);
+
+  // Difficulty badge colors — approved semantic exceptions outside the
+  // Serene Professional palette (green/orange tiers are intentional).
+  static const difficultyNoviceBg = Color(0x66d3e4fe);
+  static const difficultyNoviceText = Color(0xFF44474c);
+  static const difficultyBeginnerBg = Color(0xFFE8F5E9);
+  static const difficultyBeginnerText = Color(0xFF4CAF50);
+  static const difficultyIntermediateBg = Color(0xFFFFF3E0);
+  static const difficultyIntermediateText = Color(0xFFFF9800);
+  static const difficultyAdvancedBg = Color(0xFFffdad6);
+  static const difficultyAdvancedText = Color(0xFFba1a1a);
 }
 
 abstract final class AedifyDarkColors {
@@ -103,4 +118,20 @@ abstract final class AedifyDarkColors {
   static const background = Color(0xFF11131b);
   static const onBackground = Color(0xFFe1e2ed);
   static const surfaceVariant = Color(0xFF32343d);
+  static const errorSurface = Color(0x19ffb4ab);
+  static const handleBarColor = Color(0x50c3c6d7);
+  static const surfaceVariantFaded = Color(0x66c3c6d7);
+  static const primaryContainerSelected = Color(0x4C2563eb);
+  static const secondaryBorder = Color(0x3Fb9c7e1);
+
+  // Difficulty badge colors — approved semantic exceptions outside the
+  // Serene Professional palette (green/orange tiers are intentional).
+  static const difficultyNoviceBg = Color(0x6632343d);
+  static const difficultyNoviceText = Color(0xFFc3c6d7);
+  static const difficultyBeginnerBg = Color(0xFF1B3D1B);
+  static const difficultyBeginnerText = Color(0xFF81C784);
+  static const difficultyIntermediateBg = Color(0xFF3D2E1B);
+  static const difficultyIntermediateText = Color(0xFFFFB74D);
+  static const difficultyAdvancedBg = Color(0xFF93000a);
+  static const difficultyAdvancedText = Color(0xFFffb4ab);
 }

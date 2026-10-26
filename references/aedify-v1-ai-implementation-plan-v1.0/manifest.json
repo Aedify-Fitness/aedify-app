@@ -1,0 +1,37 @@
+{
+  "package": "AI Implementation Plan",
+  "version": "v1.0",
+  "created": "2026-06-14",
+  "source_baseline": "PRD v1.10 Final / Re-locked after Package Validation",
+  "roadmap_baseline": "aedify-v1-implementation-roadmap-tech-stack-updated-v1.3.md",
+  "architecture_baseline": "aedify-v1-architecture-implementation-plan-v1.0.md",
+  "feature_plan_baseline": "v1-feature-by-feature-build-plan-v1.0/",
+  "data_model_baseline": "v1-data-model-implementation-plan-v1.0/",
+  "scope_rule": "No product scope change; implementation-only breakdown",
+  "milestones_covered": [
+    "M7",
+    "M8",
+    "M9",
+    "M11",
+    "M12",
+    "M13",
+    "M14"
+  ],
+  "files": [
+    "00-ai-implementation-plan-index-v1.0.md",
+    "01-ai-boundaries-principles-v1.0.md",
+    "02-provider-byok-capability-plan-v1.0.md",
+    "03-prompt-builder-context-assembly-v1.0.md",
+    "04-structured-output-validation-repair-v1.0.md",
+    "05-candidate-exercise-engine-v1.0.md",
+    "06-ai-workout-programme-generation-v1.0.md",
+    "07-ai-chat-update-flows-v1.0.md",
+    "08-external-text-import-ai-v1.0.md",
+    "09-image-screenshot-import-ai-v1.0.md",
+    "10-progress-media-physique-analysis-ai-v1.0.md",
+    "11-privacy-consent-redaction-ai-v1.0.md",
+    "12-ai-error-resilience-cost-plan-v1.0.md",
+    "13-ai-testing-acceptance-checklist-v1.0.md",
+    "14-ai-backlog-ticket-seeds-v1.0.md"
+  ]
+}

@@ -1,0 +1,691 @@
+import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
+import 'package:aedify/features/lift_log/application/workout_history_providers.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
+import 'package:aedify/shared/constants/svg_assets_solid.dart';
+import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
+import 'package:aedify/shared/theme/context_extensions.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_exercise_item.dart';
+import 'package:aedify/features/workout_execution/domain/workout_runner_session_view_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class WorkoutCompleteScreen extends ConsumerWidget {
+  const WorkoutCompleteScreen({super.key, required this.session});
+
+  final WorkoutRunnerSessionViewData session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session =
+        ref
+            .watch(
+              WorkoutHistoryProviders.completedSessionProvider(
+                this.session.sessionId,
+              ),
+            )
+            .asData
+            ?.value ??
+        this.session;
+    final completedAt = session.completedAt ?? DateTime.now();
+    final durationSeconds =
+        session.durationSeconds ??
+        completedAt.difference(session.startedAt).inSeconds;
+    final totalVolume = _computeTotalVolume(session);
+    final completedSets = _computeCompletedSets(session);
+    final totalSets = _computeTotalSets(session);
+    final preferredUnit =
+        ref
+            .watch(AppProviders.profileControllerProvider)
+            .asData
+            ?.value
+            .profile
+            ?.preferredUnits ??
+        PreferredUnit.metric;
+    final weightUnit = preferredUnit.weightUnit;
+
+    return Scaffold(
+      backgroundColor: context.colorScheme.surface,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(64),
+        child: Container(
+          color: context.colorScheme.surface,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: SizedBox(
+                height: 64,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: SvgPicture.asset(
+                        OutlinedSvgAssets.xMark,
+                        width: AppSizing.iconMd,
+                        height: AppSizing.iconMd,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AppWhiteSpace.hLg,
+            _HeroSection(workoutName: session.name),
+            AppWhiteSpace.hXl,
+            _MetricsRow(
+              durationSeconds: durationSeconds,
+              totalVolume: totalVolume,
+              completedSets: completedSets,
+              totalSets: totalSets,
+              weightUnit: weightUnit,
+            ),
+            AppWhiteSpace.hLg,
+            _InsightCard(),
+            AppWhiteSpace.hLg,
+            _ExerciseSummarySection(
+              sessionId: session.sessionId,
+              exercises: session.exercises,
+              weightUnit: weightUnit,
+            ),
+            AppWhiteSpace.hLg,
+          ],
+        ),
+      ),
+      bottomNavigationBar: _BottomActionsLayer(
+        onDone: () => context.pop(),
+        onShare: () {},
+      ),
+    );
+  }
+
+  double _computeTotalVolume(WorkoutRunnerSessionViewData session) {
+    var volume = 0.0;
+    for (final exercise in session.exercises) {
+      for (final set in exercise.sets) {
+        if (set.completed &&
+            set.actualWeightKg != null &&
+            set.actualReps != null) {
+          volume += set.actualWeightKg! * set.actualReps!;
+        }
+      }
+    }
+    return volume;
+  }
+
+  int _computeCompletedSets(WorkoutRunnerSessionViewData session) {
+    var count = 0;
+    for (final exercise in session.exercises) {
+      for (final set in exercise.sets) {
+        if (set.completed) count++;
+      }
+    }
+    return count;
+  }
+
+  int _computeTotalSets(WorkoutRunnerSessionViewData session) {
+    var count = 0;
+    for (final exercise in session.exercises) {
+      count += exercise.sets.length;
+    }
+    return count;
+  }
+}
+
+class _HeroSection extends StatelessWidget {
+  const _HeroSection({required this.workoutName});
+
+  final String workoutName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _PulsingCheckCircle(),
+        AppWhiteSpace.hMd,
+        Text(
+          AppStrings.sessionComplete,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.headlineLgMobile.copyWith(
+            fontWeight: FontWeight.w600,
+            color: context.colorScheme.onSurface,
+          ),
+        ),
+        AppWhiteSpace.hSm,
+        Text(
+          workoutName,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.bodyLg.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PulsingCheckCircle extends StatefulWidget {
+  @override
+  State<_PulsingCheckCircle> createState() => _PulsingCheckCircleState();
+}
+
+class _PulsingCheckCircleState extends State<_PulsingCheckCircle>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(
+      begin: 0.2,
+      end: 0.4,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: context.colorScheme.secondaryContainer,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: context.colorScheme.secondary.withAlpha(
+                  (255 * _animation.value).round(),
+                ),
+                blurRadius: 20,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: SvgPicture.asset(
+            SolidSvgAssets.checkCircle,
+            width: 40,
+            height: 40,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSecondaryContainer,
+              BlendMode.srcIn,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _MetricsRow extends StatelessWidget {
+  const _MetricsRow({
+    required this.durationSeconds,
+    required this.totalVolume,
+    required this.completedSets,
+    required this.totalSets,
+    required this.weightUnit,
+  });
+
+  final int durationSeconds;
+  final double totalVolume;
+  final int completedSets;
+  final int totalSets;
+  final String weightUnit;
+
+  static String _formatDuration(int seconds) {
+    final minutes = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
+  static String _formatVolume(double volume) {
+    final rounded = volume.round();
+    return rounded.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (m) => '${m[1]},',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _BentoStatCard(
+            label: AppStrings.duration.toUpperCase(),
+            child: Text(
+              _formatDuration(durationSeconds),
+              style: AppTextStyles.headlineMd.copyWith(
+                color: context.colorScheme.secondary,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: AppSpacing.buttonVertical),
+        Expanded(
+          child: _BentoStatCard(
+            label: AppStrings.volumeLabel.toUpperCase(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _formatVolume(totalVolume),
+                  style: AppTextStyles.headlineMd.copyWith(
+                    color: context.colorScheme.secondary,
+                    height: 1.0,
+                  ),
+                ),
+                Text(
+                  weightUnit,
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: AppSpacing.buttonVertical),
+        Expanded(
+          child: _BentoStatCard(
+            label: AppStrings.setsLabel.toUpperCase(),
+            child: Text(
+              '$completedSets/$totalSets',
+              style: AppTextStyles.headlineMd.copyWith(
+                color: context.colorScheme.secondary,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BentoStatCard extends StatelessWidget {
+  const _BentoStatCard({required this.label, required this.child});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow.withAlpha(10),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTextStyles.labelSm.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+              letterSpacing: 0.5,
+            ),
+          ),
+          AppWhiteSpace.hXs,
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _InsightCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -16,
+            top: -16,
+            child: SvgPicture.asset(
+              OutlinedSvgAssets.sparkles,
+              width: AppSizing.decorativeIcon,
+              height: AppSizing.decorativeIcon,
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.secondary.withAlpha(26),
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    OutlinedSvgAssets.bolt,
+                    width: AppSizing.iconSm,
+                    height: AppSizing.iconSm,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.secondary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  AppWhiteSpace.wSm,
+                  Text(
+                    AppStrings.aedifyInsight.toUpperCase(),
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: context.colorScheme.secondary,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+              AppWhiteSpace.hMd,
+              Text(
+                AppStrings.completionInsight,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.colorScheme.onSurface,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExerciseSummarySection extends StatelessWidget {
+  const _ExerciseSummarySection({
+    required this.sessionId,
+    required this.exercises,
+    required this.weightUnit,
+  });
+
+  final String sessionId;
+  final List<WorkoutRunnerExerciseItem> exercises;
+  final String weightUnit;
+
+  double _exerciseVolume(WorkoutRunnerExerciseItem exercise) {
+    var volume = 0.0;
+    for (final set in exercise.sets) {
+      if (set.completed &&
+          set.actualWeightKg != null &&
+          set.actualReps != null) {
+        volume += set.actualWeightKg! * set.actualReps!;
+      }
+    }
+    return volume;
+  }
+
+  int _completedSetCount(WorkoutRunnerExerciseItem exercise) {
+    var count = 0;
+    for (final set in exercise.sets) {
+      if (set.completed) count++;
+    }
+    return count;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Text(
+            AppStrings.workoutSummary,
+            style: AppTextStyles.headlineMd.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+        ),
+        AppWhiteSpace.hMd,
+        ...exercises.map((exercise) {
+          final volume = _exerciseVolume(exercise);
+          final completedCount = _completedSetCount(exercise);
+          final formattedVolume = _formatVolume(volume);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.buttonVertical),
+            child: _ExerciseCard(
+              onTap: exercise.canCorrectLogs
+                  ? () => context.pushNamed(
+                      AppRoutes.workoutHistoryDetail().name,
+                      pathParameters: {'sessionId': sessionId},
+                    )
+                  : null,
+              id: exercise.id,
+              name: exercise.exerciseName,
+              completedSets: completedCount,
+              totalSets: exercise.sets.length,
+              formattedVolume: formattedVolume,
+              weightUnit: weightUnit,
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+String _formatVolume(double volume) {
+  final rounded = volume.round();
+  return rounded.toString().replaceAllMapped(
+    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+    (m) => '${m[1]},',
+  );
+}
+
+class _ExerciseCard extends StatelessWidget {
+  const _ExerciseCard({
+    this.onTap,
+    required this.id,
+    required this.name,
+    required this.completedSets,
+    required this.totalSets,
+    required this.formattedVolume,
+    required this.weightUnit,
+  });
+
+  final String id;
+  final String name;
+  final int completedSets;
+  final int totalSets;
+  final String formattedVolume;
+  final String weightUnit;
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        key: ValueKey('completion_exercise_$id'),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Ink(
+          padding: const EdgeInsets.all(AppSpacing.md + AppSpacing.xs),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(color: context.colorScheme.surfaceContainer),
+            boxShadow: [
+              BoxShadow(
+                color: context.colorScheme.shadow.withAlpha(5),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: AppTextStyles.labelMd.copyWith(
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
+                    AppWhiteSpace.hXs,
+                    Text(
+                      '$completedSets sets \u2022 $formattedVolume $weightUnit volume',
+                      style: AppTextStyles.bodyMd.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                SvgPicture.asset(
+                  OutlinedSvgAssets.chevronRight,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.outlineVariant,
+                    BlendMode.srcIn,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomActionsLayer extends StatelessWidget {
+  const _BottomActionsLayer({required this.onDone, required this.onShare});
+
+  final VoidCallback onDone;
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface.withAlpha(230),
+        border: Border(
+          top: BorderSide(
+            color: context.colorScheme.outlineVariant.withAlpha(51),
+          ),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: AppSpacing.md,
+            top: AppSpacing.md,
+            right: AppSpacing.md,
+            bottom: AppSpacing.lg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: FilledButton(
+                  onPressed: onDone,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: context.colorScheme.secondary,
+                    foregroundColor: context.colorScheme.onSecondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(AppStrings.done, style: AppTextStyles.labelMd),
+                ),
+              ),
+              SizedBox(height: AppSpacing.buttonVertical),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: FilledButton(
+                  onPressed: onShare,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: context.colorScheme.surfaceContainer,
+                    foregroundColor: context.colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        OutlinedSvgAssets.share,
+                        width: AppSizing.iconSm,
+                        height: AppSizing.iconSm,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.secondary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      AppWhiteSpace.wSm,
+                      Text(
+                        AppStrings.shareSummary,
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: context.colorScheme.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

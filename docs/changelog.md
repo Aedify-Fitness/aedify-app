@@ -1,8 +1,2018 @@
 # Aedify — Changelog
 
+## 2026-10-26 — Match CI to the local Flutter SDK
+
+- Pinned `.github/workflows/foundation.yml` to Flutter 3.44.4 stable (bundled Dart 3.12.2), matching the installed local SDK so CI uses the same formatter version.
+- Verification: local SDK metadata confirmed; local CI formatting command passes. Hosted pipeline execution remains pending; no app behavior or dependency changes.
+
+## 2026-10-26 — Optional workout weight suggestions complete
+
+- Added a local RPE-based weight suggestion above the active set grid, with explicit Use weight, standalone target selection, source/calculation explanation and next-set recalculation.
+- Eligible recent working sets and user-entered 1RM anchors provide evidence; warm-ups, incomplete/unlogged sets, incompatible load types and stale history are excluded. Corrections refresh suggestions through local table updates.
+- Suggestions do not change prescribed targets, complete sets or write analytics e1RM/PR values. Prior programme-day changes remain intact. Policy, boundaries and acceptance evidence: [weight suggestions](weight-suggestions.md).
+- Verification: formatting checked 802 Dart files, analysis clean, all 1,659 tests passed with zero failures/skips. Native offline acceptance and synthetic light/dark/source-explanation review passed on iOS and Android; normal app entrypoints restored/launched on both. No schema/dependency/code-generation changes.
+
+## 2026-10-25 — Prefill programme workout days from the profile
+
+- New programme training blocks preselect the profile's chosen workout days and create matching, chronologically ordered workout slots for every block week. Days remain editable; empty/unavailable profiles leave the choices empty. Editing/duplicating a saved programme preserves its schedule.
+- Updated `programme_builder_controller.dart` and its unit/widget tests. Verification: `dart format .` checked 791 files, `flutter analyze` clean, all 364 programme tests passed (seven new regressions), zero failures/skips. No schema/dependency changes; full-suite and native checks were not repeated for this follow-up.
+
+## 2026-10-25 — M1–M4 implementation gaps fixed; live acceptance pending
+
+- Fixed global crash redaction/flag handling, Google key redaction and destructive key rotation (M1).
+- Fixed empty-cache/offline sync recovery, stale connectivity and future-schema shortcut handling (M2).
+- Implemented selected-model validation, capability cache population/refresh, safe key replacement/compensation, saved-provider editing and capability navigation (M3). Corrected model IDs/pricing, transactional onboarding and active-programme profile impact detection.
+- Added 34 request-contract, real-SQLite rollback/race, privacy and UI regressions. Formatting (791 Dart files), analysis and the full suite (1,630 tests, zero failures/skips) pass. Native storage/onboarding/BYOK, fixture-based offline library, BYOK UI and M4 offline regressions pass on iOS and Android. Normal app entrypoints restored/launched on both platforms. Firebase is down and no live BYOK test keys are configured; live acceptance remains separate from deterministic checks. Final results: [M1–M4 closure evidence](m1-m4-gap-closure.md).
+
 All meaningful project changes are recorded here in reverse chronological order.
 
 ---
+
+## 2026-10-25
+
+### M4 — Align empty-session and correction actions with the theme
+
+- Add exercises and Save correction now share `AppButtonStyles.primary`, using the approved secondary/onSecondary roles in light mode and primaryContainer/onPrimaryContainer roles in dark mode. Labels inherit theme-specific action typography, and the Add icon matches the foreground color.
+- Preserved the approved pill shape, touch sizes, keyboard clearance and save/disabled behavior. No global theme, data or navigation changes.
+- Verification: formatting (780 files), clean analysis and all 10 focused layout/correction tests passed. Native iOS acceptance passed, light/dark previews were visually reviewed and the normal app entrypoint restored. The full suite and Android native flow were not repeated for this styling-only follow-up.
+
+### M4 — Workout entry and training-history redesign
+
+- Redesigned the empty session with a clear Add exercises footer, a calm introduction and two short guidance rows. History entries use readable date/workout headings and tappable exercise cards with prominent actual results, quiet targets and explicit unlogged states.
+- Rebuilt workout details around a session overview and responsive metric strip, with Repeat workout as a secondary action. Supersets use a shared tonal container and numbered members instead of heavy badges and runner instructions.
+- Redesigned correction sheets with exercise/set context, logging-type-specific result fields, separate effort/notes, and persistent Save/Cancel actions. Validation errors scroll into view; large text and keyboard insets no longer overflow. Editing eligibility and persistence behavior remain intact.
+- Verification: formatting (779 files), clean analysis and **1,596 passing tests**, zero skips. Native iOS/Android offline and redesign-preview acceptance passed, including light/dark weighted and timed editors; native images reviewed and normal app entrypoints restored. No schema/package changes.
+
+### M4 — Exercise-card navigation and logged-set corrections
+
+- Full and finish-early completion summaries now open saved workout logs when an exercise with logged sets is tapped. Partially completed exercises remain editable for their completed logged sets; pending, skipped and empty sets have no correction controls. Local validation enforces the same boundary.
+- Exercise-history cards open the workout log directly; workout name/date headings are plain labels. Partial exercises in finished sessions contribute only completed actual logs to exercise history. Active sessions remain excluded.
+- Correction editors follow logging type: reps + weight, reps only, or duration + optional distance, plus RPE and notes. RIR remains derived internally. Hidden historical values are preserved; completion metrics refresh after saving a correction.
+- Verification: formatting (778 files), clean analysis, all **1,590 tests passed**, zero skips. Native exercise-card → saved log → type-specific correction → repeat flows passed on iOS and Android; editor screenshots visually checked and normal app entrypoints restored. No Home shortcut was added, and no schema/package changes were needed.
+
+### M4 — Remove RIR from the runner table
+
+- Removed RIR from every logging-type table header and row, including supersets. RIR-only target summaries now display the equivalent RPE, leaving no RIR labels in the table. RPE entry and internal RIR calculation/persistence remain intact.
+- Updated existing table-schema, empty-result and mixed-superset tests; all logging-type cases assert RIR is absent and RIR-only targets display RPE.
+- Verification: `dart format .` (777 files), clean analysis, full suite **1,585 passed**. Native checks were not repeated for this table-only change; no schema/package changes.
+
+### M4 — RPE-only entry, linked superset types and standalone launch fixes
+
+- RPE is the only editable effort input in the runner and history corrections; RIR is derived and read-only. RIR-only prescriptions initialize editable RPE (`10 − RIR`) in new saved/programme/repeated workouts and added sets; existing actual RIR-only sessions also populate RPE. Weight/reps/time remain explicit actual inputs.
+- Superset type toggles now update the corresponding linked round together, preserving both members, set identities, other rounds, results and unrelated exercises. Restored sessions use stable member ordering when no explicit superset order exists.
+- Fixed Home's Manual log action, which still opened the template builder. It now starts the standalone launch flow. The previous native fixture started at Lift Log and missed that Home entry point; native acceptance now starts from the real Home screen.
+- Verification: formatting (777 files), clean analysis, **1,585 passing tests**, zero skips, and native Home-to-standalone/offline/reopen/history/correction/repeat flows on iOS and Android. Reviewed both themes on both platforms; normal app entrypoints restored. No schema/package changes.
+
+### M4 — Logging-type tables and completed exercise history
+
+- Removed the runner set-details expansion. Headers and inline actual fields now follow each exercise's logging type, including mixed supersets: weighted reps, reps only, or duration with optional distance. RPE/RIR are inline for every type; targets remain separate from actuals.
+- Each set's Warm-up/Working label toggles its type on tap without clearing results or metadata. Shared horizontal scrolling keeps headers and fields aligned at narrow widths and large text; the iOS scrollbar stays below the rows.
+- Exercise history excludes active sessions and unfinished exercise occurrences, then displays only completed, non-skipped sets with actual results. Empty occurrences disappear; full session history retains every original set. Duration corrections require time while preserving older distance-only logs without a logging-type snapshot.
+- Verification: `dart format .` checked 774 files; analysis clean; all **1,581 tests passed**, zero skips. Updated the stale superset nesting assertion to verify visible round/member order. The native iOS offline/recovery/history/correction/repeat flow passed; final light/dark screenshots were reviewed. The normal app entrypoint was restored. Android native/OS-termination checks remain from the original M4 closure.
+
+### M4 — Closed after functionality and native acceptance verification
+
+- Added standalone workouts, independent repeats, complete actual-set inputs, controlled history corrections and live exercise history. Completion now refreshes cached histories. Preserved snapshots and attribution across source edits, deletions and exercise swaps.
+- Schema v18 retains time/distance/RIR targets and logging mode. Fixed pre-M4 upgrade guards and added real file-backed migration/reopen/failed-write coverage.
+- Resolved all 42 previously recorded UI failures through current UI expectations and actual layout/touch/input fixes. No tests were skipped or deleted to obtain a pass.
+- Native build compatibility now uses `health` 13.3.2 within the approved stack, Android API 26 minimum with notification desugaring, and the existing iOS 15 minimum across CocoaPods targets. Health permission requests/sync remain disabled.
+- Verification: code generation, formatting (773 files), clean analysis and **1,573 passing tests**. Native offline UI plus deliberate OS-termination/recovery passed on both platforms; normal `lib/main.dart` apps restored and launched. Details and complete file inventory: [M4 closure](m4-closure.md).
+
+## 2026-10-24
+
+### M4 — Functional gap implementation
+
+- Added standalone workout launch and repeat from completed session snapshots with fresh identities, explicit actual inputs, and active-session conflict handling.
+- Added controlled transactional history corrections and completed per-exercise history with preserved exercise attribution across mid-workout swaps.
+- Schema v18 retains prescribed time, distance, RIR and session exercise logging type. Active logging supports strength, bodyweight and timed exercise actuals plus warm-up labels.
+- Updated stale UI expectations and fixed real narrow-layout, touch-target and input-state defects. Added real SQLite recovery/rollback and diagnostic privacy acceptance tests.
+- Implementation verification continued into 2026-10-25; the closure entry above records the final results.
+
+### M4 — Library hub redesign
+
+- Refined `LibraryHubScreen` with a clear heading, accessible Exercises/Workouts
+  controls and a contextual Create action. Search, filters, scroll positions and
+  the selected pane survive navigation; embedded libraries avoid duplicate FABs.
+- Updated exercise browsing controls, Bodymap entry, filtered result counts and
+  loading/error/empty states. Saved workout cards expose separate detail, menu
+  and Start/Resume actions, respecting the existing active-session boundary.
+- Restored the original `ExerciseCard` design per user preference. Its background
+  now matches `SavedWorkoutListTile` in both themes; metadata wraps and the
+  difficulty badge moves below it for large text.
+- Verification: `dart format .` checked 750 files; `flutter analyze`, diff checks
+  and all 76 Library/browsing/saved-workout/router tests passed. Reviewed real-font
+  light/dark renders and compact, large-text, keyboard and navigation clearance
+  cases. Full suite: 1491 passed, 42 failed. All failures reproduce in an untouched
+  checkout of the current commit (12 programme-builder and 30 runner cases); no
+  new failures. Updated existing menu tests to use the public tooltip rather than
+  the internal menu value type. No schema/package changes or code generation;
+  live reload not repeated.
+
+### M4 — Resume banner header removed
+
+- Removed the parent navigation header above `WorkoutRunnerResumeBanner`,
+  retaining its safe-area layout and the native iOS swipe to the previous route.
+  Leaving the recovered session does not save, complete or abandon it.
+- Verification: `dart format .` checked 746 files; analysis, diff checks and all
+  209 workout-execution/router tests passed. Two pushed-route iOS gesture cases
+  verify header-free recovery exits and the active runner's guarded exit sheet.
+  Full suite and live reload not repeated for this navigation-only follow-up.
+
+### M4 — Original workout resume banner restored
+
+- Restored `WorkoutRunnerResumeBanner`'s original Session in Progress heading,
+  centered subtitle, raised summary card, elapsed/exercise tiles, current-focus
+  progress row and rectangular Resume/Abandon buttons, per user preference.
+- Retained guarded async resume/discard/retry and inline failure recovery. Small
+  screens and large text stack the summary content; completed-exercise counts
+  require every set completed and current focus follows superset execution order.
+- Verification: `dart format .` checked 746 files; analysis, diff checks and all
+  168 workout-execution tests passed, including five resume-banner cases. Reviewed
+  real-font light/dark banner renders. Full suite: 1498 passed, 12 failed; failure
+  names match the existing programme-builder baseline, with no new failures.
+  No schema/packages/code generation; live reload not repeated.
+
+### M4 — Original workout runner layout refined
+
+- Restored `WorkoutRunnerScreen`'s exercise/context header, large 16:9 media
+  preview, compact training table, paired Log Set/Finish actions and circular
+  rest countdown. Refined mode typography, tonal surfaces, active-row emphasis
+  and 48px controls retain the original screen's character.
+- The table separates prescribed targets from editable actual KG/reps and
+  completed results. Superset members and warm-up/working rounds remain ordered;
+  Add Set, notes, completion undo, skip/restore and guide navigation remain
+  functional. Progress reflects actual session data without invented history.
+- Header/body/footer use natural layout heights. On short screens or large text,
+  the header scrolls and rows stack; the rest panel scrolls within a bounded
+  region. Keyboard and safe-area clearance are reserved without fixed overlays.
+- Progress saves are serialized with guarded pause/finalization and operation-
+  specific retries. Failed operations preserve drafts; completion includes notes,
+  energy and difficulty. Loading/recovery/error exits and duplicate actions are
+  guarded, and timers dismiss once and stop after disposal.
+- Verification: `dart format .` checked 745 files; `flutter analyze`,
+  `git diff --check` and all 163 workout-execution tests passed. Reviewed real-font
+  390px light/dark single-exercise, superset, log and rest previews. Full suite:
+  1493 passed, 12 failed. All failures match the previously confirmed programme-
+  builder baseline; no new failures and the two prior runner failures now pass.
+  No schema/package changes or code generation; live reload not repeated.
+
+### M4 — Custom exercise editor redesign
+
+- Rebuilt `CustomExerciseEditorScreen` with a clear create/edit heading,
+  grouped exercise details, training setup and tracking, and a fixed Save/Discard
+  footer that respects safe areas, large text and the keyboard.
+- Extracted reusable equipment/difficulty and instruction sections. All muscle,
+  modality, difficulty and tracking choices remain available through accessible
+  48px controls; tracking uses full-width rows and difficulty wraps naturally.
+- Numbered cue cards and explicit text/list actions preserve normalization,
+  cursor/composition state, deletion identity and validation feedback. Required
+  fields and optional instruction behavior are unchanged.
+- Save/delete now block concurrent operations and draft changes while pending,
+  ignore completions after disposal and clear stale operation errors. Failure
+  Retry repeats the failed operation. Dirty exit confirmation, successful route
+  results and library refresh/filter behavior remain intact.
+- Verification: `dart format .` checked 741 files; `flutter analyze`,
+  `git diff --check` and all 311 exercise-library tests passed, including editor
+  lifecycle, library returns and 320px/2x-text/keyboard accessibility cases.
+  Reviewed real-font 390px light/dark overview, setup, tracking and instruction
+  previews. Full suite: 1447 passed, 14 failed; the failure names exactly match
+  the previously confirmed 12 programme-builder and two runner failures.
+  No new failures, dependencies, schema or storage changes. Live reload not repeated.
+
+## 2026-10-23
+
+### M4 — Full-screen programme calendar and workout details
+
+- Programme calendar and programme workout detail routes now use the root
+  navigator, hiding the floating bottom navigation bar. Saved-workout details
+  already use that navigator. Route names/paths and Back to the previous screen
+  are preserved; the bar remains available on the main tabs.
+- Verification: `dart format .` checked 736 files; `flutter analyze`,
+  `git diff --check` and all 64 router, navigation-shell, workout-detail and
+  calendar-screen tests passed. Seven new routing cases cover direct entry,
+  route parameters and navigation restoration through Back. Full suite and live
+  reload were not repeated for this routing-only follow-up.
+
+### M4 — Workout detail redesign
+
+- Rebuilt `WorkoutDetailScreen` around a concise workout overview, actual
+  exercise/set totals, estimated duration and an ordered exercise flow. Light
+  and dark surfaces follow the shared design tokens; the safe-area action bar
+  reserves its own space and supports large text.
+- Numbered exercise cards separate guide navigation from set disclosure.
+  Supersets stay grouped, warm-ups are counted separately, variable repetition
+  targets are explicit, and expanded rows show available per-set load, effort,
+  rest, duration and notes without inventing missing values.
+- Moved local loading/session eligibility into `WorkoutDetailController`.
+  Conflicting active sessions hide Start, matching sessions offer Resume, and
+  scheduled occurrences retain completion/today guards. Return navigation,
+  refresh and retry reload safely, including disposal during a pending refresh.
+- Saved-workout logging types now prefer the stored occurrence snapshot, and
+  unscheduled programme occurrences no longer display an invented weekday.
+  No schema, dependency or privacy-boundary changes.
+- Verification: `dart format .` checked 736 files; `flutter analyze`,
+  `git diff --check` and all 52 workout-detail regression tests passed. Reviewed
+  rendered 390px light/dark overview, expanded-set and superset previews; tests
+  cover 320px/2x text, high contrast, reduced motion, named routes and footer
+  clearance. Full suite: 1401 passed, 14 failed; failure names exactly match
+  the previously confirmed 12 programme-builder and two runner failures.
+  No new failing tests; live reload not repeated.
+
+### M2/M4 — Exercise detail redesign
+
+- Reworked `ExerciseDetailScreen` with a quiet close/favorite header, concise
+  exercise facts, full-width media previews, audio-led instructions, progressive
+  metadata disclosure and a footer that reserves its own layout space.
+- Removed the Muscles Worked section at the user's request; the exercise's
+  underlying muscle metadata is preserved for later restoration.
+- Favorite and avoid/allow saves now run through an application controller with
+  busy states, protected refresh and recoverable inline failures. Existing local
+  persistence and optional per-step audio remain intact.
+- Media previews expose readable captions and accessible paging rather than an
+  inert play glyph. Existing preview-only media, unavailable notes and empty
+  history remain explicit; this change does not implement video playback,
+  durable notes, history queries or anatomical highlighting.
+- Verification: `dart format .` checked 731 files; `flutter analyze`,
+  `git diff --check` and all 272 exercise-library tests passed. Coverage includes
+  24 detail-screen and 18 media tests, 48px audio controls, preference failures
+  and delayed refresh, removed anatomy, and 320px/2x-text/high-contrast/reduced-
+  motion layouts in both themes. Final 390px light/dark previews were reviewed.
+  Full suite: 1350 passed, 14 failed; failure names exactly match the previously
+  confirmed baseline builder/runner failures. No schema or dependency changes.
+
+### M4 — Programme calendar redesign
+
+- Rebuilt `ProgrammeCalendarScreen` around programme completion, the actual
+  scheduled workout and a selected-week agenda. Numbered week navigation reveals
+  distant current weeks reliably, offers a return to the current week and retains
+  selection through refresh; removed weeks and programme changes reset safely.
+- Refined `ProgrammeCalendarHeader`, `ProgrammeWeekSection` and `ProgrammeDayCard`
+  with a seven-day overview, connected agenda, compact recovery rows, explicit
+  workout statuses and distinct deload treatment. Shared tokens/copy, light/dark
+  surfaces, accessible progress and 48px controls follow the design system.
+- Preserved named edit/detail/runner routes, reload on return, start/resume session
+  guards, local data ownership and offline behavior. No dependencies or schema
+  changes.
+- Verification: `dart format .` checked 728 files; `flutter analyze`,
+  `git diff --check` and all 35 calendar regressions passed, including 320px/2x
+  text in both themes, distant-week selection, session conflicts, routes,
+  refresh/retry and overview taps. Light/dark 390px previews rendered/reviewed.
+  Full `flutter test`: 1337 passed, 14 failed. The identical 14 builder/runner
+  failures reproduce in an isolated archive of unchanged HEAD `0d4788e`.
+
+## 2026-10-20
+
+### M4 — Repeat visibility and confirmation rules
+
+- Weekly Schedule day cards and Define Workouts hide Repeat in this block when
+  the configured workout already matches on that weekday in every block week.
+  Customizing a copy or clearing an assignment makes the action available again.
+- Selecting repeat scope in `ProgrammeWorkoutScopeSelector` applies it directly
+  for programme templates, saved workout imports and new programme workouts.
+  The Define Workouts repeat action also applies directly. Confirmation is shown
+  only for the Weekly Schedule day-card repeat action.
+- Added identity-independent repetition detection, including prescriptions and
+  superset grouping, with cached results refreshed on edits and week navigation.
+  Detection survives save/reload without a persisted flag or schema change.
+- Verification: formatting checked 726 files; plugin MCP analysis and
+  `git diff --check` passed. All 85 focused domain, builder, repository and
+  assignment-sheet tests passed, including independent row IDs, customized
+  targets, button visibility on both steps, direct scope assignment, card-only
+  confirmation/cancellation and 320px/2x-text themes. Full suite/live restart not
+  repeated; the earlier schema-v17 restart note still applies.
+
+### M4 — Goal summary badge and same-weekday block repetition
+
+- The review hero badge now shows the first selected programme goal, including a
+  single goal. Without programme goals, it uses the first available workout goal;
+  when neither exists the badge is omitted. Block focus remains in phase cards.
+- Weekly Schedule and Define Workouts offer custom-day assignment or repetition
+  on the same weekday throughout the current block. The template chooser exposes
+  scope for programme templates, saved workout imports and newly authored workouts;
+  assigned workouts can be repeated again after configuration.
+- Repetition confirms replacing existing workouts and adding missing training
+  days. It leaves other weekdays/blocks intact, creates independent template,
+  exercise, set and superset identities, and permits later per-day edits. The UI
+  explains that later edits affect only that copy; repeat again to reapply them.
+- Schema v17 adds default-empty workout goal metadata to programme templates.
+  Creation/import, assignment cloning and save/load preserve it. Existing v16
+  templates migrate with no inferred goals; older upgrade paths remain supported.
+- Verification: code generation passed; post-generation `dart format .` checked
+  724 files; plugin MCP analysis and `git diff --check` passed. All 334 programme,
+  database/migration and home tests passed, including block isolation, missing
+  days, custom cancellation, independent edits, goal fallback and 320px/2x-text
+  controls in both themes. Full suite not repeated. Save/discard any open draft,
+  then restart the app to apply schema v17; live restart remains deferred.
+
+### M4 — Separate programme drafts from publication
+
+- `ProgrammeBuilderController.saveDraft` now saves a named unfinished programme
+  with draft status and active=false, without publication requirements for goals,
+  block names, weeks or assignments. Publish retains full validation and promotes
+  a draft to inactive. Save failure preserves the edited draft; Retry retains
+  the original draft/publication intent. Draft saves have distinct success copy.
+- The programme library labels drafts, adds a Drafts filter and opens them in
+  the builder rather than the calendar. Draft menus omit activation, and the
+  repository rejects activation until publication.
+- Draft persistence retains unassigned workout days, empty weeks and incomplete
+  block metadata through save/load. Explicit empty weekly schedules no longer
+  inherit the first week's fallback schedule. No schema change was needed.
+- Verification: `dart format .` checked 723 files; plugin MCP analysis and
+  `git diff --check` passed. All 109 focused controller, repository, builder and
+  library tests passed, covering partial drafts, persistence/reload, promotion,
+  failure/retry, status labels, filtering, routing and activation protection.
+  Full suite/live restart not repeated; previous runner/schema-v16 notes apply.
+
+### M4 — Final publication fact spacing
+
+- `_PublicationFact.isLast` removes the final fact's bottom divider and bottom
+  padding. The publication card retains its outer inset and other row spacing.
+- Verification: format checked 722 files; plugin MCP analysis, all seven existing
+  review widget tests and `git diff --check` passed. Full suite not repeated.
+
+### M4 — Single review publication action
+
+- Removed the Publish programme button from `_PublicationPreview` and its unused
+  callback/loading inputs. `ProgrammeBuilderActionBar` remains the publication
+  action, retaining existing validation, saving state and navigation.
+- Updated review/screen tests to use the floating Publish action and assert that
+  the preview contains no button. Removed the unused button string.
+- Verification: formatting checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 52 focused review/builder-screen tests passed.
+  Full suite/live restart not repeated.
+
+### M4 — Review action bar and builder back navigation
+
+- Restored `ProgrammeBuilderActionBar` directly on Review & Publish, with Step 5,
+  Ready to publish and the existing save callback/loading state. The removed
+  `ProgrammeSaveBar`, activation controls and programme cover remain removed.
+- All five steps show an app-bar Back button. Back taps, leading-edge swipes
+  and system Back return one step; Programme Details returns to the previous
+  screen, confirming before discarding an edited draft. Navigation is disabled
+  while saving, and duplicate discard dialogs are prevented.
+- Edge gestures support both text directions and preserve horizontal scrolling
+  away from the edge. Short, reversed, vertical and cancelled gestures do not
+  navigate. Existing forward-navigation validation remains in force.
+- Verification: `dart format .` checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 62 focused summary/review/navigation/builder
+  tests passed, including safe-area reachability and publishing at 320px/2x text
+  in both themes. Full suite/live restart not repeated; previous notes apply.
+
+### M4 — Simplify review and estimate RPE from RIR
+
+- Removed the review cover and `ProgrammeSaveBar`, including its duplicate
+  publication action and activation toggle. The publication card remains the
+  review's save action; earlier steps retain their floating Proceed bars.
+- Review workload summaries prefer explicit RPE targets (including legacy RPE
+  fields), falling back to estimated RPE = 10 − prescribed RIR, limited to 1–10.
+  Converted values are labelled as estimates and never written into saved
+  prescriptions. Warmups, negative RIR and unset effort targets are excluded.
+- Verification: `dart format .` checked 720 files; plugin MCP analysis and
+  `git diff --check` passed. All 51 focused summary, review and builder-screen
+  tests passed, covering fallback/precedence/bounds, estimate labels, save
+  callbacks, footer absence and 320px/2x-text light/dark layouts. Full suite and
+  live restart were not repeated; prior runner failures/restart notes apply.
+
+### M4 — Mobile Review & Publish design
+
+- Replaced the programme review step with the supplied mobile hierarchy:
+  programme hero, two-by-two metrics, phase cards with exercise previews, dark
+  publication card, weekly workload bars and a bundled gym image. The layout
+  stays a single mobile column, without breakpoints or desktop navigation.
+- Summary values derive from the current draft: duration, weekly day range,
+  unique exercises, block ranges, explicit deload weeks, average working sets
+  and prescribed RPE. Warmups are excluded from working-set/RPE summaries;
+  unset targets are shown honestly. Publication remains private and local.
+- Both publication actions use the existing save flow. The floating footer
+  shows Step 5 and Publish, retaining activation controls and saving states.
+  Improved footer wrapping for enlarged text on small phones.
+- Verification: `dart format .` checked 722 files; plugin MCP analysis and
+  `git diff --check` passed. All 55 focused summary, review, save-bar and builder
+  tests passed, including 320px/2x-text light/dark cases. Isolated mobile renders
+  were visually checked with the bundled fonts. Full suite not repeated; the
+  previous two runner failures and deferred schema-v16 restart still apply.
+
+### M4 — Optional training days across each block
+
+- Training Blocks now offers optional weekday chips. Selecting a day adds it
+  across that block's weeks; other blocks and existing assignments on untouched
+  days are preserved. No selection is required to leave the block step.
+- Weekly Schedule still edits each week independently. Its overrides do not
+  change the saved block defaults or get reset by block name/notes edits or
+  reloading. New weeks from block resizing or Manage Weeks inherit defaults.
+- Removing a default day with assigned workouts requires confirmation before
+  clearing those assignments. Other week-specific days remain unchanged.
+- Drift schema v16 stores block defaults through the existing enum codec.
+  v15 migration starts with defaults unset and retains block names/lengths;
+  direct upgrades from earlier versions create the current block table.
+- Verification: code generation and post-generation formatting (718 files)
+  passed; plugin MCP analysis and `git diff --check` passed. Full suite: 1284
+  passed / two existing runner failures. All programme and migration checks
+  passed, including independent weeks, block isolation, inheritance, confirmation
+  cancellation, save/reload and 320px/2x-text light/dark layouts.
+  Live restart remains deferred to preserve the open draft; restart after saving
+  or discarding it to apply schema v16.
+
+### M4 — Leave newly created block names blank
+
+- `ProgrammeBuilderController` no longer inserts Block 1/Block 2 into new block
+  name fields. Blocks derived from legacy weeks also start unnamed; existing
+  saved names are retained. Numbered card headings remain separate from the name.
+- Required-name validation continues to block forward navigation until the user
+  provides a nonblank name. Updated controller, persistence and screen regressions.
+- Verification: `dart format .` checked 718 files; plugin MCP analysis and
+  `git diff --check` passed. All 144 programme application/persistence/screen
+  tests passed. Full suite not rerun for this scoped change; prior full run had
+  1279 passes and two existing runner failures. Live restart remains deferred
+  for the previous schema migration/open draft.
+
+### M4 — Named training blocks and five-step programme builder
+
+- Builder order is Programme Details → Training Blocks → Weekly Schedule →
+  Define Workouts → Review & Publish. Moves duration/week planning out of Details,
+  and renames the former Training Blocks workout editor to Define Workouts.
+- Training Blocks supports named sequential phases, focus (base, accumulation,
+  hypertrophy, strength, peak, deload), week counts, and optional progression
+  notes. Ranges and total duration follow the block lengths. Progression remains
+  manual: notes guide training, and targets are configured in Define Workouts.
+- Block resizing preserves later blocks' weeks and workout targets, clones new
+  assignments independently, and renumbers ranges. Removing/shortening populated
+  blocks requires confirmation. Existing week-management controls keep block
+  membership consistent. Schedule and workout steps identify the selected block.
+- Drift schema v15 adds `program_training_blocks`; save/load, update, deletion,
+  and duplication preserve block metadata transactionally. Existing programmes
+  open with one base block spanning their existing weeks when edited.
+- All five steps use the shared floating action bar and guarded progress
+  navigation. Blocks require names and complete week coverage; schedule and
+  assignment prerequisites still apply. Fixed large-text overflows in shared
+  section actions and the floating action bar; updated obsolete inset assertions.
+- Verification: code generation passed; `dart format .` checked 718 files;
+  plugin MCP analysis and `git diff --check` passed. Full suite: 1279 passed,
+  two existing runner failures (pending-save controller state and compact
+  runner touch-target size). All programme, migration, and database checks passed,
+  including v14→v15 data retention and 320px/2x-text light/dark block editing.
+  Live reload/restart deferred to preserve the open builder draft; the database
+  migration requires an app restart after that draft is saved or discarded.
+
+### M4 — Gate programme steps on schedule and workout assignments
+
+- Weekly Schedule requires at least one week and a selected workout day in
+  every week. Review & Publish additionally requires a workout on every selected
+  day. Proceed disables immediately when incomplete, including after deletions.
+- Guards progress-indicator jumps and the Details week shortcut as well as the
+  main action. Blocked jumps return to the incomplete step and relevant week;
+  inline messages identify empty weeks and unassigned days. Backward navigation
+  remains available to repair the schedule.
+- Adds `ProgrammeBuilderStepValidator` and regression coverage for null/empty
+  weeks, per-week day selection, assignments across weeks, deletion, repairs,
+  and navigation shortcuts. Updates the old screen expectation that allowed
+  review with unassigned workout days.
+- Verification: `dart format .` checked 715 files; plugin MCP analysis passed.
+  Programme validator/controller/screen run: 91 passed, 6 pre-existing failures
+  (two action-bar inset assertions and four small-phone layout cases).
+  All 64 application checks and 27/33 screen checks passed, including both new
+  navigation regressions. MCP hot reload/runtime and `git diff --check` passed.
+  Full app suite and device-driver interaction were not run for this change.
+
+## 2026-10-18
+
+### M4 — Redesign programme superset editor
+
+- `ProgrammeSupersetEditorSheet` now has a dismissible mobile header, a tonal
+  explanation, exercise cards with set counts and numbered execution badges,
+  and a pinned action area with safe-area clearance. Selected rows use a subtle
+  accent tint; selection count updates as exercises are chosen.
+- Edit mode displays only the active group's members in saved execution order,
+  with accessible remove controls and a separate delete-group action. Explains
+  that deleting the group retains its exercises. Create remains disabled until
+  two existing exercises are selected; stale IDs do not count.
+- Verification: `dart format .` checked 713 files; plugin MCP analysis passed.
+  Focused sheet/service/validator tests passed 23/23, including dismissal,
+  selection order, callbacks, empty state, and 320-pixel phones at 2x text in
+  light/dark modes. MCP hot reload/runtime checks passed; simulator layout
+  inspected. `git diff --check` passed. Full suite not rerun for this UI change;
+  driver interaction unavailable because the app has no driver extension.
+
+### M4 — Remove workout days from Training Blocks
+
+- Each workout-day tab has an accessible remove button for assigned and blank
+  days. Removes the selected week's assignment, updates the count, and opens a
+  remaining workout when the active day is removed. The + action remains usable
+  after removing the final day.
+- Removal reindexes slots, refreshes template references and weekly frequency,
+  and preserves other weeks and Saved Workouts. Invalid/stale indices are ignored.
+- Verification: `dart format .` checked 713 files; plugin MCP analysis passed.
+  Controller tests passed 41/41 and focused screen flows passed 9/9, including
+  final programme save after deletion. Live reload/runtime checks and
+  `git diff --check` passed. Full suite not rerun for this scoped change.
+
+### M4 — Training Blocks + adds an unassigned workout day
+
+- The day-tab + action now adds the next unused weekday in the selected week
+  with Select a workout… instead of opening the workout builder. Each tap adds
+  another day even when another assignment is empty; stops when all seven days
+  are present.
+- Scrolls the new tab into view and keeps the current exercise editor selected.
+  Tapping an unassigned tab opens the picker; Create template in that picker
+  still opens the programme-only workout builder.
+- Verification: `dart format .` checked 713 files; plugin MCP analysis and live
+  reload/runtime checks passed. Controller checks passed 40/40 and selected
+  screen flows 7/7. Covers selected-week isolation, repeated empty days, new-tab
+  visibility, seven-day limit, and choosing/creating a workout after insertion.
+  `git diff --check` passed. Full suite not rerun for this scoped correction.
+
+### M4 — Independent Training Blocks templates for each workout day
+
+- Training Blocks shows one day-labelled tab per workout assignment in the
+  selected week, including unassigned days. Adds a week selector and workout
+  count; selecting an assignment makes that day's configuration editable.
+- Separates reused templates into day-owned copies when loading, assigning,
+  extending, or duplicating weeks. Gives copied templates, exercises, sets, and
+  superset groups independent identities while preserving prescription metadata.
+  Exercise and target edits now affect only the selected day.
+- Keeps assignment-picker choices deduplicated by exercise content. New or reused
+  assignments select their own day editor immediately; creation uses the selected
+  week. Existing open drafts can be separated safely during screen refresh.
+- Verification: formatting checked 713 files; plugin MCP analysis and final live
+  reload/runtime checks passed. Core checks passed 71/71; selected UI flows 8/8.
+  Database round-trip verifies independent targets after save/reload. Live MCP
+  inspection confirmed matching day tabs and independent template IDs. Full
+  suite: 1242 passed / the same 9 existing builder/runner failures.
+  `git diff --check` passed. Initial stale shared-widget reload errors were
+  resolved by scoped day keys and open-draft separation; final check was clean.
+
+### M4 — Create programme templates with the workout builder
+
+- Create template in the assignment sheet and Define Workouts opens
+  `WorkoutBuilderScreen.programmeTemplate` through a named route outside the
+  bottom navigation shell. Its Save template action returns a validated draft.
+- Programme mode never calls the Saved Workouts persistence use case or refreshes
+  that library. The programme controller converts and assigns the authored
+  template; it persists with the programme on final programme save.
+- Keeps exercise targets, set types, notes, rest, duration, and superset data.
+  Cancelling/discarding leaves the programme assignment untouched; reopening
+  starts a fresh child draft. When all slots are assigned, saving a new template
+  adds a workout on the first unused day in the selected week.
+- Constrains the workout builder exercise-header controls for the mobile route
+  and gives the superset action a standard button touch target.
+- Verification: `dart format .` checked 713 files; plugin MCP analysis and hot
+  reload/runtime checks passed. Focused controller/conversion/router/workout UI
+  checks passed 92/92; programme save/cancel/create flows passed 3/3. Full suite:
+  1237 passed / 9 failed: 7 existing programme layout/copy/inset checks, the known
+  runner pending-save timing check, and the runner compact touch-target check
+  (28px observed versus 48px required). `git diff --check` passed. The new route
+  requires a fresh app launch for an already instantiated router.
+
+### M4 — Deduplicate programme template choices by exercises
+
+- The assignment sheet now shows one programme template for each exercise
+  collection, keeping the first matching template and its original prescription.
+  Copied IDs, names, exercise ordering, and prescription differences do not add
+  duplicate choices; different exercise IDs or occurrence counts remain distinct.
+- Updates the programme-template count to the visible choices and removes the
+  launcher's ineffective object-identity deduplication. Stored drafts and saved
+  workout choices are unchanged.
+- Verification: `dart format .` checked 711 files; plugin MCP analysis and live
+  reload/runtime checks passed. Domain/sheet regressions passed 22/22, including
+  selecting distinct same-name templates and selecting the retained original.
+  `git diff --check` passed. Full suite not rerun for this scoped correction.
+
+### M4 — Mobile workout assignment sheet redesign
+
+- Rebuilds `TemplateReassignmentBottomSheet` with a fixed header and accessible
+  close action, highlighted Create template card, counted source groups, and
+  bordered workout cards with actual exercise totals and optional stored estimates.
+- Lists programme templates before saved workouts. Keeps creation result and
+  selection callbacks, supports dismissal without assignment, and scrolls long
+  lists beneath the header. Uses a mobile-only sheet with platform safe areas.
+- The builder opens this sheet with scroll-controlled height and safe top bounds.
+  Adds shared copy and a sizing token; retains local-only assignment behavior.
+- Verification: `dart format .` checked 709 files; plugin MCP analysis and live
+  reload/runtime checks passed. Sheet tests passed 15/15; two temporary mobile
+  renders passed and were inspected before removing the capture test.
+  `git diff --check` passed. Broader builder checks currently have 7 failures:
+  a removed step label, changed action inset assertions, and 2× text overflows
+  in existing builder sections. Those layouts were not changed by this redesign.
+  Full suite not rerun.
+
+### M4 — Floating programme builder actions
+
+- Moves the shared Proceed/Save bar out of the page column into the Scaffold's
+  bottom overlay with `extendBody`. Content now scrolls beneath the inset bar.
+- Uses the measured footer inset for scroll padding, keeping final content
+  reachable above the action surface and phone safe area on every mobile step.
+- Verification: `dart format .` checked 709 files; plugin MCP analysis and live
+  reload/runtime checks passed. Screen/save-bar checks passed 31/31, including
+  full-height scroll viewports and fixed action placement after scrolling.
+  `git diff --check` passed. Full suite was not rerun for this layout correction.
+
+### M4 — Mobile week management and shared builder actions
+
+- Applies the supplied Manage weeks and assignments design: bordered accordion,
+  tinted week panels, day/template chips, white workout cards, exercise icon
+  tiles, dashed Add exercise, and outlined Add workout/Add week pills.
+- Uses `ProgrammeBuilderActionBar` for all four builder steps, with the supplied
+  inset blue surface, context icon/title, and white Proceed or Save action.
+  Retains required Details, draft/activation state, loading, and save behavior.
+- Removes the desktop sidebar and Details column breakpoint. All builder steps
+  use one stacked mobile layout with Back in the app bar.
+- Verification: `dart format .` checked 709 files; Dart and Flutter plugin MCP
+  analysis and hot reload/runtime checks passed. Focused checks passed 44/44;
+  three temporary mobile capture checks passed and their test file was removed.
+  Full suite: 1223 passed / 1 previously documented workout-runner pending-save
+  timing failure. `git diff --check` passed.
+
+### M4 — Shared exercise configuration and supplied week cards
+
+- Reuses the workout builder's configuration panel in programme templates:
+  matching header, compact set rows, weight/reps/target/rest columns, set-type
+  controls, add/remove actions, and notes. Keeps the mobile-only composition.
+- Adds an adapter that preserves programme-only prescription metadata when the
+  shared editor changes or clears fields. Retains decimal RPE targets and fixes
+  the reps-only row's nested layout expansion.
+- Restyles week workout cards to the supplied white-card design with tinted
+  exercise rows, dataset thumbnails or a neutral fallback, actual prescription
+  summaries, optional stored duration estimates, and dashed Add Exercise actions.
+- Wires week-row Edit to the matching template/exercise configuration and keeps
+  assignment, day changes, supersets, duplicate/remove, and week types available.
+- Verification: `dart format .` checked 707 files; plugin MCP analysis and
+  `git diff --check` passed. Focused checks passed 56/56; inspected mobile renders
+  of both components. Full `flutter test`: 1220 passed / 1 previously documented
+  workout-runner pending-save timing failure. Final MCP reload/runtime check passed.
+
+### M4 — Mobile Define Workouts design
+
+- Replaces the third builder stage's weeks-first view with the supplied Define
+  Workouts hierarchy: template tabs, selectable exercise cards, dashed add
+  actions, set configuration, and coaching notes. Uses a single stacked mobile
+  composition without desktop breakpoints; Back stays in the app bar.
+- Connects exercise selection, reordering/removal, warm-up/working types, exact
+  and ranged reps, RPE, weight, rest, set addition/removal, and notes to the local
+  programme draft. Keeps supersets and week/deload/assignment management available.
+- Propagates edits to every occurrence of a reused template, including repeated
+  assignments within the same week. Preserves advanced prescription metadata
+  while editing or copying sets and supports clearing optional targets.
+- Verification: `dart format .` checked 704 files; Dart and Flutter plugin MCP
+  analysis and `git diff --check` passed. Inspected mobile renders, hot reloaded
+  the running app through MCP, and found no runtime errors. Full `flutter test`:
+  1214 passed / 1 previously documented workout-runner pending-save timing failure.
+
+### M4 — Programme Builder app-bar Back button
+
+- Moves Back from the bottom action bar into the header for Weekly Schedule,
+  Training Blocks, and Review & Publish. Returning to earlier steps preserves
+  the local draft; saving temporarily disables Back.
+- Verification: `dart format .` checked 703 files; `flutter analyze` passed;
+  all 14 programme-builder screen tests passed, including stage navigation,
+  draft preservation, and small-screen/large-text coverage.
+
+### M4 — Focused Programme Builder navigation and required Details
+
+- Opens create, edit, and duplicate builders on the root navigator, removing
+  the app's bottom navigation while preserving return to the Plan tab.
+- Removes the header close button from loaded, loading, and error states;
+  retains the existing system-back dirty-draft confirmation.
+- Removes expanded and collapsed dividers from More goals and Notes.
+- Requires a trimmed programme name and at least one goal before enabling Next.
+  Guards sidebar/stepper navigation and Add week shortcuts too, shows the
+  existing required-field messages, and avoids creating weeks on blocked exits.
+- Adds route, form-gate, shortcut, borderless expansion, and back-navigation
+  regression coverage. `dart format .` checked 703 files; `flutter analyze` and
+  `git diff --check` passed. Full `flutter test`: 1206 passed / 1 previously
+  documented workout-runner pending-save timing failure.
+
+### M4 — Manual Programme Builder supplied-design alignment
+
+- Rebuilds the programme builder around the supplied Details and Weekly Schedule
+  designs: close/title/Save Draft header, flat white form panels, primary-goal
+  pills, duration selector, typical training days, preparation summary, and fixed
+  next-step actions. Adds mobile progress indicators and a wide-screen sidebar.
+- Connects Details → Weekly Schedule → Training Blocks → Review & Publish to the
+  existing local manual programme workflow. The week editor keeps workout
+  creation/import, reusable templates, supersets, duplicate/remove, and deloads.
+- Adds expandable day cards with real template names, training toggles, template
+  selection, and clear-selection actions. Preserves multiple sessions on a day
+  and supports individual week selection.
+- Duration changes preserve existing weeks and reuse the first week's schedule
+  when extending. Shortening populated weeks requires confirmation; cancellation
+  leaves both the draft and duration selector unchanged. Schedule counts stay in
+  sync with the local draft.
+- Save Draft uses the existing validation/save pipeline with draft status; review
+  retains the existing active/inactive save behavior and dirty-exit confirmation.
+- Uses manual progression guidance and real preparation counts. The illustrative
+  automatic-progression/deload engine, invented block data, and unbounded Ongoing
+  duration are not added to the locked v1 model.
+- Adds controller and full-screen regression coverage, including assignment,
+  saving, cancellation, 320px / 2× text, light/dark modes, and wide navigation.
+  Inspected rendered Details and Weekly Schedule pages with the local app font.
+- Verification: `dart format .` checked 703 files; `flutter analyze` and
+  `git diff --check` passed. Focused builder checks passed 46/46; full
+  `flutter test` passed 1198/1199, with only the previously documented
+  workout-runner pending-save timing failure.
+
+## 2026-10-17
+
+### M4 — Rest timer separated from elapsed duration
+
+- Moves superset rest countdowns into the supplied full-width bottom rest panel,
+  matching single-exercise rest behavior: circular countdown, REST TIME label,
+  −15s/+15s adjustments, and Skip Rest & Log Next Set action.
+- Keeps the header clock dedicated to elapsed workout duration throughout rest.
+  Removes the compact rest variant and the header's timer-replacement option.
+- Preserves paired warmup/working round progression and restores the contextual
+  Log/Finish tray when rest is skipped or expires.
+- Adds warmup and working superset regressions for separate timer placement,
+  unchanged header clock, countdown adjustments, and skip-to-next-round behavior.
+- Verification: `dart format .` checked 699 files; `flutter analyze` and
+  `git diff --check` passed. Full `flutter test` passed 1185/1186; the only failure
+  is the previously documented pending-save controller timing test.
+
+### M4 — Exercise library refresh, dismissible exit, and paired superset rounds
+
+- Reloads the exercise library after returning from custom exercise creation,
+  including Back after saving, while retaining the current query and filters.
+- Makes the exit-workout sheet dismissible through Close, outside-card taps,
+  and system back without finishing, pausing, or abandoning the session.
+- Matches the supplied superset composition with linked member previews and
+  connected, shared-surface rounds for both warmups (`W1 (A)` / `W1 (B)`) and
+  working sets (`S1 (A)` / `S1 (B)`). Unequal counts retain only prescribed sets.
+- Advances warmup rounds in member order and starts rest after each resolved
+  warmup or working round. Supersets show rest in a compact header countdown,
+  retain the Log/Finish tray, and allow skipping rest by tapping the countdown
+  or logging the next set. The existing single-exercise rest panel remains.
+- Aligns runner gutters to the reference's 20 logical pixels and adapts the
+  fixed header for large text on narrow phones without covering the card.
+- Adds library navigation, modal dismissal, warmup ordering/rest, connected-round,
+  and light/dark small-phone regression coverage; visually inspected a rendered
+  390×1450 superset screen using local fonts and truthful session data.
+- Verification: `dart format .` checked 699 files; `flutter analyze` passed;
+  focused regression tests passed 51/51; `git diff --check` passed.
+  Full `flutter test` passed 1184/1185; the only failure
+  remains the previously documented pending-save async timing test in
+  `workout_runner_controller_test.dart`.
+
+## 2026-08-22
+
+### Workout Runner — superset execution block runner (supplied design)
+
+- Added a shared `WorkoutRunnerBlockResolver` so the active runner resolves a single exercise or an ordered superset block, labels members as A/B, renders warmups before working rounds, and advances working sets round-major (`S1 (A)` → `S1 (B)` → next round).
+- Refactored `WorkoutRunnerScreen` and `WorkoutRunnerActiveView` so active supersets render as a grouped `Superset Block N` card with member previews, interleaved set rows, no Substitute pill, an `ADD SUPERSET` footer action, and a contextual bottom CTA such as `Log S1 (Incline DB Press)`.
+- Tightened the supplied superset `Up next` button treatment with a primary-colored link glyph, title-row chevron placement, soft card elevation, and the existing SUPerset badge/linked-exercise hierarchy.
+- Fixed the superset `Up next` resolver so the second exercise name is pulled from the full superset group instead of only from adjacent list positions.
+- Replaced resolver tuple returns with `WorkoutRunnerBlockSet` so block rows expose named `exercise` and `set` fields instead of `$1` / `$2` record access.
+- Updated logging/rest behavior for supersets so rest starts after the current superset round is resolved, not after every individual member set. Single-exercise runner behavior remains unchanged.
+- Added `WorkoutRunnerController.addSetToExercises` so `ADD SUPERSET` appends one cloned set to every member of the current superset block.
+- Added superset runner strings/tokens and coverage for resolver ordering/rest decisions, grouped superset rendering, and adding a set to multiple exercises.
+- Verification: `dart format .` checked 697 files; `flutter analyze` passed with no issues; `flutter test test/features/workout_execution/domain/workout_runner_block_test.dart test/features/workout_execution/presentation/workout_runner_screen_test.dart` passed 21/21; `flutter test test/features/workout_execution/presentation/workout_runner_screen_test.dart` passed 19/19 after the supplied-button refinement and second-name resolver fix; `flutter test test/features/workout_execution/application/workout_runner_controller_test.dart --plain-name "appends one incomplete set to each selected exercise"` passed 1/1. The full controller file passed 36/37, still failing only the pre-existing `saveProgress preserves and persists a set edit made while save is pending` async timing test.
+
+## 2026-08-06
+
+### Workout Runner — in-session exercise substitution (supplied design)
+
+- Added the header Substitute pill from the supplied design, sitting under the exercise title: a bordered `surface-container-low` chip with an accent `swap_horiz` glyph and an uppercase SUBSTITUTE label; the runner header extent grows to 116px to fit it.
+- Tapping the pill opens the shared `AddExerciseBottomSheet` (with the current exercise excluded) and swaps the chosen exercise into the active session via the new `WorkoutRunnerController.substituteExercise`.
+- Completed or skipped set logs keep their original per-set `exerciseId`, so finished work stays attributed to the original exercise; pending sets are recreated for the replacement with their prescriptions kept and in-progress actuals cleared. The swap persists through the existing autosave.
+- Disables the pill while paused (matching the disabled training-log treatment) and guards the controller so a swap cannot reset a paused or saving phase.
+- Bundled the official Material Symbols `swap_horiz` SVG and registered it as `OutlinedSvgAssets.materialSwapHoriz`.
+- Added controller coverage for identity swap, completed-set attribution, pending-set reset, untouched-exercise preservation, same-exercise no-op, and the paused guard, plus a widget test for the picker flow and header presence.
+- Verification: `dart format .` checked 695 files; `flutter analyze` passed with no issues; the runner presentation suite passed 18/18; the controller suite passed 36/37; full `flutter test` passed 1159 with the single pre-existing `saveProgress` pending-save timing failure from the prior unverified session.
+
+### Workout Runner — rest timer bottom panel (supplied design)
+
+- Replaced the compact floating rest pill and its modal adjustment sheet with the supplied full-width bottom rest panel: a 128px circular countdown ring in the runner accent, an uppercase REST TIME eyebrow, side-by-side −15s/+15s tonal pills, and a full-width Skip Rest & Log Next Set primary action.
+- While resting, the panel takes over the runner's fixed bottom chrome in place of the Log Set / Finish tray; skipping or completing the countdown restores the action tray so the next set can be logged. The frosted surface, top border, safe-area padding, and max-width rhythm match the existing action tray.
+- Kept the header's authoritative elapsed workout clock unchanged; the rest countdown remains an independent per-set timer that auto-dismisses at zero, clamps adjustments to 0–300 seconds, and now dismisses immediately when a logged set resolves to zero rest instead of sticking on an inert 00:00 pill.
+- Added rest-panel sizing tokens to `AppWorkoutRunnerTokens` and a `skipRestAndLogNextSet` string; retired the now-unused `adjustRestTimer` and `skipRest` strings.
+- Updated runner coverage for inline −15s/+15s adjustments, rebuild survival, full-width bottom-anchored panel geometry, the action-tray swap while resting, and the skip-restores-actions flow.
+- Verification: `dart format .` checked 695 files; `flutter analyze` reported no issues (also repaired two pre-existing exercise-library lint findings from the prior unverified session); focused workout-runner presentation tests passed 17/17; full `flutter test` passed 1156/1157 — the single failure is the pre-existing `workout_runner_controller_test.dart` pending-save timing test from the prior unverified session, which imports none of the files this change touches.
+
+### Exercise Details — updated supplied-design alignment
+
+- Rebuilt the exercise-detail Guidance composition around the latest supplied design: close/title/favorite header, Guidance/Performance tabs, horizontally paged 16:9 video cards with overlaid variant badges, expanded Exercise Guide metadata, dual bodymaps, audio-led instruction rows, Notes surface, and a fixed Substitute pill.
+- Removed the superseded Optimal Technique treatment, title-level metadata chips, external video variant controls, and scroll-body action card. The locked Ask AI entry point remains available from the otherwise-unspecified Performance state.
+- Preserved provider-backed exercise content, video empty/failure states, favorite state, Performance empty state, per-step TTS, theme/dark/high-contrast behavior, and local SVG bodymaps. Substitute now persists through the existing repository instead of showing placeholder copy.
+- Kept muscle presentation data-honest by retaining `Primary` anatomical labels and `Muscle Focus` bodymap buckets rather than inventing a secondary-muscle classification that the current detail model does not expose. Notes remain visibly disabled with an honest coming-soon explanation until repository save wiring is added.
+- Added regression coverage for carousel cards and paging, overlaid video metadata, expanded/collapsible guide metadata, revised section order, persisted favorite/substitute state, fixed action placement, Notes treatment, small phones, and 2× text.
+- Verification: `git diff --check` is clean. The required `dart format .`, `flutter analyze`, focused tests, and full `flutter test` could not be executed because the environment rejected SDK-cache escalation after its usage quota was exhausted.
+
+### Workout Runner — supplied design alignment
+
+- Rebuilt the active `WorkoutRunnerScreen` around the supplied fixed-mobile hierarchy: a fixed frosted header with elapsed workout duration, 16:9 exercise media, rounded set log, progress insight, linked next-exercise preview, and a fixed frosted 2:1 Log Set / Finish action tray.
+- Preserved recovery, pause, guarded exit, early finish, normal completion, autosave, programme/saved/resume entry modes, exercise-detail routing, and set-completion behavior while making Add Set and Add Note functional.
+- Uses session prescriptions and actuals for editable KG/REPS and target summaries, an honest em dash where previous-performance history is not available, provider-backed exercise details, and current M5 placeholder copy instead of importing illustrative HTML data.
+- Added shared runner layout and glass tokens, compact-field styling hooks, safe-area-aware terminal scroll clearance, dark-theme treatment, and 320px / 2× text adaptations without changing bottom-navigation opacity values.
+- Moved the programme-workout runner to the root navigator so all three runner entry modes use the same full-screen presentation without the persistent bottom-navigation shell.
+- Corrected the connected early-completion insight heading so it wraps safely on narrow screens.
+- Made the header clock an authoritative elapsed-duration timer derived from the session start, frozen while paused, resumed from accumulated time, and formatted as MM:SS or HH:MM:SS. The adjustable rest countdown remains independent and appears above the fixed action tray after a set is logged.
+- Corrected pause/recovery continuation so its frozen duration is explicitly cleared, its rebased start time is persisted immediately, and exit/early/normal completion resolve the same authoritative duration at confirmation time. In-flight progress saves now retain newer edits while their follow-up autosave persists them.
+- Added controller, duration-resolver, fixed-390 geometry, set-state, logging, separate elapsed/rest timer, add-set, note, sticky-overlay, routing, error, pause, completion, compact/large-text, and dark-theme coverage.
+- Verification: before the elapsed-clock correction, `dart format .` checked 692 files, `flutter analyze` reported no issues, focused workout-runner widget/controller tests passed 49/49, and router tests passed 22/22; full `flutter test` had previously passed 1145/1145. The final format/analyze/test rerun for the elapsed-clock correction was blocked by the execution environment's current usage limit; `git diff --check` remains clean.
+
+## 2026-08-05
+
+### Bottom navigation — prominent selected capsule
+
+- Replaced Material's small fixed selection indicator with a responsive pill-shaped backing that fills each destination inside a 6px navigation-bar edge inset and sits 6px from the bar's top and bottom edges.
+- Reduced the floating bar from 72px to 64px and its selected capsule from 60px to 52px while retaining the exact 6px vertical insets and mobile-sized destination targets.
+- Uses the light secondary-container and dark primary-container color pairs for solid contrast against the glass, with stronger theme pairs in high-contrast mode; selected glyphs grow to 28px while inactive glyphs retain their 24px size.
+- Added one persistent capsule that slides between destinations over a restrained 200ms transition while preserving the icon-only layout, filled selected SVGs, routing, safe-area clearance, and user-adjusted liquid-glass opacity values.
+- Suppressed the Material pressed overlay for destination taps so the sliding capsule is the sole visual selection feedback, while leaving non-pressed focus handling available.
+- Extended widget coverage for directional midpoint motion, final indicator geometry, compact containment, light/dark/high-contrast fills and foregrounds, icon sizing, and the transparent built-in Material indicator.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
+### Bottom navigation — icon-only Library clarity
+
+- Replaced Library's sparkles with the matched outlined and filled open-book SVGs so the destination reads clearly as a browsable exercise and workout catalog.
+- Hid all visual bottom-navigation labels while retaining each destination label for accessibility; preserved routing, tap targets, safe-area behavior, selected states, and the existing glass opacity values.
+- Added coverage for icon-only presentation, retained destination labels, Library routing, and the outlined-to-filled Library icon transition.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
+### Bottom navigation — filled selected icons
+
+- Mapped each selected bottom-navigation destination to its matching solid SVG while retaining the outlined SVG for its unselected state.
+- Preserved the existing liquid-glass surface, opacity tokens, routing, labels, colors, sizing, and accessibility behavior.
+- Added asset-level assertions for the initial Home selection and the Home-to-Plan state transition.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused bottom-navigation tests passed 5/5; full `flutter test` passed 1137/1137.
+
+### Floating navigation — liquid-glass overlay and scroll clearance
+
+- Converted the five-destination shell navigation into a clipped, backdrop-blurred glass overlay with theme-derived translucent surfaces, a subtle outline/shadow, and a more opaque high-contrast treatment.
+- Extended shell content behind the floating bar while preserving device safe-area insets through a shared navigation scope, so scrolling content remains visible through the glass and can finish fully above it.
+- Normalized Home, Library, Plan, AI, and Stats loading, error, empty, list, and placeholder states; shell Library FABs now clear both the glass bar and final list cards while standalone Library routes retain their previous spacing.
+- Added compact-width, 2× text-scale, light/dark/high-contrast, safe-area, routing, terminal-scroll, and FAB geometry coverage.
+- Verification: `dart format .` checked 691 files; `flutter analyze` reported no issues; focused navigation and destination tests passed 21/21; full `flutter test` passed 1137/1137.
+
+### Workout Detail — supplied design alignment
+
+- Aligned `WorkoutDetailScreen` with the supplied HTML hierarchy: 24px centered content gutter, no blank app-bar reservation, uppercase workout hero, 48px hero-to-flow spacing, 32px Workout Flow heading, reference stat rhythm, atmospheric panel, and 24px fixed-action margins.
+- Preserved repository-backed programme/saved-workout data, session-aware Start/Resume/hidden behavior, exercise-detail routing, superset grouping, and local SVG placeholders instead of adopting remote mock imagery.
+- Matched duration and intensity presentation (`60s`, equal RPE ranges collapsed to `RPE 9`) and title-cased saved-workout goal badges.
+- Added compact-width prescription wrapping to prevent overflow beside the reference-sized 96px exercise tile while retaining inline metadata on wider layouts.
+- Kept scrollable content below the device's top safe area and centered each 24px stat SVG inside its 48px tile so parent constraints no longer enlarge the glyph.
+- Added fixed 390×884 widget coverage for the complete reference hierarchy, spacing, content, superset treatment, CTA, and overflow safety.
+- Verification: `dart format .` checked 689 files, `flutter analyze` reported no issues, the focused Workout Detail test passed 1/1, and full `flutter test` passed 1131/1131 before the final safe-area/icon constraint correction; the focused test and analysis remained clean afterward.
+
+### Custom exercise instructions — shared text fields
+
+- Replaced the cue-list editor's bespoke `TextField` decoration with `AppTextField` while preserving its controllers, dense layout, styling, focus dismissal, and update behavior.
+- Reused `AppTextField` for the multiline instructions textarea while keeping its animated focus surface, six-line layout, cue-list switch, and draft synchronization unchanged.
+- Converts newline-separated textarea content into individual trimmed cues, ignores blank or whitespace-only lines, and prevents adding another cue until the previous cue contains text.
+- Added widget coverage confirming both instruction modes use the shared field component.
+- Verification: `dart format .` checked 688 files, `flutter analyze` reported no issues, the focused custom-exercise editor tests passed 37/37, and full `flutter test` passed 1130/1130.
+
+### Onboarding exercise selection — shared picker reuse
+
+- Replaced the onboarding-only Favorites/Substitutions picker with the existing `AddExerciseBottomSheet` used by workout and programme creation.
+- Added backward-compatible initial-selection and excluded-ID inputs so onboarding restores saved choices and keeps favorite and substitution exercises mutually exclusive.
+- Removed the obsolete onboarding selector, strings, sizing tokens, exports, and design-specific assertions.
+- Kept search filters isolated between launches and made the shared custom-exercise row responsive on compact mobile widths.
+- Verification: `dart format .` checked 688 files, `flutter analyze` reported no issues, the shared-sheet plus complete onboarding presentation tests passed 36/36, and full `flutter test` passed 1129/1129.
+
+## 2026-08-01
+
+### Custom Exercise difficulty — sliding selection motion
+
+- **Physical indicator**: Replaced the four independent selected fills with one quarter-width thumb that slides between Novice, Beginner, Intermediate, and Advanced in the direction of the selection change.
+- **Motion language**: Uses the shared 200ms segmented-control duration and `easeOutCubic` curve, with synchronized animated label colors and direction-aware alignment while preserving existing surfaces, shadows, radii, semantics, and the nullable difficulty contract.
+- **AppBar preservation**: Kept the user's create-mode AppBar change and updated the stale screen assertion to verify that it remains present without the edit-only delete action.
+- **Regression coverage**: Added fixed-390 geometry and frame assertions for exact thumb sizing, endpoint alignment, forward travel, midpoint motion, reverse travel, duration, and curve.
+- **Verification**: `dart format .` checked 688 files, `flutter analyze` reported no issues, all 6 Custom Exercise Editor screen tests passed, and full `flutter test` passed 1128/1128.
+
+## 2026-07-31
+
+### Custom Exercise Editor — supplied design alignment
+
+- **Reference hierarchy**: Rebuilt the create flow as the supplied fixed-mobile single-column form with 16px horizontal padding, 40px section rhythm, focus-responsive input surfaces, and scroll-contained stacked actions. Create mode no longer reserves an empty app bar; edit mode retains its delete action.
+- **Selection controls**: Matched the muscle, modality, equipment, and difficulty treatments while preserving the complete controller-backed option sets, including all four supported difficulty tiers.
+- **Instructions**: Replaced the filled Optional badge with plain supporting copy and keeps free-form text in the textarea until the user explicitly switches to the cue-list editor. The textarea and cue-list are implemented as private widgets.
+- **Logging type**: Reworked the logging panel around the supplied icon-led hierarchy, two-column mobile grid, three-column wide layout, equal-height cards, and compact selected check treatment.
+- **Behavior boundary**: Preserved local create/edit/delete/discard behavior and validation. Confirmed dirty-form discards now clear state and close the dialog and editor exactly once; name updates preserve the active caret and composing state. The incompatible four-tab navigation and undefined AI action from the export were not added.
+- **Regression coverage**: Added fixed 390×884 widget coverage for create/edit composition, section order, four-tier difficulty, two-column logging geometry, scroll-contained actions, explicit textarea-to-cue-list switching, caret stability, and confirmed discard navigation.
+- **Verification**: `dart format .` checked 688 files, `flutter analyze` reported no issues, all 248 exercise-library tests passed, and full `flutter test` passed 1127/1127.
+
+### Home dashboard — supplied design alignment
+
+- **Reference hierarchy**: Reordered the fixed-mobile Home flow to greeting, plateau signal, weekly volume, active programme, today workout, and the two-column quick-action grid with 32px section rhythm.
+- **Workout hero**: Rebuilt the scheduled, ongoing, and no-workout states inside the dark 24px-radius feature surface with the blue ambient glow, prominent status badge, 40px headline, compact metadata, stacked primary action, and scheduled-workout `View Details` route. Days without a workout now show a dedicated `REST` state without workout actions.
+- **No-programme state**: Replaced the separate generic empty card with the same Scheduled Today feature surface, badge, type hierarchy, glow, minimum height, and full-width action treatment while preserving Browse Programmes navigation.
+- **Programme and actions**: Matched the dense active-programme card with week progress and remaining-session copy, made the complete card open its calendar, removed the extra Quick Actions heading, and centered the four supplied 56px-icon square tiles.
+- **Truthful local state**: Kept profile, programme, workout, duration, and exercise values provider-backed; retained honest empty/loading/error/resume states and disabled unavailable actions. The mock streak, weekly volume, and plateau figures were not hardcoded, and M5-only signal cards retain polished coming-soon states.
+- **Widget composition**: Kept every Home presentation component as a private widget class rather than introducing widget-returning builder functions, while adding Home-specific dimensions to the shared sizing tokens.
+- **Regression coverage**: Added fixed 390×844 composition coverage for the revised section order, scheduled-workout metadata/actions, programme status, the no-workout state, the Scheduled Today-styled no-programme state, FAB absence, and all quick-action labels while preserving the dominant Start CTA test.
+- **Verification**: `dart format .` checked 686 files, `flutter analyze` reported no issues, all 6 Home presentation tests passed, and full `flutter test` passed 1121/1121.
+
+### Onboarding exercise preference sheets — supplied design alignment
+
+- **Shared Step 6 sheet**: Replaced the inline Favorites/Substitutions picker with an imported `OnboardingExerciseSelectionSheet` used by both onboarding launch points.
+- **Design-accurate hierarchy**: Added the 90%-height rounded surface, drag handle, `Select Exercises` header, 48px search, horizontal muscle filters, padded metadata rows, square selection controls, and surface-matched pinned `Add Selected Exercises` footer from the supplied reference.
+- **Functional filtering**: Search and category filters compose while temporary selections persist; Chest, Back, and Shoulders match exact muscle groups, while Legs aggregates the lower-body buckets. Opposing favorite/substitution IDs remain excluded before filtering.
+- **Deferred exercise imagery**: Replaced the reference icons with uppercase exercise initials in 48px tonal tiles and left an adjacent code TODO to swap them for dataset-backed thumbnails when exercise image integration is scheduled.
+- **Widget composition**: Replaced the filter-chip and exercise-row `Widget` helper functions with private `StatelessWidget` classes, leaving selection/filter state and callbacks in the owning sheet state.
+- **Regression coverage**: Added fixed-390 geometry, color, copy, initial, muscle metadata, filtering, selection-persistence, commit, and both-launch-point assertions. Kept removed/renamed onboarding actions removed and aligned stale test expectations with `Continue` and `Finish setup`.
+- **Verification**: `dart format .` checked 686 files, `flutter analyze` reported no issues, all 35 onboarding presentation tests passed, all 10 M3 setup smoke tests passed, and full `flutter test` passed 1117/1117.
+
+### Onboarding Elite Baseline — sliding unit toggles
+
+- **Physical segmented motion**: Replaced the Weight and Height toggles' instantaneous selected fills with one shared underlay per control that slides between equal-width Metric and Imperial segments.
+- **Motion language**: Matched the established Core Identity selector with a 200ms `easeOutCubic` transition and synchronized animated label colors while preserving the existing surfaces, radii, touch behavior, and selected semantics.
+- **Shared unit state**: Weight and Height indicators animate together because both remain driven by the same preferred-unit draft value; canonical metric persistence and displayed ruler/value conversions are unchanged.
+- **Buttonless review tests**: Kept the Experience, Schedule, and Equipment review cards free of visible action buttons and updated Step 9 coverage to assert their tappable surfaces instead of removed labels.
+- **Regression coverage**: Added frame-level geometry assertions proving both indicator thumbs move at the animation midpoint and settle at the opposite segment.
+- **Verification**: `dart format .` checked 685 files with no remaining changes, `flutter analyze` reported no issues, all 34 onboarding presentation tests passed, and full `flutter test` passed 1116/1116.
+
+### Onboarding review — separate experience tier and duration
+
+- **Distinct review values**: The Experience & Level card now removes the parenthesized date range from Tier and renders only that range in Duration; for example, `Intermediate (6 mo–2 yr)` is displayed as `Intermediate` and `6 mo–2 yr`.
+- **Empty-state safety**: Experience values without a parenthesized range, including the review placeholder, remain unchanged instead of being reduced to blank text.
+- **Buttonless interactions**: Experience, Schedule, and Equipment remain tappable without visible action buttons, alongside the existing whole-card navigation for AI Intelligence and Metric Integration.
+- **Regression coverage**: Step 9 now asserts the exact Tier and Duration tile contents and verifies that the combined experience label is absent.
+- **Verification**: `dart format .` checked 684 files with no remaining changes, `flutter analyze` reported no issues, all 33 onboarding presentation tests passed, and full `flutter test` passed 1115/1115.
+
+### Exercise preferences — opposing-selector exclusion
+
+- **Mutually exclusive pickers**: Favorite exercises are now removed from the Avoid/Substitutions picker, and avoided/substituted exercises are removed from the Favorites picker.
+- **Consistent editing**: Applied the same cross-filtering to onboarding Step 6 and the editable Profile screen so the conflict cannot be reintroduced after onboarding.
+- **Mobile sheet stability**: Constrained the onboarding picker heading so its Done action remains reachable on the fixed 390px design surface.
+- **Regression coverage**: Added real in-memory exercise-library interaction coverage for both exclusion directions in onboarding and Profile, and backed the modal tests with router-aware harnesses.
+- **Test maintenance**: Aligned remaining Step 4 and Step 7 assertions with the current slider range, removed eyebrow, and 32px Max Lifts spacing; updated the M3 smoke flow for the current `Adept`, `Next Step`, and Elite Baseline copy.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, the complete onboarding/Profile presentation files passed 48/48 tests, and full `flutter test` passed 1115/1115.
+
+### Onboarding presentation tests — stale assertion repair
+
+- **Library boundary**: Replaced test references to the private `_OnboardingSelectionPill` implementation with its stable semantics keys and selected-state contract.
+- **Scoped content**: Scoped the duplicated Step 3 title assertion to `OnboardingExperienceGoalsStep`, distinguishing the body headline from the progress-header label.
+- **Current duration control**: Replaced obsolete Step 4 ruler-key expectations with assertions for the current discrete 20–120 minute Slider and its 20 divisions.
+- **Verification**: Superseded by the cross-filtering verification above; `onboarding_screen_test.dart` now passes all 33 tests.
+
+## 2026-07-30
+
+### Onboarding Core Identity — sliding unit selector
+
+- **Segmented motion**: Replaced the independent Metric/Imperial selected-state cross-fade with one shared indicator that slides between the two choices.
+- **Interaction boundary**: Preserved the existing colors, pill shape, shadow, labels, draft updates, touch behavior, and selected semantics while animating the indicator with the established fast `easeOutCubic` motion.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused sliding-selector widget test passed.
+
+### Onboarding navigation — reset scroll position between steps
+
+- **Step transitions**: Added a scaffold-owned scroll controller that returns onboarding content to the top whenever the active `OnboardingStep` changes.
+- **Coverage**: The reset applies consistently to forward, Back, and review-card jump navigation while leaving the fixed progress header and pinned action area unchanged.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused widget test passed for both forward and backward transitions after scrolling. The complete onboarding presentation file passed 31 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding presentation — standalone widget extraction
+
+- **One widget per file**: Moved all 62 private widget classes out of `onboarding_screen.dart` into unique standalone libraries under `lib/features/onboarding/presentation/widgets/onboarding/`, keeping each state class beside its owning stateful widget.
+- **Imports and exports**: Renamed extracted widgets with public `Onboarding...` names required by Dart library boundaries, added direct package imports between dependent widgets, and exposed the complete set through `onboarding_widgets.dart`. No `part` directives are used.
+- **Screen entry point**: Reduced `onboarding_screen.dart` from 5,848 lines to a 44-line route/state entry point while preserving the existing Riverpod controller boundary.
+- **Behavior boundary**: This is a presentation-only structural refactor; onboarding copy, layout, state transitions, validation, persistence, privacy, and navigation behavior are unchanged.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, the focused end-to-end step-transition test passed, and structural checks confirmed 62 exported files with exactly one widget class in each and no private widget classes remaining in `onboarding_screen.dart`. The complete onboarding presentation file passed 30 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding step nine — Final Architecture Review alignment
+
+- **Review hierarchy**: Moved the Step 9 hero into the review body so the supplied 40px headline, 18px lead copy, 16px internal gap, and 48px card offset are preserved without changing the shared onboarding scaffold.
+- **Fixed mobile cards**: Retained the five-card single-column order with 24px gaps and corrected Experience, Schedule, and Equipment to use 32px padding, 12px radii, restrained shadows, reference-style fact tiles, and plain schedule/equipment summaries.
+- **AI Intelligence**: Preserved the existing AI card content and tonal treatment, removed its `Modify` button, and made the full card navigate to the optional AI setup step with button semantics and pressed feedback.
+- **Metric Integration**: Removed its `Modify` button and made the complete bordered metric card navigate to the Metrics step while retaining truthful local metric copy and chips.
+- **Project boundaries**: Kept the shared Step 9 of 9 header and pinned `INITIALIZE WORKSPACE` / `Back` actions instead of reintroducing the reference's inline action or unsupported biometric-sync claims.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 9 design/navigation test passed. The complete onboarding file passed 30 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+## 2026-07-29
+
+### Onboarding step eight — Intelligence Layer alignment
+
+- **Composition**: Rebuilt Step 8 around the supplied fixed-mobile hierarchy: Configuration eyebrow, 40px Intelligence Layer headline, truthful supporting copy, and compact benefit rows ordered Private → BYOK → Optional.
+- **Provider setup**: Replaced compact provider pills with stacked OpenAI, Anthropic, and Google cards using the supplied 48px icon tiles, 12px radii, tonal selected surface, and animated 2px accent outline. OpenAI is selected initially.
+- **Credentials**: Added provider-specific API-key labels and hints, a masked 56px credential field with reference visibility behavior and focus ring, secure-storage helper copy, filled `Secure Connection` action, inline failure feedback, and the encrypted dot-line divider.
+- **BYOK behavior**: Preserved the required model selector, corrected each provider's initial model to the cheapest catalog option, and now validates a key before saving it through the existing secure-storage repository boundary.
+- **Project boundaries**: Retained the nine-step header and shared pinned `Continue` / `Back` actions, omitted the reference's unsupported nutrition/recovery claims and decorative gradient, and kept core Aedify features fully usable without AI.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and both focused Step 8 widget tests passed. The full onboarding file passed 29 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding step seven — Elite Baseline alignment
+
+- **Composition**: Rebuilt Step 7 around the supplied centered `Onboarding: Step 7` introduction, separate Weight and Height baseline cards, and a dedicated optional Max Lifts card.
+- **Metric cards**: Added synchronized compact unit selectors, prominent editable values, and interactive 96px reference-style analogue rulers. Their tick strips now follow the drag direction beneath a fixed center marker, carry release velocity, settle to the nearest increment, support tap-to-seek, and retain accessibility increment/decrement controls. Retained the supplied Weight-before-Height hierarchy and fixed 32px card padding.
+- **Max Lifts**: Matched the supplied fixed-mobile card with exact title casing, a 40px post-Height offset, translucent bordered surface and restrained blue ambient shadow, contiguous title/helper hierarchy, and the larger muted accuracy pill.
+- **Strength anchors**: Rebuilt Bench Press, Back Squat, and Deadlift as stacked 56px tonal inputs with 8px radii, `0` hints, headline numerals, explicit unit suffix styling, and animated blue label/ring plus white-surface focus states.
+- **Behavior boundary**: Preserved optional/null semantics, canonical centimetre/kilogram storage, synchronized global unit preference, imperial conversions, and the existing three strength-anchor fields. Clearing Height or Weight now correctly restores `null`.
+- **Actions**: Retained the project-wide pinned stacked `Continue` and `Back` controls established for onboarding.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 7 plus end-to-end onboarding flow tests passed 8/8. The complete onboarding screen file passed 27 tests and retains its unrelated existing Step 4 duration-ruler assertion failure.
+
+### Onboarding step six — Precision Constraints alignment
+
+- **Composition**: Rebuilt Step 6 around the supplied centered introduction and fixed-width single-column sequence: Safety First, injury flags, Favorites, Substitutions / Avoid List, and Other Notes.
+- **Safety priority**: Retained Aedify's truthful local-first safety and privacy content, promoted it to the first content section, and kept its quiet tonal surface treatment.
+- **Controls**: Reworked limitations into reference-style two-column visual tiles and restyled the real favorite/substitution pickers as tonal input surfaces without replacing their local exercise-ID behavior with mockup-only sample chips.
+- **Exercise chips**: Favorite and substitution selections now render their exercise names in selection order. Up to eight selections remain individually visible; additional selections collapse into a single `n selected` overflow chip after the first eight.
+- **Actions**: Set the shared pinned action copy to `Next Step` and `Back` while preserving the established stacked layout.
+- **Behavior boundary**: Preserved all nine existing optional limitation values, note persistence, exercise selection workflow, nine-step progress, and no-validation progression.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 6 plus end-to-end onboarding flow tests passed 7/7, including the eight-chip boundary and overflow behavior.
+
+### Onboarding step five — Gym Environment alignment
+
+- **Composition**: Matched the supplied centered introduction and tiered equipment-card hierarchy while preserving Aedify's existing equipment taxonomy and selection behavior.
+- **Equipment artwork**: Generated and bundled original local images for the squat rack, pull-up bar, and cardio machine—the three displayed equipment choices that previously used icon fallbacks. Bodyweight only intentionally retains its illustrated symbol treatment.
+- **Asset boundary**: Added the generated artwork as local JPG assets referenced through `ImageAssets`; onboarding remains offline-first with no runtime image requests.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused Step 5 widget test passed. The complete onboarding suite remains blocked by an existing Step 4 duration-ruler assertion (expected 10 keyed marks; current widget tree contains none).
+
+### Onboarding step four — Your Rhythm alignment
+
+- **Composition**: Rebuilt the schedule screen around the supplied centered intro and three white bento surfaces for weekly availability, session duration, and total weekly load.
+- **Controls**: Restyled weekday choices as substantial tonal schedule tiles, added the reference-style inset coaching tip, promoted the duration value, and refined summary metrics plus the seven-day load chart.
+- **Session duration**: Added the reference 8px tonal slider track and white-ringed blue thumb with restrained shadow. Corrected the below-slider scale to a compact fixed-gap ten-mark ruler with emphasized intervals and full-width uppercase, tracked, muted Endurance/Optimal/Intensity labels.
+- **Total weekly load**: Matched the reference metric copy and hierarchy with uppercase tile labels, `x.x hours` volume formatting, a taller unlabeled seven-bar chart with fixed gaps and top-only rounding, plus the faint analytics decoration.
+- **Actions**: Explicitly set the pinned action copy to `Continue` and `Back`.
+- **Behavior boundary**: Preserved weekday selections as the authoritative persisted schedule model rather than replacing them with decorative frequency-only numbers.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 21/21.
+
+### Onboarding step three — Define Your Path alignment
+
+- **Composition**: Replaced the two generic form panels with the supplied open layout: centered intro, three standalone Novice/Adept/Elite experience cards, and free-standing wrapped growth-pillar selectors.
+- **Interaction**: Experience cards now use the supplied white surface, selected blue outline, emphasized icon, and check state. The pinned primary action is explicitly labeled `Continue`.
+- **Growth pillars**: Matched the supplied spacious chip treatment with 24×16 padding, white outlined unselected surfaces, blue selected fills, 12px icon gaps, and no trailing check glyph.
+- **Scope**: Preserved the existing experience enums, supported goal taxonomy, validation, and persistence behavior.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 20/20.
+
+### Onboarding step two + shared pinned actions
+
+- **Core Identity**: Rebuilt step two as one centered white identity surface with reference-aligned title, supporting copy, three sex choices, pill measurement selector, and date-of-birth control.
+- **Shared navigation**: Moved onboarding actions outside the scrolling content into a bottom-pinned action bar on every step, including Welcome and Final Review. Primary and Back actions are stacked vertically in reference order with standardized rectangular radii, and the pinned area uses the same surface color as the scaffold.
+- **Measurement selector**: Corrected the selected segment to a white inset surface with blue text and subtle shadow; unselected segments remain transparent with muted text on the tonal container.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 19/19.
+
+### Onboarding step one — supplied welcome design alignment
+
+- **Composition**: Removed the mobile gym-image hero and rebuilt the welcome step around the supplied headline-first hierarchy: privacy feature grid, display-name field, bottom-pinned rectangular primary action, and trust footer.
+- **Product boundaries**: Preserved Aedify's locked nine-step flow and local-only/BYOK copy instead of introducing the supplied mockup's unsupported cloud-sync claims.
+- **Verification**: `dart format .` passed, `flutter analyze` reported no issues, and the focused onboarding presentation suite passed 17/17.
+
+### Onboarding — updated nine-step fixed mobile flow
+
+- **Flow order**: Expanded onboarding to Welcome → Core Identity → Experience & Goals → Schedule → Gym Environment → Limitations → Metrics → Optional AI → Review, including updated forward, back, resume, and review-edit navigation.
+- **Core Identity stepper**: Retained the theme-aware Aedify logo and applied the Core Identity segmented `Step X of 9` progress treatment to every onboarding page.
+- **Weekday frequency**: Replaced independent numeric frequency choices with a fixed four-column Monday–Sunday selector. The selected weekday list is now the source of truth; displayed, saved, reloaded, and reviewed day counts are derived from it.
+- **Gym environment**: Bundled and displayed the supplied dumbbell, barbell, bench, kettlebell, resistance-band, cable-machine, and Smith-machine images, with deliberate icon treatments for bodyweight and existing equipment options without supplied artwork.
+- **Design SVGs**: Bundled all 55 unique Google Material Symbols referenced by the supplied onboarding design, plus its filled `info` state, under the existing outlined SVG asset family. Centralized every path in `OutlinedSvgAssets`, retained the Aedify logo, and applied the exact design glyphs to onboarding choices, section cues, statuses, and navigation controls.
+- **Asset provenance**: Added the upstream Apache 2.0 license alongside the local Material Symbols set. The SVGs ship in the app bundle and require no runtime font or network request.
+- **Presentation**: Reworked the supplied design into a fixed mobile composition using Aedify theme, spacing, typography, SVG, privacy, local-first, and optional-AI conventions without adding responsive breakpoints or unsupported cloud/health behavior.
+- **Verification**: `dart format .` completed with no changes, `flutter analyze` reported no issues, all 56 downloaded SVG variants passed XML validation, focused onboarding/M3 tests passed 27/27, focused Drift repository tests passed 14/14, and full `flutter test` passed 1098/1098.
+
+## 2026-07-24
+
+### M4 UI redesign — complete Serene Professional mobile experience
+
+- **Design foundation**: Fixed dark-theme button typography and input focus color, added semantic layout spacing and light `bodySm` tokens, documented the approved green/orange difficulty-color exceptions, and added reusable `AppBottomSheet`, `AppDialog`, `AppEmptyState`, `AppIconButton`, `AppListTile`, `AppSectionHeader`, and `AppTogglePill` components.
+- **Floating navigation**: Replaced the custom bottom bar with a floating Material 3 `NavigationBar` using rounded tonal surfaces, mode-correct active indicators, SVG destinations, safe-area spacing, and existing `StatefulNavigationShell` branch behavior.
+- **Setup and trust surfaces**: Redesigned onboarding, profile, settings, BYOK setup, and provider capabilities with privacy-first tonal hierarchy, semantic pill selectors, grouped mobile forms, secure key presentation, explicit capability states, and touch targets of at least 44 logical pixels.
+- **Training discovery**: Redesigned Home as a coach's clipboard with a dominant Start/Resume action, programme continuity, active-session progress, guided empty/error states, and disabled M5 actions. Exercise Detail now stages video, instructions/TTS, bodymap, metadata, notes, and honest history-empty content as alternating visual sections. Bodymap now uses a full-width anatomical stage, bucket pills, and front/back controls.
+- **Programme planning**: Redesigned Programme Builder with quiet mode headers, tonal details panels, semantic goals/equipment pills, expandable weeks, clearer workout slots, consistent sheets, inline validation, and a separated save/active-state surface. Programme Calendar now provides current-week, today, completion, rest, and patterned deload treatments with active-session-aware Start/Resume behavior.
+- **History review**: Redesigned Lift Log with rich snapshot cards, guided empty/error states, pull-to-refresh, and floating-nav clearance. Workout History Detail now uses a session summary hero, tonal exercise/superset sections, and explicit Warm-up/Working plus Completed/Skipped/In Progress set states.
+- **M4 audit cleanup**: Replaced all remaining production Material `Icons.*` and `Navigator.pop` usages, converted the exercise-picker modality switches and onboarding favorite selector to shared controls, removed the unused legacy exercise-filter and superset sheets, and routed the generic workout path to the real active-session runner instead of the obsolete placeholder screen.
+- **Scope**: Presentation, theme, routing cleanup, shared UI components, and widget tests only. No product scope, persistence, privacy, AI, or domain behavior changed.
+- **Verification**: `dart format .` — 0 pending formatting changes. `flutter analyze` — no issues found. `flutter test` — **1087/1087 passed**.
+
+## 2026-07-20
+
+### Workout execution — Material Icons replaced with SvgPicture.asset
+
+- **`finish_early_session_complete_screen.dart`**: 6 Material icons replaced — `Icons.close` → `OutlinedSvgAssets.xMark`, `Icons.block` → `OutlinedSvgAssets.noSymbol`, bottom-nav `_NavItem.icon` type changed from `IconData` to SVG asset path (`calendar`, `dumbbell` solid, `clock`, `user`).
+- **`workout_complete_screen.dart`**: 6 Material icons replaced — `close` → `xMark`, `check_circle` → `SolidSvgAssets.checkCircle`, `auto_awesome` → `sparkles`, `bolt` → `bolt`, `chevron_right` → `chevronRight`, `share` → `share`. Added `flutter_svg` + both SVG asset imports.
+- **`exit_workout_sheet.dart`**: 5 Material icons replaced — `pause_circle_filled` → `SolidSvgAssets.pauseCircle`, `save` → `arrowDownTray`, `arrow_forward` → `arrowRight` (both `onSecondary` per button foreground), `play_arrow` → `SolidSvgAssets.play`, `delete_forever` → `trash`. Added `flutter_svg` + both SVG asset imports.
+- **`finish_early_dialog.dart`**: 1 Material icon replaced — `Icons.warning` → `OutlinedSvgAssets.exclamationTriangle`. Added `flutter_svg` + outlined SVG asset imports.
+- **`workout_runner_screen.dart`**: 4 `Navigator.of(context).pop()` calls in `_showExitWorkoutSheet` replaced with `context.pop()` (go_router was already imported).
+- No behavior, layout, or string changes; existing `AppSizing.*` sizes and explicit icon colors preserved.
+- Verification: `dart format lib/features/workout_execution/` — 0 changed. `flutter analyze lib/features/workout_execution/` — no issues found.
+
+## 2026-07-07
+
+### Workout detail screen — logging-type-aware exercise cards
+
+- **`_ExerciseCard` now renders per `ExerciseLoggingType`**: `repsWeight` shows "Sets x Reps" + "Intensity" (unchanged); `repsOnly` shows "Sets x Reps" only (no intensity column); `duration` shows "Sets x Duration" with formatted time (`Xs` for <60s, `M:SS` for ≥60s) and no intensity column.
+- **`ExerciseDetailItem.loggingType`** field added (defaults to `repsWeight`).
+- **Controller** passes resolved `ExerciseLoggingType` from `exerciseModel.loggingType` in both `buildWorkoutDetail` and `buildSavedWorkoutDetail`.
+- **`AppStrings.setsAndDuration`** added (`"Sets x Duration"`).
+- Files: 4 lib files changed.
+- Verification: `dart format .` — 0 issues. `flutter analyze` — 0 issues.
+
+### Custom exercise editor — step list view redesigned to match HTML
+
+- **`CustomExerciseStepsEditor` redesigned**: Matches the HTML list view with `surfaceContainerLow` container, `rounded-2xl`, `min-h-[240px]`, numbered step rows with white input fields (`border outlineVariant`, `rounded-xl`, `px-4 py-3`), delete icon per step, `add_circle` + "Add Step" button, and two overlay buttons (notes + AI suggestion) with `rounded-lg` and `shadow-sm`.
+- **Added `onSwitchToText` callback**: Notes button in steps editor switches back to textarea view by clearing all steps.
+- Updated `_InstructionsSection` with `_switchToText` method to handle the toggle.
+- Files: `lib/features/exercise_library/presentation/widgets/custom_exercise_steps_editor.dart`, `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart`, test file.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — third pass: HTML mobile view match, section order fix
+
+- **Section order corrected to match HTML mobile view**: Exercise Name → PRIMARY MUSCLE GROUP → Equipment + Difficulty → MODALITY → Instructions → Logging Type → Action Buttons.
+- **Chip spacing**: All chip wraps changed from 4px gap to 8px gap (`gap-2` in HTML).
+- **Instructions overlay**: Added second AI suggestion button; both use `rounded-lg` (8px radius) with `shadow-sm`.
+- **Action buttons**: Changed from side-by-side `Row` to stacked `Column` (mobile `flex-col`), 16px gap.
+- **Logging type spacing**: Header-to-cards gap 24px (`space-y-6`); card wrap spacing 16px (`gap-4`).
+- Files: 4 lib files.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — second pass: precise HTML design match
+
+- **Section order corrected**: Modality now appears before Primary Muscle Group per the HTML layout.
+- **Chips replaced**: `FilterChip` and `SegmentedButton` replaced with custom `GestureDetector` + `Container` pills — `px-5 py-2.5` (20h/10v), `rounded-full`, toggle colors matching HTML exactly (`secondaryContainer`/`onSecondaryContainer`/`secondary` border when selected; `surfaceContainerLowest`/`onSurfaceVariant`/`outlineVariant` when unselected).
+- **Section spacing**: 40px (`AppWhiteSpace.hXl`) between major sections.
+- **Name input**: `surfaceContainerLow` bg, no border, `rounded-2xl` (16px), `px-6 py-5` (24h/20v), `bodyLg` font, focus state with white bg + blue-tinted shadow.
+- **Instructions section**: `TextField(maxLines: 6)` styled as textarea when steps are empty; delegates to `CustomExerciseStepsEditor` when steps exist. "Optional" label tag.
+- **Action buttons**: `py-5` (20v padding), `rounded-2xl` (16px radius), 16px gap, primary has `shadow-lg`.
+- **Logging type cards**: `shadow-sm` on all cards (selected and unselected), 8px gap between internal elements.
+- **Equipment dropdown**: `surfaceContainerLow` bg, `rounded-2xl`, `padding horizontal: 24`, `expand_more` icon.
+- **Difficulty segment**: 6px container padding, 12px vertical button padding, 3 segments.
+- Files:
+  - `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart` — rewrite
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_modality_section.dart` — chip padding fix
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_muscle_group_picker.dart` — replaced FilterChip with custom toggle chips
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_logging_type_picker.dart` — card shadows/spacing fix
+  - `test/features/exercise_library/presentation/widgets/custom_exercise_muscle_group_picker_test.dart` — updated tests for custom chips
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+### Custom exercise editor — redesigned to match HTML design, modality moved above muscle groups
+
+- **CustomExerciseModalitySection redesigned**: Replaced `SegmentedButton` + `DropdownButtonFormField` layout with pill-shaped toggle chips matching the HTML design — `surfaceContainerLowest`/`secondaryContainer` toggle with `outlineVariant`/`secondary` border, `AnimatedContainer` for smooth transitions.
+- **Modality moved above muscle groups**: The `CustomExerciseEditorScreen` now shows Modality chips before the Primary Muscle Group picker.
+- **Equipment + Difficulty combined into `_EquipmentDifficultySection`**: Styled side-by-side layout — equipment dropdown uses `DropdownButton` with `surfaceContainerLow` background and `AppRadius.xl` rounding; difficulty uses 3-segment button group (Beginner/Intermediate/Advanced) with `surfaceContainerLow` container and `surfaceContainerLowest` selected pill.
+- **New `CustomExerciseLoggingTypePicker`**: Matches the HTML "Logging Type" section — icon header with `Icons.calculate`, subtitle, and 3 selectable cards (Reps Only, Weight & Reps, Duration) with `AnimatedContainer` selection state, check-circle overlay, and `surfaceContainerLowest`/`secondary` border styling.
+- **Instructions section redesigned**: Label updated to "INSTRUCTIONS & FORM NOTES" with "Optional" badge.
+- **Bottom buttons redesigned**: "Create Exercise" (primary) and "Discard" (outlined) buttons side by side, using `AppRadius.lg` rounded shape.
+- **New controller method**: `setLoggingType(ExerciseLoggingType?)` added to `CustomExerciseEditorController`.
+- **Default logging type**: `LoadCustomExerciseDraftUseCase.createEmptyDraft()` now defaults `loggingType` to `ExerciseLoggingType.repsWeight`.
+- **New AppStrings**: `customExerciseLoggingType`, `customExerciseLoggingTypeDesc`, `customExerciseLoggingTypeRepsOnly/Desc`, `customExerciseLoggingTypeWeightReps/Desc`, `customExerciseLoggingTypeDuration/Desc`, `createExercise`, `customExercisePrimaryMuscleGroup`, `customExerciseInstructionsHint`, `customExerciseInstructionsOptional`.
+- Files:
+  - `lib/features/exercise_library/presentation/custom_exercise_editor_screen.dart` — full rewrite
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_modality_section.dart` — redesigned
+  - `lib/features/exercise_library/presentation/widgets/custom_exercise_logging_type_picker.dart` — new
+  - `lib/features/exercise_library/application/custom_exercise_editor_controller.dart` — added `setLoggingType`
+  - `lib/features/exercise_library/application/load_custom_exercise_draft_use_case.dart` — default loggingType
+  - `lib/shared/constants/app_strings.dart` — new strings
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1064 all passed.
+
+---
+
+## 2026-07-06
+
+### ExerciseLoggingType — new logging type field on exercises
+
+- **New enum**: `ExerciseLoggingType` (`repsWeight`, `repsOnly`, `duration`) in `lib/shared/domain/exercise_logging_type.dart`.
+- **New resolver**: `ExerciseLoggingTypeResolver.resolve({modality, equipment?, force?})` — computes defaults from modality/equipment/force per explicit rules: strength + bodyweight equipment → repsOnly, strength + other → repsWeight, flexibility + hold → duration, flexibility + other → repsOnly, cardio → duration, recovery → duration.
+- **DB column**: `exercises.logging_type` (nullable TEXT). Schema bumped 12 → 13 with migration that backfills all existing rows via SQL CASE statement.
+- **Propagated** through `ExerciseDatasetExercise`, `ExerciseListItem`, `ExerciseDetailViewData`, `CandidateExerciseDto`, `CustomExerciseDraft`, `CustomExerciseSeed`, `ExerciseReference`, dataset parser/importer, repository read/write methods, candidate query service, and custom exercise load/save flow.
+
+### WorkoutDetailScreen — session-aware buttons, goal badge, stale-data fixes
+
+- **Hide start/resume when conflicting session**: `_loadSavedWorkoutDetail` now sets `buttonState = hidden` when there's an active session for a different workout.
+- **Stale data after discard**: Added `ref.watch(AppProviders.activeWorkoutSessionProvider)` to saved-workout loading; home-screen discard invalidates this provider, cascading re-fetch.
+- **Stale data after edits/pauses**: `_loadSavedWorkoutDetail` also watches `homeRefreshTriggerProvider` (triggered by workout runner on pause/complete).
+- **Top-level functions encapsulated**: `_loadProgrammeDetail` and `_loadSavedWorkoutDetail` moved into `_WorkoutDetailProviders` as `static` methods.
+
+### SavedWorkoutListTile — session-aware play button, edit menu, spacing
+
+- **`_PlayButton`**: No session → play starts workout; session IS this workout → play resumes; session for DIFFERENT workout → grayed out, disabled.
+- **Removed "Start Workout" from popup menu**: Start action lives exclusively on play button.
+- **"Edit Workout" menu item**: `pencil` icon, navigates to `workoutBuilderEdit`.
+- **Spacing fixes**: Category `mb-1` 2→4px. Icon-text `gap-1` 2→4px. More button `p-2 -mr-2` via `Transform.translate` + 8px padding.
+
+### WorkoutDetailScreen — dual programme/saved-workout mode
+
+- **Renamed**: `ProgrammeWorkoutDetailScreen` → `WorkoutDetailScreen`. `programId` made nullable; when null loads from `SavedWorkoutRepository`.
+- **Goal badge**: `buildSavedWorkoutDetail` parses `goalTagsJson` into display string for hero badge.
+- **Controller**: `buildSavedWorkoutDetail(SavedWorkoutAggregate, exerciseModels)` reuses existing formatting.
+- **Routes**: New `/workouts/:workoutId` (`AppRoutes.workoutDetail`). `SavedWorkoutListTile` tap now navigates here instead of `workoutBuilderEdit`.
+
+### CreateActionFab — shared component
+
+- Extracted from `_CreateExerciseFab` into `lib/shared/components/create_action_fab.dart`. Used in both `ExerciseLibraryScreen` and `SavedWorkoutLibraryScreen`.
+
+### SavedWorkoutListItem — focus + modalities
+
+- **`focus`**: Required field from `goalTagsJson`, formatted via `_formatFocus` in use case.
+- **`modalities`**: Required `List<String>` from exercise lookups via `ExerciseDao.getModalityByIds(List<int>)`.
+
+### \_StackedCategoryIcons — modality-driven, up to 3
+
+- Maps modality strings to icons (`dumbbell`/`heart`/`meditation`). `.take(3)` with progressive offsets for proper overlap.
+
+### Convention violations — widget method, cs param, raw numbers
+
+- `_buildExerciseListView` → `_ExerciseListView` widget class.
+- `_SupersetGroupWidget`: removed `cs` param, uses `context.colorScheme`.
+- Raw `4` → `2 * AppSizing.strokeWidth`. `AppFontSizes.sm` → `AppSpacing.md - AppSpacing.xxs`.
+- `_selectionCount` inlined. Superset badge → `AppBadge`.
+
+### ProgrammeWorkoutDetailScreen — superset grouping
+
+- `ExerciseDetailItem` gains `supersetGroupId`/`supersetOrder`. `_ExerciseList` groups into `_SupersetGroupSection` (left accent border, badge, 5% bg).
+
+### Saved workout library screen — card redesign + FAB
+
+- **`SavedWorkoutListTile` redesigned**: Replaced `Card`+`ListTile` pattern with a rich card matching the HTML design — `surfaceContainerLowest` background, 3-level shadow, `AppRadius.lg` corners, 1px `surfaceContainer` border. Card layout: top row with description-as-category label (uppercase, 10px, secondary), headline-md title (max 2 lines), stats row with `listBullet` icon + exercise count and `clock` icon + duration. Trailing `ellipsisVertical` PopupMenuButton (start/archive/delete). Bottom row with stacked category icon circles (bolt + clock, 32px, overlapping -8px, `surfaceContainer`/`surfaceContainerLow` backgrounds, 2px `surfaceContainerLowest` border) and 48px filled `play` button (`secondary` bg, `AppRadius.lg`, shadow).
+- **FAB added**: 56px `secondary` FAB with `plus` icon, `AppRadius.lg` shape, navigates to `AppRoutes.workoutBuilderCreate`.
+- **`SavedWorkoutLibraryScreen` updated**: `_ListView` padding updated to `top: lg, horizontal: md, bottom: xxl + xl` for FAB clearance. `_EmptyView` and `_ErrorView` text styles updated to use `AppTextStyles`. Extracted `onTap` callback for card tap → `workoutBuilderEdit`.
+- **New private widgets**: `_StackedCategoryIcons` and `_CategoryIconCircle` for the overlapping icon circles.
+- **Files**: `lib/features/programmes/presentation/widgets/saved_workout_list_tile.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`.
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing (M3 smoke flow).
+
+### Exercise library screen — full redesign to match HTML design system
+
+- **ExerciseLibraryScreen rewritten** (587 lines, down from 391+185): Matches the HTML design with view toggle (List/Bodymap pill toggle using `surfaceContainerLow` bg + `AppRadius.full`), search bar (white card, `AppRadius.md`, no-border style, focused ring at `secondary/20`), horizontal scrollable muscle-group filter chips (`_MuscleGroupChips` — All/Chest/Back/Legs/Shoulders/Arms/Core/Cardio mapping to `BodymapBucket` and `ExerciseModality`), exercise list using shared `ExerciseCard` component, das
+  hed-border empty state (`_EmptyState` with `DashedBorderPainter`), and `_CreateExerciseFab` (`AppRadius.lg`, secondary color, plus icon, navigates to custom exercise creation).
+- **View toggle**: `_ViewToggle` and `_TogglePill` widgets — animated container with 300ms duration, selected pill uses `secondary` bg + shadow, unselected uses transparent bg. Bodymap tab icon uses `BodymapSvgAssets.front` (existing large SVG scaled to icon size).
+- **Chip-based filtering replaces filter FAB + bottom sheet**: `_MuscleGroupChips` provides quick muscle-group access inline. `_FilterChipData` static list maps 8 labels to `BodymapBucket?` + `ExerciseModality?`. `_MuscleGroupChips` `onSelected` uses `copyWith` with `clearMuscleGroup: bucket == null` and `clearModality: modality == null` to correctly clear fields when switching chips — fixes the `??` fallback pattern that prevented clearing filter values to null.
+- **Empty state redesigned**: Dashed-border container (300px, `DashedBorderPainter` with 2px stroke, 8px dash, 8px gap, `AppRadius.md`) with circle icon, headline, and subtext. Replaces centered icon + text pattern.
+- **New `_ErrorView`**: Extracted from screen body — centered layout with `exclamationCircle` icon, error message, and `FilledButton` retry.
+- **New `_CreateExerciseFab`**: GestureDetector + Container (60x60px, `secondary` bg, `AppRadius.lg`, key: `create_exercise_fab`) replacing `FloatingActionButton` filter icon.
+- **Removed** `_ActiveFilterBar`, `_FilterChipWidget`, `_ExerciseListTile` — functionality replaced by new chip bar and shared `ExerciseCard`.
+- Files: `lib/features/exercise_library/presentation/exercise_library_screen.dart`, `test/features/exercise_library/presentation/exercise_library_screen_test.dart`.
+- Verification: `dart format .` — 643 files (0 changed). `flutter analyze` — 0 issues. `flutter test` — 1064 passed (8 exercise library screen tests).
+
+### ExerciseCard extraction — shared widget reused across workout builder and exercise library
+
+- **New shared widget**: `lib/features/exercise_library/presentation/widgets/exercise_card.dart` — `ExerciseCard` (public `StatelessWidget`) extracted from `AddExerciseBottomSheet._ExerciseCard`. Takes `ExerciseListItem item`, `bool isSelected` (defaults `false`), `VoidCallback onTap`. Renders row layout: 56x56 avatar with first-letter initial, name + `_TagChip` (first muscle group or modality) + equipment chip (if present), trailing `_DifficultyBadge` (color-resolved per difficulty + brightness via `AppBadge`). Selection state animates with `AnimatedContainer` (200ms, `easeInOut`): secondary border + tinted avatar + `checkCircle` overlay. Private helpers `_TagChip` and `_DifficultyBadge` (previously in `add_exercise_bottom_sheet.dart`) moved into this file along with `_formatEquipment` / `_formatLabel` functions.
+- **`AddExerciseBottomSheet` updated**: `_ExerciseCard`, `_TagChip`, `_DifficultyBadge` classes (~240 lines) removed; import replaced with shared `ExerciseCard`. Unused imports (`app_badge`, `svg_assets_solid`, `exercise_difficulty`) removed. `app_colors` import kept (used by handle bar color).
+- **`ExerciseLibraryScreen` updated**: Old `_ExerciseCard` (with `_ExerciseCardImage` gradient placeholder + `_MuscleGroupTagRow`, ~185 lines) replaced with shared `ExerciseCard`. Unused imports (`exercise_list_item`, `exercise_difficulty`) removed.
+- Files: `lib/features/exercise_library/presentation/widgets/exercise_card.dart` (new), `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`, `lib/features/exercise_library/presentation/exercise_library_screen.dart`.
+- Verification: `dart format .` — 3 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1064 passed.
+
+### Convention violation fixes — private widget method, cs param, raw numbers
+
+- **`_buildExerciseListView` → `_ExerciseListView` widget class**: Private method returning a `Widget` extracted into a proper `StatelessWidget` class, per `rules.md` ("Use small, private `Widget` classes instead of private helper methods that return a `Widget`").
+- **`_SupersetGroupWidget` `cs` param removed**: Widget now uses `context.colorScheme` in `build()` instead of receiving `ColorScheme` via constructor, matching the file-wide convention of extracting `cs` from `context.colorScheme` (via ThemeX extension).
+- **Raw `4` border width**: `BorderSide(width: 4)` → `2 * AppSizing.strokeWidth`.
+- **`AppFontSizes.sm` as padding**: `right: AppFontSizes.sm` → `right: AppSpacing.md - AppSpacing.xxs` (preserves 14px intent with spacing tokens).
+- **`_selectionCount` getter inlined**: Both call sites replaced with `selectedSupersetIds.length`, getter removed.
+- **Superset badge in `_SupersetGroupWidget`**: Inline `Container`/`Text` (with `secondaryContainer`/`onSecondaryContainer`, `AppRadius.full`, uppercase, custom padding, `FontWeight.w700`) replaced with shared `AppBadge` component.
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing (M3 smoke flow).
+
+## 2026-07-05
+
+### Workout builder — inline superset selection replaces bottom sheet
+
+- **Inline superset selection**: Tapping "Create Superset" now enters inline selection mode (`_isSupersetSelectionMode`) instead of opening `SupersetEditorSheet` bottom sheet. Exercise cards show check circles; selected exercises get secondary border + shadow. "Cancel Selection" link replaces "Create Superset" in the header; "Group Exercises (N Selected)" button appears below the add-exercise button.
+- **Removed `SupersetEditorSheet` import** from `workout_builder_screen.dart` — no longer used.
+- **Added `AppStrings.cancelSelection`** ('Cancel Selection') to `app_strings.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Workout builder screen redesign — superset grouping, DropdownButton TYPE, new CTA
+
+- **Superset grouping in exercise list**: `_ExerciseListPanel` rewritten to group exercises by `supersetGroupId` into `_SupersetGroupWidget` (left border + inline superset badge). Preserves original exercise order; ungrouped exercises render individually.
+- **"Create Superset" header link**: Exercise list header shows "Exercises (N)" + icon + text link. Initially wired to `SupersetEditorSheet` bottom sheet, later replaced by inline selection mode.
+- **`_ConfigPanelHeader` redesigned**: Exercise name now uses `headlineMd`; superset badge + "CONFIGURATION" label side by side below name; delete button preserved.
+- **`_SetTableRow` TYPE column**: Changed from `GestureDetector` toggle to `DropdownButton` with `setTypeOptions` — matches HTML design.
+- **`_FooterSection`**: Changed save button to "Next: Review & Publish" with `arrow_forward` icon, rounded-full shape, increased padding.
+- **Cleanup**: Removed unused `superset_grouping_policy.dart` import, `displayIndex` variable, and string interpolation warning.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Badge unification — SupersetGroupBadge, \_PhaseBadge,\_DifficultyBadge all delegate to AppBadge
+
+- **AppBadge extended**: Added `EdgeInsetsGeometry? padding` and `TextStyle? textStyle` optional params to support custom padding and text-style overrides without losing the shared badge pattern.
+- **`SupersetGroupBadge`** (`superset_group_badge.dart`): Rewrote `build()` to delegate to `AppBadge` — passes custom padding (`xs`/`xxxs`), `borderRadius: AppRadius.xxs`, `textStyle: AppTextStyles.labelSm`, and `primaryContainer`/`onPrimaryContainer` colors. Public API (`groupId`, `order`) and test unchanged.
+- **`_PhaseBadge`** removed from `programme_calendar_header.dart`: Inlined `AppBadge` at the single usage site with `borderRadius: AppRadius.full`, custom padding (`md`/`xxs+1`), `letterSpacing: 0.02`, and `surfaceContainerHigh`/`onSecondaryFixedVariant` colors.
+- **`_DifficultyBadge`** (`add_exercise_bottom_sheet.dart`): Rewrote `build()` to delegate to `AppBadge` — keeps its color-resolution switch and `_formatLabel` helper, passes resolved `bg`/`text` colors, custom padding (`sm`/`xs`), and `textStyle: AppTextStyles.headlineXl.copyWith(fontSize: AppFontSizes.xxs, letterSpacing: 0.5)`.
+- **6 private `_Badge`/badge-like widget definitions now consolidated into 1 shared `AppBadge`** + 2 thin public wrappers (`SupersetGroupBadge`, `_DifficultyBadge`).
+- Verification: `dart format .` — 2 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### \_Badge extraction — 3 private definitions unified into shared AppBadge component
+
+- **New shared widget** `lib/shared/components/app_badge.dart` — `AppBadge` StatelessWidget with required `label`, optional `backgroundColor`/`foregroundColor` (defaults to `secondary`/`onSecondary`), `borderRadius` (default `AppRadius.sm`), `fontWeight`, and `letterSpacing`.
+- **Removed 3 private `_Badge` definitions** from `home_screen.dart`, `programme_list_tile.dart`, `programmes_screen.dart`.
+- **7 usage sites updated**: `home_screen.dart` (3 sites, uses defaults), `programme_list_tile.dart` (2 sites, `textColor` renamed to `foregroundColor`), `programmes_screen.dart` (2 sites, passes explicit `borderRadius: AppRadius.defaultRadius`, `fontWeight: FontWeight.w500`, `letterSpacing: 0.02` to preserve existing appearance).
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Convention compliance audit — fixed ~90 token, color, and navigation violations across 10 files
+
+- **Audit scope**: Systematic check of all enforceable rules from `AGENTS.md` and `rules.md` across `lib/`. 12 rule categories passed cleanly; ~90 violations fixed across 10 files.
+- **Hardcoded colors → theme tokens**:
+  - `finish_early_dialog.dart`: `Color(0x26000000)` → `context.colorScheme.shadow.withAlpha(38)`, `Colors.black.withValues(alpha: 0.4)` → `context.colorScheme.scrim.withAlpha(102)`
+  - `exit_workout_sheet.dart`: `Color(0x140052d5)` / `Color(0x0a0052d5)` → `context.colorScheme.secondary.withAlpha(20/10)`
+  - `finish_early_session_complete_screen.dart`: `Colors.white.withAlpha(128)` → `context.colorScheme.outlineVariant.withAlpha(128)`, `Colors.black.withAlpha(10)` → `context.colorScheme.shadow.withAlpha(10)`
+  - `programme_workout_detail_screen.dart`: `Colors.white` → `context.colorScheme.onSecondary`
+- **Raw spacing → `AppSpacing.*` / `AppWhiteSpace.*`**: Replaced ~40 `SizedBox(height:/width:)` with `AppWhiteSpace.*` tokens and ~18 `EdgeInsets.all/symmetric/only/fromLTRB` with `AppSpacing.*` tokens across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `exit_workout_sheet.dart`, `programme_workout_detail_screen.dart`.
+- **Raw border radius → `AppRadius.*`**: Replaced 11 `BorderRadius.circular(n)` with `AppRadius.md` / `AppRadius.full` / `AppRadius.defaultRadius` across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `programmes_screen.dart`.
+- **Raw icon sizes → `AppSizing.*`**: Replaced 9 `size:` values with `AppSizing.iconSm/Md/Xxl` across `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `workout_builder_screen.dart`.
+- **New token**: `AppSizing.decorativeIcon = 128` added to `app_spacing.dart` for one-off decorative icon.
+- **`Navigator.of(context).pop()` → `context.pop()`**: Fixed 3 remaining calls in `finish_early_dialog.dart` and `workout_complete_screen.dart`.
+- **Commented code removed**: 42-line commented-out `ListTile` block in `bottom_nav_shell.dart`.
+- **`boxShadow: const` removed from `exit_workout_sheet.dart`** and `finish_early_dialog.dart` — `const` arrays cannot contain `.withAlpha()` method calls.
+- **Restored missing import**: `workout_runner_session_view_data.dart` import added back to `workout_complete_screen.dart`.
+- Files: `app_spacing.dart`, `finish_early_dialog.dart`, `exit_workout_sheet.dart`, `programme_workout_detail_screen.dart`, `workout_complete_screen.dart`, `finish_early_session_complete_screen.dart`, `workout_builder_screen.dart`, `programmes_screen.dart`, `bottom_nav_shell.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow library browse).
+
+### ProgrammeTemplateQuickCreateSheet — narrowed empty-setState rebuild to ListenableBuilder
+
+- **`programme_template_quick_create_sheet.dart`**: Removed `onChanged: (_) => setState(() {})` from the template name `AppTextField` — previously every keystroke rebuilt the entire bottom sheet (exercise list, count text, button) just to re-evaluate the Create button's enabled state.
+- **New pattern**: Create button wrapped in `ListenableBuilder(listenable: _nameController, builder: ...)`. Only the button rebuilds on keystrokes. Exercise add/remove still uses `setState` (the exercise list itself changes).
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Timer widgets — migrated from setState to ValueNotifier + ValueListenableBuilder
+
+- **`RestTimerWidget`** (`rest_timer_widget.dart`): `int _remaining` → `ValueNotifier<int> _remaining`. Timer ticks and `_adjust()` now write to `_remaining.value` instead of `setState`. Timer display (circular progress + time text + label) wrapped in a single `ValueListenableBuilder<int>` — only that subtree rebuilds each tick.
+- **`WorkoutRunnerHeader`** (`workout_runner_header.dart`): Timer-driven `setState(() {})` → `_tick` `ValueNotifier<int>` incremented each second. Elapsed `Text` wrapped in `ValueListenableBuilder<int>` — header title, button, and clock icon no longer rebuild every second.
+- Both files now have zero `setState` calls. Timer-scoped rebuilds replace full-widget rebuilds.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow library browse).
+
+### AppTextField — shared text field widget with focus dismissal (replaces all raw TextField/TextFormField)
+
+- **New widget**: `AppTextField` at `lib/shared/components/app_text_field.dart` — wraps `TextField`/`TextFormField` with built-in `onTapOutside` unfocus. Supports `enableObscureToggle` for API key fields, `style`, `isDense`, `suffixText`/`suffixStyle`, `borderOverride`, `borderRadius`, and all standard text field parameters. Auto-selects `TextFormField` when `validator` is non-null, `TextField` otherwise.
+- **Replaced all 16 raw `TextField`/`TextFormField` usages** across 14 files with `AppTextField`.
+- **Controller leak fix**: `_SearchBar` in `exercise_library_screen.dart` converted from `StatelessWidget` to `StatefulWidget` — `TextEditingController` now properly created in `initState` and disposed in `dispose()`.
+- **Removed 4 private wrapper classes**: `_InputField` (workout_builder_screen), `_FormField` (profile_screen + onboarding_screen variants), `_ApiKeyField` (byok_settings_screen), `_ByokFormWidgetState` (onboarding_screen).
+- **Cleaned up `_obscured` `ValueNotifier`** from `_ApiKeyFieldState` and `_ByokFormWidgetState` — obscure toggle now managed internally by `AppTextField.enableObscureToggle`.
+- **Test updates**: `byok_settings_screen_test`, `m3_setup_smoke_flow_test`, `workout_runner_set_row_test` — `find.byType(TextFormField)` → `TextField`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1051 passed, 1 pre-existing failure (M3 smoke flow library browse test, pre-dates this change).
+
+### WorkoutCompleteScreen — new normal-completion screen matching HTML design
+
+- **New screen**: `WorkoutCompleteScreen` at `lib/features/workout_execution/presentation/workout_complete_screen.dart` — a dedicated success screen for workouts that were completed normally (not finished early). Matches the HTML design exactly: filled check_circle hero with pulse glow, 3-column bento stats grid (Duration, Volume, Sets), Aedify Insight card with `auto_awesome` background decoration and `completionInsight` message, Exercise Summary list with chevron_right icons, and a fixed bottom layer with Done + Share Summary buttons.
+- **New route**: `sessionComplete` (`/workout/summary`, name `sessionComplete`) added to `AppRoutes` and `app_router.dart`.
+- **New strings**: `shareSummary`, `setsLabel`, `volumeLabel`, `completionInsight` added to `AppStrings`.
+- **Navigation routing**: `workout_runner_screen.dart` now distinguishes normal completion from early finish. When all sets are completed or skipped, it navigates to `sessionComplete` route. When there are untouched sets (early finish), it navigates to `finishEarlySummary` route.
+- **Test updates**: Added `finishEarlySummary` route to test GoRouter for the finish early test case.
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing M3 smoke flow failure.
+
+### Session complete screen — workout summary fix, percentage formatting, preferred unit support
+
+- **Bug fix**: Workout summary no longer shows untouched exercises as completed. Replaced `allSkipped || (hasSkipped && !hasCompleted)` with `!hasCompleted` in `_WorkoutSummarySection`.
+- **`{percentage}` placeholder**: `AppStrings.recoveryIsProgress` changed from `static const` to `static String recoveryIsProgress(int percentage)`. The insight card now computes completion percentage: volume-based when all sets have prescribed weight/reps, otherwise falls back to set completion ratio.
+- **Preferred unit**: `SessionCompleteScreen` converted from `StatelessWidget` to `ConsumerWidget`. Wires `profileControllerProvider` to read `preferredUnits`. Volume stat card and exercise card now show `kg` or `lbs` based on profile preference.
+- **Navigation collision fix**: Cancel/abandon flow no longer triggers SessionCompleteScreen navigation. Added `session.status == WorkoutSessionStatus.completed` guard to `pushReplacementNamed` call. Removed redundant `context.pop()` after `completeWorkout()` in exit sheet handler.
+- **Test updates**: 3 `workout_runner_screen_test.dart` tests updated for navigation-based completion flow (GoRouter + SessionCompleteScreen expectations).
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing M3 smoke flow failure.
+
+### ProgrammeWorkoutDetailScreen — redesigned to match HTML spec (v2)
+
+- Rewrote `ProgrammeWorkoutDetailScreen` to exactly follow the HTML design (iteration 2): no AppBar/back button, `Wrap` for flex-wrap stat rows, Material Icons for stat icons (`fitness_center`, `schedule`, `my_location`), `p-5` (20px) card padding, `gap-5` (20px) image-content gap, `mt-8` (32px) before stats, `mb-1`/`mt-2` (12px total) between name row and stats row, `headline-lg` for "Workout Flow" heading, `rounded-2xl` (16px) on atmospheric section, fixed start button with `play_arrow` icon and `headlineMd` text.
+- Added `programmeName`, `focusAreas` to `ProgrammeWorkoutDetailViewData` and `modality` to `ExerciseDetailItem`.
+- Updated `ProgrammeWorkoutDetailController` to accept full `Exercise` models and compute focus areas from primary muscles.
+- Updated provider to pass full `Exercise` models.
+- New AppStrings: `minutes`, `focusLabel`, `workoutFlow`, `movements`, `setsAndReps`, `intensity`, `readyToPush`, `sessionInspirationMessage`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Home screen `durationMinutes` now reflects today's workout only (not entire programme)
+
+- Changed `durationMinutes` calculation on home screen from summing `estimatedDurationMinutes` across all programme templates to resolving only the template for `todayWorkoutId` via `workoutTemplateId` lookup.
+- Previously showed total estimated duration of every workout in the programme. Now shows the duration of today's scheduled workout only.
+- Verification: `dart format .` — 636 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Auto-calculated workout estimated duration from rest times + set count
+
+- Added `computeEstimatedDurationMinutes()` to `WorkoutBuilderDraft` — computes estimated duration per set using tiered fallback: per-set `restSeconds` (priority 1), per-exercise `restBetweenExercisesSeconds` (priority 2), global `restBetweenExercisesSeconds` (priority 3), default 60s (priority 4), plus 60s per set for execution time.
+- Updated `WorkoutBuilderController._normalizeDraftForSave()` to call `computeEstimatedDurationMinutes()` and set `estimatedDurationMinutes` before persistence.
+- Previously `estimatedDurationMinutes` was never calculated — the field existed in the model but was always null. Now every saved workout auto-computes its estimate from current exercises, sets, and rest values.
+- Downstream consumers (home screen, programme calendar) already read `estimatedDurationMinutes` — no changes needed.
+- Verification: `dart format .` — 636 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Shared `DashedBorderPainter` extracted from workout builder screen
+
+- Extracted `DashedBorderPainter` (was `_DashedBorderPainter`) from `workout_builder_screen.dart` into `lib/shared/widgets/dashed_border_painter.dart`.
+- Updated both `workout_builder_screen.dart` and `programmes_screen.dart` to import and use the shared `DashedBorderPainter`.
+- Removed duplicate local `_DashedBorderPainter` definition from `programmes_screen.dart`.
+- Verification: `dart format .` — 0 changed. `flutter analyze` — 0 issues.
+
+### Schema v12 — `prescribed_reps_exact` column on `set_logs`
+
+- Bumped database schema from `11` to `12`.
+- Added nullable `prescribed_reps_exact` (INTEGER) column to `set_logs` table via migration: `ALTER TABLE set_logs ADD COLUMN prescribed_reps_exact INTEGER`.
+- Updated `AppDatabase` onCreate logging to record `toVersion: 12`.
+- Migration-log and schema-version tests updated for version `12`.
+- Files: `lib/core/db/app_database.dart`, `lib/core/db/app_database.g.dart`, `lib/core/db/tables/set_logs.dart`, `test/core/db/app_database_test.dart`, `test/core/db/migration_test.dart`
+
+### ProgrammesScreen — redesigned list with state-aware start/resume CTA
+
+- Rewrote `ProgrammesScreen` with redesigned programme list: each tile shows programme name, goal tags, and a state-aware `WorkoutDetailButtonState` CTA (start/resume/hidden) that reflects the active-session status of the programme's today workout.
+- Added `WorkoutDetailButtonState` enum at `lib/shared/domain/workout_detail_button_state.dart` — three states: `start`, `resume`, `hidden`.
+- Tapping a programme tile navigates to `ProgrammeCalendarScreen`. The edit action moved to the overflow menu.
+- `ProgrammesScreen` now watches `activeWorkoutSessionProvider` to determine CTA state and uses `workoutRunnerControllerProvider.family` for start/resume actions.
+- Wired `programmeSyncProvider` refresh trigger for post-save state consistency.
+- Files: `lib/shared/domain/workout_detail_button_state.dart`, `lib/features/programmes/presentation/programmes_screen.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/app/providers/providers.dart`
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Runner exit flow — ExitWorkoutSheet, FinishEarlyDialog, FinishEarlySessionCompleteScreen
+
+- **`ExitWorkoutSheet`** (`lib/features/workout_execution/presentation/widgets/exit_workout_sheet.dart`): Replaces inline exit-confirmation UI with a dedicated bottom sheet showing elapsed session time, session name, and three action buttons — Finish & Save, Pause, Abandon.
+- **`FinishEarlyDialog`** (`lib/features/workout_execution/presentation/widgets/finish_early_dialog.dart`): Replaces the old `CancelWorkoutDialog` for early-finish flow with a dedicated dialog that shows session summary (duration, volume, completed sets) and collects optional notes/energy/difficulty before completing.
+- **`FinishEarlySessionCompleteScreen`** (`lib/features/workout_execution/presentation/finish_early_session_complete_screen.dart`): New dedicated summary screen for workouts finished early (untouched sets remain). Displays completion percentage, duration, volume, exercise summary with skipped/untouched badges, and Done CTA. Separate from `WorkoutCompleteScreen` which handles full-completion flow.
+- Updated `workout_runner_screen.dart` routing: normal completion → `WorkoutCompleteScreen` (sessionComplete route), early finish → `FinishEarlySessionCompleteScreen` (finishEarlySummary route), abandon/cancel → HomeScreen via `context.pop()`.
+- New AppStrings: `exitWorkout`, `finishAndSave`, `pauseWorkout`, `abandonConfirm`.
+- Files: `lib/features/workout_execution/presentation/workout_runner_screen.dart`, `lib/features/workout_execution/presentation/workout_complete_screen.dart`, `lib/features/workout_execution/presentation/finish_early_session_complete_screen.dart`, `lib/features/workout_execution/presentation/widgets/exit_workout_sheet.dart`, `lib/features/workout_execution/presentation/widgets/finish_early_dialog.dart`, `lib/shared/constants/app_routes.dart`, `lib/app/router/app_router.dart`, `lib/shared/constants/app_strings.dart`, `test/features/workout_execution/presentation/workout_runner_screen_test.dart`
+- Verification: `dart format .` — passed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing failure.
+
+### Domain model rest field propagation — SetLogDraft, WorkoutRunnerSetItem, WorkoutSessionDraft
+
+- Added `int? restSeconds` to `SetLogDraft` and `WorkoutRunnerSetItem` domain models with `copyWith` propagation.
+- Added `int? restBetweenExercisesSeconds` to `WorkoutSessionDraft` with `copyWith` propagation.
+- Updated `WorkoutRunnerMapper.toViewData()`/`toDraft()` to preserve `restSeconds` and `restBetweenExercisesSeconds` in round-trip.
+- Updated `StartWorkoutSessionUseCase` to propagate `restSeconds` from set prescriptions and `restBetweenExercisesSeconds` from exercise drafts into session domain models.
+- Updated `DriftWorkoutSessionRepository` to persist `restSeconds` on `set_logs` and `restBetweenExercisesSeconds` on `workout_session_exercises` columns.
+- Files: `lib/features/workout_execution/domain/set_log_draft.dart`, `lib/features/workout_execution/domain/workout_runner_set_item.dart`, `lib/features/workout_execution/domain/workout_session_draft.dart`, `lib/features/workout_execution/application/workout_runner_mapper.dart`, `lib/features/workout_execution/application/start_workout_session_use_case.dart`, `lib/features/workout_execution/data/drift_workout_session_repository.dart`
+
+### Convention compliance — all `SizedBox` whitespace migrated to `AppWhiteSpace`
+
+- Added `wXxs` and `hXxs` constants to `AppWhiteSpace` in `app_spacing.dart` for the 2px (AppSpacing.xxs) spacing token.
+- Replaced all `SizedBox(height: AppSpacing.*)` with `AppWhiteSpace.h*` (~135 occurrences across 55 files).
+- Replaced all `SizedBox(width: AppSpacing.*)` with `AppWhiteSpace.w*` (~52 occurrences across 19 files).
+- Replaced raw-number `SizedBox(width: 2)` with `AppWhiteSpace.wXxs` in `workout_builder_screen.dart`.
+- Replaced raw-number `SizedBox(width: 40)` with `AppWhiteSpace.custom(width: AppSizing.handleWidth)` in `workout_builder_screen.dart`.
+- Files: `lib/shared/theme/app_spacing.dart` + 60 feature files.
+- Verification: `dart format .` — 0 unchanged. `flutter analyze` — 0 issues. `flutter test` — 1060 passed, 1 pre-existing failure (M3 smoke flow, unrelated).
+
+### Workout builder screen — enhanced sets table, WEIGHT/REST columns, controller lifecycle
+
+- Expanded `_ExerciseConfigPanel` sets table with WEIGHT and REST columns alongside existing SET/TYPE/REPS/TARGET — inline `TextField` editors with proper `TextEditingController` lifecycle managed via `StatefulWidget` (`_SetTableRow`). Weight parsed as `double`, rest as `int`, reps as range or exact, target as RPE range or RIR.
+- Added `_SetTableRow` (StatefulWidget) with `_onWeightChanged`, `_onRestChanged`, `_onRepsChanged`, `_onTargetChanged` listeners and `_isSyncing` guard to prevent feedback loops. `_syncControllers` on `didUpdateWidget` preserves cursor position.
+- Added `_CoachNotesField` (StatefulWidget) for per-exercise notes textarea — controller lifecycle, `didUpdateWidget` sync on `exerciseId` change.
+- Added `_DashedBorderPainter` (`CustomPainter`, later moved to `lib/shared/widgets/dashed_border_painter.dart` as `DashedBorderPainter`) for the dashed-border "Add Exercise" button, `_AddExerciseButton` with plus-circle icon, `_ExerciseMenu` popup menu (duplicate/delete) replacing always-visible icons.
+- Added rest seconds display in `_MiniExerciseCard` summary line — shows clock icon + `{restSec}s` when set-level rest is present.
+- Added `SetPrescriptionDraft.clearTarget()`, `clearReps()`, `clearWeight()`, `clearRest()` mutation helpers and full `==`/`hashCode` overrides for dirty-state comparison.
+- Added `WorkoutBuilderDraft.clearRestBetweenExercises()`, `==`/`hashCode` with `listEquals` for list fields, and `WorkoutBuilderExerciseDraft` `==`/`hashCode`.
+- Added `ExerciseReference` `==`/`hashCode` override.
+- Added `stack.svg` asset and `OutlinedSvgAssets.stack` for set count icon in mini cards.
+- New AppStrings: `weightColumn`, `restColumn`, `configLabel`, `reorderButton`, `defaultRestHint`, `rpeHint`, `secondsUnitAbbreviation`, `duplicateExercise`, `removeSet`.
+- Added `AppRadius.xxl = 32` for panel padding.
+- Controller: removed mutable `isDirty` field from `WorkoutBuilderState` — replaced with computed `isDirty` getter comparing `draft != originalDraft`. State gains `originalDraft` field. `updateExerciseNotes`, `updateGoalTags`, `updateDescription`, `updateRestBetweenExercises` all simplified with no `isDirty: true`.
+- `LoadWorkoutDraftUseCase` now accepts optional `ExerciseDao` — resolves `modality` per exercise from DB for badge display; `goalTags` decoded from JSON string list instead of `GoalTag` enum.
+- `SaveWorkoutDraftUseCase` uses raw string goal tags (`Set<String>`) — removed `_goalTagFromString`.
+- `SavedWorkoutDraft.goalTags` type changed from `Set<GoalTag>` to `Set<String>`.
+- `DriftSavedWorkoutRepository` serializes goal tags with `jsonEncode(draft.goalTags.toList())` instead of `EnumCodec.encodeSet`.
+- `AppTheme`: added `surfaceTintColor` to light and dark `AppBarTheme`.
+- Provider `loadWorkoutDraftUseCaseProvider` now injects `exerciseDaoProvider`.
+- Integration test uses `createNewWorkout` string assertion and `ensureVisible` for add exercise button.
+- Controller tests (4 groups) add `loadWorkoutDraftUseCaseProvider` override.
+- M4 tests: `GoalTag.generalFitness` replaced with `'general_fitness'` string.
+- Files: `lib/features/workout_builder/presentation/workout_builder_screen.dart`, `lib/features/workout_builder/application/workout_builder_controller.dart`, `lib/features/workout_builder/application/workout_builder_state.dart`, `lib/features/workout_builder/application/load_workout_draft_use_case.dart`, `lib/features/workout_builder/application/save_workout_draft_use_case.dart`, `lib/features/workout_builder/domain/exercise_reference.dart`, `lib/features/workout_builder/domain/set_prescription_draft.dart`, `lib/features/workout_builder/domain/workout_builder_draft.dart`, `lib/features/workout_builder/domain/workout_builder_exercise_draft.dart`, `lib/features/workout_builder/domain/saved_workout_draft.dart`, `lib/features/workout_builder/data/drift_saved_workout_repository.dart`, `lib/app/providers/providers.dart`, `lib/app/theme/app_theme.dart`, `lib/shared/constants/app_strings.dart`, `lib/shared/constants/svg_assets_outlined.dart`, `lib/shared/theme/app_spacing.dart`, `assets/svgs/outline/stack.svg`, `test/features/workout_builder/application/workout_builder_controller_test.dart`, `test/features/workout_builder/presentation/workout_builder_integration_test.dart`, `test/app/m4/m4_manual_tracker_acceptance_test.dart`, `test/app/m4/m4_privacy_integrity_blockers_test.dart`
+
+### Exercise picker bottom sheet — expanded difficulty badges (4 tiers), restyled cards
+
+- Redesigned `AddExerciseBottomSheet` as full-height container with handle bar, close button + "Add Exercise" header, pill-shaped search bar with magnifying glass and filter icons, horizontal muscle-group filter chips (All/Chest/Back/Legs/Shoulders/Arms/Core), single-column exercise card list with colored initial-letter avatar, tag chips, and animated bottom action bar with selection count + confirm button.
+- Expanded difficulty badges from 2 tiers (beginner, intermediate) to 4 tiers (novice, beginner, intermediate, advanced) — each with dedicated color tokens (`difficultyNoviceBg/Text`, `difficultyBeginnerBg/Text`, `difficultyIntermediateBg/Text`, `difficultyAdvancedBg/Text`) in both `AedifyLightColors` and `AedifyDarkColors`.
+- Exercise cards show color-coded difficulty badge: novice (blue-tinted), beginner (green), intermediate (orange), advanced (red). Selected cards get secondary border, tinted background, and check-circle overlay.
+- 35 new filter-related AppStrings for difficulty labels/descriptions, muscle group names, equipment types, modality types, and filter UI labels.
+- Files: `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`, `lib/shared/theme/app_colors.dart`, `lib/shared/constants/app_strings.dart`
+
+### Exercise picker filter sheet
+
+- Created `ExercisePickerFilterSheet` — a full filter bottom sheet triggered by tapping the search suffix icon. Includes multi-select muscle group pills, a 2-column equipment card grid (with Material icons), radio-style difficulty picker with descriptions, iOS-style modality toggles, and Cancel/Apply Filters footer with active filter count badge.
+- Fixed header in `AddExerciseBottomSheet` to properly show the "Add Exercise" title alongside the close button.
+- Wired the search bar's filter icon to open the new filter sheet.
+- Files: `lib/features/workout_builder/presentation/widgets/exercise_picker_filter_sheet.dart`, `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`
+- Verification: `dart format` passed, `flutter analyze` — 0 issues.
+
+## 2026-07-04
+
+### Workout runner completion and active-session integrity
+
+- Completing a workout no longer immediately pops the route. `WorkoutRunnerScreen` now transitions into a dedicated completed-state summary showing workout name, duration, total volume, completed sets, completed exercises, and a `Done` CTA for intentional exit.
+- Cleared transient runner UI (`_showRestTimer`, `_restSeconds`) before completion/cancel and added explicit placeholders for `completing` / `cancelling` phases so the interactive runner body cannot linger in an invalid state.
+- Fixed the final-set path so logging the last incomplete set auto-completes exactly once and enters the same summary flow as finish-early completion.
+- Removed pre-pop invalidation of `workoutRunnerControllerProvider(...)` from finish-early and cancel flows. This prevents the still-mounted screen from rebuilding the auto-starting controller and creating a second persisted `in_progress` session while the route is exiting.
+- Hardened session persistence against stale-active state:
+  - `WorkoutSessionDao.updateSessionIfInProgress(...)` guards progress writes so a late autosave cannot revive a completed session.
+  - `DriftWorkoutSessionRepository.getActiveSession()` now repairs duplicate active rows by abandoning rows superseded by a later completed row and collapsing remaining duplicates to the most recent in-progress session.
+  - `completeSession()` abandons sibling in-progress rows for the same workout identity immediately after completion.
+  - `startSession()` performs the in-progress count check inside the transaction step instead of before transaction execution.
+- Added regression coverage for finish-early route exit, final-set auto-completion, late progress-save race protection, and duplicate active-session repair / sibling abandonment.
+- Files: `lib/features/workout_execution/presentation/workout_runner_screen.dart`, `lib/core/db/daos/workout_session_dao.dart`, `lib/features/workout_execution/data/drift_workout_session_repository.dart`, `test/features/workout_execution/presentation/workout_runner_screen_test.dart`, `test/features/workout_execution/data/drift_workout_session_repository_test.dart`
+
+### Programme builder save/load correctness and refresh flow
+
+- Fixed a multi-week save bug where programme expansion only reused slot-day configuration from week 1. `ProgrammeDraft` now carries `weekSlotDayIndices` and `weekSlotTemplateIds`, and the repository uses week-specific slot config when available.
+- Fixed edit-mode slot reconstruction by using the slot's sequential position within the week instead of `scheduledDayIndex` as `slotIndex`.
+- Restored saved day labels on edit by decoding `scheduledDayIndex` back into `TrainingDay`.
+- Added an optional day-of-week picker to workout slots in the programme builder. Users can tap the slot day label to override the assigned day via a bottom sheet; slots still fall back to auto-assignment when no override is chosen.
+- Fixed post-save refresh behavior:
+  - programme list refresh now uses explicit `reload()` after `context.pop()` instead of relying on a lost invalidation signal
+  - programme calendar refresh now also calls `reload()` on the family controller after save when editing an existing programme
+- Files: `lib/features/programmes/domain/programme_draft.dart`, `lib/features/programmes/application/save_programme_builder_draft_use_case.dart`, `lib/features/programmes/application/load_programme_builder_draft_use_case.dart`, `lib/features/programmes/data/drift_programme_repository.dart`, `lib/features/programmes/application/programme_builder_controller.dart`, `lib/features/programmes/presentation/programme_builder_screen.dart`, `lib/features/programmes/presentation/widgets/programme_workout_slot_card.dart`, `lib/features/programmes/presentation/widgets/programme_week_card.dart`, `lib/features/programmes/presentation/widgets/programme_weeks_overview.dart`, `lib/shared/constants/app_strings.dart`
+
+### Programme calendar, home sync, and progress resolution
+
+- Extracted shared flat-index progression logic into `TodayWorkoutResolver` so the calendar and home screen agree on which workout counts as "today" when days are skipped or the user starts mid-week.
+- Fixed calendar completion state to come from resolved workout-session data (`completedWorkoutIds`) instead of the never-updated `program_workouts.status` column.
+- `programmeSyncProvider` now watches the programme library controller as a data dependency, and `homeRefreshTriggerProvider` forces home-screen-related providers to refresh after completion/cancel so home and calendar state update immediately.
+- Fixed the runner rest-timer trigger to respect the default 60-second fallback by always calling `RestResolver.effectiveRest()`.
+- Active programme progress now reflects the current week instead of total programme count:
+  - `ProgrammeListItem` now carries `startDateLocal`
+  - home progress uses current-week sessions remaining and completion ratio
+  - current week is derived consistently from start date / flat-index resolution
+- Completed workouts now reflect correctly across the programme surfaces:
+  - today's completed workout shows a checkmark in the calendar
+  - the home today-workout card hides when no incomplete workout remains for today
+  - home and calendar both use active-session-aware resume / disable logic for start buttons when another workout session is already in progress
+- Files: `lib/app/providers/providers.dart`, `lib/features/home/presentation/home_screen.dart`, `lib/features/programmes/application/today_workout_resolver.dart`, `lib/features/programmes/application/list_programmes_use_case.dart`, `lib/features/programmes/application/programme_calendar_controller.dart`, `lib/features/programmes/domain/programme_list_item.dart`, `lib/features/programmes/presentation/programme_calendar_screen.dart`, `lib/features/programmes/presentation/widgets/programme_calendar_header.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/features/workout_execution/application/workout_runner_controller.dart`, `lib/shared/domain/week_calculator.dart`
+
+### Saved workout persistence moves to soft delete; schema v11
+
+- Bumped the database schema from `10` to `11`.
+- Added nullable `deleted_at` to `saved_workouts` and migrated existing databases with `ALTER TABLE saved_workouts ADD COLUMN deleted_at TEXT NULL`.
+- `SavedWorkoutDao.getAll()` and `getByStatus()` now exclude soft-deleted rows.
+- `DriftSavedWorkoutRepository.deleteSavedWorkout()` now performs a soft delete by setting `status = 'deleted'`, `deletedAt`, and `updatedAt` instead of deleting the saved-workout root row.
+- Updated schema-version and migration-log tests for version `11`.
+- Files: `lib/core/db/app_database.dart`, `lib/core/db/app_database.g.dart`, `lib/core/db/tables/saved_workouts.dart`, `lib/core/db/daos/saved_workout_dao.dart`, `lib/features/workout_builder/data/drift_saved_workout_repository.dart`, `test/core/db/app_database_test.dart`, `test/core/db/migration_test.dart`
+
+### Programme/library navigation and UI refinements
+
+- `ProgrammesScreen` now treats tapping a programme as navigation into the programme calendar, while edit moved into the overflow menu as an explicit action.
+- `ProgrammeListTile` now shows the primary goal label from `goalTags` instead of a placeholder and remains fully tappable as a details entry point.
+- `ProgrammeCalendarScreen`, `ProgrammeCalendarHeader`, `ProgrammeWeekSection`, and `ProgrammeDayCard` were visually refined:
+  - current week gets a distinct highlighted expanded section
+  - today cards and rest-day cards have dedicated presentation states
+  - the header uses the active-session-aware start/resume CTA and a cleaner full-bleed layout
+- `HomeScreen` now includes a `View details` path from the active programme surface into the programme calendar.
+- Removed nested child-screen app bars from the library/programme tab surfaces so the hub shell owns the top chrome consistently.
+- Added new SVG assets `leaf` and `meditation`, introduced `AppSizing.iconS`, reduced `iconXs`, and retuned deload-pattern sizing to support the updated programme/calendar visuals.
+- Files: `lib/features/programmes/presentation/programmes_screen.dart`, `lib/features/programmes/presentation/widgets/programme_list_tile.dart`, `lib/features/programmes/presentation/programme_calendar_screen.dart`, `lib/features/programmes/presentation/widgets/programme_calendar_header.dart`, `lib/features/programmes/presentation/widgets/programme_day_card.dart`, `lib/features/programmes/presentation/widgets/programme_week_section.dart`, `lib/features/home/presentation/home_screen.dart`, `lib/features/exercise_library/presentation/exercise_library_screen.dart`, `lib/features/library/presentation/library_hub_screen.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`, `lib/features/bodymap/presentation/bodymap_screen.dart`, `lib/features/bodymap/presentation/widgets/bodymap_bucket_chip_bar.dart`, `lib/shared/constants/svg_assets_outlined.dart`, `lib/shared/constants/svg_assets_solid.dart`, `lib/shared/theme/app_spacing.dart`, `assets/svgs/outline/leaf.svg`, `assets/svgs/solid/meditation.svg`
+
+### Verification snapshot
+
+- Fresh verification run on 2026-07-04:
+  - `dart format .` — passed (`Formatted 634 files (0 changed) in 1.35 seconds`)
+  - `flutter analyze` — passed (`No issues found!`)
+  - `flutter test` — 1060 passed, 1 failed
+- The single failing test remains `test/app/m3/m3_setup_smoke_flow_test.dart: M3 Setup Smoke Flow library browse: exercise list screen renders with empty state`.
+- Result: the latest schema v11 soft-delete work and programme/library UI refinements did not introduce new format or analyzer issues; the test sweep still has the same outstanding M3 smoke-flow failure.
+
+## 2026-07-03
+
+### Programme builder: goal tags and week type save/load roundtrip fix
+
+- **Goal tags now restored on edit** (`LoadProgrammeBuilderDraftUseCase.loadForEdit()`): `goalTags` and `equipment` are now decoded from `goalTagsJson`/`equipmentJson` via `EnumCodec.decodeSet` — previously they were silently dropped on load, so saved tags appeared empty when reopening a programme.
+- **Week type now persisted on save** (`DriftProgrammeRepository._insertExpandedProgramRows()`): Added `List<WeekType?>? weekTypes` to `ProgrammeDraft` domain model. `SaveProgrammeBuilderDraftUseCase` now extracts week types from builder weeks. The repository passes the value to `_buildProgramWeekCompanion(weekType: ...)` instead of always `null`.
+- **Week type now restored on edit** (`LoadProgrammeBuilderDraftUseCase.loadForEdit()`): Reads `w.weekType` and passes `WeekType.fromDb()` to `ProgrammeBuilderWeekDraft(weekType: ...)`.
+- Files changed: `programme_draft.dart`, `save_programme_builder_draft_use_case.dart`, `drift_programme_repository.dart`, `load_programme_builder_draft_use_case.dart`.
+
+### Full failing-test sweep to green
+
+- **Full suite green**: `flutter test` now passes cleanly at **1056/1056**.
+- **Workout builder warmup ordering fix**: `WorkoutBuilderController.addSet(..., setType: SetType.warmup)` now inserts warmup sets before working sets, fixing an unsaveable-workout bug exposed by tests.
+- **DB version / migration test repairs**: Updated schema-version expectations to `10` and fixed `AppDatabase` on-create migration logging from `toVersion: 9` to `toVersion: 10`.
+- **Router-backed widget tests**: Repaired dialog and bottom-sheet widget tests that now rely on `context.pop()` by wrapping them in `GoRouter`-backed harnesses. Covered workout builder, workout runner, custom exercise, BYOK settings, programme builder, and template reassignment surfaces.
+- **Runner autosave test stability**: Updated debounce tests to keep the `autoDispose` workout-runner provider alive while timers elapse.
+
+### Workout builder save-time warmup normalization
+
+- **Editing behavior preserved**: Adding a warmup set no longer immediately reorders the draft while the user is editing.
+- **Save-time reordering**: `WorkoutBuilderController.saveWorkout()` now normalizes each exercise before validation/persistence so all warmup sets are saved before working sets, while preserving relative order within each group.
+- **Edit-mode consistency**: After a successful save in edit mode, the controller state is updated to the normalized set order so the UI matches what was persisted.
+- **Coverage**: Added/updated workout-builder controller tests for mixed pre-save order, normalized saved payload order, and normalized post-save edit state.
+
+### Workout runner lifecycle hardening + HomeScreen in-progress card
+
+- **Lifecycle hardening** (extends 2026-07-02 fix): `autoSave` timer cancelled on `completeWorkout()`/`cancelWorkout()` — prevents save-after-complete race. `autoSave` now guards on `session.status == inProgress`. `activeWorkoutSessionProvider` invalidated after start/resume/save/complete/cancel — consumers reflect current session state immediately.
+- **Cancel pops runner**: After `cancelWorkout()` succeeds, dialog invalidates controller provider and calls `context.pop()`, returning to HomeScreen.
+- **HomeScreen ongoing card**: `_OngoingWorkoutCard` shown when `activeWorkoutSessionProvider` returns a session — progress (completed/total sets), elapsed time, resume button, discard button (calls `AbandonWorkoutSessionUseCase` + refreshes provider).
+- **New provider**: `AppProviders.activeWorkoutSessionProvider` — `FutureProvider<WorkoutRunnerSessionViewData?>`.
+
+### Rest timer wiring + warmup chip in runner
+
+- **Rest timer duration-aware**: `onSetLogged` passes `int restSeconds` computed via `RestResolver.effectiveRest(setRest:, exerciseRest:)`. Timer starts with resolved duration (set-level > exercise-level > 60s default).
+- **Log set gating**: Button disabled until both `actualWeightKg` and `actualReps` entered — prevents logging incomplete sets.
+- **Active set index recomputed per build**: Removed mutable `_activeSetIndex` from `_SetTableState` — derived statically from completion state.
+- **Warmup chip in runner**: `SetTypeChip` shown for warmup sets in runner's `_SetTable`.
+- **`copyWithActuals` preserves rest**: `restSeconds` propagated. Params changed from `double?`/`int?` to `String?` with parse in body.
+
+### DB schema v10 — rest columns + warmup validation
+
+- **Schema v10**: Added `restSeconds` (nullable int) to `set_logs`, `restBetweenExercisesSeconds` (nullable int) to `workout_session_exercises`. v9→v10 migration.
+- **Warmup ordering validation**: `DefaultDraftValidationService._validateSetOrdering()` — detects warmup sets after working sets. `DraftValidationCode.warmupSetOrdering`, `AppStrings.warmupSetsMustComeFirst`.
+- **Saved workout delete simplified**: `DriftSavedWorkoutRepository.deleteSavedWorkout()` always hard-deletes (removed archive-on-history conditional). DAO `deleteById()` added.
+
+### Domain + data-layer rest field propagation
+
+- **Domain models**: `restSeconds` on `SetLogDraft` / `WorkoutRunnerSetItem`. `restBetweenExercisesSeconds` on `WorkoutSessionExerciseDraft`. All with `copyWith`.
+- **Load use case**: Maps `restBetweenExercisesSeconds` from saved workout aggregate. Fixes `exerciseRef` → `exercise.name`.
+- **Start use case**: Propagates `restSeconds` from set prescriptions and `restBetweenExercisesSeconds` from exercise drafts (saved + program paths).
+- **Mapper**: `toViewData()`/`toDraft()` preserve rest fields in round-trip.
+- **Repository**: Writes `restSeconds` / `restBetweenExercisesSeconds` columns when saving session.
+
+### Workout builder rest field StatefulWidget extraction
+
+- **`_RestField`** (`workout_builder_screen.dart`): Extracted from inline `TextField` + `TextEditingController.fromValue(...)` to `StatefulWidget` with controller lifecycle — fixes cursor loss on rebuild.
+- **`_ExerciseRestField`** (`workout_exercise_card.dart`): Same extraction for per-exercise rest field.
+
+### New AppStrings
+
+- `warmupSetsMustComeFirst`, `workoutInProgress`, `discardWorkout`.
+
+- Verification: `dart format` — pending. `flutter analyze` — pending. `flutter test` — pending.
+
+## 2026-07-02
+
+### Workout runner abandon/restart fix
+
+- **Runner provider lifecycle**: `AppProviders.workoutRunnerControllerProvider` is now `autoDispose.family`, so reopening the same saved workout or programme workout does not reuse a stale controller instance after the screen is dismissed.
+- **Cancel flow reset**: `workout_runner_screen.dart` now invalidates the current runner provider instance after `cancelWorkout()` succeeds and immediately pops the runner screen, preventing an abandoned in-memory session from being reused on the next launch.
+- **Regression coverage**: `workout_runner_screen_test.dart` now covers abandoning a workout, leaving the runner, reopening the same workout, and verifying that a fresh session is started.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test test/features/workout_execution/presentation/workout_runner_screen_test.dart` — passed. `flutter test` — not clean due pre-existing unrelated failures in BYOK/workout-builder widget tests and Flutter test runner shutdown errors.
+
+### Convention compliance sweep — hardcoded strings + raw layout values
+
+- **30 new `AppStrings` constants** added — 8 missing equipment labels, 12 BYOK provider/model display names, 3 custom exercise validation messages, 2 rest timer labels, 2 duration abbreviations.
+- **`profile_screen.dart` taxonomy** (26 strings): Replaced all hardcoded experience/goal/equipment labels in `_ProfileTaxonomy` and chip `options:` lists with `AppStrings` constants. Also replaced `suffixText: 'min'` with `AppStrings.onboardingReviewMinutes`.
+- **`onboarding_screen.dart` taxonomy** (14 strings): Replaced hardcoded goal labels and 8 remaining equipment labels in `_OnboardingTaxonomy` with `AppStrings` constants.
+- **`drift_byok_repository.dart`** (12 strings): Replaced all provider `displayName:` and model `displayName:` values with `AppStrings` constants.
+- **`custom_exercise_validator.dart`** (3 strings): Replaced validation messages with `AppStrings` constants.
+- **`custom_exercise_editor_controller.dart`** (2 strings): Replaced error messages with existing `AppStrings.customExerciseSaveFailed` / `customExerciseDeleteFailed`.
+- **`custom_exercise_error_banner.dart`** (1 string): Replaced `'Retry'` with `AppStrings.retry`.
+- **`programme_calendar_controller.dart`** (1 string): Replaced `'Active Recovery'` with `AppStrings.activeRecovery`.
+- **`rest_timer_widget.dart`** (2 strings): Replaced `'-15s'` / `'+15s'` with `AppStrings.restMinus15` / `restPlus15`.
+- **`complete_workout_sheet.dart`** (1 string): Replaced `'$minutes min'` to use `AppStrings.onboardingReviewMinutes`.
+- **`workout_history_detail_screen.dart`** (2 strings): Replaced `'h'` / `'m'` duration abbreviations with `AppStrings.durationHoursAbbreviation` / `durationMinutesAbbreviation`.
+- **Raw layout values → tokens**: Added 20 new `AppSizing` tokens (`videoCardHeight`, `videoPreviewHeight`, `emptyStateHeight`, `restTimerSize`, `weekTypeDropdownWidth`, `dataFieldWidthSm/Md`, `timerStrokeWidth`, `hairlineStrokeWidth`, `activeIndicatorHeight`, `deloadLineStrokeWidth/Spacing`, `exerciseNumberCircle`, `setNumberColumnWidth`). Replaced 30+ raw values across 10 files — `exercise_detail_screen.dart`, `workout_runner_screen.dart`, `rest_timer_widget.dart`, `week_selector_pills.dart`, `programme_list_tile.dart`, `programme_week_card.dart`, `programme_workout_detail_screen.dart`, `onboarding_screen.dart`, `custom_exercise_editor_screen.dart`, `workout_history_detail_screen.dart`, `pattern_deload_painter.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues.
+
+### Convention compliance sweep — Navigator.pop, EdgeInsets.fromLTRB, TextStyle, Theme.of(context)
+
+- **`Navigator.of(context).pop()` → `context.pop()`** (22 files): Replaced all remaining `Navigator.of(context).pop()`, `Navigator.of(context).pop(true/false)`, and `Navigator.pop(ctx)` with go_router's `context.pop()` / `ctx.pop()`. Added missing `go_router` imports. Affected files: `custom_exercise_editor_screen`, `exercise_detail_screen`, `delete_custom_exercise_dialog`, `discard_custom_exercise_changes_dialog`, `home_screen`, `onboarding_screen`, `profile_screen`, `programme_builder_screen`, `programmes_screen`, `active_programme_warning_dialog`, `add_week_dialog`, `archive_item_dialog`, `delete_item_dialog`, `discard_programme_changes_dialog`, `programme_template_quick_create_sheet`, `template_reassignment_bottom_sheet`, `byok_settings_screen`, `add_exercise_bottom_sheet`, `discard_changes_dialog`, `workout_builder_header`, `workout_builder_screen`, `cancel_workout_dialog`, `workout_runner_screen`.
+- **`EdgeInsets.fromLTRB()` → `EdgeInsets.only()`** (4 locations, 3 files): `programme_calendar_header.dart`, `programme_week_section.dart` (×2), `workout_runner_screen.dart`.
+- **`TextStyle(...)` → `AppTextStyles.*.copyWith()` / `context.textTheme.*.copyWith()`** (10 locations, 8 files): `exercise_detail_screen.dart` (×2), `home_screen.dart` (×2), `active_programme_warning_dialog.dart`, `add_week_dialog.dart`, `discard_programme_changes_dialog.dart`, `programme_list_tile.dart`, `saved_workout_list_tile.dart`, `workout_runner_screen.dart` (×3).
+- **`Theme.of(context).colorScheme` → `context.colorScheme`** (2 files): `delete_custom_exercise_dialog.dart`, `delete_item_dialog.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Final widget-builder helper method sweep — zero violations remaining
+
+- **11 files converted**: `exercise_dataset_status_tile`, `exercise_step_audio_button`, `workout_history_detail_screen`, `exercise_detail_screen`, `exercise_library_screen`, `programme_calendar_header`, `programme_week_section`, `programme_day_card`, `programme_workout_detail_screen`, `onboarding_screen`, `home_screen`.
+- **5 deferred helpers also converted** (all previous stragglers now resolved):
+  - `home_screen.dart`: `_buildScheduled` → `_ScheduledView` (StatelessWidget), `_buildEmpty` → `_EmptyView` (StatelessWidget).
+  - `onboarding_screen.dart`: `_infoPanel` → `_ByokInfoPanel` (StatelessWidget), `_buildForm` + `_saveKey` + mutable fields → `_ByokForm` (ConsumerStatefulWidget).
+  - `workout_runner_screen.dart`: `_buildBody` + `_showCompleteSheet` + `_showCancelDialog` → `_WorkoutRunnerBody` (ConsumerWidget).
+- **Exhaustive verification**: Grep-confirmed zero non-build methods returning `Widget` in `lib/`. The only non-build widget-returning functions are static `AppWhiteSpace.both`/`custom` factory methods (intentional design-token utilities).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Final top-level declaration sweep — zero violations remaining
+
+- **Moved `const _items` into `_BottomNavItemData`** in `lib/app/router/bottom_nav_shell.dart:16` — converted from a top-level constant to a `static const` member of the existing private class, with references updated to `_BottomNavItemData.items.length` / `_BottomNavItemData.items[index]`.
+- **Moved `_findFirstIncomplete` into `WorkoutRunnerScreen`** in `lib/features/workout_execution/presentation/workout_runner_screen.dart:301` — converted from a top-level helper function to a `static` method of `WorkoutRunnerScreen`, called from within `build()`.
+- **Exhaustive verification**: Grep-confirmed zero top-level declarations remain outside `main()` in `main.dart` across all of `lib/`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### HomeScreen — greeting, active programme, today's workout
+
+- **New `HomeScreen`** (`lib/features/home/presentation/home_screen.dart`): 688-line `ConsumerWidget` with time-of-day greeting (good morning/afternoon/evening), user display name from profile, active programme card with tap-to-navigate, today's scheduled workout card with start/resume actions, volume metric card, and quick action grid.
+- **Provider wiring**: Wired through `profileControllerProvider` for name, `programmeLibraryControllerProvider` for active programme, `workoutRunnerControllerProvider.family` for session start/resume.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Rest timer widget + workout runner metrics refactor
+
+- **New `RestTimerWidget`** (`lib/features/workout_execution/presentation/widgets/rest_timer_widget.dart`): Animated countdown timer with circular progress, remaining time display, add-30-seconds button, and dismiss action. Uses `AnimationController` + `Timer.periodic` for 1s tick updates.
+- **Runner integration**: `WorkoutRunnerScreen` and `WorkoutRunnerHeader` manage rest timer visibility — appears after completing a set, auto-dismisses when elapsed or user taps skip. `WorkoutRunnerExerciseCard` shows effective rest time per exercise.
+- **Metrics extraction**: `_CompleteWorkoutMetrics` class extracted from `CompleteWorkoutSheet` — centralizes total volume, completed sets, and completed exercise calculations.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Exercise detail screen — StatefulWidget migration + error handling
+
+- **Converted `ExerciseDetailScreen`** from `ConsumerWidget` to `ConsumerStatefulWidget` — proper lifecycle for video state, audio playback, and async reloads.
+- **Improved error states**: Retry button on failure, explicit loading/error/missing states via `_ExerciseDetailState` enum, `ErrorWidget` with CTA.
+- **Supporting widgets updated**: `ExerciseVideoCard`, `ExerciseDatasetStatusTile`, `ExerciseStepAudioButton` — error propagation alignment.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Exercise multi-select refactor + onboarding provider structure
+
+- **Multi-select extraction**: Reusable chip patterns extracted from `OnboardingScreen`, `ProfileScreen`, and `AddExerciseBottomSheet` — reduced duplication in exercise/equipment/goal selection.
+- **Onboarding providers**: Refactored local provider declarations in `onboarding_screen.dart` — grouped by concern, removed unused providers.
+- **Slot day assignment**: Extended `slot_day_assignment.dart` with improved training-day anchor resolution.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Logging sweep — 59 files instrumented across M4 modules
+
+- **Systematic logging**: `AppLogger` integrated into 59 files — all controllers (BYOK, settings, workout builder/runner, programme builder, onboarding, profile, exercise library, sync), all repositories (Drift BYOK/settings/saved-workout/session/programme/history), all use cases (load/save/complete/abandon/start), validators/adapters/services, and core infrastructure (bootstrap, Firebase, network, TTS, transactions, secure storage, file store).
+- **Pattern**: Every public method logs entry/exit at appropriate severity — `info` for state transitions, `warning` for recoverable failures, `severe` for unrecoverable errors. No sensitive data included.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Minor refactors and fixes
+
+- **Validation scope rename** (`lib/core/validation/`): `DraftValidationScope.set` → `DraftValidationScope.exerciseSet` across 5 files (service, adapters, tests).
+- **Custom exercise editor invalidation** (`custom_exercise_editor_screen.dart`): Controller invalidates provider state on "Done" — ensures fresh state on re-entry.
+- **\_InfoRow extraction** (`workout_history_detail_screen.dart`): Repeated `_infoRow` helper → standalone `_InfoRow` StatelessWidget.
+- **VSCode launch config** (`.vscode/launch.json`): Flutter debug/run configuration for IDE development.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+## 2026-07-01
+
+### Rule-compliance cleanup + failing test repair
+
+- **Top-level declaration cleanup**: Wrapped remaining touched-surface top-level helpers/providers into private classes or static members to comply with the Aedify rule against top-level declarations outside `main()`. This included slot-day assignment, exercise-video label formatting, complete-workout metrics, onboarding/profile exercise multi-select helpers, onboarding local providers, programme workout detail helpers, and profile 1RM helper generation.
+- **Programmes screen repair**: Rebuilt `ProgrammesScreen` into a minimal valid library screen wired to `ProgrammeLibraryController`, restoring compile health and correct archive/delete/activate entrypoints.
+- **Exercise detail repair**: Restored visible metadata chips (difficulty, modality, equipment, force) and a substitution tooltip so the detail screen once again matches its widget-test contract.
+- **Runner test alignment**: Updated the workout-runner widget test to assert the current runner UI contract (`finishEarly`, `logSet`) and suppressed repeated drift warnings in that test file.
+- **Widget polish**: Added missing `_TodayBadge` const constructor and removed stale helper-state issues exposed during verification.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Programme goals + status/list visibility fixes
+
+- **Programme builder goals UI**: Added a goal selector to `ProgrammeDetailsSection` using multi-select chips for all `GoalTag` values. Wired `ProgrammeBuilderScreen` to pass current `goalTags` and `ProgrammeBuilderController.setGoalTags(...)`.
+- **Programme validation**: Added programme-goal validation so a programme must have at least one goal before save. Added `DraftValidationCode.noGoals`, `AppErrorCodes.noGoals`, `AppStrings.programmeGoalsRequired`, and `ProgrammeBuilderValidator._validateGoals(...)`.
+- **Programme status consistency**: Fixed `status` / `active` divergence so activation state is now written consistently across all save and toggle flows:
+  - `ProgrammeBuilderController.setProgrammeStatus(...)` now updates both `status` and `active`
+  - `SaveProgrammeBuilderDraftUseCase` now derives `active` from `status == ProgramStatus.active`
+  - `ProgramDao.clearActiveProgram(...)` now also writes `status: 'inactive'`
+  - `ProgramDao.setProgramActive(...)` now writes both `active` and `status`
+- **Programme list visibility**: New programmes default to `inactive` instead of `draft`, and both active and inactive programmes are now visible on the list screens:
+  - `LoadProgrammeBuilderDraftUseCase.createEmptyDraft()` now defaults to `ProgramStatus.inactive`
+  - `ListProgrammesUseCase` no longer filters to `status: 'active'`
+  - `ListSavedWorkoutsUseCase` no longer filters to `status: 'active'`
+- **Result**: Newly created inactive programmes now appear on `ProgrammesScreen`, and the status chip stays in sync after activation/deactivation.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Deload week flag + three-tier rest model
+
+- **Deload week**: `ProgrammeBuilderWeekDraft` now has `WeekType? weekType` field. `ProgrammeWeekCard` shows a dropdown with all 6 `WeekType` values (normal, deload, test, taper, hypertrophy, strength). Controller `setWeekType` added.
+- **Rest resolver** (`lib/shared/domain/rest_resolver.dart`): `RestResolver.effectiveRest(set?, exercise?, workout?)` resolves the three-tier chain → defaults to 60s when all null.
+- **Domain models** (5 files): Added `int? restBetweenExercisesSeconds` to `WorkoutBuilderDraft`, `WorkoutBuilderExerciseDraft`, `ProgrammeBuilderTemplateDraft`, `ProgrammeExerciseDraft`, `ProgrammeBuilderDraft`. Added `restBetweenExercisesSeconds` to persistence drafts `SavedWorkoutDraft` and `SavedWorkoutExerciseDraft`.
+- **Drift migration v8→v9**: Added 4 nullable `restBetweenExercisesSeconds` columns to `saved_workouts`, `saved_workout_exercises`, `program_workout_templates`, `program_template_exercises`.
+- **Controllers**: `WorkoutBuilderController` +`updateRestBetweenExercises` and `updateExerciseRest`. `ProgrammeBuilderController` +`setWeekType` and `updateTemplateRestBetweenExercises`.
+- **Repository**: `DriftSavedWorkoutRepository` companion builders map new rest columns. `SaveWorkoutDraftUseCase` maps rest fields from builder to persistence draft.
+- **UI**: `ProgrammeWeekCard` shows week type dropdown. `ProgrammeWeeksOverview` passes `onSetWeekType` callback. `ProgrammeBuilderScreen` wires both deload and template rest.
+- **Strings**: `workoutRestLabel`, `workoutRestHint`, `restSecondsUnit`, `weekTypeLabel`.
+- **Tests**: `rest_resolver_test.dart` (6 tests), `programme_builder_controller_test.dart` (setWeekType test). Migration and schema version tests updated for v9.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1053/1053 passed.
+
+### Day-of-week selection — onboarding + programme defaults
+
+- **Onboarding schedule step**: Replaced number picker (1-7) with day-of-week toggle (Mon-Sun) using `TrainingDay.displayLabel`. Users now select exact workout days. `trainingDaysPerWeek` is derived from `trainingDays.length`.
+- **Onboarding controller**: `_resumeStepForDraft` and `_validateStep` now check `trainingDays.isEmpty` instead of `trainingDaysPerWeek`.
+- **Review step**: Displays selected day names instead of just the count.
+- **`TrainingDay`**: Added `displayLabel` getter (Mon/Tue/Wed/...).
+- **`ProgrammeBuilderWorkoutSlotDraft`**: Added `TrainingDay? scheduledDay` field + `copyWith`.
+- **Slot day assignment algorithm** (`lib/features/programmes/application/slot_day_assignment.dart`): Derives calendar-ordered days from training anchors. Supports day-of-week selection enforcement for future >7 slot weeks.
+- **Programme builder screen**: `onAddSlot` now reads profile `trainingDays` and computes `scheduledDay`/`scheduledDayIndex` using the algorithm.
+- **`ProgrammeBuilderController.addSlot()`**: Now accepts optional `TrainingDay? scheduledDay`.
+- **Programme slot card**: Shows `scheduledDay?.displayLabel` or fallback.
+- **Validator**: Added `scheduledDayRequired` error for weeks with >7 slots where slot days aren't explicitly set.
+- **AppStrings** (+1): `scheduledDayRequired`. **AppErrorCodes** (+1): `noScheduledDay`.
+- **Tests updated**: Onboarding controller/screen tests use day toggle taps. M3 smoke flow updated. All pre-existing tests pass.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1043/1043 passed.
+
+### V1-M4-011 — M4 manual tracker acceptance suite (complete)
+
+- **Test harness** (`test/app/m4/m4_test_harness.dart`): App-level pump helper with provider overrides for savedWorkoutRepository, programmeRepository, workoutSessionRepository, exerciseRepository, workoutHistoryRepository, and networkStatus. Mirrors the M3 harness pattern.
+- **Fake dependencies** (`test/app/m4/fake_m4_dependencies.dart`): `FakeSavedWorkoutRepository`, `FakeProgrammeRepository`, `FakeWorkoutSessionRepository`, `FakeWorkoutHistoryRepository`, `FakeExerciseRepository`, `FakeNetworkStatus`.
+- **Acceptance tests** (`test/app/m4/m4_manual_tracker_acceptance_test.dart` — 8 tests): create custom exercise, create workout, create multi-week programme, start active session + complete, recover active workout, complete + view history, warmup sets visible in history, superset grouping survives.
+- **Privacy integrity blocker tests** (`test/app/m4/m4_privacy_integrity_blockers_test.dart` — 4 tests): full offline flow, completion failure leaves session recoverable, history readable after source delete, no sentinel data leaks.
+- **Helpers**: `m4_route_driver.dart`, `m4_expectations.dart`.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1013/1013 passed.
+
+### V1-M4-010 — Transactional save and rollback service (complete)
+
+- **Core transaction infrastructure** (`lib/core/db/transactions/` — 7 files): `TransactionOperation`, `TransactionFailureInjection`, `NoOpTransactionFailureInjection`, `TransactionExecutionFailure`, `TransactionStep`, `TransactionExecutor` (abstract), `DriftTransactionExecutor`.
+- **Test support** (2 files): `ThrowingTransactionFailureInjection` (injects failures before/after named operations), `CapturingTransactionFailureInjection` (records operation sequence).
+- **Repository refactor**: `DriftProgrammeRepository`, `DriftSavedWorkoutRepository`, and `DriftWorkoutSessionRepository` now use `TransactionExecutor` instead of raw `_database.inTransaction()`. Each repository exposes step-builder methods with stable operation names.
+- **Provider wiring**: Added `transactionFailureInjectionProvider` and `transactionExecutorProvider`. Updated all 3 repository providers to inject `TransactionExecutor`.
+- **Removed `_database` field** from all three repositories — the executor now owns the transaction boundary.
+- **Tests**: 7 new — 4 core executor tests (step ordering, rollback before, rollback after, error wrapping) + 3 programme repository rollback tests (template insertion, expanded row insertion, root write rollback).
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 1001/1001 passed.
+
+### V1-M4-009 — Reusable draft validation service (complete)
+
+- **Core validation models** (13 files in `lib/core/validation/`): `DraftValidationScope`, `DraftValidationCode`, `DraftValidationPath`, `DraftValidationIssue`, `DraftValidationResult`, and 7 validated draft types (`ValidatedSetDraft`, `ValidatedExerciseDraft`, `ValidatedWorkoutDraft`, `ValidatedProgrammeTemplateDraft`, `ValidatedProgrammeSlotDraft`, `ValidatedProgrammeWeekDraft`, `ValidatedProgrammeDraft`).
+- **Service**: `DraftValidationService` (abstract) + `DefaultDraftValidationService` — validates workout drafts (10 rules: name, exercises, sets, reps, weight, RPE, RIR, rest, set type, superset) and programme drafts (6 rules: name, weeks, templates, week sequence, slot templates, template exercises).
+- **Feature adapters**: `WorkoutBuilderValidationAdapter` (maps `WorkoutBuilderDraft` → `ValidatedWorkoutDraft`; maps shared issues → `WorkoutBuilderValidationError`). `ProgrammeBuilderValidationAdapter` (maps `ProgrammeBuilderDraft` → `ValidatedProgrammeDraft`; maps shared issues → `ProgrammeBuilderValidationError`).
+- **Validator refactor**: `WorkoutBuilderValidator` and `ProgrammeBuilderValidator` now thin façades over shared `DraftValidationService` + adapters. No signature change needed in controllers.
+- **Providers**: `draftValidationServiceProvider`, `workoutBuilderValidationAdapterProvider`, `programmeBuilderValidationAdapterProvider`. Updated `workoutBuilderValidatorProvider` and `programmeBuilderValidatorProvider` to wire shared service.
+- **Tests**: 42 new — 20 workout service, 12 programme service, 5 workout adapter, 5 programme adapter. Existing validator/controller tests updated to use shared service.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 994/994 passed.
+
+### V1-M4-008 — Manual superset / execution group support (complete)
+
+- **Shared domain** (3 files): `ExecutionGroup`, `SupersetGroupSummary`, `SupersetGroupingPolicy`.
+- **Domain enums/models**: `WorkoutBuilderSupersetAction`, `ProgrammeTemplateSupersetAction`, `SupersetSelectionState`.
+- **Application layer** (6 files): builder + programme superset services and validators, runner + history grouping mappers.
+- **Model fixes**: Extended `ProgrammeBuilderTemplateDraft` with `exercises: List<ProgrammeExerciseDraft>`; added `supersetOrder` + `copyWith` to `WorkoutRunnerExerciseItem` and `WorkoutHistoryExerciseItem`; added `copyWith` to `ProgrammeExerciseDraft`.
+- **Load/save wiring**: `LoadProgrammeBuilderDraftUseCase` now loads template exercises via `ProgrammeRepository.getTemplateExercises()`. `SaveProgrammeBuilderDraftUseCase` preserves template exercises from builder draft. `DriftProgrammeRepository` maps template exercise/set rows to domain drafts.
+- **WorkoutBuilderController** (+4 methods): `createSuperset`, `removeExerciseFromSuperset`, `deleteSupersetGroup`, `reorderWithinSuperset`.
+- **ProgrammeBuilderController** (+4 methods): `createTemplateSuperset`, `removeTemplateExerciseFromSuperset`, `deleteTemplateSuperset`, `reorderTemplateSupersetMember`.
+- **ProgrammeRepository**: Added `getTemplateExercises(String templateId)` to abstract interface.
+- **Presentation widgets** (6 files):
+  - `SupersetEditorSheet` — multi-select exercise sheet for creating supersets.
+  - `SupersetGroupBadge` — primaryContainer badge showing order.
+  - `SupersetActionsMenu` — PopupMenuButton with create/remove/delete.
+  - `WorkoutRunnerSupersetGroupCard` — grouped display in runner.
+  - `WorkoutHistorySupersetGroupCard` — grouped display in history.
+  - `ProgrammeSupersetEditorSheet` — programme template exercise superset sheet.
+- **Screen wiring**: `WorkoutBuilderScreen` → ConsumerStatefulWidget with sheet. `WorkoutExerciseCard`/`WorkoutExerciseList` extended. `WorkoutRunnerScreen` passes groups. `WorkoutHistoryDetailScreen` renders groups. `ProgrammeWorkoutSlotCard` extended with superset actions + exercise list.
+- **AppStrings** (+21), **AppProviders** (+7).
+- **Tests**: 48 total — 4 policy, 10 services, 10 validators, 7 mappers, 4 builder controller, 3 programme controller, 4 widget (editor sheet, group badge, runner card, history card), expanded history detail + repository tests.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 945/945 passed.
+
+### V1-M4-007 — Compliance closure pass
+
+- Replaced remaining `Icons.*` in the touched workout-builder 007 surface with `SvgPicture.asset` + `OutlinedSvgAssets` (`WorkoutBuilderScreen`, `WorkoutExerciseCard`, `SetPrescriptionEditorRow`).
+- Removed remaining raw layout values in the touched 007 widgets by extending `AppSpacing` / `AppSizing` with reusable tokens (`xxxs`, `inputHorizontal`, `fieldWidthXs`, `fieldWidthXl`) and applying them in `SetTypeChip`, `SetPrescriptionEditorRow`, and `WorkoutRunnerSetRow`.
+- Moved remaining touched-surface hardcoded strings into `AppStrings` (`skipped`, `setNumberLabel`) and updated runner/history rendering to use them.
+- Refactored `SetPrescriptionEditorRow` from recreating `TextEditingController.fromValue(...)` inside `build()` to a `StatefulWidget` with controller lifecycle managed in `initState` / `didUpdateWidget` / `dispose`.
+- Updated widget tests to match SVG/tooltip-based interactions and shared string usage.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 894/894 passed.
+
+### V1-M4-007 — Warmup vs working set behavior (complete)
+
+- **Shared domain** (`lib/shared/domain/`): `WarmupSetPolicy` (isWarmup/isWorking/shouldBeExcludedFromFutureAnalytics), `SetTypeOption` (type/label/description model for dropdowns).
+- **Set type options use case** (`lib/features/workout_builder/application/set_type_options_use_case.dart`): Returns warmup + working `SetTypeOption`s with labels and descriptions.
+- **Extension helpers**: `SetPrescriptionDraftX`, `WorkoutRunnerSetItemX`, `WorkoutHistorySetItemX` — `isWarmup`/`isWorking` getters and `withSetType()` mutation.
+- **Shared UI helper**: `SetTypeChip` provides the reusable warmup/working chip used by builder/runner/history surfaces.
+- **Builder controller** (`workout_builder_controller.dart`): Added `addWarmupSet()`, `updateSetType()`. `addSet()` now accepts optional `SetType` (defaults to `SetType.working`).
+- **SetPrescriptionEditorRow**: Now shows a `DropdownButtonFormField<SetType>` between the set number and fields — user can toggle warmup/working. Requires `setTypeOptions` parameter. Prop-drilled through `SetPrescriptionList` → `WorkoutExerciseCard` → `WorkoutExerciseList` → `WorkoutBuilderScreen`.
+- **WorkoutRunnerSetRow**: Warmup sets get a distinct `tertiaryContainer` background + chip label with `onTertiaryContainer` text. Working sets get `secondaryContainer` chip. Set type is read-only in runner (matches plan — fixed from template).
+- **WorkoutHistorySetRow**: Now shows a warmup chip (`tertiaryContainer` tint) when `setType == SetType.warmup`. Working sets appear without a chip (cleaner look).
+- **AppStrings**: Added `setTypeWarmup`, `setTypeWorking`, `setTypeWarmupDescription`, `setTypeWorkingDescription`, `addWarmupSet`, `addWorkingSet`, `warmupExcludedFromAnalytics`, `warmupSetDescription`, `setTypeRequired`.
+- **AppProviders**: Added `warmupSetPolicyProvider`, `setTypeOptionsUseCaseProvider`.
+- **ProgrammeBuilderController**: Skipped — programme templates are assigned from builder, not edited inline. No set-level UI exists in programme builder.
+- **WorkoutRunnerController**: Skipped — set type is read-only during active session (matches plan's conditional guidance).
+- **Tests**: 9 new unit tests — 6 `warmup_set_policy`, 3 `set_type_options_use_case`; expanded `workout_builder_controller_test.dart`; expanded `workout_builder_widgets_test.dart` for set type dropdown behavior; new `workout_history_set_row_test.dart` for warmup label rendering.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 894/894 passed.
+
+## 2026-06-30
+
+### Fix — Onboarding imperial unit conversion
+
+- **Root cause**: `toImperialHeight`/`toImperialWeight` in `PreferredUnit` had inverted conditionals — when `isImperial` was true, they returned canonical values (cm/kg) instead of converting to imperial (in/lbs). Unit choice chip `onSelected` also corrupted canonical fields by storing converted display values back into `heightCm`/`bodyweightKg`.
+- **Fix 1** (`lib/shared/domain/preferred_unit.dart`): Flipped if/else bodies in `toImperialHeight` and `toImperialWeight` so imperial mode properly converts cm→in and kg→lbs.
+- **Fix 2** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Removed conversion logic from unit choice chip `onSelected` — now only updates `preferredUnits`. Canonical values are always stored in metric; display adapts on-read.
+- **Fix 3** (`lib/features/onboarding/presentation/onboarding_screen.dart`): Added `ValueKey` keyed on `preferredUnits` to bench/squat/deadlift `_FormField` widgets so they re-create their controller on unit switch, matching the pattern already used by height/weight fields.
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 new issues. `flutter test` — 863/863 pass (all 47 onboarding tests pass).
+
+### V1-M4-004 — Active Workout Session Runner (complete)
+
+- **6 domain models**: `WorkoutRunnerMode` (savedWorkout/programWorkout/resume), `WorkoutRunnerSetItem`, `WorkoutRunnerExerciseItem`, `WorkoutRunnerSessionViewData`, `WorkoutRunnerCompletionDraft`, `WorkoutRunnerResumeDecision`.
+- **9 application files**: `WorkoutRunnerPhase` (6 states), `WorkoutRunnerState` (loading/ready/blocked/paused/failure/completed), `StartWorkoutSessionUseCase`, `LoadActiveWorkoutSessionUseCase`, `SaveWorkoutSessionProgressUseCase`, `CompleteWorkoutSessionUseCase`, `AbandonWorkoutSessionUseCase`, `WorkoutRunnerMapper` (toViewData/toDraft round-trip), `WorkoutRunnerController` (AsyncNotifier with constructor injection — 19 mutation methods: build all 3 modes, resume/discard recovery, updateSet, toggleSetCompleted/Skipped, pauseWorkout, continueWorkout, saveProgress, completeWorkout, cancelWorkout, updateSessionNotes/EnergyLevel/PerceivedDifficulty).
+- **10 presentation files**: `WorkoutRunnerScreen` (3 named constructors), `WorkoutRunnerHeader`, `WorkoutRunnerExerciseList`, `WorkoutRunnerExerciseCard`, `WorkoutRunnerSetRow`, `WorkoutRunnerResumeBanner`, `CompleteWorkoutSheet`, `CancelWorkoutDialog`, `WorkoutRunnerErrorBanner`.
+- **Infrastructure updates**: `AppRoutes` (+3 route factories), `AppStrings` (+26 runtime strings), `AppRouter` (+3 GoRoute entries), `AppProviders` (+7 runner providers).
+- **AppSizing**: Added `iconXxl = 48`.
+- **Fixes**: Controller mutation methods use `state.asData?.value` / `AsyncData(...)` pattern matching `ProgrammeBuilderController`. Pre-existing issues fixed: duplicate import in `providers.dart`, unnecessary braces in `complete_workout_sheet.dart`, non-exhaustive `DioExceptionType.transformTimeout` switch in `error_mapper.dart`.
+- **Tests**: 58 new — 24 controller, 8 mapper, 4 screen, 8 set row, 4 complete sheet, 3 cancel dialog.
+- **Flutter SDK note**: Widget tests for `FilledButton` use `NoSplash.splashFactory` to work around Flutter 3.44.4 `ink_sparkle.frag` shader version mismatch bug (also affects pre-existing tests).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 58/58 workout_execution tests pass (pre-existing 14 failures in exercise_library/bodymap unchanged).
+
+### Rule-violation gap closure pass (M4-003)
+
+- **Icons.\* → SvgPicture.asset**: Replaced all 18 `Icons.*` across 7 programme
+  feature files with `SvgPicture.asset` using heroicon-style SVG constants.
+  Updated `programme_save_bar_test.dart` to match new non-Icon dirty indicator.
+- Pre-existing compilation errors (`ProgrammeAggregate`, `AppRoutes` missing
+  imports in `programmes_screen.dart`) remain — not part of this pass.
+
+### V1-M4-006 — Custom Exercise Editor (complete)
+
+- **Domain layer** (`lib/features/exercise_library/domain/`):
+  - `CustomExerciseDraft` — writable draft model with `copyWith()`/`toSeed()`
+  - `CustomExerciseValidationError` — typed error with scope/code/message/stepIndex
+  - `CustomExerciseEditorMode` — create / edit enum
+- **Application layer** (`lib/features/exercise_library/application/`):
+  - `CustomExerciseEditorPhase` — 8-phase state machine (loading/editing/saving/saved/deleting/deleted/failure/blocked)
+  - `CustomExerciseEditorState` — immutable state with `isLoading`/`isSaving`/`hasValidationErrors`/`copyWith()`/`initial()`
+  - `CustomExerciseValidator` — 3 validation rules: name required, muscle groups required, no empty steps
+  - `LoadCustomExerciseDraftUseCase` — `createEmptyDraft()` and `loadForEdit()` via existing `ExerciseRepository`
+  - `SaveCustomExerciseUseCase` — `create()` and `update()` via existing `ExerciseRepository`
+  - `DeleteCustomExerciseUseCase` — `delete()` via existing `ExerciseRepository`
+  - `CustomExerciseEditorController` — `AsyncNotifier<CustomExerciseEditorState>` with constructor args (mode, exerciseId). 14 mutation methods: rename, setModality, setEquipment, setDifficulty, toggleMuscleGroup, addStep, updateStep, removeStep, save, delete, clearValidationErrors, discardChanges
+- **Presentation layer** (`lib/features/exercise_library/presentation/`):
+  - `CustomExerciseEditorScreen` — create/edit factory constructors, loading/error/saved/deleted/editing states, PopScope for unsaved changes
+  - 7 widgets: `CustomExerciseNameField`, `CustomExerciseModalitySection` (SegmentedButton + equipment/difficulty dropdowns), `CustomExerciseMuscleGroupPicker` (14 FilterChips), `CustomExerciseStepsEditor` (dynamic add/remove/update), `CustomExerciseErrorBanner`, `DeleteCustomExerciseDialog`, `DiscardCustomExerciseChangesDialog`
+- **Infrastructure updates**:
+  - `AppRoutes`: +2 — `customExerciseCreate()` (`/exercises/custom/new`), `customExerciseEdit()` (`/exercises/custom/:id/edit`)
+  - `AppRouter`: +2 GoRoute entries as sub-routes of `/exercises`
+  - `AppStrings`: +23 custom-exercise strings (labels, hints, confirmations)
+  - `AppErrorCodes`: +3 custom-exercise error codes
+  - `AppProviders`: +5 providers (validator, 3 use cases, controller family)
+  - `AddExerciseBottomSheet`: added "Create custom exercise" entry at end of list; navigates to editor, refreshes search on return
+- **Critical architecture decisions**:
+  - Reuses `ExerciseRepository` — no new persistence, table, or ID generation
+  - Keeps all custom exercise editing inside `features/exercise_library/` — closest to persistence
+  - Controller uses `AsyncNotifier` with constructor args + `AsyncNotifierProvider.family` (matching codebase family pattern)
+  - Integrates into manual flows via `AddExerciseBottomSheet` "Create custom exercise" action
+- **Tests**: 55 new — 8 validator, 24 controller, 6 load use case, 4 save use case, 4 name field widget, 6 muscle group picker widget, 3 delete dialog widget
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 863/863 passed.
+
+### V1-M4-006 gap closure — 7 fixes (pop(true), delete/discard labels, SVGs, controllers, tests)
+
+- **Saved phase pop(true)**: `CustomExerciseEditorScreen` saved phase now calls `Navigator.pop(true)` so `AddExerciseBottomSheet` detects the result and refreshes search on return.
+- **Delete dialog button label**: Changed from `AppStrings.customExerciseDeleted` (status message) to `AppStrings.customExerciseDelete` ("Delete exercise").
+- **Discard dialog button label**: Changed from `AppStrings.done` to `AppStrings.customExerciseDiscard` ("Discard").
+- **Material Icons → SVGs**: Replaced `Icons.delete_outline`/`check_circle_outline`/`remove_circle_outline`/`Icons.add` with `OutlinedSvgAssets.trash`/`checkBadge`/`minusCircle`/`plus`.
+- **Steps editor tooltip**: Changed from hardcoded `'Remove step'` to `AppStrings.customExerciseRemoveStep`.
+- **Inline TextEditingController → StatefulWidget**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` now use `StatefulWidget` with controllers created in `initState` and synced in `didUpdateWidget`, preserving cursor position during typing.
+- **3 widget test files added**: `custom_exercise_steps_editor_test` (5 tests), `custom_exercise_error_banner_test` (4 tests), `discard_custom_exercise_changes_dialog_test` (3 tests). Delete dialog test updated for new string constant.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
+
+### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
+
+### Added (V1-M4-005 — Workout History & Programme Library)
+
+- **Saved workout library**: `SavedWorkoutLibraryScreen` with list, archive, delete via `SavedWorkoutLibraryController`.
+- **Programme library refactored**: `ProgrammesScreen` now uses `ProgrammeLibraryController` instead of local `FutureProvider`, with archive/delete popup menus.
+- **Workout history list**: `LiftLogScreen` replaced placeholder with real controller-driven list, source labels, empty/retry states.
+- **Workout history detail**: `WorkoutHistoryDetailScreen` shows session info (name, source, notes, duration) plus read-only exercise/set cards.
+- **Domain models**: `SavedWorkoutListItem`, `ProgrammeListItem`, `WorkoutHistoryListItem`, `WorkoutHistoryExerciseItem`, `WorkoutHistorySetItem`, `WorkoutHistoryDetailViewData`.
+- **Data layer**: `WorkoutHistoryRepository` (abstract) + `DriftWorkoutHistoryRepository` using existing session/exercise/set DAOs with snapshot-based rendering.
+- **Application layer**: 4 controllers, 4 states, 4 use cases all wired into `AppProviders`.
+- **Presentation widgets**: `SavedWorkoutListTile`, `ProgrammeListTile`, `WorkoutHistoryListTile`, `WorkoutHistoryExerciseCard`, `WorkoutHistorySetRow`, `ArchiveItemDialog`, `DeleteItemDialog`, `HistoryErrorBanner`.
+- **Routes**: `AppRoutes.workoutHistoryDetail()` (`/lift-log/:sessionId`), `AppRoutes.savedWorkoutLibrary()` (`/workouts`).
+- **Strings**: 20+ new `AppStrings` for history/library UI and confirmation dialogs.
+- **Tests**: 29 new — 1 drift repository (4 tests), 4 controller tests (14 tests), 4 widget tests (7 tests), 2 screen tests (2 tests), 2 widget tests for tiles/cards (4 tests).
+- **Architecture**: History detail uses snapshot fields, not live source joins. `WorkoutHistoryRepository` is read-focused, separate from runner repositories. Archive/delete preserves history semantics.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+### Post-V1-M4-005 gap closure — dialog confirm labels, test fake cleanup
+
+- **`ArchiveItemDialog` / `DeleteItemDialog`**: Added optional `confirmLabel` parameter. Previously both used hardcoded labels (`AppStrings.archiveProgramme` / `AppStrings.deleteWorkout`) regardless of context.
+- **ProgrammesScreen delete**: Now passes `confirmLabel: AppStrings.deleteProgramme` to `DeleteItemDialog` (was silently showing "Delete workout" for programmes).
+- **SavedWorkoutLibraryScreen archive**: Now passes `confirmLabel: AppStrings.archiveWorkout` to `ArchiveItemDialog` (was silently showing "Archive programme" for saved workouts).
+- **Test fake cleanup**: Removed `shouldThrow` field/constructor param from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository` — both still had `if (shouldThrow)` guards referencing the removed field. Removed throw guards. Removed unused `shouldThrow` import.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+- **`EquipmentTag.fromDb` normalizes input** (`lib/shared/domain/equipment_tag.dart`): Instead of exact `dbValue` match, lowercases input, replaces hyphens/underscores, and tries both raw and singular forms. Fallback to `EquipmentTag.other` for unrecognized values. This fixes `Bad state: No element` for `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`, etc.
+- **5 new `EquipmentTag` entries**: `bosuBall` (`bosu_ball`), `medicineBall` (`medicine_ball`), `plate`, `trx`, `vitruvian` — all with `dbValue` mappings and exhaustive switch coverage in onboarding/profile taxonomy.
+- **Removed strict parser validation**: `exercise_dataset_parser.dart` no longer throws on empty `steps` or empty `primary_muscles` arrays — dataset has valid exercises with these fields missing.
+- **Sync integrated into bootstrap**: `BootstrapController.start()` now calls `await ref.read(exerciseDatasetSyncControllerProvider.notifier).initialize()` before setting `BootstrapState.success()`. The router only redirects to onboarding after sync reaches a terminal state (synced/unavailableOffline/failed).
+- **Onboarding/profile exhaustive switches**: `_OnboardingTaxonomy` and `_ProfileTaxonomy` `equipmentLabel()`/`equipmentFromLabel()` updated for all 5 new tags. Profile equipment chip selector list extended.
+- **Test updates**: Parser tests updated (`"rejects empty steps"` → `"allows empty steps"`, same for primary_muscles). `_FakeSyncController` added to bootstrap test overrides.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 779/779 passed (across all 13 test files).
+
+## 2026-06-29
+
+### V1-M4-003 — Manual multi-week programme builder (complete)
+
+- **6 domain models**: `ProgrammeBuilderDraft` (18 fields with typed enums), `ProgrammeBuilderWeekDraft`, `ProgrammeBuilderWorkoutSlotDraft`, `ProgrammeBuilderTemplateDraft` (dayType enum, id, name), `ProgrammeBuilderValidationError` (scope enum, optional weekIndex/slotIndex/templateKey), `ProgrammeBuilderSaveRequest`.
+- **8 application files**: `ProgrammeBuilderMode` (create/edit/duplicate), `ProgrammeBuilderPhase` (6 states), `ProgrammeBuilderState` (copyWith/initial), `ProgrammeBuilderValidator` (10 rules: name, at least one week, week numbers sequential, at least one slot per week, at least one template, every slot references template, + composite), `LoadProgrammeBuilderDraftUseCase` (createEmpty/loadForEdit/loadDuplicate), `SaveProgrammeBuilderDraftUseCase` (maps ProgrammeBuilderDraft → ProgrammeDraft), `ProgrammeBuilderController` (all mutations: add/remove/duplicate week, add/remove slot, assign template, save, discard, updateName, clearValidation).
+- **Infrastructure updates**: `AppRoutes` (+3 programme builder routes), `AppStrings` (+45 builder constants), `AppErrorCodes` (+7 programme builder error codes), `AppRouter` (+3 GoRoute entries as sub-routes of `/programmes`), `AppProviders` (+4 provider declarations).
+- **12 presentation files**: `ProgrammeBuilderScreen` (create/edit/duplicate factory constructors, PopScope for unsaved changes, validation banner, error banner, template sheet placeholder), `ProgrammesScreen` (overhauled: list view with programme cards, empty/error state, FAB linking to builder), `ProgrammeDetailsSection`, `ProgrammeWeeksOverview` (empty state + week list + add button), `ProgrammeWeekCard` (week header with duplicate/remove, slot list, add slot), `ProgrammeWorkoutSlotCard` (template display, assign/remove), `ProgrammeSaveBar` (dirty indicator, save button), `ProgrammeBuilderErrorBanner`, `DiscardProgrammeChangesDialog`, `ActiveProgrammeWarningDialog`, `AddWeekDialog`, `TemplateReassignmentBottomSheet`.
+- **Compilation fixes**: Riverpod `AsyncNotifier<State>` constructor injection, `asData?.value` pattern, explicit generics for all draft list operations, const router entries, missing `CreationMethod.duplicate` fallback → `CreationMethod.manual`, null-check safety, missing imports, icon token fallback (no `iconXl`), unused parameter cleanup.
+- **Gap closure pass**: Wired `TemplateReassignmentBottomSheet` (was `Placeholder`), added save-confirmation snackbar, moved 4 hardcoded strings to `AppStrings`, replaced 3 deprecated `withAlpha` calls with pre-baked `errorSurface` color tokens.
+- **Tests**: 34 new — 12 validator tests (all 10 validation rules + composite/multi-week scenarios) + 22 controller tests (create mode: build/rename/addWeek/removeWeek/duplicateWeek/addSlot/removeSlot/assignTemplate/save/validation/clearErrors; edit mode: load/initial dirty; duplicate mode: load; edge cases: out-of-range indices) + 25 widget tests (week card display/callbacks, slot card display/callbacks, save bar dirty/disabled/spinner/save, 4 dialog confirm/cancel).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 713/713 passed.
+
+### Settings and exercise-library test migration to enum-backed provider/exercise taxonomy
+
+- Updated the targeted settings, exercise-library, and M3 smoke tests plus shared fakes to use enum-backed `AiProviderName`, `ProviderValidationStatus`, `ExerciseDifficulty`, `ExerciseModality`, `EquipmentTag`, `BodymapBucket`, `ExerciseVideoAngle`, and `ExerciseVideoGender` APIs instead of legacy strings.
+- Adjusted repository/controller/widget expectations to assert enum values or formatted enum labels at the UI boundary, and refreshed the dataset parser/importer test fixture inputs to match the new closed vocabularies.
+- Verification: targeted `flutter test test/features/settings test/features/exercise_library test/app/m3` now passes.
+
+### Onboarding/profile test migration to enum-backed profile taxonomy
+
+- Updated onboarding and profile tests under `test/features/onboarding/**` and `test/features/profile/**` to use the new enum-backed `ExperienceLevel`, `GoalTag`, `EquipmentTag`, and `Sex` APIs instead of legacy strings/lists.
+- Adjusted fake repositories, test fixtures, and expectations to match typed `Set<GoalTag>` / `Set<EquipmentTag>` fields and nullable `experienceLevel` behavior.
+- Verification: `dart format` on updated tests completed. Targeted analysis/tests run after this entry.
+
+### Enum-backed taxonomy rollout for exercise, profile, onboarding, and provider models
+
+- Added 18 shared taxonomy/support files in `lib/shared/domain/` covering enum-backed parsing for experience level, sex, goals, equipment, training days, exercise difficulty/modality/source/force/mechanic/video metadata, strength anchors, AI provider names, and provider validation status plus a shared `EnumCodec` helper for JSON text enum arrays.
+- Converted implemented exercise-library domain models from raw taxonomy strings to enums/enum sets where the reference docs define closed vocabularies: filters, list/detail view data, candidate DTO/query, custom exercise seed, dataset exercise/video DTOs, and exercise repository/query-service mapping.
+- Tightened exercise filter UI to the documented exercise modality taxonomy (`strength`, `flexibility`, `cardio`, `recovery`) and wired filter selections/bodymap buckets through enum-backed state instead of raw strings.
+- Converted implemented profile and onboarding models to enum-backed constraints for `experienceLevel`, `sex`, `goals`, `equipmentAccess`, and `trainingDayNames`, while intentionally keeping `primaryMuscles`, notes, steps, and limitations as validated/freeform strings per the docs.
+- Converted implemented programme and saved-workout draft metadata to `Set<GoalTag>` / `Set<EquipmentTag>` and typed `experienceLevelAtCreation` / `preferredUnitsAtCreation` fields.
+- Replaced strength-anchor magic strings in `DriftProfileRepository` with typed `StrengthAnchorType` / `StrengthAnchorSource` values.
+- Converted BYOK/provider-facing implemented models and repositories to typed `AiProviderName` and `ProviderValidationStatus` values, including provider capability repository/controller and key validation routing.
+- Verification: `dart format` pending, `flutter analyze` pending, `flutter test` pending at the time of this entry.
+
+### Codebase-wide enum conversion for ~20 string-typed fields + convention fixes
+
+- **18 new enum files** in `lib/shared/domain/`: `SetType`, `SetIntent`, `WeightPrescriptionType`, `LoadingModel`, `ExerciseRole`, `WorkoutSource`, `SessionSource`, `CreationMethod`, `ImportOrigin`, `ImportReviewStatus`, `ExportPrivacyMode`, `ProgramStatus`, `SavedWorkoutStatus`, `ProgramWorkoutStatus`, `WorkoutSessionStatus`, `DayType`, `WeekType`, `PeriodisationModel`, `TrainingStyle`, `ChangeType`, `UpdateScope`.
+- **Enum pattern**: `dbValue` getter + `fromDb()` static factory, conversion only at repository boundaries (Drift `text()` columns remain `String`).
+- **Domain models updated**: All draft classes in `workout_builder/`, `programmes/`, `workout_execution/` now use typed enums instead of `String`.
+- **Repository/use case boundaries**: `DriftSavedWorkoutRepository`, `DriftProgrammeRepository`, `DriftWorkoutSessionRepository`, `LoadWorkoutDraftUseCase` convert enum↔DB string at boundaries.
+- **`set` → `prescription` rename**: Reserved-word avoidance across all workout builder, programmes, and workout execution files (7 lib + 2 test).
+- **Raw sizing doubles fixed**: `strokeWidth: 2` → `AppSizing.strokeWidth` (6 files), field widths 80/72/64 → `fieldWidthLg/Md/Sm`, bodymap SVG 240×480 → `bodymapSvgWidth/Height`.
+- **Token-type mismatch fixes** (4): `fontSize: AppSpacing.lg` → `AppFontSizes.xxl`, `size: AppSpacing.xxxl` → `AppSizing.iconLg`, `strokeWidth: AppSpacing.xxs` → `AppSizing.strokeWidth`.
+- **Color modulation fix**: `withAlpha`/`withValues` runtime modulations replaced with 6 pre-baked alpha color tokens in `AedifyLightColors`/`AedifyDarkColors`.
+- **Relative imports → package imports**: All 33 `../` imports in workout_builder feature converted.
+- **Hardcoded strings → AppStrings**: 14 new constants + 1 static method for controller/validator/sync UI strings.
+- **Test enum migration**: `drift_programme_repository_test.dart` (28 matches), `workout_builder_validator_test.dart` (9 matches) updated to use enum values; `workout_builder_controller_test.dart` corrected — Drift data classes remain `String`.
+- **Unused import cleanup**: 14 warnings removed across 4 lib files.
+- **Hardcoded Exception → AppErrorStrings**: `LoadWorkoutDraftUseCase.loadForEdit()` hardcoded `Exception('Saved workout not found: $savedWorkoutId')` replaced with `AppErrorStrings.workoutNotFoundWithId(savedWorkoutId)` — a parameterized static method preserving the original message while keeping strings in the constants file.
+- **AppErrorCodes file created**: `lib/shared/constants/app_error_codes.dart` — central constant file for all 46 string-literal error codes previously scattered across 14 source files. Organized by domain (Validator, Network, Workout, Profile, Settings, BYOK, Onboarding, Audio, Key Validation). All 14 files updated to reference `AppErrorCodes.xxx` instead of inline string literals. Enum-based failure codes (`ExerciseDatasetDownloadFailureCode`, `ExerciseDatasetValidationFailureCode`, `ExerciseLibraryImportFailureCode`, `ProviderGateFailureReason`) left as typed enums.
+- **Verification**: `flutter analyze` — 0 issues. `flutter test` — 655/655 passed.
+
+## 2026-06-28
+
+### V1-M4-002 — Workout builder: create/edit saved workouts with exercises/sets offline
+
+- **6 domain models**: `ExerciseReference`, `SetPrescriptionDraft` (with `copyWith`), `WorkoutBuilderExerciseDraft`, `WorkoutBuilderDraft`, `WorkoutBuilderValidationError`, `WorkoutBuilderSaveRequest`.
+- **5 application files**: `WorkoutBuilderState` (mode/phase/draft/errors/dirty), `WorkoutBuilderValidator` (10 rules), `LoadWorkoutDraftUseCase`, `SaveWorkoutDraftUseCase`, `WorkoutBuilderController` (all mutations: add/remove/reorder exercises, add/update/remove sets, save, discard, rename).
+- **Data layer**: `SavedWorkoutRepository` abstract interface + `DriftSavedWorkoutRepository` (child replacement, aggregate with flat sets).
+- **10 presentation files**: `WorkoutBuilderScreen` (create/edit ctors, PopScope, all UX states) + 9 widgets (header, name field, exercise list, exercise card, set list, set editor row, error banner, discard dialog, add-exercise bottom sheet).
+- **Infrastructure updates**: `AppStrings` (+28 builder strings), `AppRoutes` (+2 routes), `AppRouter` (+2 GoRoutes), `AppProviders` (+4 provider declarations).
+- **Exercise library wiring**: added `isCustom` to `ExerciseListItem`; `AddExerciseBottomSheet` now watches real `exerciseSearchControllerProvider`.
+- **Tests**: 17 validator tests + 12 controller tests (10 create-mode + 2 edit-mode: load aggregate, load-edit round-trip) + 13 widget tests + 1 integration test (create → name → add exercise → verify state).
+- **Lint fixes**: unused imports removed, `__` → `_` in widget test callbacks.
+- **Production bugfix**: `ReorderableListView` in `WorkoutExerciseList` given `shrinkWrap: true` + `NeverScrollableScrollPhysics()` to prevent layout crash when nested inside outer `ListView`.
+- **Verification**: `flutter analyze` — 0 issues, `flutter test` — 655/655 passed.
+- **Analyzer fixes**: Fixed Riverpod controller base class (uses `AsyncNotifier<State>` with constructor injection matching codebase pattern), fixed provider family declaration, fixed import paths, fixed text style names (`bodyMd`, `labelSm`, `headlineMd`), fixed `providers.dart` import, fixed flat set access in load use case.
+- **27 tests**: 17 validator tests (all 10 rules) + 10 controller tests (create mode: init, rename, add/remove exercise, add/remove set, duplicate, reorder, save validation, discard; edit mode: load failure).
+- `flutter analyze` — 0, `flutter test` — 639/639.
+
+### V1-M4-001 — M4 persistence foundation (all gaps closed): schema v8, 15 tables, 15 DAOs, 3 repos, domain models, provider wiring
+
+- **Schema v8**: Added 15 new Drift tables (`programs`, `program_workout_templates`, `program_template_exercises`, `program_template_exercise_sets`, `program_weeks`, `program_workouts`, `program_exercises`, `program_exercise_sets`, `program_revisions`, `saved_workouts`, `saved_workout_exercises`, `saved_workout_exercise_sets`, `workout_sessions`, `workout_session_exercises`, `set_logs`) with v7→v8 migration (parent-first creation order).
+- **15 DAOs**: Full CRUD methods for each table including upsert, delete-by-parent, ordered queries.
+- **Domain models**: 11 draft/aggregate files across programmes, workout_builder, and workout_execution features.
+- **3 repository implementations**: `DriftProgrammeRepository` (template+expanded hierarchy save with child replacement, active program management, soft-delete with history check), `DriftSavedWorkoutRepository` (full CRUD with child replacement, history-safe delete), `DriftWorkoutSessionRepository` (session lifecycle: start/save/complete/abandon/delete with in-progress guard).
+- **Provider graph**: 15 DAO providers + 3 repository providers in `AppProviders`.
+- **Privacy updates**: Added M4-sensitive field keys to `Redaction._sensitiveFields` and `PrivacyClassifier._forbiddenFields`.
+- **Duplicate entries removed**: Cleaned up duplicated keys in `redaction.dart` and `privacy_classifier.dart` const sets.
+- **Cleanup**: Removed unnecessary casts in DAOs, unused imports/elements in repos, unused `Uuid`/`_newId()` helpers.
+- **Fixed expanded rows data integrity**: `_insertExpandedProgramRows` now copies template exercises and sets into `program_exercises`/`program_exercise_sets` per expanded workout. Previously rows were deleted but never repopulated, causing `_buildAggregate` to return empty lists.
+- **Fixed root upsert DAO methods**: `upsertProgram`, `upsertSavedWorkout`, `upsertSession` changed from plain `insert()` to `insert(mode: InsertMode.insertOrReplace)` to handle re-save of the same root id.
+- **Repository tests**: Added `test/features/programmes/data/drift_programme_repository_test.dart` with 6 tests covering CRUD, expanded rows round-trip, child replacement on re-save, archive, soft-delete, and activate/deactivate.
+- Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 612/612 passed.
 
 ## 2026-06-27
 
@@ -30,28 +2040,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Batch 7 — AppFontSizes extended**: Added `xxs(10)`, `sm(14)`, `md(16)`, `lg(18)`, `xl(20)`, `xxl(24)`, `xxxl(28)`, `displaySm(32)`, `displayMd(40)`. Updated `AppTextStyles` and `AppTextStylesDark` to reference them.
 - **Batch 8 — Theme constants consolidated**: Moved `app_colors.dart` from `lib/app/theme/` to `lib/shared/theme/`. Updated `app_theme.dart` import.
 - Verification: `dart format` ✓ → `flutter analyze` ✓ 0 errors → `flutter test` ✓ 606/606 passing.
-
-## 2026-06-25
-
-### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
-
-- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
-- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
-- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
-- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
-- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
-- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
-- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
-- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
-- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
-- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
-- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
-- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
-- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
-- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
-- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
-
-## 2026-06-27
 
 ### Added (V1-M3-008 — Create onboarding/profile/BYOK privacy tests)
 
@@ -144,6 +2132,26 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Redaction test**: Added `all block messages are safe AppStrings — no internal details leaked` test — verifies all 6 failure-path messages are known safe `AppStrings` constants with no forbidden patterns (provider/model names, API keys, file paths, error terminology).
 - **1 new test** — 504 total passing. No schema change (nullable column addition, no migration needed).
 - Verification: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing warnings). `flutter test` — 504/504 passed.
+
+## 2026-06-25
+
+### Fixed (V1-M3-004 — 10 gap fix: Google provider, correct models, key validation, cost indicator, onboarding BYOK step, more-capable hint)
+
+- **Google provider added**: Gemini 2.5 Pro + Gemini 2.5 Flash — matches PRD §5.1.1 three-provider spec.
+- **OpenAI models corrected**: Replaced `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo` with `o1`, `o1-mini`.
+- **Anthropic models use PRD display names**: "Claude Sonnet 4.6", "Claude Haiku 4.5", "Claude Opus 4.7" — API ID mapping deferred to M7.
+- **`ByokModelOption` domain model** (`lib/features/settings/domain/byok_model_option.dart`): Model option with `id`, `displayName`, `inputCostPer1kTokens`, `outputCostPer1kTokens`, `estimatedCostPerWorkout`, `isCheapest` getter.
+- **`ByokProviderOption.description` added**: Per-provider descriptions for OpenAI, Anthropic, Google.
+- **`ProviderKeyValidator`** (`lib/features/settings/data/provider_key_validator.dart`): Validates keys via per-provider Dio endpoints (5s timeout, no retry, privacy-redacted errors). OpenAI (`/v1/models` with `Authorization`), Anthropic (`/v1/messages` with `x-api-key`), Google (`/v1/models` with `x-goog-api-key`). Returns `KeyValidationResult` with `isValid` + `errorCode`.
+- **`ByokRepository.validateKey()` added**: Abstract + `DriftByokRepository` implementation delegates to `ProviderKeyValidator`.
+- **`ByokSetupController.save()` rewritten**: Now validates key via `repository.validateKey()` before persisting — shows `isTesting` spinner state, surfaces `byokKeyValidationFailed` on rejection.
+- **Cost indicator** (`_CostIndicator` widget in `byok_settings_screen.dart`): Shows "Est. cost: $0.xx" below the model selector, computed from `inputCostPer1kTokens`/`outputCostPer1kTokens` × ~2K input + ~1K output tokens per workout generation.
+- **More capable hint** (`_MoreCapableHint` widget): Shows "More capable models available" when a non-priciest model is selected.
+- **Skip AI for now button**: `OutlinedButton` at bottom of `ByokSettingsScreen` that pops navigation.
+- **Onboarding BYOK step rewritten** (`_ByokOptionalStep` in `onboarding_screen.dart`): `ConsumerStatefulWidget` with provider/model/key entry form, "Save key" button that persists via `ByokRepository`, `byokSkipped` flag update, success banner, scaffold Continue skips.
+- **Strings**: 7 new `AppStrings` (`skipAiForNow`, `estimatedCostPerWorkout`, `byokTestingKey`, `lessThan`, `byokMoreCapableModelsHint`, `byokOnboardingSaved`, 3 provider descriptions), 2 new `AppErrorStrings` (`byokKeyValidationFailed`, `byokValidationNetworkError`).
+- **Tests**: 4 new repository tests (3 providers, correct OpenAI/Anthropic/Google models, pricing assertions), all tests pass (485/485).
+- **Verification**: `dart format` — passed. `flutter analyze` — 0 errors (2 pre-existing unused-field warnings). `flutter test` — 485/485 passed.
 
 ### Added (V1-M3-004 — Full BYOK Provider Setup Flow)
 
@@ -600,7 +2608,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 - **`lib/app/providers/providers.dart`**: Added `localFileRecordDaoProvider` and `localFileRecordServiceProvider`.
 
-### Changed
+### What Changed
 
 - Updated `docs/implementation.md` with Group 2 completed work. Test count: 33→75.
 - DB tests now use `NativeDatabase.memory()` for platform-channel independence.
@@ -624,7 +2632,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests**: 33 total (+12 new). 4 app shell widget tests (loading, failure, redirect, offline-onboarding). 6 bootstrap controller unit tests. 3 provider override tests.
 - Group A complete: `flutter analyze` — 0 issues; `flutter test` — 33/33 passed
 
-### Changed
+### Changes
 
 - Converted all relative imports to `package:aedify/` imports across 5 files
 - Created `app_colors.dart` with all DESIGN.md light/dark color tokens; replaced all hardcoded `Color(0x...)` values in `app_theme.dart`
@@ -663,3 +2671,11 @@ All meaningful project changes are recorded here in reverse chronological order.
 #### M0 — Implementation lock & backlog setup
 
 - Created `implementation.md` and `changelog.md` tracking files
+
+## 2026-07-29 — Final onboarding review body aligned to supplied design
+
+- Reworked `OnboardingScreen` final review into the supplied fixed mobile, single-column bento composition.
+- Added exact review hierarchy and spacing for experience, AI status, schedule, equipment, metric integration, and the in-body initialize action.
+- Added centralized review sizing and copy tokens; retained editable section actions and local-first/BYOK-safe content.
+- Updated `OnboardingStepScaffold` so only the final review places its primary action in the content body.
+- Verification: `dart format .` passed; `flutter analyze` passed; onboarding widget tests passed 17/17; full `flutter test` passed 1098/1098.

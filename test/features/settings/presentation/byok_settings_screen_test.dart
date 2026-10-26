@@ -1,25 +1,34 @@
+import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/data/drift_byok_repository.dart';
 import 'package:aedify/features/settings/data/byok_repository.dart';
 import 'package:aedify/features/settings/presentation/byok_settings_screen.dart';
-import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/components/app_icon_button.dart';
+import 'package:aedify/shared/components/app_text_field.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
-import '../../../support/privacy/privacy_sentinel_values.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../support/privacy/privacy_sentinel_values.dart';
 import '../data/fake_dependencies.dart';
 
 class _ValidatingFakeRepository extends DriftByokRepository {
   _ValidatingFakeRepository({
     required super.configDao,
     required super.secureStorageService,
-  });
+  }) : super(
+         keyValidator: FakeProviderKeyValidator(),
+         capabilityRepository: FakeProviderCapabilityRepository(),
+       );
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     return true;
@@ -34,7 +43,7 @@ class _FailingValidationRepository extends DriftByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async {
     return false;
@@ -42,11 +51,20 @@ class _FailingValidationRepository extends DriftByokRepository {
 }
 
 Widget createTestApp({required ByokRepository repository}) {
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const ByokSettingsScreen(),
+      ),
+    ],
+  );
+
   return ProviderScope(
     overrides: [
       AppProviders.byokRepositoryProvider.overrideWith((ref) => repository),
     ],
-    child: const MaterialApp(home: ByokSettingsScreen()),
+    child: MaterialApp.router(routerConfig: router),
   );
 }
 
@@ -64,6 +82,39 @@ void main() {
       secureStorageService: secureStorage,
     );
   });
+
+  testWidgets(
+    'saved provider can be edited without adding a second configuration',
+    (tester) async {
+      final id = await repository.saveConfig(
+        const ByokEditDraft(
+          providerName: AiProviderName.openai,
+          selectedModel: 'gpt-4o',
+          apiKey: 'synthetic-key',
+        ),
+      );
+      await tester.pumpWidget(createTestApp(repository: repository));
+      await tester.pumpAndSettle();
+      final edit = find.byKey(ValueKey('byok-edit-$id'));
+      await tester.ensureVisible(edit);
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('byok-model-gpt-4o-selected')),
+        findsOneWidget,
+      );
+      final keyField = find.byType(TextField);
+      await tester.ensureVisible(keyField.first);
+      await tester.enterText(keyField.first, 'synthetic-new-key');
+      final save = find.text(AppStrings.saveKey);
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(await repository.getConfigs(), hasLength(1));
+      expect(await secureStorage.readProviderApiKey(id), 'synthetic-new-key');
+      expect(find.byKey(ValueKey('byok-capabilities-$id')), findsOneWidget);
+    },
+  );
 
   testWidgets('renders loading then empty state', (tester) async {
     await tester.pumpWidget(createTestApp(repository: repository));
@@ -85,14 +136,17 @@ void main() {
     await tester.pumpWidget(createTestApp(repository: repository));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('OpenAI'));
     await tester.tap(find.text('OpenAI'));
     await tester.pumpAndSettle();
 
     expect(find.text(AppStrings.model), findsOneWidget);
 
-    await tester.enterText(find.byType(TextFormField), 'sk-test-key');
+    await tester.ensureVisible(find.byType(TextField));
+    await tester.enterText(find.byType(TextField), 'sk-test-key');
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text(AppStrings.saveKey));
     await tester.tap(find.text(AppStrings.saveKey));
     await tester.pumpAndSettle();
 
@@ -103,15 +157,18 @@ void main() {
     await tester.pumpWidget(createTestApp(repository: repository));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('OpenAI'));
     await tester.tap(find.text('OpenAI'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.byType(TextField));
     await tester.enterText(
-      find.byType(TextFormField),
+      find.byType(TextField),
       PrivacySentinelValues.fakeApiKey,
     );
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text(AppStrings.saveKey));
     await tester.tap(find.text(AppStrings.saveKey));
     await tester.pumpAndSettle();
 
@@ -130,15 +187,18 @@ void main() {
     await tester.pumpWidget(createTestApp(repository: failingRepo));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('OpenAI'));
     await tester.tap(find.text('OpenAI'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.byType(TextField));
     await tester.enterText(
-      find.byType(TextFormField),
+      find.byType(TextField),
       PrivacySentinelValues.fakeApiKey,
     );
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text(AppStrings.saveKey));
     await tester.tap(find.text(AppStrings.saveKey));
     await tester.pumpAndSettle();
 
@@ -152,6 +212,32 @@ void main() {
     expect(find.text('Google'), findsOneWidget);
   });
 
+  testWidgets('uses custom selectors and obscures the API key', (tester) async {
+    await tester.pumpWidget(createTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ChoiceChip), findsNothing);
+    expect(find.byType(DropdownButtonFormField<String>), findsNothing);
+    expect(find.byType(AppTextField), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).obscureText,
+      isTrue,
+    );
+
+    await tester.ensureVisible(find.text('Google'));
+    await tester.tap(find.text('Google'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('byok-provider-google-selected')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('byok-model-gemini-2.5-pro-selected')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'invalid key validation surfaces safe error without leaking key',
     (tester) async {
@@ -162,15 +248,18 @@ void main() {
       await tester.pumpWidget(createTestApp(repository: failingRepo));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text('OpenAI'));
       await tester.tap(find.text('OpenAI'));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byType(TextField));
       await tester.enterText(
-        find.byType(TextFormField),
+        find.byType(TextField),
         PrivacySentinelValues.fakeApiKey,
       );
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text(AppStrings.saveKey));
       await tester.tap(find.text(AppStrings.saveKey));
       await tester.pumpAndSettle();
 
@@ -190,19 +279,23 @@ void main() {
     await tester.pumpWidget(createTestApp(repository: repository));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('OpenAI'));
     await tester.tap(find.text('OpenAI'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextFormField), 'sk-test-key-delete');
+    await tester.ensureVisible(find.byType(TextField));
+    await tester.enterText(find.byType(TextField), 'sk-test-key-delete');
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text(AppStrings.saveKey));
     await tester.tap(find.text(AppStrings.saveKey));
     await tester.pumpAndSettle();
 
     expect(find.text(AppStrings.savedProviders), findsOneWidget);
 
-    // Tap delete key (opens confirmation dialog)
-    await tester.tap(find.text(AppStrings.deleteKey));
+    // Tap the saved-provider delete action (opens confirmation dialog).
+    await tester.ensureVisible(find.byType(AppIconButton));
+    await tester.tap(find.byType(AppIconButton));
     await tester.pumpAndSettle();
 
     // Confirm deletion in dialog — second "Delete key" is the FilledButton

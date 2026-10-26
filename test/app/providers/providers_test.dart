@@ -8,6 +8,8 @@ import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/firebase/firebase_bootstrap.dart';
 import 'package:aedify/core/network/network_status.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
+import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
 
 void main() {
   group('Provider overrides', () {
@@ -28,6 +30,9 @@ void main() {
             ),
             AppProviders.networkStatusProvider.overrideWithValue(
               _FakeNetworkStatus(),
+            ),
+            AppProviders.exerciseDatasetSyncControllerProvider.overrideWith(
+              () => _FakeSyncController(),
             ),
           ],
         );
@@ -91,6 +96,9 @@ void main() {
           AppProviders.networkStatusProvider.overrideWithValue(
             _FakeNetworkStatus(isOnline: false),
           ),
+          AppProviders.exerciseDatasetSyncControllerProvider.overrideWith(
+            () => _FakeSyncController(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -105,6 +113,19 @@ void main() {
       expect(state.isOffline, true);
     });
   });
+}
+
+class _FakeSyncController extends ExerciseDatasetSyncController {
+  @override
+  Future<ExerciseDatasetSyncState> build() async {
+    return const ExerciseDatasetSyncState(
+      phase: ExerciseDatasetSyncPhase.synced,
+      exerciseCount: 0,
+    );
+  }
+
+  @override
+  Future<void> initialize() async {}
 }
 
 class _FakeFirebaseBootstrap implements FirebaseBootstrap {

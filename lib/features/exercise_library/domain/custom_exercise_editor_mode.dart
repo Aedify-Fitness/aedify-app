@@ -1,0 +1,1 @@
+enum CustomExerciseEditorMode { create, edit }

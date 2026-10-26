@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
@@ -11,6 +13,8 @@ import 'package:path/path.dart' as p;
 
 class ExerciseStepAudioController
     extends Notifier<Map<String, ExerciseStepAudioState>> {
+  static final _logger = AppLogger(name: 'ExerciseStepAudioController');
+
   @override
   Map<String, ExerciseStepAudioState> build() => {};
 
@@ -29,6 +33,7 @@ class ExerciseStepAudioController
     required int stepIndex,
     required String text,
   }) async {
+    _logger.info('playStep — exerciseId: $exerciseId, stepIndex: $stepIndex');
     final key = _key(exerciseId, stepIndex);
 
     state = {
@@ -44,12 +49,13 @@ class ExerciseStepAudioController
       final fileStore = ref.read(AppProviders.localFileStoreProvider);
 
       final available = await ttsService.isAvailable();
+      _logger.info('playStep — TTS available: $available');
       if (!available) {
         state = {
           ...state,
           key: const ExerciseStepAudioState(
             phase: ExerciseStepAudioPhase.unavailable,
-            errorCode: 'tts_unavailable',
+            errorCode: AppErrorCodes.ttsUnavailable,
             errorMessage: AppErrorStrings.ttsUnavailableMessage,
           ),
         };
@@ -83,6 +89,7 @@ class ExerciseStepAudioController
         final fileName = '$stepIndex-$textHash.wav';
         final relativePath = p.join(relativeDir, fileName);
 
+        _logger.info('playStep — synthesizing TTS audio');
         final synthesizedPath = await ttsService.synthesizeToFile(
           text: text,
           relativeOutputPath: relativePath,
@@ -123,11 +130,12 @@ class ExerciseStepAudioController
 
       await ttsService.speak(text);
     } catch (e) {
+      _logger.error('playStep — failed', error: e);
       state = {
         ...state,
         key: const ExerciseStepAudioState(
           phase: ExerciseStepAudioPhase.failed,
-          errorCode: 'audio_playback_failed',
+          errorCode: AppErrorCodes.audioPlaybackFailed,
           errorMessage: AppErrorStrings.audioPlaybackFailedMessage,
         ),
       };

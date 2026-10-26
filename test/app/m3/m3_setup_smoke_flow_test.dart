@@ -5,12 +5,38 @@ import 'package:aedify/features/settings/presentation/byok_settings_screen.dart'
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../support/privacy/privacy_sentinel_values.dart';
 import 'm3_test_harness.dart';
+
+void useFixedMobileSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(390, 844);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+Future<void> tapPrimaryButton(
+  WidgetTester tester, {
+  String label = AppStrings.continueLabel,
+}) async {
+  final button = find.widgetWithText(FilledButton, label);
+  await tester.ensureVisible(button);
+  await tester.tap(button);
+  await tester.pump();
+}
+
+Future<void> tapVisibleText(WidgetTester tester, String label) async {
+  final target = find.text(label).first;
+  await tester.ensureVisible(target);
+  await tester.tap(target);
+  await tester.pump();
+}
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -29,6 +55,7 @@ void main() {
     testWidgets('fresh install shows onboarding welcome screen', (
       tester,
     ) async {
+      useFixedMobileSurface(tester);
       final router = await harness.pumpApp(
         tester: tester,
         onboardingStatusOverride: OnboardingStatus.incomplete,
@@ -40,15 +67,19 @@ void main() {
         equals(AppRoutes.onboarding().path),
       );
       expect(
-        find.text(AppStrings.onboardingWelcomeDescription),
+        find.text(AppStrings.onboardingWelcomeHeroDescription),
         findsOneWidget,
       );
-      expect(find.text(AppStrings.continueLabel), findsOneWidget);
+      expect(
+        find.widgetWithText(FilledButton, AppStrings.onboardingInitializeSpace),
+        findsOneWidget,
+      );
     });
 
     testWidgets('full onboarding flow completes through all steps', (
       tester,
     ) async {
+      useFixedMobileSurface(tester);
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -64,50 +95,57 @@ void main() {
 
       // Welcome step -> continue
       expect(
-        find.text(AppStrings.onboardingWelcomeDescription),
+        find.text(AppStrings.onboardingWelcomeHeroDescription),
         findsOneWidget,
       );
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      await tapPrimaryButton(
+        tester,
+        label: AppStrings.onboardingInitializeSpace,
+      );
 
-      // ExperienceGoals step
-      expect(find.text(AppStrings.onboardingExperienceTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.onboardingExperienceIntermediate));
-      await tester.pump();
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      // Core Identity step
+      expect(find.text(AppStrings.onboardingCoreIdentityTitle), findsWidgets);
+      await tapPrimaryButton(tester);
+
+      // Experience and Goals step
+      expect(find.text(AppStrings.experienceLevel), findsOneWidget);
+      await tapVisibleText(tester, AppStrings.onboardingExperienceAdept);
+      await tapPrimaryButton(tester);
 
       // Schedule step
-      expect(find.text(AppStrings.onboardingScheduleTitle), findsOneWidget);
-      await tester.tap(find.text('4'));
-      await tester.pump();
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      expect(find.text(AppStrings.onboardingSessionDuration), findsOneWidget);
+      for (final day in const [
+        TrainingDay.monday,
+        TrainingDay.tuesday,
+        TrainingDay.wednesday,
+        TrainingDay.thursday,
+      ]) {
+        await tapVisibleText(tester, day.displayLabel);
+      }
+      await tapPrimaryButton(tester);
 
       // Equipment step
-      expect(find.text(AppStrings.onboardingEquipmentTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
-
-      // UnitsMetrics step
-      expect(find.text(AppStrings.onboardingUnitsTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      expect(find.text(AppStrings.onboardingGymEnvironmentTitle), findsWidgets);
+      await tapPrimaryButton(tester);
 
       // Limitations step
-      expect(find.text(AppStrings.onboardingLimitationsTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      expect(find.text(AppStrings.onboardingSafetyFirst), findsOneWidget);
+      await tapPrimaryButton(tester);
+
+      // Metrics step
+      expect(find.text(AppStrings.onboardingEliteBaselineTitle), findsWidgets);
+      await tapPrimaryButton(tester);
 
       // BYOK step
-      expect(find.text(AppStrings.onboardingByokOptionalTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.continueLabel));
-      await tester.pump();
+      expect(
+        find.text(AppStrings.onboardingIntelligenceLayerTitle),
+        findsWidgets,
+      );
+      await tapPrimaryButton(tester);
 
-      // Review step -> Finish setup
-      expect(find.text(AppStrings.onboardingReviewTitle), findsOneWidget);
-      await tester.tap(find.text(AppStrings.finishSetup));
-      await tester.pump();
+      // Review step -> Initialize workspace
+      expect(find.text(AppStrings.onboardingFinalReviewTitle), findsWidgets);
+      await tapPrimaryButton(tester, label: AppStrings.finishSetup);
       await tester.pump();
 
       // Verify onboarding is completed in the repository
@@ -216,7 +254,7 @@ void main() {
 
       // Enter sentinel key
       await tester.enterText(
-        find.byType(TextFormField),
+        find.byType(TextField),
         PrivacySentinelValues.fakeApiKey,
       );
       await tester.pumpAndSettle();
@@ -234,7 +272,7 @@ void main() {
       final configs = await harness.byokRepo.getConfigs();
       expect(configs.length, equals(1));
       expect(configs.first.hasKey, isTrue);
-      expect(configs.first.providerName, equals('openai'));
+      expect(configs.first.providerName, equals(AiProviderName.openai));
     });
 
     testWidgets('AI gating: missing key blocks chat route', (tester) async {
@@ -279,6 +317,7 @@ void main() {
     testWidgets(
       'validation blocks progression when required fields are missing',
       (tester) async {
+        useFixedMobileSurface(tester);
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
@@ -293,19 +332,23 @@ void main() {
         await tester.pump();
 
         // Advance past welcome
-        await tester.tap(find.text(AppStrings.continueLabel));
-        await tester.pump();
+        await tapPrimaryButton(
+          tester,
+          label: AppStrings.onboardingInitializeSpace,
+        );
+
+        // Advance past optional Core Identity.
+        await tapPrimaryButton(tester);
 
         // Try to continue without selecting experience level
-        await tester.tap(find.text(AppStrings.continueLabel));
-        await tester.pump();
+        await tapPrimaryButton(tester);
         await tester.pump();
 
         expect(
           find.text(AppStrings.onboardingValidationRequired),
           findsOneWidget,
         );
-        expect(find.text(AppStrings.onboardingExperienceTitle), findsOneWidget);
+        expect(find.text(AppStrings.experienceLevel), findsOneWidget);
       },
     );
 
@@ -330,7 +373,7 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.enterText(
-          find.byType(TextFormField),
+          find.byType(TextField),
           PrivacySentinelValues.fakeApiKey,
         );
         await tester.pumpAndSettle();

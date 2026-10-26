@@ -1,4 +1,9 @@
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 class ProfileViewData {
   const ProfileViewData({
@@ -7,6 +12,7 @@ class ProfileViewData {
     required this.goals,
     required this.equipmentAccess,
     required this.trainingDaysPerWeek,
+    this.trainingDays = const <TrainingDay>[],
     required this.targetSessionLengthMinutes,
     required this.preferredUnits,
     required this.heightCm,
@@ -23,10 +29,11 @@ class ProfileViewData {
   });
 
   final String? displayName;
-  final String experienceLevel;
-  final List<String> goals;
-  final List<String> equipmentAccess;
+  final ExperienceLevel experienceLevel;
+  final Set<GoalTag> goals;
+  final Set<EquipmentTag> equipmentAccess;
   final int? trainingDaysPerWeek;
+  final List<TrainingDay> trainingDays;
   final int? targetSessionLengthMinutes;
   final PreferredUnit preferredUnits;
   final double? heightCm;
@@ -35,7 +42,7 @@ class ProfileViewData {
   final List<int> substitutedExerciseIds;
   final List<String> injuriesLimitations;
   final String? otherNotes;
-  final String? sex;
+  final Sex? sex;
   final DateTime? dateOfBirth;
   final double? bench1RmKg;
   final double? squat1RmKg;

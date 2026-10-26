@@ -32,28 +32,36 @@ class ExerciseDatasetStatusTile extends StatelessWidget {
             style: context.textTheme.titleSmall,
           ),
         ),
-        _row(
-          context,
-          AppStrings.exerciseLibraryVersion,
-          libraryVersion ?? '--',
+        _RowInfo(
+          label: AppStrings.exerciseLibraryVersion,
+          value: libraryVersion ?? '--',
         ),
-        _row(
-          context,
-          AppStrings.exerciseLibrarySchemaVersion,
-          schemaVersion?.toString() ?? '--',
+        _RowInfo(
+          label: AppStrings.exerciseLibrarySchemaVersion,
+          value: schemaVersion?.toString() ?? '--',
         ),
-        _row(
-          context,
-          AppStrings.exerciseLibraryExerciseCount,
-          exerciseCount?.toString() ?? '--',
+        _RowInfo(
+          label: AppStrings.exerciseLibraryExerciseCount,
+          value: exerciseCount?.toString() ?? '--',
         ),
-        _row(context, AppStrings.exerciseLibrarySyncStatus, syncStatusLabel),
+        _RowInfo(
+          label: AppStrings.exerciseLibrarySyncStatus,
+          value: syncStatusLabel,
+        ),
         Divider(height: AppSizing.divider),
       ],
     );
   }
+}
 
-  Widget _row(BuildContext context, String label, String value) {
+class _RowInfo extends StatelessWidget {
+  const _RowInfo({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,

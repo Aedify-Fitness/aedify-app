@@ -15,6 +15,10 @@ class AppRoutes {
   factory AppRoutes.bodymap() => AppRoutes._(path: '/bodymap', name: 'bodymap');
   factory AppRoutes.liftLog() =>
       AppRoutes._(path: '/lift-log', name: 'liftLog');
+  factory AppRoutes.workoutHistoryDetail() =>
+      AppRoutes._(path: '/lift-log/:sessionId', name: 'workoutHistoryDetail');
+  factory AppRoutes.savedWorkoutLibrary() =>
+      AppRoutes._(path: '/workouts', name: 'savedWorkoutLibrary');
   factory AppRoutes.settings() =>
       AppRoutes._(path: '/settings', name: 'settings');
   factory AppRoutes.progress() =>
@@ -23,6 +27,7 @@ class AppRoutes {
       AppRoutes._(path: '/exercises', name: 'exercises');
   factory AppRoutes.analytics() =>
       AppRoutes._(path: '/analytics', name: 'analytics');
+  factory AppRoutes.library() => AppRoutes._(path: '/library', name: 'library');
   factory AppRoutes.onboarding() =>
       AppRoutes._(path: '/onboarding', name: 'onboarding');
   factory AppRoutes.programmes() =>
@@ -50,6 +55,69 @@ class AppRoutes {
   factory AppRoutes.profile() => AppRoutes._(path: '/profile', name: 'profile');
   factory AppRoutes.aiProviderSettings() =>
       AppRoutes._(path: '/settings/ai-provider', name: 'aiProviderSettings');
+  factory AppRoutes.providerCapabilities() => AppRoutes._(
+    path: '/settings/byok/capabilities/:provider/:model',
+    name: 'providerCapabilities',
+  );
   factory AppRoutes.byokSettings() =>
       AppRoutes._(path: '/settings/byok', name: 'byokSettings');
+  factory AppRoutes.workoutBuilderCreate() =>
+      AppRoutes._(path: '/workouts/new', name: 'workoutBuilderCreate');
+  factory AppRoutes.workoutBuilderEdit() =>
+      AppRoutes._(path: '/workouts/:id/edit', name: 'workoutBuilderEdit');
+
+  // Programme builder
+  factory AppRoutes.programmeWorkoutBuilderCreate() => AppRoutes._(
+    path: '/programmes/workout-template/new',
+    name: 'programmeWorkoutBuilderCreate',
+  );
+  factory AppRoutes.programmeBuilderCreate() =>
+      AppRoutes._(path: '/programmes/new', name: 'programmeBuilderCreate');
+  factory AppRoutes.programmeBuilderEdit() =>
+      AppRoutes._(path: '/programmes/:id/edit', name: 'programmeBuilderEdit');
+  factory AppRoutes.programmeBuilderDuplicate() => AppRoutes._(
+    path: '/programmes/:id/duplicate',
+    name: 'programmeBuilderDuplicate',
+  );
+
+  // Workout runner
+  factory AppRoutes.workoutRunnerStandalone() =>
+      AppRoutes._(path: '/workout/new', name: 'workoutRunnerStandalone');
+  factory AppRoutes.workoutRunnerRepeat() => AppRoutes._(
+    path: '/lift-log/:sessionId/repeat',
+    name: 'workoutRunnerRepeat',
+  );
+  factory AppRoutes.workoutRunnerActive() =>
+      AppRoutes._(path: '/workout/active', name: 'workoutRunnerActive');
+  factory AppRoutes.workoutRunnerSavedWorkout() =>
+      AppRoutes._(path: '/workouts/:id/run', name: 'workoutRunnerSavedWorkout');
+  factory AppRoutes.workoutDetail() =>
+      AppRoutes._(path: '/workouts/:workoutId', name: 'workoutDetail');
+  factory AppRoutes.workoutRunnerProgramWorkout() => AppRoutes._(
+    path: '/programmes/:programId/workouts/:workoutId/run',
+    name: 'workoutRunnerProgramWorkout',
+  );
+  factory AppRoutes.finishEarlySummary() => AppRoutes._(
+    path: '/workout/finish-early/summary',
+    name: 'finishEarlySummary',
+  );
+  factory AppRoutes.sessionComplete() =>
+      AppRoutes._(path: '/workout/summary', name: 'sessionComplete');
+
+  // Programme calendar (read-only)
+  factory AppRoutes.programmeCalendar() =>
+      AppRoutes._(path: '/programmes/:id', name: 'programmeCalendar');
+  factory AppRoutes.programmeWorkoutDetail() => AppRoutes._(
+    path: '/programmes/:programId/workouts/:workoutId',
+    name: 'programmeWorkoutDetail',
+  );
+
+  // Custom exercise editor
+  factory AppRoutes.customExerciseCreate() =>
+      AppRoutes._(path: '/exercises/custom/new', name: 'customExerciseCreate');
+
+  factory AppRoutes.customExerciseEdit() => AppRoutes._(
+    path: '/exercises/custom/:id/edit',
+    name: 'customExerciseEdit',
+  );
 }

@@ -1,8 +1,11 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/domain/byok_config_view_data.dart';
 import 'package:aedify/features/settings/domain/byok_edit_draft.dart';
 import 'package:aedify/features/settings/domain/byok_provider_option.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ByokSetupState {
@@ -67,8 +70,11 @@ class ByokSetupState {
 }
 
 class ByokSetupController extends AsyncNotifier<ByokSetupState> {
+  static final _logger = AppLogger(name: 'ByokSetupController');
+
   @override
   Future<ByokSetupState> build() async {
+    _logger.info('build');
     final repository = ref.read(AppProviders.byokRepositoryProvider);
     try {
       final providerOptions = await repository.getProviderOptions();
@@ -79,11 +85,12 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
         configs: configs,
       );
     } catch (e) {
+      _logger.error('build — failed', error: e);
       return ByokSetupState(
         isLoading: false,
         providerOptions: [],
         configs: [],
-        errorCode: 'byok_load_failed',
+        errorCode: AppErrorCodes.byokLoadFailed,
         errorMessage: AppErrorStrings.byokLoadFailedMessage,
       );
     }
@@ -104,7 +111,8 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     final current = state.requireValue;
     final draft = current.editDraft;
 
-    if (draft?.apiKey == null || draft!.apiKey!.isEmpty) {
+    if (draft == null ||
+        ((draft.apiKey?.trim().isEmpty ?? true) && draft.configId == null)) {
       state = AsyncData(
         current.copyWith(
           validationMessage: AppErrorStrings.byokEmptyKeyValidation,
@@ -124,16 +132,22 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       return;
     }
 
+    _logger.info('saveConfig — provider: ${draft.providerName!.name}');
     state = AsyncData(current.copyWith(isTesting: true, clearError: true));
 
     try {
       final repository = ref.read(AppProviders.byokRepositoryProvider);
-      final isValid = await repository.validateKey(
-        providerName: draft.providerName!,
-        apiKey: draft.apiKey!,
-      );
+      final isValid =
+          (draft.apiKey?.trim().isEmpty ?? true) && draft.configId != null ||
+          await repository.validateKey(
+            providerName: draft.providerName!,
+            apiKey: draft.apiKey!.trim(),
+          );
 
       if (!isValid) {
+        _logger.info(
+          'saveConfig — key validation failed: ${draft.providerName!.name}',
+        );
         state = AsyncData(
           current.copyWith(
             isTesting: false,
@@ -147,15 +161,25 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
       await repository.saveConfig(draft);
       final configs = await repository.getConfigs();
+      _logger.info('saveConfig — success: ${draft.providerName!.name}');
       state = AsyncData(
-        current.copyWith(isSaving: false, configs: configs, clearDraft: true),
+        current.copyWith(
+          isSaving: false,
+          configs: configs,
+          clearDraft: true,
+          clearValidationMessage: true,
+        ),
       );
     } catch (e) {
+      _logger.error(
+        'saveConfig — failed: ${draft.providerName!.name}',
+        error: e,
+      );
       state = AsyncData(
         current.copyWith(
           isSaving: false,
           isTesting: false,
-          errorCode: 'byok_save_failed',
+          errorCode: AppErrorCodes.byokSaveFailed,
           errorMessage: AppErrorStrings.byokSaveFailedMessage,
         ),
       );
@@ -164,10 +188,11 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {
     final current = state.requireValue;
+    _logger.info('rotateKey — configId: $configId');
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));
 
     try {
@@ -180,10 +205,11 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
       final configs = await repository.getConfigs();
       state = AsyncData(current.copyWith(isSaving: false, configs: configs));
     } catch (e) {
+      _logger.error('rotateKey — failed: $configId', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'byok_rotate_failed',
+          errorCode: AppErrorCodes.byokRotateFailed,
           errorMessage: AppErrorStrings.byokKeyRotationFailed,
         ),
       );
@@ -192,15 +218,17 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
 
   Future<void> deleteConfig(String configId) async {
     final current = state.requireValue;
+    _logger.info('deleteConfig — configId: $configId');
     try {
       final repository = ref.read(AppProviders.byokRepositoryProvider);
       await repository.deleteConfig(configId);
       final configs = await repository.getConfigs();
       state = AsyncData(current.copyWith(configs: configs));
     } catch (e) {
+      _logger.error('deleteConfig — failed: $configId', error: e);
       state = AsyncData(
         current.copyWith(
-          errorCode: 'byok_delete_failed',
+          errorCode: AppErrorCodes.byokDeleteFailed,
           errorMessage: AppErrorStrings.byokDeleteFailedMessage,
         ),
       );
@@ -217,7 +245,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
     } catch (e) {
       state = AsyncData(
         current.copyWith(
-          errorCode: 'byok_set_active_failed',
+          errorCode: AppErrorCodes.byokSetActiveFailed,
           errorMessage: AppErrorStrings.byokSaveFailedMessage,
         ),
       );
@@ -243,7 +271,7 @@ class ByokSetupController extends AsyncNotifier<ByokSetupState> {
           isLoading: false,
           providerOptions: [],
           configs: [],
-          errorCode: 'byok_load_failed',
+          errorCode: AppErrorCodes.byokLoadFailed,
           errorMessage: AppErrorStrings.byokLoadFailedMessage,
         ),
       );

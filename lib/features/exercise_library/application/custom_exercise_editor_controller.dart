@@ -1,0 +1,309 @@
+import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/logging/app_logger.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/features/exercise_library/application/custom_exercise_editor_phase.dart';
+import 'package:aedify/features/exercise_library/application/custom_exercise_editor_state.dart';
+import 'package:aedify/features/exercise_library/domain/custom_exercise_editor_mode.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+typedef CustomExerciseEditorArgs = ({
+  CustomExerciseEditorMode mode,
+  int? exerciseId,
+});
+
+class CustomExerciseEditorController
+    extends AsyncNotifier<CustomExerciseEditorState> {
+  static final _logger = AppLogger(name: 'CustomExerciseEditorController');
+
+  CustomExerciseEditorController({required this.mode, this.exerciseId});
+
+  final CustomExerciseEditorMode mode;
+  final int? exerciseId;
+
+  @override
+  Future<CustomExerciseEditorState> build() async {
+    _logger.info('build — mode: ${mode.name}');
+    if (mode == CustomExerciseEditorMode.create) {
+      final draft = await ref
+          .read(AppProviders.loadCustomExerciseDraftUseCaseProvider)
+          .createEmptyDraft();
+      return CustomExerciseEditorState(
+        mode: mode,
+        phase: CustomExerciseEditorPhase.editing,
+        draft: draft,
+        validationErrors: const [],
+        isDirty: false,
+      );
+    }
+
+    final draft = await ref
+        .read(AppProviders.loadCustomExerciseDraftUseCaseProvider)
+        .loadForEdit(exerciseId!);
+    return CustomExerciseEditorState(
+      mode: mode,
+      phase: CustomExerciseEditorPhase.editing,
+      draft: draft,
+      validationErrors: const [],
+      isDirty: false,
+      exerciseId: exerciseId,
+    );
+  }
+
+  CustomExerciseEditorState? get _editableState {
+    if (!ref.mounted) return null;
+    final current = state.asData?.value;
+    return current?.phase == CustomExerciseEditorPhase.editing ||
+            current?.phase == CustomExerciseEditorPhase.failure
+        ? current
+        : null;
+  }
+
+  Future<void> rename(String value) async {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(name: value),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> setModality(ExerciseModality modality) async {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(modality: modality),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> setEquipment(EquipmentTag? equipment) async {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(equipment: equipment),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> setDifficulty(ExerciseDifficulty? difficulty) async {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(difficulty: difficulty),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> setLoggingType(ExerciseLoggingType? loggingType) async {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(loggingType: loggingType),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> toggleMuscleGroup(BodymapBucket bucket) async {
+    final current = _editableState;
+    if (current == null) return;
+    final currentGroups = current.draft.muscleGroups;
+    final updated = <BodymapBucket>{...currentGroups};
+    if (updated.contains(bucket)) {
+      updated.remove(bucket);
+    } else {
+      updated.add(bucket);
+    }
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(muscleGroups: updated),
+        isDirty: true,
+        clearValidation: true,
+      ),
+    );
+  }
+
+  Future<void> addStep() async {
+    final current = _editableState;
+    if (current == null) return;
+    if (current.draft.steps.isNotEmpty &&
+        current.draft.steps.last.trim().isEmpty) {
+      return;
+    }
+    final steps = [...current.draft.steps, ''];
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(steps: steps),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> updateStep({required int index, required String value}) async {
+    final current = _editableState;
+    if (current == null) return;
+    final steps = [...current.draft.steps];
+    if (index >= 0 && index < steps.length) {
+      steps[index] = value;
+    }
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(steps: steps),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> removeStep(int index) async {
+    final current = _editableState;
+    if (current == null) return;
+    final steps = [...current.draft.steps];
+    if (index >= 0 && index < steps.length) {
+      steps.removeAt(index);
+    }
+    state = AsyncData(
+      current.copyWith(
+        draft: current.draft.copyWith(steps: steps),
+        isDirty: true,
+      ),
+    );
+  }
+
+  Future<void> save() async {
+    final current = _editableState;
+    if (current == null) return;
+
+    final validator = ref.read(AppProviders.customExerciseValidatorProvider);
+    final errors = validator.validate(current.draft);
+
+    if (errors.isNotEmpty) {
+      _logger.info(
+        'save — validation errors',
+        metadata: {'count': errors.length},
+      );
+      state = AsyncData(current.copyWith(validationErrors: errors));
+      return;
+    }
+
+    _logger.info('save');
+    state = AsyncData(
+      current.copyWith(
+        phase: CustomExerciseEditorPhase.saving,
+        clearValidation: true,
+        clearErrors: true,
+      ),
+    );
+
+    try {
+      if (current.mode == CustomExerciseEditorMode.create) {
+        final id = await ref
+            .read(AppProviders.saveCustomExerciseUseCaseProvider)
+            .create(current.draft);
+        if (!ref.mounted) return;
+        _logger.info('save — success (create)', metadata: {'exerciseId': id});
+        state = AsyncData(
+          current.copyWith(
+            phase: CustomExerciseEditorPhase.saved,
+            exerciseId: id,
+            clearDirty: true,
+            clearErrors: true,
+          ),
+        );
+      } else {
+        await ref
+            .read(AppProviders.saveCustomExerciseUseCaseProvider)
+            .update(exerciseId: current.exerciseId!, draft: current.draft);
+        if (!ref.mounted) return;
+        _logger.info(
+          'save — success (update)',
+          metadata: {'exerciseId': current.exerciseId},
+        );
+        state = AsyncData(
+          current.copyWith(
+            phase: CustomExerciseEditorPhase.saved,
+            clearDirty: true,
+            clearErrors: true,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!ref.mounted) return;
+      _logger.error('save — failure', error: e);
+      state = AsyncData(
+        current.copyWith(
+          phase: CustomExerciseEditorPhase.failure,
+          errorCode: 'save_failed',
+          errorMessage: AppStrings.customExerciseSaveFailed,
+        ),
+      );
+    }
+  }
+
+  Future<void> delete() async {
+    final current = _editableState;
+    if (current == null) return;
+    if (current.exerciseId == null) return;
+
+    state = AsyncData(
+      current.copyWith(
+        phase: CustomExerciseEditorPhase.deleting,
+        clearErrors: true,
+      ),
+    );
+
+    try {
+      await ref
+          .read(AppProviders.deleteCustomExerciseUseCaseProvider)
+          .delete(current.exerciseId!);
+      if (!ref.mounted) return;
+      state = AsyncData(
+        current.copyWith(
+          phase: CustomExerciseEditorPhase.deleted,
+          clearDirty: true,
+          clearErrors: true,
+        ),
+      );
+    } catch (e) {
+      if (!ref.mounted) return;
+      state = AsyncData(
+        current.copyWith(
+          phase: CustomExerciseEditorPhase.failure,
+          errorCode: 'delete_failed',
+          errorMessage: AppStrings.customExerciseDeleteFailed,
+        ),
+      );
+    }
+  }
+
+  void clearValidationErrors() {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(current.copyWith(clearValidation: true));
+  }
+
+  void discardChanges() {
+    final current = _editableState;
+    if (current == null) return;
+    state = AsyncData(
+      current.copyWith(
+        clearDirty: true,
+        clearErrors: true,
+        clearValidation: true,
+      ),
+    );
+  }
+}

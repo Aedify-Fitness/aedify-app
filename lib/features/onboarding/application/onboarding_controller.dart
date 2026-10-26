@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
@@ -9,10 +11,12 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   Timer? _draftSaveDebounceTimer;
   OnboardingDraft? _pendingDraftSave;
 
+  static final _logger = AppLogger(name: 'OnboardingController');
   static const _debounceDuration = Duration(milliseconds: 400);
 
   @override
   Future<OnboardingState> build() async {
+    _logger.info('build');
     ref.onDispose(() {
       _draftSaveDebounceTimer?.cancel();
     });
@@ -49,6 +53,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     final next = _nextStepFor(current.currentStep);
     if (next == null) return;
 
+    _logger.info('nextStep — ${current.currentStep.name} -> ${next.name}');
     state = AsyncData(
       current.copyWith(
         currentStep: next,
@@ -63,6 +68,9 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
     final previous = _previousStepFor(current.currentStep);
     if (previous == null) return;
 
+    _logger.info(
+      'previousStep — ${current.currentStep.name} -> ${previous.name}',
+    );
     state = AsyncData(
       current.copyWith(
         currentStep: previous,
@@ -73,6 +81,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   void jumpToStep(OnboardingStep step) {
+    _logger.info('jumpToStep — ${step.name}');
     state = AsyncData(
       state.requireValue.copyWith(
         currentStep: step,
@@ -84,6 +93,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
 
   Future<void> completeOnboarding() async {
     final current = state.requireValue;
+    _logger.info('complete');
     state = AsyncData(current.copyWith(isSaving: true, clearError: true));
 
     final validationMessage = _validateStep(current.currentStep, current.draft);
@@ -98,6 +108,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
       await _flushPendingDraftSave();
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.completeOnboarding(current.draft);
+      ref.invalidate(AppProviders.onboardingStatusProvider);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
@@ -106,10 +117,11 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         ),
       );
     } catch (e) {
+      _logger.error('complete — failed', error: e);
       state = AsyncData(
         current.copyWith(
           isSaving: false,
-          errorCode: 'onboarding_save_failed',
+          errorCode: AppErrorCodes.onboardingSaveFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );
@@ -119,14 +131,16 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   Future<void> restartOnboarding() async {
     _draftSaveDebounceTimer?.cancel();
     _pendingDraftSave = null;
+    _logger.info('restart');
     try {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.clearOnboardingDraft();
       state = AsyncData(const OnboardingState.initial());
     } catch (e) {
+      _logger.error('restart — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_clear_failed',
+          errorCode: AppErrorCodes.onboardingClearFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );
@@ -134,6 +148,7 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   Future<void> loadExistingDraft() async {
+    _logger.info('loadExistingDraft');
     try {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       final existing = await repository.loadOnboardingDraft();
@@ -147,9 +162,10 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
         );
       }
     } catch (e) {
+      _logger.error('loadExistingDraft — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_load_failed',
+          errorCode: AppErrorCodes.onboardingLoadFailed,
           errorMessage: AppErrorStrings.onboardingLoadFailedMessage,
         ),
       );
@@ -179,9 +195,10 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
       final repository = ref.read(AppProviders.onboardingRepositoryProvider);
       await repository.saveOnboardingDraft(draft);
     } catch (e) {
+      _logger.error('_executePendingSave — failed', error: e);
       state = AsyncData(
         state.requireValue.copyWith(
-          errorCode: 'onboarding_save_failed',
+          errorCode: AppErrorCodes.onboardingSaveFailed,
           errorMessage: AppErrorStrings.onboardingSaveFailedMessage,
         ),
       );
@@ -189,29 +206,42 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   }
 
   OnboardingStep _resumeStepForDraft(OnboardingDraft draft) {
-    if (draft.experienceLevel == null || draft.experienceLevel!.isEmpty) {
-      return OnboardingStep.experienceGoals;
+    if (draft.experienceLevel == null) {
+      return OnboardingStep.coreIdentity;
     }
-    if (draft.trainingDaysPerWeek == null || draft.trainingDaysPerWeek! < 1) {
+    if (draft.trainingDays.isEmpty) {
       return OnboardingStep.schedule;
     }
     if (draft.equipmentAccess.isEmpty &&
-        draft.preferredUnits == null &&
         draft.heightCm == null &&
         draft.bodyweightKg == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null &&
         draft.limitations.isEmpty &&
         draft.notes == null &&
+        draft.favoriteExerciseIds.isEmpty &&
+        draft.substitutedExerciseIds.isEmpty &&
         draft.byokSkipped) {
       return OnboardingStep.equipment;
     }
-    if (draft.preferredUnits == null &&
-        draft.heightCm == null &&
-        draft.bodyweightKg == null) {
-      return OnboardingStep.unitsMetrics;
-    }
     if (draft.limitations.isEmpty &&
-        (draft.notes == null || draft.notes!.isEmpty)) {
+        (draft.notes == null || draft.notes!.isEmpty) &&
+        draft.favoriteExerciseIds.isEmpty &&
+        draft.substitutedExerciseIds.isEmpty &&
+        draft.heightCm == null &&
+        draft.bodyweightKg == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null) {
       return OnboardingStep.limitations;
+    }
+    if (draft.heightCm == null &&
+        draft.bodyweightKg == null &&
+        draft.bench1RmKg == null &&
+        draft.squat1RmKg == null &&
+        draft.deadlift1RmKg == null) {
+      return OnboardingStep.unitsMetrics;
     }
     if (!draft.byokSkipped) {
       return OnboardingStep.review;
@@ -222,20 +252,20 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   String? _validateStep(OnboardingStep step, OnboardingDraft draft) {
     switch (step) {
       case OnboardingStep.experienceGoals:
-        if (draft.experienceLevel == null || draft.experienceLevel!.isEmpty) {
+        if (draft.experienceLevel == null) {
           return AppStrings.onboardingValidationRequired;
         }
         return null;
       case OnboardingStep.schedule:
-        if (draft.trainingDaysPerWeek == null ||
-            draft.trainingDaysPerWeek! < 1) {
+        if (draft.trainingDays.isEmpty) {
           return AppStrings.onboardingValidationRequired;
         }
         return null;
       case OnboardingStep.welcome:
+      case OnboardingStep.coreIdentity:
       case OnboardingStep.equipment:
-      case OnboardingStep.unitsMetrics:
       case OnboardingStep.limitations:
+      case OnboardingStep.unitsMetrics:
       case OnboardingStep.byokOptional:
       case OnboardingStep.review:
         return null;
@@ -245,16 +275,18 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
   OnboardingStep? _nextStepFor(OnboardingStep current) {
     switch (current) {
       case OnboardingStep.welcome:
+        return OnboardingStep.coreIdentity;
+      case OnboardingStep.coreIdentity:
         return OnboardingStep.experienceGoals;
       case OnboardingStep.experienceGoals:
         return OnboardingStep.schedule;
       case OnboardingStep.schedule:
         return OnboardingStep.equipment;
       case OnboardingStep.equipment:
-        return OnboardingStep.unitsMetrics;
-      case OnboardingStep.unitsMetrics:
         return OnboardingStep.limitations;
       case OnboardingStep.limitations:
+        return OnboardingStep.unitsMetrics;
+      case OnboardingStep.unitsMetrics:
         return OnboardingStep.byokOptional;
       case OnboardingStep.byokOptional:
         return OnboardingStep.review;
@@ -265,18 +297,20 @@ class OnboardingController extends AsyncNotifier<OnboardingState> {
 
   OnboardingStep? _previousStepFor(OnboardingStep current) {
     switch (current) {
-      case OnboardingStep.experienceGoals:
+      case OnboardingStep.coreIdentity:
         return OnboardingStep.welcome;
+      case OnboardingStep.experienceGoals:
+        return OnboardingStep.coreIdentity;
       case OnboardingStep.schedule:
         return OnboardingStep.experienceGoals;
       case OnboardingStep.equipment:
         return OnboardingStep.schedule;
-      case OnboardingStep.unitsMetrics:
-        return OnboardingStep.equipment;
       case OnboardingStep.limitations:
-        return OnboardingStep.unitsMetrics;
-      case OnboardingStep.byokOptional:
+        return OnboardingStep.equipment;
+      case OnboardingStep.unitsMetrics:
         return OnboardingStep.limitations;
+      case OnboardingStep.byokOptional:
+        return OnboardingStep.unitsMetrics;
       case OnboardingStep.review:
         return OnboardingStep.byokOptional;
       case OnboardingStep.welcome:

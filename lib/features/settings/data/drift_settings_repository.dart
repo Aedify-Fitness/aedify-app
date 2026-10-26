@@ -1,3 +1,4 @@
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/app/feature_flags/feature_flags.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/app_settings_dao.dart';
@@ -15,11 +16,14 @@ class DriftSettingsRepository implements SettingsRepository {
   }) : _appSettingsDao = appSettingsDao,
        _featureFlags = featureFlags;
 
+  static final _logger = AppLogger(name: 'DriftSettingsRepository');
+
   final AppSettingsDao _appSettingsDao;
   final FeatureFlags _featureFlags;
 
   @override
   Future<SettingsViewData> getSettings() async {
+    _logger.debug('get');
     final row = await _appSettingsDao.getSettings();
     return SettingsViewData(
       preferredUnits: PreferredUnit.fromDb(row?.preferredUnits ?? 'metric'),
@@ -40,6 +44,7 @@ class DriftSettingsRepository implements SettingsRepository {
 
   @override
   Future<void> saveSettings(SettingsEditDraft draft) async {
+    _logger.info('save');
     final now = DateTime.now();
     await _appSettingsDao.upsertSettings(
       AppSettingsCompanion(

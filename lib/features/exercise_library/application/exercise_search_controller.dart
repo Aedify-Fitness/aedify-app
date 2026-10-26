@@ -1,6 +1,8 @@
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_list_item.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ExerciseSearchState {
@@ -39,6 +41,8 @@ class ExerciseSearchState {
 }
 
 class ExerciseSearchController extends Notifier<ExerciseSearchState> {
+  static final _logger = AppLogger(name: 'ExerciseSearchController');
+
   @override
   ExerciseSearchState build() {
     _loadInitial();
@@ -64,13 +68,14 @@ class ExerciseSearchController extends Notifier<ExerciseSearchState> {
         filters: const ExerciseFilterState(),
         items: [],
         isLoading: false,
-        errorCode: 'load_failed',
+        errorCode: AppErrorCodes.loadFailed,
         errorMessage: e.toString(),
       );
     }
   }
 
   Future<void> updateSearchQuery(String query) async {
+    _logger.debug('updateSearchQuery — query: $query');
     final updatedFilters = state.filters.copyWith(searchQuery: query);
     await _reloadWithFilters(updatedFilters);
   }
@@ -84,6 +89,7 @@ class ExerciseSearchController extends Notifier<ExerciseSearchState> {
   }
 
   Future<void> reload() async {
+    _logger.debug('reload');
     await _reloadWithFilters(state.filters);
   }
 
@@ -99,11 +105,12 @@ class ExerciseSearchController extends Notifier<ExerciseSearchState> {
         isLoading: false,
       );
     } catch (e) {
+      _logger.error('reload failed', error: e);
       state = ExerciseSearchState(
         filters: filters,
         items: state.items,
         isLoading: false,
-        errorCode: 'search_failed',
+        errorCode: AppErrorCodes.searchFailed,
         errorMessage: e.toString(),
       );
     }

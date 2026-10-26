@@ -1,9 +1,18 @@
 import 'dart:convert';
 
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_exercise.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_validation_failure.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_video.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_logging_type.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
 
 class ExerciseDatasetParser {
   const ExerciseDatasetParser();
@@ -153,51 +162,41 @@ class ExerciseDatasetParser {
       );
     }
 
-    final difficulty = _requireString(json, 'difficulty', exerciseId: id);
-    _validateDifficulty(difficulty, exerciseId: id);
+    final difficultyValue = _requireString(json, 'difficulty', exerciseId: id);
+    _validateDifficulty(difficultyValue, exerciseId: id);
+    final difficulty = ExerciseDifficulty.fromDb(difficultyValue);
 
     final primaryMuscles = _requireStringList(
       json,
       'primary_muscles',
       exerciseId: id,
     );
-    if (primaryMuscles.isEmpty) {
-      throw ExerciseDatasetValidationFailure(
-        code: ExerciseDatasetValidationFailureCode.invalidPrimaryMuscles,
-        message: 'primary_muscles must not be empty',
-        field: 'primary_muscles',
-        exerciseId: id,
-      );
-    }
 
-    final muscleGroups = _requireStringList(
+    final muscleGroupValues = _requireStringList(
       json,
       'muscle_groups',
       exerciseId: id,
     );
-    _validateMuscleGroups(muscleGroups, exerciseId: id);
+    _validateMuscleGroups(muscleGroupValues, exerciseId: id);
+    final muscleGroups = muscleGroupValues.map(_bodymapBucketFromLabel).toSet();
 
-    final modality = _requireString(json, 'modality', exerciseId: id);
-    _validateModality(modality, exerciseId: id);
+    final modalityValue = _requireString(json, 'modality', exerciseId: id);
+    _validateModality(modalityValue, exerciseId: id);
+    final modality = ExerciseModality.fromDb(modalityValue);
 
-    final equipment = _readNullableString(json, 'equipment');
+    final equipmentValue = _readNullableString(json, 'equipment');
     _validateStrengthEquipment(
-      modality: modality,
-      equipment: equipment,
+      modality: modality.dbValue,
+      equipment: equipmentValue,
       exerciseId: id,
     );
+    final equipment = equipmentValue == null || equipmentValue.trim().isEmpty
+        ? null
+        : EquipmentTag.fromDb(equipmentValue);
 
     final grips = _requireStringList(json, 'grips', exerciseId: id);
 
     final steps = _requireStringList(json, 'steps', exerciseId: id);
-    if (steps.isEmpty) {
-      throw ExerciseDatasetValidationFailure(
-        code: ExerciseDatasetValidationFailureCode.invalidSteps,
-        message: 'steps must not be empty',
-        field: 'steps',
-        exerciseId: id,
-      );
-    }
 
     final videosJson = _requireList(json, 'videos', exerciseId: id);
     final videos = <ExerciseDatasetVideo>[];
@@ -221,9 +220,12 @@ class ExerciseDatasetParser {
       muscleGroups: muscleGroups,
       category: _readNullableString(json, 'category'),
       modality: modality,
+      loggingType: _decodeLoggingType(
+        _readNullableString(json, 'logging_type'),
+      ),
       equipment: equipment,
-      force: _readNullableString(json, 'force'),
-      mechanic: _readNullableString(json, 'mechanic'),
+      force: _decodeForce(_readNullableString(json, 'force')),
+      mechanic: _decodeMechanic(_readNullableString(json, 'mechanic')),
       grips: grips,
       steps: steps,
       videos: videos,
@@ -245,8 +247,12 @@ class ExerciseDatasetParser {
       );
     }
 
-    final angle = _requireString(json, 'angle', exerciseId: exerciseId);
-    final gender = _requireString(json, 'gender', exerciseId: exerciseId);
+    final angle = ExerciseVideoAngle.fromDb(
+      _requireString(json, 'angle', exerciseId: exerciseId),
+    );
+    final gender = ExerciseVideoGender.fromDb(
+      _requireString(json, 'gender', exerciseId: exerciseId),
+    );
 
     return ExerciseDatasetVideo(
       url: url,
@@ -254,6 +260,25 @@ class ExerciseDatasetParser {
       gender: gender,
       ogImage: _readNullableString(json, 'og_image'),
     );
+  }
+
+  BodymapBucket _bodymapBucketFromLabel(String label) {
+    return BodymapBucket.values.firstWhere((bucket) => bucket.label == label);
+  }
+
+  ExerciseForce? _decodeForce(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return ExerciseForce.fromDb(value.toLowerCase());
+  }
+
+  ExerciseLoggingType? _decodeLoggingType(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return ExerciseLoggingType.fromDb(value.toLowerCase());
+  }
+
+  ExerciseMechanic? _decodeMechanic(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return ExerciseMechanic.fromDb(value.toLowerCase());
   }
 
   void _validateExerciseCount({

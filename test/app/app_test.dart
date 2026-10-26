@@ -65,7 +65,10 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
+    expect(
+      find.text(AppStrings.onboardingWelcomeHeroDescription),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -95,7 +98,7 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(
-        find.text(AppStrings.onboardingWelcomeDescription),
+        find.text(AppStrings.onboardingWelcomeHeroDescription),
         findsOneWidget,
       );
       expect(find.text(AppStrings.offlineModeInfo), findsNothing);
@@ -127,7 +130,10 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.text(AppStrings.onboardingWelcomeDescription), findsOneWidget);
+    expect(
+      find.text(AppStrings.onboardingWelcomeHeroDescription),
+      findsOneWidget,
+    );
   });
 
   testWidgets('allows navigation when onboarding complete', (tester) async {

@@ -1,16 +1,31 @@
 import 'dart:convert';
+
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
 import 'package:aedify/features/onboarding/data/onboarding_repository.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/enum_codec.dart';
+import 'package:aedify/shared/domain/experience_level.dart';
+import 'package:aedify/shared/domain/goal_tag.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
+import 'package:aedify/shared/domain/sex.dart';
+import 'package:aedify/shared/domain/strength_anchor_source.dart';
+import 'package:aedify/shared/domain/strength_anchor_type.dart';
+import 'package:aedify/shared/domain/training_day.dart';
 
 class DriftOnboardingRepository implements OnboardingRepository {
   DriftOnboardingRepository({required AppDatabase database})
-    : _dao = UserProfileDao(database);
+    : _dao = UserProfileDao(database),
+      _strengthAnchorDao = StrengthAnchorDao(database);
+
+  static final _logger = AppLogger(name: 'DriftOnboardingRepository');
 
   final UserProfileDao _dao;
+  final StrengthAnchorDao _strengthAnchorDao;
 
   @override
   Future<bool> isOnboardingCompleted() async {
@@ -27,20 +42,34 @@ class DriftOnboardingRepository implements OnboardingRepository {
 
   @override
   Future<void> saveOnboardingDraft(OnboardingDraft draft) async {
+    _logger.info('save');
     final now = DateTime.now();
     final existing = await _dao.getProfile();
     await _dao.upsertProfile(
       UserProfileCompanion(
         id: const Value('default'),
         name: Value(draft.displayName),
-        experienceLevel: Value(draft.experienceLevel ?? ''),
-        goalsJson: Value(jsonEncode(draft.goals)),
-        trainingDaysPerWeek: Value(draft.trainingDaysPerWeek),
+        sex: Value(draft.sex?.dbValue),
+        dateOfBirth: Value(draft.dateOfBirth),
+        experienceLevel: Value(draft.experienceLevel?.dbValue ?? ''),
+        goalsJson: Value(
+          EnumCodec.encodeSet(draft.goals, (value) => value.dbValue),
+        ),
+        trainingDaysPerWeek: Value(draft.trainingDays.length),
+        trainingDayNamesJson: Value(
+          EnumCodec.encodeList(draft.trainingDays, (value) => value.dbValue),
+        ),
         targetSessionLengthMinutes: Value(draft.targetSessionLengthMinutes),
-        equipmentAccessJson: Value(jsonEncode(draft.equipmentAccess)),
+        equipmentAccessJson: Value(
+          EnumCodec.encodeSet(draft.equipmentAccess, (value) => value.dbValue),
+        ),
         preferredUnits: Value(draft.preferredUnits?.dbValue ?? 'metric'),
         heightCm: Value(draft.heightCm),
         bodyweightKg: Value(draft.bodyweightKg),
+        favoriteExerciseIdsJson: Value(jsonEncode(draft.favoriteExerciseIds)),
+        substitutedExerciseIdsJson: Value(
+          jsonEncode(draft.substitutedExerciseIds),
+        ),
         injuriesLimitationsJson: Value(jsonEncode(draft.limitations)),
         otherNotes: Value(draft.notes),
         createdAt: Value(existing?.createdAt ?? now),
@@ -51,10 +80,43 @@ class DriftOnboardingRepository implements OnboardingRepository {
 
   @override
   Future<void> completeOnboarding(OnboardingDraft draft) async {
+    _logger.info('complete');
     final now = DateTime.now();
-    await saveOnboardingDraft(draft);
-    await _dao.markOnboardingCompleted(completedAt: now);
+    await _dao.transaction(() async {
+      await saveOnboardingDraft(draft);
+
+      final existingAnchors = await _strengthAnchorDao.getAllAnchors();
+      for (final entry in _oneRmEntries(draft)) {
+        final existingAnchor = existingAnchors
+            .where((a) => a.id == entry.id)
+            .firstOrNull;
+        await _strengthAnchorDao.upsertAnchor(
+          StrengthAnchorsCompanion(
+            id: Value(entry.id),
+            exerciseId: Value(entry.exerciseId),
+            anchorType: Value(StrengthAnchorType.known1rm.dbValue),
+            weightKg: Value(entry.weightKg),
+            source: Value(StrengthAnchorSource.userEntered.dbValue),
+            loggedAt: Value(entry.weightKg != null ? now : null),
+            createdAt: Value(existingAnchor?.createdAt ?? now),
+            updatedAt: Value(now),
+          ),
+        );
+      }
+
+      await _dao.markOnboardingCompleted(completedAt: now);
+    });
   }
+
+  List<_OneRmEntry> _oneRmEntries(OnboardingDraft draft) => [
+    _OneRmEntry(id: 'known_1rm_1', exerciseId: 1, weightKg: draft.bench1RmKg),
+    _OneRmEntry(id: 'known_1rm_5', exerciseId: 5, weightKg: draft.squat1RmKg),
+    _OneRmEntry(
+      id: 'known_1rm_6',
+      exerciseId: 6,
+      weightKg: draft.deadlift1RmKg,
+    ),
+  ];
 
   @override
   Future<void> clearOnboardingDraft() async {
@@ -68,8 +130,8 @@ class DriftOnboardingRepository implements OnboardingRepository {
       UserProfileCompanion(
         id: const Value('default'),
         name: const Value(null),
-        sex: Value(existing?.sex),
-        dateOfBirth: Value(existing?.dateOfBirth),
+        sex: const Value(null),
+        dateOfBirth: const Value(null),
         heightCm: const Value(null),
         bodyweightKg: const Value(null),
         bodyweightLoggedAt: Value(existing?.bodyweightLoggedAt),
@@ -77,11 +139,13 @@ class DriftOnboardingRepository implements OnboardingRepository {
         experienceLevel: const Value(''),
         targetSessionLengthMinutes: const Value(null),
         trainingDaysPerWeek: const Value(null),
-        trainingDayNamesJson: Value(existing?.trainingDayNamesJson ?? '[]'),
+        trainingDayNamesJson: const Value('[]'),
         onboardingCompleted: Value(existing?.onboardingCompleted ?? false),
         onboardingCompletedAt: Value(existing?.onboardingCompletedAt),
         goalsJson: const Value('[]'),
         equipmentAccessJson: const Value('[]'),
+        favoriteExerciseIdsJson: const Value('[]'),
+        substitutedExerciseIdsJson: const Value('[]'),
         injuriesLimitationsJson: const Value('[]'),
         otherNotes: const Value(null),
         createdAt: Value(existing?.createdAt ?? now),
@@ -91,16 +155,35 @@ class DriftOnboardingRepository implements OnboardingRepository {
   }
 
   OnboardingDraft _profileToDraft(UserProfileData profile) {
+    final trainingDays = EnumCodec.decodeList(
+      profile.trainingDayNamesJson,
+      TrainingDay.fromDb,
+    );
+
     return OnboardingDraft(
       displayName: profile.name,
-      experienceLevel: profile.experienceLevel,
-      goals: _decodeJsonList(profile.goalsJson),
-      trainingDaysPerWeek: profile.trainingDaysPerWeek,
+      sex: profile.sex == null || profile.sex!.isEmpty
+          ? null
+          : Sex.fromDb(profile.sex!),
+      dateOfBirth: profile.dateOfBirth,
+      experienceLevel: profile.experienceLevel.isEmpty
+          ? null
+          : ExperienceLevel.fromDb(profile.experienceLevel),
+      goals: EnumCodec.decodeSet(profile.goalsJson, GoalTag.fromDb),
+      trainingDaysPerWeek: trainingDays.isEmpty ? null : trainingDays.length,
+      trainingDays: trainingDays,
       targetSessionLengthMinutes: profile.targetSessionLengthMinutes,
-      equipmentAccess: _decodeJsonList(profile.equipmentAccessJson),
+      equipmentAccess: EnumCodec.decodeSet(
+        profile.equipmentAccessJson,
+        EquipmentTag.fromDb,
+      ),
       preferredUnits: PreferredUnit.fromDb(profile.preferredUnits),
       heightCm: profile.heightCm,
       bodyweightKg: profile.bodyweightKg,
+      favoriteExerciseIds: _decodeIntList(profile.favoriteExerciseIdsJson),
+      substitutedExerciseIds: _decodeIntList(
+        profile.substitutedExerciseIdsJson,
+      ),
       limitations: _decodeJsonList(profile.injuriesLimitationsJson),
       notes: profile.otherNotes,
     );
@@ -113,4 +196,24 @@ class DriftOnboardingRepository implements OnboardingRepository {
       return [];
     }
   }
+
+  List<int> _decodeIntList(String json) {
+    try {
+      return (jsonDecode(json) as List).cast<int>();
+    } catch (_) {
+      return [];
+    }
+  }
+}
+
+class _OneRmEntry {
+  const _OneRmEntry({
+    required this.id,
+    required this.exerciseId,
+    required this.weightKg,
+  });
+
+  final String id;
+  final int exerciseId;
+  final double? weightKg;
 }

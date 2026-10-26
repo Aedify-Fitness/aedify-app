@@ -97,11 +97,11 @@ class ExerciseDatasetSyncBanner extends ConsumerWidget {
   String _progressMessage(ExerciseDatasetSyncState state) {
     switch (state.phase) {
       case ExerciseDatasetSyncPhase.checkingManifest:
-        return 'Checking for updates...';
+        return AppStrings.checkingForUpdates;
       case ExerciseDatasetSyncPhase.downloading:
-        return 'Downloading...';
+        return AppStrings.downloadingUpdate;
       case ExerciseDatasetSyncPhase.importing:
-        return 'Importing exercises...';
+        return AppStrings.importingExercises;
       default:
         return '';
     }

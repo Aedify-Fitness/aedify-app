@@ -15,6 +15,12 @@ class ExerciseDao extends DatabaseAccessor<AppDatabase>
   Future<Exercise?> getExerciseById(int id) =>
       (select(exercises)..where((t) => t.id.equals(id))).getSingleOrNull();
 
+  Future<Map<int, String>> getModalityByIds(List<int> ids) async {
+    if (ids.isEmpty) return {};
+    final rows = await (select(exercises)..where((t) => t.id.isIn(ids))).get();
+    return {for (final r in rows) r.id: r.modality};
+  }
+
   Future<List<Exercise>> searchExercises({
     String? query,
     String? muscleGroup,

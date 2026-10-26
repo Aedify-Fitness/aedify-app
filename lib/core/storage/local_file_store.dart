@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/directory_constants.dart';
 
 enum FileCategory {
@@ -16,6 +17,8 @@ enum FileCategory {
 }
 
 class LocalFileStore {
+  static final _logger = AppLogger(name: 'LocalFileStore');
+
   LocalFileStore({String? basePath}) : _basePath = basePath;
 
   String? _basePath;
@@ -28,6 +31,7 @@ class LocalFileStore {
   }
 
   Future<Directory> _ensureDir(String path) async {
+    _logger.debug('ensureDirectory — path: $path');
     final dir = Directory(path);
     if (!await dir.exists()) {
       await dir.create(recursive: true);

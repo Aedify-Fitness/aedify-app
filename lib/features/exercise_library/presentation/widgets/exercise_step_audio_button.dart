@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_step_audio_state.dart';
+import 'package:aedify/features/exercise_library/presentation/widgets/exercise_detail_style.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -28,28 +29,15 @@ class ExerciseStepAudioButton extends ConsumerWidget {
     );
     final stepState = stateMap[key] ?? const ExerciseStepAudioState.idle();
 
-    return _buildButton(context, ref, stepState);
-  }
-
-  Widget _buildButton(
-    BuildContext context,
-    WidgetRef ref,
-    ExerciseStepAudioState stepState,
-  ) {
     final colorScheme = context.colorScheme;
 
     switch (stepState.phase) {
       case ExerciseStepAudioPhase.idle:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.play,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
-            ),
-          ),
+        return _AudioIconControl(
+          asset: OutlinedSvgAssets.speakerWave,
+          label: AppStrings.playStepAudio,
+          foreground: ExerciseDetailStyle.accent(context),
+          background: colorScheme.surfaceContainerLow,
           onPressed: () {
             ref
                 .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
@@ -59,60 +47,59 @@ class ExerciseStepAudioButton extends ConsumerWidget {
                   text: text,
                 );
           },
-          tooltip: AppStrings.playStepAudio,
         );
 
       case ExerciseStepAudioPhase.checkingCache:
       case ExerciseStepAudioPhase.generating:
-        return Container(
-          width: AppSpacing.lg,
-          height: AppSpacing.lg,
-          padding: const EdgeInsets.all(AppSpacing.xs),
-          child: CircularProgressIndicator(
-            strokeWidth: AppSizing.divider * 2,
-            color: colorScheme.onSurfaceVariant,
+        return Semantics(
+          label: AppStrings.audioGenerating,
+          liveRegion: true,
+          child: SizedBox(
+            width: AppExerciseDetailTokens.controlSize,
+            height: AppExerciseDetailTokens.controlSize,
+            child: Center(
+              child: SizedBox(
+                width: AppSizing.iconSm,
+                height: AppSizing.iconSm,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppSizing.strokeWidth,
+                  color: ExerciseDetailStyle.accent(context),
+                ),
+              ),
+            ),
           ),
         );
 
       case ExerciseStepAudioPhase.speaking:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.stop,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
-          ),
+        return _AudioIconControl(
+          asset: OutlinedSvgAssets.stop,
+          label: AppStrings.stopStepAudio,
+          foreground: ExerciseDetailStyle.actionForeground(context),
+          background: ExerciseDetailStyle.actionFill(context),
           onPressed: () {
             ref
                 .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
                 .stop(exerciseId, stepIndex);
           },
-          tooltip: AppStrings.stopStepAudio,
         );
 
       case ExerciseStepAudioPhase.unavailable:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.speakerXMark,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(
-              colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-              BlendMode.srcIn,
-            ),
-          ),
+        return _AudioIconControl(
+          asset: OutlinedSvgAssets.speakerXMark,
+          label: AppStrings.audioUnavailable,
+          foreground: colorScheme.onSurfaceVariant,
+          background: colorScheme.surfaceContainerLow,
           onPressed: null,
-          tooltip: AppStrings.audioUnavailable,
         );
 
       case ExerciseStepAudioPhase.failed:
-        return IconButton(
-          icon: SvgPicture.asset(
-            OutlinedSvgAssets.speakerXMark,
-            width: AppSizing.iconSm,
-            height: AppSizing.iconSm,
-            colorFilter: ColorFilter.mode(colorScheme.error, BlendMode.srcIn),
-          ),
+        final errorMessage =
+            stepState.errorMessage ?? AppStrings.audioUnavailable;
+        return _AudioIconControl(
+          asset: OutlinedSvgAssets.speakerXMark,
+          label: errorMessage,
+          foreground: colorScheme.error,
+          background: colorScheme.errorContainer,
           onPressed: () {
             ref
                 .read(AppProviders.exerciseStepAudioControllerProvider.notifier)
@@ -122,8 +109,51 @@ class ExerciseStepAudioButton extends ConsumerWidget {
                   text: text,
                 );
           },
-          tooltip: stepState.errorMessage ?? AppStrings.audioUnavailable,
         );
     }
+  }
+}
+
+class _AudioIconControl extends StatelessWidget {
+  const _AudioIconControl({
+    required this.asset,
+    required this.label,
+    required this.foreground,
+    required this.background,
+    required this.onPressed,
+  });
+
+  final String asset;
+  final String label;
+  final Color foreground;
+  final Color background;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: AppExerciseDetailTokens.controlSize,
+      child: IconButton(
+        tooltip: label,
+        onPressed: onPressed,
+        style: IconButton.styleFrom(
+          backgroundColor: background,
+          disabledBackgroundColor: background,
+          foregroundColor: foreground,
+          disabledForegroundColor: foreground,
+          shape: const CircleBorder(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.controlGap,
+            vertical: AppSpacing.controlGap,
+          ),
+        ),
+        icon: SvgPicture.asset(
+          asset,
+          width: AppSizing.iconSm,
+          height: AppSizing.iconSm,
+          colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+        ),
+      ),
+    );
   }
 }

@@ -44,11 +44,22 @@ class PrivacyClassifier {
     'injury_note',
     'injuries',
     'notes',
+    'programme_description',
+    'workout_notes',
+    'session_notes',
+    'exercise_name_snapshot',
+    'program_revision_summary',
     'screenshot_path',
     'source_file_excerpt',
     'local_database_dump',
     'prompt_text',
     'ai_response_json',
+    'workout_session_notes',
+    'saved_workout_notes',
+    'set_log_notes',
+    'exercise_notes',
+    'exercise_cues',
+    'workout_name_snapshot',
   };
 
   bool isAllowedInCrashlytics(PrivacyClass privacyClass) {

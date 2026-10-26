@@ -1,13 +1,15 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/settings/application/provider_capability_state.dart';
+import 'package:aedify/shared/constants/app_error_codes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProviderCapabilityController
     extends AsyncNotifier<ProviderCapabilityState> {
   ProviderCapabilityController(this._providerName, this._modelName);
 
-  final String _providerName;
+  final AiProviderName _providerName;
   final String _modelName;
 
   @override
@@ -24,7 +26,7 @@ class ProviderCapabilityController
     } catch (e) {
       return ProviderCapabilityState(
         isLoading: false,
-        errorCode: 'capability_load_failed',
+        errorCode: AppErrorCodes.capabilityLoadFailed,
         errorMessage: AppErrorStrings.providerCapabilityLoadFailedMessage,
       );
     }
@@ -32,6 +34,21 @@ class ProviderCapabilityController
 
   Future<void> reload() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(build);
+    try {
+      final capability = await ref
+          .read(AppProviders.providerCapabilityRefreshServiceProvider)
+          .refresh(providerName: _providerName, modelName: _modelName);
+      state = AsyncData(
+        ProviderCapabilityState(isLoading: false, capability: capability),
+      );
+    } catch (_) {
+      state = const AsyncData(
+        ProviderCapabilityState(
+          isLoading: false,
+          errorCode: AppErrorCodes.capabilityLoadFailed,
+          errorMessage: AppErrorStrings.providerCapabilityLoadFailedMessage,
+        ),
+      );
+    }
   }
 }

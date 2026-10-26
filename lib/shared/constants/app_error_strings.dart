@@ -1,5 +1,13 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const weightSuggestionUnavailable =
+      'Could not load a weight estimate. You can still log manually.';
+  static const weightSuggestionTargetInvalid =
+      'Enter 1–10 reps and an RPE from 6 to 10.';
+  static const datasetUpdateRequired =
+      'Update Aedify to use this exercise dataset.';
+  static const draftProgrammeRequiresPublishing =
+      'Publish the programme before activating it.';
 
   static const String storageErrorMessage = 'Storage error';
   static const String downloadFailedMessage = 'Download failed';
@@ -43,6 +51,10 @@ class AppErrorStrings {
   static const String onboardingLoadFailedMessage =
       'Could not load onboarding progress.';
 
+  // Exercise library
+  static const String exercisePreferenceSaveFailed =
+      'Could not save this exercise preference. Please try again.';
+
   // TTS / Audio Cache
   static const String audioGenerationFailedMessage =
       'Could not generate step audio.';
@@ -70,4 +82,33 @@ class AppErrorStrings {
       'Could not determine provider capabilities.';
   static const String providerCapabilityLoadFailedMessage =
       'Could not load provider capability information.';
+
+  // Workout execution and history
+  static const workoutHistoryCorrectionInvalid =
+      'Check the logged results: reps, duration and distance must be positive, weight cannot be negative, and RPE must be 1–10.';
+  static const workoutHistoryCorrectionFailed =
+      'Could not save the correction. Try again.';
+  static const workoutHistoryCorrectionConflict =
+      'This log has changed. Close this editor and reopen it to use the latest results.';
+  static const workoutHistoryCorrectionMissing =
+      'This completed session is no longer available. Close this editor and refresh history.';
+  static const workoutStartFailed = 'Could not start the workout. Try again.';
+  static const workoutCannotRepeat =
+      'This completed workout is no longer available to repeat.';
+  static const workoutNoCompletedSets =
+      'Log at least one set before finishing. You can pause or discard '
+      'this workout instead.';
+  static const workoutInvalidCompletedSets =
+      'Check the actual results for your completed sets before finishing.';
+  static const workoutActualsInvalid =
+      'Use positive reps, time and distance, weight of zero or more, '
+      'RPE from 1 to 10, and RIR from 0 to 5.';
+
+  // Workout builder
+  static String workoutNotFoundWithId(String savedWorkoutId) =>
+      'Saved workout not found: $savedWorkoutId';
+
+  // Programme builder
+  static String programmeNotFoundWithId(String programmeId) =>
+      'Programme not found: $programmeId';
 }

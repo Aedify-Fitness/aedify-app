@@ -17,6 +17,22 @@ import 'tables/body_measurements.dart';
 import 'tables/app_settings.dart';
 import 'tables/ai_model_capabilities.dart';
 import 'tables/ai_provider_configs.dart';
+import 'tables/programs.dart';
+import 'tables/program_workout_templates.dart';
+import 'tables/program_template_exercises.dart';
+import 'tables/program_template_exercise_sets.dart';
+import 'tables/program_weeks.dart';
+import 'package:aedify/core/db/tables/program_training_blocks.dart';
+import 'tables/program_workouts.dart';
+import 'tables/program_exercises.dart';
+import 'tables/program_exercise_sets.dart';
+import 'tables/saved_workouts.dart';
+import 'tables/saved_workout_exercises.dart';
+import 'tables/saved_workout_exercise_sets.dart';
+import 'tables/workout_sessions.dart';
+import 'tables/workout_session_exercises.dart';
+import 'tables/set_logs.dart';
+import 'tables/program_revisions.dart';
 
 part 'app_database.g.dart';
 
@@ -35,6 +51,22 @@ part 'app_database.g.dart';
     AppSettings,
     AiModelCapabilities,
     AiProviderConfigs,
+    Programs,
+    ProgramWorkoutTemplates,
+    ProgramTemplateExercises,
+    ProgramTemplateExerciseSets,
+    ProgramWeeks,
+    ProgramTrainingBlocks,
+    ProgramWorkouts,
+    ProgramExercises,
+    ProgramExerciseSets,
+    SavedWorkouts,
+    SavedWorkoutExercises,
+    SavedWorkoutExerciseSets,
+    WorkoutSessions,
+    WorkoutSessionExercises,
+    SetLogs,
+    ProgramRevisions,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -42,14 +74,14 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 7);
+      await _logMigration(m, fromVersion: 0, toVersion: 18);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -76,6 +108,113 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 7) {
         await m.createTable(aiModelCapabilities);
+      }
+      if (from < 8) {
+        await m.createTable(programs);
+        await m.createTable(savedWorkouts);
+        await m.createTable(programWorkoutTemplates);
+        await m.createTable(programTemplateExercises);
+        await m.createTable(programTemplateExerciseSets);
+        await m.createTable(programWeeks);
+        await m.createTable(programWorkouts);
+        await m.createTable(programExercises);
+        await m.createTable(programExerciseSets);
+        await m.createTable(savedWorkoutExercises);
+        await m.createTable(savedWorkoutExerciseSets);
+        await m.createTable(workoutSessions);
+        await m.createTable(workoutSessionExercises);
+        await m.createTable(setLogs);
+        await m.createTable(programRevisions);
+      }
+      if (from >= 8 && from < 9) {
+        await customStatement(
+          'ALTER TABLE saved_workouts '
+          'ADD COLUMN rest_between_exercises_seconds INTEGER',
+        );
+        await customStatement(
+          'ALTER TABLE saved_workout_exercises '
+          'ADD COLUMN rest_between_exercises_seconds INTEGER',
+        );
+        await customStatement(
+          'ALTER TABLE program_workout_templates '
+          'ADD COLUMN rest_between_exercises_seconds INTEGER',
+        );
+        await customStatement(
+          'ALTER TABLE program_template_exercises '
+          'ADD COLUMN rest_between_exercises_seconds INTEGER',
+        );
+      }
+      if (from >= 8 && from < 10) {
+        await m.addColumn(setLogs, setLogs.restSeconds);
+        await m.addColumn(
+          workoutSessionExercises,
+          workoutSessionExercises.restBetweenExercisesSeconds,
+        );
+      }
+      if (from >= 8 && from < 11) {
+        await customStatement(
+          'ALTER TABLE saved_workouts ADD COLUMN deleted_at TEXT NULL',
+        );
+      }
+      if (from >= 8 && from < 12) {
+        await customStatement(
+          'ALTER TABLE set_logs ADD COLUMN prescribed_reps_exact INTEGER',
+        );
+      }
+      if (from < 13) {
+        await m.addColumn(exercises, exercises.loggingType);
+        await customStatement('''
+          UPDATE exercises
+          SET logging_type =
+            CASE modality
+              WHEN 'strength' THEN
+                CASE
+                  WHEN equipment IN (
+                    'bodyweight', 'bands', 'pull_up_bar',
+                    'bosu_ball', 'medicine_ball', 'trx', 'vitruvian'
+                  ) THEN 'repsOnly'
+                  ELSE 'repsWeight'
+                END
+              WHEN 'flexibility' THEN
+                CASE
+                  WHEN force = 'hold' THEN 'duration'
+                  ELSE 'repsOnly'
+                END
+              WHEN 'cardio' THEN 'duration'
+              WHEN 'recovery' THEN 'duration'
+            END
+          WHERE logging_type IS NULL
+        ''');
+      }
+      if (from >= 8 && from < 14) {
+        await m.addColumn(
+          savedWorkoutExercises,
+          savedWorkoutExercises.loggingType,
+        );
+      }
+      if (from < 15) {
+        await m.createTable(programTrainingBlocks);
+      }
+      if (from >= 15 && from < 16) {
+        await m.addColumn(
+          programTrainingBlocks,
+          programTrainingBlocks.trainingDaysJson,
+        );
+      }
+      if (from >= 8 && from < 17) {
+        await m.addColumn(
+          programWorkoutTemplates,
+          programWorkoutTemplates.goalTagsJson,
+        );
+      }
+      if (from >= 8 && from < 18) {
+        await m.addColumn(setLogs, setLogs.prescribedRir);
+        await m.addColumn(setLogs, setLogs.prescribedDurationSeconds);
+        await m.addColumn(setLogs, setLogs.prescribedDistanceMeters);
+        await m.addColumn(
+          workoutSessionExercises,
+          workoutSessionExercises.loggingType,
+        );
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

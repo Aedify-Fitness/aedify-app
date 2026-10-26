@@ -1,0 +1,1 @@
+enum WorkoutRunnerResumeDecision { resume, discard }

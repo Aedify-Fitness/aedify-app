@@ -1,12 +1,13 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_controller.dart';
 import 'package:aedify/features/exercise_library/application/exercise_dataset_sync_state.dart';
-import 'package:aedify/features/exercise_library/presentation/widgets/exercise_dataset_status_tile.dart';
 import 'package:aedify/features/settings/data/settings_repository.dart';
 import 'package:aedify/features/settings/domain/settings_edit_draft.dart';
 import 'package:aedify/features/settings/domain/settings_view_data.dart';
 import 'package:aedify/features/settings/presentation/settings_screen.dart';
 import 'package:aedify/features/settings/presentation/widgets/settings_storage_boundary_card.dart';
+import 'package:aedify/shared/components/app_list_tile.dart';
+import 'package:aedify/shared/components/app_toggle_pill.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/preferred_unit.dart';
@@ -104,7 +105,7 @@ void main() {
       await tester.pump();
 
       expect(find.text(AppStrings.exerciseLibraryStatus), findsOneWidget);
-      expect(find.byType(ExerciseDatasetStatusTile), findsOneWidget);
+      expect(find.byType(AppListTile), findsWidgets);
       expect(find.text(AppStrings.exerciseLibraryVersion), findsOneWidget);
       expect(find.text(AppStrings.exerciseLibrarySynced), findsOneWidget);
     });
@@ -183,6 +184,56 @@ void main() {
       await tester.pump();
 
       expect(find.byType(SettingsStorageBoundaryCard), findsOneWidget);
+    });
+
+    testWidgets('uses pill controls and updates notification toggle', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithProviders(
+          ExerciseDatasetSyncState(
+            phase: ExerciseDatasetSyncPhase.synced,
+            libraryVersion: 'v1',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(Switch), findsNothing);
+      expect(find.byType(DropdownButton<String>), findsNothing);
+
+      final toggleFinder = find.byKey(
+        const ValueKey('settings-notifications-toggle'),
+      );
+      await tester.ensureVisible(toggleFinder);
+      expect(tester.widget<AppTogglePill>(toggleFinder).value, isTrue);
+
+      await tester.tap(toggleFinder);
+      await tester.pump();
+
+      expect(tester.widget<AppTogglePill>(toggleFinder).value, isFalse);
+    });
+
+    testWidgets('selects a custom theme-mode segment', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviders(
+          ExerciseDatasetSyncState(
+            phase: ExerciseDatasetSyncPhase.synced,
+            libraryVersion: 'v1',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final darkModeFinder = find.byKey(const ValueKey('settings-theme-dark'));
+      await tester.ensureVisible(darkModeFinder);
+      await tester.tap(darkModeFinder);
+      await tester.pump();
+
+      expect(
+        tester.widget<Semantics>(darkModeFinder).properties.selected,
+        isTrue,
+      );
     });
 
     testWidgets('shows error state when settings fail to load', (tester) async {

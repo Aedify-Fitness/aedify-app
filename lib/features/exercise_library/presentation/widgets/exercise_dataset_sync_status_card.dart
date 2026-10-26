@@ -1,4 +1,5 @@
 import 'package:aedify/shared/theme/app_spacing.dart';
+import 'package:aedify/shared/theme/app_text_styles.dart';
 import 'package:aedify/shared/theme/context_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +23,14 @@ class ExerciseDatasetSyncStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -47,14 +52,24 @@ class ExerciseDatasetSyncStatusCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: context.textTheme.titleSmall),
-                  SizedBox(height: AppSpacing.xxs),
-                  Text(message, style: context.textTheme.bodySmall),
+                  Text(
+                    title,
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  AppWhiteSpace.hXxs,
+                  Text(
+                    message,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),
             if (actionLabel != null && onAction != null) ...[
-              SizedBox(width: AppSpacing.md),
+              AppWhiteSpace.wMd,
               FilledButton.tonal(
                 onPressed: isLoading ? null : onAction,
                 child: Text(actionLabel!),

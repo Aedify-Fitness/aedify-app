@@ -173,6 +173,109 @@ void main() {
       );
     }
 
+    test(
+      'failed first sync followed by offline retry never claims a dataset exists',
+      () async {
+        final container = createContainer(
+          database: db,
+          networkStatus: networkStatus,
+          downloadService: downloadService,
+        );
+        addTearDown(container.dispose);
+        downloadService.shouldThrowOnManifest = true;
+        final controller = container.read(
+          AppProviders.exerciseDatasetSyncControllerProvider.notifier,
+        );
+        await controller.initialize();
+        expect(
+          (await readState(container)).phase,
+          ExerciseDatasetSyncPhase.failed,
+        );
+        networkStatus.online = false;
+        await controller.retry();
+        expect(
+          (await readState(container)).phase,
+          ExerciseDatasetSyncPhase.unavailableOffline,
+        );
+        await controller.clearFailure();
+        expect(
+          (await readState(container)).phase,
+          ExerciseDatasetSyncPhase.unavailableOffline,
+        );
+      },
+    );
+
+    test('refresh rechecks network after offline startup', () async {
+      networkStatus.online = false;
+      final container = createContainer(
+        database: db,
+        networkStatus: networkStatus,
+        downloadService: downloadService,
+      );
+      addTearDown(container.dispose);
+      final controller = container.read(
+        AppProviders.exerciseDatasetSyncControllerProvider.notifier,
+      );
+      await controller.initialize();
+      networkStatus.online = true;
+      downloadService.shouldThrowOnManifest = true;
+      await controller.refresh();
+      expect(
+        (await readState(container)).phase,
+        ExerciseDatasetSyncPhase.failed,
+      );
+      expect((await readState(container)).isOffline, isFalse);
+    });
+
+    test(
+      'matching version cannot bypass a future schema requirement',
+      () async {
+        await dao.upsertLibraryMeta(
+          LibraryMetaCompanion(
+            id: const Value('exercise_library'),
+            source: const Value('test'),
+            schemaVersion: const Value(1),
+            libraryVersion: const Value('v1'),
+            exerciseCount: const Value(10),
+            syncStatus: Value(LibrarySyncStatus.synced.value),
+            createdAt: Value(DateTime.now()),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+        downloadService.manifestOverride = ExerciseDatasetManifest(
+          schemaVersion: 1,
+          manifestVersion: 1,
+          datasetVersion: 'v1',
+          generatedAt: DateTime.now(),
+          source: 'test',
+          exerciseCount: 10,
+          active: ExerciseDatasetActiveFile(
+            path: 'v1.json',
+            contentType: 'application/json',
+            sizeBytes: 100,
+            sha256: 'abc123',
+            schemaVersion: 99,
+            minimumSupportedAppSchemaVersion: 99,
+          ),
+          history: [],
+        );
+        final container = createContainer(
+          database: db,
+          networkStatus: networkStatus,
+          downloadService: downloadService,
+        );
+        addTearDown(container.dispose);
+        await container
+            .read(AppProviders.exerciseDatasetSyncControllerProvider.notifier)
+            .refresh();
+        expect(
+          (await readState(container)).phase,
+          ExerciseDatasetSyncPhase.updateRequired,
+        );
+        expect((await dao.getLibraryMeta())!.exerciseCount, 10);
+      },
+    );
+
     test('initial state is never synced when no local meta exists', () async {
       final container = createContainer(
         database: db,

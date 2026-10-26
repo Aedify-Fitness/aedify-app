@@ -1,3 +1,6 @@
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+import 'package:aedify/shared/domain/provider_validation_status.dart';
+
 class ByokConfigViewData {
   const ByokConfigViewData({
     required this.id,
@@ -11,11 +14,11 @@ class ByokConfigViewData {
   });
 
   final String id;
-  final String providerName;
+  final AiProviderName providerName;
   final String? displayName;
   final String? selectedModel;
   final bool hasKey;
   final bool isActive;
-  final String? lastValidationStatus;
+  final ProviderValidationStatus? lastValidationStatus;
   final String? lastErrorCode;
 }

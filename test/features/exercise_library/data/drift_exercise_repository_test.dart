@@ -4,9 +4,14 @@ import 'package:drift/native.dart';
 import 'package:aedify/core/db/app_database.dart';
 import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/exercise_repository.dart';
 import 'package:aedify/features/exercise_library/domain/custom_exercise_seed.dart';
 import 'package:aedify/features/exercise_library/domain/exercise_filter_state.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -47,7 +52,7 @@ void main() {
           nameNormalized: const Value('squat'),
           source: const Value('musclewiki'),
           primaryMusclesJson: Value(json.encode(['Quadriceps', 'Glutes'])),
-          muscleGroupsJson: Value(json.encode(['Quadriceps', 'Glutes'])),
+          muscleGroupsJson: Value(json.encode(['Quads', 'Glutes'])),
           modality: const Value('strength'),
           equipment: const Value('barbell'),
           difficulty: const Value('beginner'),
@@ -65,7 +70,7 @@ void main() {
           source: const Value('musclewiki'),
           primaryMusclesJson: Value(json.encode(['Biceps'])),
           muscleGroupsJson: Value(json.encode(['Biceps'])),
-          modality: const Value('hypertrophy'),
+          modality: const Value('recovery'),
           equipment: const Value('dumbbell'),
           difficulty: const Value('beginner'),
           force: const Value('pull'),
@@ -110,7 +115,7 @@ void main() {
 
     test('filters by muscle group', () async {
       final results = await repository.searchExercises(
-        const ExerciseFilterState(muscleGroup: 'Chest'),
+        const ExerciseFilterState(muscleGroup: BodymapBucket.chest),
       );
       expect(results.length, 2);
       expect(
@@ -121,7 +126,7 @@ void main() {
 
     test('filters by equipment', () async {
       final results = await repository.searchExercises(
-        const ExerciseFilterState(equipment: 'barbell'),
+        const ExerciseFilterState(equipment: EquipmentTag.barbell),
       );
       expect(results.length, 2);
       expect(results.map((e) => e.name), containsAll(['Bench Press', 'Squat']));
@@ -129,14 +134,14 @@ void main() {
 
     test('filters by difficulty', () async {
       final results = await repository.searchExercises(
-        const ExerciseFilterState(difficulty: 'beginner'),
+        const ExerciseFilterState(difficulty: ExerciseDifficulty.beginner),
       );
       expect(results.length, 3);
     });
 
     test('filters by modality', () async {
       final results = await repository.searchExercises(
-        const ExerciseFilterState(modality: 'hypertrophy'),
+        const ExerciseFilterState(modality: ExerciseModality.recovery),
       );
       expect(results.length, 1);
       expect(results.first.name, 'Bicep Curl');
@@ -152,7 +157,10 @@ void main() {
 
     test('combined filters produce expected results', () async {
       final results = await repository.searchExercises(
-        const ExerciseFilterState(searchQuery: 'bench', equipment: 'barbell'),
+        const ExerciseFilterState(
+          searchQuery: 'bench',
+          equipment: EquipmentTag.barbell,
+        ),
       );
       expect(results.length, 1);
       expect(results.first.name, 'Bench Press');
@@ -177,7 +185,7 @@ void main() {
       expect(detail!.name, 'Bench Press');
       expect(detail.primaryMuscles, contains('Pectoralis Major'));
       expect(detail.videos.length, 1);
-      expect(detail.videos.first.angle, 'front');
+      expect(detail.videos.first.angle, ExerciseVideoAngle.front);
       expect(detail.steps.length, 2);
     });
 
@@ -250,8 +258,8 @@ void main() {
       final id = await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'My Custom Exercise',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
         ),
       );
       expect(id, isNegative);
@@ -265,8 +273,8 @@ void main() {
       final id = await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Custom Curl',
-          muscleGroups: ['Biceps'],
-          modality: 'hypertrophy',
+          muscleGroups: {BodymapBucket.biceps},
+          modality: ExerciseModality.recovery,
         ),
       );
       final customExercises = await repository.getCustomExercises();
@@ -279,8 +287,8 @@ void main() {
       await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Custom Curl',
-          muscleGroups: ['Biceps'],
-          modality: 'hypertrophy',
+          muscleGroups: {BodymapBucket.biceps},
+          modality: ExerciseModality.recovery,
         ),
       );
 
@@ -302,23 +310,23 @@ void main() {
       final id = await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Custom Exercise',
-          muscleGroups: ['Core'],
-          modality: 'strength',
-          equipment: 'bodyweight',
+          muscleGroups: {BodymapBucket.core},
+          modality: ExerciseModality.strength,
+          equipment: EquipmentTag.bodyweight,
         ),
       );
       final detail = await repository.getCustomExerciseDetail(id);
       expect(detail, isNotNull);
       expect(detail!.videos, isEmpty);
-      expect(detail.equipment, 'bodyweight');
+      expect(detail.equipment, EquipmentTag.bodyweight);
     });
 
     test('updateCustomExercise updates mutable fields', () async {
       final id = await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Old Name',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
           steps: ['Step 1'],
         ),
       );
@@ -327,9 +335,9 @@ void main() {
         exerciseId: id,
         seed: const CustomExerciseSeed(
           name: 'New Name',
-          muscleGroups: ['Shoulders'],
-          modality: 'hypertrophy',
-          equipment: 'dumbbell',
+          muscleGroups: {BodymapBucket.shoulders},
+          modality: ExerciseModality.recovery,
+          equipment: EquipmentTag.dumbbell,
           steps: ['Step 1', 'Step 2'],
         ),
       );
@@ -337,9 +345,9 @@ void main() {
       final detail = await repository.getCustomExerciseDetail(id);
       expect(detail, isNotNull);
       expect(detail!.name, 'New Name');
-      expect(detail.muscleGroups, contains('Shoulders'));
-      expect(detail.modality, 'hypertrophy');
-      expect(detail.equipment, 'dumbbell');
+      expect(detail.muscleGroups, contains(BodymapBucket.shoulders));
+      expect(detail.modality, ExerciseModality.recovery);
+      expect(detail.equipment, EquipmentTag.dumbbell);
       expect(detail.steps.length, 2);
     });
 
@@ -347,8 +355,8 @@ void main() {
       final id = await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'To Delete',
-          muscleGroups: ['Back'],
-          modality: 'strength',
+          muscleGroups: {BodymapBucket.back},
+          modality: ExerciseModality.strength,
         ),
       );
       expect(await repository.getCustomExercises(), hasLength(1));
@@ -361,15 +369,15 @@ void main() {
       await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Custom A',
-          muscleGroups: ['Chest'],
-          modality: 'strength',
+          muscleGroups: {BodymapBucket.chest},
+          modality: ExerciseModality.strength,
         ),
       );
       await repository.createCustomExercise(
         const CustomExerciseSeed(
           name: 'Custom B',
-          muscleGroups: ['Back'],
-          modality: 'hypertrophy',
+          muscleGroups: {BodymapBucket.back},
+          modality: ExerciseModality.recovery,
         ),
       );
 

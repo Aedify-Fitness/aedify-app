@@ -1,3 +1,5 @@
+import 'package:aedify/shared/domain/ai_provider_name.dart';
+
 class ProviderCapabilityViewData {
   const ProviderCapabilityViewData({
     required this.providerName,
@@ -13,7 +15,7 @@ class ProviderCapabilityViewData {
     required this.checkedAt,
   });
 
-  final String providerName;
+  final AiProviderName providerName;
   final String modelName;
   final bool supportsTextInput;
   final bool supportsImageInput;

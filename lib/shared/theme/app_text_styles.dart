@@ -55,6 +55,14 @@ class AppTextStyles {
     letterSpacing: 0,
   );
 
+  static const TextStyle bodySm = TextStyle(
+    fontFamily: manrope,
+    fontSize: AppFontSizes.sm,
+    fontWeight: FontWeight.w400,
+    height: 1.429,
+    letterSpacing: 0,
+  );
+
   static const TextStyle labelMd = TextStyle(
     fontFamily: manrope,
     fontSize: AppFontSizes.sm,

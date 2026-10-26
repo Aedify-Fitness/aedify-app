@@ -1,3 +1,8 @@
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+
 class ExerciseFilterState {
   const ExerciseFilterState({
     this.searchQuery = '',
@@ -10,10 +15,10 @@ class ExerciseFilterState {
   });
 
   final String searchQuery;
-  final String? muscleGroup;
-  final String? equipment;
-  final String? difficulty;
-  final String? modality;
+  final BodymapBucket? muscleGroup;
+  final EquipmentTag? equipment;
+  final ExerciseDifficulty? difficulty;
+  final ExerciseModality? modality;
   final bool favoritesOnly;
   final bool excludeSubstituted;
 
@@ -28,10 +33,10 @@ class ExerciseFilterState {
 
   ExerciseFilterState copyWith({
     String? searchQuery,
-    String? muscleGroup,
-    String? equipment,
-    String? difficulty,
-    String? modality,
+    BodymapBucket? muscleGroup,
+    EquipmentTag? equipment,
+    ExerciseDifficulty? difficulty,
+    ExerciseModality? modality,
     bool? favoritesOnly,
     bool? excludeSubstituted,
     bool clearMuscleGroup = false,

@@ -1,3 +1,6 @@
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
+
 class ExerciseDetailVideoViewData {
   const ExerciseDetailVideoViewData({
     required this.url,
@@ -7,8 +10,8 @@ class ExerciseDetailVideoViewData {
   });
 
   final String url;
-  final String? angle;
-  final String? gender;
+  final ExerciseVideoAngle? angle;
+  final ExerciseVideoGender? gender;
   final String? ogImageUrl;
 
   bool get hasThumbnail => ogImageUrl != null && ogImageUrl!.isNotEmpty;

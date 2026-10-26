@@ -9,6 +9,7 @@ import 'package:aedify/features/settings/domain/provider_capability_view_data.da
 import 'package:aedify/features/settings/domain/provider_gate_decision.dart';
 import 'package:aedify/features/settings/domain/provider_operation_type.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import '../../../support/privacy/privacy_sentinel_values.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,7 +37,7 @@ class _MockByokRepository implements ByokRepository {
   @override
   Future<void> rotateKey({
     required String configId,
-    required String providerName,
+    required AiProviderName providerName,
     required String newApiKey,
   }) async {}
 
@@ -51,7 +52,7 @@ class _MockByokRepository implements ByokRepository {
 
   @override
   Future<bool> validateKey({
-    required String providerName,
+    required AiProviderName providerName,
     required String apiKey,
   }) async => true;
 }
@@ -63,7 +64,7 @@ class _MockCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<ProviderCapabilityViewData?> getCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async => capability;
 
@@ -72,7 +73,7 @@ class _MockCapabilityRepository implements ProviderCapabilityRepository {
 
   @override
   Future<void> clearCapability({
-    required String providerName,
+    required AiProviderName providerName,
     required String modelName,
   }) async {}
 }
@@ -89,7 +90,7 @@ class _MockNetworkStatus extends NetworkStatus {
 
 ByokConfigViewData _config({
   String id = 'test-config',
-  String providerName = 'openai',
+  AiProviderName providerName = AiProviderName.openai,
   String? selectedModel = 'gpt-4o',
   bool hasKey = true,
 }) {
@@ -108,7 +109,7 @@ ByokConfigViewData _config({
 void main() {
   group('DefaultProviderGateService', () {
     final textCapability = ProviderCapabilityViewData(
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       modelName: 'gpt-4o',
       supportsTextInput: true,
       supportsImageInput: false,
@@ -121,7 +122,7 @@ void main() {
     );
 
     final imageCapability = ProviderCapabilityViewData(
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       modelName: 'gpt-4o',
       supportsTextInput: true,
       supportsImageInput: true,

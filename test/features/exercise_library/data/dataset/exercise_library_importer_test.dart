@@ -5,11 +5,19 @@ import 'package:aedify/core/db/daos/exercise_dao.dart';
 import 'package:aedify/core/db/daos/exercise_video_dao.dart';
 import 'package:aedify/core/db/daos/library_meta_dao.dart';
 import 'package:aedify/core/db/enums/library_sync_status.dart';
+import 'package:aedify/features/bodymap/domain/bodymap_bucket.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_exercise.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_manifest.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_dataset_video.dart';
 import 'package:aedify/features/exercise_library/data/dataset/exercise_library_importer.dart';
+import 'package:aedify/shared/domain/equipment_tag.dart';
+import 'package:aedify/shared/domain/exercise_difficulty.dart';
+import 'package:aedify/shared/domain/exercise_force.dart';
+import 'package:aedify/shared/domain/exercise_mechanic.dart';
+import 'package:aedify/shared/domain/exercise_modality.dart';
+import 'package:aedify/shared/domain/exercise_video_angle.dart';
+import 'package:aedify/shared/domain/exercise_video_gender.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -49,21 +57,21 @@ void main() {
           (i) => ExerciseDatasetExercise(
             id: i + 1,
             name: 'Exercise ${i + 1}',
-            difficulty: 'intermediate',
+            difficulty: ExerciseDifficulty.intermediate,
             primaryMuscles: ['Chest'],
-            muscleGroups: ['Chest', 'Triceps'],
+            muscleGroups: {BodymapBucket.chest, BodymapBucket.triceps},
             category: 'compound',
-            modality: 'strength',
-            equipment: 'barbell',
-            force: 'push',
-            mechanic: 'compound',
+            modality: ExerciseModality.strength,
+            equipment: EquipmentTag.barbell,
+            force: ExerciseForce.push,
+            mechanic: ExerciseMechanic.compound,
             grips: ['barbell'],
             steps: ['Step 1', 'Step 2'],
             videos: [
               ExerciseDatasetVideo(
                 url: Uri.parse('https://example.com/video_${i + 1}.mp4'),
-                angle: 'front',
-                gender: 'male',
+                angle: ExerciseVideoAngle.front,
+                gender: ExerciseVideoGender.male,
                 ogImage: 'https://example.com/thumb_${i + 1}.jpg',
               ),
             ],

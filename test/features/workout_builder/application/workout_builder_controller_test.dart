@@ -1,0 +1,1174 @@
+import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/features/workout_builder/application/load_workout_draft_use_case.dart';
+import 'package:aedify/features/workout_builder/application/workout_builder_state.dart';
+import 'package:aedify/features/workout_builder/data/saved_workout_repository.dart';
+import 'package:aedify/features/workout_builder/domain/exercise_reference.dart';
+import 'package:aedify/features/workout_builder/domain/saved_workout_aggregate.dart';
+import 'package:aedify/features/workout_builder/domain/saved_workout_draft.dart';
+import 'package:aedify/shared/domain/set_type.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+class _FakeSavedWorkoutRepository implements SavedWorkoutRepository {
+  _FakeSavedWorkoutRepository({this.shouldThrowOnGet = false, this.aggregate});
+
+  final bool shouldThrowOnGet;
+  final SavedWorkoutAggregate? aggregate;
+  SavedWorkoutDraft? lastSavedDraft;
+
+  @override
+  Future<SavedWorkoutAggregate?> getSavedWorkout(String id) async {
+    if (shouldThrowOnGet) {
+      throw Exception('Database error');
+    }
+    return aggregate;
+  }
+
+  @override
+  Future<List<SavedWorkoutAggregate>> listSavedWorkouts({
+    String? status,
+  }) async {
+    return aggregate != null ? [aggregate!] : [];
+  }
+
+  @override
+  Future<String> saveSavedWorkout(SavedWorkoutDraft draft) async {
+    lastSavedDraft = draft;
+    return aggregate?.savedWorkout.id ?? 'saved-id';
+  }
+
+  @override
+  Future<void> archiveSavedWorkout(String id) async {}
+
+  @override
+  Future<void> deleteSavedWorkout(String id) async {}
+}
+
+void main() {
+  group('WorkoutBuilderController (programme template mode)', () {
+    final provider = AppProviders.workoutBuilderControllerProvider((
+      mode: WorkoutBuilderMode.programmeTemplate,
+      savedWorkoutId: null,
+    ));
+    late ProviderContainer container;
+    late _FakeSavedWorkoutRepository repository;
+
+    setUp(() async {
+      repository = _FakeSavedWorkoutRepository();
+      container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWithValue(
+            repository,
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      await container.read(provider.future);
+    });
+
+    test('starts a separate blank programme draft', () async {
+      final state = container.read(provider).requireValue;
+      expect(state.mode, WorkoutBuilderMode.programmeTemplate);
+      expect(state.draft.name, isEmpty);
+      expect(state.isDirty, isFalse);
+      final library = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+      await library.future;
+      await library.renameWorkout('Unfinished library workout');
+      expect(container.read(provider).requireValue.draft.name, isEmpty);
+    });
+
+    test(
+      'returns validated normalized targets without saving a library workout',
+      () async {
+        final controller = container.read(provider.notifier);
+        await controller.renameWorkout('Programme Push');
+        await controller.addExercise(
+          const ExerciseReference(
+            exerciseId: 1,
+            name: 'Bench Press',
+            modality: 'strength',
+          ),
+        );
+        final exercise = container
+            .read(provider)
+            .requireValue
+            .draft
+            .exercises
+            .single;
+        await controller.updateDescription('Programme description');
+        await controller.updateRestBetweenExercises(75);
+        await controller.updateExerciseNotes(exercise.id, 'Controlled tempo');
+        await controller.addSet(exercise.id, setType: SetType.warmup);
+        final result = await controller.saveWorkout();
+        expect(result, isNotNull);
+        expect(result!.name, 'Programme Push');
+        expect(result.description, 'Programme description');
+        expect(result.restBetweenExercisesSeconds, 75);
+        expect(result.exercises.single.notes, 'Controlled tempo');
+        expect(result.exercises.single.sets.map((set) => set.setType), [
+          SetType.warmup,
+          SetType.working,
+        ]);
+        expect(result.exercises.single.sets.map((set) => set.setIndex), [0, 1]);
+        expect(result.estimatedDurationMinutes, isPositive);
+        expect(repository.lastSavedDraft, isNull);
+        expect(container.read(provider).requireValue.isDirty, isFalse);
+        expect(container.read(provider).requireValue.savedWorkoutId, isNull);
+      },
+    );
+
+    test(
+      'rejects incomplete programme workouts without a persistence call',
+      () async {
+        final controller = container.read(provider.notifier);
+        expect(await controller.saveWorkout(), isNull);
+        expect(
+          container.read(provider).requireValue.hasValidationErrors,
+          isTrue,
+        );
+        expect(repository.lastSavedDraft, isNull);
+      },
+    );
+
+    test('discard resets the programme draft without saving it', () async {
+      final controller = container.read(provider.notifier);
+      final originalId = container.read(provider).requireValue.draft.id;
+      await controller.renameWorkout('Do not keep this');
+      await controller.discardChanges();
+      final state = container.read(provider).requireValue;
+      expect(state.draft.name, isEmpty);
+      expect(state.draft.id, isNot(originalId));
+      expect(state.isDirty, isFalse);
+      expect(repository.lastSavedDraft, isNull);
+    });
+  });
+
+  group('WorkoutBuilderController (create mode)', () {
+    ProviderContainer createContainer({bool shouldThrowOnGet = false}) {
+      return ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) =>
+                _FakeSavedWorkoutRepository(shouldThrowOnGet: shouldThrowOnGet),
+          ),
+        ],
+      );
+    }
+
+    test(
+      'saveWorkout resets create mode state after successful save',
+      () async {
+        final container = createContainer();
+        final controller = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )).notifier,
+        );
+
+        await controller.future;
+        await controller.renameWorkout('Push Day');
+        await controller.addExercise(
+          const ExerciseReference(
+            exerciseId: 1,
+            name: 'Bench Press',
+            modality: 'strength',
+          ),
+        );
+
+        await controller.saveWorkout();
+
+        final state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )),
+        );
+
+        expect(state.asData?.value.phase, WorkoutBuilderPhase.editing);
+        expect(state.asData?.value.isDirty, isFalse);
+        expect(state.asData?.value.draft.name, isEmpty);
+        expect(state.asData?.value.draft.exercises, isEmpty);
+      },
+    );
+
+    test('initial state is editing with empty draft in create mode', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      final state = await controller.future;
+
+      expect(state.phase, equals(WorkoutBuilderPhase.editing));
+      expect(state.mode, equals(WorkoutBuilderMode.create));
+      expect(state.draft.name, isEmpty);
+      expect(state.draft.exercises, isEmpty);
+      expect(state.isDirty, isFalse);
+      expect(state.validationErrors, isEmpty);
+    });
+
+    test('renameWorkout updates draft name and marks dirty', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.renameWorkout('Push Day');
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+
+      expect(state.asData?.value.draft.name, equals('Push Day'));
+      expect(state.asData?.value.isDirty, isTrue);
+    });
+
+    test('addExercise adds exercise with one default set', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench Press',
+          modality: 'strength',
+        ),
+      );
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+
+      expect(state.asData?.value.draft.exercises.length, equals(1));
+      expect(
+        state.asData?.value.draft.exercises.first.exercise.name,
+        equals('Bench Press'),
+      );
+      expect(state.asData?.value.draft.exercises.first.sets.length, equals(1));
+      expect(
+        state.asData?.value.draft.exercises.first.sets.first.setType,
+        equals(SetType.working),
+      );
+      expect(state.asData?.value.isDirty, isTrue);
+    });
+
+    test('removeExercise removes exercise from draft', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Squat',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Press',
+          modality: 'strength',
+        ),
+      );
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      await controller.removeExercise(exerciseId);
+
+      final updatedState = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+
+      expect(updatedState.asData?.value.draft.exercises.length, equals(1));
+      expect(
+        updatedState.asData?.value.draft.exercises.first.exercise.name,
+        equals('Press'),
+      );
+    });
+
+    test('addSet adds a set to the specified exercise', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'DL',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      expect(state.asData!.value.draft.exercises.first.sets.length, equals(1));
+
+      await controller.addSet(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(state.asData!.value.draft.exercises.first.sets.length, equals(2));
+    });
+
+    test('duplicateExercise creates a copy after the original', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Curl',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      await controller.duplicateExercise(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(state.asData!.value.draft.exercises.length, equals(2));
+      expect(
+        state.asData!.value.draft.exercises[0].exercise.name,
+        equals('Curl'),
+      );
+      expect(
+        state.asData!.value.draft.exercises[1].exercise.name,
+        equals('Curl'),
+      );
+      expect(
+        state.asData!.value.draft.exercises[0].id,
+        isNot(state.asData!.value.draft.exercises[1].id),
+      );
+    });
+
+    test(
+      'saveWorkout with errors sets validation errors without saving',
+      () async {
+        final container = createContainer();
+        final controller = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )).notifier,
+        );
+
+        await controller.future;
+
+        // Save with empty name and no exercises — should fail validation
+        await controller.saveWorkout();
+
+        final state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.create,
+            savedWorkoutId: null,
+          )),
+        );
+
+        expect(state.asData?.value.hasValidationErrors, isTrue);
+        expect(state.asData?.value.phase, equals(WorkoutBuilderPhase.editing));
+      },
+    );
+
+    test('discardChanges resets draft to empty in create mode', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.renameWorkout('Should not persist');
+      await controller.discardChanges();
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+
+      expect(state.asData!.value.draft.name, isEmpty);
+      expect(state.asData!.value.isDirty, isFalse);
+    });
+
+    test('reorderExercises changes exercise order', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(exerciseId: 1, name: 'A', modality: 'strength'),
+      );
+      await controller.addExercise(
+        const ExerciseReference(exerciseId: 2, name: 'B', modality: 'strength'),
+      );
+
+      // Move A from index 0 to index 1
+      await controller.reorderExercises(0, 1);
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+
+      expect(state.asData!.value.draft.exercises[0].exercise.name, equals('B'));
+      expect(state.asData!.value.draft.exercises[1].exercise.name, equals('A'));
+    });
+
+    test('addWarmupSet adds a set with SetType.warmup', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench Press',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      expect(state.asData!.value.draft.exercises.first.sets.length, equals(1));
+
+      await controller.addWarmupSet(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final sets = state.asData!.value.draft.exercises.first.sets;
+      expect(sets.length, equals(2));
+      expect(sets.first.setType, equals(SetType.working));
+      expect(sets.last.setType, equals(SetType.warmup));
+    });
+
+    test('updateSetType changes set type of a set', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Squat',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+      final setId = state.asData!.value.draft.exercises.first.sets.first.id;
+
+      expect(
+        state.asData!.value.draft.exercises.first.sets.first.setType,
+        equals(SetType.working),
+      );
+
+      await controller.updateSetType(
+        exerciseDraftId: exerciseId,
+        setId: setId,
+        setType: SetType.warmup,
+      );
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(
+        state.asData!.value.draft.exercises.first.sets.first.setType,
+        equals(SetType.warmup),
+      );
+    });
+
+    test('addSet with SetType.warmup creates warmup set', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'DL',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+      await controller.addSet(exerciseId, setType: SetType.warmup);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final sets = state.asData!.value.draft.exercises.first.sets;
+      expect(sets.length, equals(2));
+      expect(sets.first.setType, equals(SetType.working));
+      expect(sets.last.setType, equals(SetType.warmup));
+    });
+
+    test('warmup set survives save mapping (roundtrip)', () async {
+      final fakeRepository = _FakeSavedWorkoutRepository();
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) => fakeRepository,
+          ),
+        ],
+      );
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.renameWorkout('Test Warmup');
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Press',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exerciseId = state.asData!.value.draft.exercises.first.id;
+      await controller.addWarmupSet(exerciseId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final updatedSets = state.asData!.value.draft.exercises.first.sets;
+      expect(updatedSets.first.setType, SetType.working);
+      expect(updatedSets.last.setType, SetType.warmup);
+
+      await controller.updateSet(
+        exerciseDraftId: exerciseId,
+        setId: updatedSets.first.id,
+        prescription: updatedSets.first.copyWith(prescribedWeightKg: 40),
+      );
+      await controller.updateSet(
+        exerciseDraftId: exerciseId,
+        setId: updatedSets.last.id,
+        prescription: updatedSets.last.copyWith(prescribedWeightKg: 20),
+      );
+
+      await controller.saveWorkout();
+
+      final savedDraft = fakeRepository.lastSavedDraft;
+      expect(savedDraft, isNotNull);
+      expect(savedDraft!.exercises, hasLength(1));
+      expect(savedDraft.exercises.first.sets, hasLength(2));
+      expect(savedDraft.exercises.first.sets.first.setType, SetType.warmup);
+      expect(savedDraft.exercises.first.sets.last.setType, SetType.working);
+      expect(savedDraft.exercises.first.sets.first.prescribedWeightKg, 20);
+      expect(savedDraft.exercises.first.sets.last.prescribedWeightKg, 40);
+    });
+
+    test('createSuperset groups two exercises', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+
+      await controller.createSuperset(ids);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.every((e) => e.supersetGroupId != null), isTrue);
+      expect(exercises.first.supersetOrder, 0);
+      expect(exercises.last.supersetOrder, 1);
+      expect(state.asData!.value.isDirty, isTrue);
+    });
+
+    test('createSuperset ignores fewer than 2 selections', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final id = state.asData!.value.draft.exercises.first.id;
+
+      await controller.createSuperset([id]);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      expect(state.asData!.value.draft.exercises.first.supersetGroupId, isNull);
+    });
+
+    test('removeExerciseFromSuperset ungroups one exercise', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+      await controller.createSuperset(ids);
+
+      await controller.removeExerciseFromSuperset(ids.first);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.first.supersetGroupId, isNull);
+      expect(exercises.first.supersetOrder, isNull);
+      expect(exercises.last.supersetGroupId, isNull);
+      expect(exercises.last.supersetOrder, isNull);
+    });
+
+    test('deleteSupersetGroup clears all group fields', () async {
+      final container = createContainer();
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Bench',
+          modality: 'strength',
+        ),
+      );
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 2,
+          name: 'Fly',
+          modality: 'strength',
+        ),
+      );
+
+      var state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final ids = state.asData!.value.draft.exercises.map((e) => e.id).toList();
+      await controller.createSuperset(ids);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final groupId =
+          state.asData!.value.draft.exercises.first.supersetGroupId!;
+      await controller.deleteSupersetGroup(groupId);
+
+      state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.create,
+          savedWorkoutId: null,
+        )),
+      );
+      final exercises = state.asData!.value.draft.exercises;
+
+      expect(exercises.every((e) => e.supersetGroupId == null), isTrue);
+      expect(exercises.every((e) => e.supersetOrder == null), isTrue);
+    });
+  });
+
+  group('WorkoutBuilderController (edit mode)', () {
+    test('loads aggregate and returns editing state in edit mode', () async {
+      final t = DateTime(2025, 1, 1);
+      final aggregate = SavedWorkoutAggregate(
+        savedWorkout: SavedWorkout(
+          id: 'w1',
+          name: 'My Saved Workout',
+          source: 'manual',
+          creationMethod: 'manual',
+          status: 'active',
+          goalTagsJson: '[]',
+          equipmentJson: '[]',
+          imported: false,
+          createdAt: t,
+          updatedAt: t,
+        ),
+        exercises: [
+          SavedWorkoutExercise(
+            id: 'ex1',
+            savedWorkoutId: 'w1',
+            exerciseId: 1,
+            sortOrder: 0,
+            exerciseRef: 'Bench Press',
+            createdAt: t,
+          ),
+        ],
+        sets: [
+          SavedWorkoutExerciseSet(
+            id: 's1',
+
+            savedWorkoutExerciseId: 'ex1',
+            setIndex: 0,
+            setType: SetType.working.dbValue,
+            prescribedRepsMin: 8,
+            prescribedWeightKg: 60.0,
+            isCalibrationEstimate: false,
+            createdAt: t,
+          ),
+        ],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) => _FakeSavedWorkoutRepository(aggregate: aggregate),
+          ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
+          ),
+        ],
+      );
+
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.edit,
+          savedWorkoutId: 'w1',
+        )).notifier,
+      );
+
+      final state = await controller.future;
+
+      expect(state.mode, equals(WorkoutBuilderMode.edit));
+      expect(state.phase, equals(WorkoutBuilderPhase.editing));
+      expect(state.draft.name, equals('My Saved Workout'));
+      expect(state.draft.exercises.length, equals(1));
+      expect(state.draft.exercises.first.sets.length, equals(1));
+      expect(state.isDirty, isFalse);
+    });
+
+    test('load, edit, and save round-trips through the controller', () async {
+      final t = DateTime(2025, 1, 1);
+      final aggregate = SavedWorkoutAggregate(
+        savedWorkout: SavedWorkout(
+          id: 'w1',
+          name: 'Original',
+          source: 'manual',
+          creationMethod: 'manual',
+          status: 'active',
+          goalTagsJson: '[]',
+          equipmentJson: '[]',
+          imported: false,
+          createdAt: t,
+          updatedAt: t,
+        ),
+        exercises: [],
+        sets: [],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) => _FakeSavedWorkoutRepository(aggregate: aggregate),
+          ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
+          ),
+        ],
+      );
+
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.edit,
+          savedWorkoutId: 'w1',
+        )).notifier,
+      );
+
+      await controller.future;
+      await controller.renameWorkout('Renamed');
+      await controller.addExercise(
+        const ExerciseReference(
+          exerciseId: 1,
+          name: 'Squat',
+          modality: 'strength',
+        ),
+      );
+
+      final state = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.edit,
+          savedWorkoutId: 'w1',
+        )),
+      );
+      expect(state.asData?.value.draft.name, equals('Renamed'));
+      expect(state.asData?.value.draft.exercises.length, equals(1));
+      expect(state.asData?.value.isDirty, isTrue);
+    });
+
+    test(
+      'edit mode save normalizes warmup sets in state and saved payload',
+      () async {
+        final t = DateTime(2025, 1, 1);
+        final aggregate = SavedWorkoutAggregate(
+          savedWorkout: SavedWorkout(
+            id: 'w1',
+            name: 'Original',
+            source: 'manual',
+            creationMethod: 'manual',
+            status: 'active',
+            goalTagsJson: '[]',
+            equipmentJson: '[]',
+            imported: false,
+            createdAt: t,
+            updatedAt: t,
+          ),
+          exercises: [
+            SavedWorkoutExercise(
+              id: 'ex1',
+              savedWorkoutId: 'w1',
+              exerciseId: 1,
+              sortOrder: 0,
+              exerciseRef: 'Bench Press',
+              createdAt: t,
+            ),
+          ],
+          sets: [
+            SavedWorkoutExerciseSet(
+              id: 's1',
+              savedWorkoutExerciseId: 'ex1',
+              setIndex: 0,
+              setType: SetType.working.dbValue,
+              prescribedWeightKg: 60,
+              isCalibrationEstimate: false,
+              createdAt: t,
+            ),
+          ],
+        );
+
+        final fakeRepository = _FakeSavedWorkoutRepository(
+          aggregate: aggregate,
+        );
+        final container = ProviderContainer(
+          overrides: [
+            AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+              (ref) => fakeRepository,
+            ),
+            AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+              (ref) => LoadWorkoutDraftUseCase(
+                savedWorkoutRepository: ref.read(
+                  AppProviders.savedWorkoutRepositoryProvider,
+                ),
+              ),
+            ),
+          ],
+        );
+
+        final controller = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )).notifier,
+        );
+
+        await controller.future;
+
+        var state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final exerciseId = state.asData!.value.draft.exercises.first.id;
+
+        await controller.addWarmupSet(exerciseId);
+
+        state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final setsBeforeSave = state.asData!.value.draft.exercises.first.sets;
+        expect(setsBeforeSave.first.setType, SetType.working);
+        expect(setsBeforeSave.last.setType, SetType.warmup);
+
+        await controller.updateSet(
+          exerciseDraftId: exerciseId,
+          setId: setsBeforeSave.last.id,
+          prescription: setsBeforeSave.last.copyWith(prescribedWeightKg: 20),
+        );
+
+        await controller.saveWorkout();
+
+        state = container.read(
+          AppProviders.workoutBuilderControllerProvider((
+            mode: WorkoutBuilderMode.edit,
+            savedWorkoutId: 'w1',
+          )),
+        );
+        final setsAfterSave = state.asData!.value.draft.exercises.first.sets;
+        expect(state.asData!.value.isDirty, isFalse);
+        expect(setsAfterSave.first.setType, SetType.warmup);
+        expect(setsAfterSave.last.setType, SetType.working);
+        expect(setsAfterSave.first.prescribedWeightKg, 20);
+        expect(setsAfterSave.last.prescribedWeightKg, 60);
+
+        final savedDraft = fakeRepository.lastSavedDraft;
+        expect(savedDraft, isNotNull);
+        expect(savedDraft!.exercises.first.sets.first.setType, SetType.warmup);
+        expect(savedDraft.exercises.first.sets.last.setType, SetType.working);
+      },
+    );
+
+    test('surfaces error when repository throws', () async {
+      final container = ProviderContainer(
+        overrides: [
+          AppProviders.savedWorkoutRepositoryProvider.overrideWith(
+            (ref) => _FakeSavedWorkoutRepository(shouldThrowOnGet: true),
+          ),
+          AppProviders.loadWorkoutDraftUseCaseProvider.overrideWith(
+            (ref) => LoadWorkoutDraftUseCase(
+              savedWorkoutRepository: ref.read(
+                AppProviders.savedWorkoutRepositoryProvider,
+              ),
+            ),
+          ),
+        ],
+      );
+
+      final controller = container.read(
+        AppProviders.workoutBuilderControllerProvider((
+          mode: WorkoutBuilderMode.edit,
+          savedWorkoutId: 'nonexistent',
+        )).notifier,
+      );
+
+      final state = await controller.future;
+
+      expect(state.mode, equals(WorkoutBuilderMode.edit));
+      expect(state.phase, equals(WorkoutBuilderPhase.failure));
+      expect(state.errorCode, equals('load_failed'));
+    });
+  });
+}

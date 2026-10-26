@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SettingsStorageBoundaryCard extends StatelessWidget {
-  const SettingsStorageBoundaryCard({super.key});
+  const SettingsStorageBoundaryCard({super.key, this.showTitle = true});
+
+  final bool showTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -15,37 +17,37 @@ class SettingsStorageBoundaryCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(
-          color: context.colorScheme.outlineVariant,
-          width: AppSizing.divider,
-        ),
+        color: context.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                OutlinedSvgAssets.shieldCheck,
-                width: AppSizing.iconMd,
-                height: AppSizing.iconMd,
-                colorFilter: ColorFilter.mode(
-                  context.colorScheme.primary,
-                  BlendMode.srcIn,
+          if (showTitle) ...[
+            Row(
+              children: [
+                SvgPicture.asset(
+                  OutlinedSvgAssets.shieldCheck,
+                  width: AppSizing.iconMd,
+                  height: AppSizing.iconMd,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.secondary,
+                    BlendMode.srcIn,
+                  ),
                 ),
-              ),
-              AppWhiteSpace.wSm,
-              Text(
-                AppStrings.privacyAndStorage,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: context.colorScheme.onSurface,
+                AppWhiteSpace.wSm,
+                Expanded(
+                  child: Text(
+                    AppStrings.privacyAndStorage,
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          AppWhiteSpace.hMd,
+              ],
+            ),
+            AppWhiteSpace.hMd,
+          ],
           _BulletPoint(text: AppStrings.localOnlyNotice),
           AppWhiteSpace.hSm,
           _BulletPoint(text: AppStrings.secureStorageNotice),
@@ -72,7 +74,7 @@ class _BulletPoint extends StatelessWidget {
             width: AppSizing.iconSm,
             height: AppSizing.iconSm,
             colorFilter: ColorFilter.mode(
-              context.colorScheme.primary,
+              context.colorScheme.secondary,
               BlendMode.srcIn,
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:aedify/core/db/daos/ai_model_capability_dao.dart';
 import 'package:aedify/features/settings/data/drift_provider_capability_repository.dart';
 import 'package:aedify/features/settings/data/provider_capability_repository.dart';
 import 'package:aedify/features/settings/domain/provider_capability_view_data.dart';
+import 'package:aedify/shared/domain/ai_provider_name.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,7 +26,7 @@ void main() {
     final now = DateTime.now();
     await repository.saveCapability(
       ProviderCapabilityViewData(
-        providerName: 'openai',
+        providerName: AiProviderName.openai,
         modelName: 'gpt-4o',
         supportsTextInput: true,
         supportsImageInput: false,
@@ -39,11 +40,11 @@ void main() {
     );
 
     final saved = await repository.getCapability(
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       modelName: 'gpt-4o',
     );
     expect(saved, isNotNull);
-    expect(saved!.providerName, equals('openai'));
+    expect(saved!.providerName, equals(AiProviderName.openai));
     expect(saved.modelName, equals('gpt-4o'));
     expect(saved.supportsTextInput, isTrue);
     expect(saved.supportsJsonSchemaMode, isTrue);
@@ -54,7 +55,7 @@ void main() {
     final now = DateTime.now();
     await repository.saveCapability(
       ProviderCapabilityViewData(
-        providerName: 'anthropic',
+        providerName: AiProviderName.anthropic,
         modelName: 'claude-sonnet-4-20250514',
         supportsTextInput: true,
         supportsImageInput: true,
@@ -68,11 +69,11 @@ void main() {
     );
 
     final result = await repository.getCapability(
-      providerName: 'anthropic',
+      providerName: AiProviderName.anthropic,
       modelName: 'claude-sonnet-4-20250514',
     );
     expect(result, isNotNull);
-    expect(result!.providerName, equals('anthropic'));
+    expect(result!.providerName, equals(AiProviderName.anthropic));
     expect(result.supportsTextInput, isTrue);
     expect(result.supportsImageInput, isTrue);
     expect(result.supportsJsonSchemaMode, isFalse);
@@ -84,7 +85,7 @@ void main() {
     final now = DateTime.now();
     await repository.saveCapability(
       ProviderCapabilityViewData(
-        providerName: 'openai',
+        providerName: AiProviderName.openai,
         modelName: 'gpt-4o',
         supportsTextInput: true,
         supportsImageInput: false,
@@ -98,12 +99,12 @@ void main() {
     );
 
     await repository.clearCapability(
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       modelName: 'gpt-4o',
     );
 
     final result = await repository.getCapability(
-      providerName: 'openai',
+      providerName: AiProviderName.openai,
       modelName: 'gpt-4o',
     );
     expect(result, isNull);

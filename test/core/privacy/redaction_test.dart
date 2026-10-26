@@ -83,6 +83,18 @@ void main() {
     });
 
     group('headers', () {
+      test('Google API key header is completely redacted', () {
+        expect(
+          Redaction.headers({
+            'X-Goog-Api-Key': 'synthetic-key',
+          })['X-Goog-Api-Key'],
+          Redaction.redactedPlaceholder,
+        );
+        expect(
+          Redaction.queryParameters({'key': 'synthetic-key'})['key'],
+          Redaction.redactedPlaceholder,
+        );
+      });
       test('redacts authorization header', () {
         final result = Redaction.headers({
           'Authorization': 'Bearer tokensecret123',
