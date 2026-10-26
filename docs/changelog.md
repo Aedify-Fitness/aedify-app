@@ -1,5 +1,10 @@
 # Aedify — Changelog
 
+## 2026-10-26 — Match CI to the local Flutter SDK
+
+- Pinned `.github/workflows/foundation.yml` to Flutter 3.44.4 stable (bundled Dart 3.12.2), matching the installed local SDK so CI uses the same formatter version.
+- Verification: local SDK metadata confirmed; local CI formatting command passes. Hosted pipeline execution remains pending; no app behavior or dependency changes.
+
 ## 2026-10-26 — Optional workout weight suggestions complete
 
 - Added a local RPE-based weight suggestion above the active set grid, with explicit Use weight, standalone target selection, source/calculation explanation and next-set recalculation.
@@ -7,12 +12,10 @@
 - Suggestions do not change prescribed targets, complete sets or write analytics e1RM/PR values. Prior programme-day changes remain intact. Policy, boundaries and acceptance evidence: [weight suggestions](weight-suggestions.md).
 - Verification: formatting checked 802 Dart files, analysis clean, all 1,659 tests passed with zero failures/skips. Native offline acceptance and synthetic light/dark/source-explanation review passed on iOS and Android; normal app entrypoints restored/launched on both. No schema/dependency/code-generation changes.
 
-
 ## 2026-10-25 — Prefill programme workout days from the profile
 
 - New programme training blocks preselect the profile's chosen workout days and create matching, chronologically ordered workout slots for every block week. Days remain editable; empty/unavailable profiles leave the choices empty. Editing/duplicating a saved programme preserves its schedule.
 - Updated `programme_builder_controller.dart` and its unit/widget tests. Verification: `dart format .` checked 791 files, `flutter analyze` clean, all 364 programme tests passed (seven new regressions), zero failures/skips. No schema/dependency changes; full-suite and native checks were not repeated for this follow-up.
-
 
 ## 2026-10-25 — M1–M4 implementation gaps fixed; live acceptance pending
 
@@ -20,7 +23,6 @@
 - Fixed empty-cache/offline sync recovery, stale connectivity and future-schema shortcut handling (M2).
 - Implemented selected-model validation, capability cache population/refresh, safe key replacement/compensation, saved-provider editing and capability navigation (M3). Corrected model IDs/pricing, transactional onboarding and active-programme profile impact detection.
 - Added 34 request-contract, real-SQLite rollback/race, privacy and UI regressions. Formatting (791 Dart files), analysis and the full suite (1,630 tests, zero failures/skips) pass. Native storage/onboarding/BYOK, fixture-based offline library, BYOK UI and M4 offline regressions pass on iOS and Android. Normal app entrypoints restored/launched on both platforms. Firebase is down and no live BYOK test keys are configured; live acceptance remains separate from deterministic checks. Final results: [M1–M4 closure evidence](m1-m4-gap-closure.md).
-
 
 All meaningful project changes are recorded here in reverse chronological order.
 
@@ -85,7 +87,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - Schema v18 retains prescribed time, distance, RIR and session exercise logging type. Active logging supports strength, bodyweight and timed exercise actuals plus warm-up labels.
 - Updated stale UI expectations and fixed real narrow-layout, touch-target and input-state defects. Added real SQLite recovery/rollback and diagnostic privacy acceptance tests.
 - Implementation verification continued into 2026-10-25; the closure entry above records the final results.
-
 
 ### M4 — Library hub redesign
 
@@ -639,7 +640,6 @@ All meaningful project changes are recorded here in reverse chronological order.
   of both components. Full `flutter test`: 1220 passed / 1 previously documented
   workout-runner pending-save timing failure. Final MCP reload/runtime check passed.
 
-
 ### M4 — Mobile Define Workouts design
 
 - Replaces the third builder stage's weeks-first view with the supplied Define
@@ -656,7 +656,6 @@ All meaningful project changes are recorded here in reverse chronological order.
   analysis and `git diff --check` passed. Inspected mobile renders, hot reloaded
   the running app through MCP, and found no runtime errors. Full `flutter test`:
   1214 passed / 1 previously documented workout-runner pending-save timing failure.
-
 
 ### M4 — Programme Builder app-bar Back button
 
@@ -711,7 +710,6 @@ All meaningful project changes are recorded here in reverse chronological order.
   `flutter test` passed 1198/1199, with only the previously documented
   workout-runner pending-save timing failure.
 
-
 ## 2026-10-17
 
 ### M4 — Rest timer separated from elapsed duration
@@ -752,7 +750,6 @@ All meaningful project changes are recorded here in reverse chronological order.
   Full `flutter test` passed 1184/1185; the only failure
   remains the previously documented pending-save async timing test in
   `workout_runner_controller_test.dart`.
-
 
 ## 2026-08-22
 
@@ -1210,6 +1207,13 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 ### Saved workout library screen — card redesign + FAB
 
+- **`SavedWorkoutListTile` redesigned**: Replaced `Card`+`ListTile` pattern with a rich card matching the HTML design — `surfaceContainerLowest` background, 3-level shadow, `AppRadius.lg` corners, 1px `surfaceContainer` border. Card layout: top row with description-as-category label (uppercase, 10px, secondary), headline-md title (max 2 lines), stats row with `listBullet` icon + exercise count and `clock` icon + duration. Trailing `ellipsisVertical` PopupMenuButton (start/archive/delete). Bottom row with stacked category icon circles (bolt + clock, 32px, overlapping -8px, `surfaceContainer`/`surfaceContainerLow` backgrounds, 2px `surfaceContainerLowest` border) and 48px filled `play` button (`secondary` bg, `AppRadius.lg`, shadow).
+- **FAB added**: 56px `secondary` FAB with `plus` icon, `AppRadius.lg` shape, navigates to `AppRoutes.workoutBuilderCreate`.
+- **`SavedWorkoutLibraryScreen` updated**: `_ListView` padding updated to `top: lg, horizontal: md, bottom: xxl + xl` for FAB clearance. `_EmptyView` and `_ErrorView` text styles updated to use `AppTextStyles`. Extracted `onTap` callback for card tap → `workoutBuilderEdit`.
+- **New private widgets**: `_StackedCategoryIcons` and `_CategoryIconCircle` for the overlapping icon circles.
+- **Files**: `lib/features/programmes/presentation/widgets/saved_workout_list_tile.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`.
+- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing (M3 smoke flow).
+
 ### Exercise library screen — full redesign to match HTML design system
 
 - **ExerciseLibraryScreen rewritten** (587 lines, down from 391+185): Matches the HTML design with view toggle (List/Bodymap pill toggle using `surfaceContainerLow` bg + `AppRadius.full`), search bar (white card, `AppRadius.md`, no-border style, focused ring at `secondary/20`), horizontal scrollable muscle-group filter chips (`_MuscleGroupChips` — All/Chest/Back/Legs/Shoulders/Arms/Core/Cardio mapping to `BodymapBucket` and `ExerciseModality`), exercise list using shared `ExerciseCard` component, das
@@ -1230,15 +1234,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **`ExerciseLibraryScreen` updated**: Old `_ExerciseCard` (with `_ExerciseCardImage` gradient placeholder + `_MuscleGroupTagRow`, ~185 lines) replaced with shared `ExerciseCard`. Unused imports (`exercise_list_item`, `exercise_difficulty`) removed.
 - Files: `lib/features/exercise_library/presentation/widgets/exercise_card.dart` (new), `lib/features/workout_builder/presentation/widgets/add_exercise_bottom_sheet.dart`, `lib/features/exercise_library/presentation/exercise_library_screen.dart`.
 - Verification: `dart format .` — 3 files (1 changed). `flutter analyze` — 0 issues. `flutter test` — 1064 passed.
-
-### Saved workout library screen — card redesign + FAB
-
-- **`SavedWorkoutListTile` redesigned**: Replaced `Card`+`ListTile` pattern with a rich card matching the HTML design — `surfaceContainerLowest` background, 3-level shadow, `AppRadius.lg` corners, 1px `surfaceContainer` border. Card layout: top row with description-as-category label (uppercase, 10px, secondary), headline-md title (max 2 lines), stats row with `listBullet` icon + exercise count and `clock` icon + duration. Trailing `ellipsisVertical` PopupMenuButton (start/archive/delete). Bottom row with stacked category icon circles (bolt + clock, 32px, overlapping -8px, `surfaceContainer`/`surfaceContainerLow` backgrounds, 2px `surfaceContainerLowest` border) and 48px filled `play` button (`secondary` bg, `AppRadius.lg`, shadow).
-- **FAB added**: 56px `secondary` FAB with `plus` icon, `AppRadius.lg` shape, navigates to `AppRoutes.workoutBuilderCreate`.
-- **`SavedWorkoutLibraryScreen` updated**: `_ListView` padding updated to `top: lg, horizontal: md, bottom: xxl + xl` for FAB clearance. `_EmptyView` and `_ErrorView` text styles updated to use `AppTextStyles`. Extracted `onTap` callback for card tap → `workoutBuilderEdit`.
-- **New private widgets**: `_StackedCategoryIcons` and `_CategoryIconCircle` for the overlapping icon circles.
-- **Files**: `lib/features/programmes/presentation/widgets/saved_workout_list_tile.dart`, `lib/features/programmes/presentation/saved_workout_library_screen.dart`.
-- Verification: `dart format .` — 1 changed. `flutter analyze` — 0 issues. `flutter test` — 1061 passed, 1 pre-existing (M3 smoke flow).
 
 ### Convention violation fixes — private widget method, cs param, raw numbers
 
@@ -1855,6 +1850,83 @@ All meaningful project changes are recorded here in reverse chronological order.
 - Pre-existing compilation errors (`ProgrammeAggregate`, `AppRoutes` missing
   imports in `programmes_screen.dart`) remain — not part of this pass.
 
+### V1-M4-006 — Custom Exercise Editor (complete)
+
+- **Domain layer** (`lib/features/exercise_library/domain/`):
+  - `CustomExerciseDraft` — writable draft model with `copyWith()`/`toSeed()`
+  - `CustomExerciseValidationError` — typed error with scope/code/message/stepIndex
+  - `CustomExerciseEditorMode` — create / edit enum
+- **Application layer** (`lib/features/exercise_library/application/`):
+  - `CustomExerciseEditorPhase` — 8-phase state machine (loading/editing/saving/saved/deleting/deleted/failure/blocked)
+  - `CustomExerciseEditorState` — immutable state with `isLoading`/`isSaving`/`hasValidationErrors`/`copyWith()`/`initial()`
+  - `CustomExerciseValidator` — 3 validation rules: name required, muscle groups required, no empty steps
+  - `LoadCustomExerciseDraftUseCase` — `createEmptyDraft()` and `loadForEdit()` via existing `ExerciseRepository`
+  - `SaveCustomExerciseUseCase` — `create()` and `update()` via existing `ExerciseRepository`
+  - `DeleteCustomExerciseUseCase` — `delete()` via existing `ExerciseRepository`
+  - `CustomExerciseEditorController` — `AsyncNotifier<CustomExerciseEditorState>` with constructor args (mode, exerciseId). 14 mutation methods: rename, setModality, setEquipment, setDifficulty, toggleMuscleGroup, addStep, updateStep, removeStep, save, delete, clearValidationErrors, discardChanges
+- **Presentation layer** (`lib/features/exercise_library/presentation/`):
+  - `CustomExerciseEditorScreen` — create/edit factory constructors, loading/error/saved/deleted/editing states, PopScope for unsaved changes
+  - 7 widgets: `CustomExerciseNameField`, `CustomExerciseModalitySection` (SegmentedButton + equipment/difficulty dropdowns), `CustomExerciseMuscleGroupPicker` (14 FilterChips), `CustomExerciseStepsEditor` (dynamic add/remove/update), `CustomExerciseErrorBanner`, `DeleteCustomExerciseDialog`, `DiscardCustomExerciseChangesDialog`
+- **Infrastructure updates**:
+  - `AppRoutes`: +2 — `customExerciseCreate()` (`/exercises/custom/new`), `customExerciseEdit()` (`/exercises/custom/:id/edit`)
+  - `AppRouter`: +2 GoRoute entries as sub-routes of `/exercises`
+  - `AppStrings`: +23 custom-exercise strings (labels, hints, confirmations)
+  - `AppErrorCodes`: +3 custom-exercise error codes
+  - `AppProviders`: +5 providers (validator, 3 use cases, controller family)
+  - `AddExerciseBottomSheet`: added "Create custom exercise" entry at end of list; navigates to editor, refreshes search on return
+- **Critical architecture decisions**:
+  - Reuses `ExerciseRepository` — no new persistence, table, or ID generation
+  - Keeps all custom exercise editing inside `features/exercise_library/` — closest to persistence
+  - Controller uses `AsyncNotifier` with constructor args + `AsyncNotifierProvider.family` (matching codebase family pattern)
+  - Integrates into manual flows via `AddExerciseBottomSheet` "Create custom exercise" action
+- **Tests**: 55 new — 8 validator, 24 controller, 6 load use case, 4 save use case, 4 name field widget, 6 muscle group picker widget, 3 delete dialog widget
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 863/863 passed.
+
+### V1-M4-006 gap closure — 7 fixes (pop(true), delete/discard labels, SVGs, controllers, tests)
+
+- **Saved phase pop(true)**: `CustomExerciseEditorScreen` saved phase now calls `Navigator.pop(true)` so `AddExerciseBottomSheet` detects the result and refreshes search on return.
+- **Delete dialog button label**: Changed from `AppStrings.customExerciseDeleted` (status message) to `AppStrings.customExerciseDelete` ("Delete exercise").
+- **Discard dialog button label**: Changed from `AppStrings.done` to `AppStrings.customExerciseDiscard` ("Discard").
+- **Material Icons → SVGs**: Replaced `Icons.delete_outline`/`check_circle_outline`/`remove_circle_outline`/`Icons.add` with `OutlinedSvgAssets.trash`/`checkBadge`/`minusCircle`/`plus`.
+- **Steps editor tooltip**: Changed from hardcoded `'Remove step'` to `AppStrings.customExerciseRemoveStep`.
+- **Inline TextEditingController → StatefulWidget**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` now use `StatefulWidget` with controllers created in `initState` and synced in `didUpdateWidget`, preserving cursor position during typing.
+- **3 widget test files added**: `custom_exercise_steps_editor_test` (5 tests), `custom_exercise_error_banner_test` (4 tests), `discard_custom_exercise_changes_dialog_test` (3 tests). Delete dialog test updated for new string constant.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
+
+### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
+
+### Added (V1-M4-005 — Workout History & Programme Library)
+
+- **Saved workout library**: `SavedWorkoutLibraryScreen` with list, archive, delete via `SavedWorkoutLibraryController`.
+- **Programme library refactored**: `ProgrammesScreen` now uses `ProgrammeLibraryController` instead of local `FutureProvider`, with archive/delete popup menus.
+- **Workout history list**: `LiftLogScreen` replaced placeholder with real controller-driven list, source labels, empty/retry states.
+- **Workout history detail**: `WorkoutHistoryDetailScreen` shows session info (name, source, notes, duration) plus read-only exercise/set cards.
+- **Domain models**: `SavedWorkoutListItem`, `ProgrammeListItem`, `WorkoutHistoryListItem`, `WorkoutHistoryExerciseItem`, `WorkoutHistorySetItem`, `WorkoutHistoryDetailViewData`.
+- **Data layer**: `WorkoutHistoryRepository` (abstract) + `DriftWorkoutHistoryRepository` using existing session/exercise/set DAOs with snapshot-based rendering.
+- **Application layer**: 4 controllers, 4 states, 4 use cases all wired into `AppProviders`.
+- **Presentation widgets**: `SavedWorkoutListTile`, `ProgrammeListTile`, `WorkoutHistoryListTile`, `WorkoutHistoryExerciseCard`, `WorkoutHistorySetRow`, `ArchiveItemDialog`, `DeleteItemDialog`, `HistoryErrorBanner`.
+- **Routes**: `AppRoutes.workoutHistoryDetail()` (`/lift-log/:sessionId`), `AppRoutes.savedWorkoutLibrary()` (`/workouts`).
+- **Strings**: 20+ new `AppStrings` for history/library UI and confirmation dialogs.
+- **Tests**: 29 new — 1 drift repository (4 tests), 4 controller tests (14 tests), 4 widget tests (7 tests), 2 screen tests (2 tests), 2 widget tests for tiles/cards (4 tests).
+- **Architecture**: History detail uses snapshot fields, not live source joins. `WorkoutHistoryRepository` is read-focused, separate from runner repositories. Archive/delete preserves history semantics.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+### Post-V1-M4-005 gap closure — dialog confirm labels, test fake cleanup
+
+- **`ArchiveItemDialog` / `DeleteItemDialog`**: Added optional `confirmLabel` parameter. Previously both used hardcoded labels (`AppStrings.archiveProgramme` / `AppStrings.deleteWorkout`) regardless of context.
+- **ProgrammesScreen delete**: Now passes `confirmLabel: AppStrings.deleteProgramme` to `DeleteItemDialog` (was silently showing "Delete workout" for programmes).
+- **SavedWorkoutLibraryScreen archive**: Now passes `confirmLabel: AppStrings.archiveWorkout` to `ArchiveItemDialog` (was silently showing "Archive programme" for saved workouts).
+- **Test fake cleanup**: Removed `shouldThrow` field/constructor param from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository` — both still had `if (shouldThrow)` guards referencing the removed field. Removed throw guards. Removed unused `shouldThrow` import.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
+
+- **`EquipmentTag.fromDb` normalizes input** (`lib/shared/domain/equipment_tag.dart`): Instead of exact `dbValue` match, lowercases input, replaces hyphens/underscores, and tries both raw and singular forms. Fallback to `EquipmentTag.other` for unrecognized values. This fixes `Bad state: No element` for `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`, etc.
+- **5 new `EquipmentTag` entries**: `bosuBall` (`bosu_ball`), `medicineBall` (`medicine_ball`), `plate`, `trx`, `vitruvian` — all with `dbValue` mappings and exhaustive switch coverage in onboarding/profile taxonomy.
+- **Removed strict parser validation**: `exercise_dataset_parser.dart` no longer throws on empty `steps` or empty `primary_muscles` arrays — dataset has valid exercises with these fields missing.
+- **Sync integrated into bootstrap**: `BootstrapController.start()` now calls `await ref.read(exerciseDatasetSyncControllerProvider.notifier).initialize()` before setting `BootstrapState.success()`. The router only redirects to onboarding after sync reaches a terminal state (synced/unavailableOffline/failed).
+- **Onboarding/profile exhaustive switches**: `_OnboardingTaxonomy` and `_ProfileTaxonomy` `equipmentLabel()`/`equipmentFromLabel()` updated for all 5 new tags. Profile equipment chip selector list extended.
+- **Test updates**: Parser tests updated (`"rejects empty steps"` → `"allows empty steps"`, same for primary_muscles). `_FakeSyncController` added to bootstrap test overrides.
+- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 779/779 passed (across all 13 test files).
+
 ## 2026-06-29
 
 ### V1-M4-003 — Manual multi-week programme builder (complete)
@@ -2216,85 +2288,6 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests updated**: Controller tests cover debounce, flush-on-next, resume-step, and collapse behavior. Router tests cover complete→home, incomplete→onboarding, and unresolved→startup. Widget tests cover BYOK skip and partial-draft resume.
 - Verification: `dart format` — passed. `flutter analyze` — 0 issues. `flutter test` — 420/420 passed.
 
-## 2026-06-30
-
-### V1-M4-006 — Custom Exercise Editor (complete)
-
-- **Domain layer** (`lib/features/exercise_library/domain/`):
-  - `CustomExerciseDraft` — writable draft model with `copyWith()`/`toSeed()`
-  - `CustomExerciseValidationError` — typed error with scope/code/message/stepIndex
-  - `CustomExerciseEditorMode` — create / edit enum
-- **Application layer** (`lib/features/exercise_library/application/`):
-  - `CustomExerciseEditorPhase` — 8-phase state machine (loading/editing/saving/saved/deleting/deleted/failure/blocked)
-  - `CustomExerciseEditorState` — immutable state with `isLoading`/`isSaving`/`hasValidationErrors`/`copyWith()`/`initial()`
-  - `CustomExerciseValidator` — 3 validation rules: name required, muscle groups required, no empty steps
-  - `LoadCustomExerciseDraftUseCase` — `createEmptyDraft()` and `loadForEdit()` via existing `ExerciseRepository`
-  - `SaveCustomExerciseUseCase` — `create()` and `update()` via existing `ExerciseRepository`
-  - `DeleteCustomExerciseUseCase` — `delete()` via existing `ExerciseRepository`
-  - `CustomExerciseEditorController` — `AsyncNotifier<CustomExerciseEditorState>` with constructor args (mode, exerciseId). 14 mutation methods: rename, setModality, setEquipment, setDifficulty, toggleMuscleGroup, addStep, updateStep, removeStep, save, delete, clearValidationErrors, discardChanges
-- **Presentation layer** (`lib/features/exercise_library/presentation/`):
-  - `CustomExerciseEditorScreen` — create/edit factory constructors, loading/error/saved/deleted/editing states, PopScope for unsaved changes
-  - 7 widgets: `CustomExerciseNameField`, `CustomExerciseModalitySection` (SegmentedButton + equipment/difficulty dropdowns), `CustomExerciseMuscleGroupPicker` (14 FilterChips), `CustomExerciseStepsEditor` (dynamic add/remove/update), `CustomExerciseErrorBanner`, `DeleteCustomExerciseDialog`, `DiscardCustomExerciseChangesDialog`
-- **Infrastructure updates**:
-  - `AppRoutes`: +2 — `customExerciseCreate()` (`/exercises/custom/new`), `customExerciseEdit()` (`/exercises/custom/:id/edit`)
-  - `AppRouter`: +2 GoRoute entries as sub-routes of `/exercises`
-  - `AppStrings`: +23 custom-exercise strings (labels, hints, confirmations)
-  - `AppErrorCodes`: +3 custom-exercise error codes
-  - `AppProviders`: +5 providers (validator, 3 use cases, controller family)
-  - `AddExerciseBottomSheet`: added "Create custom exercise" entry at end of list; navigates to editor, refreshes search on return
-- **Critical architecture decisions**:
-  - Reuses `ExerciseRepository` — no new persistence, table, or ID generation
-  - Keeps all custom exercise editing inside `features/exercise_library/` — closest to persistence
-  - Controller uses `AsyncNotifier` with constructor args + `AsyncNotifierProvider.family` (matching codebase family pattern)
-  - Integrates into manual flows via `AddExerciseBottomSheet` "Create custom exercise" action
-- **Tests**: 55 new — 8 validator, 24 controller, 6 load use case, 4 save use case, 4 name field widget, 6 muscle group picker widget, 3 delete dialog widget
-- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 863/863 passed.
-
-### V1-M4-006 gap closure — 7 fixes (pop(true), delete/discard labels, SVGs, controllers, tests)
-
-- **Saved phase pop(true)**: `CustomExerciseEditorScreen` saved phase now calls `Navigator.pop(true)` so `AddExerciseBottomSheet` detects the result and refreshes search on return.
-- **Delete dialog button label**: Changed from `AppStrings.customExerciseDeleted` (status message) to `AppStrings.customExerciseDelete` ("Delete exercise").
-- **Discard dialog button label**: Changed from `AppStrings.done` to `AppStrings.customExerciseDiscard` ("Discard").
-- **Material Icons → SVGs**: Replaced `Icons.delete_outline`/`check_circle_outline`/`remove_circle_outline`/`Icons.add` with `OutlinedSvgAssets.trash`/`checkBadge`/`minusCircle`/`plus`.
-- **Steps editor tooltip**: Changed from hardcoded `'Remove step'` to `AppStrings.customExerciseRemoveStep`.
-- **Inline TextEditingController → StatefulWidget**: `CustomExerciseNameField` and `CustomExerciseStepsEditor` now use `StatefulWidget` with controllers created in `initState` and synced in `didUpdateWidget`, preserving cursor position during typing.
-- **3 widget test files added**: `custom_exercise_steps_editor_test` (5 tests), `custom_exercise_error_banner_test` (4 tests), `discard_custom_exercise_changes_dialog_test` (3 tests). Delete dialog test updated for new string constant.
-- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 875/875 passed.
-
-### Fixed (exercise sync bootstrap crash — dataset parser crashes + sync wired into startup)
-
-### Added (V1-M4-005 — Workout History & Programme Library)
-
-- **Saved workout library**: `SavedWorkoutLibraryScreen` with list, archive, delete via `SavedWorkoutLibraryController`.
-- **Programme library refactored**: `ProgrammesScreen` now uses `ProgrammeLibraryController` instead of local `FutureProvider`, with archive/delete popup menus.
-- **Workout history list**: `LiftLogScreen` replaced placeholder with real controller-driven list, source labels, empty/retry states.
-- **Workout history detail**: `WorkoutHistoryDetailScreen` shows session info (name, source, notes, duration) plus read-only exercise/set cards.
-- **Domain models**: `SavedWorkoutListItem`, `ProgrammeListItem`, `WorkoutHistoryListItem`, `WorkoutHistoryExerciseItem`, `WorkoutHistorySetItem`, `WorkoutHistoryDetailViewData`.
-- **Data layer**: `WorkoutHistoryRepository` (abstract) + `DriftWorkoutHistoryRepository` using existing session/exercise/set DAOs with snapshot-based rendering.
-- **Application layer**: 4 controllers, 4 states, 4 use cases all wired into `AppProviders`.
-- **Presentation widgets**: `SavedWorkoutListTile`, `ProgrammeListTile`, `WorkoutHistoryListTile`, `WorkoutHistoryExerciseCard`, `WorkoutHistorySetRow`, `ArchiveItemDialog`, `DeleteItemDialog`, `HistoryErrorBanner`.
-- **Routes**: `AppRoutes.workoutHistoryDetail()` (`/lift-log/:sessionId`), `AppRoutes.savedWorkoutLibrary()` (`/workouts`).
-- **Strings**: 20+ new `AppStrings` for history/library UI and confirmation dialogs.
-- **Tests**: 29 new — 1 drift repository (4 tests), 4 controller tests (14 tests), 4 widget tests (7 tests), 2 screen tests (2 tests), 2 widget tests for tiles/cards (4 tests).
-- **Architecture**: History detail uses snapshot fields, not live source joins. `WorkoutHistoryRepository` is read-focused, separate from runner repositories. Archive/delete preserves history semantics.
-- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
-
-### Post-V1-M4-005 gap closure — dialog confirm labels, test fake cleanup
-
-- **`ArchiveItemDialog` / `DeleteItemDialog`**: Added optional `confirmLabel` parameter. Previously both used hardcoded labels (`AppStrings.archiveProgramme` / `AppStrings.deleteWorkout`) regardless of context.
-- **ProgrammesScreen delete**: Now passes `confirmLabel: AppStrings.deleteProgramme` to `DeleteItemDialog` (was silently showing "Delete workout" for programmes).
-- **SavedWorkoutLibraryScreen archive**: Now passes `confirmLabel: AppStrings.archiveWorkout` to `ArchiveItemDialog` (was silently showing "Archive programme" for saved workouts).
-- **Test fake cleanup**: Removed `shouldThrow` field/constructor param from `_FakeSavedWorkoutRepository` and `_FakeWorkoutHistoryRepository` — both still had `if (shouldThrow)` guards referencing the removed field. Removed throw guards. Removed unused `shouldThrow` import.
-- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 808/808 passed.
-
-- **`EquipmentTag.fromDb` normalizes input** (`lib/shared/domain/equipment_tag.dart`): Instead of exact `dbValue` match, lowercases input, replaces hyphens/underscores, and tries both raw and singular forms. Fallback to `EquipmentTag.other` for unrecognized values. This fixes `Bad state: No element` for `'Band'`, `'Plate'`, `'TRX'`, `'Cables'`, `'Smith-Machine'`, etc.
-- **5 new `EquipmentTag` entries**: `bosuBall` (`bosu_ball`), `medicineBall` (`medicine_ball`), `plate`, `trx`, `vitruvian` — all with `dbValue` mappings and exhaustive switch coverage in onboarding/profile taxonomy.
-- **Removed strict parser validation**: `exercise_dataset_parser.dart` no longer throws on empty `steps` or empty `primary_muscles` arrays — dataset has valid exercises with these fields missing.
-- **Sync integrated into bootstrap**: `BootstrapController.start()` now calls `await ref.read(exerciseDatasetSyncControllerProvider.notifier).initialize()` before setting `BootstrapState.success()`. The router only redirects to onboarding after sync reaches a terminal state (synced/unavailableOffline/failed).
-- **Onboarding/profile exhaustive switches**: `_OnboardingTaxonomy` and `_ProfileTaxonomy` `equipmentLabel()`/`equipmentFromLabel()` updated for all 5 new tags. Profile equipment chip selector list extended.
-- **Test updates**: Parser tests updated (`"rejects empty steps"` → `"allows empty steps"`, same for primary_muscles). `_FakeSyncController` added to bootstrap test overrides.
-- Verification: `dart format` — passed. `flutter analyze` — 0 errors. `flutter test` — 779/779 passed (across all 13 test files).
-
 ## 2026-06-22
 
 ### Added (V1-M2 TTS/audio-cache slice — TTS service, audio cache DAO, step audio controller, per-step playback UI)
@@ -2615,7 +2608,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 - **`lib/app/providers/providers.dart`**: Added `localFileRecordDaoProvider` and `localFileRecordServiceProvider`.
 
-### Changed
+### What Changed
 
 - Updated `docs/implementation.md` with Group 2 completed work. Test count: 33→75.
 - DB tests now use `NativeDatabase.memory()` for platform-channel independence.
@@ -2639,7 +2632,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 - **Tests**: 33 total (+12 new). 4 app shell widget tests (loading, failure, redirect, offline-onboarding). 6 bootstrap controller unit tests. 3 provider override tests.
 - Group A complete: `flutter analyze` — 0 issues; `flutter test` — 33/33 passed
 
-### Changed
+### Changes
 
 - Converted all relative imports to `package:aedify/` imports across 5 files
 - Created `app_colors.dart` with all DESIGN.md light/dark color tokens; replaced all hardcoded `Color(0x...)` values in `app_theme.dart`
@@ -2679,7 +2672,7 @@ All meaningful project changes are recorded here in reverse chronological order.
 
 - Created `implementation.md` and `changelog.md` tracking files
 
-# 2026-07-29 — Final onboarding review body aligned to supplied design
+## 2026-07-29 — Final onboarding review body aligned to supplied design
 
 - Reworked `OnboardingScreen` final review into the supplied fixed mobile, single-column bento composition.
 - Added exact review hierarchy and spacing for experience, AI status, schedule, equipment, metric integration, and the in-body initialize action.

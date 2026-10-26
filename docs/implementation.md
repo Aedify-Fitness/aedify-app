@@ -2,20 +2,25 @@
 
 ## Current Status
 
-| Field | Value |
-| --- | --- |
-| Current milestone | **M4 — Manual Programmes, Workouts and Logging: closed (2026-10-25).** |
-| Implemented | Standalone sessions, independent repeat from history, logging-type tables with RPE-only effort display, internal RIR derivation and linked-round set-type toggles, exercise-card navigation to logging-type-specific corrections, partial logged-set editing and saved per-exercise history. Existing manual builders, programmes, supersets, warm-ups and saved histories remain available offline. |
-| Verification | Latest weight-suggestion follow-up (2026-10-26): format checked 802 Dart files, analysis clean, all **1,659 tests passed**, zero failures/skips, including programme-day defaults. Native weight-suggestion offline acceptance and light/dark review pass on iOS/Android. Live Firebase and successful real-key BYOK acceptance remain pending separately. |
-| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26). |
-| Next milestone | **M5 planned, not started** — Analytics, PRs and Plateau Base Logic. |
-| Evidence | [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md), including changed files, coverage, commands and native/live boundaries. |
+| Field             | Value                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current milestone | **M4 — Manual Programmes, Workouts and Logging: closed (2026-10-25).**                                                                                                                                                                                                                                                                                                                               |
+| Implemented       | Standalone sessions, independent repeat from history, logging-type tables with RPE-only effort display, internal RIR derivation and linked-round set-type toggles, exercise-card navigation to logging-type-specific corrections, partial logged-set editing and saved per-exercise history. Existing manual builders, programmes, supersets, warm-ups and saved histories remain available offline. |
+| Verification      | Latest weight-suggestion follow-up (2026-10-26): format checked 802 Dart files, analysis clean, all **1,659 tests passed**, zero failures/skips, including programme-day defaults. Native weight-suggestion offline acceptance and light/dark review pass on iOS/Android. Live Firebase and successful real-key BYOK acceptance remain pending separately.                                           |
+| Storage/platforms | Schema v18 retains targets and logging mode; v7-to-v18 and later migration fixtures pass. Restart an existing app to open v18. Native requirements: iOS 15+ and Android API 26 / Android 8.0+ (the updated approved Health package requires API 26).                                                                                                                                                 |
+| Next milestone    | **M5 planned, not started** — Analytics, PRs and Plateau Base Logic.                                                                                                                                                                                                                                                                                                                                 |
+| Evidence          | [M1–M4 gap closure](m1-m4-gap-closure.md) and [M4 closure report](m4-closure.md), including changed files, coverage, commands and native/live boundaries.                                                                                                                                                                                                                                            |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — CI Flutter version alignment
+
+- Foundation CI now explicitly selects Flutter 3.44.4 stable, matching local Flutter/Dart 3.12.2 instead of following the latest stable release.
+- Verification: installed SDK metadata confirmed and local CI formatting command passed (796 files, zero changes). Hosted workflow execution remains pending; app analysis/tests were not repeated for this configuration-only update.
 
 ### 2026-10-26 — Optional runner weight suggestions (complete)
 
@@ -29,14 +34,12 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 - User changes remain local to the block/programme. Saved edit/duplicate schedules retain their own days. Missing, empty or unavailable profiles keep manual day selection available.
 - Unit/widget regressions verify the visible selected chips, editable days, week/slot consistency, independent block defaults, draft-save payload and saved-schedule preservation. Formatting (791 files), clean analysis and all 364 programme tests passed, zero failures/skips. The prior full suite (1,630) and native results predate this change; no full/native rerun, schema/dependency change or code generation was needed.
 
-
 ### 2026-10-25 — M1–M4 implementation gap closure
 
 - M1: route global crash errors through the redaction wrapper, honor collection flags, preserve old keys on failed rotation, redact Google key transport and avoid post-dispose network emissions.
 - M2: prevent failed/empty first syncs being shown as offline success, recheck connectivity on refresh, validate schema before version short-circuit and sanitize unexpected failure text.
 - M3: correct provider metadata/auth requests, check selected models, populate/refresh capabilities, validate and compensate key changes, reject stale responses and expose saved-provider editing/capability navigation. Correct Anthropic model IDs and affected pricing estimates. Make onboarding completion transactional and profile impact detection effective without changing existing programmes automatically.
 - Verification: format (791 Dart files), clean analysis, full suite 1,630 passing tests without skips; native storage/onboarding/BYOK, fixture-based offline library, BYOK UI and M4 regression pass on iOS/Android. No schema/dependency/code-generation changes. Live Firebase acceptance is pending during the confirmed outage; successful real-provider authentication remains unverified because no test keys are configured. Details and file inventory: [closure evidence](m1-m4-gap-closure.md).
-
 
 ### 2026-10-25 — M4 primary-action theme alignment (complete)
 
@@ -87,7 +90,6 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 - Native compatibility: `integration_test` SDK development dependency; approved `health` upgraded 3.0.6 → 13.3.2; Android API 26 minimum plus notification desugaring/multidex; CocoaPods targets honor the existing iOS 15 minimum. Health access remains disabled.
 - Verification: code generation, `dart format .` (773 files), clean analysis and full `flutter test` **1,573/1,573**. Offline UI flow and committed-session OS force-stop/relaunch recovery passed on the iPhone 18 Pro simulator and Pixel 10 Pro emulator. Native light/dark synthetic fixtures visually reviewed. Normal production entrypoints restored and launch exited successfully on both platforms.
 - M4 is closed. No M5 implementation started. Full scope and reproducible checks: [m4-closure.md](m4-closure.md).
-
 
 ### 2026-10-24 — M4 Library hub redesign (complete)
 
@@ -719,7 +721,6 @@ All implementation gaps identified in this review are fixed. M1 native storage a
   reload reported a stale removed-widget teardown event; a subsequent reload and
   runtime-error check were clean. No interactive device-driver test was run.
 
-
 ### 2026-10-18 — M4 mobile Define Workouts editor (complete)
 
 - `programme_builder_workouts.dart` implements the third stage as a mobile-only,
@@ -742,7 +743,6 @@ All implementation gaps identified in this review are fixed. M1 native storage a
   pending-save timing failure only. Mobile renders were inspected. Live MCP hot
   reload/runtime-error checks passed; interactive driver testing was unavailable
   because the running app does not enable the Flutter driver extension.
-
 
 ### 2026-10-18 — M4 Programme Builder app-bar Back (complete)
 
@@ -800,7 +800,6 @@ All implementation gaps identified in this review are fixed. M1 native storage a
   passed, and rendered 390px Details/Schedule pages were inspected using the
   local font. Device smoke testing was not run.
 
-
 ### 2026-10-17 — M4 independent rest and elapsed workout timers (complete)
 
 - `workout_runner_active_view.dart` uses the supplied bottom rest panel for both
@@ -840,7 +839,6 @@ All implementation gaps identified in this review are fixed. M1 native storage a
   `git diff --check` passed.
   A 390×1450 render was inspected; compact 320px / 2× text and light/dark
   geometry/interaction checks are covered. Device smoke testing was not run.
-
 
 ### 2026-08-22 — Workout Runner superset execution block runner (complete)
 
