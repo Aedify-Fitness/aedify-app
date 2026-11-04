@@ -58,7 +58,7 @@ session display names, which remain private and are excluded from diagnostic,
 export and AI payload use. Plateau DTOs/flag basis remain unchanged and exclude
 these names. No schema or dependency changes were needed.
 
-M5-006 retains ownership of app-wide recomputation/invalidation integration.
+M5-006 now supplies [app-wide recomputation/invalidation integration](analytics-consistency.md).
 M5-007 retains milestone-wide acceptance; notification and AI suggestion flows
 remain in their owning later milestones. This ticket supplies the dashboard,
 local review/dismissal and drilldown UI using M5-001–004 services.

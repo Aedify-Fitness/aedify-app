@@ -129,11 +129,43 @@ class DriftPlateauRepository implements PlateauRepository {
   @override
   Stream<List<PlateauEvaluation>> watchEvaluations({
     required DateTime Function() now,
-  }) async* {
+  }) {
     StreamSubscription<Set<TableUpdate>>? updates;
     Timer? refresh;
-    late StreamController<void> triggers;
-    triggers = StreamController<void>(
+    late StreamController<List<PlateauEvaluation>> results;
+    var active = true;
+    var running = false;
+    var pending = false;
+
+    Future<void> drain() async {
+      if (running || !active) return;
+      running = true;
+      try {
+        while (pending && active) {
+          pending = false;
+          try {
+            final evaluations = await recompute(now: now());
+            if (active) results.add(evaluations);
+          } catch (_) {
+            // Keep watching after a failed derived write. No SQL errors or
+            // private values may bypass this boundary, including on retry.
+            if (active) {
+              results.addError(PlateauFailure.unavailable, StackTrace.empty);
+            }
+          }
+        }
+      } finally {
+        running = false;
+      }
+    }
+
+    void enqueue() {
+      if (!active) return;
+      pending = true;
+      unawaited(drain());
+    }
+
+    results = StreamController<List<PlateauEvaluation>>(
       onListen: () {
         updates = _db
             .tableUpdates(
@@ -147,22 +179,29 @@ class DriftPlateauRepository implements PlateauRepository {
                 _db.plateauFlags,
               ]),
             )
-            .listen((_) => triggers.add(null), onError: triggers.addError);
-        refresh = Timer.periodic(_refreshInterval, (_) => triggers.add(null));
-        triggers.add(null);
+            .listen(
+              (_) => enqueue(),
+              onError: (Object _) {
+                if (active) {
+                  results.addError(
+                    PlateauFailure.unavailable,
+                    StackTrace.empty,
+                  );
+                }
+              },
+            );
+        refresh = Timer.periodic(_refreshInterval, (_) => enqueue());
+        enqueue();
       },
-      onCancel: () async {
+      onCancel: () {
+        // Cancel synchronously, even if an in-flight database transaction has
+        // not finished. Its result is discarded after the listener leaves.
+        active = false;
         refresh?.cancel();
-        await updates?.cancel();
+        return updates?.cancel();
       },
     );
-    try {
-      await for (final _ in triggers.stream) {
-        yield await recompute(now: now());
-      }
-    } catch (_) {
-      throw PlateauFailure.unavailable;
-    }
+    return results.stream;
   }
 
   static String _basis(PlateauEvaluation evaluation) => jsonEncode({

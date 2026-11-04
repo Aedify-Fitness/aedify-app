@@ -4,11 +4,11 @@
 
 | Field             | Value                                                                                                                                                                                                                                                                         |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-005 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                     |
-| Implemented       | M5 query/PR/e1RM/plateau services plus the Stats dashboard and named exercise-history screens: charts, saved-unit conversion, records, workouts, warm-up history and local plateau dismissal. M5-006 app-wide consistency work remains pending.                               |
-| Verification      | V1-M5-005 (2026-10-26): format checked 839 files, analysis clean, all **1,789 tests passed**, zero failures/skips, including 16 new mapper/widget cases. Native offline light/dark flows pass on iOS/Android; iOS captures reviewed; normal app entrypoints restored on both. |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-006 complete (2026-11-04), awaiting user review.** M4 remains closed. |
+| Implemented       | Read-derived PR/e1RM/charts and app-wide plateau reconciliation now follow committed source changes, with safe recovery, coalesced work and cancellation. [Consistency policy and changed files](analytics-consistency.md). |
+| Verification      | V1-M5-006: formatting checked 841 files; analysis clean; all **1,801 tests passed**, zero failures/skips. Focused suite 33/33 includes 12 new consistency fixtures. Native checks were not repeated for this data/application-only ticket. |
 | Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+.                                                |
-| Next ticket       | **V1-M5-006 — Analytics invalidation after edits/deletes: not started.** Await explicit user go-ahead after V1-M5-005 review.                                                                                                                                                 |
+| Next ticket       | **V1-M5-007 — M5 analytics acceptance fixture suite: not started.** Stop after M5-006 for review; explicit user go-ahead is required. |
 | Evidence          | [Analytics UI policy, files and verification](analytics-ui.md), [plateau policy](plateau-detection.md), [e1RM policy](e1rm-estimation.md) and prior completion entries. Existing live Firebase/BYOK acceptance boundaries remain separate.                                    |
 
 ## M1–M4 closure review — 2026-10-25
@@ -16,6 +16,13 @@
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-04 — V1-M5-006 analytics invalidation after edits/deletes
+
+- Retained a readiness-gated app job that reconciles local plateau flags before Stats is opened and shares the screen's evaluation stream. Startup catches stale flags; committed edits, completion/cancellation, deletion and exercise metadata changes refresh derived state. PR/e1RM/charts remain computed on read. [Policy and changed files](analytics-consistency.md).
+- Plateau watching now coalesces pending triggers, runs recomputation serially, preserves safe errors and retries after failed derived writes. Cancelling stops timers immediately even during an in-flight database transaction. No source-log, schema, dependency, notification or AI changes.
+- Added 12 real SQLite/repository/provider cases covering corrections, historical PR rebuilding, warm-up flips/history, deletion/orphans, custom archival, atomic commit/rollback, sanitized recovery and app subscription ownership. Formatting checked 841 files, analysis clean, focused suite 33/33 and full suite **1,801/1,801 passed**, zero failures/skips. The temporary test-only native-hook override used a package-hash-verified cached SQLite binary and was restored; native device checks were not repeated.
+- **Stop after V1-M5-006 for user review; V1-M5-007 requires the user's go-ahead.**
 
 ### 2026-10-26 — V1-M5-005 analytics dashboard and exercise history screens
 

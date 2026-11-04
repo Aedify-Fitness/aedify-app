@@ -71,8 +71,9 @@ idempotent so observing flags does not create an update loop.
 `PlateauProviders` supplies repository/clock injection, async evaluation states
 and a dismissal controller with safe failures and retry. UI does not access
 Drift directly. M5-005 consumes these APIs for dashboard indicators and review;
-M5-006 owns app-wide recomputation integration. Notification and AI suggestion
-flows remain in their owning milestones. Device upgrade/UI acceptance belongs
+M5-006 now supplies [app-wide recomputation integration](analytics-consistency.md),
+including startup gating and recovery after failed derived writes. Notification
+and AI suggestion flows remain in their owning milestones. Device upgrade/UI acceptance belongs
 to the later M5 acceptance work; no mobile screens were changed here.
 
 ## Changed files and verification

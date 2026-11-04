@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-04 — M5-006 analytics consistency after edits/deletes
+
+- Keep local plateau reconciliation running after successful startup, including before Stats is opened. App and screens share the same stream; startup repairs stale flags. PRs, e1RM and charts continue to derive from current committed logs.
+- Recover after failed flag writes with safe errors and automatic retry on the next change/tick. Coalesce pending work and cancel timers immediately when the app subscription ends.
+- Add 12 SQLite/repository/provider regressions for correction, warm-up classification, completion/cancellation/deletion, custom history, atomic rollback, failure recovery and subscription ownership. Format checked 841 files; analysis clean; full suite **1,801 passed**, zero failures/skips. [Files, policy and verification](analytics-consistency.md).
+- Schema/dependencies remain unchanged. Native checks were not repeated for this data/application-only ticket. Pause for review before M5-007.
+
 ## 2026-10-26 — M5 analytics dashboard and exercise history UI (V1-M5-005)
 
 - Replaced the Stats placeholder with local counts, weekly volume/comparison, records, recent workouts, exercise links and plateau review/dismissal. Added a named exercise drilldown with reliable Epley/volume charts, confidence-aware estimates, all-time bests and saved warm-up/working-set history.
