@@ -28172,6 +28172,687 @@ class ProgramRevisionsCompanion extends UpdateCompanion<ProgramRevision> {
   }
 }
 
+class $PlateauFlagsTable extends PlateauFlags
+    with TableInfo<$PlateauFlagsTable, PlateauFlag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlateauFlagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _plateauTypeMeta = const VerificationMeta(
+    'plateauType',
+  );
+  @override
+  late final GeneratedColumn<String> plateauType = GeneratedColumn<String>(
+    'plateau_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('e1rm_stall'),
+  );
+  static const VerificationMeta _basisJsonMeta = const VerificationMeta(
+    'basisJson',
+  );
+  @override
+  late final GeneratedColumn<String> basisJson = GeneratedColumn<String>(
+    'basis_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _firstDetectedAtMeta = const VerificationMeta(
+    'firstDetectedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> firstDetectedAt =
+      GeneratedColumn<DateTime>(
+        'first_detected_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _lastDetectedAtMeta = const VerificationMeta(
+    'lastDetectedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastDetectedAt =
+      GeneratedColumn<DateTime>(
+        'last_detected_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _dismissedAtMeta = const VerificationMeta(
+    'dismissedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dismissedAt = GeneratedColumn<DateTime>(
+    'dismissed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _resolvedAtMeta = const VerificationMeta(
+    'resolvedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> resolvedAt = GeneratedColumn<DateTime>(
+    'resolved_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    exerciseId,
+    status,
+    plateauType,
+    basisJson,
+    firstDetectedAt,
+    lastDetectedAt,
+    dismissedAt,
+    resolvedAt,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'plateau_flags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PlateauFlag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('plateau_type')) {
+      context.handle(
+        _plateauTypeMeta,
+        plateauType.isAcceptableOrUnknown(
+          data['plateau_type']!,
+          _plateauTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('basis_json')) {
+      context.handle(
+        _basisJsonMeta,
+        basisJson.isAcceptableOrUnknown(data['basis_json']!, _basisJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_basisJsonMeta);
+    }
+    if (data.containsKey('first_detected_at')) {
+      context.handle(
+        _firstDetectedAtMeta,
+        firstDetectedAt.isAcceptableOrUnknown(
+          data['first_detected_at']!,
+          _firstDetectedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_firstDetectedAtMeta);
+    }
+    if (data.containsKey('last_detected_at')) {
+      context.handle(
+        _lastDetectedAtMeta,
+        lastDetectedAt.isAcceptableOrUnknown(
+          data['last_detected_at']!,
+          _lastDetectedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastDetectedAtMeta);
+    }
+    if (data.containsKey('dismissed_at')) {
+      context.handle(
+        _dismissedAtMeta,
+        dismissedAt.isAcceptableOrUnknown(
+          data['dismissed_at']!,
+          _dismissedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('resolved_at')) {
+      context.handle(
+        _resolvedAtMeta,
+        resolvedAt.isAcceptableOrUnknown(data['resolved_at']!, _resolvedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlateauFlag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlateauFlag(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      plateauType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plateau_type'],
+      )!,
+      basisJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}basis_json'],
+      )!,
+      firstDetectedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}first_detected_at'],
+      )!,
+      lastDetectedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_detected_at'],
+      )!,
+      dismissedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}dismissed_at'],
+      ),
+      resolvedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}resolved_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PlateauFlagsTable createAlias(String alias) {
+    return $PlateauFlagsTable(attachedDatabase, alias);
+  }
+}
+
+class PlateauFlag extends DataClass implements Insertable<PlateauFlag> {
+  final String id;
+  final int exerciseId;
+  final String status;
+  final String plateauType;
+  final String basisJson;
+  final DateTime firstDetectedAt;
+  final DateTime lastDetectedAt;
+  final DateTime? dismissedAt;
+  final DateTime? resolvedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const PlateauFlag({
+    required this.id,
+    required this.exerciseId,
+    required this.status,
+    required this.plateauType,
+    required this.basisJson,
+    required this.firstDetectedAt,
+    required this.lastDetectedAt,
+    this.dismissedAt,
+    this.resolvedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['status'] = Variable<String>(status);
+    map['plateau_type'] = Variable<String>(plateauType);
+    map['basis_json'] = Variable<String>(basisJson);
+    map['first_detected_at'] = Variable<DateTime>(firstDetectedAt);
+    map['last_detected_at'] = Variable<DateTime>(lastDetectedAt);
+    if (!nullToAbsent || dismissedAt != null) {
+      map['dismissed_at'] = Variable<DateTime>(dismissedAt);
+    }
+    if (!nullToAbsent || resolvedAt != null) {
+      map['resolved_at'] = Variable<DateTime>(resolvedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PlateauFlagsCompanion toCompanion(bool nullToAbsent) {
+    return PlateauFlagsCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      status: Value(status),
+      plateauType: Value(plateauType),
+      basisJson: Value(basisJson),
+      firstDetectedAt: Value(firstDetectedAt),
+      lastDetectedAt: Value(lastDetectedAt),
+      dismissedAt: dismissedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dismissedAt),
+      resolvedAt: resolvedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(resolvedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PlateauFlag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlateauFlag(
+      id: serializer.fromJson<String>(json['id']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      status: serializer.fromJson<String>(json['status']),
+      plateauType: serializer.fromJson<String>(json['plateauType']),
+      basisJson: serializer.fromJson<String>(json['basisJson']),
+      firstDetectedAt: serializer.fromJson<DateTime>(json['firstDetectedAt']),
+      lastDetectedAt: serializer.fromJson<DateTime>(json['lastDetectedAt']),
+      dismissedAt: serializer.fromJson<DateTime?>(json['dismissedAt']),
+      resolvedAt: serializer.fromJson<DateTime?>(json['resolvedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'status': serializer.toJson<String>(status),
+      'plateauType': serializer.toJson<String>(plateauType),
+      'basisJson': serializer.toJson<String>(basisJson),
+      'firstDetectedAt': serializer.toJson<DateTime>(firstDetectedAt),
+      'lastDetectedAt': serializer.toJson<DateTime>(lastDetectedAt),
+      'dismissedAt': serializer.toJson<DateTime?>(dismissedAt),
+      'resolvedAt': serializer.toJson<DateTime?>(resolvedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PlateauFlag copyWith({
+    String? id,
+    int? exerciseId,
+    String? status,
+    String? plateauType,
+    String? basisJson,
+    DateTime? firstDetectedAt,
+    DateTime? lastDetectedAt,
+    Value<DateTime?> dismissedAt = const Value.absent(),
+    Value<DateTime?> resolvedAt = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => PlateauFlag(
+    id: id ?? this.id,
+    exerciseId: exerciseId ?? this.exerciseId,
+    status: status ?? this.status,
+    plateauType: plateauType ?? this.plateauType,
+    basisJson: basisJson ?? this.basisJson,
+    firstDetectedAt: firstDetectedAt ?? this.firstDetectedAt,
+    lastDetectedAt: lastDetectedAt ?? this.lastDetectedAt,
+    dismissedAt: dismissedAt.present ? dismissedAt.value : this.dismissedAt,
+    resolvedAt: resolvedAt.present ? resolvedAt.value : this.resolvedAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PlateauFlag copyWithCompanion(PlateauFlagsCompanion data) {
+    return PlateauFlag(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      status: data.status.present ? data.status.value : this.status,
+      plateauType: data.plateauType.present
+          ? data.plateauType.value
+          : this.plateauType,
+      basisJson: data.basisJson.present ? data.basisJson.value : this.basisJson,
+      firstDetectedAt: data.firstDetectedAt.present
+          ? data.firstDetectedAt.value
+          : this.firstDetectedAt,
+      lastDetectedAt: data.lastDetectedAt.present
+          ? data.lastDetectedAt.value
+          : this.lastDetectedAt,
+      dismissedAt: data.dismissedAt.present
+          ? data.dismissedAt.value
+          : this.dismissedAt,
+      resolvedAt: data.resolvedAt.present
+          ? data.resolvedAt.value
+          : this.resolvedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlateauFlag(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('status: $status, ')
+          ..write('plateauType: $plateauType, ')
+          ..write('basisJson: $basisJson, ')
+          ..write('firstDetectedAt: $firstDetectedAt, ')
+          ..write('lastDetectedAt: $lastDetectedAt, ')
+          ..write('dismissedAt: $dismissedAt, ')
+          ..write('resolvedAt: $resolvedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    exerciseId,
+    status,
+    plateauType,
+    basisJson,
+    firstDetectedAt,
+    lastDetectedAt,
+    dismissedAt,
+    resolvedAt,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlateauFlag &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.status == this.status &&
+          other.plateauType == this.plateauType &&
+          other.basisJson == this.basisJson &&
+          other.firstDetectedAt == this.firstDetectedAt &&
+          other.lastDetectedAt == this.lastDetectedAt &&
+          other.dismissedAt == this.dismissedAt &&
+          other.resolvedAt == this.resolvedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PlateauFlagsCompanion extends UpdateCompanion<PlateauFlag> {
+  final Value<String> id;
+  final Value<int> exerciseId;
+  final Value<String> status;
+  final Value<String> plateauType;
+  final Value<String> basisJson;
+  final Value<DateTime> firstDetectedAt;
+  final Value<DateTime> lastDetectedAt;
+  final Value<DateTime?> dismissedAt;
+  final Value<DateTime?> resolvedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const PlateauFlagsCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.plateauType = const Value.absent(),
+    this.basisJson = const Value.absent(),
+    this.firstDetectedAt = const Value.absent(),
+    this.lastDetectedAt = const Value.absent(),
+    this.dismissedAt = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PlateauFlagsCompanion.insert({
+    required String id,
+    required int exerciseId,
+    required String status,
+    this.plateauType = const Value.absent(),
+    required String basisJson,
+    required DateTime firstDetectedAt,
+    required DateTime lastDetectedAt,
+    this.dismissedAt = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       exerciseId = Value(exerciseId),
+       status = Value(status),
+       basisJson = Value(basisJson),
+       firstDetectedAt = Value(firstDetectedAt),
+       lastDetectedAt = Value(lastDetectedAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<PlateauFlag> custom({
+    Expression<String>? id,
+    Expression<int>? exerciseId,
+    Expression<String>? status,
+    Expression<String>? plateauType,
+    Expression<String>? basisJson,
+    Expression<DateTime>? firstDetectedAt,
+    Expression<DateTime>? lastDetectedAt,
+    Expression<DateTime>? dismissedAt,
+    Expression<DateTime>? resolvedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (status != null) 'status': status,
+      if (plateauType != null) 'plateau_type': plateauType,
+      if (basisJson != null) 'basis_json': basisJson,
+      if (firstDetectedAt != null) 'first_detected_at': firstDetectedAt,
+      if (lastDetectedAt != null) 'last_detected_at': lastDetectedAt,
+      if (dismissedAt != null) 'dismissed_at': dismissedAt,
+      if (resolvedAt != null) 'resolved_at': resolvedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PlateauFlagsCompanion copyWith({
+    Value<String>? id,
+    Value<int>? exerciseId,
+    Value<String>? status,
+    Value<String>? plateauType,
+    Value<String>? basisJson,
+    Value<DateTime>? firstDetectedAt,
+    Value<DateTime>? lastDetectedAt,
+    Value<DateTime?>? dismissedAt,
+    Value<DateTime?>? resolvedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return PlateauFlagsCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      status: status ?? this.status,
+      plateauType: plateauType ?? this.plateauType,
+      basisJson: basisJson ?? this.basisJson,
+      firstDetectedAt: firstDetectedAt ?? this.firstDetectedAt,
+      lastDetectedAt: lastDetectedAt ?? this.lastDetectedAt,
+      dismissedAt: dismissedAt ?? this.dismissedAt,
+      resolvedAt: resolvedAt ?? this.resolvedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (plateauType.present) {
+      map['plateau_type'] = Variable<String>(plateauType.value);
+    }
+    if (basisJson.present) {
+      map['basis_json'] = Variable<String>(basisJson.value);
+    }
+    if (firstDetectedAt.present) {
+      map['first_detected_at'] = Variable<DateTime>(firstDetectedAt.value);
+    }
+    if (lastDetectedAt.present) {
+      map['last_detected_at'] = Variable<DateTime>(lastDetectedAt.value);
+    }
+    if (dismissedAt.present) {
+      map['dismissed_at'] = Variable<DateTime>(dismissedAt.value);
+    }
+    if (resolvedAt.present) {
+      map['resolved_at'] = Variable<DateTime>(resolvedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlateauFlagsCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('status: $status, ')
+          ..write('plateauType: $plateauType, ')
+          ..write('basisJson: $basisJson, ')
+          ..write('firstDetectedAt: $firstDetectedAt, ')
+          ..write('lastDetectedAt: $lastDetectedAt, ')
+          ..write('dismissedAt: $dismissedAt, ')
+          ..write('resolvedAt: $resolvedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -28230,6 +28911,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProgramRevisionsTable programRevisions = $ProgramRevisionsTable(
     this,
   );
+  late final $PlateauFlagsTable plateauFlags = $PlateauFlagsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -28264,6 +28946,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     workoutSessionExercises,
     setLogs,
     programRevisions,
+    plateauFlags,
   ];
 }
 
@@ -41263,6 +41946,332 @@ typedef $$ProgramRevisionsTableProcessedTableManager =
       ProgramRevision,
       PrefetchHooks Function()
     >;
+typedef $$PlateauFlagsTableCreateCompanionBuilder =
+    PlateauFlagsCompanion Function({
+      required String id,
+      required int exerciseId,
+      required String status,
+      Value<String> plateauType,
+      required String basisJson,
+      required DateTime firstDetectedAt,
+      required DateTime lastDetectedAt,
+      Value<DateTime?> dismissedAt,
+      Value<DateTime?> resolvedAt,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$PlateauFlagsTableUpdateCompanionBuilder =
+    PlateauFlagsCompanion Function({
+      Value<String> id,
+      Value<int> exerciseId,
+      Value<String> status,
+      Value<String> plateauType,
+      Value<String> basisJson,
+      Value<DateTime> firstDetectedAt,
+      Value<DateTime> lastDetectedAt,
+      Value<DateTime?> dismissedAt,
+      Value<DateTime?> resolvedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$PlateauFlagsTableFilterComposer
+    extends Composer<_$AppDatabase, $PlateauFlagsTable> {
+  $$PlateauFlagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plateauType => $composableBuilder(
+    column: $table.plateauType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get basisJson => $composableBuilder(
+    column: $table.basisJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get firstDetectedAt => $composableBuilder(
+    column: $table.firstDetectedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastDetectedAt => $composableBuilder(
+    column: $table.lastDetectedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dismissedAt => $composableBuilder(
+    column: $table.dismissedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PlateauFlagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlateauFlagsTable> {
+  $$PlateauFlagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get plateauType => $composableBuilder(
+    column: $table.plateauType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get basisJson => $composableBuilder(
+    column: $table.basisJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get firstDetectedAt => $composableBuilder(
+    column: $table.firstDetectedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastDetectedAt => $composableBuilder(
+    column: $table.lastDetectedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dismissedAt => $composableBuilder(
+    column: $table.dismissedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PlateauFlagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlateauFlagsTable> {
+  $$PlateauFlagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get plateauType => $composableBuilder(
+    column: $table.plateauType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get basisJson =>
+      $composableBuilder(column: $table.basisJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get firstDetectedAt => $composableBuilder(
+    column: $table.firstDetectedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastDetectedAt => $composableBuilder(
+    column: $table.lastDetectedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get dismissedAt => $composableBuilder(
+    column: $table.dismissedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$PlateauFlagsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PlateauFlagsTable,
+          PlateauFlag,
+          $$PlateauFlagsTableFilterComposer,
+          $$PlateauFlagsTableOrderingComposer,
+          $$PlateauFlagsTableAnnotationComposer,
+          $$PlateauFlagsTableCreateCompanionBuilder,
+          $$PlateauFlagsTableUpdateCompanionBuilder,
+          (
+            PlateauFlag,
+            BaseReferences<_$AppDatabase, $PlateauFlagsTable, PlateauFlag>,
+          ),
+          PlateauFlag,
+          PrefetchHooks Function()
+        > {
+  $$PlateauFlagsTableTableManager(_$AppDatabase db, $PlateauFlagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlateauFlagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlateauFlagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlateauFlagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> plateauType = const Value.absent(),
+                Value<String> basisJson = const Value.absent(),
+                Value<DateTime> firstDetectedAt = const Value.absent(),
+                Value<DateTime> lastDetectedAt = const Value.absent(),
+                Value<DateTime?> dismissedAt = const Value.absent(),
+                Value<DateTime?> resolvedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PlateauFlagsCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                status: status,
+                plateauType: plateauType,
+                basisJson: basisJson,
+                firstDetectedAt: firstDetectedAt,
+                lastDetectedAt: lastDetectedAt,
+                dismissedAt: dismissedAt,
+                resolvedAt: resolvedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int exerciseId,
+                required String status,
+                Value<String> plateauType = const Value.absent(),
+                required String basisJson,
+                required DateTime firstDetectedAt,
+                required DateTime lastDetectedAt,
+                Value<DateTime?> dismissedAt = const Value.absent(),
+                Value<DateTime?> resolvedAt = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PlateauFlagsCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                status: status,
+                plateauType: plateauType,
+                basisJson: basisJson,
+                firstDetectedAt: firstDetectedAt,
+                lastDetectedAt: lastDetectedAt,
+                dismissedAt: dismissedAt,
+                resolvedAt: resolvedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PlateauFlagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PlateauFlagsTable,
+      PlateauFlag,
+      $$PlateauFlagsTableFilterComposer,
+      $$PlateauFlagsTableOrderingComposer,
+      $$PlateauFlagsTableAnnotationComposer,
+      $$PlateauFlagsTableCreateCompanionBuilder,
+      $$PlateauFlagsTableUpdateCompanionBuilder,
+      (
+        PlateauFlag,
+        BaseReferences<_$AppDatabase, $PlateauFlagsTable, PlateauFlag>,
+      ),
+      PlateauFlag,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -41341,4 +42350,6 @@ class $AppDatabaseManager {
       $$SetLogsTableTableManager(_db, _db.setLogs);
   $$ProgramRevisionsTableTableManager get programRevisions =>
       $$ProgramRevisionsTableTableManager(_db, _db.programRevisions);
+  $$PlateauFlagsTableTableManager get plateauFlags =>
+      $$PlateauFlagsTableTableManager(_db, _db.plateauFlags);
 }

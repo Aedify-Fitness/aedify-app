@@ -35,6 +35,7 @@ import 'package:aedify/features/lift_log/presentation/lift_log_screen.dart';
 import 'package:aedify/features/lift_log/presentation/workout_history_detail_screen.dart';
 import 'package:aedify/features/programmes/presentation/saved_workout_library_screen.dart';
 import 'package:aedify/features/analytics/presentation/analytics_screen.dart';
+import 'package:aedify/features/analytics/presentation/analytics_exercise_history_screen.dart';
 import 'package:aedify/features/ai_trainer_chat/presentation/ai_chat_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_media_screen.dart';
 import 'package:aedify/features/sharing/presentation/sharing_screen.dart';
@@ -271,6 +272,13 @@ class AppRouter {
           ],
         ),
         // Non-shell routes (no bottom nav)
+        GoRoute(
+          path: AppRoutes.analyticsExerciseHistory().path,
+          name: AppRoutes.analyticsExerciseHistory().name,
+          builder: (context, state) => AnalyticsExerciseHistoryScreen(
+            exerciseId: int.tryParse(state.pathParameters['id'] ?? ''),
+          ),
+        ),
         GoRoute(
           path: AppRoutes.workoutRunnerStandalone().path,
           name: AppRoutes.workoutRunnerStandalone().name,

@@ -1,5 +1,49 @@
 # Aedify — Changelog
 
+## 2026-11-04 — M5-007 analytics acceptance fixtures and privacy gate
+
+- Added six file-backed SQLite fixtures for no history, progression, plateau, heavy warm-ups, corrected logs and custom exercises, plus integrity/failure/cooldown checks. Fixed expectations cover PRs, reliable Epley trends, weekly volumes/comparisons and plateau outcomes across all session sources.
+- A failing privacy sentinel exposed derived metrics passing through unknown Crashlytics log metadata keys. `CrashlyticsService.logSafe` now applies the existing diagnostic allowlist before redaction; allowed diagnostic fields still pass.
+- Extended native analytics acceptance with the real app's background detection, imperial display, live corrections, durable dismissal after disk reopen, deletion and empty history. Both native flows passed on iOS/Android with zero HTTP calls; light/dark previews were reviewed. Format checked 843 files, analysis clean, focused diagnostics/acceptance 70/70 and full suite **1,816/1,816 passed**. Final strengthened fixture assertions also passed all 15 cases. [Gate, coverage and changed files](m5-acceptance.md).
+- Normal app entrypoints were restored/launched on both devices. Temporary native-hook/build workarounds were removed; no schema/dependency/iOS configuration changes remain. Stop after M5-007 for review; M6 is not started.
+
+## 2026-11-04 — M5-006 analytics consistency after edits/deletes
+
+- Keep local plateau reconciliation running after successful startup, including before Stats is opened. App and screens share the same stream; startup repairs stale flags. PRs, e1RM and charts continue to derive from current committed logs.
+- Recover after failed flag writes with safe errors and automatic retry on the next change/tick. Coalesce pending work and cancel timers immediately when the app subscription ends.
+- Add 12 SQLite/repository/provider regressions for correction, warm-up classification, completion/cancellation/deletion, custom history, atomic rollback, failure recovery and subscription ownership. Format checked 841 files; analysis clean; full suite **1,801 passed**, zero failures/skips. [Files, policy and verification](analytics-consistency.md).
+- Schema/dependencies remain unchanged. Native checks were not repeated for this data/application-only ticket. Pause for review before M5-007.
+
+## 2026-10-26 — M5 analytics dashboard and exercise history UI (V1-M5-005)
+
+- Replaced the Stats placeholder with local counts, weekly volume/comparison, records, recent workouts, exercise links and plateau review/dismissal. Added a named exercise drilldown with reliable Epley/volume charts, confidence-aware estimates, all-time bests and saved warm-up/working-set history.
+- Added application mapping/providers, display-only saved-unit conversion and an accessible shared chart with tooltips/data tables. Loading/empty/unsupported/retry states and responsive light/dark surfaces follow DESIGN.md. No schema/dependency changes or network calls.
+- Format (839 files), clean analysis and all 1,789 tests passed with zero failures/skips, including 16 new mapping/widget cases. Native offline UI acceptance passes on iOS/Android; iOS light/dark previews reviewed and normal app entrypoints restored on both. [Policy, files and evidence](analytics-ui.md). Pause before V1-M5-006.
+
+## 2026-10-26 — M5 plateau detection base logic (V1-M5-004)
+
+- Added the locked 28-day/four-session/rolling-three Epley slope detector, with explicit insufficient-history/deload/inactive/unsupported outcomes and derived missed-target/high-effort evidence codes. Programme-week context is ownership checked; missing context fails closed.
+- Schema v19 adds transactional local plateau flags, idempotent reconciliation, durable 14-day dismissal and resolution after source changes. Riverpod exposes live evaluation/dismissal workflows. Source logs remain unchanged; no UI, AI, notification or dependency changes.
+- Code generation and formatting (826 files) completed; analysis is clean and all 1,773 full-suite tests passed, zero failures/skips, including 35 new plateau regressions. [Policy, boundaries and files](plateau-detection.md). Pause before V1-M5-005.
+
+## 2026-10-26 — M5 e1RM estimation (V1-M5-003)
+
+- Added exact PRD Epley estimation, confidence metadata, an explicit insufficient-data summary and minimal future-anchor candidates. Positive weighted strength actuals qualify; unsupported/bodyweight-only/non-finite evidence is excluded. Estimates above 10 reps remain available as low confidence and cannot establish e1RM PRs or anchors.
+- PR detection now includes standard-confidence e1RM records and shares deterministic source ordering with estimation. Both derive from local queries and refresh after corrections/deletions. No source-log writes, schema/dependency changes, AI calls or UI changes.
+- Format checked 818 files; all 79 analytics tests passed, including 30 new e1RM cases. Final analysis is clean; all 1,738 full-suite tests passed with zero failures/skips. [Policy and changed files](e1rm-estimation.md). Pause before V1-M5-004.
+
+## 2026-10-26 — M5 PR detection service (V1-M5-002)
+
+- Added pure Dart detection for maximum load, reps at the same load, reps-only strength and single-set volume, with immutable current/history DTOs and documented baseline/tie rules. Canonical/custom IDs and all workout sources share deterministic comparisons.
+- Riverpod derives records from full completed-working-set history and automatically rebuilds after corrections/deletions. No source-log flags, cache, schema, dependency or UI changes. e1RM remains V1-M5-003.
+- Format (813 files), clean analysis and 49 focused analytics tests pass, including 31 new PR regressions. All 1,708 full-suite tests passed, zero failures/skips. Policy and files: [PR detection](pr-detection.md). Pause for review before V1-M5-003.
+
+## 2026-10-26 — M5 first ticket: completed-log analytics queries
+
+- V1-M5-001 adds read-only analytics repositories, immutable evidence/query types and Riverpod access under `lib/features/analytics/`. Default evidence includes completed working sets from finished sessions, preserving canonical units and source identity while excluding warm-ups, skipped/incomplete sets and inactive/deleted/orphaned sessions.
+- Streams refresh on corrections, deletions and source metadata changes. Archived/missing exercise metadata retains history; database failures expose safe codes without private error contents. No cache, schema, dependency or UI changes.
+- Verification: `dart format .` checked 809 files, `flutter analyze` clean, 18 focused SQLite/Riverpod regressions and all 1,677 full-suite tests passed, zero failures/skips. Native UI checks were not repeated for this data-only ticket. Ticket-by-ticket review is required before V1-M5-002 begins.
+
 ## 2026-10-26 — Match CI to the local Flutter SDK
 
 - Pinned `.github/workflows/foundation.yml` to Flutter 3.44.4 stable (bundled Dart 3.12.2), matching the installed local SDK so CI uses the same formatter version.

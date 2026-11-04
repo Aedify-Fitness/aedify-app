@@ -320,6 +320,9 @@ class AppRadius {
 }
 
 class AppSizing {
+  static const double analyticsChartHeight = 184;
+  static const double analyticsMaxWidth = 680;
+  static const double analyticsDataRowMinWidth = 240;
   AppSizing._();
 
   static const double iconXs = 14;

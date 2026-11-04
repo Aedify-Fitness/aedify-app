@@ -27,6 +27,10 @@ class AppRoutes {
       AppRoutes._(path: '/exercises', name: 'exercises');
   factory AppRoutes.analytics() =>
       AppRoutes._(path: '/analytics', name: 'analytics');
+  factory AppRoutes.analyticsExerciseHistory() => AppRoutes._(
+    path: '/analytics/exercises/:id',
+    name: 'analyticsExerciseHistory',
+  );
   factory AppRoutes.library() => AppRoutes._(path: '/library', name: 'library');
   factory AppRoutes.onboarding() =>
       AppRoutes._(path: '/onboarding', name: 'onboarding');
