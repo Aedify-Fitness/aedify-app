@@ -1,5 +1,11 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const analyticsLoadFailed =
+      'Could not load your training trends. Try again.';
+  static const plateauLoadFailed =
+      'Could not check recent training. Your charts are still available.';
+  static const plateauDismissFailed =
+      'Could not dismiss this signal. Try again.';
   static const weightSuggestionUnavailable =
       'Could not load a weight estimate. You can still log manually.';
   static const weightSuggestionTargetInvalid =

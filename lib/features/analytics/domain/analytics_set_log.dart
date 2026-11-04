@@ -33,6 +33,8 @@ class AnalyticsSetLog {
     this.prescribedWeightKg,
     this.isDeload = false,
     this.isPlateauEligible = true,
+    this.exerciseName,
+    this.sessionName,
   });
 
   final String id;
@@ -65,4 +67,8 @@ class AnalyticsSetLog {
 
   /// Whether current catalogue metadata permits plateau evaluation.
   final bool isPlateauEligible;
+
+  /// Local display metadata; never diagnostic, export or AI payload content.
+  final String? exerciseName;
+  final String? sessionName;
 }

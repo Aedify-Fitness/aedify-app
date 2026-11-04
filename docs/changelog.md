@@ -1,5 +1,11 @@
 # Aedify — Changelog
 
+## 2026-10-26 — M5 analytics dashboard and exercise history UI (V1-M5-005)
+
+- Replaced the Stats placeholder with local counts, weekly volume/comparison, records, recent workouts, exercise links and plateau review/dismissal. Added a named exercise drilldown with reliable Epley/volume charts, confidence-aware estimates, all-time bests and saved warm-up/working-set history.
+- Added application mapping/providers, display-only saved-unit conversion and an accessible shared chart with tooltips/data tables. Loading/empty/unsupported/retry states and responsive light/dark surfaces follow DESIGN.md. No schema/dependency changes or network calls.
+- Format (839 files), clean analysis and all 1,789 tests passed with zero failures/skips, including 16 new mapping/widget cases. Native offline UI acceptance passes on iOS/Android; iOS light/dark previews reviewed and normal app entrypoints restored on both. [Policy, files and evidence](analytics-ui.md). Pause before V1-M5-006.
+
 ## 2026-10-26 — M5 plateau detection base logic (V1-M5-004)
 
 - Added the locked 28-day/four-session/rolling-three Epley slope detector, with explicit insufficient-history/deload/inactive/unsupported outcomes and derived missed-target/high-effort evidence codes. Programme-week context is ownership checked; missing context fails closed.

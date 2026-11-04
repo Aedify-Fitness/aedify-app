@@ -2,20 +2,27 @@
 
 ## Current Status
 
-| Field             | Value                                                                                                                                                                                                                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-004 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                                              |
-| Implemented       | M5 completed-log queries, PR/e1RM services and deterministic plateau detection with local flags, durable 14-day dismissal, source reconciliation and Riverpod workflows. Dashboard and app-wide recomputation integration remain in M5-005/006.                                                        |
-| Verification      | V1-M5-004 (2026-10-26): generation completed, format checked 826 files, analysis clean, all **1,773 tests passed**, zero failures/skips, including 35 new plateau cases. Migration/rollback/restart fixtures pass; native UI checks were not repeated. Live Firebase/BYOK acceptance remains separate. |
-| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+.                                                                         |
-| Next ticket       | **V1-M5-005 — Analytics dashboard and exercise history screens: not started.** Await explicit user go-ahead after V1-M5-004 review.                                                                                                                                                                    |
-| Evidence          | [Plateau policy, changed files and verification](plateau-detection.md), [e1RM policy](e1rm-estimation.md), [PR policy](pr-detection.md) and completed-ticket entries below. Prior M1–M4 reports retain native/live boundaries.                                                                         |
+| Field             | Value                                                                                                                                                                                                                                                                         |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-005 complete (2026-10-26), awaiting user review.** M4 remains closed.                                                                                                                                                     |
+| Implemented       | M5 query/PR/e1RM/plateau services plus the Stats dashboard and named exercise-history screens: charts, saved-unit conversion, records, workouts, warm-up history and local plateau dismissal. M5-006 app-wide consistency work remains pending.                               |
+| Verification      | V1-M5-005 (2026-10-26): format checked 839 files, analysis clean, all **1,789 tests passed**, zero failures/skips, including 16 new mapper/widget cases. Native offline light/dark flows pass on iOS/Android; iOS captures reviewed; normal app entrypoints restored on both. |
+| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+.                                                |
+| Next ticket       | **V1-M5-006 — Analytics invalidation after edits/deletes: not started.** Await explicit user go-ahead after V1-M5-005 review.                                                                                                                                                 |
+| Evidence          | [Analytics UI policy, files and verification](analytics-ui.md), [plateau policy](plateau-detection.md), [e1RM policy](e1rm-estimation.md) and prior completion entries. Existing live Firebase/BYOK acceptance boundaries remain separate.                                    |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-10-26 — V1-M5-005 analytics dashboard and exercise history screens
+
+- Built the Stats dashboard and named exercise-history route with working-set counts, weekly external-load volume/comparison, records, recent workouts, exercise links, local plateau review/dismissal, strength/volume trends and all-time saved history. Working-set trends exclude warm-ups; history retains them. High-rep estimates carry low-confidence labels outside the reliable trend. [Policy, files and evidence](analytics-ui.md).
+- Added pure application mapping, DTOs/providers, private local display metadata, saved-unit display conversion and shared token-based Material/chart components. Accessible chart data tables, safe errors/retry, empty/unsupported states, 320px/2× text and light/dark behavior are covered. No widget calls persistence/network/platform services directly; no schema/dependency changes.
+- Verification: format checked 839 files; final analysis is clean; all 1,789 tests passed with zero failures/skips, including 16 new mapper/widget cases. Native offline flows passed on iOS/Android, iOS light/dark dashboard/chart/detail/history captures were reviewed and normal app entrypoints restored on both. M5-006 app-wide consistency work remains separate.
+- **Stop after V1-M5-005 for user review; V1-M5-006 requires the user's go-ahead.**
 
 ### 2026-10-26 — V1-M5-004 plateau detection base logic
 

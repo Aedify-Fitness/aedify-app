@@ -115,6 +115,10 @@ class DriftAnalyticsRepository implements AnalyticsRepository {
         sessionId: session.id,
         sessionExerciseId: member.id,
         exerciseId: log.exerciseId,
+        exerciseName: member.exerciseId == log.exerciseId
+            ? member.exerciseNameSnapshot
+            : exercise?.name,
+        sessionName: session.name,
         source:
             SessionSource.fromDb(session.source) ?? SessionSource.standalone,
         performedAt: log.performedAt,
