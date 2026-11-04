@@ -2,20 +2,28 @@
 
 ## Current Status
 
-| Field             | Value                                                                                                                                                                                                                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-006 complete (2026-11-04), awaiting user review.** M4 remains closed. |
-| Implemented       | Read-derived PR/e1RM/charts and app-wide plateau reconciliation now follow committed source changes, with safe recovery, coalesced work and cancellation. [Consistency policy and changed files](analytics-consistency.md). |
-| Verification      | V1-M5-006: formatting checked 841 files; analysis clean; all **1,801 tests passed**, zero failures/skips. Focused suite 33/33 includes 12 new consistency fixtures. Native checks were not repeated for this data/application-only ticket. |
-| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+.                                                |
-| Next ticket       | **V1-M5-007 — M5 analytics acceptance fixture suite: not started.** Stop after M5-006 for review; explicit user go-ahead is required. |
-| Evidence          | [Analytics UI policy, files and verification](analytics-ui.md), [plateau policy](plateau-detection.md), [e1RM policy](e1rm-estimation.md) and prior completion entries. Existing live Firebase/BYOK acceptance boundaries remain separate.                                    |
+| Field             | Value                                                                                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-007 complete (2026-11-04), awaiting user review.** M4 remains closed; M6 is not started. |
+| Implemented       | Six deterministic analytics fixtures, integrity/privacy gates and extended native app-job/correction/reopen/deletion acceptance. Fixed Crashlytics log metadata bypassing the diagnostic allowlist. [Gate and coverage boundaries](m5-acceptance.md). |
+| Verification      | Format checked 843 files; analysis clean; **1,816 tests passed**, zero failures/skips. Focused diagnostics/acceptance 70/70; final strengthened fixtures 15/15. Both native flows passed on iOS/Android; previews reviewed and normal app entrypoints restored/launched. |
+| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+. |
+| Next ticket       | **Stop after M5-007 for user review.** M6 has not started and requires explicit go-ahead. |
+| Evidence          | [M5 acceptance fixtures, gate and verification](m5-acceptance.md); prior M5 policies remain linked below. Existing live Firebase/BYOK acceptance boundaries remain separate.                                                   |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-04 — V1-M5-007 analytics acceptance fixture suite
+
+- Added six deterministic file-backed SQLite fixtures for no history, progression, plateau, heavy warm-ups, corrected logs and custom exercises. Fifteen new host cases verify fixed PR/e1RM/volume/week-comparison outcomes, source independence, explicit deload/unknown-context suppression, warm-up/unsupported exclusions, correction/deletion, disk-reopen cooldown, safe errors and rollback/retry. Source snapshots, table inventory and per-table counts guard against hidden persistence. [Gate, boundaries and changed files](m5-acceptance.md).
+- The privacy sentinel gate found unknown metadata keys forwarding derived metrics through Crashlytics logs. `CrashlyticsService.logSafe` now applies the existing diagnostic allowlist before redaction, preserving safe codes while blocking current and future private payload fields.
+- Extended native acceptance with actual app-level detection before Stats opens, saved imperial units, live correction, durable dismissal after database/container reopen, deletion and empty history. Both flows passed on iOS/Android with zero Dart HTTP attempts; light/dark captures were reviewed and normal `lib/main.dart` entrypoints restored/launched on both.
+- Verification: format checked 843 files; analysis clean; focused acceptance/diagnostic suite 70/70; full suite **1,816/1,816 passed**, zero failures/skips. Final strengthened fixture assertions passed all 15 cases. Temporary SQLite asset overrides and the simulator upload guard were removed; the user-provided FlutterFire CLI was verified at 1.4.1. No schema/dependency/iOS configuration changes remain. The gate records broader unimplemented planning rows separately rather than certifying them.
+- **Stop after V1-M5-007 for user review. M6 has not started and requires explicit go-ahead.**
 
 ### 2026-11-04 — V1-M5-006 analytics invalidation after edits/deletes
 

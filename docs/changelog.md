@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-04 — M5-007 analytics acceptance fixtures and privacy gate
+
+- Added six file-backed SQLite fixtures for no history, progression, plateau, heavy warm-ups, corrected logs and custom exercises, plus integrity/failure/cooldown checks. Fixed expectations cover PRs, reliable Epley trends, weekly volumes/comparisons and plateau outcomes across all session sources.
+- A failing privacy sentinel exposed derived metrics passing through unknown Crashlytics log metadata keys. `CrashlyticsService.logSafe` now applies the existing diagnostic allowlist before redaction; allowed diagnostic fields still pass.
+- Extended native analytics acceptance with the real app's background detection, imperial display, live corrections, durable dismissal after disk reopen, deletion and empty history. Both native flows passed on iOS/Android with zero HTTP calls; light/dark previews were reviewed. Format checked 843 files, analysis clean, focused diagnostics/acceptance 70/70 and full suite **1,816/1,816 passed**. Final strengthened fixture assertions also passed all 15 cases. [Gate, coverage and changed files](m5-acceptance.md).
+- Normal app entrypoints were restored/launched on both devices. Temporary native-hook/build workarounds were removed; no schema/dependency/iOS configuration changes remain. Stop after M5-007 for review; M6 is not started.
+
 ## 2026-11-04 — M5-006 analytics consistency after edits/deletes
 
 - Keep local plateau reconciliation running after successful startup, including before Stats is opened. App and screens share the same stream; startup repairs stale flags. PRs, e1RM and charts continue to derive from current committed logs.
