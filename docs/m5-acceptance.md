@@ -1,6 +1,6 @@
 # M5 analytics acceptance — V1-M5-007
 
-Date: 2026-11-04. Status: **M5-007 complete; shipped M5 acceptance passed, awaiting review**.
+Date: 2026-11-04. Status: **M5-007 complete; shipped M5 acceptance passed; user approved M5 on 2026-11-04**.
 
 This gate verifies the shipped M5-001–006 pipeline against the locked M5 ticket,
 roadmap acceptance gate, analytics test/data-model plans, PRD working-set/Epley/
@@ -140,4 +140,4 @@ upload behavior is unchanged. Existing plugin migration/deprecation notices rema
 - `lib/core/firebase/crashlytics_service.dart`
 - This evidence file, `docs/changelog.md` and `docs/implementation.md`.
 
-Pause after M5-007 for user review. M6 is not authorized by this ticket.
+User approved M5 and authorized M6 on 2026-11-04, with a review pause after every M6 ticket. The M5 verification evidence above is unchanged.

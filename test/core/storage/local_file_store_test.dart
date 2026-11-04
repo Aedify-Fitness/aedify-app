@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -19,6 +20,83 @@ void main() {
   });
 
   group('LocalFileStore', () {
+    test(
+      'progress directories never expose paths or identifiers in logs',
+      () async {
+        final events = <String>[];
+        final privateStore = LocalFileStore(
+          basePath: tempDir.path,
+          logger: AppLogger(
+            sink:
+                (message, {required name, required level, error, stackTrace}) {
+                  events.add(message);
+                },
+          ),
+        );
+        await privateStore.progressSessionOriginalsDir(
+          'private-session-sentinel',
+        );
+        await privateStore.progressSessionThumbnailsDir(
+          'private-session-sentinel',
+        );
+        await privateStore.progressSessionFramesDir('private-session-sentinel');
+        expect(events, isNotEmpty);
+        for (final event in events) {
+          expect(event, isNot(contains(tempDir.path)));
+          expect(event, isNot(contains('private-session-sentinel')));
+          expect(event, isNot(contains('media/progress')));
+        }
+      },
+    );
+
+    test(
+      'managed stat returns only sandbox file metadata and handles missing files',
+      () async {
+        final file = await store.fileAt(FileCategory.media, 'synthetic.jpg');
+        await file.writeAsBytes([1, 2, 3]);
+        final relativePath = await store.toRelativePath(file.path);
+        expect((await store.statManagedFile(relativePath))!.size, 3);
+        expect(
+          await store.statManagedFile(p.join('media', 'missing.jpg')),
+          isNull,
+        );
+        expect(await store.statManagedFile('media'), isNull);
+      },
+    );
+
+    test(
+      'managed stat rejects absolute paths and traversal outside sandbox',
+      () async {
+        await expectLater(
+          store.statManagedFile('/private/fixture.jpg'),
+          throwsFormatException,
+        );
+        await expectLater(
+          store.statManagedFile('../fixture.jpg'),
+          throwsFormatException,
+        );
+        await expectLater(store.statManagedFile('.'), throwsFormatException);
+      },
+    );
+
+    test(
+      'managed stat rejects linked directories and dangling links',
+      () async {
+        await Link(p.join(tempDir.path, 'linked')).create(tempDir.path);
+        await expectLater(
+          store.statManagedFile(p.join('linked', 'fixture.jpg')),
+          throwsFormatException,
+        );
+        await Link(
+          p.join(tempDir.path, 'dangling'),
+        ).create(p.join(tempDir.path, 'absent'));
+        await expectLater(
+          store.statManagedFile('dangling'),
+          throwsFormatException,
+        );
+      },
+    );
+
     test('categoryDir creates and returns directory', () async {
       final dir = await store.categoryDir(FileCategory.media);
       expect(await dir.exists(), isTrue);

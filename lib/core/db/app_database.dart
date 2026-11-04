@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:aedify/shared/constants/db_constants.dart';
 import 'package:aedify/core/db/tables/plateau_flags.dart';
+import 'package:aedify/core/db/tables/progress_media_tables.dart';
 import 'tables/schema_meta.dart';
 import 'tables/exercises.dart';
 import 'tables/local_file_records.dart';
@@ -69,6 +70,10 @@ part 'app_database.g.dart';
     SetLogs,
     ProgramRevisions,
     PlateauFlags,
+    ProgressMeasurementSnapshots,
+    ProgressMediaSessions,
+    ProgressMediaItems,
+    ProgressMediaReminderSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -76,14 +81,15 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+      await _createProgressMediaIndexes();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 19);
+      await _logMigration(m, fromVersion: 0, toVersion: 20);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -221,11 +227,35 @@ class AppDatabase extends _$AppDatabase {
       if (from < 19) {
         await m.createTable(plateauFlags);
       }
+      if (from < 20) {
+        await m.createTable(progressMeasurementSnapshots);
+        await m.createTable(progressMediaSessions);
+        await m.createTable(progressMediaItems);
+        await m.createTable(progressMediaReminderSettings);
+        await _createProgressMediaIndexes();
+      }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);
       }
     },
   );
+
+  Future<void> _createProgressMediaIndexes() async {
+    await customStatement('''
+      CREATE UNIQUE INDEX progress_media_active_baseline
+      ON progress_media_sessions (is_baseline)
+      WHERE is_baseline = 1 AND deleted_at IS NULL
+    ''');
+    await customStatement('''
+      CREATE INDEX progress_media_timeline
+      ON progress_media_sessions (captured_at DESC, id)
+      WHERE deleted_at IS NULL
+    ''');
+    await customStatement('''
+      CREATE INDEX progress_media_session_items
+      ON progress_media_items (session_id)
+    ''');
+  }
 
   Future<void> _addExerciseColumns(Migrator m) async {
     await m.addColumn(exercises, exercises.isCustom);

@@ -17,10 +17,11 @@ enum FileCategory {
 }
 
 class LocalFileStore {
-  static final _logger = AppLogger(name: 'LocalFileStore');
+  LocalFileStore({String? basePath, AppLogger? logger})
+    : _basePath = basePath,
+      _logger = logger ?? AppLogger(name: 'LocalFileStore');
 
-  LocalFileStore({String? basePath}) : _basePath = basePath;
-
+  final AppLogger _logger;
   String? _basePath;
 
   Future<String> get basePath async {
@@ -31,7 +32,7 @@ class LocalFileStore {
   }
 
   Future<Directory> _ensureDir(String path) async {
-    _logger.debug('ensureDirectory — path: $path');
+    _logger.debug('ensureDirectory');
     final dir = Directory(path);
     if (!await dir.exists()) {
       await dir.create(recursive: true);
@@ -182,5 +183,27 @@ class LocalFileStore {
   Future<String> toAbsolutePath(String relativePath) async {
     final base = await basePath;
     return p.join(base, relativePath);
+  }
+
+  /// Inspects an existing sandbox file without following links outside it.
+  ///
+  /// Returns null for a missing file. Invalid paths and filesystem failures
+  /// are left to the owning repository to map to safe, operation-specific codes.
+  Future<FileStat?> statManagedFile(String relativePath) async {
+    final base = p.normalize(p.absolute(await basePath));
+    final target = p.normalize(p.join(base, relativePath));
+    if (p.isAbsolute(relativePath) || !p.isWithin(base, target)) {
+      throw const FormatException();
+    }
+    // Inspect each segment without following links, including dangling links.
+    var current = base;
+    for (final segment in p.split(p.relative(target, from: base))) {
+      current = p.join(current, segment);
+      final type = await FileSystemEntity.type(current, followLinks: false);
+      if (type == FileSystemEntityType.link) throw const FormatException();
+      if (type == FileSystemEntityType.notFound) return null;
+    }
+    final stat = await File(target).stat();
+    return stat.type == FileSystemEntityType.file ? stat : null;
   }
 }

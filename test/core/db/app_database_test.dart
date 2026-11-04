@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppDatabase', () {
-    test('schema version is 19', () {
+    test('schema version is 20', () {
       final db = AppDatabase(NativeDatabase.memory());
-      expect(db.schemaVersion, equals(19));
+      expect(db.schemaVersion, equals(20));
       db.close();
     });
 

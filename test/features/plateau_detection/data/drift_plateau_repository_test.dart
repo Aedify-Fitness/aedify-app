@@ -449,6 +449,14 @@ void main() {
       final before = (await db.select(db.setLogs).get())
           .map((row) => row.toJson())
           .toList();
+      for (final table in [
+        'progress_media_items',
+        'progress_media_sessions',
+        'progress_measurement_snapshots',
+        'progress_media_reminder_settings',
+      ]) {
+        await db.customStatement('DROP TABLE $table');
+      }
       await db.customStatement('DROP TABLE plateau_flags');
       await db.customStatement('PRAGMA user_version = 18');
       await db.close();
@@ -460,7 +468,7 @@ void main() {
       );
       expect(
         (await db.select(db.schemaMigrationsLog).get()).any(
-          (row) => row.fromVersion == 18 && row.toVersion == 19,
+          (row) => row.fromVersion == 18 && row.toVersion == 20,
         ),
         isTrue,
       );

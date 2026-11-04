@@ -9,6 +9,109 @@ import 'package:path/path.dart' as p;
 void main() {
   group('Migration', () {
     test(
+      'v19 upgrade preserves every existing table and creates empty media storage',
+      () async {
+        final directory = await Directory.systemTemp.createTemp(
+          'progress_v20_',
+        );
+        addTearDown(() => directory.delete(recursive: true));
+        final file = File(p.join(directory.path, 'fixture.sqlite'));
+        final original = AppDatabase(NativeDatabase(file));
+        final now = DateTime.utc(2026, 11, 4);
+        await original
+            .into(original.userProfile)
+            .insert(
+              UserProfileCompanion.insert(
+                name: const Value('Synthetic profile'),
+                experienceLevel: 'beginner',
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        await original
+            .into(original.setLogs)
+            .insert(
+              SetLogsCompanion.insert(
+                id: 'set',
+                workoutSessionExerciseId: 'session-exercise',
+                exerciseId: 1,
+                performedAt: now,
+                setIndex: 0,
+                actualReps: const Value(8),
+                actualWeightKg: const Value(40),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        await original
+            .into(original.localFileRecords)
+            .insert(
+              LocalFileRecordsCompanion.insert(
+                category: 'audio-cache',
+                ownerType: 'exercise',
+                ownerId: const Value('1'),
+                localRelativePath: 'audio-cache/synthetic.mp3',
+                fileSizeBytes: 12,
+                createdAt: now,
+              ),
+            );
+        await original
+            .into(original.plateauFlags)
+            .insert(
+              PlateauFlagsCompanion.insert(
+                id: 'plateau',
+                exerciseId: 1,
+                status: 'dismissed',
+                basisJson: '{}',
+                firstDetectedAt: now,
+                lastDetectedAt: now,
+                dismissedAt: Value(now),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        for (final table in _MigrationFixtures.m6Tables) {
+          await original.customStatement('DROP TABLE $table');
+        }
+        final before = await _MigrationFixtures.sourceRows(original);
+        await original.customStatement('PRAGMA user_version = 19');
+        await original.close();
+        final upgraded = AppDatabase(NativeDatabase(file));
+        expect(await _MigrationFixtures.sourceRows(upgraded), before);
+        for (final table in _MigrationFixtures.m6Tables) {
+          expect(
+            await upgraded.customSelect('SELECT * FROM $table').get(),
+            isEmpty,
+          );
+        }
+        final columns = await upgraded
+            .customSelect('PRAGMA table_info(progress_media_items)')
+            .get();
+        expect(
+          columns.any(
+            (column) => column.read<String>('type').toUpperCase() == 'BLOB',
+          ),
+          isFalse,
+        );
+        final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
+        expect(
+          logs
+              .where((log) => log.fromVersion == 19 && log.toVersion == 20)
+              .length,
+          1,
+        );
+        await upgraded.close();
+        final reopened = AppDatabase(NativeDatabase(file));
+        addTearDown(reopened.close);
+        expect(await _MigrationFixtures.sourceRows(reopened), before);
+        expect(
+          (await reopened.select(reopened.schemaMigrationsLog).get()).length,
+          logs.length,
+        );
+      },
+    );
+
+    test(
       'v7 upgrade creates current training tables and preserves M3 data',
       () async {
         final directory = Directory.systemTemp.createTempSync('m3_upgrade_');
@@ -109,11 +212,11 @@ void main() {
         expect(
           (await upgraded.customSelect('PRAGMA user_version').getSingle())
               .read<int>('user_version'),
-          19,
+          20,
         );
         final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
         expect(
-          logs.any((log) => log.fromVersion == 7 && log.toVersion == 19),
+          logs.any((log) => log.fromVersion == 7 && log.toVersion == 20),
           isTrue,
         );
       },
@@ -167,7 +270,7 @@ void main() {
           await upgraded.select(upgraded.workoutSessionExercises).get(),
           isEmpty,
         );
-        expect(upgraded.schemaVersion, 19);
+        expect(upgraded.schemaVersion, 20);
       },
     );
 
@@ -285,7 +388,7 @@ void main() {
       );
       final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
       expect(
-        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 19),
+        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 20),
         isTrue,
       );
       await upgraded.close();
@@ -314,7 +417,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(19));
+      expect(logRows.first.toVersion, equals(20));
 
       db.close();
     });
@@ -376,8 +479,31 @@ void main() {
 }
 
 abstract final class _MigrationFixtures {
+  static Future<Map<String, List<Map<String, Object?>>>> sourceRows(
+    AppDatabase db,
+  ) async {
+    final result = <String, List<Map<String, Object?>>>{};
+    for (final table in db.allTables) {
+      final name = table.actualTableName;
+      if (m6Tables.contains(name) || name == 'schema_migrations_log') continue;
+      final rows = await db
+          .customSelect('SELECT * FROM $name ORDER BY rowid')
+          .get();
+      result[name] = rows.map((row) => row.data).toList();
+    }
+    return result;
+  }
+
   // Training fixtures also remove dependent M5 state when simulating v7.
+  static const m6Tables = [
+    'progress_media_items',
+    'progress_media_sessions',
+    'progress_measurement_snapshots',
+    'progress_media_reminder_settings',
+  ];
+
   static const m4Tables = [
+    ...m6Tables,
     'plateau_flags',
     'set_logs',
     'workout_session_exercises',
@@ -398,6 +524,9 @@ abstract final class _MigrationFixtures {
   ];
 
   static Future<void> removeV18Columns(AppDatabase db) async {
+    for (final table in m6Tables) {
+      await db.customStatement('DROP TABLE $table');
+    }
     await db.customStatement('DROP TABLE plateau_flags');
     for (final column in [
       'prescribed_rir',

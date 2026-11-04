@@ -28853,6 +28853,2977 @@ class PlateauFlagsCompanion extends UpdateCompanion<PlateauFlag> {
   }
 }
 
+class $ProgressMeasurementSnapshotsTable extends ProgressMeasurementSnapshots
+    with
+        TableInfo<
+          $ProgressMeasurementSnapshotsTable,
+          ProgressMeasurementSnapshotRow
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgressMeasurementSnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> measuredAt = GeneratedColumn<DateTime>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _waistCmMeta = const VerificationMeta(
+    'waistCm',
+  );
+  @override
+  late final GeneratedColumn<double> waistCm = GeneratedColumn<double>(
+    'waist_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chestCmMeta = const VerificationMeta(
+    'chestCm',
+  );
+  @override
+  late final GeneratedColumn<double> chestCm = GeneratedColumn<double>(
+    'chest_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hipsCmMeta = const VerificationMeta('hipsCm');
+  @override
+  late final GeneratedColumn<double> hipsCm = GeneratedColumn<double>(
+    'hips_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftArmCmMeta = const VerificationMeta(
+    'leftArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftArmCm = GeneratedColumn<double>(
+    'left_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightArmCmMeta = const VerificationMeta(
+    'rightArmCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightArmCm = GeneratedColumn<double>(
+    'right_arm_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leftThighCmMeta = const VerificationMeta(
+    'leftThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> leftThighCm = GeneratedColumn<double>(
+    'left_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rightThighCmMeta = const VerificationMeta(
+    'rightThighCm',
+  );
+  @override
+  late final GeneratedColumn<double> rightThighCm = GeneratedColumn<double>(
+    'right_thigh_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'progress_measurement_snapshots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgressMeasurementSnapshotRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('waist_cm')) {
+      context.handle(
+        _waistCmMeta,
+        waistCm.isAcceptableOrUnknown(data['waist_cm']!, _waistCmMeta),
+      );
+    }
+    if (data.containsKey('chest_cm')) {
+      context.handle(
+        _chestCmMeta,
+        chestCm.isAcceptableOrUnknown(data['chest_cm']!, _chestCmMeta),
+      );
+    }
+    if (data.containsKey('hips_cm')) {
+      context.handle(
+        _hipsCmMeta,
+        hipsCm.isAcceptableOrUnknown(data['hips_cm']!, _hipsCmMeta),
+      );
+    }
+    if (data.containsKey('left_arm_cm')) {
+      context.handle(
+        _leftArmCmMeta,
+        leftArmCm.isAcceptableOrUnknown(data['left_arm_cm']!, _leftArmCmMeta),
+      );
+    }
+    if (data.containsKey('right_arm_cm')) {
+      context.handle(
+        _rightArmCmMeta,
+        rightArmCm.isAcceptableOrUnknown(
+          data['right_arm_cm']!,
+          _rightArmCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('left_thigh_cm')) {
+      context.handle(
+        _leftThighCmMeta,
+        leftThighCm.isAcceptableOrUnknown(
+          data['left_thigh_cm']!,
+          _leftThighCmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('right_thigh_cm')) {
+      context.handle(
+        _rightThighCmMeta,
+        rightThighCm.isAcceptableOrUnknown(
+          data['right_thigh_cm']!,
+          _rightThighCmMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgressMeasurementSnapshotRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgressMeasurementSnapshotRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      waistCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}waist_cm'],
+      ),
+      chestCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}chest_cm'],
+      ),
+      hipsCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}hips_cm'],
+      ),
+      leftArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_arm_cm'],
+      ),
+      rightArmCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_arm_cm'],
+      ),
+      leftThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}left_thigh_cm'],
+      ),
+      rightThighCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}right_thigh_cm'],
+      ),
+    );
+  }
+
+  @override
+  $ProgressMeasurementSnapshotsTable createAlias(String alias) {
+    return $ProgressMeasurementSnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgressMeasurementSnapshotRow extends DataClass
+    implements Insertable<ProgressMeasurementSnapshotRow> {
+  final String id;
+  final DateTime measuredAt;
+  final double? bodyweightKg;
+  final double? waistCm;
+  final double? chestCm;
+  final double? hipsCm;
+  final double? leftArmCm;
+  final double? rightArmCm;
+  final double? leftThighCm;
+  final double? rightThighCm;
+  const ProgressMeasurementSnapshotRow({
+    required this.id,
+    required this.measuredAt,
+    this.bodyweightKg,
+    this.waistCm,
+    this.chestCm,
+    this.hipsCm,
+    this.leftArmCm,
+    this.rightArmCm,
+    this.leftThighCm,
+    this.rightThighCm,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['measured_at'] = Variable<DateTime>(measuredAt);
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || waistCm != null) {
+      map['waist_cm'] = Variable<double>(waistCm);
+    }
+    if (!nullToAbsent || chestCm != null) {
+      map['chest_cm'] = Variable<double>(chestCm);
+    }
+    if (!nullToAbsent || hipsCm != null) {
+      map['hips_cm'] = Variable<double>(hipsCm);
+    }
+    if (!nullToAbsent || leftArmCm != null) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm);
+    }
+    if (!nullToAbsent || rightArmCm != null) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm);
+    }
+    if (!nullToAbsent || leftThighCm != null) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm);
+    }
+    if (!nullToAbsent || rightThighCm != null) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm);
+    }
+    return map;
+  }
+
+  ProgressMeasurementSnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return ProgressMeasurementSnapshotsCompanion(
+      id: Value(id),
+      measuredAt: Value(measuredAt),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      waistCm: waistCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waistCm),
+      chestCm: chestCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chestCm),
+      hipsCm: hipsCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hipsCm),
+      leftArmCm: leftArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftArmCm),
+      rightArmCm: rightArmCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightArmCm),
+      leftThighCm: leftThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftThighCm),
+      rightThighCm: rightThighCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightThighCm),
+    );
+  }
+
+  factory ProgressMeasurementSnapshotRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgressMeasurementSnapshotRow(
+      id: serializer.fromJson<String>(json['id']),
+      measuredAt: serializer.fromJson<DateTime>(json['measuredAt']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      waistCm: serializer.fromJson<double?>(json['waistCm']),
+      chestCm: serializer.fromJson<double?>(json['chestCm']),
+      hipsCm: serializer.fromJson<double?>(json['hipsCm']),
+      leftArmCm: serializer.fromJson<double?>(json['leftArmCm']),
+      rightArmCm: serializer.fromJson<double?>(json['rightArmCm']),
+      leftThighCm: serializer.fromJson<double?>(json['leftThighCm']),
+      rightThighCm: serializer.fromJson<double?>(json['rightThighCm']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'measuredAt': serializer.toJson<DateTime>(measuredAt),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'waistCm': serializer.toJson<double?>(waistCm),
+      'chestCm': serializer.toJson<double?>(chestCm),
+      'hipsCm': serializer.toJson<double?>(hipsCm),
+      'leftArmCm': serializer.toJson<double?>(leftArmCm),
+      'rightArmCm': serializer.toJson<double?>(rightArmCm),
+      'leftThighCm': serializer.toJson<double?>(leftThighCm),
+      'rightThighCm': serializer.toJson<double?>(rightThighCm),
+    };
+  }
+
+  ProgressMeasurementSnapshotRow copyWith({
+    String? id,
+    DateTime? measuredAt,
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<double?> waistCm = const Value.absent(),
+    Value<double?> chestCm = const Value.absent(),
+    Value<double?> hipsCm = const Value.absent(),
+    Value<double?> leftArmCm = const Value.absent(),
+    Value<double?> rightArmCm = const Value.absent(),
+    Value<double?> leftThighCm = const Value.absent(),
+    Value<double?> rightThighCm = const Value.absent(),
+  }) => ProgressMeasurementSnapshotRow(
+    id: id ?? this.id,
+    measuredAt: measuredAt ?? this.measuredAt,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    waistCm: waistCm.present ? waistCm.value : this.waistCm,
+    chestCm: chestCm.present ? chestCm.value : this.chestCm,
+    hipsCm: hipsCm.present ? hipsCm.value : this.hipsCm,
+    leftArmCm: leftArmCm.present ? leftArmCm.value : this.leftArmCm,
+    rightArmCm: rightArmCm.present ? rightArmCm.value : this.rightArmCm,
+    leftThighCm: leftThighCm.present ? leftThighCm.value : this.leftThighCm,
+    rightThighCm: rightThighCm.present ? rightThighCm.value : this.rightThighCm,
+  );
+  ProgressMeasurementSnapshotRow copyWithCompanion(
+    ProgressMeasurementSnapshotsCompanion data,
+  ) {
+    return ProgressMeasurementSnapshotRow(
+      id: data.id.present ? data.id.value : this.id,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      waistCm: data.waistCm.present ? data.waistCm.value : this.waistCm,
+      chestCm: data.chestCm.present ? data.chestCm.value : this.chestCm,
+      hipsCm: data.hipsCm.present ? data.hipsCm.value : this.hipsCm,
+      leftArmCm: data.leftArmCm.present ? data.leftArmCm.value : this.leftArmCm,
+      rightArmCm: data.rightArmCm.present
+          ? data.rightArmCm.value
+          : this.rightArmCm,
+      leftThighCm: data.leftThighCm.present
+          ? data.leftThighCm.value
+          : this.leftThighCm,
+      rightThighCm: data.rightThighCm.present
+          ? data.rightThighCm.value
+          : this.rightThighCm,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMeasurementSnapshotRow(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    measuredAt,
+    bodyweightKg,
+    waistCm,
+    chestCm,
+    hipsCm,
+    leftArmCm,
+    rightArmCm,
+    leftThighCm,
+    rightThighCm,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgressMeasurementSnapshotRow &&
+          other.id == this.id &&
+          other.measuredAt == this.measuredAt &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.waistCm == this.waistCm &&
+          other.chestCm == this.chestCm &&
+          other.hipsCm == this.hipsCm &&
+          other.leftArmCm == this.leftArmCm &&
+          other.rightArmCm == this.rightArmCm &&
+          other.leftThighCm == this.leftThighCm &&
+          other.rightThighCm == this.rightThighCm);
+}
+
+class ProgressMeasurementSnapshotsCompanion
+    extends UpdateCompanion<ProgressMeasurementSnapshotRow> {
+  final Value<String> id;
+  final Value<DateTime> measuredAt;
+  final Value<double?> bodyweightKg;
+  final Value<double?> waistCm;
+  final Value<double?> chestCm;
+  final Value<double?> hipsCm;
+  final Value<double?> leftArmCm;
+  final Value<double?> rightArmCm;
+  final Value<double?> leftThighCm;
+  final Value<double?> rightThighCm;
+  final Value<int> rowid;
+  const ProgressMeasurementSnapshotsCompanion({
+    this.id = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgressMeasurementSnapshotsCompanion.insert({
+    required String id,
+    required DateTime measuredAt,
+    this.bodyweightKg = const Value.absent(),
+    this.waistCm = const Value.absent(),
+    this.chestCm = const Value.absent(),
+    this.hipsCm = const Value.absent(),
+    this.leftArmCm = const Value.absent(),
+    this.rightArmCm = const Value.absent(),
+    this.leftThighCm = const Value.absent(),
+    this.rightThighCm = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       measuredAt = Value(measuredAt);
+  static Insertable<ProgressMeasurementSnapshotRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? measuredAt,
+    Expression<double>? bodyweightKg,
+    Expression<double>? waistCm,
+    Expression<double>? chestCm,
+    Expression<double>? hipsCm,
+    Expression<double>? leftArmCm,
+    Expression<double>? rightArmCm,
+    Expression<double>? leftThighCm,
+    Expression<double>? rightThighCm,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (waistCm != null) 'waist_cm': waistCm,
+      if (chestCm != null) 'chest_cm': chestCm,
+      if (hipsCm != null) 'hips_cm': hipsCm,
+      if (leftArmCm != null) 'left_arm_cm': leftArmCm,
+      if (rightArmCm != null) 'right_arm_cm': rightArmCm,
+      if (leftThighCm != null) 'left_thigh_cm': leftThighCm,
+      if (rightThighCm != null) 'right_thigh_cm': rightThighCm,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgressMeasurementSnapshotsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? measuredAt,
+    Value<double?>? bodyweightKg,
+    Value<double?>? waistCm,
+    Value<double?>? chestCm,
+    Value<double?>? hipsCm,
+    Value<double?>? leftArmCm,
+    Value<double?>? rightArmCm,
+    Value<double?>? leftThighCm,
+    Value<double?>? rightThighCm,
+    Value<int>? rowid,
+  }) {
+    return ProgressMeasurementSnapshotsCompanion(
+      id: id ?? this.id,
+      measuredAt: measuredAt ?? this.measuredAt,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      waistCm: waistCm ?? this.waistCm,
+      chestCm: chestCm ?? this.chestCm,
+      hipsCm: hipsCm ?? this.hipsCm,
+      leftArmCm: leftArmCm ?? this.leftArmCm,
+      rightArmCm: rightArmCm ?? this.rightArmCm,
+      leftThighCm: leftThighCm ?? this.leftThighCm,
+      rightThighCm: rightThighCm ?? this.rightThighCm,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<DateTime>(measuredAt.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (waistCm.present) {
+      map['waist_cm'] = Variable<double>(waistCm.value);
+    }
+    if (chestCm.present) {
+      map['chest_cm'] = Variable<double>(chestCm.value);
+    }
+    if (hipsCm.present) {
+      map['hips_cm'] = Variable<double>(hipsCm.value);
+    }
+    if (leftArmCm.present) {
+      map['left_arm_cm'] = Variable<double>(leftArmCm.value);
+    }
+    if (rightArmCm.present) {
+      map['right_arm_cm'] = Variable<double>(rightArmCm.value);
+    }
+    if (leftThighCm.present) {
+      map['left_thigh_cm'] = Variable<double>(leftThighCm.value);
+    }
+    if (rightThighCm.present) {
+      map['right_thigh_cm'] = Variable<double>(rightThighCm.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMeasurementSnapshotsCompanion(')
+          ..write('id: $id, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('waistCm: $waistCm, ')
+          ..write('chestCm: $chestCm, ')
+          ..write('hipsCm: $hipsCm, ')
+          ..write('leftArmCm: $leftArmCm, ')
+          ..write('rightArmCm: $rightArmCm, ')
+          ..write('leftThighCm: $leftThighCm, ')
+          ..write('rightThighCm: $rightThighCm, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgressMediaSessionsTable extends ProgressMediaSessions
+    with TableInfo<$ProgressMediaSessionsTable, ProgressMediaSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgressMediaSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _capturedAtMeta = const VerificationMeta(
+    'capturedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> capturedAt = GeneratedColumn<DateTime>(
+    'captured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mediaTypeMeta = const VerificationMeta(
+    'mediaType',
+  );
+  @override
+  late final GeneratedColumn<String> mediaType = GeneratedColumn<String>(
+    'media_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isBaselineMeta = const VerificationMeta(
+    'isBaseline',
+  );
+  @override
+  late final GeneratedColumn<bool> isBaseline = GeneratedColumn<bool>(
+    'is_baseline',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_baseline" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isCompletePoseSetMeta = const VerificationMeta(
+    'isCompletePoseSet',
+  );
+  @override
+  late final GeneratedColumn<bool> isCompletePoseSet = GeneratedColumn<bool>(
+    'is_complete_pose_set',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_complete_pose_set" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _bodyweightKgMeta = const VerificationMeta(
+    'bodyweightKg',
+  );
+  @override
+  late final GeneratedColumn<double> bodyweightKg = GeneratedColumn<double>(
+    'bodyweight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyMeasurementSnapshotIdMeta =
+      const VerificationMeta('bodyMeasurementSnapshotId');
+  @override
+  late final GeneratedColumn<String> bodyMeasurementSnapshotId =
+      GeneratedColumn<String>(
+        'body_measurement_snapshot_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES progress_measurement_snapshots (id)',
+        ),
+      );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reminderCadenceAtCaptureMeta =
+      const VerificationMeta('reminderCadenceAtCapture');
+  @override
+  late final GeneratedColumn<String> reminderCadenceAtCapture =
+      GeneratedColumn<String>(
+        'reminder_cadence_at_capture',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _storageSizeBytesMeta = const VerificationMeta(
+    'storageSizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> storageSizeBytes = GeneratedColumn<int>(
+    'storage_size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    capturedAt,
+    mediaType,
+    isBaseline,
+    isCompletePoseSet,
+    bodyweightKg,
+    bodyMeasurementSnapshotId,
+    notes,
+    reminderCadenceAtCapture,
+    storageSizeBytes,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'progress_media_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgressMediaSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('captured_at')) {
+      context.handle(
+        _capturedAtMeta,
+        capturedAt.isAcceptableOrUnknown(data['captured_at']!, _capturedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_capturedAtMeta);
+    }
+    if (data.containsKey('media_type')) {
+      context.handle(
+        _mediaTypeMeta,
+        mediaType.isAcceptableOrUnknown(data['media_type']!, _mediaTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mediaTypeMeta);
+    }
+    if (data.containsKey('is_baseline')) {
+      context.handle(
+        _isBaselineMeta,
+        isBaseline.isAcceptableOrUnknown(data['is_baseline']!, _isBaselineMeta),
+      );
+    }
+    if (data.containsKey('is_complete_pose_set')) {
+      context.handle(
+        _isCompletePoseSetMeta,
+        isCompletePoseSet.isAcceptableOrUnknown(
+          data['is_complete_pose_set']!,
+          _isCompletePoseSetMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bodyweight_kg')) {
+      context.handle(
+        _bodyweightKgMeta,
+        bodyweightKg.isAcceptableOrUnknown(
+          data['bodyweight_kg']!,
+          _bodyweightKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('body_measurement_snapshot_id')) {
+      context.handle(
+        _bodyMeasurementSnapshotIdMeta,
+        bodyMeasurementSnapshotId.isAcceptableOrUnknown(
+          data['body_measurement_snapshot_id']!,
+          _bodyMeasurementSnapshotIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('reminder_cadence_at_capture')) {
+      context.handle(
+        _reminderCadenceAtCaptureMeta,
+        reminderCadenceAtCapture.isAcceptableOrUnknown(
+          data['reminder_cadence_at_capture']!,
+          _reminderCadenceAtCaptureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('storage_size_bytes')) {
+      context.handle(
+        _storageSizeBytesMeta,
+        storageSizeBytes.isAcceptableOrUnknown(
+          data['storage_size_bytes']!,
+          _storageSizeBytesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_storageSizeBytesMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgressMediaSessionRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgressMediaSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      capturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}captured_at'],
+      )!,
+      mediaType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}media_type'],
+      )!,
+      isBaseline: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_baseline'],
+      )!,
+      isCompletePoseSet: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_complete_pose_set'],
+      )!,
+      bodyweightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bodyweight_kg'],
+      ),
+      bodyMeasurementSnapshotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body_measurement_snapshot_id'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      reminderCadenceAtCapture: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reminder_cadence_at_capture'],
+      ),
+      storageSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}storage_size_bytes'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $ProgressMediaSessionsTable createAlias(String alias) {
+    return $ProgressMediaSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgressMediaSessionRow extends DataClass
+    implements Insertable<ProgressMediaSessionRow> {
+  final String id;
+  final DateTime capturedAt;
+  final String mediaType;
+  final bool isBaseline;
+  final bool isCompletePoseSet;
+  final double? bodyweightKg;
+  final String? bodyMeasurementSnapshotId;
+  final String? notes;
+  final String? reminderCadenceAtCapture;
+  final int storageSizeBytes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  const ProgressMediaSessionRow({
+    required this.id,
+    required this.capturedAt,
+    required this.mediaType,
+    required this.isBaseline,
+    required this.isCompletePoseSet,
+    this.bodyweightKg,
+    this.bodyMeasurementSnapshotId,
+    this.notes,
+    this.reminderCadenceAtCapture,
+    required this.storageSizeBytes,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['captured_at'] = Variable<DateTime>(capturedAt);
+    map['media_type'] = Variable<String>(mediaType);
+    map['is_baseline'] = Variable<bool>(isBaseline);
+    map['is_complete_pose_set'] = Variable<bool>(isCompletePoseSet);
+    if (!nullToAbsent || bodyweightKg != null) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || bodyMeasurementSnapshotId != null) {
+      map['body_measurement_snapshot_id'] = Variable<String>(
+        bodyMeasurementSnapshotId,
+      );
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || reminderCadenceAtCapture != null) {
+      map['reminder_cadence_at_capture'] = Variable<String>(
+        reminderCadenceAtCapture,
+      );
+    }
+    map['storage_size_bytes'] = Variable<int>(storageSizeBytes);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  ProgressMediaSessionsCompanion toCompanion(bool nullToAbsent) {
+    return ProgressMediaSessionsCompanion(
+      id: Value(id),
+      capturedAt: Value(capturedAt),
+      mediaType: Value(mediaType),
+      isBaseline: Value(isBaseline),
+      isCompletePoseSet: Value(isCompletePoseSet),
+      bodyweightKg: bodyweightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyweightKg),
+      bodyMeasurementSnapshotId:
+          bodyMeasurementSnapshotId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyMeasurementSnapshotId),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      reminderCadenceAtCapture: reminderCadenceAtCapture == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reminderCadenceAtCapture),
+      storageSizeBytes: Value(storageSizeBytes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory ProgressMediaSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgressMediaSessionRow(
+      id: serializer.fromJson<String>(json['id']),
+      capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
+      mediaType: serializer.fromJson<String>(json['mediaType']),
+      isBaseline: serializer.fromJson<bool>(json['isBaseline']),
+      isCompletePoseSet: serializer.fromJson<bool>(json['isCompletePoseSet']),
+      bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      bodyMeasurementSnapshotId: serializer.fromJson<String?>(
+        json['bodyMeasurementSnapshotId'],
+      ),
+      notes: serializer.fromJson<String?>(json['notes']),
+      reminderCadenceAtCapture: serializer.fromJson<String?>(
+        json['reminderCadenceAtCapture'],
+      ),
+      storageSizeBytes: serializer.fromJson<int>(json['storageSizeBytes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'capturedAt': serializer.toJson<DateTime>(capturedAt),
+      'mediaType': serializer.toJson<String>(mediaType),
+      'isBaseline': serializer.toJson<bool>(isBaseline),
+      'isCompletePoseSet': serializer.toJson<bool>(isCompletePoseSet),
+      'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'bodyMeasurementSnapshotId': serializer.toJson<String?>(
+        bodyMeasurementSnapshotId,
+      ),
+      'notes': serializer.toJson<String?>(notes),
+      'reminderCadenceAtCapture': serializer.toJson<String?>(
+        reminderCadenceAtCapture,
+      ),
+      'storageSizeBytes': serializer.toJson<int>(storageSizeBytes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  ProgressMediaSessionRow copyWith({
+    String? id,
+    DateTime? capturedAt,
+    String? mediaType,
+    bool? isBaseline,
+    bool? isCompletePoseSet,
+    Value<double?> bodyweightKg = const Value.absent(),
+    Value<String?> bodyMeasurementSnapshotId = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    Value<String?> reminderCadenceAtCapture = const Value.absent(),
+    int? storageSizeBytes,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => ProgressMediaSessionRow(
+    id: id ?? this.id,
+    capturedAt: capturedAt ?? this.capturedAt,
+    mediaType: mediaType ?? this.mediaType,
+    isBaseline: isBaseline ?? this.isBaseline,
+    isCompletePoseSet: isCompletePoseSet ?? this.isCompletePoseSet,
+    bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    bodyMeasurementSnapshotId: bodyMeasurementSnapshotId.present
+        ? bodyMeasurementSnapshotId.value
+        : this.bodyMeasurementSnapshotId,
+    notes: notes.present ? notes.value : this.notes,
+    reminderCadenceAtCapture: reminderCadenceAtCapture.present
+        ? reminderCadenceAtCapture.value
+        : this.reminderCadenceAtCapture,
+    storageSizeBytes: storageSizeBytes ?? this.storageSizeBytes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  ProgressMediaSessionRow copyWithCompanion(
+    ProgressMediaSessionsCompanion data,
+  ) {
+    return ProgressMediaSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      capturedAt: data.capturedAt.present
+          ? data.capturedAt.value
+          : this.capturedAt,
+      mediaType: data.mediaType.present ? data.mediaType.value : this.mediaType,
+      isBaseline: data.isBaseline.present
+          ? data.isBaseline.value
+          : this.isBaseline,
+      isCompletePoseSet: data.isCompletePoseSet.present
+          ? data.isCompletePoseSet.value
+          : this.isCompletePoseSet,
+      bodyweightKg: data.bodyweightKg.present
+          ? data.bodyweightKg.value
+          : this.bodyweightKg,
+      bodyMeasurementSnapshotId: data.bodyMeasurementSnapshotId.present
+          ? data.bodyMeasurementSnapshotId.value
+          : this.bodyMeasurementSnapshotId,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      reminderCadenceAtCapture: data.reminderCadenceAtCapture.present
+          ? data.reminderCadenceAtCapture.value
+          : this.reminderCadenceAtCapture,
+      storageSizeBytes: data.storageSizeBytes.present
+          ? data.storageSizeBytes.value
+          : this.storageSizeBytes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaSessionRow(')
+          ..write('id: $id, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('mediaType: $mediaType, ')
+          ..write('isBaseline: $isBaseline, ')
+          ..write('isCompletePoseSet: $isCompletePoseSet, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyMeasurementSnapshotId: $bodyMeasurementSnapshotId, ')
+          ..write('notes: $notes, ')
+          ..write('reminderCadenceAtCapture: $reminderCadenceAtCapture, ')
+          ..write('storageSizeBytes: $storageSizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    capturedAt,
+    mediaType,
+    isBaseline,
+    isCompletePoseSet,
+    bodyweightKg,
+    bodyMeasurementSnapshotId,
+    notes,
+    reminderCadenceAtCapture,
+    storageSizeBytes,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgressMediaSessionRow &&
+          other.id == this.id &&
+          other.capturedAt == this.capturedAt &&
+          other.mediaType == this.mediaType &&
+          other.isBaseline == this.isBaseline &&
+          other.isCompletePoseSet == this.isCompletePoseSet &&
+          other.bodyweightKg == this.bodyweightKg &&
+          other.bodyMeasurementSnapshotId == this.bodyMeasurementSnapshotId &&
+          other.notes == this.notes &&
+          other.reminderCadenceAtCapture == this.reminderCadenceAtCapture &&
+          other.storageSizeBytes == this.storageSizeBytes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class ProgressMediaSessionsCompanion
+    extends UpdateCompanion<ProgressMediaSessionRow> {
+  final Value<String> id;
+  final Value<DateTime> capturedAt;
+  final Value<String> mediaType;
+  final Value<bool> isBaseline;
+  final Value<bool> isCompletePoseSet;
+  final Value<double?> bodyweightKg;
+  final Value<String?> bodyMeasurementSnapshotId;
+  final Value<String?> notes;
+  final Value<String?> reminderCadenceAtCapture;
+  final Value<int> storageSizeBytes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const ProgressMediaSessionsCompanion({
+    this.id = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+    this.mediaType = const Value.absent(),
+    this.isBaseline = const Value.absent(),
+    this.isCompletePoseSet = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyMeasurementSnapshotId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.reminderCadenceAtCapture = const Value.absent(),
+    this.storageSizeBytes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgressMediaSessionsCompanion.insert({
+    required String id,
+    required DateTime capturedAt,
+    required String mediaType,
+    this.isBaseline = const Value.absent(),
+    this.isCompletePoseSet = const Value.absent(),
+    this.bodyweightKg = const Value.absent(),
+    this.bodyMeasurementSnapshotId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.reminderCadenceAtCapture = const Value.absent(),
+    required int storageSizeBytes,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       capturedAt = Value(capturedAt),
+       mediaType = Value(mediaType),
+       storageSizeBytes = Value(storageSizeBytes),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProgressMediaSessionRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? capturedAt,
+    Expression<String>? mediaType,
+    Expression<bool>? isBaseline,
+    Expression<bool>? isCompletePoseSet,
+    Expression<double>? bodyweightKg,
+    Expression<String>? bodyMeasurementSnapshotId,
+    Expression<String>? notes,
+    Expression<String>? reminderCadenceAtCapture,
+    Expression<int>? storageSizeBytes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (capturedAt != null) 'captured_at': capturedAt,
+      if (mediaType != null) 'media_type': mediaType,
+      if (isBaseline != null) 'is_baseline': isBaseline,
+      if (isCompletePoseSet != null) 'is_complete_pose_set': isCompletePoseSet,
+      if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (bodyMeasurementSnapshotId != null)
+        'body_measurement_snapshot_id': bodyMeasurementSnapshotId,
+      if (notes != null) 'notes': notes,
+      if (reminderCadenceAtCapture != null)
+        'reminder_cadence_at_capture': reminderCadenceAtCapture,
+      if (storageSizeBytes != null) 'storage_size_bytes': storageSizeBytes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgressMediaSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? capturedAt,
+    Value<String>? mediaType,
+    Value<bool>? isBaseline,
+    Value<bool>? isCompletePoseSet,
+    Value<double?>? bodyweightKg,
+    Value<String?>? bodyMeasurementSnapshotId,
+    Value<String?>? notes,
+    Value<String?>? reminderCadenceAtCapture,
+    Value<int>? storageSizeBytes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgressMediaSessionsCompanion(
+      id: id ?? this.id,
+      capturedAt: capturedAt ?? this.capturedAt,
+      mediaType: mediaType ?? this.mediaType,
+      isBaseline: isBaseline ?? this.isBaseline,
+      isCompletePoseSet: isCompletePoseSet ?? this.isCompletePoseSet,
+      bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      bodyMeasurementSnapshotId:
+          bodyMeasurementSnapshotId ?? this.bodyMeasurementSnapshotId,
+      notes: notes ?? this.notes,
+      reminderCadenceAtCapture:
+          reminderCadenceAtCapture ?? this.reminderCadenceAtCapture,
+      storageSizeBytes: storageSizeBytes ?? this.storageSizeBytes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (capturedAt.present) {
+      map['captured_at'] = Variable<DateTime>(capturedAt.value);
+    }
+    if (mediaType.present) {
+      map['media_type'] = Variable<String>(mediaType.value);
+    }
+    if (isBaseline.present) {
+      map['is_baseline'] = Variable<bool>(isBaseline.value);
+    }
+    if (isCompletePoseSet.present) {
+      map['is_complete_pose_set'] = Variable<bool>(isCompletePoseSet.value);
+    }
+    if (bodyweightKg.present) {
+      map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (bodyMeasurementSnapshotId.present) {
+      map['body_measurement_snapshot_id'] = Variable<String>(
+        bodyMeasurementSnapshotId.value,
+      );
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (reminderCadenceAtCapture.present) {
+      map['reminder_cadence_at_capture'] = Variable<String>(
+        reminderCadenceAtCapture.value,
+      );
+    }
+    if (storageSizeBytes.present) {
+      map['storage_size_bytes'] = Variable<int>(storageSizeBytes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('mediaType: $mediaType, ')
+          ..write('isBaseline: $isBaseline, ')
+          ..write('isCompletePoseSet: $isCompletePoseSet, ')
+          ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyMeasurementSnapshotId: $bodyMeasurementSnapshotId, ')
+          ..write('notes: $notes, ')
+          ..write('reminderCadenceAtCapture: $reminderCadenceAtCapture, ')
+          ..write('storageSizeBytes: $storageSizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgressMediaItemsTable extends ProgressMediaItems
+    with TableInfo<$ProgressMediaItemsTable, ProgressMediaItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgressMediaItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES progress_media_sessions (id)',
+    ),
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _poseMeta = const VerificationMeta('pose');
+  @override
+  late final GeneratedColumn<String> pose = GeneratedColumn<String>(
+    'pose',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localRelativePathMeta = const VerificationMeta(
+    'localRelativePath',
+  );
+  @override
+  late final GeneratedColumn<String> localRelativePath =
+      GeneratedColumn<String>(
+        'local_relative_path',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+      );
+  static const VerificationMeta _thumbnailRelativePathMeta =
+      const VerificationMeta('thumbnailRelativePath');
+  @override
+  late final GeneratedColumn<String> thumbnailRelativePath =
+      GeneratedColumn<String>(
+        'thumbnail_relative_path',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fileSizeBytesMeta = const VerificationMeta(
+    'fileSizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> fileSizeBytes = GeneratedColumn<int>(
+    'file_size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHashMeta = const VerificationMeta(
+    'contentHash',
+  );
+  @override
+  late final GeneratedColumn<String> contentHash = GeneratedColumn<String>(
+    'content_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceMediaItemIdMeta = const VerificationMeta(
+    'sourceMediaItemId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceMediaItemId =
+      GeneratedColumn<String>(
+        'source_media_item_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES progress_media_items (id)',
+        ),
+      );
+  static const VerificationMeta _capturedAtMeta = const VerificationMeta(
+    'capturedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> capturedAt = GeneratedColumn<DateTime>(
+    'captured_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    type,
+    pose,
+    localRelativePath,
+    thumbnailRelativePath,
+    source,
+    durationSeconds,
+    width,
+    height,
+    fileSizeBytes,
+    contentHash,
+    sourceMediaItemId,
+    capturedAt,
+    createdAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'progress_media_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgressMediaItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('pose')) {
+      context.handle(
+        _poseMeta,
+        pose.isAcceptableOrUnknown(data['pose']!, _poseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_poseMeta);
+    }
+    if (data.containsKey('local_relative_path')) {
+      context.handle(
+        _localRelativePathMeta,
+        localRelativePath.isAcceptableOrUnknown(
+          data['local_relative_path']!,
+          _localRelativePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_localRelativePathMeta);
+    }
+    if (data.containsKey('thumbnail_relative_path')) {
+      context.handle(
+        _thumbnailRelativePathMeta,
+        thumbnailRelativePath.isAcceptableOrUnknown(
+          data['thumbnail_relative_path']!,
+          _thumbnailRelativePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('file_size_bytes')) {
+      context.handle(
+        _fileSizeBytesMeta,
+        fileSizeBytes.isAcceptableOrUnknown(
+          data['file_size_bytes']!,
+          _fileSizeBytesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fileSizeBytesMeta);
+    }
+    if (data.containsKey('content_hash')) {
+      context.handle(
+        _contentHashMeta,
+        contentHash.isAcceptableOrUnknown(
+          data['content_hash']!,
+          _contentHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source_media_item_id')) {
+      context.handle(
+        _sourceMediaItemIdMeta,
+        sourceMediaItemId.isAcceptableOrUnknown(
+          data['source_media_item_id']!,
+          _sourceMediaItemIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('captured_at')) {
+      context.handle(
+        _capturedAtMeta,
+        capturedAt.isAcceptableOrUnknown(data['captured_at']!, _capturedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgressMediaItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgressMediaItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      pose: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pose'],
+      )!,
+      localRelativePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_relative_path'],
+      )!,
+      thumbnailRelativePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_relative_path'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      fileSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size_bytes'],
+      )!,
+      contentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_hash'],
+      ),
+      sourceMediaItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_media_item_id'],
+      ),
+      capturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}captured_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $ProgressMediaItemsTable createAlias(String alias) {
+    return $ProgressMediaItemsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgressMediaItemRow extends DataClass
+    implements Insertable<ProgressMediaItemRow> {
+  final String id;
+  final String sessionId;
+  final String type;
+  final String pose;
+  final String localRelativePath;
+  final String? thumbnailRelativePath;
+  final String source;
+  final int? durationSeconds;
+  final int? width;
+  final int? height;
+  final int fileSizeBytes;
+  final String? contentHash;
+  final String? sourceMediaItemId;
+  final DateTime? capturedAt;
+  final DateTime createdAt;
+  final DateTime? deletedAt;
+  const ProgressMediaItemRow({
+    required this.id,
+    required this.sessionId,
+    required this.type,
+    required this.pose,
+    required this.localRelativePath,
+    this.thumbnailRelativePath,
+    required this.source,
+    this.durationSeconds,
+    this.width,
+    this.height,
+    required this.fileSizeBytes,
+    this.contentHash,
+    this.sourceMediaItemId,
+    this.capturedAt,
+    required this.createdAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['session_id'] = Variable<String>(sessionId);
+    map['type'] = Variable<String>(type);
+    map['pose'] = Variable<String>(pose);
+    map['local_relative_path'] = Variable<String>(localRelativePath);
+    if (!nullToAbsent || thumbnailRelativePath != null) {
+      map['thumbnail_relative_path'] = Variable<String>(thumbnailRelativePath);
+    }
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    map['file_size_bytes'] = Variable<int>(fileSizeBytes);
+    if (!nullToAbsent || contentHash != null) {
+      map['content_hash'] = Variable<String>(contentHash);
+    }
+    if (!nullToAbsent || sourceMediaItemId != null) {
+      map['source_media_item_id'] = Variable<String>(sourceMediaItemId);
+    }
+    if (!nullToAbsent || capturedAt != null) {
+      map['captured_at'] = Variable<DateTime>(capturedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  ProgressMediaItemsCompanion toCompanion(bool nullToAbsent) {
+    return ProgressMediaItemsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      type: Value(type),
+      pose: Value(pose),
+      localRelativePath: Value(localRelativePath),
+      thumbnailRelativePath: thumbnailRelativePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailRelativePath),
+      source: Value(source),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+      fileSizeBytes: Value(fileSizeBytes),
+      contentHash: contentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHash),
+      sourceMediaItemId: sourceMediaItemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceMediaItemId),
+      capturedAt: capturedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(capturedAt),
+      createdAt: Value(createdAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory ProgressMediaItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgressMediaItemRow(
+      id: serializer.fromJson<String>(json['id']),
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      type: serializer.fromJson<String>(json['type']),
+      pose: serializer.fromJson<String>(json['pose']),
+      localRelativePath: serializer.fromJson<String>(json['localRelativePath']),
+      thumbnailRelativePath: serializer.fromJson<String?>(
+        json['thumbnailRelativePath'],
+      ),
+      source: serializer.fromJson<String>(json['source']),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+      fileSizeBytes: serializer.fromJson<int>(json['fileSizeBytes']),
+      contentHash: serializer.fromJson<String?>(json['contentHash']),
+      sourceMediaItemId: serializer.fromJson<String?>(
+        json['sourceMediaItemId'],
+      ),
+      capturedAt: serializer.fromJson<DateTime?>(json['capturedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sessionId': serializer.toJson<String>(sessionId),
+      'type': serializer.toJson<String>(type),
+      'pose': serializer.toJson<String>(pose),
+      'localRelativePath': serializer.toJson<String>(localRelativePath),
+      'thumbnailRelativePath': serializer.toJson<String?>(
+        thumbnailRelativePath,
+      ),
+      'source': serializer.toJson<String>(source),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+      'fileSizeBytes': serializer.toJson<int>(fileSizeBytes),
+      'contentHash': serializer.toJson<String?>(contentHash),
+      'sourceMediaItemId': serializer.toJson<String?>(sourceMediaItemId),
+      'capturedAt': serializer.toJson<DateTime?>(capturedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  ProgressMediaItemRow copyWith({
+    String? id,
+    String? sessionId,
+    String? type,
+    String? pose,
+    String? localRelativePath,
+    Value<String?> thumbnailRelativePath = const Value.absent(),
+    String? source,
+    Value<int?> durationSeconds = const Value.absent(),
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+    int? fileSizeBytes,
+    Value<String?> contentHash = const Value.absent(),
+    Value<String?> sourceMediaItemId = const Value.absent(),
+    Value<DateTime?> capturedAt = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => ProgressMediaItemRow(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    type: type ?? this.type,
+    pose: pose ?? this.pose,
+    localRelativePath: localRelativePath ?? this.localRelativePath,
+    thumbnailRelativePath: thumbnailRelativePath.present
+        ? thumbnailRelativePath.value
+        : this.thumbnailRelativePath,
+    source: source ?? this.source,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+    fileSizeBytes: fileSizeBytes ?? this.fileSizeBytes,
+    contentHash: contentHash.present ? contentHash.value : this.contentHash,
+    sourceMediaItemId: sourceMediaItemId.present
+        ? sourceMediaItemId.value
+        : this.sourceMediaItemId,
+    capturedAt: capturedAt.present ? capturedAt.value : this.capturedAt,
+    createdAt: createdAt ?? this.createdAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  ProgressMediaItemRow copyWithCompanion(ProgressMediaItemsCompanion data) {
+    return ProgressMediaItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      type: data.type.present ? data.type.value : this.type,
+      pose: data.pose.present ? data.pose.value : this.pose,
+      localRelativePath: data.localRelativePath.present
+          ? data.localRelativePath.value
+          : this.localRelativePath,
+      thumbnailRelativePath: data.thumbnailRelativePath.present
+          ? data.thumbnailRelativePath.value
+          : this.thumbnailRelativePath,
+      source: data.source.present ? data.source.value : this.source,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      fileSizeBytes: data.fileSizeBytes.present
+          ? data.fileSizeBytes.value
+          : this.fileSizeBytes,
+      contentHash: data.contentHash.present
+          ? data.contentHash.value
+          : this.contentHash,
+      sourceMediaItemId: data.sourceMediaItemId.present
+          ? data.sourceMediaItemId.value
+          : this.sourceMediaItemId,
+      capturedAt: data.capturedAt.present
+          ? data.capturedAt.value
+          : this.capturedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaItemRow(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('type: $type, ')
+          ..write('pose: $pose, ')
+          ..write('localRelativePath: $localRelativePath, ')
+          ..write('thumbnailRelativePath: $thumbnailRelativePath, ')
+          ..write('source: $source, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('fileSizeBytes: $fileSizeBytes, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('sourceMediaItemId: $sourceMediaItemId, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sessionId,
+    type,
+    pose,
+    localRelativePath,
+    thumbnailRelativePath,
+    source,
+    durationSeconds,
+    width,
+    height,
+    fileSizeBytes,
+    contentHash,
+    sourceMediaItemId,
+    capturedAt,
+    createdAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgressMediaItemRow &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.type == this.type &&
+          other.pose == this.pose &&
+          other.localRelativePath == this.localRelativePath &&
+          other.thumbnailRelativePath == this.thumbnailRelativePath &&
+          other.source == this.source &&
+          other.durationSeconds == this.durationSeconds &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.fileSizeBytes == this.fileSizeBytes &&
+          other.contentHash == this.contentHash &&
+          other.sourceMediaItemId == this.sourceMediaItemId &&
+          other.capturedAt == this.capturedAt &&
+          other.createdAt == this.createdAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class ProgressMediaItemsCompanion
+    extends UpdateCompanion<ProgressMediaItemRow> {
+  final Value<String> id;
+  final Value<String> sessionId;
+  final Value<String> type;
+  final Value<String> pose;
+  final Value<String> localRelativePath;
+  final Value<String?> thumbnailRelativePath;
+  final Value<String> source;
+  final Value<int?> durationSeconds;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<int> fileSizeBytes;
+  final Value<String?> contentHash;
+  final Value<String?> sourceMediaItemId;
+  final Value<DateTime?> capturedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const ProgressMediaItemsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.pose = const Value.absent(),
+    this.localRelativePath = const Value.absent(),
+    this.thumbnailRelativePath = const Value.absent(),
+    this.source = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.fileSizeBytes = const Value.absent(),
+    this.contentHash = const Value.absent(),
+    this.sourceMediaItemId = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgressMediaItemsCompanion.insert({
+    required String id,
+    required String sessionId,
+    required String type,
+    required String pose,
+    required String localRelativePath,
+    this.thumbnailRelativePath = const Value.absent(),
+    required String source,
+    this.durationSeconds = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    required int fileSizeBytes,
+    this.contentHash = const Value.absent(),
+    this.sourceMediaItemId = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+    required DateTime createdAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sessionId = Value(sessionId),
+       type = Value(type),
+       pose = Value(pose),
+       localRelativePath = Value(localRelativePath),
+       source = Value(source),
+       fileSizeBytes = Value(fileSizeBytes),
+       createdAt = Value(createdAt);
+  static Insertable<ProgressMediaItemRow> custom({
+    Expression<String>? id,
+    Expression<String>? sessionId,
+    Expression<String>? type,
+    Expression<String>? pose,
+    Expression<String>? localRelativePath,
+    Expression<String>? thumbnailRelativePath,
+    Expression<String>? source,
+    Expression<int>? durationSeconds,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<int>? fileSizeBytes,
+    Expression<String>? contentHash,
+    Expression<String>? sourceMediaItemId,
+    Expression<DateTime>? capturedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (type != null) 'type': type,
+      if (pose != null) 'pose': pose,
+      if (localRelativePath != null) 'local_relative_path': localRelativePath,
+      if (thumbnailRelativePath != null)
+        'thumbnail_relative_path': thumbnailRelativePath,
+      if (source != null) 'source': source,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (fileSizeBytes != null) 'file_size_bytes': fileSizeBytes,
+      if (contentHash != null) 'content_hash': contentHash,
+      if (sourceMediaItemId != null) 'source_media_item_id': sourceMediaItemId,
+      if (capturedAt != null) 'captured_at': capturedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgressMediaItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sessionId,
+    Value<String>? type,
+    Value<String>? pose,
+    Value<String>? localRelativePath,
+    Value<String?>? thumbnailRelativePath,
+    Value<String>? source,
+    Value<int?>? durationSeconds,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<int>? fileSizeBytes,
+    Value<String?>? contentHash,
+    Value<String?>? sourceMediaItemId,
+    Value<DateTime?>? capturedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgressMediaItemsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      type: type ?? this.type,
+      pose: pose ?? this.pose,
+      localRelativePath: localRelativePath ?? this.localRelativePath,
+      thumbnailRelativePath:
+          thumbnailRelativePath ?? this.thumbnailRelativePath,
+      source: source ?? this.source,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      fileSizeBytes: fileSizeBytes ?? this.fileSizeBytes,
+      contentHash: contentHash ?? this.contentHash,
+      sourceMediaItemId: sourceMediaItemId ?? this.sourceMediaItemId,
+      capturedAt: capturedAt ?? this.capturedAt,
+      createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (pose.present) {
+      map['pose'] = Variable<String>(pose.value);
+    }
+    if (localRelativePath.present) {
+      map['local_relative_path'] = Variable<String>(localRelativePath.value);
+    }
+    if (thumbnailRelativePath.present) {
+      map['thumbnail_relative_path'] = Variable<String>(
+        thumbnailRelativePath.value,
+      );
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (fileSizeBytes.present) {
+      map['file_size_bytes'] = Variable<int>(fileSizeBytes.value);
+    }
+    if (contentHash.present) {
+      map['content_hash'] = Variable<String>(contentHash.value);
+    }
+    if (sourceMediaItemId.present) {
+      map['source_media_item_id'] = Variable<String>(sourceMediaItemId.value);
+    }
+    if (capturedAt.present) {
+      map['captured_at'] = Variable<DateTime>(capturedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('type: $type, ')
+          ..write('pose: $pose, ')
+          ..write('localRelativePath: $localRelativePath, ')
+          ..write('thumbnailRelativePath: $thumbnailRelativePath, ')
+          ..write('source: $source, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('fileSizeBytes: $fileSizeBytes, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('sourceMediaItemId: $sourceMediaItemId, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgressMediaReminderSettingsTable extends ProgressMediaReminderSettings
+    with
+        TableInfo<
+          $ProgressMediaReminderSettingsTable,
+          ProgressMediaReminderSettingsRow
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgressMediaReminderSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _cadenceMeta = const VerificationMeta(
+    'cadence',
+  );
+  @override
+  late final GeneratedColumn<String> cadence = GeneratedColumn<String>(
+    'cadence',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSessionAtMeta = const VerificationMeta(
+    'lastSessionAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSessionAt =
+      GeneratedColumn<DateTime>(
+        'last_session_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _nextReminderAtMeta = const VerificationMeta(
+    'nextReminderAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextReminderAt =
+      GeneratedColumn<DateTime>(
+        'next_reminder_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastPromptedAtMeta = const VerificationMeta(
+    'lastPromptedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastPromptedAt =
+      GeneratedColumn<DateTime>(
+        'last_prompted_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    enabled,
+    cadence,
+    lastSessionAt,
+    nextReminderAt,
+    lastPromptedAt,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'progress_media_reminder_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgressMediaReminderSettingsRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    if (data.containsKey('cadence')) {
+      context.handle(
+        _cadenceMeta,
+        cadence.isAcceptableOrUnknown(data['cadence']!, _cadenceMeta),
+      );
+    }
+    if (data.containsKey('last_session_at')) {
+      context.handle(
+        _lastSessionAtMeta,
+        lastSessionAt.isAcceptableOrUnknown(
+          data['last_session_at']!,
+          _lastSessionAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_reminder_at')) {
+      context.handle(
+        _nextReminderAtMeta,
+        nextReminderAt.isAcceptableOrUnknown(
+          data['next_reminder_at']!,
+          _nextReminderAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_prompted_at')) {
+      context.handle(
+        _lastPromptedAtMeta,
+        lastPromptedAt.isAcceptableOrUnknown(
+          data['last_prompted_at']!,
+          _lastPromptedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgressMediaReminderSettingsRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgressMediaReminderSettingsRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+      cadence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cadence'],
+      ),
+      lastSessionAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_session_at'],
+      ),
+      nextReminderAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_reminder_at'],
+      ),
+      lastPromptedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_prompted_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgressMediaReminderSettingsTable createAlias(String alias) {
+    return $ProgressMediaReminderSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgressMediaReminderSettingsRow extends DataClass
+    implements Insertable<ProgressMediaReminderSettingsRow> {
+  final String id;
+  final bool enabled;
+  final String? cadence;
+  final DateTime? lastSessionAt;
+  final DateTime? nextReminderAt;
+  final DateTime? lastPromptedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProgressMediaReminderSettingsRow({
+    required this.id,
+    required this.enabled,
+    this.cadence,
+    this.lastSessionAt,
+    this.nextReminderAt,
+    this.lastPromptedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['enabled'] = Variable<bool>(enabled);
+    if (!nullToAbsent || cadence != null) {
+      map['cadence'] = Variable<String>(cadence);
+    }
+    if (!nullToAbsent || lastSessionAt != null) {
+      map['last_session_at'] = Variable<DateTime>(lastSessionAt);
+    }
+    if (!nullToAbsent || nextReminderAt != null) {
+      map['next_reminder_at'] = Variable<DateTime>(nextReminderAt);
+    }
+    if (!nullToAbsent || lastPromptedAt != null) {
+      map['last_prompted_at'] = Variable<DateTime>(lastPromptedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProgressMediaReminderSettingsCompanion toCompanion(bool nullToAbsent) {
+    return ProgressMediaReminderSettingsCompanion(
+      id: Value(id),
+      enabled: Value(enabled),
+      cadence: cadence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cadence),
+      lastSessionAt: lastSessionAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSessionAt),
+      nextReminderAt: nextReminderAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextReminderAt),
+      lastPromptedAt: lastPromptedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPromptedAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProgressMediaReminderSettingsRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgressMediaReminderSettingsRow(
+      id: serializer.fromJson<String>(json['id']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+      cadence: serializer.fromJson<String?>(json['cadence']),
+      lastSessionAt: serializer.fromJson<DateTime?>(json['lastSessionAt']),
+      nextReminderAt: serializer.fromJson<DateTime?>(json['nextReminderAt']),
+      lastPromptedAt: serializer.fromJson<DateTime?>(json['lastPromptedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'enabled': serializer.toJson<bool>(enabled),
+      'cadence': serializer.toJson<String?>(cadence),
+      'lastSessionAt': serializer.toJson<DateTime?>(lastSessionAt),
+      'nextReminderAt': serializer.toJson<DateTime?>(nextReminderAt),
+      'lastPromptedAt': serializer.toJson<DateTime?>(lastPromptedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProgressMediaReminderSettingsRow copyWith({
+    String? id,
+    bool? enabled,
+    Value<String?> cadence = const Value.absent(),
+    Value<DateTime?> lastSessionAt = const Value.absent(),
+    Value<DateTime?> nextReminderAt = const Value.absent(),
+    Value<DateTime?> lastPromptedAt = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProgressMediaReminderSettingsRow(
+    id: id ?? this.id,
+    enabled: enabled ?? this.enabled,
+    cadence: cadence.present ? cadence.value : this.cadence,
+    lastSessionAt: lastSessionAt.present
+        ? lastSessionAt.value
+        : this.lastSessionAt,
+    nextReminderAt: nextReminderAt.present
+        ? nextReminderAt.value
+        : this.nextReminderAt,
+    lastPromptedAt: lastPromptedAt.present
+        ? lastPromptedAt.value
+        : this.lastPromptedAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProgressMediaReminderSettingsRow copyWithCompanion(
+    ProgressMediaReminderSettingsCompanion data,
+  ) {
+    return ProgressMediaReminderSettingsRow(
+      id: data.id.present ? data.id.value : this.id,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+      cadence: data.cadence.present ? data.cadence.value : this.cadence,
+      lastSessionAt: data.lastSessionAt.present
+          ? data.lastSessionAt.value
+          : this.lastSessionAt,
+      nextReminderAt: data.nextReminderAt.present
+          ? data.nextReminderAt.value
+          : this.nextReminderAt,
+      lastPromptedAt: data.lastPromptedAt.present
+          ? data.lastPromptedAt.value
+          : this.lastPromptedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaReminderSettingsRow(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('cadence: $cadence, ')
+          ..write('lastSessionAt: $lastSessionAt, ')
+          ..write('nextReminderAt: $nextReminderAt, ')
+          ..write('lastPromptedAt: $lastPromptedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    enabled,
+    cadence,
+    lastSessionAt,
+    nextReminderAt,
+    lastPromptedAt,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgressMediaReminderSettingsRow &&
+          other.id == this.id &&
+          other.enabled == this.enabled &&
+          other.cadence == this.cadence &&
+          other.lastSessionAt == this.lastSessionAt &&
+          other.nextReminderAt == this.nextReminderAt &&
+          other.lastPromptedAt == this.lastPromptedAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProgressMediaReminderSettingsCompanion
+    extends UpdateCompanion<ProgressMediaReminderSettingsRow> {
+  final Value<String> id;
+  final Value<bool> enabled;
+  final Value<String?> cadence;
+  final Value<DateTime?> lastSessionAt;
+  final Value<DateTime?> nextReminderAt;
+  final Value<DateTime?> lastPromptedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProgressMediaReminderSettingsCompanion({
+    this.id = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.cadence = const Value.absent(),
+    this.lastSessionAt = const Value.absent(),
+    this.nextReminderAt = const Value.absent(),
+    this.lastPromptedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgressMediaReminderSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.cadence = const Value.absent(),
+    this.lastSessionAt = const Value.absent(),
+    this.nextReminderAt = const Value.absent(),
+    this.lastPromptedAt = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProgressMediaReminderSettingsRow> custom({
+    Expression<String>? id,
+    Expression<bool>? enabled,
+    Expression<String>? cadence,
+    Expression<DateTime>? lastSessionAt,
+    Expression<DateTime>? nextReminderAt,
+    Expression<DateTime>? lastPromptedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (enabled != null) 'enabled': enabled,
+      if (cadence != null) 'cadence': cadence,
+      if (lastSessionAt != null) 'last_session_at': lastSessionAt,
+      if (nextReminderAt != null) 'next_reminder_at': nextReminderAt,
+      if (lastPromptedAt != null) 'last_prompted_at': lastPromptedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgressMediaReminderSettingsCompanion copyWith({
+    Value<String>? id,
+    Value<bool>? enabled,
+    Value<String?>? cadence,
+    Value<DateTime?>? lastSessionAt,
+    Value<DateTime?>? nextReminderAt,
+    Value<DateTime?>? lastPromptedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgressMediaReminderSettingsCompanion(
+      id: id ?? this.id,
+      enabled: enabled ?? this.enabled,
+      cadence: cadence ?? this.cadence,
+      lastSessionAt: lastSessionAt ?? this.lastSessionAt,
+      nextReminderAt: nextReminderAt ?? this.nextReminderAt,
+      lastPromptedAt: lastPromptedAt ?? this.lastPromptedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (cadence.present) {
+      map['cadence'] = Variable<String>(cadence.value);
+    }
+    if (lastSessionAt.present) {
+      map['last_session_at'] = Variable<DateTime>(lastSessionAt.value);
+    }
+    if (nextReminderAt.present) {
+      map['next_reminder_at'] = Variable<DateTime>(nextReminderAt.value);
+    }
+    if (lastPromptedAt.present) {
+      map['last_prompted_at'] = Variable<DateTime>(lastPromptedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgressMediaReminderSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('cadence: $cadence, ')
+          ..write('lastSessionAt: $lastSessionAt, ')
+          ..write('nextReminderAt: $nextReminderAt, ')
+          ..write('lastPromptedAt: $lastPromptedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -28912,6 +31883,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $PlateauFlagsTable plateauFlags = $PlateauFlagsTable(this);
+  late final $ProgressMeasurementSnapshotsTable progressMeasurementSnapshots =
+      $ProgressMeasurementSnapshotsTable(this);
+  late final $ProgressMediaSessionsTable progressMediaSessions =
+      $ProgressMediaSessionsTable(this);
+  late final $ProgressMediaItemsTable progressMediaItems =
+      $ProgressMediaItemsTable(this);
+  late final $ProgressMediaReminderSettingsTable progressMediaReminderSettings =
+      $ProgressMediaReminderSettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -28947,6 +31926,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     setLogs,
     programRevisions,
     plateauFlags,
+    progressMeasurementSnapshots,
+    progressMediaSessions,
+    progressMediaItems,
+    progressMediaReminderSettings,
   ];
 }
 
@@ -42272,6 +45255,2021 @@ typedef $$PlateauFlagsTableProcessedTableManager =
       PlateauFlag,
       PrefetchHooks Function()
     >;
+typedef $$ProgressMeasurementSnapshotsTableCreateCompanionBuilder =
+    ProgressMeasurementSnapshotsCompanion Function({
+      required String id,
+      required DateTime measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<int> rowid,
+    });
+typedef $$ProgressMeasurementSnapshotsTableUpdateCompanionBuilder =
+    ProgressMeasurementSnapshotsCompanion Function({
+      Value<String> id,
+      Value<DateTime> measuredAt,
+      Value<double?> bodyweightKg,
+      Value<double?> waistCm,
+      Value<double?> chestCm,
+      Value<double?> hipsCm,
+      Value<double?> leftArmCm,
+      Value<double?> rightArmCm,
+      Value<double?> leftThighCm,
+      Value<double?> rightThighCm,
+      Value<int> rowid,
+    });
+
+final class $$ProgressMeasurementSnapshotsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ProgressMeasurementSnapshotsTable,
+          ProgressMeasurementSnapshotRow
+        > {
+  $$ProgressMeasurementSnapshotsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $ProgressMediaSessionsTable,
+    List<ProgressMediaSessionRow>
+  >
+  _progressMediaSessionsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.progressMediaSessions,
+    aliasName:
+        'progress_measurement_snapshots__id__progress_media_sessions__body_measurement_snapshot_id',
+  );
+
+  $$ProgressMediaSessionsTableProcessedTableManager
+  get progressMediaSessionsRefs {
+    final manager =
+        $$ProgressMediaSessionsTableTableManager(
+          $_db,
+          $_db.progressMediaSessions,
+        ).filter(
+          (f) => f.bodyMeasurementSnapshotId.id.sqlEquals(
+            $_itemColumn<String>('id')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _progressMediaSessionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ProgressMeasurementSnapshotsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgressMeasurementSnapshotsTable> {
+  $$ProgressMeasurementSnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> progressMediaSessionsRefs(
+    Expression<bool> Function($$ProgressMediaSessionsTableFilterComposer f) f,
+  ) {
+    final $$ProgressMediaSessionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.progressMediaSessions,
+          getReferencedColumn: (t) => t.bodyMeasurementSnapshotId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaSessionsTableFilterComposer(
+                $db: $db,
+                $table: $db.progressMediaSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$ProgressMeasurementSnapshotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgressMeasurementSnapshotsTable> {
+  $$ProgressMeasurementSnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get waistCm => $composableBuilder(
+    column: $table.waistCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get chestCm => $composableBuilder(
+    column: $table.chestCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get hipsCm => $composableBuilder(
+    column: $table.hipsCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftArmCm => $composableBuilder(
+    column: $table.leftArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgressMeasurementSnapshotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgressMeasurementSnapshotsTable> {
+  $$ProgressMeasurementSnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get waistCm =>
+      $composableBuilder(column: $table.waistCm, builder: (column) => column);
+
+  GeneratedColumn<double> get chestCm =>
+      $composableBuilder(column: $table.chestCm, builder: (column) => column);
+
+  GeneratedColumn<double> get hipsCm =>
+      $composableBuilder(column: $table.hipsCm, builder: (column) => column);
+
+  GeneratedColumn<double> get leftArmCm =>
+      $composableBuilder(column: $table.leftArmCm, builder: (column) => column);
+
+  GeneratedColumn<double> get rightArmCm => $composableBuilder(
+    column: $table.rightArmCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get leftThighCm => $composableBuilder(
+    column: $table.leftThighCm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rightThighCm => $composableBuilder(
+    column: $table.rightThighCm,
+    builder: (column) => column,
+  );
+
+  Expression<T> progressMediaSessionsRefs<T extends Object>(
+    Expression<T> Function($$ProgressMediaSessionsTableAnnotationComposer a) f,
+  ) {
+    final $$ProgressMediaSessionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.progressMediaSessions,
+          getReferencedColumn: (t) => t.bodyMeasurementSnapshotId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaSessionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.progressMediaSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$ProgressMeasurementSnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgressMeasurementSnapshotsTable,
+          ProgressMeasurementSnapshotRow,
+          $$ProgressMeasurementSnapshotsTableFilterComposer,
+          $$ProgressMeasurementSnapshotsTableOrderingComposer,
+          $$ProgressMeasurementSnapshotsTableAnnotationComposer,
+          $$ProgressMeasurementSnapshotsTableCreateCompanionBuilder,
+          $$ProgressMeasurementSnapshotsTableUpdateCompanionBuilder,
+          (
+            ProgressMeasurementSnapshotRow,
+            $$ProgressMeasurementSnapshotsTableReferences,
+          ),
+          ProgressMeasurementSnapshotRow,
+          PrefetchHooks Function({bool progressMediaSessionsRefs})
+        > {
+  $$ProgressMeasurementSnapshotsTableTableManager(
+    _$AppDatabase db,
+    $ProgressMeasurementSnapshotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgressMeasurementSnapshotsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgressMeasurementSnapshotsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgressMeasurementSnapshotsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> measuredAt = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMeasurementSnapshotsCompanion(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime measuredAt,
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> waistCm = const Value.absent(),
+                Value<double?> chestCm = const Value.absent(),
+                Value<double?> hipsCm = const Value.absent(),
+                Value<double?> leftArmCm = const Value.absent(),
+                Value<double?> rightArmCm = const Value.absent(),
+                Value<double?> leftThighCm = const Value.absent(),
+                Value<double?> rightThighCm = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMeasurementSnapshotsCompanion.insert(
+                id: id,
+                measuredAt: measuredAt,
+                bodyweightKg: bodyweightKg,
+                waistCm: waistCm,
+                chestCm: chestCm,
+                hipsCm: hipsCm,
+                leftArmCm: leftArmCm,
+                rightArmCm: rightArmCm,
+                leftThighCm: leftThighCm,
+                rightThighCm: rightThighCm,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ProgressMeasurementSnapshotsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({progressMediaSessionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (progressMediaSessionsRefs) db.progressMediaSessions,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (progressMediaSessionsRefs)
+                    await $_getPrefetchedData<
+                      ProgressMeasurementSnapshotRow,
+                      $ProgressMeasurementSnapshotsTable,
+                      ProgressMediaSessionRow
+                    >(
+                      currentTable: table,
+                      referencedTable:
+                          $$ProgressMeasurementSnapshotsTableReferences
+                              ._progressMediaSessionsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ProgressMeasurementSnapshotsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).progressMediaSessionsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.bodyMeasurementSnapshotId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ProgressMeasurementSnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgressMeasurementSnapshotsTable,
+      ProgressMeasurementSnapshotRow,
+      $$ProgressMeasurementSnapshotsTableFilterComposer,
+      $$ProgressMeasurementSnapshotsTableOrderingComposer,
+      $$ProgressMeasurementSnapshotsTableAnnotationComposer,
+      $$ProgressMeasurementSnapshotsTableCreateCompanionBuilder,
+      $$ProgressMeasurementSnapshotsTableUpdateCompanionBuilder,
+      (
+        ProgressMeasurementSnapshotRow,
+        $$ProgressMeasurementSnapshotsTableReferences,
+      ),
+      ProgressMeasurementSnapshotRow,
+      PrefetchHooks Function({bool progressMediaSessionsRefs})
+    >;
+typedef $$ProgressMediaSessionsTableCreateCompanionBuilder =
+    ProgressMediaSessionsCompanion Function({
+      required String id,
+      required DateTime capturedAt,
+      required String mediaType,
+      Value<bool> isBaseline,
+      Value<bool> isCompletePoseSet,
+      Value<double?> bodyweightKg,
+      Value<String?> bodyMeasurementSnapshotId,
+      Value<String?> notes,
+      Value<String?> reminderCadenceAtCapture,
+      required int storageSizeBytes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgressMediaSessionsTableUpdateCompanionBuilder =
+    ProgressMediaSessionsCompanion Function({
+      Value<String> id,
+      Value<DateTime> capturedAt,
+      Value<String> mediaType,
+      Value<bool> isBaseline,
+      Value<bool> isCompletePoseSet,
+      Value<double?> bodyweightKg,
+      Value<String?> bodyMeasurementSnapshotId,
+      Value<String?> notes,
+      Value<String?> reminderCadenceAtCapture,
+      Value<int> storageSizeBytes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+final class $$ProgressMediaSessionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ProgressMediaSessionsTable,
+          ProgressMediaSessionRow
+        > {
+  $$ProgressMediaSessionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProgressMeasurementSnapshotsTable _bodyMeasurementSnapshotIdTable(
+    _$AppDatabase db,
+  ) => db.progressMeasurementSnapshots.createAlias(
+    'progress_media_sessions__body_measurement_snapshot_id__progress_measurement_snapshots__id',
+  );
+
+  $$ProgressMeasurementSnapshotsTableProcessedTableManager?
+  get bodyMeasurementSnapshotId {
+    final $_column = $_itemColumn<String>('body_measurement_snapshot_id');
+    if ($_column == null) return null;
+    final manager = $$ProgressMeasurementSnapshotsTableTableManager(
+      $_db,
+      $_db.progressMeasurementSnapshots,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(
+      _bodyMeasurementSnapshotIdTable($_db),
+    );
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $ProgressMediaItemsTable,
+    List<ProgressMediaItemRow>
+  >
+  _progressMediaItemsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.progressMediaItems,
+        aliasName:
+            'progress_media_sessions__id__progress_media_items__session_id',
+      );
+
+  $$ProgressMediaItemsTableProcessedTableManager get progressMediaItemsRefs {
+    final manager = $$ProgressMediaItemsTableTableManager(
+      $_db,
+      $_db.progressMediaItems,
+    ).filter((f) => f.sessionId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _progressMediaItemsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ProgressMediaSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgressMediaSessionsTable> {
+  $$ProgressMediaSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mediaType => $composableBuilder(
+    column: $table.mediaType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isBaseline => $composableBuilder(
+    column: $table.isBaseline,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCompletePoseSet => $composableBuilder(
+    column: $table.isCompletePoseSet,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reminderCadenceAtCapture => $composableBuilder(
+    column: $table.reminderCadenceAtCapture,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get storageSizeBytes => $composableBuilder(
+    column: $table.storageSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProgressMeasurementSnapshotsTableFilterComposer
+  get bodyMeasurementSnapshotId {
+    final $$ProgressMeasurementSnapshotsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.bodyMeasurementSnapshotId,
+          referencedTable: $db.progressMeasurementSnapshots,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMeasurementSnapshotsTableFilterComposer(
+                $db: $db,
+                $table: $db.progressMeasurementSnapshots,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  Expression<bool> progressMediaItemsRefs(
+    Expression<bool> Function($$ProgressMediaItemsTableFilterComposer f) f,
+  ) {
+    final $$ProgressMediaItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.progressMediaItems,
+      getReferencedColumn: (t) => t.sessionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProgressMediaItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.progressMediaItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ProgressMediaSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgressMediaSessionsTable> {
+  $$ProgressMediaSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mediaType => $composableBuilder(
+    column: $table.mediaType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isBaseline => $composableBuilder(
+    column: $table.isBaseline,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCompletePoseSet => $composableBuilder(
+    column: $table.isCompletePoseSet,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reminderCadenceAtCapture => $composableBuilder(
+    column: $table.reminderCadenceAtCapture,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get storageSizeBytes => $composableBuilder(
+    column: $table.storageSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProgressMeasurementSnapshotsTableOrderingComposer
+  get bodyMeasurementSnapshotId {
+    final $$ProgressMeasurementSnapshotsTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.bodyMeasurementSnapshotId,
+          referencedTable: $db.progressMeasurementSnapshots,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMeasurementSnapshotsTableOrderingComposer(
+                $db: $db,
+                $table: $db.progressMeasurementSnapshots,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ProgressMediaSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgressMediaSessionsTable> {
+  $$ProgressMediaSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mediaType =>
+      $composableBuilder(column: $table.mediaType, builder: (column) => column);
+
+  GeneratedColumn<bool> get isBaseline => $composableBuilder(
+    column: $table.isBaseline,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCompletePoseSet => $composableBuilder(
+    column: $table.isCompletePoseSet,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bodyweightKg => $composableBuilder(
+    column: $table.bodyweightKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get reminderCadenceAtCapture => $composableBuilder(
+    column: $table.reminderCadenceAtCapture,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get storageSizeBytes => $composableBuilder(
+    column: $table.storageSizeBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$ProgressMeasurementSnapshotsTableAnnotationComposer
+  get bodyMeasurementSnapshotId {
+    final $$ProgressMeasurementSnapshotsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.bodyMeasurementSnapshotId,
+          referencedTable: $db.progressMeasurementSnapshots,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMeasurementSnapshotsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.progressMeasurementSnapshots,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  Expression<T> progressMediaItemsRefs<T extends Object>(
+    Expression<T> Function($$ProgressMediaItemsTableAnnotationComposer a) f,
+  ) {
+    final $$ProgressMediaItemsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.progressMediaItems,
+          getReferencedColumn: (t) => t.sessionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaItemsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.progressMediaItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$ProgressMediaSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgressMediaSessionsTable,
+          ProgressMediaSessionRow,
+          $$ProgressMediaSessionsTableFilterComposer,
+          $$ProgressMediaSessionsTableOrderingComposer,
+          $$ProgressMediaSessionsTableAnnotationComposer,
+          $$ProgressMediaSessionsTableCreateCompanionBuilder,
+          $$ProgressMediaSessionsTableUpdateCompanionBuilder,
+          (ProgressMediaSessionRow, $$ProgressMediaSessionsTableReferences),
+          ProgressMediaSessionRow,
+          PrefetchHooks Function({
+            bool bodyMeasurementSnapshotId,
+            bool progressMediaItemsRefs,
+          })
+        > {
+  $$ProgressMediaSessionsTableTableManager(
+    _$AppDatabase db,
+    $ProgressMediaSessionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgressMediaSessionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgressMediaSessionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgressMediaSessionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> capturedAt = const Value.absent(),
+                Value<String> mediaType = const Value.absent(),
+                Value<bool> isBaseline = const Value.absent(),
+                Value<bool> isCompletePoseSet = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<String?> bodyMeasurementSnapshotId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> reminderCadenceAtCapture = const Value.absent(),
+                Value<int> storageSizeBytes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaSessionsCompanion(
+                id: id,
+                capturedAt: capturedAt,
+                mediaType: mediaType,
+                isBaseline: isBaseline,
+                isCompletePoseSet: isCompletePoseSet,
+                bodyweightKg: bodyweightKg,
+                bodyMeasurementSnapshotId: bodyMeasurementSnapshotId,
+                notes: notes,
+                reminderCadenceAtCapture: reminderCadenceAtCapture,
+                storageSizeBytes: storageSizeBytes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime capturedAt,
+                required String mediaType,
+                Value<bool> isBaseline = const Value.absent(),
+                Value<bool> isCompletePoseSet = const Value.absent(),
+                Value<double?> bodyweightKg = const Value.absent(),
+                Value<String?> bodyMeasurementSnapshotId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> reminderCadenceAtCapture = const Value.absent(),
+                required int storageSizeBytes,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaSessionsCompanion.insert(
+                id: id,
+                capturedAt: capturedAt,
+                mediaType: mediaType,
+                isBaseline: isBaseline,
+                isCompletePoseSet: isCompletePoseSet,
+                bodyweightKg: bodyweightKg,
+                bodyMeasurementSnapshotId: bodyMeasurementSnapshotId,
+                notes: notes,
+                reminderCadenceAtCapture: reminderCadenceAtCapture,
+                storageSizeBytes: storageSizeBytes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ProgressMediaSessionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                bodyMeasurementSnapshotId = false,
+                progressMediaItemsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (progressMediaItemsRefs) db.progressMediaItems,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (bodyMeasurementSnapshotId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn:
+                                        table.bodyMeasurementSnapshotId,
+                                    referencedTable:
+                                        $$ProgressMediaSessionsTableReferences
+                                            ._bodyMeasurementSnapshotIdTable(
+                                              db,
+                                            ),
+                                    referencedColumn:
+                                        $$ProgressMediaSessionsTableReferences
+                                            ._bodyMeasurementSnapshotIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (progressMediaItemsRefs)
+                        await $_getPrefetchedData<
+                          ProgressMediaSessionRow,
+                          $ProgressMediaSessionsTable,
+                          ProgressMediaItemRow
+                        >(
+                          currentTable: table,
+                          referencedTable:
+                              $$ProgressMediaSessionsTableReferences
+                                  ._progressMediaItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProgressMediaSessionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).progressMediaItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sessionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ProgressMediaSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgressMediaSessionsTable,
+      ProgressMediaSessionRow,
+      $$ProgressMediaSessionsTableFilterComposer,
+      $$ProgressMediaSessionsTableOrderingComposer,
+      $$ProgressMediaSessionsTableAnnotationComposer,
+      $$ProgressMediaSessionsTableCreateCompanionBuilder,
+      $$ProgressMediaSessionsTableUpdateCompanionBuilder,
+      (ProgressMediaSessionRow, $$ProgressMediaSessionsTableReferences),
+      ProgressMediaSessionRow,
+      PrefetchHooks Function({
+        bool bodyMeasurementSnapshotId,
+        bool progressMediaItemsRefs,
+      })
+    >;
+typedef $$ProgressMediaItemsTableCreateCompanionBuilder =
+    ProgressMediaItemsCompanion Function({
+      required String id,
+      required String sessionId,
+      required String type,
+      required String pose,
+      required String localRelativePath,
+      Value<String?> thumbnailRelativePath,
+      required String source,
+      Value<int?> durationSeconds,
+      Value<int?> width,
+      Value<int?> height,
+      required int fileSizeBytes,
+      Value<String?> contentHash,
+      Value<String?> sourceMediaItemId,
+      Value<DateTime?> capturedAt,
+      required DateTime createdAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgressMediaItemsTableUpdateCompanionBuilder =
+    ProgressMediaItemsCompanion Function({
+      Value<String> id,
+      Value<String> sessionId,
+      Value<String> type,
+      Value<String> pose,
+      Value<String> localRelativePath,
+      Value<String?> thumbnailRelativePath,
+      Value<String> source,
+      Value<int?> durationSeconds,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int> fileSizeBytes,
+      Value<String?> contentHash,
+      Value<String?> sourceMediaItemId,
+      Value<DateTime?> capturedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+final class $$ProgressMediaItemsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ProgressMediaItemsTable,
+          ProgressMediaItemRow
+        > {
+  $$ProgressMediaItemsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProgressMediaSessionsTable _sessionIdTable(_$AppDatabase db) =>
+      db.progressMediaSessions.createAlias(
+        'progress_media_items__session_id__progress_media_sessions__id',
+      );
+
+  $$ProgressMediaSessionsTableProcessedTableManager get sessionId {
+    final $_column = $_itemColumn<String>('session_id')!;
+
+    final manager = $$ProgressMediaSessionsTableTableManager(
+      $_db,
+      $_db.progressMediaSessions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sessionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $ProgressMediaItemsTable _sourceMediaItemIdTable(_$AppDatabase db) =>
+      db.progressMediaItems.createAlias(
+        'progress_media_items__source_media_item_id__progress_media_items__id',
+      );
+
+  $$ProgressMediaItemsTableProcessedTableManager? get sourceMediaItemId {
+    final $_column = $_itemColumn<String>('source_media_item_id');
+    if ($_column == null) return null;
+    final manager = $$ProgressMediaItemsTableTableManager(
+      $_db,
+      $_db.progressMediaItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sourceMediaItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ProgressMediaItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgressMediaItemsTable> {
+  $$ProgressMediaItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pose => $composableBuilder(
+    column: $table.pose,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbnailRelativePath => $composableBuilder(
+    column: $table.thumbnailRelativePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProgressMediaSessionsTableFilterComposer get sessionId {
+    final $$ProgressMediaSessionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sessionId,
+          referencedTable: $db.progressMediaSessions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaSessionsTableFilterComposer(
+                $db: $db,
+                $table: $db.progressMediaSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$ProgressMediaItemsTableFilterComposer get sourceMediaItemId {
+    final $$ProgressMediaItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceMediaItemId,
+      referencedTable: $db.progressMediaItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProgressMediaItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.progressMediaItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ProgressMediaItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgressMediaItemsTable> {
+  $$ProgressMediaItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pose => $composableBuilder(
+    column: $table.pose,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbnailRelativePath => $composableBuilder(
+    column: $table.thumbnailRelativePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProgressMediaSessionsTableOrderingComposer get sessionId {
+    final $$ProgressMediaSessionsTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sessionId,
+          referencedTable: $db.progressMediaSessions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaSessionsTableOrderingComposer(
+                $db: $db,
+                $table: $db.progressMediaSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$ProgressMediaItemsTableOrderingComposer get sourceMediaItemId {
+    final $$ProgressMediaItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceMediaItemId,
+      referencedTable: $db.progressMediaItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProgressMediaItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.progressMediaItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ProgressMediaItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgressMediaItemsTable> {
+  $$ProgressMediaItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get pose =>
+      $composableBuilder(column: $table.pose, builder: (column) => column);
+
+  GeneratedColumn<String> get localRelativePath => $composableBuilder(
+    column: $table.localRelativePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get thumbnailRelativePath => $composableBuilder(
+    column: $table.thumbnailRelativePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<int> get fileSizeBytes => $composableBuilder(
+    column: $table.fileSizeBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$ProgressMediaSessionsTableAnnotationComposer get sessionId {
+    final $$ProgressMediaSessionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sessionId,
+          referencedTable: $db.progressMediaSessions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaSessionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.progressMediaSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$ProgressMediaItemsTableAnnotationComposer get sourceMediaItemId {
+    final $$ProgressMediaItemsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sourceMediaItemId,
+          referencedTable: $db.progressMediaItems,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProgressMediaItemsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.progressMediaItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ProgressMediaItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgressMediaItemsTable,
+          ProgressMediaItemRow,
+          $$ProgressMediaItemsTableFilterComposer,
+          $$ProgressMediaItemsTableOrderingComposer,
+          $$ProgressMediaItemsTableAnnotationComposer,
+          $$ProgressMediaItemsTableCreateCompanionBuilder,
+          $$ProgressMediaItemsTableUpdateCompanionBuilder,
+          (ProgressMediaItemRow, $$ProgressMediaItemsTableReferences),
+          ProgressMediaItemRow,
+          PrefetchHooks Function({bool sessionId, bool sourceMediaItemId})
+        > {
+  $$ProgressMediaItemsTableTableManager(
+    _$AppDatabase db,
+    $ProgressMediaItemsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgressMediaItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgressMediaItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgressMediaItemsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sessionId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> pose = const Value.absent(),
+                Value<String> localRelativePath = const Value.absent(),
+                Value<String?> thumbnailRelativePath = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int> fileSizeBytes = const Value.absent(),
+                Value<String?> contentHash = const Value.absent(),
+                Value<String?> sourceMediaItemId = const Value.absent(),
+                Value<DateTime?> capturedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaItemsCompanion(
+                id: id,
+                sessionId: sessionId,
+                type: type,
+                pose: pose,
+                localRelativePath: localRelativePath,
+                thumbnailRelativePath: thumbnailRelativePath,
+                source: source,
+                durationSeconds: durationSeconds,
+                width: width,
+                height: height,
+                fileSizeBytes: fileSizeBytes,
+                contentHash: contentHash,
+                sourceMediaItemId: sourceMediaItemId,
+                capturedAt: capturedAt,
+                createdAt: createdAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sessionId,
+                required String type,
+                required String pose,
+                required String localRelativePath,
+                Value<String?> thumbnailRelativePath = const Value.absent(),
+                required String source,
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                required int fileSizeBytes,
+                Value<String?> contentHash = const Value.absent(),
+                Value<String?> sourceMediaItemId = const Value.absent(),
+                Value<DateTime?> capturedAt = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaItemsCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                type: type,
+                pose: pose,
+                localRelativePath: localRelativePath,
+                thumbnailRelativePath: thumbnailRelativePath,
+                source: source,
+                durationSeconds: durationSeconds,
+                width: width,
+                height: height,
+                fileSizeBytes: fileSizeBytes,
+                contentHash: contentHash,
+                sourceMediaItemId: sourceMediaItemId,
+                capturedAt: capturedAt,
+                createdAt: createdAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ProgressMediaItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({sessionId = false, sourceMediaItemId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (sessionId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.sessionId,
+                                    referencedTable:
+                                        $$ProgressMediaItemsTableReferences
+                                            ._sessionIdTable(db),
+                                    referencedColumn:
+                                        $$ProgressMediaItemsTableReferences
+                                            ._sessionIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (sourceMediaItemId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.sourceMediaItemId,
+                                    referencedTable:
+                                        $$ProgressMediaItemsTableReferences
+                                            ._sourceMediaItemIdTable(db),
+                                    referencedColumn:
+                                        $$ProgressMediaItemsTableReferences
+                                            ._sourceMediaItemIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ProgressMediaItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgressMediaItemsTable,
+      ProgressMediaItemRow,
+      $$ProgressMediaItemsTableFilterComposer,
+      $$ProgressMediaItemsTableOrderingComposer,
+      $$ProgressMediaItemsTableAnnotationComposer,
+      $$ProgressMediaItemsTableCreateCompanionBuilder,
+      $$ProgressMediaItemsTableUpdateCompanionBuilder,
+      (ProgressMediaItemRow, $$ProgressMediaItemsTableReferences),
+      ProgressMediaItemRow,
+      PrefetchHooks Function({bool sessionId, bool sourceMediaItemId})
+    >;
+typedef $$ProgressMediaReminderSettingsTableCreateCompanionBuilder =
+    ProgressMediaReminderSettingsCompanion Function({
+      Value<String> id,
+      Value<bool> enabled,
+      Value<String?> cadence,
+      Value<DateTime?> lastSessionAt,
+      Value<DateTime?> nextReminderAt,
+      Value<DateTime?> lastPromptedAt,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgressMediaReminderSettingsTableUpdateCompanionBuilder =
+    ProgressMediaReminderSettingsCompanion Function({
+      Value<String> id,
+      Value<bool> enabled,
+      Value<String?> cadence,
+      Value<DateTime?> lastSessionAt,
+      Value<DateTime?> nextReminderAt,
+      Value<DateTime?> lastPromptedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProgressMediaReminderSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgressMediaReminderSettingsTable> {
+  $$ProgressMediaReminderSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cadence => $composableBuilder(
+    column: $table.cadence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSessionAt => $composableBuilder(
+    column: $table.lastSessionAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextReminderAt => $composableBuilder(
+    column: $table.nextReminderAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastPromptedAt => $composableBuilder(
+    column: $table.lastPromptedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgressMediaReminderSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgressMediaReminderSettingsTable> {
+  $$ProgressMediaReminderSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cadence => $composableBuilder(
+    column: $table.cadence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSessionAt => $composableBuilder(
+    column: $table.lastSessionAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextReminderAt => $composableBuilder(
+    column: $table.nextReminderAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastPromptedAt => $composableBuilder(
+    column: $table.lastPromptedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgressMediaReminderSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgressMediaReminderSettingsTable> {
+  $$ProgressMediaReminderSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+
+  GeneratedColumn<String> get cadence =>
+      $composableBuilder(column: $table.cadence, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSessionAt => $composableBuilder(
+    column: $table.lastSessionAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get nextReminderAt => $composableBuilder(
+    column: $table.nextReminderAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastPromptedAt => $composableBuilder(
+    column: $table.lastPromptedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProgressMediaReminderSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgressMediaReminderSettingsTable,
+          ProgressMediaReminderSettingsRow,
+          $$ProgressMediaReminderSettingsTableFilterComposer,
+          $$ProgressMediaReminderSettingsTableOrderingComposer,
+          $$ProgressMediaReminderSettingsTableAnnotationComposer,
+          $$ProgressMediaReminderSettingsTableCreateCompanionBuilder,
+          $$ProgressMediaReminderSettingsTableUpdateCompanionBuilder,
+          (
+            ProgressMediaReminderSettingsRow,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgressMediaReminderSettingsTable,
+              ProgressMediaReminderSettingsRow
+            >,
+          ),
+          ProgressMediaReminderSettingsRow,
+          PrefetchHooks Function()
+        > {
+  $$ProgressMediaReminderSettingsTableTableManager(
+    _$AppDatabase db,
+    $ProgressMediaReminderSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgressMediaReminderSettingsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProgressMediaReminderSettingsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProgressMediaReminderSettingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<String?> cadence = const Value.absent(),
+                Value<DateTime?> lastSessionAt = const Value.absent(),
+                Value<DateTime?> nextReminderAt = const Value.absent(),
+                Value<DateTime?> lastPromptedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaReminderSettingsCompanion(
+                id: id,
+                enabled: enabled,
+                cadence: cadence,
+                lastSessionAt: lastSessionAt,
+                nextReminderAt: nextReminderAt,
+                lastPromptedAt: lastPromptedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<String?> cadence = const Value.absent(),
+                Value<DateTime?> lastSessionAt = const Value.absent(),
+                Value<DateTime?> nextReminderAt = const Value.absent(),
+                Value<DateTime?> lastPromptedAt = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgressMediaReminderSettingsCompanion.insert(
+                id: id,
+                enabled: enabled,
+                cadence: cadence,
+                lastSessionAt: lastSessionAt,
+                nextReminderAt: nextReminderAt,
+                lastPromptedAt: lastPromptedAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgressMediaReminderSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgressMediaReminderSettingsTable,
+      ProgressMediaReminderSettingsRow,
+      $$ProgressMediaReminderSettingsTableFilterComposer,
+      $$ProgressMediaReminderSettingsTableOrderingComposer,
+      $$ProgressMediaReminderSettingsTableAnnotationComposer,
+      $$ProgressMediaReminderSettingsTableCreateCompanionBuilder,
+      $$ProgressMediaReminderSettingsTableUpdateCompanionBuilder,
+      (
+        ProgressMediaReminderSettingsRow,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgressMediaReminderSettingsTable,
+          ProgressMediaReminderSettingsRow
+        >,
+      ),
+      ProgressMediaReminderSettingsRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -42352,4 +47350,20 @@ class $AppDatabaseManager {
       $$ProgramRevisionsTableTableManager(_db, _db.programRevisions);
   $$PlateauFlagsTableTableManager get plateauFlags =>
       $$PlateauFlagsTableTableManager(_db, _db.plateauFlags);
+  $$ProgressMeasurementSnapshotsTableTableManager
+  get progressMeasurementSnapshots =>
+      $$ProgressMeasurementSnapshotsTableTableManager(
+        _db,
+        _db.progressMeasurementSnapshots,
+      );
+  $$ProgressMediaSessionsTableTableManager get progressMediaSessions =>
+      $$ProgressMediaSessionsTableTableManager(_db, _db.progressMediaSessions);
+  $$ProgressMediaItemsTableTableManager get progressMediaItems =>
+      $$ProgressMediaItemsTableTableManager(_db, _db.progressMediaItems);
+  $$ProgressMediaReminderSettingsTableTableManager
+  get progressMediaReminderSettings =>
+      $$ProgressMediaReminderSettingsTableTableManager(
+        _db,
+        _db.progressMediaReminderSettings,
+      );
 }

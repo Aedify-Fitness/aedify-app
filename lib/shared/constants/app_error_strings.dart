@@ -1,5 +1,13 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressMediaInvalid =
+      'Check the progress media and measurements before saving.';
+  static const progressMediaMissing =
+      'This progress media is no longer available. Choose the file again.';
+  static const progressMediaConflict =
+      'This progress session or file is already saved. Refresh and try again.';
+  static const progressMediaUnavailable =
+      'Could not access progress media. Try again.';
   static const analyticsLoadFailed =
       'Could not load your training trends. Try again.';
   static const plateauLoadFailed =

@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-04 — M5 approved; M6-001 progress media storage foundation
+
+- Recorded user approval of M5 and the required pause after every M6 ticket.
+- Added schema v20 for local progress sessions, parent-linked media/thumbnail/frame metadata, immutable measurement snapshots and disabled reminder state. Raw media stays in sandbox files, registered atomically with session metadata.
+- Added feature-owned repository/providers, baseline/timeline/same-pose queries, notes, storage totals, path ownership validation and recoverable missing-file status. File-store directory logs now omit paths; failures expose fixed safe codes.
+- Verification: Drift generation passed, formatting checked 851 files, analysis clean and **1,849/1,849 tests passed**, zero failures/skips (33 new regressions). Native checks were not repeated for this data/application-only ticket. [Scope, evidence and changed files](m6-storage.md). Pause after V1-M6-001 for review; photo capture/import (002) is not started.
+
 ## 2026-11-04 — M5-007 analytics acceptance fixtures and privacy gate
 
 - Added six file-backed SQLite fixtures for no history, progression, plateau, heavy warm-ups, corrected logs and custom exercises, plus integrity/failure/cooldown checks. Fixed expectations cover PRs, reliable Epley trends, weekly volumes/comparisons and plateau outcomes across all session sources.

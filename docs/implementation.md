@@ -4,18 +4,27 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M5 — Analytics, PRs and Plateau Base Logic: V1-M5-007 complete (2026-11-04), awaiting user review.** M4 remains closed; M6 is not started. |
-| Implemented       | Six deterministic analytics fixtures, integrity/privacy gates and extended native app-job/correction/reopen/deletion acceptance. Fixed Crashlytics log metadata bypassing the diagnostic allowlist. [Gate and coverage boundaries](m5-acceptance.md). |
-| Verification      | Format checked 843 files; analysis clean; **1,816 tests passed**, zero failures/skips. Focused diagnostics/acceptance 70/70; final strengthened fixtures 15/15. Both native flows passed on iOS/Android; previews reviewed and normal app entrypoints restored/launched. |
-| Storage/platforms | Schema v19 adds local plateau flags; v7-to-v19 and v18-to-v19 migration/source-preservation/restart fixtures pass. Restart an existing app to apply v19. Native requirements remain iOS 15+ and Android API 26 / Android 8.0+. |
-| Next ticket       | **Stop after M5-007 for user review.** M6 has not started and requires explicit go-ahead. |
-| Evidence          | [M5 acceptance fixtures, gate and verification](m5-acceptance.md); prior M5 policies remain linked below. Existing live Firebase/BYOK acceptance boundaries remain separate.                                                   |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-001 complete (2026-11-04), awaiting user review.** M5 approved by the user on 2026-11-04. |
+| Implemented | Local progress-media schema, transactional repository, measurement snapshots, baseline/timeline/comparison queries, file registration and disabled reminder state. [Scope and changed files](m6-storage.md). |
+| Verification | Drift generation passed; format checked 851 files; analysis clean; **1,849/1,849 tests passed**, zero failures/skips (33 new regressions). Native media checks belong to later capture/acceptance tickets. |
+| Storage/platforms | Schema v20 adds four progress-media tables and baseline/timeline/ownership indexes. Existing platform requirements remain iOS 15+ and Android API 26+. |
+| Next ticket | **Pause after V1-M6-001 for user review.** V1-M6-002 photo capture/import has not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 storage foundation](m6-storage.md); [approved M5 acceptance](m5-acceptance.md). Existing live Firebase/BYOK acceptance boundaries remain separate. |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-04 — M5 approval and V1-M6-001 storage foundation
+
+- User approved M5 and authorized M6 with a review pause after every ticket.
+- Schema v20 adds progress sessions, original/derived media metadata, immutable optional measurement snapshots and durable reminder state. Thumbnails/frames use the detailed data model's parent-linked media items; raw bytes stay in local files.
+- Added feature-owned repository/providers, structural validation, UUID-owned relative paths, atomic registrations/saves, first-session baseline, baseline changes, notes, timeline, same-pose queries, missing-file availability and registered storage usage.
+- Added safe sandbox stat handling, stopped file-store path logging and mapped storage/SQL errors to fixed codes. Save rollback retains caller-owned staging files for retry/cancel; capture and cleanup ownership are documented for later tickets.
+- Verification: Drift generation passed; `dart format .` checked 851 files, `flutter analyze` found no issues and all **1,849 tests passed**, zero failures/skips, including 33 new regression cases. Migration fixtures preserve prior rows through v20 and reopen. Native checks were not run for this data/application-only ticket. [Evidence and inventory](m6-storage.md). **Pause after ticket 001; ticket 002 is not started.**
+
 
 ### 2026-11-04 — V1-M5-007 analytics acceptance fixture suite
 
@@ -2452,8 +2461,8 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 ## Planned Work
 
 - **All M3 tickets closed** — V1-M3-001 through V1-M3-009 complete.
-- M5 — Analytics, PRs, Plateau Base Logic
-- M6 — Progress Media Tracking
+- **M5 approved (2026-11-04).**
+- M6 — Progress Media Tracking: ticket 001 complete; pause for review before 002–008
 - M7 — AI Infrastructure
 - M8 — AI Workout + Programme Generation
 - M9 — AI Trainer Chat + AI Update Flows
