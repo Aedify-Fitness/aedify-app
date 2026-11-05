@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+abstract final class AppProgressVideoTokens {
+  static const double previewHeight = 320;
+}
+
 abstract final class AppProgressPhotoTokens {
   static const double maxWidth = 640;
   static const double twoColumnsMinWidth = 360;

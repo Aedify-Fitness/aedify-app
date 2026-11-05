@@ -1,5 +1,17 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressVideoMicrophone =
+      'Microphone access is blocked. Allow it in device settings to record, or import a video without audio.';
+  static const progressVideoUnsupported =
+      'This video source or format is unavailable. Choose a supported MP4 or MOV video.';
+  static const progressVideoInvalid =
+      'This file could not be opened as a video. Choose another MP4 or MOV file.';
+  static const progressVideoTooLong =
+      'This video exceeds the selected time limit. Choose a shorter video or increase the limit.';
+  static const progressVideoTooLarge =
+      'Choose a video no larger than 100 MiB. On Android 8.0, use 16 megapixels or less.';
+  static const progressVideoPreview =
+      'Could not play this video. Retry the preview or replace the video before saving.';
   static const progressPhotoPermission =
       'Camera or photo access is blocked. Allow access in your device settings, or choose another source.';
   static const progressPhotoUnsupported =

@@ -27,9 +27,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Take progress photos to save privately on this device.</string>
+	<string>Take progress photos and videos to save privately on this device.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record audio with progress videos saved privately on this device.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Choose progress photos to save privately on this device.</string>
+	<string>Choose progress photos and videos to save privately on this device.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

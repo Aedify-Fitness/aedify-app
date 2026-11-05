@@ -1,8 +1,7 @@
 # M6 photo capture/import — V1-M6-002
 
-Date: 2026-11-05. Status: complete; awaiting user review.
-Ticket 001 was approved in conversation. Pause after this ticket; video capture
-and import (V1-M6-003) has not started.
+Date: 2026-11-05. Status: complete; user approved continuing with ticket 003 in conversation.
+Ticket 001 was approved in conversation. Pause after this ticket; video capture/import (V1-M6-003) now has its own [implementation evidence](m6-videos.md).
 
 ## Shipped behavior
 

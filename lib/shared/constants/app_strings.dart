@@ -1,8 +1,31 @@
 class AppStrings {
+  static const progressVideoTitle = 'All-sides video';
+  static const progressVideoHint =
+      'Turn slowly to capture every side. Save a video on its own or with your photos.';
+  static const progressVideoLimits =
+      'Up to 100 MiB. Choose a 30- or 60-second limit before recording or importing.';
+  static const progressVideoSource = 'Choose a video source';
+  static const progressVideoAdd = 'Add video';
+  static const progressVideoReplace = 'Replace video';
+  static const progressVideoRemove = 'Remove video';
+  static const progressVideoRecovered = 'A video was recovered';
+  static const progressVideoRecoveredHint =
+      'Confirm its original source, then review the preview before saving.';
+  static const progressVideoRecoveredSource = 'Where did this video come from?';
+  static const progressVideoReview = 'Review recovered video';
+  static const progressVideoMuted =
+      'Preview starts muted. Review it before saving.';
+  static const progressVideoThumbnailMissing =
+      'Thumbnail unavailable. You can still preview and save the video.';
+  static const progressVideoPreparing = 'Preparing video preview…';
+  static const progressMediaSave = 'Save progress media';
+  static const progressMediaDiscard = 'Discard this progress media?';
+  static String progressVideoLimitLabel(int seconds) => '$seconds-second limit';
+  static String progressVideoDuration(int seconds) => '$seconds seconds';
   static const progressPhotoTitle = 'Progress photos';
   static const progressPhotoIntroduction = 'Your progress, in perspective.';
   static const progressPhotoDescription =
-      'Capture the same views over time. Every photo stays on this device.';
+      'Capture the same views over time. Your media stays on this device.';
   static const progressPhotoGuidance =
       'Use similar lighting, clothing, camera distance and time of day.';
   static const progressPhotoPartialHint =
@@ -21,12 +44,12 @@ class AppStrings {
   static const progressPhotoSave = 'Save progress photos';
   static const progressPhotoSaved = 'Saved on this device';
   static const progressPhotoSavedHint =
-      'Your progress photos and session details are saved privately.';
+      'Your progress media and session details are saved privately.';
   static const progressPhotoCancelled =
-      'No photo selected. Your draft is unchanged.';
+      'No media selected. Your draft is unchanged.';
   static const progressPhotoDiscard = 'Discard these progress photos?';
   static const progressPhotoDiscardHint =
-      'The unsaved photos and session details will be removed from this draft.';
+      'The unsaved media and session details will be removed from this draft.';
   static const progressPhotoWorking = 'Please wait…';
   static const progressPhotoRecovered = 'A photo was recovered';
   static const progressPhotoRecoveredHint =

@@ -18,6 +18,8 @@ enum FileCategory {
   const FileCategory(this.path);
 }
 
+enum ManagedFileFailure implements Exception { sizeLimit }
+
 class LocalFileStore {
   LocalFileStore({String? basePath, AppLogger? logger})
     : _basePath = basePath,
@@ -211,17 +213,59 @@ class LocalFileStore {
 
   /// Writes atomically inside the sandbox, rejecting linked parents/targets.
   Future<void> writeManagedBytes(String relativePath, Uint8List bytes) async {
+    await writeManagedStream(
+      relativePath,
+      Stream.value(bytes),
+      maxBytes: bytes.length,
+    );
+  }
+
+  /// Bounded streaming avoids loading an entire selected video into Dart memory.
+  Future<void> writeManagedStream(
+    String relativePath,
+    Stream<List<int>> stream, {
+    required int maxBytes,
+  }) async {
     await statManagedFile(relativePath);
     final target = File(await toAbsolutePath(relativePath));
     await target.parent.create(recursive: true);
     await statManagedFile(relativePath);
     final temporary = File('${target.path}.${const Uuid().v4()}.partial');
+    final output = await temporary.open(mode: FileMode.write);
+    var closed = false;
     try {
-      await temporary.writeAsBytes(bytes, flush: true);
+      var size = 0;
+      await for (final chunk in stream) {
+        size += chunk.length;
+        if (size > maxBytes) throw ManagedFileFailure.sizeLimit;
+        await output.writeFrom(chunk);
+      }
+      await output.flush();
+      await output.close();
+      closed = true;
       await temporary.rename(target.path);
     } finally {
+      if (!closed) await output.close();
       if (await temporary.exists()) await temporary.delete();
     }
+  }
+
+  Future<File> managedFile(String relativePath) async {
+    if (await statManagedFile(relativePath) == null) {
+      throw const FileSystemException();
+    }
+    return File(await toAbsolutePath(relativePath));
+  }
+
+  Future<void> copyManagedFile(
+    String source,
+    String destination, {
+    required int maxBytes,
+  }) async {
+    final file = await managedFile(source);
+    final stat = await file.stat();
+    if (stat.size > maxBytes) throw ManagedFileFailure.sizeLimit;
+    await writeManagedStream(destination, file.openRead(), maxBytes: maxBytes);
   }
 
   Future<Uint8List> readManagedBytes(String relativePath) async {

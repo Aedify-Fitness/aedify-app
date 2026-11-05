@@ -7,6 +7,7 @@ import 'package:aedify/features/progress_media/data/progress_media_repository.da
 import 'package:aedify/features/progress_media/data/progress_media_storage_policy.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart';
+import 'package:aedify/features/progress_media/domain/progress_video_draft.dart';
 import 'package:aedify/shared/constants/directory_constants.dart';
 import 'package:path/path.dart' as p;
 
@@ -196,7 +197,11 @@ class ProgressPhotoFileService {
     }
   }
 
-  Future<void> remove(PreparedProgressPhoto photo) async {
+  void trackDraftFile(String sessionId, String relativePath) {
+    _temporary.putIfAbsent(sessionId, () => {}).add(relativePath);
+  }
+
+  Future<void> remove(PreparedProgressMedia photo) async {
     try {
       await _files.deleteManagedRelativeFile(photo.originalStagingPath);
       final thumbnail = photo.thumbnailStagingPath;
@@ -225,6 +230,8 @@ class ProgressPhotoFileService {
     required String sessionId,
     required DateTime capturedAt,
     required Iterable<PreparedProgressPhoto> photos,
+    PreparedProgressVideo? video,
+    ProgressVideoLimits videoLimits = const ProgressVideoLimits(),
     required String? notes,
     double? bodyweightKg,
   }) async {
@@ -235,21 +242,25 @@ class ProgressPhotoFileService {
         pending.remove(path);
       }
       final items = <ProgressMediaFileDraft>[];
-      for (final photo in photos) {
+      for (final photo in <PreparedProgressMedia>[...photos, ?video]) {
         final original = photo.original;
         pending.add(original.relativePath);
-        await _files.writeManagedBytes(
+        await _files.copyManagedFile(
+          photo.originalStagingPath,
           original.relativePath,
-          await _files.readManagedBytes(photo.originalStagingPath),
+          maxBytes: original.type == ProgressMediaItemType.video
+              ? videoLimits.maxBytes
+              : ProgressPhotoLimits.maxBytes,
         );
         items.add(original);
         final thumbnail = photo.thumbnail;
         final staging = photo.thumbnailStagingPath;
         if (thumbnail != null && staging != null) {
           pending.add(thumbnail.relativePath);
-          await _files.writeManagedBytes(
+          await _files.copyManagedFile(
+            staging,
             thumbnail.relativePath,
-            await _files.readManagedBytes(staging),
+            maxBytes: ProgressPhotoLimits.maxBytes,
           );
           items.add(thumbnail);
         }

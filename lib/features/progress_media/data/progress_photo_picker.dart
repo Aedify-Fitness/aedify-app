@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart';
+import 'package:aedify/features/progress_media/data/progress_video_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
@@ -53,6 +54,14 @@ class ImagePickerProgressPhotoPicker implements ProgressPhotoPicker {
       final result = await _picker.retrieveLostData();
       final files = result.files;
       if (files != null && files.isNotEmpty) {
+        if (result.type == RetrieveType.video) {
+          return RecoveredProgressPhoto(
+            video: ImagePickerProgressVideoPicker.recovered(
+              files.first,
+              _files,
+            ),
+          );
+        }
         return RecoveredProgressPhoto(
           photo: _SelectedPhoto(files.first, _files),
         );
@@ -60,6 +69,11 @@ class ImagePickerProgressPhotoPicker implements ProgressPhotoPicker {
       return RecoveredProgressPhoto(
         failure: result.exception == null
             ? null
+            : result.type == RetrieveType.video ||
+                  result.exception!.code.startsWith('microphone_')
+            ? ImagePickerProgressVideoPicker.failureFromCode(
+                result.exception!.code,
+              )
             : _failure(result.exception!.code),
       );
     } on MissingPluginException {

@@ -2,6 +2,7 @@ import 'package:aedify/features/progress_media/application/progress_photo_provid
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart';
 import 'package:aedify/features/progress_media/presentation/progress_photo_components.dart';
+import 'package:aedify/features/progress_media/presentation/progress_video_panel.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -75,6 +76,24 @@ class _ProgressMediaScreenState extends ConsumerState<ProgressMediaScreen> {
     }
   }
 
+  Future<void> _chooseVideo({bool recovered = false}) async {
+    final source = await ProgressPhotoSourceSheet.show(
+      context,
+      recovered: recovered,
+      video: true,
+    );
+    if (!mounted || source == null) return;
+    final controller = ref.read(
+      ProgressPhotoProviders.controllerProvider.notifier,
+    );
+    if (recovered) {
+      controller.assignRecoveredVideo(source);
+    } else {
+      await controller.pickVideo(source);
+      await _revealFailure();
+    }
+  }
+
   Future<void> _save() async {
     FocusManager.instance.primaryFocus?.unfocus();
     final saved = await ref
@@ -93,7 +112,11 @@ class _ProgressMediaScreenState extends ConsumerState<ProgressMediaScreen> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text(AppStrings.progressPhotoDiscard),
+          title: Text(
+            value.video == null && value.recoveredVideo == null
+                ? AppStrings.progressPhotoDiscard
+                : AppStrings.progressMediaDiscard,
+          ),
           content: const Text(AppStrings.progressPhotoDiscardHint),
           actions: [
             TextButton(
@@ -140,7 +163,7 @@ class _ProgressMediaScreenState extends ConsumerState<ProgressMediaScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(AppStrings.progressPhotoTitle),
+          title: const Text(AppStrings.progressMedia),
           leading: IconButton(
             onPressed: busy ? null : _leave,
             tooltip: AppStrings.backLabel,
@@ -311,6 +334,22 @@ class _ProgressMediaScreenState extends ConsumerState<ProgressMediaScreen> {
               const SizedBox(height: AppSpacing.md),
               const Text(AppStrings.progressPhotoPartialHint),
               const SizedBox(height: AppSpacing.xl),
+              ProgressVideoPanel(
+                state: state,
+                onChoose: _chooseVideo,
+                onRemove: () async {
+                  await controller.removeVideo();
+                  await _revealFailure();
+                },
+                onLimit: (seconds) {
+                  controller.setVideoLimit(seconds);
+                  _revealFailure();
+                },
+                onRecovered: () => _chooseVideo(recovered: true),
+                onPreview: (id, ready) =>
+                    controller.videoPreviewResult(id, ready: ready),
+              ),
+              const SizedBox(height: AppSpacing.xl),
               ProgressPhotoPanel(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -364,7 +403,9 @@ class _ProgressMediaScreenState extends ConsumerState<ProgressMediaScreen> {
                 child: Text(
                   state.busy
                       ? AppStrings.progressPhotoWorking
-                      : AppStrings.progressPhotoSave,
+                      : state.video == null
+                      ? AppStrings.progressPhotoSave
+                      : AppStrings.progressMediaSave,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),

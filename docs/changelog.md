@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-05 — M6-003 progress video capture/import
+
+- Added short all-sides video camera/import, 30/60-second caps, size validation, native local metadata/thumbnails and muted video_player/Chewie preview. Videos can save alone or alongside photos through the existing schema-v20 transaction.
+- Stream temporary/durable copies, retain drafts on failure, compensate failed saves and require usable video preview before save. Recovery requires source review; permission/invalid/unsupported/preview failures use safe messages.
+- Added small AVFoundation/MediaMetadataRetriever adapters and iOS video/microphone descriptions without new packages or schema changes. Format checked 867 files, analysis clean and **1,887/1,887 tests passed**, zero failures/skips (16 new cases), plus 83 focused checks. Synthetic native metadata/thumbnail, play/pause/seek, muted preview, video-only/mixed saves and reopen passed on both platforms; captures reviewed and normal app entrypoints restored/launched. Camera/OS permission and device-codec checks remain manual. [Evidence and files](m6-videos.md).
+- Pause after V1-M6-003 for review; gallery/comparison ticket 004 is not started.
+
 ## 2026-11-05 — M6-002 progress photo capture/import
 
 - Added local camera/library selection, front/back/left/right review, replacement/removal, optional notes/bodyweight and explicit save confirmation. Partial sets are supported; schema v20 and transactional media repositories are reused.

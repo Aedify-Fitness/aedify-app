@@ -1,5 +1,17 @@
 import 'package:aedify/shared/constants/app_error_strings.dart';
 
+abstract interface class ProgressMediaDraftFailure implements Exception {
+  String get message;
+}
+
+/// Temporary file ownership shared by photos and videos before an explicit save.
+abstract interface class PreparedProgressMedia {
+  ProgressMediaFileDraft get original;
+  String get originalStagingPath;
+  ProgressMediaFileDraft? get thumbnail;
+  String? get thumbnailStagingPath;
+}
+
 /// Persisted values are explicit and independent of Dart enum names/order.
 enum ProgressMediaType {
   photoSet('photo_set'),

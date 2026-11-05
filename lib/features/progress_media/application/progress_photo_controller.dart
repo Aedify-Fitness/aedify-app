@@ -5,6 +5,8 @@ import 'package:aedify/features/progress_media/application/progress_media_provid
 import 'package:aedify/features/progress_media/data/progress_photo_file_service.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart';
+import 'package:aedify/features/progress_media/domain/progress_video_draft.dart';
+import 'package:aedify/features/progress_media/application/progress_video_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Owns a reviewable ephemeral draft; only explicit Save persists metadata.
@@ -30,7 +32,7 @@ class ProgressPhotoController extends AsyncNotifier<ProgressPhotoState> {
     if (!ref.mounted) return ProgressPhotoState(units: units);
     final photo = recovery.photo;
     PreparedProgressPhoto? recovered;
-    ProgressPhotoFailure? failure = recovery.failure;
+    ProgressMediaDraftFailure? failure = recovery.failure;
     if (photo != null) {
       // Recovery has no pose/source metadata. The user must assign both.
       try {
@@ -49,10 +51,201 @@ class ProgressPhotoController extends AsyncNotifier<ProgressPhotoState> {
       }
       ref.read(ProgressPhotoProviders.recoveryProvider.notifier).consume();
     }
+    PreparedProgressVideo? recoveredVideo;
+    final video = recovery.video;
+    if (video != null) {
+      try {
+        recoveredVideo = await ref
+            .read(ProgressVideoProviders.filesProvider)
+            .prepare(
+              sessionId: sessionId,
+              selection: video,
+              source: ProgressMediaSource.gallery,
+              limits: ref.read(ProgressVideoProviders.limitsProvider),
+            );
+      } on ProgressMediaDraftFailure catch (error) {
+        failure = error;
+      }
+      if (!ref.mounted) {
+        if (recoveredVideo != null) await files.remove(recoveredVideo);
+        return ProgressPhotoState(units: units);
+      }
+      ref.read(ProgressPhotoProviders.recoveryProvider.notifier).consume();
+    }
     return ProgressPhotoState(
       units: units,
       recovered: recovered,
+      recoveredVideo: recoveredVideo,
+      videoLimitSeconds: ref
+          .read(ProgressVideoProviders.limitsProvider)
+          .maxDuration
+          .inSeconds,
       failure: failure,
+    );
+  }
+
+  ProgressVideoLimits _videoLimits(int seconds) => ProgressVideoLimits(
+    maxDuration: Duration(seconds: seconds),
+    maxBytes: ref.read(ProgressVideoProviders.limitsProvider).maxBytes,
+  );
+
+  Future<void> pickVideo(ProgressMediaSource source) async {
+    final current = state.asData?.value;
+    if (current == null || current.busy || current.saved) return;
+    state = AsyncData(current.copyWith(busy: true));
+    PreparedProgressVideo? prepared;
+    try {
+      final limits = _videoLimits(current.videoLimitSeconds);
+      final files = ref.read(ProgressVideoProviders.filesProvider);
+      final selection = await ref
+          .read(ProgressVideoProviders.pickerProvider)
+          .pick(source, limits);
+      if (selection != null) {
+        prepared = await files.prepare(
+          sessionId: _sessionId,
+          selection: selection,
+          source: source,
+          limits: limits,
+        );
+      }
+      if (!ref.mounted) {
+        if (prepared != null) await _files.remove(prepared);
+        return;
+      }
+      if (prepared == null) {
+        state = AsyncData(current.copyWith(cancelled: true));
+        return;
+      }
+      ProgressMediaDraftFailure? failure;
+      if (current.video != null) {
+        try {
+          await _files.remove(current.video!);
+        } catch (_) {
+          failure = ProgressPhotoFailure.cleanup;
+        }
+      }
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(
+            video: prepared,
+            videoPreviewReady: false,
+            failure: failure,
+          ),
+        );
+      }
+    } catch (error) {
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(
+            failure: error is ProgressMediaDraftFailure
+                ? error
+                : ProgressVideoFailure.storage,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> removeVideo() async {
+    final current = state.asData?.value;
+    if (current == null ||
+        current.busy ||
+        current.saved ||
+        current.video == null) {
+      return;
+    }
+    state = AsyncData(current.copyWith(busy: true));
+    try {
+      await _files.remove(current.video!);
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(clearVideo: true, videoPreviewReady: false),
+        );
+      }
+    } catch (_) {
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(failure: ProgressPhotoFailure.cleanup),
+        );
+      }
+    }
+  }
+
+  void setVideoLimit(int seconds) {
+    final current = state.asData?.value;
+    if (current == null ||
+        current.busy ||
+        current.saved ||
+        !const [30, 60].contains(seconds) ||
+        seconds >
+            ref
+                .read(ProgressVideoProviders.limitsProvider)
+                .maxDuration
+                .inSeconds) {
+      return;
+    }
+    if (current.video != null &&
+        current.video!.duration > Duration(seconds: seconds)) {
+      state = AsyncData(
+        current.copyWith(
+          videoLimitSeconds: seconds,
+          failure: ProgressVideoFailure.tooLong,
+        ),
+      );
+      return;
+    }
+    state = AsyncData(current.copyWith(videoLimitSeconds: seconds));
+  }
+
+  void videoPreviewResult(String id, {required bool ready}) {
+    final current = state.asData?.value;
+    if (current == null ||
+        current.busy ||
+        current.saved ||
+        current.video?.original.id != id) {
+      return;
+    }
+    state = AsyncData(
+      current.copyWith(
+        videoPreviewReady: ready,
+        failure: ready ? current.failure : ProgressVideoFailure.preview,
+      ),
+    );
+  }
+
+  void assignRecoveredVideo(ProgressMediaSource source) {
+    final current = state.asData?.value;
+    final video = current?.recoveredVideo;
+    if (current == null ||
+        video == null ||
+        current.busy ||
+        (source != ProgressMediaSource.camera &&
+            source != ProgressMediaSource.gallery)) {
+      return;
+    }
+    final original = video.original;
+    state = AsyncData(
+      current.copyWith(
+        clearRecoveredVideo: true,
+        videoPreviewReady: false,
+        video: PreparedProgressVideo(
+          original: ProgressMediaFileDraft(
+            id: original.id,
+            type: original.type,
+            pose: original.pose,
+            source: source,
+            relativePath: original.relativePath,
+            durationSeconds: original.durationSeconds,
+            width: original.width,
+            height: original.height,
+          ),
+          originalStagingPath: video.originalStagingPath,
+          duration: video.duration,
+          thumbnail: video.thumbnail,
+          thumbnailStagingPath: video.thumbnailStagingPath,
+          preview: video.preview,
+        ),
+      ),
     );
   }
 
@@ -200,6 +393,8 @@ class ProgressPhotoController extends AsyncNotifier<ProgressPhotoState> {
         sessionId: _sessionId,
         capturedAt: _capturedAt,
         photos: current.photos.values,
+        video: current.video,
+        videoLimits: _videoLimits(current.videoLimitSeconds),
         notes: current.notes.trim().isEmpty ? null : current.notes.trim(),
         bodyweightKg: input == null
             ? null
@@ -211,7 +406,7 @@ class ProgressPhotoController extends AsyncNotifier<ProgressPhotoState> {
       if (ref.mounted) {
         state = AsyncData(
           current.copyWith(
-            failure: error is ProgressPhotoFailure
+            failure: error is ProgressMediaDraftFailure
                 ? error
                 : ProgressPhotoFailure.storage,
           ),

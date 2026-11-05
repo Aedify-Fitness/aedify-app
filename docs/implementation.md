@@ -4,18 +4,26 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-002 complete (2026-11-05), awaiting user review.** Ticket 001 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Photo capture/import adapter, front/back/left/right review, bounded thumbnails, replace/remove/cancel, notes/bodyweight, explicit local save, temporary-file cleanup and interrupted-picker recovery review. [Scope and evidence](m6-photos.md). |
-| Verification | Format checked 859 files; analysis clean; **1,871/1,871 host tests passed**, zero failures/skips (22 new cases); focused checks 76/76. Synthetic native smoke and light/dark preview review passed on iOS/Android; normal app entrypoints restored/launched on both. |
-| Storage/platforms | Existing schema v20 is consumed unchanged. Added pinned image_picker 1.2.3 and iOS photo/camera usage strings; iOS 15+/Android API 26+ remain unchanged. |
-| Next ticket | **Pause after V1-M6-002 for user review.** V1-M6-003 video capture/import has not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 photo capture/import](m6-photos.md), [approved M6 storage foundation](m6-storage.md), [approved M5 acceptance](m5-acceptance.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-003 complete (2026-11-05), awaiting user review.** Tickets 001–002 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Local video capture/import, native bounded thumbnail/metadata inspection, muted video preview, duration/size validation and video-only/mixed saves in the existing draft transaction. [Scope and evidence](m6-videos.md). |
+| Verification | Format checked 867 files; analysis clean; **1,887/1,887 tests passed**, zero failures/skips (16 new cases). Focused checks 83/83; synthetic native video/play-pause-seek flows passed on iOS/Android. Light/dark captures reviewed; normal app entrypoints restored/launched on both. |
+| Storage/platforms | Existing schema v20 and dependencies unchanged. Streaming file writes/copies bound memory; AVFoundation/MediaMetadataRetriever adapters operate on app-owned local files. iOS camera/library/microphone descriptions updated. |
+| Next ticket | **Pause after V1-M6-003 for user review.** V1-M6-004 gallery/comparison UI has not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 video capture/import](m6-videos.md), [approved photo flow](m6-photos.md), [approved storage foundation](m6-storage.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-05 — V1-M6-003 video capture/import
+
+- User approved continuing after ticket 002. Added camera/library video selection with configurable 30/60-second limits, a 100 MiB cap, all-sides labels, metadata/thumbnail inspection and muted local review using video_player/Chewie.
+- Native AVFoundation/MediaMetadataRetriever adapters read verified app-owned files, return only duration/dimensions/a bounded PNG, reject unsafe inputs and expose fixed error codes. No third-party package or schema change; iOS usage descriptions cover video/audio.
+- Extended the existing draft controller/store for video-only and mixed-session atomic saves, preview-readiness gates, late-error retry, recovery source review and cleanup/compensation. File preparation and save use bounded streaming copies; no full-video Dart byte buffer or AI-frame extraction.
+- Verification: format checked 867 files, analysis clean and all **1,887 tests passed**, zero failures/skips (16 new regressions); focused checks 83/83. Synthetic native video/mixed save, play/pause/seek, muted startup, metadata/thumbnail, cap/remote-input rejection and reopen passed on both platforms with zero Dart HTTP attempts. Light/dark previews reviewed; normal app entrypoints restored/launched on both. Physical camera/permission dialogs and device-codec/API-26 fallback checks remain manual. [Evidence, exact boundaries and changed files](m6-videos.md). **Pause after 003; 004 is not started.**
+
 
 ### 2026-11-05 — V1-M6-002 photo capture/import
 
@@ -2470,7 +2478,7 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 
 - **All M3 tickets closed** — V1-M3-001 through V1-M3-009 complete.
 - **M5 approved (2026-11-04).**
-- M6 — Progress Media Tracking: tickets 001–002 complete; pause for review before 003–008
+- M6 — Progress Media Tracking: tickets 001–003 complete; pause for review before 004–008
 - M7 — AI Infrastructure
 - M8 — AI Workout + Programme Generation
 - M9 — AI Trainer Chat + AI Update Flows

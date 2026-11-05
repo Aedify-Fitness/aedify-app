@@ -150,6 +150,7 @@ abstract final class ProgressPhotoSourceSheet {
   static Future<ProgressMediaSource?> show(
     BuildContext context, {
     bool recovered = false,
+    bool video = false,
   }) => showModalBottomSheet<ProgressMediaSource>(
     context: context,
     isScrollControlled: true,
@@ -167,7 +168,11 @@ abstract final class ProgressPhotoSourceSheet {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              recovered
+              video
+                  ? (recovered
+                        ? AppStrings.progressVideoRecoveredSource
+                        : AppStrings.progressVideoSource)
+                  : recovered
                   ? AppStrings.progressPhotoRecoveredSource
                   : AppStrings.progressPhotoSource,
               style: AppTextStyles.headlineMd,

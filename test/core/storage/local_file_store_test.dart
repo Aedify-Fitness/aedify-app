@@ -22,6 +22,59 @@ void main() {
 
   group('LocalFileStore', () {
     test(
+      'bounded streams preserve existing targets and remove partial files on overflow',
+      () async {
+        await store.writeManagedBytes(
+          'temp/target.mp4',
+          Uint8List.fromList([9]),
+        );
+        await expectLater(
+          store.writeManagedStream(
+            'temp/target.mp4',
+            Stream.fromIterable([
+              [1, 2],
+              [3, 4],
+            ]),
+            maxBytes: 3,
+          ),
+          throwsA(ManagedFileFailure.sizeLimit),
+        );
+        expect(await store.readManagedBytes('temp/target.mp4'), [9]);
+        final files = await tempDir
+            .list(recursive: true)
+            .where((file) => file is File)
+            .toList();
+        expect(files.length, 1);
+      },
+    );
+
+    test('managed file copies enforce source size and sandbox paths', () async {
+      await store.writeManagedBytes(
+        'temp/source.mp4',
+        Uint8List.fromList([1, 2]),
+      );
+      await store.copyManagedFile(
+        'temp/source.mp4',
+        'media/video.mp4',
+        maxBytes: 2,
+      );
+      expect(await store.readManagedBytes('media/video.mp4'), [1, 2]);
+      await expectLater(
+        store.copyManagedFile(
+          'temp/source.mp4',
+          'media/video.mp4',
+          maxBytes: 1,
+        ),
+        throwsA(ManagedFileFailure.sizeLimit),
+      );
+      expect(await store.readManagedBytes('media/video.mp4'), [1, 2]);
+      await expectLater(
+        store.copyManagedFile('../outside.mp4', 'media/video.mp4', maxBytes: 2),
+        throwsFormatException,
+      );
+    });
+
+    test(
       'managed bytes write, replace, read and delete only sandbox files',
       () async {
         final bytes = Uint8List.fromList([1, 2, 3]);
