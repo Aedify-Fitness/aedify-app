@@ -4,18 +4,25 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-003 complete (2026-11-05), awaiting user review.** Tickets 001–002 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Local video capture/import, native bounded thumbnail/metadata inspection, muted video preview, duration/size validation and video-only/mixed saves in the existing draft transaction. [Scope and evidence](m6-videos.md). |
-| Verification | Format checked 867 files; analysis clean; **1,887/1,887 tests passed**, zero failures/skips (16 new cases). Focused checks 83/83; synthetic native video/play-pause-seek flows passed on iOS/Android. Light/dark captures reviewed; normal app entrypoints restored/launched on both. |
-| Storage/platforms | Existing schema v20 and dependencies unchanged. Streaming file writes/copies bound memory; AVFoundation/MediaMetadataRetriever adapters operate on app-owned local files. iOS camera/library/microphone descriptions updated. |
-| Next ticket | **Pause after V1-M6-003 for user review.** V1-M6-004 gallery/comparison UI has not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 video capture/import](m6-videos.md), [approved photo flow](m6-photos.md), [approved storage foundation](m6-storage.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-004 complete (2026-11-05), awaiting user review.** Tickets 001–003 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Local timeline, media/pose/date filters, session details, notes/baseline updates, saved-video playback and same-pose baseline/latest, previous/latest and manual comparisons. [Scope and files](m6-gallery.md). |
+| Verification | Format checked 876 files; analysis clean; **1,913/1,913 tests passed**, zero failures/skips (26 new regressions). Final synthetic native gallery/playback/reopen smoke passed on both platforms with zero Dart HTTP attempts. Light/dark previews reviewed; normal apps restored/launched on both platforms. |
+| Storage/platforms | Schema v20, dependencies and native adapters unchanged. Existing repositories own notes/baseline writes; previews remain bounded and local. |
+| Next ticket | **Pause after V1-M6-004 for user review.** Ticket 005 reminder cadence is not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 gallery/comparison](m6-gallery.md), [approved video capture/import](m6-videos.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-05 — V1-M6-004 gallery and comparison
+
+- User approved continuing after ticket 003. Progress opens a timeline with local media-type/pose/inclusive-date filters; capture moves to its own named route. Session details show pose-labelled photos, thumbnail/playback video, saved-unit snapshots and editable notes/baseline actions.
+- Same-pose baseline/latest, previous/latest and any-two comparisons preserve missing-file states and never substitute other angles. Stable covers/labels follow pose order; video playback is explicit, muted and lifecycle-owned. New routes inherit Progress feature and draft guards. No schema/dependency/native changes or AI frame extraction.
+- Verification: format checked 876 files; analysis clean; full suite **1,913/1,913 passed**, zero failures/skips (26 new cases), including all three screens at 320px/2× text in light/dark. Final synthetic native gallery/manual comparison/notes/baseline/missing-file/video/reopen smoke passed on iOS/Android with zero Dart HTTP attempts. Captures reviewed; normal apps restored/launched on both platforms. Physical-device accessibility/gestures and OS permission/codec coverage remain separate. [Evidence and inventory](m6-gallery.md). **Pause after 004; 005 is not started.**
+
 
 ### 2026-11-05 — V1-M6-003 video capture/import
 

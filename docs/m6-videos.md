@@ -135,3 +135,5 @@ acceptance remain tickets 004–008. Optional AI analysis remains M13.
 - `test/features/progress_media/progress_photo_flow_test.dart`
 - `integration_test/m6_progress_video_test.dart`
 - This evidence file, `docs/m6-photos.md`, `docs/changelog.md`, `docs/implementation.md`.
+
+User approved continuing to ticket 004 on 2026-11-05. See [gallery/comparison](m6-gallery.md).

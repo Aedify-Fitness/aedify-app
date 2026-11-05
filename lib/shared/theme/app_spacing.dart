@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+abstract final class AppProgressGalleryTokens {
+  static const double comparisonMinWidth = 280;
+}
+
 abstract final class AppProgressVideoTokens {
   static const double previewHeight = 320;
 }

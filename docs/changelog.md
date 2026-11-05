@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-05 — M6-004 progress gallery and comparison
+
+- Added a local timeline with media/pose/date filters, stable angle covers, session details, editable notes, baseline selection and explicit saved-video playback. Same-pose comparisons support baseline/latest, previous/latest and any two check-ins, with recoverable missing-media states.
+- Reused schema v20 repositories, bounded local previews and muted player lifecycle; named capture/detail/compare routes inherit feature/draft guards. No dependency or native-platform changes, hidden persistence or AI extraction.
+- Verification: format checked 876 files, analysis clean and **1,913/1,913 tests passed**, zero failures/skips (26 new regressions). Synthetic native gallery/comparison/notes/baseline/missing-media/playback/reopen smoke passed on iOS/Android with zero Dart HTTP attempts; light/dark captures reviewed and normal apps restored/launched. [Scope, files and evidence](m6-gallery.md).
+- **Pause after V1-M6-004 for user review.** Ticket 005 reminder cadence has not started.
+
 ## 2026-11-05 — M6-003 progress video capture/import
 
 - Added short all-sides video camera/import, 30/60-second caps, size validation, native local metadata/thumbnails and muted video_player/Chewie preview. Videos can save alone or alongside photos through the existing schema-v20 transaction.

@@ -21,6 +21,15 @@ class AppRoutes {
       AppRoutes._(path: '/workouts', name: 'savedWorkoutLibrary');
   factory AppRoutes.settings() =>
       AppRoutes._(path: '/settings', name: 'settings');
+  factory AppRoutes.progressCapture() =>
+      AppRoutes._(path: '/progress/new', name: 'progressCapture');
+  factory AppRoutes.progressSession() =>
+      AppRoutes._(path: '/progress/sessions/:id', name: 'progressSession');
+  factory AppRoutes.progressCompare() =>
+      AppRoutes._(path: '/progress/compare', name: 'progressCompare');
+  static bool isProgressLocation(String location) =>
+      location == AppRoutes.progress().path ||
+      location.startsWith('${AppRoutes.progress().path}/');
   factory AppRoutes.progress() =>
       AppRoutes._(path: '/progress', name: 'progress');
   factory AppRoutes.exercises() =>

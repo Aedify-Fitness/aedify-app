@@ -1,5 +1,12 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressSavedPreview =
+      'This preview could not be opened. Retry or view another check-in.';
+  static const progressSavedVideo =
+      'This video could not be played. Retry or view another check-in.';
+  static const progressSavedMissing =
+      'The original file is missing. Your check-in details are still saved on this device.';
+
   static const progressVideoMicrophone =
       'Microphone access is blocked. Allow it in device settings to record, or import a video without audio.';
   static const progressVideoUnsupported =

@@ -655,6 +655,44 @@ void main() {
       );
     });
 
+    for (final route in [
+      AppRoutes.progressCapture(),
+      AppRoutes.progressCompare(),
+      AppRoutes.progressSession(),
+    ]) {
+      testWidgets('progress flag guards ${route.name} deep link', (
+        tester,
+      ) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.clear,
+          flags: const FeatureFlags(progressMediaEnabled: false),
+        );
+        router.go(route.path.replaceFirst(':id', 'not-a-private-path'));
+        await tester.pump();
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          AppRoutes.progressDisabled().path,
+        );
+      });
+      testWidgets('draft guard covers ${route.name} deep link', (tester) async {
+        final router = await pumpApp(
+          tester: tester,
+          onboarding: OnboardingStatus.complete,
+          ai: AiAvailability.available,
+          draft: DraftGuard.blockedByUnsavedDraft,
+        );
+        router.go(route.path.replaceFirst(':id', 'not-a-private-path'));
+        await tester.pump();
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          AppRoutes.draftBlocked().path,
+        );
+      });
+    }
+
     testWidgets('diagnostics disabled redirects diagnostics route home', (
       tester,
     ) async {

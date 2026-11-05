@@ -4,6 +4,7 @@ import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart'
 import 'package:aedify/features/progress_media/domain/progress_video_draft.dart';
 import 'package:aedify/features/progress_media/presentation/progress_photo_components.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:aedify/shared/theme/app_text_styles.dart';
@@ -187,13 +188,16 @@ class _ProgressVideoPreviewState extends ConsumerState<ProgressVideoPreview> {
 
 class _ProgressVideoPlayer extends StatefulWidget {
   const _ProgressVideoPlayer({
+    super.key,
     required this.handle,
     required this.onFailure,
     required this.onRetry,
+    this.failureMessage = AppErrorStrings.progressVideoPreview,
   });
   final ProgressVideoPlayback handle;
   final VoidCallback onFailure;
   final VoidCallback onRetry;
+  final String failureMessage;
   @override
   State<_ProgressVideoPlayer> createState() => _ProgressVideoPlayerState();
 }
@@ -216,7 +220,7 @@ class _ProgressVideoPlayerState extends State<_ProgressVideoPlayer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(ProgressVideoFailure.preview.message),
+            Text(widget.failureMessage),
             TextButton(
               onPressed: widget.onRetry,
               child: const Text(AppStrings.retryVideo),
@@ -248,4 +252,38 @@ class _ProgressVideoPlayerState extends State<_ProgressVideoPlayer> {
     height: AppProgressVideoTokens.previewHeight,
     child: Chewie(controller: _controls),
   );
+}
+
+/// Saved originals use the same muted, lifecycle-owned player as draft previews.
+class ProgressSavedVideoPlayer extends ConsumerWidget {
+  const ProgressSavedVideoPlayer({super.key, required this.path});
+  final String path;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ProgressVideoProviders.previewProvider(path);
+    return ref
+        .watch(provider)
+        .when(
+          loading: () => const SizedBox(
+            height: AppProgressVideoTokens.previewHeight,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (_, _) => Column(
+            children: [
+              const Text(AppErrorStrings.progressSavedVideo),
+              TextButton(
+                onPressed: () => ref.invalidate(provider),
+                child: const Text(AppStrings.retryVideo),
+              ),
+            ],
+          ),
+          data: (handle) => _ProgressVideoPlayer(
+            key: ObjectKey(handle),
+            handle: handle,
+            onFailure: () {},
+            onRetry: () => ref.invalidate(provider),
+            failureMessage: AppErrorStrings.progressSavedVideo,
+          ),
+        );
+  }
 }

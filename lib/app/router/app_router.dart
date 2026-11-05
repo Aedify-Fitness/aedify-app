@@ -38,6 +38,9 @@ import 'package:aedify/features/analytics/presentation/analytics_screen.dart';
 import 'package:aedify/features/analytics/presentation/analytics_exercise_history_screen.dart';
 import 'package:aedify/features/ai_trainer_chat/presentation/ai_chat_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_media_screen.dart';
+import 'package:aedify/features/progress_media/presentation/progress_gallery_screen.dart';
+import 'package:aedify/features/progress_media/presentation/progress_session_screen.dart';
+import 'package:aedify/features/progress_media/presentation/progress_comparison_screen.dart';
 import 'package:aedify/features/sharing/presentation/sharing_screen.dart';
 import 'package:aedify/features/external_import/presentation/external_import_screen.dart';
 import 'package:aedify/features/image_import/presentation/image_import_screen.dart';
@@ -69,7 +72,7 @@ class AppRouter {
     if (!flags.sharingEnabled && location == AppRoutes.share().path) {
       return true;
     }
-    if (!flags.progressMediaEnabled && location == AppRoutes.progress().path) {
+    if (!flags.progressMediaEnabled && AppRoutes.isProgressLocation(location)) {
       return true;
     }
     return false;
@@ -129,7 +132,7 @@ class AppRouter {
             return AppRoutes.shareDisabled().path;
           }
           if (!featureFlags.progressMediaEnabled &&
-              location == AppRoutes.progress().path) {
+              AppRoutes.isProgressLocation(location)) {
             return AppRoutes.progressDisabled().path;
           }
         }
@@ -144,7 +147,8 @@ class AppRouter {
         }
 
         if (draftGuard == DraftGuard.blockedByUnsavedDraft &&
-            AppRouter._draftGuardedRoutes.contains(location)) {
+            (AppRouter._draftGuardedRoutes.contains(location) ||
+                AppRoutes.isProgressLocation(location))) {
           return AppRoutes.draftBlocked().path;
         }
 
@@ -480,7 +484,23 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.progress().path,
           name: AppRoutes.progress().name,
-          builder: (context, state) => const ProgressMediaScreen(),
+          builder: (context, state) => const ProgressGalleryScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.progressCapture().path,
+          name: AppRoutes.progressCapture().name,
+          builder: (_, _) => const ProgressMediaScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.progressCompare().path,
+          name: AppRoutes.progressCompare().name,
+          builder: (_, _) => const ProgressComparisonScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.progressSession().path,
+          name: AppRoutes.progressSession().name,
+          builder: (_, state) =>
+              ProgressSessionScreen(sessionId: state.pathParameters['id']!),
         ),
         GoRoute(
           path: AppRoutes.settings().path,

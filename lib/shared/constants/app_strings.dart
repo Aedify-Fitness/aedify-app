@@ -1,4 +1,53 @@
 class AppStrings {
+  static const progressTimeline = 'Your check-ins';
+  static const progressNewSession = 'New check-in';
+  static const progressEmpty = 'A little perspective, over time.';
+  static const progressEmptyHint =
+      'Save your first photo or video check-in to start your private timeline.';
+  static const progressNoMatches = 'No check-ins match these filters.';
+  static const progressLocal = 'Photos, videos and notes stay on this device.';
+  static const progressCompare = 'Compare check-ins';
+  static const progressCompareHint =
+      'Choose two different check-ins. Match the same view and similar lighting for a useful comparison.';
+  static const progressBaselineLatest = 'Baseline vs latest';
+  static const progressPreviousLatest = 'Previous vs latest';
+  static const progressAnyTwo = 'Any two check-ins';
+  static const progressBaseline = 'Baseline';
+  static const progressSetBaseline = 'Use as baseline';
+  static const progressBaselineSaved = 'Baseline updated.';
+  static const progressCompareNeedsTwo =
+      'Save another check-in to compare your progress.';
+  static const progressNoPair =
+      'This selection needs two different check-ins. Choose another comparison mode or two check-ins.';
+  static const progressNoMatchingPose =
+      'These check-ins have no matching photo views. You can still view each check-in separately.';
+  static const progressFirstSession = 'First check-in';
+  static const progressSecondSession = 'Second check-in';
+  static const progressPhotos = 'Photos';
+  static const progressMixed = 'Photos and video';
+  static const progressPose = 'View';
+  static const progressMediaType = 'Media type';
+  static String progressDateRangeLabel(String first, String second) =>
+      '$first – $second';
+  static const progressDateRange = 'Date range';
+  static const progressIncomplete = 'Partial photo set';
+  static const progressComplete = 'Four-view photo set';
+  static const progressEditNotes = 'Edit notes';
+  static const refresh = 'Refresh';
+  static const progressSavedVideoMuted = 'Playback starts muted.';
+  static const progressPlayVideo = 'Play video';
+  static const progressMeasurementSnapshot = 'Measurements at check-in';
+  static const progressWaist = 'Waist';
+  static const progressHips = 'Hips';
+  static const progressLeftArm = 'Left arm';
+  static const progressRightArm = 'Right arm';
+  static const progressLeftThigh = 'Left thigh';
+  static const progressRightThigh = 'Right thigh';
+  static String progressSessionLabel(String date, String time, String type) =>
+      '$date · $time · $type';
+  static String progressMeasurement(String label, String value, String unit) =>
+      '$label: $value $unit';
+
   static const progressVideoTitle = 'All-sides video';
   static const progressVideoHint =
       'Turn slowly to capture every side. Save a video on its own or with your photos.';
