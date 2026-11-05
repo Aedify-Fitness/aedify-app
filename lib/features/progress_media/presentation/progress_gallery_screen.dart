@@ -4,6 +4,7 @@ import 'package:aedify/features/progress_media/domain/progress_gallery.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/presentation/progress_gallery_components.dart';
 import 'package:aedify/features/progress_media/presentation/progress_photo_components.dart';
+import 'package:aedify/features/progress_media/presentation/progress_reminder_screen.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -108,6 +109,7 @@ class _ProgressGalleryScreenState extends ConsumerState<ProgressGalleryScreen> {
                           if (sessions.length == 1)
                             const Text(AppStrings.progressCompareNeedsTwo),
                           if (sessions.isNotEmpty) ...[
+                            const ProgressReminderSummary(),
                             const SizedBox(height: AppSpacing.lg),
                             ExpansionTile(
                               title: const Text(AppStrings.filters),

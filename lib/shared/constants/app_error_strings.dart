@@ -1,5 +1,10 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressReminderStorage =
+      'Could not save reminder settings. Your media is still saved. Try again.';
+  static const progressReminderPlatform =
+      'Could not update local reminders. Try again to apply your saved choice.';
+
   static const progressSavedPreview =
       'This preview could not be opened. Retry or view another check-in.';
   static const progressSavedVideo =

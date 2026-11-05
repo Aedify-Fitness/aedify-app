@@ -1,4 +1,29 @@
 class AppStrings {
+  static const progressReminderTitle = 'Check-in reminders';
+  static const progressReminderPrompt =
+      'When would you like your next check-in?';
+  static const progressReminderHint =
+      'Keep a rhythm that suits you. Reminders stay on this device.';
+  static const progressReminderTwoWeeks = 'Every 2 weeks';
+  static const progressReminderMonthly = 'Monthly';
+  static const progressReminderThreeMonths = 'Every 3 months';
+  static const progressReminderNoSession =
+      'Save your first progress check-in to set a reminder.';
+  static const progressReminderOff = 'Reminders are off.';
+  static const progressReminderAppDisabled =
+      'Reminders are paused. Enable Notifications in Settings and save your settings to resume.';
+  static const progressReminderPermission =
+      'Notifications are blocked. Allow Aedify notifications in device settings, then retry.';
+  static const progressReminderUnsupported =
+      'Local reminders are unavailable on this device.';
+  static const progressReminderEnable = 'Allow notifications and apply';
+  static const progressReminderApply = 'Apply reminder';
+  static const progressReminderTake = 'Take progress media';
+  static const progressReminderSnooze = 'Snooze 1 day';
+  static const progressReminderSkip = 'Skip this reminder';
+  static const progressReminderNotification = 'Time for a check-in.';
+  static String progressReminderNext(String date) => 'Next check-in: $date';
+
   static const progressTimeline = 'Your check-ins';
   static const progressNewSession = 'New check-in';
   static const progressEmpty = 'A little perspective, over time.';

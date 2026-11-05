@@ -1,3 +1,5 @@
+import 'package:aedify/features/progress_media/application/progress_reminder_providers.dart';
+import 'package:aedify/features/progress_media/domain/progress_reminder.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
@@ -475,6 +477,9 @@ class _GalleryFixture {
     final files = LocalFileStore(basePath: root.path);
     final container = ProviderContainer(
       overrides: [
+        ProgressReminderProviders.controllerProvider.overrideWith(
+          _NoReminders.new,
+        ),
         AppProviders.appDatabaseProvider.overrideWithValue(db),
         AppProviders.localFileStoreProvider.overrideWithValue(files),
         ProgressPhotoProviders.unitsProvider.overrideWith(
@@ -568,6 +573,9 @@ class _GalleryFixture {
     container.dispose();
     container = ProviderContainer(
       overrides: [
+        ProgressReminderProviders.controllerProvider.overrideWith(
+          _NoReminders.new,
+        ),
         ProgressMediaProviders.repositoryProvider.overrideWithValue(
           uiRepository!,
         ),
@@ -706,4 +714,17 @@ class _UiRepository implements ProgressMediaRepository {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// These fixtures isolate photo/gallery behavior; reminder flows have dedicated tests.
+class _NoReminders extends ProgressReminderController {
+  @override
+  Future<ProgressReminderView> build() async => const ProgressReminderView(
+    context: ProgressReminderContext(
+      reminder: ProgressMediaReminderState(),
+      hasSessions: false,
+      notificationsAllowed: true,
+    ),
+    status: ProgressReminderStatus.noSession,
+  );
 }

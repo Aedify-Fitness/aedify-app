@@ -39,6 +39,7 @@ import 'package:aedify/features/analytics/presentation/analytics_exercise_histor
 import 'package:aedify/features/ai_trainer_chat/presentation/ai_chat_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_media_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_gallery_screen.dart';
+import 'package:aedify/features/progress_media/presentation/progress_reminder_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_session_screen.dart';
 import 'package:aedify/features/progress_media/presentation/progress_comparison_screen.dart';
 import 'package:aedify/features/sharing/presentation/sharing_screen.dart';
@@ -485,6 +486,11 @@ class AppRouter {
           path: AppRoutes.progress().path,
           name: AppRoutes.progress().name,
           builder: (context, state) => const ProgressGalleryScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.progressReminders().path,
+          name: AppRoutes.progressReminders().name,
+          builder: (_, _) => const ProgressReminderScreen(),
         ),
         GoRoute(
           path: AppRoutes.progressCapture().path,

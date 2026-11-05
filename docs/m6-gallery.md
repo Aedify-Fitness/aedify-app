@@ -41,3 +41,5 @@ Schema v20, existing packages, native adapters and storage ownership are unchang
 Evidence logs: `/private/tmp/aedify-m6-004-{format,analyze,tests,focused,ios,android}.log`; generated light/dark timeline/comparison and saved-video captures in `/private/tmp/aedify-m6-004-{ios,android}-previews/`. `flutter test ... --no-uninstall` retains synthetic captures long enough for inspection; the default runner uninstalls its app at completion. Restoration logs: `/private/tmp/aedify-m6-004-restore-{ios,android}.log`.
 
 Sources: locked PRD FR-12.7–8, FR-12.17–22 and privacy restrictions; architecture §19; M6 ticket 004; progress-media feature/data/test plans. The repository's existing v20 schema and thumbnail graph remain the implementation baseline.
+
+User approved continuing to ticket 005 on 2026-11-05. See [progress reminders](m6-reminders.md).

@@ -66,7 +66,7 @@ class ProgressMediaItems extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-/// Durable reminder state; scheduling and cadence policy arrive in M6-005.
+/// Durable reminder choice and next intent; OS queues are derived from this row.
 @DataClassName('ProgressMediaReminderSettingsRow')
 class ProgressMediaReminderSettings extends Table {
   TextColumn get id => text().withDefault(const Constant('default'))();

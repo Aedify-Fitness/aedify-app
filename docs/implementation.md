@@ -4,18 +4,26 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-004 complete (2026-11-05), awaiting user review.** Tickets 001–003 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Local timeline, media/pose/date filters, session details, notes/baseline updates, saved-video playback and same-pose baseline/latest, previous/latest and manual comparisons. [Scope and files](m6-gallery.md). |
-| Verification | Format checked 876 files; analysis clean; **1,913/1,913 tests passed**, zero failures/skips (26 new regressions). Final synthetic native gallery/playback/reopen smoke passed on both platforms with zero Dart HTTP attempts. Light/dark previews reviewed; normal apps restored/launched on both platforms. |
-| Storage/platforms | Schema v20, dependencies and native adapters unchanged. Existing repositories own notes/baseline writes; previews remain bounded and local. |
-| Next ticket | **Pause after V1-M6-004 for user review.** Ticket 005 reminder cadence is not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 gallery/comparison](m6-gallery.md), [approved video capture/import](m6-videos.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-005 complete (2026-11-05), awaiting user review.** Tickets 001–004 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Post-first-save cadence prompt, two-week/monthly/quarterly/off choices, durable Drift intent, local queues, denied-permission recovery, global/feature pause, new-check-in resets, app lifecycle reconciliation and Take/Snooze/Skip actions. [Scope and files](m6-reminders.md). |
+| Verification | Format checked 886 files; analysis clean; **1,947/1,947 tests passed**, zero failures/skips (34 new cases). Separate DST check and synthetic native iOS/Android pending-queue/UI/reopen smoke passed with zero Dart HTTP attempts. Light/dark captures reviewed; normal apps restored/launched on both platforms. |
+| Storage/platforms | Schema v20 unchanged; existing timezone 0.11.1 promoted to direct dependency with no resolved version changes. Native notification setup added; OS queues remain derived from Drift. |
+| Next ticket | **Pause after V1-M6-005 for user review.** Ticket 006 deletion/cleanup is not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 reminders](m6-reminders.md), [approved gallery/comparison](m6-gallery.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-05 — V1-M6-005 progress reminders
+
+- User approved continuing after ticket 004. Added cadence controls after first committed check-in and under Progress/Settings → Notifications. Off/denied permission never schedules; explicit enable alone requests permission. Global notifications/feature disable pause queues while preserving durable choices.
+- Added calendar/DST-safe two-week/monthly/quarterly windows, transactional new-check-in reset, serial reconciliation, identical native queue reuse, safe rollback/retry and foreground Take/Snooze/Skip actions. A readiness-gated app job reacts to committed settings/media changes and resumes without a Progress screen open.
+- Reused schema v20, promoted the existing timezone dependency without version changes, and configured the selected notification plugin on iOS/Android. Notification copy/tokens exclude media metadata and private notes; cancellation is restricted to twelve feature IDs.
+- Verification: format checked 886 files, analysis clean, **1,947/1,947 full tests passed**, zero failures/skips (34 new cases); reminder-focused 32/32 and separate New York DST check passed. Native pending queue/UI/reset/off/reopen smoke passed on iOS/Android with zero Dart HTTP attempts; light/dark captures reviewed; normal apps restored/launched on both platforms. Regular OS permission dialogs, native action taps, reboot/lock-screen delivery and device battery/focus behavior remain manual checks. [Evidence and inventory](m6-reminders.md). **Pause after 005; 006 is not started.**
+
 
 ### 2026-11-05 — V1-M6-004 gallery and comparison
 

@@ -232,6 +232,14 @@ class _SettingsContentView extends ConsumerWidget {
                   );
                 },
               ),
+              if (state.viewData?.progressMediaEnabled == true)
+                AppListTile(
+                  title: AppStrings.progressReminderTitle,
+                  leadingAsset: OutlinedSvgAssets.bell,
+                  showChevron: true,
+                  onTap: () =>
+                      context.pushNamed(AppRoutes.progressReminders().name),
+                ),
               _SettingsToggleTile(
                 toggleKey: const ValueKey('settings-timer-sound-toggle'),
                 icon: OutlinedSvgAssets.speakerWave,

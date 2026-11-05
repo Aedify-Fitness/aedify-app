@@ -1,3 +1,4 @@
+import 'package:aedify/app/bootstrap/progress_reminder_job.dart';
 import 'package:aedify/app/app.dart';
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
 import 'package:aedify/app/bootstrap/controllers/bootstrap_controller.dart';
@@ -33,7 +34,13 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [bootstrapOverride], child: const AedifyApp()),
+      ProviderScope(
+        overrides: [
+          ProgressReminderJob.provider.overrideWith((_) {}),
+          bootstrapOverride,
+        ],
+        child: const AedifyApp(),
+      ),
     );
     await tester.pump();
     expect(find.text(AppStrings.startupFailed), findsOneWidget);
@@ -52,6 +59,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ProgressReminderJob.provider.overrideWith((_) {}),
           bootstrapOverride,
           AppProviders.appDatabaseProvider.overrideWithValue(db),
           AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -83,6 +91,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ProgressReminderJob.provider.overrideWith((_) {}),
             bootstrapOverride,
             AppProviders.appDatabaseProvider.overrideWithValue(db),
             AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -117,6 +126,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ProgressReminderJob.provider.overrideWith((_) {}),
           bootstrapOverride,
           AppProviders.appDatabaseProvider.overrideWithValue(db),
           AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -140,6 +150,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ProgressReminderJob.provider.overrideWith((_) {}),
           AppBootstrap.controllerProvider.overrideWith(
             () => _SucceedingBootstrapController(),
           ),
@@ -182,6 +193,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ProgressReminderJob.provider.overrideWith((_) {}),
             AppBootstrap.controllerProvider.overrideWith(
               () => _SucceedingBootstrapController(),
             ),

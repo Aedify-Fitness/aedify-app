@@ -1,3 +1,5 @@
+import 'package:aedify/features/progress_media/application/progress_reminder_providers.dart';
+import 'package:aedify/features/progress_media/domain/progress_reminder.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -709,6 +711,9 @@ void main() {
         final playback = _WidgetPlayback();
         final container = ProviderContainer(
           overrides: [
+            ProgressReminderProviders.controllerProvider.overrideWith(
+              _NoReminders.new,
+            ),
             ProgressPhotoProviders.controllerProvider.overrideWith(
               () => controller,
             ),
@@ -774,6 +779,9 @@ void main() {
         final controller = _WidgetPhotoController(png);
         final container = ProviderContainer(
           overrides: [
+            ProgressReminderProviders.controllerProvider.overrideWith(
+              _NoReminders.new,
+            ),
             ProgressPhotoProviders.controllerProvider.overrideWith(
               () => controller,
             ),
@@ -857,6 +865,9 @@ void main() {
         ..nextFailure = ProgressPhotoFailure.permission;
       final container = ProviderContainer(
         overrides: [
+          ProgressReminderProviders.controllerProvider.overrideWith(
+            _NoReminders.new,
+          ),
           ProgressPhotoProviders.controllerProvider.overrideWith(
             () => controller,
           ),
@@ -957,6 +968,9 @@ class _PhotoFixtures {
     if (recoverVideo) f.picker.recoveredVideo = _VideoSelection(f.videoPicker);
     f.container = ProviderContainer(
       overrides: [
+        ProgressReminderProviders.controllerProvider.overrideWith(
+          _NoReminders.new,
+        ),
         AppProviders.appDatabaseProvider.overrideWithValue(f.db),
         AppProviders.localFileStoreProvider.overrideWithValue(f.files),
         ProgressPhotoProviders.unitsProvider.overrideWith((ref) async => units),
@@ -1270,4 +1284,17 @@ class _WidgetPlayer extends VideoPlayerController {
   Future<void> play() async {}
   @override
   Future<void> seekTo(Duration position) async {}
+}
+
+/// These fixtures isolate photo/gallery behavior; reminder flows have dedicated tests.
+class _NoReminders extends ProgressReminderController {
+  @override
+  Future<ProgressReminderView> build() async => const ProgressReminderView(
+    context: ProgressReminderContext(
+      reminder: ProgressMediaReminderState(),
+      hasSessions: false,
+      notificationsAllowed: true,
+    ),
+    status: ProgressReminderStatus.noSession,
+  );
 }

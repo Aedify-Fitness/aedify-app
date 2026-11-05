@@ -658,6 +658,7 @@ void main() {
     for (final route in [
       AppRoutes.progressCapture(),
       AppRoutes.progressCompare(),
+      AppRoutes.progressReminders(),
       AppRoutes.progressSession(),
     ]) {
       testWidgets('progress flag guards ${route.name} deep link', (

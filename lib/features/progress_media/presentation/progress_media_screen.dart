@@ -3,6 +3,7 @@ import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/domain/progress_photo_draft.dart';
 import 'package:aedify/features/progress_media/presentation/progress_photo_components.dart';
 import 'package:aedify/features/progress_media/presentation/progress_video_panel.dart';
+import 'package:aedify/features/progress_media/presentation/progress_reminder_screen.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
@@ -447,6 +448,8 @@ class _ProgressPhotoSaved extends StatelessWidget {
             AppStrings.progressPhotoSavedHint,
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: AppSpacing.lg),
+          const ProgressReminderPanel(),
           const SizedBox(height: AppSpacing.lg),
           FilledButton(
             onPressed: onDone,

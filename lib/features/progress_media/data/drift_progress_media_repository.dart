@@ -7,6 +7,7 @@ import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/features/progress_media/data/progress_media_repository.dart';
 import 'package:aedify/features/progress_media/data/progress_media_storage_policy.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
+import 'package:aedify/features/progress_media/domain/progress_reminder.dart';
 import 'package:drift/drift.dart';
 
 /// Atomic local metadata writes over the M1 database and managed-file wrappers.
@@ -179,7 +180,16 @@ class DriftProgressMediaRepository implements ProgressMediaRepository {
                     ? last
                     : draft.capturedAt,
               ),
-              nextReminderAt: Value(reminders?.nextReminderAt),
+              nextReminderAt: Value(
+                reminders?.enabled == true &&
+                        (last == null || draft.capturedAt.isAfter(last))
+                    ? ProgressReminderPolicy.next(
+                        draft.capturedAt.toLocal(),
+                        ProgressReminderCadence.fromDb(reminders!.cadence!),
+                        now.toLocal(),
+                      ).toUtc()
+                    : reminders?.nextReminderAt,
+              ),
               lastPromptedAt: Value(reminders?.lastPromptedAt),
               createdAt: reminders?.createdAt ?? now,
               updatedAt: now,

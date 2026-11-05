@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-05 — M6-005 progress reminder cadence
+
+- Added the post-first-save reminder prompt and Progress/Settings controls for every 2 weeks, monthly, every 3 months or off. Permission requests require explicit enable; denied/global-disabled states preserve intent and offer recovery.
+- Added calendar/DST-aware local queues, transactional check-in resets, serial app-wide startup/resume/settings reconciliation, identical-queue reuse and foreground Take/Snooze/Skip actions. Fixed copy and scheduling tokens exclude private media data; cancellations target only the twelve reserved feature IDs.
+- Reused schema v20 and package versions; timezone is now a direct dependency and native notification setup is configured. Format checked 886 files, analysis clean and **1,947/1,947 tests passed**, zero failures/skips (34 new cases), plus 32 focused reminder cases and a separate DST check. Native queue/UI/reopen smoke passed on both platforms with zero Dart HTTP attempts; captures reviewed and normal apps restored/launched. Regular permission dialogs and OS delivery checks remain manual. [Scope, files and evidence](m6-reminders.md).
+- **Pause after V1-M6-005 for user review.** Ticket 006 deletion/cleanup has not started.
+
 ## 2026-11-05 — M6-004 progress gallery and comparison
 
 - Added a local timeline with media/pose/date filters, stable angle covers, session details, editable notes, baseline selection and explicit saved-video playback. Same-pose comparisons support baseline/latest, previous/latest and any two check-ins, with recoverable missing-media states.
