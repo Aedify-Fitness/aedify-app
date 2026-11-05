@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-05 — M6-002 progress photo capture/import
+
+- Added local camera/library selection, front/back/left/right review, replacement/removal, optional notes/bodyweight and explicit save confirmation. Partial sets are supported; schema v20 and transactional media repositories are reused.
+- Unsaved photos remain temporary; save failures compensate durable copies and preserve the draft. Local thumbnails, bounded decoding, safe failures, startup cleanup and interrupted-selection review protect privacy and recovery.
+- Added pinned image_picker 1.2.3 and required iOS usage strings/CocoaPods lock. Formatting checked 859 files, analysis clean, 76 focused checks and all **1,871 host tests passed**, zero failures/skips (22 new cases). Synthetic offline native iOS/Android smoke and preview review passed; normal app entrypoints restored/launched on both. Error/retry feedback is revealed without losing the draft. Physical camera/OS picker checks remain manual. [Evidence and changed files](m6-photos.md).
+- Pause after V1-M6-002 for review. Video capture/import (003) has not started.
+
 ## 2026-11-04 — M5 approved; M6-001 progress media storage foundation
 
 - Recorded user approval of M5 and the required pause after every M6 ticket.

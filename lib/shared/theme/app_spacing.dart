@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+abstract final class AppProgressPhotoTokens {
+  static const double maxWidth = 640;
+  static const double twoColumnsMinWidth = 360;
+  static const double singleColumnTextScale = 1.4;
+  static const double previewAspectRatio = 4 / 3;
+  static const double recoveryPreviewHeight = 200;
+  static const double controlSize = 48;
+}
+
 abstract final class AppWorkoutHistoryTokens {
   static const double controlSize = 48;
   static const double iconTileSize = 40;

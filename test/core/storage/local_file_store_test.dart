@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +21,54 @@ void main() {
   });
 
   group('LocalFileStore', () {
+    test(
+      'managed bytes write, replace, read and delete only sandbox files',
+      () async {
+        final bytes = Uint8List.fromList([1, 2, 3]);
+        final path = p.join(
+          'temp',
+          'progress_photo_drafts',
+          'synthetic',
+          'photo.png',
+        );
+        await store.writeManagedBytes(path, bytes);
+        expect(await store.readManagedBytes(path), bytes);
+        await store.writeManagedBytes(path, Uint8List.fromList([4]));
+        expect(await store.readManagedBytes(path), [4]);
+        await store.deleteManagedRelativeFile(path);
+        expect(await store.statManagedFile(path), isNull);
+        await expectLater(
+          store.writeManagedBytes('../outside.png', bytes),
+          throwsFormatException,
+        );
+        await expectLater(
+          store.readManagedBytes('../outside.png'),
+          throwsFormatException,
+        );
+        await expectLater(
+          store.deleteManagedRelativeFile('../outside.png'),
+          throwsFormatException,
+        );
+      },
+    );
+
+    test(
+      'managed writes reject linked parents without changing linked file',
+      () async {
+        final original = File(p.join(tempDir.path, 'photo.png'));
+        await original.writeAsBytes([5]);
+        await Link(p.join(tempDir.path, 'linked')).create(tempDir.path);
+        await expectLater(
+          store.writeManagedBytes(
+            p.join('linked', 'photo.png'),
+            Uint8List.fromList([9]),
+          ),
+          throwsFormatException,
+        );
+        expect(await original.readAsBytes(), [5]);
+      },
+    );
+
     test(
       'progress directories never expose paths or identifiers in logs',
       () async {

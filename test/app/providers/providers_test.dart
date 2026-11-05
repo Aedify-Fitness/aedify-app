@@ -161,6 +161,9 @@ class _FakeLocalFileStore implements LocalFileStore {
   Future<void> ensureCoreDirectories() async {}
 
   @override
+  Future<void> cleanupProgressPhotoDrafts() async {}
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 

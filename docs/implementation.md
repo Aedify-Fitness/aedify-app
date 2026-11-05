@@ -4,18 +4,26 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-001 complete (2026-11-04), awaiting user review.** M5 approved by the user on 2026-11-04. |
-| Implemented | Local progress-media schema, transactional repository, measurement snapshots, baseline/timeline/comparison queries, file registration and disabled reminder state. [Scope and changed files](m6-storage.md). |
-| Verification | Drift generation passed; format checked 851 files; analysis clean; **1,849/1,849 tests passed**, zero failures/skips (33 new regressions). Native media checks belong to later capture/acceptance tickets. |
-| Storage/platforms | Schema v20 adds four progress-media tables and baseline/timeline/ownership indexes. Existing platform requirements remain iOS 15+ and Android API 26+. |
-| Next ticket | **Pause after V1-M6-001 for user review.** V1-M6-002 photo capture/import has not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 storage foundation](m6-storage.md); [approved M5 acceptance](m5-acceptance.md). Existing live Firebase/BYOK acceptance boundaries remain separate. |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-002 complete (2026-11-05), awaiting user review.** Ticket 001 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Photo capture/import adapter, front/back/left/right review, bounded thumbnails, replace/remove/cancel, notes/bodyweight, explicit local save, temporary-file cleanup and interrupted-picker recovery review. [Scope and evidence](m6-photos.md). |
+| Verification | Format checked 859 files; analysis clean; **1,871/1,871 host tests passed**, zero failures/skips (22 new cases); focused checks 76/76. Synthetic native smoke and light/dark preview review passed on iOS/Android; normal app entrypoints restored/launched on both. |
+| Storage/platforms | Existing schema v20 is consumed unchanged. Added pinned image_picker 1.2.3 and iOS photo/camera usage strings; iOS 15+/Android API 26+ remain unchanged. |
+| Next ticket | **Pause after V1-M6-002 for user review.** V1-M6-003 video capture/import has not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 photo capture/import](m6-photos.md), [approved M6 storage foundation](m6-storage.md), [approved M5 acceptance](m5-acceptance.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-05 — V1-M6-002 photo capture/import
+
+- User approved continuing after ticket 001. Added a Flutter image-picker adapter and source/pose-labelled photo review with partial/four-pose saves, replace/remove, cancellation, notes, canonical-unit bodyweight and save confirmation.
+- Generated bounded local PNG previews, kept unsaved originals/thumbnails in temporary app storage, compensated failed durable saves and added draft cleanup at startup. Android lost selection is retrieved at app entry and requires explicit pose/source assignment before save.
+- Reused schema v20/repository/provider boundaries. Added pinned image_picker 1.2.3, transitive locks, CocoaPods lock and iOS camera/photo-library descriptions; no broad Android media permission or microphone access.
+- Verification: formatting checked 859 files, analysis clean and all **1,871 host tests passed**, zero failures/skips (22 new cases). Focused checks 76/76; final error/retry UI cases passed all 20 photo tests. Synthetic offline native smoke passed on iOS/Android with zero HTTP attempts, previews reviewed and normal app entrypoints restored/launched on both. Physical camera/OS picker/real-device HEIC remain hands-on checks; no private photos were used. [Scope, evidence and changed files](m6-photos.md). **Pause after 002; 003 is not started.**
+
 
 ### 2026-11-04 — M5 approval and V1-M6-001 storage foundation
 
@@ -2462,7 +2470,7 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 
 - **All M3 tickets closed** — V1-M3-001 through V1-M3-009 complete.
 - **M5 approved (2026-11-04).**
-- M6 — Progress Media Tracking: ticket 001 complete; pause for review before 002–008
+- M6 — Progress Media Tracking: tickets 001–002 complete; pause for review before 003–008
 - M7 — AI Infrastructure
 - M8 — AI Workout + Programme Generation
 - M9 — AI Trainer Chat + AI Update Flows

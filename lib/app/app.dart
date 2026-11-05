@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedify/app/bootstrap/analytics_consistency_providers.dart';
 import 'package:aedify/app/providers/providers.dart';
+import 'package:aedify/features/progress_media/application/progress_photo_providers.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/domain/theme_mode_setting.dart';
 import 'router/app_router.dart';
@@ -13,6 +14,9 @@ class AedifyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(AnalyticsConsistencyProviders.jobProvider);
+    if (ref.watch(AppProviders.featureFlagsProvider).progressMediaEnabled) {
+      ref.watch(ProgressPhotoProviders.recoveryProvider);
+    }
     final router = ref.watch(AppRouter.appRouterProvider);
     final settingsAsync = ref.watch(AppProviders.settingsControllerProvider);
     final themeMode =

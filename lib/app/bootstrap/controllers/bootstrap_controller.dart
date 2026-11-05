@@ -58,6 +58,9 @@ class BootstrapController extends Notifier<BootstrapState> {
       await ref
           .read(AppProviders.localFileStoreProvider)
           .ensureCoreDirectories();
+      await ref
+          .read(AppProviders.localFileStoreProvider)
+          .cleanupProgressPhotoDrafts();
 
       bool offline = false;
       try {

@@ -1,8 +1,8 @@
 # M6 storage foundation — V1-M6-001
 
-Date: 2026-11-04. Status: complete; awaiting user review.
+Date: 2026-11-04. Status: complete; user approved continuing with ticket 002 in conversation.
 M5 was approved by the user on this date. Pause after every M6 ticket;
-V1-M6-002 is not started.
+V1-M6-002 now has its own [photo-flow evidence](m6-photos.md).
 
 ## Implemented boundary
 

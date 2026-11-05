@@ -1,5 +1,17 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressPhotoPermission =
+      'Camera or photo access is blocked. Allow access in your device settings, or choose another source.';
+  static const progressPhotoUnsupported =
+      'This photo source is unavailable on this device. Try the photo library.';
+  static const progressPhotoInvalid =
+      'This file could not be opened as a photo. Choose a JPEG, PNG, WebP or supported HEIC photo.';
+  static const progressPhotoTooLarge =
+      'Choose a photo smaller than 20 MB and 64 megapixels.';
+  static const progressPhotoCleanup =
+      'Could not remove the temporary photo. Try again before leaving.';
+  static const progressPhotoBodyweight =
+      'Enter a positive bodyweight, or leave it empty.';
   static const progressMediaInvalid =
       'Check the progress media and measurements before saving.';
   static const progressMediaMissing =

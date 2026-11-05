@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:uuid/uuid.dart';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/shared/constants/directory_constants.dart';
 
@@ -205,5 +207,45 @@ class LocalFileStore {
     }
     final stat = await File(target).stat();
     return stat.type == FileSystemEntityType.file ? stat : null;
+  }
+
+  /// Writes atomically inside the sandbox, rejecting linked parents/targets.
+  Future<void> writeManagedBytes(String relativePath, Uint8List bytes) async {
+    await statManagedFile(relativePath);
+    final target = File(await toAbsolutePath(relativePath));
+    await target.parent.create(recursive: true);
+    await statManagedFile(relativePath);
+    final temporary = File('${target.path}.${const Uuid().v4()}.partial');
+    try {
+      await temporary.writeAsBytes(bytes, flush: true);
+      await temporary.rename(target.path);
+    } finally {
+      if (await temporary.exists()) await temporary.delete();
+    }
+  }
+
+  Future<Uint8List> readManagedBytes(String relativePath) async {
+    if (await statManagedFile(relativePath) == null) {
+      throw const FileSystemException();
+    }
+    return File(await toAbsolutePath(relativePath)).readAsBytes();
+  }
+
+  Future<void> deleteManagedRelativeFile(String relativePath) async {
+    if (await statManagedFile(relativePath) != null) {
+      await deleteFile(await toAbsolutePath(relativePath));
+    }
+  }
+
+  /// Unsaved photo drafts are temporary artifacts, never durable media.
+  Future<void> cleanupProgressPhotoDrafts() async {
+    final relative = p.join(
+      FileCategory.temp.path,
+      DirectoryConstants.progressPhotoDrafts,
+    );
+    // Inspect the directory path for links before recursive deletion.
+    await statManagedFile(p.join(relative, 'probe'));
+    final directory = Directory(await toAbsolutePath(relative));
+    if (await directory.exists()) await directory.delete(recursive: true);
   }
 }

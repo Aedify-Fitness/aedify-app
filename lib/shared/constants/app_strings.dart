@@ -1,4 +1,42 @@
 class AppStrings {
+  static const progressPhotoTitle = 'Progress photos';
+  static const progressPhotoIntroduction = 'Your progress, in perspective.';
+  static const progressPhotoDescription =
+      'Capture the same views over time. Every photo stays on this device.';
+  static const progressPhotoGuidance =
+      'Use similar lighting, clothing, camera distance and time of day.';
+  static const progressPhotoPartialHint =
+      'Four views are recommended. You can save a partial set.';
+  static const progressPhotoBaselineHint =
+      'Your first saved session becomes your baseline.';
+  static const progressPhotoLeft = 'Left side';
+  static const progressPhotoRight = 'Right side';
+  static const progressPhotoAdd = 'Add photo';
+  static const progressPhotoReplace = 'Replace photo';
+  static const progressPhotoRemove = 'Remove photo';
+  static const progressPhotoCamera = 'Camera';
+  static const progressPhotoGallery = 'Photo library';
+  static const progressPhotoSource = 'Choose a photo source';
+  static const progressPhotoDetails = 'Session details';
+  static const progressPhotoSave = 'Save progress photos';
+  static const progressPhotoSaved = 'Saved on this device';
+  static const progressPhotoSavedHint =
+      'Your progress photos and session details are saved privately.';
+  static const progressPhotoCancelled =
+      'No photo selected. Your draft is unchanged.';
+  static const progressPhotoDiscard = 'Discard these progress photos?';
+  static const progressPhotoDiscardHint =
+      'The unsaved photos and session details will be removed from this draft.';
+  static const progressPhotoWorking = 'Please wait…';
+  static const progressPhotoRecovered = 'A photo was recovered';
+  static const progressPhotoRecoveredHint =
+      'Choose its view and original source before saving.';
+  static const progressPhotoRecoveredSource = 'Where did this photo come from?';
+  static const progressPhotoPreviewUnavailable = 'Preview unavailable';
+  static String progressPhotoCount(int count) => '$count of 4 views';
+  static String progressPhotoAction(String action, String pose) =>
+      '$action: $pose';
+  static String progressPhotoWeight(String unit) => 'Bodyweight ($unit)';
   AppStrings._();
 
   static String onboardingStepLabel(int currentStep, int totalSteps) =>

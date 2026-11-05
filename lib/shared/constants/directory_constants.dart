@@ -19,4 +19,5 @@ class DirectoryConstants {
   static const String imagesOriginal = 'images_original';
   static const String imagesEnhanced = 'images_enhanced';
   static const String exerciseDataset = 'exercise_dataset';
+  static const String progressPhotoDrafts = 'progress_photo_drafts';
 }
