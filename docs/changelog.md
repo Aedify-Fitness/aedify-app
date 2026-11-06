@@ -1,5 +1,10 @@
 # Aedify — Changelog
 
+## 2026-11-06 — M6 completion approved
+
+- Recorded the user's acceptance of M6 as complete across all eight tickets. M7 remains unstarted under the explicit instruction not to begin it.
+- Updated implementation and acceptance status while preserving verification evidence and remaining manual checks. Documentation-only update; `git diff --check` verified, tests not rerun.
+
 ## 2026-11-06 — M6-008 connected progress-media acceptance smoke
 
 - Added an isolated native acceptance flow joining photo/video review and Save, reminder permission/cadence/reset, gallery/comparison, notes/baseline edits, playback, database reopen, missing-file recovery, deletion/retry and orphan cleanup.

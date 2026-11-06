@@ -1,6 +1,6 @@
 # M6 acceptance smoke — V1-M6-008
 
-Date: 2026-11-06. Ticket 007 approved in conversation. **Ticket 008 implementation and automated gates are complete, awaiting user review.** It connects the completed M6 slices in one isolated native acceptance journey. Physical-device milestone acceptance remains manual. M7 is not started and requires the next user review.
+Date: 2026-11-06. **M6, including ticket 008, is complete and approved by the user.** The user explicitly instructed not to start M7; it remains unstarted. This evidence connects the completed M6 slices in one isolated native acceptance journey. Manual verification boundaries remain recorded below; user approval does not represent additional test execution.
 
 ## Scope
 

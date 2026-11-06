@@ -4,11 +4,11 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-008 complete (2026-11-06), awaiting user review.** Tickets 001–007 approved in conversation; M5 approved 2026-11-04. Physical-device milestone acceptance remains manual. |
+| Current milestone | **M6 — Progress Media Tracking complete and approved by the user on 2026-11-06.** All eight tickets accepted; M5 approved 2026-11-04. Recorded manual verification boundaries remain in the acceptance evidence. |
 | Implemented | Connected synthetic native acceptance journey across real photo/video save, reminder queues, comparisons, notes/baseline, playback, database reopen, missing-file recovery, confirmed deletion/retry, orphan cleanup and diagnostic privacy. [Scope and files](m6-acceptance.md). |
 | Verification | Connected native acceptance passed on iOS/Android with zero Dart HTTP attempts; light/dark comparison and pending-cleanup captures reviewed; normal app entrypoints restored/launched. Format checked 897 files; analysis clean; **1,984/1,984 host tests passed**, zero failures/skips. |
 | Storage/platforms | Schema v20, dependencies, native setup and product behavior unchanged. Fixtures use isolated SQLite/sandbox storage and synthetic picker/permission seams. |
-| Next ticket | **Pause after V1-M6-008 for user review.** M7 is not started. Physical-device permission/media/delivery gates remain manual. |
+| Next ticket | **Do not start M7, per the user's explicit instruction on 2026-11-06.** No further milestone work is active. |
 | Evidence | [M6 connected acceptance](m6-acceptance.md), [privacy exclusions](m6-privacy-exclusions.md), [approved deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
 
 ## M1–M4 closure review — 2026-10-25
@@ -16,6 +16,11 @@
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-06 — M6 completion approved
+
+- User confirmed M6 is complete and explicitly instructed not to start M7. All eight M6 tickets are accepted; milestone work is stopped.
+- Updated this tracker, changelog and acceptance status. Existing automated evidence and manual/future-feature verification boundaries are preserved. Documentation-only update; `git diff --check` verified, tests not rerun.
 
 ### 2026-11-06 — V1-M6-008 acceptance smoke implementation
 
