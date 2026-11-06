@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-05 — M6-006 progress deletion and cleanup
+
+- Added confirmed photo/video, check-in and all-saved-media deletion, storage/pending totals and cleanup retry. Deletion cascades to derived frames/thumbnails, removes private session/snapshot metadata, and updates baseline/reminders while protecting unrelated data.
+- Existing schema-v20 deletion markers retain recovery intent across failed filesystem or metadata operations. Added readiness/resume cleanup, conservative aged-orphan/partial sweeping, active draft protection, local preview/player release and confirmation target guards. No schema, dependency or native changes.
+- Verification: format checked 895 files, analysis clean, **1,970/1,970 tests passed**, zero failures/skips (23 new regressions), and 21 dedicated cases passed. An initial unrelated timeout was rechecked unchanged before the lower-concurrency full gate passed. Synthetic native playing-video deletion, pending cleanup, reopen/retry and all-media flows passed on iOS/Android with zero Dart HTTP attempts; captures reviewed and normal entrypoints restored/launched. An Android Health registration error in unchanged activity code is recorded separately. [Scope, files and evidence](m6-deletion.md).
+- **Pause after V1-M6-006 for user review.** Ticket 007 privacy exclusions has not started.
+
 ## 2026-11-05 — M6-005 progress reminder cadence
 
 - Added the post-first-save reminder prompt and Progress/Settings controls for every 2 weeks, monthly, every 3 months or off. Permission requests require explicit enable; denied/global-disabled states preserve intent and offer recovery.

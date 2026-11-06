@@ -53,3 +53,5 @@ Sources: locked PRD FR-12.11–16; architecture §19/§25; M6 ticket 005; progre
 Silent provisional authorization is a simulator-test technique only; see [Apple notification authorization guidance](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications). Production uses the explicit regular-permission flow.
 
 Ticket 006 handoff: deletion must update reminder intent against the remaining active sessions when removing the latest check-in. The existing watcher already observes session/deletion changes and cancels the queue when no active session remains.
+
+User approved continuing to ticket 006 on 2026-11-05. The deletion/reminder handoff above is now implemented; see [deletion and cleanup](m6-deletion.md).

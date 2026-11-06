@@ -4,18 +4,26 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-005 complete (2026-11-05), awaiting user review.** Tickets 001–004 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Post-first-save cadence prompt, two-week/monthly/quarterly/off choices, durable Drift intent, local queues, denied-permission recovery, global/feature pause, new-check-in resets, app lifecycle reconciliation and Take/Snooze/Skip actions. [Scope and files](m6-reminders.md). |
-| Verification | Format checked 886 files; analysis clean; **1,947/1,947 tests passed**, zero failures/skips (34 new cases). Separate DST check and synthetic native iOS/Android pending-queue/UI/reopen smoke passed with zero Dart HTTP attempts. Light/dark captures reviewed; normal apps restored/launched on both platforms. |
-| Storage/platforms | Schema v20 unchanged; existing timezone 0.11.1 promoted to direct dependency with no resolved version changes. Native notification setup added; OS queues remain derived from Drift. |
-| Next ticket | **Pause after V1-M6-005 for user review.** Ticket 006 deletion/cleanup is not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 reminders](m6-reminders.md), [approved gallery/comparison](m6-gallery.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-006 complete (2026-11-05), awaiting user review.** Tickets 001–005 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Confirmed original/session/all-saved-media deletion, durable cleanup recovery, thumbnail/frame cascades, safe orphan sweep, storage/retry UI, and baseline/reminder reconciliation. [Scope and files](m6-deletion.md). |
+| Verification | Format checked 895 files; analysis clean; **1,970/1,970 tests passed**, zero failures/skips (23 new regressions), with lower concurrency. Dedicated checks 21/21; native iOS/Android playback/deletion/restart smoke passed with zero Dart HTTP attempts. Captures reviewed; normal entrypoints restored/launched. An Android Health registration issue is recorded separately in the evidence. |
+| Storage/platforms | Schema v20, dependencies and native setup unchanged. Existing deletion markers retain cleanup intent; private removed-session metadata is cleared transactionally. |
+| Next ticket | **Pause after V1-M6-006 for user review.** Ticket 007 privacy exclusions is not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-05 — V1-M6-006 deletion and cleanup
+
+- User approved continuing after ticket 005. Added explicit item/session/all-saved-media confirmations, storage totals/pending cleanup/retry and removed-session recovery navigation. Confirmation stays bound to its original target even if underlying UI data changes.
+- Reused schema-v20 deletion markers for a durable queue: atomic logical hide/private-metadata/snapshot removal and baseline/reminder changes precede filesystem work; descendants purge before parents, and failed unlink/metadata purge survives restart. Startup/resume recovery stays retryable without blocking entry.
+- Added strict sandbox/registry ownership checks, conservative 24-hour UUID-orphan/partial cleanup with active-draft protection, reader/player invalidation and preview eviction. Unknown or unrelated files remain protected. No dependency/schema/native changes.
+- Verification: format checked 895 files; analysis clean; **1,970/1,970 full tests passed**, zero failures/skips (23 new regressions), with lower concurrency; dedicated deletion/UI 21/21. An initial workout-test timeout during concurrent builds was rechecked unchanged (59/59) before the passing full gate. Native synthetic playback/deletion/failure/reopen/all-media flows passed on iOS/Android with zero Dart HTTP attempts; light/dark captures reviewed. Normal entrypoints restored/launched; an Android Health plugin registration error in unchanged activity code is recorded separately. Physical accessibility/gestures/storage-pressure checks remain manual. [Evidence and inventory](m6-deletion.md). **Pause after 006; 007 is not started.**
+
 
 ### 2026-11-05 — V1-M6-005 progress reminders
 

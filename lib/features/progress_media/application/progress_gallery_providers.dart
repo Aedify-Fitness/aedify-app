@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/progress_media/application/progress_media_providers.dart';
@@ -51,10 +52,20 @@ abstract final class ProgressGalleryProviders {
     ),
   );
   static final imageProvider = FutureProvider.autoDispose
-      .family<Uint8List?, ProgressMediaItem>(
-        (ref, item) => ref.watch(filesProvider).preview(item),
-        retry: (_, _) => null,
-      );
+      .family<Uint8List?, ProgressMediaItem>((ref, item) async {
+        final files = ref.watch(filesProvider);
+        final bytes = await files.preview(item);
+        if (bytes != null) {
+          if (!ref.mounted) {
+            await files.evict(bytes);
+            return null;
+          }
+          ref.onDispose(
+            () => unawaited(files.evict(bytes).catchError((Object _) {})),
+          );
+        }
+        return bytes;
+      }, retry: (_, _) => null);
   static final actionsProvider = Provider<ProgressGalleryActions>(
     (ref) => ProgressGalleryActions(ref),
   );

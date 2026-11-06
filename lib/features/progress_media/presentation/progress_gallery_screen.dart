@@ -8,6 +8,7 @@ import 'package:aedify/features/progress_media/presentation/progress_reminder_sc
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
+import 'package:aedify/shared/constants/svg_assets_outlined.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,18 @@ class _ProgressGalleryScreenState extends ConsumerState<ProgressGalleryScreen> {
   Widget build(BuildContext context) {
     final timeline = ref.watch(ProgressMediaProviders.timelineProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.progressMedia)),
+      appBar: AppBar(
+        title: const Text(AppStrings.progressMedia),
+        actions: [
+          IconButton(
+            key: const ValueKey('progress_storage'),
+            tooltip: AppStrings.progressStorage,
+            onPressed: () =>
+                context.pushNamed(AppRoutes.progressStorage().name),
+            icon: const ProgressPhotoIcon(OutlinedSvgAssets.circleStack),
+          ),
+        ],
+      ),
       body: SafeArea(
         top: false,
         child: timeline.when(

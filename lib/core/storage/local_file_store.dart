@@ -20,6 +20,17 @@ enum FileCategory {
 
 enum ManagedFileFailure implements Exception { sizeLimit }
 
+class ManagedFileEntry {
+  const ManagedFileEntry({
+    required this.relativePath,
+    required this.modified,
+    required this.size,
+  });
+  final String relativePath;
+  final DateTime modified;
+  final int size;
+}
+
 class LocalFileStore {
   LocalFileStore({String? basePath, AppLogger? logger})
     : _basePath = basePath,
@@ -278,6 +289,53 @@ class LocalFileStore {
   Future<void> deleteManagedRelativeFile(String relativePath) async {
     if (await statManagedFile(relativePath) != null) {
       await deleteFile(await toAbsolutePath(relativePath));
+    }
+  }
+
+  /// Lists sandbox files without following directory or file links.
+  Future<List<ManagedFileEntry>> listManagedFiles(
+    String relativeDirectory,
+  ) async {
+    await statManagedFile(p.join(relativeDirectory, 'probe'));
+    final directory = Directory(await toAbsolutePath(relativeDirectory));
+    if (!await directory.exists()) return const [];
+    final base = await basePath;
+    final entries = <ManagedFileEntry>[];
+    await for (final entity in directory.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      if (entity is! File) continue;
+      final relative = p.relative(entity.path, from: base);
+      final stat = await statManagedFile(relative);
+      if (stat != null) {
+        entries.add(
+          ManagedFileEntry(
+            relativePath: relative,
+            modified: stat.modified,
+            size: stat.size,
+          ),
+        );
+      }
+    }
+    return entries;
+  }
+
+  /// Removes only empty directories; unrelated or in-flight files are retained.
+  Future<void> removeEmptyManagedDirectories(String relativeDirectory) async {
+    await statManagedFile(p.join(relativeDirectory, 'probe'));
+    final root = Directory(await toAbsolutePath(relativeDirectory));
+    if (!await root.exists()) return;
+    final directories = <Directory>[];
+    await for (final entity in root.list(recursive: true, followLinks: false)) {
+      if (entity is Directory) directories.add(entity);
+    }
+    directories.sort((a, b) => b.path.length.compareTo(a.path.length));
+    for (final directory in [...directories, root]) {
+      if (await directory.exists() &&
+          await directory.list(followLinks: false).isEmpty) {
+        await directory.delete();
+      }
     }
   }
 

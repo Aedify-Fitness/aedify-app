@@ -112,6 +112,10 @@ class ProgressPhotoFileService {
   final String Function() _newId;
   final ProgressPhotoProcessor _processor;
   final Map<String, Set<String>> _temporary = {};
+  Set<String> get activeDraftSessionIds => {
+    ..._temporary.keys,
+    ..._uncommitted.keys,
+  };
   final Map<String, Set<String>> _uncommitted = {};
 
   Future<PreparedProgressPhoto> prepare({

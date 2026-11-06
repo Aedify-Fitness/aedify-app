@@ -4,6 +4,9 @@ import 'package:aedify/features/progress_media/domain/progress_media.dart';
 import 'package:aedify/features/progress_media/presentation/progress_gallery_components.dart';
 import 'package:aedify/features/progress_media/presentation/progress_photo_components.dart';
 import 'package:aedify/features/progress_media/presentation/progress_video_panel.dart';
+import 'package:aedify/features/progress_media/presentation/progress_delete_controls.dart';
+import 'package:aedify/features/progress_media/application/progress_deletion_providers.dart';
+import 'package:aedify/shared/constants/app_routes.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_strings.dart';
 import 'package:aedify/shared/theme/app_spacing.dart';
@@ -64,10 +67,7 @@ class _ProgressSessionScreenState extends ConsumerState<ProgressSessionScreen> {
                 ),
               ),
               data: (details) => details == null
-                  ? ProgressGalleryMessage(
-                      message: AppErrorStrings.progressSavedMissing,
-                      retry: () => ref.invalidate(provider),
-                    )
+                  ? const _ProgressRemovedSession()
                   : ProgressGalleryBody(
                       children: [
                         ProgressGalleryHeading(
@@ -114,12 +114,41 @@ class _ProgressSessionScreenState extends ConsumerState<ProgressSessionScreen> {
                                     i.file.pose == pose,
                               ),
                             ),
+                            ProgressDeleteButton(
+                              scope: ProgressDeleteScope.item,
+                              sessionId: widget.sessionId,
+                              itemId: details.items
+                                  .firstWhere(
+                                    (i) =>
+                                        i.file.type ==
+                                            ProgressMediaItemType.photo &&
+                                        i.file.pose == pose,
+                                  )
+                                  .file
+                                  .id,
+                            ),
                           ],
                         ],
                         for (final video in details.items.where(
                           (i) => i.file.type == ProgressMediaItemType.video,
                         ))
-                          ProgressSavedVideo(item: video),
+                          Column(
+                            children: [
+                              ProgressSavedVideo(
+                                key: ValueKey(video.file.id),
+                                item: video,
+                              ),
+                              ProgressDeleteButton(
+                                scope: ProgressDeleteScope.item,
+                                sessionId: widget.sessionId,
+                                itemId: video.file.id,
+                              ),
+                            ],
+                          ),
+                        ProgressDeleteButton(
+                          scope: ProgressDeleteScope.session,
+                          sessionId: widget.sessionId,
+                        ),
                         const SizedBox(height: AppSpacing.lg),
                         const Text(AppStrings.progressLocal),
                       ],
@@ -299,5 +328,31 @@ class _ProgressSnapshot extends ConsumerWidget {
             );
           },
         );
+  }
+}
+
+class _ProgressRemovedSession extends ConsumerWidget {
+  const _ProgressRemovedSession();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cleanup = ref
+        .watch(ProgressDeletionProviders.controllerProvider)
+        .asData
+        ?.value;
+    return ProgressGalleryBody(
+      children: [
+        const ProgressGalleryHeading(AppStrings.progressSessionUnavailable),
+        if (cleanup?.pending == true)
+          const Text(AppErrorStrings.progressCleanupPending),
+        TextButton(
+          onPressed: () => context.pushNamed(AppRoutes.progressStorage().name),
+          child: const Text(AppStrings.progressStorage),
+        ),
+        FilledButton(
+          onPressed: () => context.goNamed(AppRoutes.progress().name),
+          child: const Text(AppStrings.progressBackToTimeline),
+        ),
+      ],
+    );
   }
 }

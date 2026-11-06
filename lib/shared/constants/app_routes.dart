@@ -21,6 +21,8 @@ class AppRoutes {
       AppRoutes._(path: '/workouts', name: 'savedWorkoutLibrary');
   factory AppRoutes.settings() =>
       AppRoutes._(path: '/settings', name: 'settings');
+  factory AppRoutes.progressStorage() =>
+      AppRoutes._(path: '/progress/storage', name: 'progressStorage');
   factory AppRoutes.progressReminders() =>
       AppRoutes._(path: '/progress/reminders', name: 'progressReminders');
   factory AppRoutes.progressCapture() =>

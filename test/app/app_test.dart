@@ -1,3 +1,4 @@
+import 'package:aedify/app/bootstrap/progress_cleanup_job.dart';
 import 'package:aedify/app/bootstrap/progress_reminder_job.dart';
 import 'package:aedify/app/app.dart';
 import 'package:aedify/app/bootstrap/app_bootstrap.dart';
@@ -37,6 +38,7 @@ void main() {
       ProviderScope(
         overrides: [
           ProgressReminderJob.provider.overrideWith((_) {}),
+          ProgressCleanupJob.provider.overrideWith((_) {}),
           bootstrapOverride,
         ],
         child: const AedifyApp(),
@@ -60,6 +62,7 @@ void main() {
       ProviderScope(
         overrides: [
           ProgressReminderJob.provider.overrideWith((_) {}),
+          ProgressCleanupJob.provider.overrideWith((_) {}),
           bootstrapOverride,
           AppProviders.appDatabaseProvider.overrideWithValue(db),
           AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -92,6 +95,7 @@ void main() {
         ProviderScope(
           overrides: [
             ProgressReminderJob.provider.overrideWith((_) {}),
+            ProgressCleanupJob.provider.overrideWith((_) {}),
             bootstrapOverride,
             AppProviders.appDatabaseProvider.overrideWithValue(db),
             AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -127,6 +131,7 @@ void main() {
       ProviderScope(
         overrides: [
           ProgressReminderJob.provider.overrideWith((_) {}),
+          ProgressCleanupJob.provider.overrideWith((_) {}),
           bootstrapOverride,
           AppProviders.appDatabaseProvider.overrideWithValue(db),
           AppProviders.onboardingStatusProvider.overrideWithValue(
@@ -151,6 +156,7 @@ void main() {
       ProviderScope(
         overrides: [
           ProgressReminderJob.provider.overrideWith((_) {}),
+          ProgressCleanupJob.provider.overrideWith((_) {}),
           AppBootstrap.controllerProvider.overrideWith(
             () => _SucceedingBootstrapController(),
           ),
@@ -194,6 +200,7 @@ void main() {
         ProviderScope(
           overrides: [
             ProgressReminderJob.provider.overrideWith((_) {}),
+            ProgressCleanupJob.provider.overrideWith((_) {}),
             AppBootstrap.controllerProvider.overrideWith(
               () => _SucceedingBootstrapController(),
             ),

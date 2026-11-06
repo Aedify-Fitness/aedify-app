@@ -1,5 +1,12 @@
 class AppErrorStrings {
   AppErrorStrings._();
+  static const progressDeletionFailed =
+      'Could not complete progress-media deletion. Refresh and try again.';
+  static const progressCleanupPending =
+      'Some progress-media cleanup remains unfinished. Retry cleanup to finish removing files.';
+  static const progressCleanupFailed =
+      'Could not finish progress-media cleanup. Try again.';
+
   static const progressReminderStorage =
       'Could not save reminder settings. Your media is still saved. Try again.';
   static const progressReminderPlatform =

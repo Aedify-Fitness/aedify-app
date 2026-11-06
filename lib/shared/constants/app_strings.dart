@@ -1,4 +1,31 @@
 class AppStrings {
+  static const progressStorage = 'Progress storage';
+  static const progressStorageHint =
+      'Saved media stays on this device. Storage totals include registered originals and derived files.';
+  static const progressDeleteItem = 'Delete media';
+  static const progressDeleteSession = 'Delete check-in';
+  static const progressDeleteAll = 'Delete all progress media';
+  static const progressDeleteItemConfirm =
+      'Delete this media and its thumbnails or extracted frames from this device? If it is the last media in this check-in, its notes and measurements will also be removed. This cannot be undone.';
+  static const progressDeleteSessionConfirm =
+      'Delete this check-in, its photos, video, thumbnails, notes and measurements from this device? This cannot be undone.';
+  static const progressDeleteAllConfirm =
+      'Delete every saved progress check-in and its media, notes, measurements and reminder settings from this device? This cannot be undone.';
+  static const progressDeleted = 'Progress media deleted.';
+  static const progressDeletedPending =
+      'Progress media removed from view. File cleanup is still pending.';
+  static const progressSessionUnavailable =
+      'This check-in is no longer available.';
+  static const progressBackToTimeline = 'Back to check-ins';
+  static const progressRetryCleanup = 'Retry cleanup';
+  static String progressStorageSummary(int count, String size) => count == 1
+      ? '1 saved check-in · $size'
+      : '$count saved check-ins · $size';
+  static String progressPendingSummary(int count, String size) => count == 1
+      ? '1 file awaiting cleanup · $size'
+      : '$count files awaiting cleanup · $size';
+  static String progressSizeMiB(String size) => '$size MiB';
+
   static const progressReminderTitle = 'Check-in reminders';
   static const progressReminderPrompt =
       'When would you like your next check-in?';

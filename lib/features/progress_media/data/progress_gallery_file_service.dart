@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:flutter/painting.dart';
 import 'package:aedify/core/storage/local_file_store.dart';
 import 'package:aedify/features/progress_media/data/progress_photo_file_service.dart';
 import 'package:aedify/features/progress_media/domain/progress_media.dart';
@@ -7,6 +8,10 @@ import 'package:aedify/features/progress_media/domain/progress_media.dart';
 class ProgressGalleryFileService {
   ProgressGalleryFileService(this._files);
   final LocalFileStore _files;
+  Future<void> evict(Uint8List bytes) async {
+    await MemoryImage(bytes).evict();
+  }
+
   Future<Uint8List?> preview(ProgressMediaItem item) async {
     final paths = [
       if (item.thumbnailRelativePath != null) item.thumbnailRelativePath!,
