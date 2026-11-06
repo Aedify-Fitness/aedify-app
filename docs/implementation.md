@@ -4,18 +4,24 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-006 complete (2026-11-05), awaiting user review.** Tickets 001–005 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Confirmed original/session/all-saved-media deletion, durable cleanup recovery, thumbnail/frame cascades, safe orphan sweep, storage/retry UI, and baseline/reminder reconciliation. [Scope and files](m6-deletion.md). |
-| Verification | Format checked 895 files; analysis clean; **1,970/1,970 tests passed**, zero failures/skips (23 new regressions), with lower concurrency. Dedicated checks 21/21; native iOS/Android playback/deletion/restart smoke passed with zero Dart HTTP attempts. Captures reviewed; normal entrypoints restored/launched. An Android Health registration issue is recorded separately in the evidence. |
-| Storage/platforms | Schema v20, dependencies and native setup unchanged. Existing deletion markers retain cleanup intent; private removed-session metadata is cleared transactionally. |
-| Next ticket | **Pause after V1-M6-006 for user review.** Ticket 007 privacy exclusions is not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-007 complete (2026-11-06), awaiting user review.** Tickets 001–006 approved in conversation; M5 approved 2026-11-04. |
+| Implemented | Progress-media sentinel regressions, diagnostic metadata/key/object guards, complete stack/path redaction, HTTP URL exclusion and private default field classification. [Scope and files](m6-privacy-exclusions.md). |
+| Verification | Format checked 896 files; analysis clean; **1,984/1,984 full tests passed**, zero failures/skips (14 new privacy regressions). Initial focused gate passed 99/99 before the final control case; all final cases passed in the full run. Native behavior is unchanged and is not rechecked for this Dart-only ticket. |
+| Storage/platforms | Schema v20, dependencies and native setup unchanged. Existing repositories and file store are exercised without new persistence. |
+| Next ticket | **Pause after V1-M6-007 for user review.** Ticket 008 acceptance smoke is not started. Pause after every M6 ticket as requested. |
+| Evidence | [M6 privacy exclusions](m6-privacy-exclusions.md), [approved deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-06 — V1-M6-007 privacy exclusion implementation
+
+- User approved continuing after ticket 006. Added progress-media sentinels across diagnostic sinks, synthetic multipart HTTP success/error and existing local repository/file workflows, including SQL failure and missing-file recovery. No new persistence, dependency or schema changes.
+- Fixed reproduced diagnostic leaks through HTTP paths, arbitrary stacks, private metadata keys and nested values under allowlisted keys. Fully redacted basenames; recognized media field families and made unknown field classifications private by default. Safe static error codes/types remain useful; raw stack detail is deliberately removed.
+- Verification: format checked 896 files; analysis clean; **1,984/1,984 full tests passed**, zero failures/skips (14 new regressions), with concurrency 2. Initial focused gate passed 99/99 before the final control case; the full run includes all final cases. Actual export/AI integration remains a required future milestone gate because its serializers/providers do not exist yet. Native/UI/media-codec checks were not repeated for this Dart-only change. [Scope, files and verification limits](m6-privacy-exclusions.md). **Pause after 007; 008 is not started.**
 
 ### 2026-11-05 — V1-M6-006 deletion and cleanup
 

@@ -20,9 +20,9 @@ void main() {
       expect(Redaction.apiKey('short'), '[REDACTED]');
     });
 
-    test('Redaction.filePath shows last segment', () {
+    test('Redaction.filePath hides all path segments', () {
       final result = Redaction.filePath('/path/to/file.txt');
-      expect(result, '.../file.txt');
+      expect(result, '[REDACTED]');
     });
 
     test('Redaction.filePath returns placeholder for short path', () {

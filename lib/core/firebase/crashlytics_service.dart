@@ -39,6 +39,10 @@ class FirebaseCrashlyticsClient implements CrashlyticsClient {
   }
 }
 
+/// Emits diagnostics with redacted errors, stack text and private metadata.
+///
+/// Event strings must be static identifiers. Allowlisted scalar metadata must
+/// contain non-sensitive diagnostic values, never user content.
 class CrashlyticsService {
   CrashlyticsService({
     CrashlyticsClient? client,
@@ -54,7 +58,10 @@ class CrashlyticsService {
   void setCustomKeySafe(String key, Object value) {
     if (!enabled || _client == null) return;
     if (!_classifier.isDiagnosticFieldAllowed(key)) return;
-    _client.setCustomKey(key, value.toString());
+    final safeMetadata = Redaction.diagnosticMetadata({
+      key: value,
+    }, classifier: _classifier);
+    _client.setCustomKey(key, safeMetadata[key].toString());
   }
 
   void recordErrorSafe(
@@ -64,7 +71,10 @@ class CrashlyticsService {
     Map<String, Object?> metadata = const {},
   }) {
     if (!enabled || _client == null) return;
-    final safeMetadata = Redaction.metadata(metadata);
+    final safeMetadata = Redaction.diagnosticMetadata(
+      metadata,
+      classifier: _classifier,
+    );
     for (final entry in safeMetadata.entries) {
       if (_classifier.isDiagnosticFieldAllowed(entry.key)) {
         _client.setCustomKey(entry.key, entry.value.toString());
@@ -72,24 +82,17 @@ class CrashlyticsService {
     }
     _client.recordError(
       StateError('Redacted ${exception.runtimeType}'),
-      stack,
+      Redaction.stackTrace(stack),
       reason: reason == null ? null : Redaction.sensitive(reason),
     );
   }
 
   void logSafe(String event, {Map<String, Object?> metadata = const {}}) {
     if (!enabled || _client == null) return;
-    // Derived analytics and future private fields must not bypass the
-    // diagnostic allowlist merely because their names are new to redaction.
-    final classified = metadata.map(
-      (key, value) => MapEntry(
-        key,
-        _classifier.isDiagnosticFieldAllowed(key)
-            ? value
-            : Redaction.sensitive(value?.toString()),
-      ),
+    final safeMetadata = Redaction.diagnosticMetadata(
+      metadata,
+      classifier: _classifier,
     );
-    final safeMetadata = Redaction.metadata(classified);
     final safeEvent = safeMetadata.isEmpty
         ? event
         : '$event (${safeMetadata.map((k, v) => MapEntry(k, v.toString()))})';

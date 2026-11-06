@@ -1,3 +1,5 @@
+import 'package:aedify/core/privacy/privacy_classifier.dart';
+
 class Redaction {
   static const String redactedPlaceholder = '[REDACTED]';
   static const String pathSeparator = '/';
@@ -57,14 +59,49 @@ class Redaction {
   }
 
   static String filePath(String? path) {
-    if (path == null) return redactedPlaceholder;
-    final segments = path.split(pathSeparator);
-    if (segments.length < 2) return redactedPlaceholder;
-    return '.../${segments.last}';
+    // Basenames can contain private media names too.
+    return redactedPlaceholder;
+  }
+
+  /// Replaces arbitrary stack text with a redacted trace.
+  ///
+  /// Stack text can contain local paths and exception payloads.
+  /// Keep error types/codes separately; do not trust caller-supplied frames.
+  static StackTrace? stackTrace(StackTrace? stack) =>
+      stack == null ? null : StackTrace.fromString(redactedPlaceholder);
+
+  /// Filters diagnostic keys and rejects arbitrary objects and byte arrays.
+  ///
+  /// Allowlisted scalar values must be static codes or non-sensitive metadata.
+  /// Unknown keys can themselves be filenames or notes, so hide both sides.
+  static Map<String, Object?> diagnosticMetadata(
+    Map<String, Object?> input, {
+    PrivacyClassifier classifier = const PrivacyClassifier(),
+  }) {
+    final output = <String, Object?>{};
+    for (final entry in input.entries) {
+      if (!classifier.isDiagnosticFieldAllowed(entry.key)) {
+        output[redactedPlaceholder] = redactedPlaceholder;
+        continue;
+      }
+      final value = entry.value;
+      output[entry.key] =
+          entry.key == 'redacted_stack_trace' ||
+              (value != null &&
+                  value is! String &&
+                  value is! num &&
+                  value is! bool)
+          ? redactedPlaceholder
+          : valueForField(entry.key, value);
+    }
+    return output;
   }
 
   static Object? valueForField(String key, Object? value) {
     if (value == null) return null;
+    if (const PrivacyClassifier().isLocalMediaField(key)) {
+      return redactedPlaceholder;
+    }
     final normalizedKey = key.toLowerCase();
     if (_sensitiveFields.contains(normalizedKey)) {
       return sensitive(value.toString());

@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-06 — M6-007 progress-media privacy exclusions
+
+- Added sentinel coverage for private media names, notes, paths, thumbnails, frames, analysis results and byte representations in diagnostics, synthetic HTTP and real local save/compare/delete/recovery workflows.
+- Closed HTTP URL, stack-text, unknown-key and nested allowlisted-value leaks. Diagnostic sinks share stricter filtering; basenames are fully redacted and unrecognized fields now classify as private. No schema/dependency/native changes; safe codes/types remain available with reduced stack detail.
+- Verification: format checked 896 files; analysis clean; **1,984/1,984 full tests passed**, zero failures/skips (14 new regressions), plus an initial 99/99 focused gate. Native checks were not repeated for this Dart-only change. Export/AI serializer checks remain explicit gates for their later implementations. [Scope, files and evidence](m6-privacy-exclusions.md).
+- **Pause after V1-M6-007 for user review.** Ticket 008 acceptance smoke has not started.
+
 ## 2026-11-05 — M6-006 progress deletion and cleanup
 
 - Added confirmed photo/video, check-in and all-saved-media deletion, storage/pending totals and cleanup retry. Deletion cascades to derived frames/thumbnails, removes private session/snapshot metadata, and updates baseline/reminders while protecting unrelated data.

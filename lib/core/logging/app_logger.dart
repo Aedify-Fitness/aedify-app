@@ -11,6 +11,11 @@ typedef AppLogSink =
       StackTrace? stackTrace,
     });
 
+/// Emits diagnostics through shared privacy filters.
+///
+/// Events and logger names must be static identifiers, with private data passed
+/// only through metadata or error arguments. Allowlisted scalar metadata must
+/// contain non-sensitive diagnostic values, never user content.
 class AppLogger {
   static const loggerName = 'aedify';
 
@@ -92,13 +97,10 @@ class AppLogger {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    final classified = metadata.map((k, v) {
-      if (!_classifier.isDiagnosticFieldAllowed(k)) {
-        return MapEntry(k, Redaction.sensitive(v.toString()));
-      }
-      return MapEntry(k, v);
-    });
-    final safeMetadata = Redaction.metadata(classified);
+    final safeMetadata = Redaction.diagnosticMetadata(
+      metadata,
+      classifier: _classifier,
+    );
     final safeEvent = safeMetadata.isEmpty
         ? event
         : '$event (${safeMetadata.map((k, v) => MapEntry(k, v.toString()))})';
@@ -107,7 +109,7 @@ class AppLogger {
       name: name,
       level: level,
       error: _safeError(error),
-      stackTrace: stackTrace,
+      stackTrace: Redaction.stackTrace(stackTrace),
     );
   }
 

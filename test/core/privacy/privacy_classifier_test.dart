@@ -104,10 +104,10 @@ void main() {
         expect(classifier.classifyField('prompt'), equals(PrivacyClass.secret));
       });
 
-      test('returns publicStatic for unknown fields', () {
+      test('returns localPersonal for unknown fields', () {
         expect(
           classifier.classifyField('unknown'),
-          equals(PrivacyClass.publicStatic),
+          equals(PrivacyClass.localPersonal),
         );
       });
     });

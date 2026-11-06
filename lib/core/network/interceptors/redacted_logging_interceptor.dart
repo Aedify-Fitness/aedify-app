@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:aedify/core/logging/app_logger.dart';
-import 'package:aedify/core/privacy/redaction.dart';
 
 class RedactedLoggingInterceptor extends Interceptor {
   RedactedLoggingInterceptor({required AppLogger logger}) : _logger = logger;
@@ -9,31 +8,16 @@ class RedactedLoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final safeHeaders = Redaction.headers(
-      options.headers.map((k, v) => MapEntry(k, v as Object)),
-    );
-    _logger.debug(
-      '[HTTP] --> ${options.method} ${options.path}',
-      metadata: {
-        'method': options.method,
-        'path': options.path,
-        if (options.queryParameters.isNotEmpty)
-          'query': Redaction.queryParameters(
-            options.queryParameters.map((k, v) => MapEntry(k, v as Object)),
-          ).toString(),
-        'headers': safeHeaders.keys.toString(),
-      },
-    );
+    _logger.debug('[HTTP] request', metadata: {'method': options.method});
     handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     _logger.info(
-      '[HTTP] <-- ${response.statusCode} ${response.requestOptions.path}',
+      '[HTTP] response',
       metadata: {
         'status_code': response.statusCode,
-        'path': response.requestOptions.path,
         'method': response.requestOptions.method,
       },
     );
@@ -43,10 +27,9 @@ class RedactedLoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     _logger.error(
-      '[HTTP] ERROR ${err.type.name} ${err.requestOptions.path}',
+      '[HTTP] error',
       metadata: {
-        'error_type': err.type.name,
-        'path': err.requestOptions.path,
+        'error_code': err.type.name,
         'method': err.requestOptions.method,
         if (err.response?.statusCode != null)
           'status_code': err.response!.statusCode,

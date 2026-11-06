@@ -91,8 +91,28 @@ class PrivacyClassifier {
   }
 
   PrivacyClass classifyField(String key) {
-    if (_forbiddenFields.contains(key)) return PrivacyClass.secret;
+    if (isLocalMediaField(key)) return PrivacyClass.localMedia;
+    if (_forbiddenFields.contains(key.toLowerCase())) {
+      return PrivacyClass.secret;
+    }
     if (_allowedFields.contains(key)) return PrivacyClass.diagnosticSafe;
-    return PrivacyClass.publicStatic;
+    // Public/reference and exportable content must be explicitly classified by
+    // its owner. A new field name cannot grant permission to leave the device.
+    return PrivacyClass.localPersonal;
+  }
+
+  /// Recognizes private media field families across snake/camel-case DTOs.
+  bool isLocalMediaField(String key) {
+    final normalized = key.toLowerCase().replaceAll(RegExp('[^a-z0-9]'), '');
+    return const [
+      'media',
+      'thumbnail',
+      'extractedframe',
+      'videoframe',
+      'physique',
+      'localrelativepath',
+      'photobytes',
+      'videobytes',
+    ].any(normalized.contains);
   }
 }
