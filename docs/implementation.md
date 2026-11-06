@@ -4,18 +4,24 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking: V1-M6-007 complete (2026-11-06), awaiting user review.** Tickets 001–006 approved in conversation; M5 approved 2026-11-04. |
-| Implemented | Progress-media sentinel regressions, diagnostic metadata/key/object guards, complete stack/path redaction, HTTP URL exclusion and private default field classification. [Scope and files](m6-privacy-exclusions.md). |
-| Verification | Format checked 896 files; analysis clean; **1,984/1,984 full tests passed**, zero failures/skips (14 new privacy regressions). Initial focused gate passed 99/99 before the final control case; all final cases passed in the full run. Native behavior is unchanged and is not rechecked for this Dart-only ticket. |
-| Storage/platforms | Schema v20, dependencies and native setup unchanged. Existing repositories and file store are exercised without new persistence. |
-| Next ticket | **Pause after V1-M6-007 for user review.** Ticket 008 acceptance smoke is not started. Pause after every M6 ticket as requested. |
-| Evidence | [M6 privacy exclusions](m6-privacy-exclusions.md), [approved deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
+| Current milestone | **M6 — Progress Media Tracking: V1-M6-008 complete (2026-11-06), awaiting user review.** Tickets 001–007 approved in conversation; M5 approved 2026-11-04. Physical-device milestone acceptance remains manual. |
+| Implemented | Connected synthetic native acceptance journey across real photo/video save, reminder queues, comparisons, notes/baseline, playback, database reopen, missing-file recovery, confirmed deletion/retry, orphan cleanup and diagnostic privacy. [Scope and files](m6-acceptance.md). |
+| Verification | Connected native acceptance passed on iOS/Android with zero Dart HTTP attempts; light/dark comparison and pending-cleanup captures reviewed; normal app entrypoints restored/launched. Format checked 897 files; analysis clean; **1,984/1,984 host tests passed**, zero failures/skips. |
+| Storage/platforms | Schema v20, dependencies, native setup and product behavior unchanged. Fixtures use isolated SQLite/sandbox storage and synthetic picker/permission seams. |
+| Next ticket | **Pause after V1-M6-008 for user review.** M7 is not started. Physical-device permission/media/delivery gates remain manual. |
+| Evidence | [M6 connected acceptance](m6-acceptance.md), [privacy exclusions](m6-privacy-exclusions.md), [approved deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
 All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
 
 ## Completed Work
+
+### 2026-11-06 — V1-M6-008 acceptance smoke implementation
+
+- User approved continuing after ticket 007. Added one connected native journey using the existing screens/controllers/services, isolated file-backed schema-v20 database, real file/video/notification adapters, synthetic media selection and a test permission seam. No product/schema/dependency/native setup changes.
+- Covers save-before-persist/cancel, four-pose and mixed sessions, reminder gate/cadences/reset, same-pose comparisons, note/baseline edits, native playback, durable reopen/missing-file state, delete confirmation/cancel, failed unlink/reopen/retry, all-media cleanup/orphans and private diagnostic/notification captures with blocked Dart HTTP.
+- Verification: native acceptance passed on iOS/Android (45s/47s), zero Dart HTTP attempts; light/dark comparison and pending-cleanup captures reviewed, generated device captures removed, normal entrypoints restored/launched. Format checked 897 files; analysis clean; **1,984/1,984 host tests passed** in 2m30s, zero failures/skips. One new integration journey passed separately on both platforms. Broader negative/widget coverage remains in tickets 001–007. Physical-device milestone acceptance and future export/AI integration boundaries remain explicit. [Acceptance map and files](m6-acceptance.md). **Pause after 008; M7 is not started.**
 
 ### 2026-11-06 — V1-M6-007 privacy exclusion implementation
 

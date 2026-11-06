@@ -1,5 +1,12 @@
 # Aedify — Changelog
 
+## 2026-11-06 — M6-008 connected progress-media acceptance smoke
+
+- Added an isolated native acceptance flow joining photo/video review and Save, reminder permission/cadence/reset, gallery/comparison, notes/baseline edits, playback, database reopen, missing-file recovery, deletion/retry and orphan cleanup.
+- Uses existing production boundaries with synthetic picker/permission seams, real SQLite/files/native video and notification pending queues, blocked Dart HTTP and captured diagnostic/notification privacy sentinels. No product, schema, dependency or native setup changes.
+- Verification: native acceptance passed on iOS/Android (45s/47s), zero Dart HTTP attempts; captures reviewed, generated device captures removed and normal entrypoints restored/launched. Format checked 897 files; analysis clean; **1,984/1,984 host tests passed**, zero failures/skips. Physical-device acceptance and later export/AI payload gates remain explicit. [Scope, files and evidence](m6-acceptance.md).
+- **Pause after V1-M6-008 for user review.** M7 is not started.
+
 ## 2026-11-06 — M6-007 progress-media privacy exclusions
 
 - Added sentinel coverage for private media names, notes, paths, thumbnails, frames, analysis results and byte representations in diagnostics, synthetic HTTP and real local save/compare/delete/recovery workflows.
