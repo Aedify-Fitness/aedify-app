@@ -1,5 +1,6 @@
 import 'package:aedify/app/providers/providers.dart';
 import 'package:aedify/features/analytics/application/analytics_providers.dart';
+import 'package:aedify/features/analytics/application/analytics_insights_providers.dart';
 import 'package:aedify/features/analytics/application/analytics_view_mapper.dart';
 import 'package:aedify/features/analytics/domain/analytics_log_query.dart';
 import 'package:aedify/features/analytics/domain/analytics_query_failure.dart';
@@ -83,6 +84,7 @@ abstract final class AnalyticsViewProviders {
 
   /// Refreshes only this feature's current read state and recoverable failures.
   static void refresh(WidgetRef ref, {int? exerciseId}) {
+    ref.invalidate(AnalyticsInsightsProviders.data);
     ref.invalidate(
       AnalyticsProviders.completedWorkingSetsProvider(
         AnalyticsLogQuery(exerciseId: exerciseId),

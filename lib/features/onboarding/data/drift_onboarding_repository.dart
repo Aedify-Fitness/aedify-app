@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:drift/drift.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/body_measurement_recorder.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/onboarding/application/onboarding_state.dart';
@@ -19,12 +20,14 @@ import 'package:aedify/shared/domain/training_day.dart';
 
 class DriftOnboardingRepository implements OnboardingRepository {
   DriftOnboardingRepository({required AppDatabase database})
-    : _dao = UserProfileDao(database),
+    : _database = database,
+      _dao = UserProfileDao(database),
       _strengthAnchorDao = StrengthAnchorDao(database);
 
   static final _logger = AppLogger(name: 'DriftOnboardingRepository');
 
   final UserProfileDao _dao;
+  final AppDatabase _database;
   final StrengthAnchorDao _strengthAnchorDao;
 
   @override
@@ -83,6 +86,8 @@ class DriftOnboardingRepository implements OnboardingRepository {
     _logger.info('complete');
     final now = DateTime.now();
     await _dao.transaction(() async {
+      final wasCompleted =
+          (await _dao.getProfile())?.onboardingCompleted ?? false;
       await saveOnboardingDraft(draft);
 
       final existingAnchors = await _strengthAnchorDao.getAllAnchors();
@@ -104,6 +109,13 @@ class DriftOnboardingRepository implements OnboardingRepository {
         );
       }
 
+      if (!wasCompleted) {
+        await BodyMeasurementRecorder.record(
+          _database,
+          draft.bodyweightKg,
+          now,
+        );
+      }
       await _dao.markOnboardingCompleted(completedAt: now);
     });
   }

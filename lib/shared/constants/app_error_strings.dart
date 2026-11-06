@@ -1,4 +1,12 @@
 class AppErrorStrings {
+  static const analyticsMeasurementInvalid =
+      'Enter at least one positive measurement using numbers only.';
+  static const analyticsMeasurementFailed =
+      'Could not save this measurement. Try again.';
+  static const analyticsExportFailed =
+      'Could not save the analytics CSV. Try again.';
+  static const analyticsExportTooLarge =
+      'This export is too large. Choose a shorter date range.';
   AppErrorStrings._();
   static const progressDeletionFailed =
       'Could not complete progress-media deletion. Refresh and try again.';

@@ -6,6 +6,7 @@ import 'package:aedify/features/analytics/presentation/widgets/analytics_compone
 import 'package:aedify/features/analytics/presentation/widgets/analytics_plateau_panel.dart';
 import 'package:aedify/features/analytics/presentation/widgets/analytics_records_panel.dart';
 import 'package:aedify/features/analytics/presentation/widgets/analytics_trend_chart.dart';
+import 'package:aedify/features/analytics/presentation/widgets/analytics_insights_panel.dart';
 import 'package:aedify/features/lift_log/presentation/widgets/workout_history_list_tile.dart';
 import 'package:aedify/shared/constants/app_error_strings.dart';
 import 'package:aedify/shared/constants/app_routes.dart';
@@ -130,6 +131,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         ]);
       }
       children.add(const _RecentWorkouts());
+    }
+    if (units.hasValue) {
+      children.add(
+        AnalyticsInsightsPanel(range: _range, unit: units.requireValue),
+      );
     }
     return AnalyticsPage(onRefresh: () async => _refresh(), children: children);
   }

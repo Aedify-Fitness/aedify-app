@@ -46,10 +46,10 @@ Evidence uses `/private/tmp/aedify-m6-008-{format,analyze,tests,ios-final,androi
 
 ## Remaining acceptance boundaries
 
-- Physical iOS/Android camera/gallery selection, limited-library access, regular permission dialogs, notification action/delivery/reboot/focus/battery behavior, accessibility/gestures and real storage pressure remain manual. Simulator/emulator evidence does not satisfy the testing plan's real-device media gate.
+- Physical iOS/Android camera/gallery selection, limited-library access, regular permission dialogs, notification action/delivery/reboot/focus/battery behavior, accessibility/gestures and real storage pressure are **on hold by user instruction dated 2026-11-06**. Simulator/emulator evidence does not satisfy the testing plan's real-device media gate.
 - Real `.aedifyplan`/PDF/export/import serializers and AI provider/physique-analysis consent transport belong to later milestones. Their actual outbound artifacts must rerun the [privacy sentinels](m6-privacy-exclusions.md). None are introduced or certified by this smoke.
-- The previously recorded Android Health plugin activity-registration error remains outside M6. See [deletion evidence](m6-deletion.md); acceptance of these media flows does not certify Health integration.
-- Existing M1–M4 live Firebase/BYOK evidence limits remain documented in [closure evidence](m1-m4-gap-closure.md).
+- The previously recorded Android Health activity-registration error is fixed by the FlutterFragmentActivity change. The SDK-status probe and repeated M6 media acceptance passed; see [gap closure](m0-m6-gap-closure.md). Actual Health data/permissions integration remains future work.
+- Existing M1–M4 live Firebase/BYOK checks are on hold by user instruction; [closure evidence](m1-m4-gap-closure.md) preserves the earlier failed/unrun live results.
 
 ## Changed files
 

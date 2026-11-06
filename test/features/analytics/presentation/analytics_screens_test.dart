@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:aedify/app/theme/app_theme.dart';
 import 'package:aedify/features/analytics/analytics_strings.dart';
 import 'package:aedify/features/analytics/application/analytics_providers.dart';
+import 'package:aedify/features/analytics/application/analytics_insights_providers.dart';
+import 'package:aedify/features/analytics/domain/analytics_insights.dart';
 import 'package:aedify/features/analytics/application/analytics_view_providers.dart';
 import 'package:aedify/features/analytics/domain/analytics_set_log.dart';
 import 'package:aedify/features/analytics/presentation/analytics_screen.dart';
@@ -60,6 +62,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         AnalyticsViewProviders.unitsProvider.overrideWithValue(AsyncData(unit)),
+        AnalyticsInsightsProviders.data.overrideWith(
+          (_, _) async => AnalyticsInsights(measurements: [], adherence: []),
+        ),
         PlateauProviders.clockProvider.overrideWithValue(() => now),
         AnalyticsProviders.completedWorkingSetsProvider.overrideWith(
           (ref, query) => loading

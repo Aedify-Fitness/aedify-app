@@ -33,6 +33,53 @@ void main() {
   });
 
   group('DriftProfileRepository', () {
+    test(
+      'explicit changed bodyweight appends history while unchanged saves do not',
+      () async {
+        const first = ProfileEditDraft(
+          bodyweightKg: 80,
+          preferredUnits: PreferredUnit.metric,
+        );
+        await repository.saveProfile(first);
+        await repository.saveProfile(first);
+        expect(await db.select(db.bodyMeasurements).get(), hasLength(1));
+        await repository.saveProfile(
+          const ProfileEditDraft(
+            bodyweightKg: 79,
+            preferredUnits: PreferredUnit.metric,
+          ),
+        );
+        expect(
+          (await db.select(db.bodyMeasurements).get()).map(
+            (m) => m.bodyweightKg,
+          ),
+          [80, 79],
+        );
+      },
+    );
+
+    test('failed measurement recording rolls back the profile change', () async {
+      await repository.saveProfile(
+        const ProfileEditDraft(
+          bodyweightKg: 80,
+          preferredUnits: PreferredUnit.metric,
+        ),
+      );
+      await db.customStatement(
+        "CREATE TRIGGER fail_bodyweight BEFORE INSERT ON body_measurements BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END",
+      );
+      await expectLater(
+        repository.saveProfile(
+          const ProfileEditDraft(
+            bodyweightKg: 79,
+            preferredUnits: PreferredUnit.metric,
+          ),
+        ),
+        throwsA(anything),
+      );
+      expect((await db.select(db.userProfile).get()).single.bodyweightKg, 80);
+      expect(await db.select(db.bodyMeasurements).get(), hasLength(1));
+    });
     test('getProfile returns null when no profile exists', () async {
       final profile = await repository.getProfile();
       expect(profile, isNull);

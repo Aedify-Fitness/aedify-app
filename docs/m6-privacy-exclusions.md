@@ -25,7 +25,7 @@ The existing sharing and chat screens are placeholders. `.aedifyplan`/PDF serial
 
 Diagnostic event strings and logger names remain static-identifier caller contracts. Allowlisted scalar values must contain non-sensitive diagnostic metadata; field allowlisting cannot make arbitrary user text safe. All current progress-media and file-store calls were inspected for this contract. The HTTP path interpolation was removed from the shared interceptor.
 
-Native integration was not repeated because this change has no native/UI/media-codec behavior. Existing reminder notification privacy and progress-media capture/deletion regressions run in the full suite. Prior native evidence remains in [deletion/recovery](m6-deletion.md) and [reminders](m6-reminders.md). The previously recorded Android Health registration issue remains outside this ticket. Physical-device accessibility, OS delivery and storage-pressure checks remain manual.
+Native integration was not repeated for ticket 007 because it has no native/UI/media-codec behavior. Existing reminder notification privacy and progress-media capture/deletion regressions run in the full suite. Prior native evidence remains in [deletion/recovery](m6-deletion.md) and [reminders](m6-reminders.md). The 2026-11-06 [gap closure](m0-m6-gap-closure.md) fixes the Android Health registration issue and repeats connected media acceptance on both platforms. Physical-device accessibility, OS delivery and storage-pressure checks are on hold by user instruction.
 
 ## Changed files
 

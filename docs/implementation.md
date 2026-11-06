@@ -4,18 +4,32 @@
 
 | Field             | Value                                                                                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Current milestone | **M6 — Progress Media Tracking complete and approved by the user on 2026-11-06.** All eight tickets accepted; M5 approved 2026-11-04. Recorded manual verification boundaries remain in the acceptance evidence. |
-| Implemented | Connected synthetic native acceptance journey across real photo/video save, reminder queues, comparisons, notes/baseline, playback, database reopen, missing-file recovery, confirmed deletion/retry, orphan cleanup and diagnostic privacy. [Scope and files](m6-acceptance.md). |
-| Verification | Connected native acceptance passed on iOS/Android with zero Dart HTTP attempts; light/dark comparison and pending-cleanup captures reviewed; normal app entrypoints restored/launched. Format checked 897 files; analysis clean; **1,984/1,984 host tests passed**, zero failures/skips. |
-| Storage/platforms | Schema v20, dependencies, native setup and product behavior unchanged. Fixtures use isolated SQLite/sandbox storage and synthetic picker/permission seams. |
-| Next ticket | **Do not start M7, per the user's explicit instruction on 2026-11-06.** No further milestone work is active. |
-| Evidence | [M6 connected acceptance](m6-acceptance.md), [privacy exclusions](m6-privacy-exclusions.md), [approved deletion/recovery](m6-deletion.md), [approved reminders](m6-reminders.md). |
+| Current milestone | **M0–M6 reviewed gaps closed (2026-11-06), excluding the explicit verification holds below.** M6 remains approved; M7 remains unstarted. |
+| Implemented | Measurement history/charts and ten-field entry, transactional profile/onboarding weight history, programme adherence, reviewed/sanitized native analytics CSV export, Android activity compatibility and M0 governance/traceability. Existing M0–M6 feature behavior remains accepted. |
+| Verification | Schema generation passed; format checked 910 files; analysis clean; **2,009/2,009 host tests passed**, zero failures/skips (1m56s). New gap journey, existing connected M6 media flow and foundation fixtures passed on both native simulators. Android CSV system save/readback and Health registration passed. |
+| Storage/platforms | Schema v21 adds nullable manual body-fat/neck measurements and preserves existing history. Package versions are unchanged. Android uses FlutterFragmentActivity for installed-plugin compatibility. |
+| Next ticket | **Do not start M7.** M2/M3 live Firebase/real-key BYOK verification and M6 physical-device verification remain on hold by user instruction. No other reviewed closure item remains open. |
+| Governance | Private linked [implementation board](https://github.com/orgs/Aedify-Fitness/projects/1): 129 canonical tickets + 6 closure cards + 2 holds; 67 Done, 70 Todo, 0 In Progress. M0–M14 labels and 231 requirement occurrences are tracked. |
+| Evidence | [M0–M6 gap closure](m0-m6-gap-closure.md), [governance and verification snapshot](governance/index.md), [M6 connected acceptance](m6-acceptance.md), [privacy exclusions](m6-privacy-exclusions.md), [deletion/recovery](m6-deletion.md). |
 
 ## M1–M4 closure review — 2026-10-25
 
-All implementation gaps identified in this review are fixed. M1 native storage acceptance now passes on both platforms. M2 fixture-based sync/offline acceptance and M3 native onboarding/BYOK/UI acceptance pass on both platforms; live Firebase acceptance remains pending during the user-confirmed outage, and successful live BYOK checks need a configured test key. M4 native offline acceptance passes again on both platforms. M5 remains planned, not started. See [M1–M4 closure evidence](m1-m4-gap-closure.md) for exact boundaries and the changed-file inventory.
+Historical summary: the October review fixed its identified implementation gaps. M1 native storage, M2 fixture-based sync/offline, M3 native onboarding/BYOK/UI and M4 native offline acceptance passed on both platforms. Live checks were unpassed/unrun during the then-confirmed outage and lack of test keys; M5 was still planned at that time. M5/M6 have since been accepted, and the user held M2/M3 live verification on 2026-11-06. See [M1–M4 closure evidence](m1-m4-gap-closure.md) and the current status above.
 
 ## Completed Work
+
+### 2026-11-06 — Helper/template cleanup requested by user
+
+- Removed the three gap-closure Python helpers and three new YAML issue templates, their CI invocation and active documentation references. Governance and traceability are maintained from the locked sources; the existing Foundation workflow, PR checklist, GitHub board and evidence snapshots remain.
+- Verification: `dart format .`, remaining workflow YAML parsing, local documentation links, removed-file/reference checks and `git diff --check` passed. App analysis/tests were not repeated because this cleanup changes no Flutter/native behavior; the last complete app gate remains 2,009 passing tests.
+- M2/M3 live verification and M6 physical-device verification remain held. M7 remains unstarted.
+
+### 2026-11-06 — M0–M6 remaining-gap closure complete
+
+- Closed the reviewed measurement-chart, adherence, analytics-CSV, Android plugin compatibility, governance and tracking gaps. Schema v21 adds manual body-fat/neck fields; profile/onboarding history writes are transactional and do not invent past measurements. CSV requires review, exports an allowlisted canonical DTO and uses native document destinations.
+- Created the private linked implementation board, M0–M14 labels, source/dependency/workstream/change-control metadata, templates, ready/done/fixture rules and 231-occurrence requirements traceability. All 129 locked tickets are represented; future/held work remains Todo. No source commit/push, repository issue creation or person assignment was performed.
+- Verification: generation passed; format checked 910 files; analysis clean; **2,009/2,009 host tests passed**, zero failures/skips. New gap, existing M6 and foundation native acceptance passed on iOS/Android; Android saved CSV was read back and removed. Light/dark previews reviewed, exact synthetic app artifacts removed, normal entrypoints restored. One initial stale migration-version assertion was corrected before the passing full gates.
+- **M2/M3 live verification and M6 physical-device verification remain held by user instruction. M7 is not started.** [Scope, evidence, file inventory and holds](m0-m6-gap-closure.md).
 
 ### 2026-11-06 — M6 completion approved
 
@@ -2518,7 +2532,7 @@ All implementation gaps identified in this review are fixed. M1 native storage a
 
 - **All M3 tickets closed** — V1-M3-001 through V1-M3-009 complete.
 - **M5 approved (2026-11-04).**
-- M6 — Progress Media Tracking: tickets 001–003 complete; pause for review before 004–008
+- **M6 approved complete (2026-11-06).** All eight tickets accepted; physical-device verification is on hold by user instruction.
 - M7 — AI Infrastructure
 - M8 — AI Workout + Programme Generation
 - M9 — AI Trainer Chat + AI Update Flows

@@ -7010,6 +7010,26 @@ class $BodyMeasurementsTable extends BodyMeasurements
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _bodyFatPercentMeta = const VerificationMeta(
+    'bodyFatPercent',
+  );
+  @override
+  late final GeneratedColumn<double> bodyFatPercent = GeneratedColumn<double>(
+    'body_fat_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _neckCmMeta = const VerificationMeta('neckCm');
+  @override
+  late final GeneratedColumn<double> neckCm = GeneratedColumn<double>(
+    'neck_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _waistCmMeta = const VerificationMeta(
     'waistCm',
   );
@@ -7121,6 +7141,8 @@ class $BodyMeasurementsTable extends BodyMeasurements
     id,
     measuredAt,
     bodyweightKg,
+    bodyFatPercent,
+    neckCm,
     waistCm,
     chestCm,
     hipsCm,
@@ -7164,6 +7186,21 @@ class $BodyMeasurementsTable extends BodyMeasurements
           data['bodyweight_kg']!,
           _bodyweightKgMeta,
         ),
+      );
+    }
+    if (data.containsKey('body_fat_percent')) {
+      context.handle(
+        _bodyFatPercentMeta,
+        bodyFatPercent.isAcceptableOrUnknown(
+          data['body_fat_percent']!,
+          _bodyFatPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('neck_cm')) {
+      context.handle(
+        _neckCmMeta,
+        neckCm.isAcceptableOrUnknown(data['neck_cm']!, _neckCmMeta),
       );
     }
     if (data.containsKey('waist_cm')) {
@@ -7260,6 +7297,14 @@ class $BodyMeasurementsTable extends BodyMeasurements
         DriftSqlType.double,
         data['${effectivePrefix}bodyweight_kg'],
       ),
+      bodyFatPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}body_fat_percent'],
+      ),
+      neckCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}neck_cm'],
+      ),
       waistCm: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}waist_cm'],
@@ -7313,6 +7358,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
   final String id;
   final DateTime measuredAt;
   final double? bodyweightKg;
+  final double? bodyFatPercent;
+  final double? neckCm;
   final double? waistCm;
   final double? chestCm;
   final double? hipsCm;
@@ -7327,6 +7374,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
     required this.id,
     required this.measuredAt,
     this.bodyweightKg,
+    this.bodyFatPercent,
+    this.neckCm,
     this.waistCm,
     this.chestCm,
     this.hipsCm,
@@ -7345,6 +7394,12 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
     map['measured_at'] = Variable<DateTime>(measuredAt);
     if (!nullToAbsent || bodyweightKg != null) {
       map['bodyweight_kg'] = Variable<double>(bodyweightKg);
+    }
+    if (!nullToAbsent || bodyFatPercent != null) {
+      map['body_fat_percent'] = Variable<double>(bodyFatPercent);
+    }
+    if (!nullToAbsent || neckCm != null) {
+      map['neck_cm'] = Variable<double>(neckCm);
     }
     if (!nullToAbsent || waistCm != null) {
       map['waist_cm'] = Variable<double>(waistCm);
@@ -7382,6 +7437,12 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
       bodyweightKg: bodyweightKg == null && nullToAbsent
           ? const Value.absent()
           : Value(bodyweightKg),
+      bodyFatPercent: bodyFatPercent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyFatPercent),
+      neckCm: neckCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(neckCm),
       waistCm: waistCm == null && nullToAbsent
           ? const Value.absent()
           : Value(waistCm),
@@ -7420,6 +7481,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
       id: serializer.fromJson<String>(json['id']),
       measuredAt: serializer.fromJson<DateTime>(json['measuredAt']),
       bodyweightKg: serializer.fromJson<double?>(json['bodyweightKg']),
+      bodyFatPercent: serializer.fromJson<double?>(json['bodyFatPercent']),
+      neckCm: serializer.fromJson<double?>(json['neckCm']),
       waistCm: serializer.fromJson<double?>(json['waistCm']),
       chestCm: serializer.fromJson<double?>(json['chestCm']),
       hipsCm: serializer.fromJson<double?>(json['hipsCm']),
@@ -7439,6 +7502,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
       'id': serializer.toJson<String>(id),
       'measuredAt': serializer.toJson<DateTime>(measuredAt),
       'bodyweightKg': serializer.toJson<double?>(bodyweightKg),
+      'bodyFatPercent': serializer.toJson<double?>(bodyFatPercent),
+      'neckCm': serializer.toJson<double?>(neckCm),
       'waistCm': serializer.toJson<double?>(waistCm),
       'chestCm': serializer.toJson<double?>(chestCm),
       'hipsCm': serializer.toJson<double?>(hipsCm),
@@ -7456,6 +7521,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
     String? id,
     DateTime? measuredAt,
     Value<double?> bodyweightKg = const Value.absent(),
+    Value<double?> bodyFatPercent = const Value.absent(),
+    Value<double?> neckCm = const Value.absent(),
     Value<double?> waistCm = const Value.absent(),
     Value<double?> chestCm = const Value.absent(),
     Value<double?> hipsCm = const Value.absent(),
@@ -7470,6 +7537,10 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
     id: id ?? this.id,
     measuredAt: measuredAt ?? this.measuredAt,
     bodyweightKg: bodyweightKg.present ? bodyweightKg.value : this.bodyweightKg,
+    bodyFatPercent: bodyFatPercent.present
+        ? bodyFatPercent.value
+        : this.bodyFatPercent,
+    neckCm: neckCm.present ? neckCm.value : this.neckCm,
     waistCm: waistCm.present ? waistCm.value : this.waistCm,
     chestCm: chestCm.present ? chestCm.value : this.chestCm,
     hipsCm: hipsCm.present ? hipsCm.value : this.hipsCm,
@@ -7490,6 +7561,10 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
       bodyweightKg: data.bodyweightKg.present
           ? data.bodyweightKg.value
           : this.bodyweightKg,
+      bodyFatPercent: data.bodyFatPercent.present
+          ? data.bodyFatPercent.value
+          : this.bodyFatPercent,
+      neckCm: data.neckCm.present ? data.neckCm.value : this.neckCm,
       waistCm: data.waistCm.present ? data.waistCm.value : this.waistCm,
       chestCm: data.chestCm.present ? data.chestCm.value : this.chestCm,
       hipsCm: data.hipsCm.present ? data.hipsCm.value : this.hipsCm,
@@ -7515,6 +7590,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
           ..write('id: $id, ')
           ..write('measuredAt: $measuredAt, ')
           ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyFatPercent: $bodyFatPercent, ')
+          ..write('neckCm: $neckCm, ')
           ..write('waistCm: $waistCm, ')
           ..write('chestCm: $chestCm, ')
           ..write('hipsCm: $hipsCm, ')
@@ -7534,6 +7611,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
     id,
     measuredAt,
     bodyweightKg,
+    bodyFatPercent,
+    neckCm,
     waistCm,
     chestCm,
     hipsCm,
@@ -7552,6 +7631,8 @@ class BodyMeasurement extends DataClass implements Insertable<BodyMeasurement> {
           other.id == this.id &&
           other.measuredAt == this.measuredAt &&
           other.bodyweightKg == this.bodyweightKg &&
+          other.bodyFatPercent == this.bodyFatPercent &&
+          other.neckCm == this.neckCm &&
           other.waistCm == this.waistCm &&
           other.chestCm == this.chestCm &&
           other.hipsCm == this.hipsCm &&
@@ -7568,6 +7649,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
   final Value<String> id;
   final Value<DateTime> measuredAt;
   final Value<double?> bodyweightKg;
+  final Value<double?> bodyFatPercent;
+  final Value<double?> neckCm;
   final Value<double?> waistCm;
   final Value<double?> chestCm;
   final Value<double?> hipsCm;
@@ -7583,6 +7666,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
     this.id = const Value.absent(),
     this.measuredAt = const Value.absent(),
     this.bodyweightKg = const Value.absent(),
+    this.bodyFatPercent = const Value.absent(),
+    this.neckCm = const Value.absent(),
     this.waistCm = const Value.absent(),
     this.chestCm = const Value.absent(),
     this.hipsCm = const Value.absent(),
@@ -7599,6 +7684,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
     required String id,
     required DateTime measuredAt,
     this.bodyweightKg = const Value.absent(),
+    this.bodyFatPercent = const Value.absent(),
+    this.neckCm = const Value.absent(),
     this.waistCm = const Value.absent(),
     this.chestCm = const Value.absent(),
     this.hipsCm = const Value.absent(),
@@ -7618,6 +7705,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
     Expression<String>? id,
     Expression<DateTime>? measuredAt,
     Expression<double>? bodyweightKg,
+    Expression<double>? bodyFatPercent,
+    Expression<double>? neckCm,
     Expression<double>? waistCm,
     Expression<double>? chestCm,
     Expression<double>? hipsCm,
@@ -7634,6 +7723,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
       if (id != null) 'id': id,
       if (measuredAt != null) 'measured_at': measuredAt,
       if (bodyweightKg != null) 'bodyweight_kg': bodyweightKg,
+      if (bodyFatPercent != null) 'body_fat_percent': bodyFatPercent,
+      if (neckCm != null) 'neck_cm': neckCm,
       if (waistCm != null) 'waist_cm': waistCm,
       if (chestCm != null) 'chest_cm': chestCm,
       if (hipsCm != null) 'hips_cm': hipsCm,
@@ -7652,6 +7743,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
     Value<String>? id,
     Value<DateTime>? measuredAt,
     Value<double?>? bodyweightKg,
+    Value<double?>? bodyFatPercent,
+    Value<double?>? neckCm,
     Value<double?>? waistCm,
     Value<double?>? chestCm,
     Value<double?>? hipsCm,
@@ -7668,6 +7761,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
       id: id ?? this.id,
       measuredAt: measuredAt ?? this.measuredAt,
       bodyweightKg: bodyweightKg ?? this.bodyweightKg,
+      bodyFatPercent: bodyFatPercent ?? this.bodyFatPercent,
+      neckCm: neckCm ?? this.neckCm,
       waistCm: waistCm ?? this.waistCm,
       chestCm: chestCm ?? this.chestCm,
       hipsCm: hipsCm ?? this.hipsCm,
@@ -7693,6 +7788,12 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
     }
     if (bodyweightKg.present) {
       map['bodyweight_kg'] = Variable<double>(bodyweightKg.value);
+    }
+    if (bodyFatPercent.present) {
+      map['body_fat_percent'] = Variable<double>(bodyFatPercent.value);
+    }
+    if (neckCm.present) {
+      map['neck_cm'] = Variable<double>(neckCm.value);
     }
     if (waistCm.present) {
       map['waist_cm'] = Variable<double>(waistCm.value);
@@ -7736,6 +7837,8 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurement> {
           ..write('id: $id, ')
           ..write('measuredAt: $measuredAt, ')
           ..write('bodyweightKg: $bodyweightKg, ')
+          ..write('bodyFatPercent: $bodyFatPercent, ')
+          ..write('neckCm: $neckCm, ')
           ..write('waistCm: $waistCm, ')
           ..write('chestCm: $chestCm, ')
           ..write('hipsCm: $hipsCm, ')
@@ -35627,6 +35730,8 @@ typedef $$BodyMeasurementsTableCreateCompanionBuilder =
       required String id,
       required DateTime measuredAt,
       Value<double?> bodyweightKg,
+      Value<double?> bodyFatPercent,
+      Value<double?> neckCm,
       Value<double?> waistCm,
       Value<double?> chestCm,
       Value<double?> hipsCm,
@@ -35644,6 +35749,8 @@ typedef $$BodyMeasurementsTableUpdateCompanionBuilder =
       Value<String> id,
       Value<DateTime> measuredAt,
       Value<double?> bodyweightKg,
+      Value<double?> bodyFatPercent,
+      Value<double?> neckCm,
       Value<double?> waistCm,
       Value<double?> chestCm,
       Value<double?> hipsCm,
@@ -35678,6 +35785,16 @@ class $$BodyMeasurementsTableFilterComposer
 
   ColumnFilters<double> get bodyweightKg => $composableBuilder(
     column: $table.bodyweightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bodyFatPercent => $composableBuilder(
+    column: $table.bodyFatPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get neckCm => $composableBuilder(
+    column: $table.neckCm,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -35756,6 +35873,16 @@ class $$BodyMeasurementsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get bodyFatPercent => $composableBuilder(
+    column: $table.bodyFatPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get neckCm => $composableBuilder(
+    column: $table.neckCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get waistCm => $composableBuilder(
     column: $table.waistCm,
     builder: (column) => ColumnOrderings(column),
@@ -35828,6 +35955,14 @@ class $$BodyMeasurementsTableAnnotationComposer
     column: $table.bodyweightKg,
     builder: (column) => column,
   );
+
+  GeneratedColumn<double> get bodyFatPercent => $composableBuilder(
+    column: $table.bodyFatPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get neckCm =>
+      $composableBuilder(column: $table.neckCm, builder: (column) => column);
 
   GeneratedColumn<double> get waistCm =>
       $composableBuilder(column: $table.waistCm, builder: (column) => column);
@@ -35906,6 +36041,8 @@ class $$BodyMeasurementsTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<DateTime> measuredAt = const Value.absent(),
                 Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> bodyFatPercent = const Value.absent(),
+                Value<double?> neckCm = const Value.absent(),
                 Value<double?> waistCm = const Value.absent(),
                 Value<double?> chestCm = const Value.absent(),
                 Value<double?> hipsCm = const Value.absent(),
@@ -35921,6 +36058,8 @@ class $$BodyMeasurementsTableTableManager
                 id: id,
                 measuredAt: measuredAt,
                 bodyweightKg: bodyweightKg,
+                bodyFatPercent: bodyFatPercent,
+                neckCm: neckCm,
                 waistCm: waistCm,
                 chestCm: chestCm,
                 hipsCm: hipsCm,
@@ -35938,6 +36077,8 @@ class $$BodyMeasurementsTableTableManager
                 required String id,
                 required DateTime measuredAt,
                 Value<double?> bodyweightKg = const Value.absent(),
+                Value<double?> bodyFatPercent = const Value.absent(),
+                Value<double?> neckCm = const Value.absent(),
                 Value<double?> waistCm = const Value.absent(),
                 Value<double?> chestCm = const Value.absent(),
                 Value<double?> hipsCm = const Value.absent(),
@@ -35953,6 +36094,8 @@ class $$BodyMeasurementsTableTableManager
                 id: id,
                 measuredAt: measuredAt,
                 bodyweightKg: bodyweightKg,
+                bodyFatPercent: bodyFatPercent,
+                neckCm: neckCm,
                 waistCm: waistCm,
                 chestCm: chestCm,
                 hipsCm: hipsCm,

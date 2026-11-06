@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-06",
+  "repository": "Aedify-Fitness/aedify-app",
+  "project_url": "https://github.com/orgs/Aedify-Fitness/projects/1",
+  "visibility": "private",
+  "card_count": 137,
+  "status_counts": {
+    "Todo": 70,
+    "In Progress": 0,
+    "Done": 67
+  },
+  "labels": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14"
+  ],
+  "held": [
+    "HOLD \u2014 M2/M3 live Firebase and real-key BYOK verification",
+    "HOLD \u2014 M6 physical-device verification"
+  ],
+  "future_status": "Todo; M7 implementation is not authorized",
+  "repository_link_verified": true,
+  "governance_fields_verified": 137,
+  "canonical_tickets": 129,
+  "gap_cards": 6,
+  "hold_cards": 2,
+  "future_canonical_tickets_todo": 68
+}

@@ -9,6 +9,68 @@ import 'package:path/path.dart' as p;
 void main() {
   group('Migration', () {
     test(
+      'v20 measurement upgrade preserves historical values and adds nullable manual metrics',
+      () async {
+        final root = await Directory.systemTemp.createTemp('measurement_v21_');
+        addTearDown(() => root.delete(recursive: true));
+        final file = File(p.join(root.path, 'fixture.sqlite'));
+        final original = AppDatabase(NativeDatabase(file));
+        final now = DateTime.utc(2026, 11, 6);
+        await original
+            .into(original.bodyMeasurements)
+            .insert(
+              BodyMeasurementsCompanion.insert(
+                id: 'historical',
+                measuredAt: now,
+                bodyweightKg: const Value(75),
+                waistCm: const Value(81),
+                notes: const Value('PRIVATE_MEASUREMENT_NOTE'),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        await original.customStatement(
+          'ALTER TABLE body_measurements DROP COLUMN body_fat_percent',
+        );
+        await original.customStatement(
+          'ALTER TABLE body_measurements DROP COLUMN neck_cm',
+        );
+        await original.customStatement('PRAGMA user_version = 20');
+        await original.close();
+        final upgraded = AppDatabase(NativeDatabase(file));
+        final row =
+            (await upgraded.select(upgraded.bodyMeasurements).get()).single;
+        expect(row.id, 'historical');
+        expect(row.bodyweightKg, 75);
+        expect(row.waistCm, 81);
+        expect(row.notes, 'PRIVATE_MEASUREMENT_NOTE');
+        expect(row.measuredAt.toUtc(), now);
+        expect(row.bodyFatPercent, isNull);
+        expect(row.neckCm, isNull);
+        await upgraded
+            .update(upgraded.bodyMeasurements)
+            .write(
+              const BodyMeasurementsCompanion(
+                bodyFatPercent: Value(20),
+                neckCm: Value(38),
+              ),
+            );
+        expect(
+          (await upgraded.select(upgraded.bodyMeasurements).get())
+              .single
+              .neckCm,
+          38,
+        );
+        expect(
+          (await upgraded.select(upgraded.schemaMigrationsLog).get()).any(
+            (m) => m.fromVersion == 20 && m.toVersion == 21,
+          ),
+          isTrue,
+        );
+        await upgraded.close();
+      },
+    );
+    test(
       'v19 upgrade preserves every existing table and creates empty media storage',
       () async {
         final directory = await Directory.systemTemp.createTemp(
@@ -96,7 +158,7 @@ void main() {
         final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
         expect(
           logs
-              .where((log) => log.fromVersion == 19 && log.toVersion == 20)
+              .where((log) => log.fromVersion == 19 && log.toVersion == 21)
               .length,
           1,
         );
@@ -212,11 +274,11 @@ void main() {
         expect(
           (await upgraded.customSelect('PRAGMA user_version').getSingle())
               .read<int>('user_version'),
-          20,
+          21,
         );
         final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
         expect(
-          logs.any((log) => log.fromVersion == 7 && log.toVersion == 20),
+          logs.any((log) => log.fromVersion == 7 && log.toVersion == 21),
           isTrue,
         );
       },
@@ -270,7 +332,7 @@ void main() {
           await upgraded.select(upgraded.workoutSessionExercises).get(),
           isEmpty,
         );
-        expect(upgraded.schemaVersion, 20);
+        expect(upgraded.schemaVersion, 21);
       },
     );
 
@@ -388,7 +450,7 @@ void main() {
       );
       final logs = await upgraded.select(upgraded.schemaMigrationsLog).get();
       expect(
-        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 20),
+        logs.any((entry) => entry.fromVersion == 14 && entry.toVersion == 21),
         isTrue,
       );
       await upgraded.close();
@@ -417,7 +479,7 @@ void main() {
       final logRows = await db.select(db.schemaMigrationsLog).get();
       expect(logRows, isNotEmpty);
       expect(logRows.first.fromVersion, equals(0));
-      expect(logRows.first.toVersion, equals(20));
+      expect(logRows.first.toVersion, equals(21));
 
       db.close();
     });

@@ -468,7 +468,7 @@ void main() {
       );
       expect(
         (await db.select(db.schemaMigrationsLog).get()).any(
-          (row) => row.fromVersion == 18 && row.toVersion == 20,
+          (row) => row.fromVersion == 18 && row.toVersion == 21,
         ),
         isTrue,
       );

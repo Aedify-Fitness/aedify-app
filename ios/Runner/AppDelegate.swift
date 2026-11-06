@@ -5,6 +5,7 @@ import AVFoundation
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  private var analyticsExport: AnalyticsCsvExport?
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -15,6 +16,20 @@ import AVFoundation
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AedifyAnalyticsExport") {
+      analyticsExport?.cancel()
+      let exporter = AnalyticsCsvExport()
+      analyticsExport = exporter
+      let channel = FlutterMethodChannel(name: "aedify/analytics_export", binaryMessenger: registrar.messenger())
+      channel.setMethodCallHandler { call, result in
+        if call.method == "cancel" { exporter.cancel(); result(nil); return }
+        guard call.method == "save", let args = call.arguments as? [String: Any],
+              let data = args["bytes"] as? FlutterStandardTypedData else {
+          result(FlutterError(code: "unavailable", message: nil, details: nil)); return
+        }
+        exporter.save(data.data, result: result)
+      }
+    }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AedifyProgressVideo") {
       let channel = FlutterMethodChannel(name: "aedify/progress_video", binaryMessenger: registrar.messenger())
       channel.setMethodCallHandler { call, result in
@@ -39,6 +54,57 @@ import AVFoundation
         }
       }
     }
+  }
+}
+
+/// Owns only an explicitly requested CSV and removes its temporary copy on exit.
+private final class AnalyticsCsvExport: NSObject, UIDocumentPickerDelegate, UIAdaptivePresentationControllerDelegate {
+  private var pending: FlutterResult?
+  private var folder: URL?
+  private var picker: UIDocumentPickerViewController?
+  override init() {
+    super.init()
+    let base = FileManager.default.temporaryDirectory
+    for directory in (try? FileManager.default.contentsOfDirectory(at: base, includingPropertiesForKeys: nil)) ?? [] {
+      let name = directory.lastPathComponent
+      guard name.hasPrefix("aedify_export_"), UUID(uuidString: String(name.dropFirst("aedify_export_".count))) != nil else { continue }
+      try? FileManager.default.removeItem(at: directory)
+    }
+  }
+  func save(_ data: Data, result: @escaping FlutterResult) {
+    guard pending == nil, !data.isEmpty, data.count <= 8388608 else {
+      result(FlutterError(code: "unavailable", message: nil, details: nil)); return
+    }
+    let root = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+      .flatMap { $0.windows }.first { $0.isKeyWindow }?.rootViewController
+    guard var top = root else { result(FlutterError(code: "unavailable", message: nil, details: nil)); return }
+    while let presented = top.presentedViewController { top = presented }
+    pending = result
+    do {
+      let directory = FileManager.default.temporaryDirectory.appendingPathComponent("aedify_export_\(UUID().uuidString)", isDirectory: true)
+      folder = directory
+      try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
+      let file = directory.appendingPathComponent("aedify_analytics.csv")
+      try data.write(to: file, options: [.atomic, .completeFileProtection])
+      let controller = UIDocumentPickerViewController(forExporting: [file], asCopy: true)
+      picker = controller
+      controller.delegate = self
+      top.present(controller, animated: true)
+      controller.presentationController?.delegate = self
+    } catch { finish(false, failed: true) }
+  }
+  func cancel() { picker?.dismiss(animated: false); finish(false) }
+  func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) { finish(false) }
+  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) { finish(!urls.isEmpty) }
+  func presentationControllerDidDismiss(_ presentationController: UIPresentationController) { finish(false) }
+  private func finish(_ saved: Bool, failed: Bool = false) {
+    let result = pending
+    pending = nil
+    picker = nil
+    if let directory = folder { try? FileManager.default.removeItem(at: directory) }
+    folder = nil
+    if failed { result?(FlutterError(code: "unavailable", message: nil, details: nil)) }
+    else { result?(saved) }
   }
 }
 

@@ -20,6 +20,8 @@ class AnalyticsTrendChart extends StatefulWidget {
     required this.points,
     required this.unit,
     this.volume = false,
+    this.circumference = false,
+    this.percentage = false,
   });
   final String title;
   final String hint;
@@ -27,6 +29,8 @@ class AnalyticsTrendChart extends StatefulWidget {
   final List<AnalyticsChartPoint> points;
   final PreferredUnit unit;
   final bool volume;
+  final bool circumference;
+  final bool percentage;
   @override
   State<AnalyticsTrendChart> createState() => _AnalyticsTrendChartState();
 }
@@ -45,7 +49,10 @@ class _AnalyticsTrendChartState extends State<AnalyticsTrendChart> {
   @override
   void didUpdateWidget(covariant AnalyticsTrendChart oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.points != widget.points || oldWidget.unit != widget.unit) {
+    if (oldWidget.points != widget.points ||
+        oldWidget.unit != widget.unit ||
+        oldWidget.circumference != widget.circumference ||
+        oldWidget.percentage != widget.percentage) {
       _prepare();
     }
   }
@@ -56,24 +63,39 @@ class _AnalyticsTrendChartState extends State<AnalyticsTrendChart> {
           (point) =>
               point.value.isFinite &&
               point.value >= 0 &&
-              widget.unit.toDisplayWeight(point.value).isFinite,
+              _display(point.value).isFinite,
         )
         .toList();
     _spots = [
       for (final point in _points)
         FlSpot(
           point.date.millisecondsSinceEpoch / _millisecondsPerDay,
-          widget.unit.toDisplayWeight(point.value),
+          _display(point.value),
         ),
     ];
     _maximum = _spots.fold<double>(0, (max, point) => math.max(max, point.y));
   }
 
+  double _display(double value) => widget.percentage
+      ? value
+      : widget.circumference
+      ? widget.unit.toDisplayHeight(value)
+      : widget.unit.toDisplayWeight(value);
+  String _value(double value) => widget.circumference
+      ? '${AnalyticsFormat.number(_display(value))} ${widget.unit.heightUnit}'
+      : widget.percentage
+      ? '${AnalyticsFormat.number(value)} ${AnalyticsStrings.percentUnit}'
+      : AnalyticsFormat.weight(value, widget.unit, volume: widget.volume);
+
   @override
   Widget build(BuildContext context) {
     final accent = AnalyticsStyles.accent(context);
     final unitLabel =
-        '${widget.unit.weightUnit}${widget.volume ? ' ${AnalyticsStrings.volumeUnit}' : ''}';
+        '${widget.percentage
+            ? AnalyticsStrings.percentUnit
+            : widget.circumference
+            ? widget.unit.heightUnit
+            : widget.unit.weightUnit}${widget.volume ? ' ${AnalyticsStrings.volumeUnit}' : ''}';
     return AnalyticsPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,11 +205,7 @@ class _AnalyticsTrendChartState extends State<AnalyticsTrendChart> {
                   style: AnalyticsStyles.small(context),
                 ),
                 Text(
-                  AnalyticsFormat.weight(
-                    _points.last.value,
-                    widget.unit,
-                    volume: widget.volume,
-                  ),
+                  _value(_points.last.value),
                   style: AnalyticsStyles.label(context),
                 ),
                 Text(
@@ -227,11 +245,7 @@ class _AnalyticsTrendChartState extends State<AnalyticsTrendChart> {
                           style: AnalyticsStyles.small(context),
                         ),
                         Text(
-                          AnalyticsFormat.weight(
-                            point.value,
-                            widget.unit,
-                            volume: widget.volume,
-                          ),
+                          _value(point.value),
                           style: AnalyticsStyles.body(context),
                         ),
                       ],

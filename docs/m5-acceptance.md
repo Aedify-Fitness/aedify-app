@@ -89,10 +89,11 @@ this ticket does not claim a new operating-system termination test.
   requires explicit programme context; missing context fails closed. This gate
   does not invent an intent, injury or fatigue classifier.
 - AI suggestions and plateau notifications remain in later owning milestones.
-  Optional warm-up-inclusive charts, muscle-group filters, adherence summaries,
-  body-measurement charts and CSV export are not certified by this ticket's
-  shipped M5-001–006 acceptance. No broader planning checklist is silently marked
-  complete, and the locked references are unchanged.
+  Optional warm-up-inclusive charts and muscle-group filters are outside this
+  ticket's shipped M5-001–006 acceptance. The 2026-11-06 follow-up implements and
+  verifies adherence summaries, body-measurement charts and reviewed analytics
+  CSV export; see [M0–M6 gap closure](m0-m6-gap-closure.md). This original gate's
+  historical results below are unchanged; the follow-up owns its new evidence.
 - Existing live Firebase/BYOK acceptance boundaries remain separate.
 
 ## Verification and reproduction

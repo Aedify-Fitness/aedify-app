@@ -1,5 +1,7 @@
 # M6 progress-media deletion and recovery — V1-M6-006
 
+2026-11-06 follow-up: the Android Health activity-registration failure recorded below is fixed and the connected M6 media flow passes again on both platforms. See [M0–M6 gap closure](m0-m6-gap-closure.md). Physical-device verification is on hold by user instruction; the original ticket evidence is retained below.
+
 Date: 2026-11-05. Status: complete; paused for user review before ticket 007.
 
 Users can delete an original photo/video, a full check-in, or all saved progress media. Every action requires a confirmation describing the affected local data and supports cancellation. Progress storage shows active registered bytes, pending file count/bytes and an explicit cleanup retry. Individual deletion includes every descendant thumbnail/frame, including thumbnails of extracted frames. Removing the last original also removes the check-in's notes and measurement snapshot. All-media deletion covers saved check-ins; unsaved active drafts and unrelated files are protected.

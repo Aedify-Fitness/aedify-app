@@ -1,7 +1,45 @@
 import 'package:aedify/features/analytics/domain/personal_record.dart';
+import 'package:aedify/features/analytics/domain/analytics_insights.dart';
+import 'package:aedify/shared/constants/app_strings.dart';
 
 /// Product copy for the local analytics screens and accessible chart data.
 abstract final class AnalyticsStrings {
+  static const measurements = 'Body measurements';
+  static const neck = 'Neck';
+  static const bodyFat = 'Body fat';
+  static const percentUnit = '%';
+  static const measurementHint =
+      'Your recorded measurements, in your saved units.';
+  static const noMeasurements = 'Record a measurement to start your trend.';
+  static const recordMeasurement = 'Record measurement';
+  static const measuredToday =
+      'Recorded now. Leave measurements you did not take empty.';
+  static const adherence = 'Programme adherence';
+  static const adherenceHint =
+      'Completed scheduled workouts through today. Each planned workout counts once; skipped workouts remain in the total. Future workouts are excluded.';
+  static const noProgrammes = 'No published programmes yet.';
+  static const noDueWorkouts = 'No scheduled workouts due in this range.';
+  static const exportCsv = 'Export analytics CSV';
+  static const exportReview =
+      'This file includes working-set results, exercise names, body measurements and programme adherence for the selected range in kg, cm and percent. Notes, photos, videos and AI conversations are excluded. Choose where to save it.';
+  static const exportSaved = 'Analytics CSV saved.';
+  static const exportCancelled = 'Export cancelled.';
+  static String adherenceCount(int completed, int due, String percent) =>
+      '$completed of $due completed · $percent%';
+  static String unscheduled(int count) =>
+      '$count workouts have no schedule and are excluded.';
+  static String metric(BodyMetric metric) => switch (metric) {
+    BodyMetric.bodyweightKg => AppStrings.bodyweight,
+    BodyMetric.bodyFatPercent => bodyFat,
+    BodyMetric.neckCm => neck,
+    BodyMetric.waistCm => AppStrings.progressWaist,
+    BodyMetric.chestCm => AppStrings.filterChest,
+    BodyMetric.hipsCm => AppStrings.progressHips,
+    BodyMetric.leftArmCm => AppStrings.progressLeftArm,
+    BodyMetric.rightArmCm => AppStrings.progressRightArm,
+    BodyMetric.leftThighCm => AppStrings.progressLeftThigh,
+    BodyMetric.rightThighCm => AppStrings.progressRightThigh,
+  };
   static const introduction = 'See your training take shape.';
   static const refresh = 'Refresh trends';
   static const showAllRecords = 'Show all records';

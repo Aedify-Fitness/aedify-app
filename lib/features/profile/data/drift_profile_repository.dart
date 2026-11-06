@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aedify/core/logging/app_logger.dart';
 import 'package:aedify/core/db/app_database.dart';
+import 'package:aedify/core/db/body_measurement_recorder.dart';
 import 'package:aedify/core/db/daos/strength_anchor_dao.dart';
 import 'package:aedify/core/db/daos/user_profile_dao.dart';
 import 'package:aedify/features/profile/data/profile_repository.dart';
@@ -131,6 +132,13 @@ class DriftProfileRepository implements ProfileRepository {
       );
 
       final existingAnchors = await _strengthAnchorDao.getAllAnchors();
+      if (existing?.bodyweightKg != draft.bodyweightKg) {
+        await BodyMeasurementRecorder.record(
+          _database,
+          draft.bodyweightKg,
+          now,
+        );
+      }
       for (final entry in _oneRmEntries(draft)) {
         final existingAnchor = existingAnchors
             .where((a) => a.id == entry.id)

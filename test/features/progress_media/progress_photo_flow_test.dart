@@ -145,7 +145,7 @@ void main() {
       final row = (await f.db.select(f.db.progressMediaSessions).get()).single;
       expect(row.isCompletePoseSet, isFalse);
       expect(row.bodyweightKg, closeTo(75, 0.001));
-      expect(f.db.schemaVersion, 20);
+      expect(f.db.schemaVersion, 21);
     },
   );
 
@@ -405,7 +405,7 @@ void main() {
       expect((await f.db.select(f.db.localFileRecords).get()).length, 2);
       expect(await f.filesIn('temp'), isEmpty);
       expect(f.videoPicker.released, 1);
-      expect(f.db.schemaVersion, 20);
+      expect(f.db.schemaVersion, 21);
     },
   );
 

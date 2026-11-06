@@ -2,6 +2,8 @@
 
 Date: 2026-10-25. Status: identified implementation gaps fixed; deterministic/native acceptance passed; live-service acceptance pending.
 
+2026-11-06 update: the user placed M2/M3 live Firebase/BYOK verification on hold. The foundation native fixture suite passed again on iOS/Android against schema v21; see [M0–M6 gap closure](m0-m6-gap-closure.md). Historical outage/key availability below describes the October run, not a fresh check of service or account status. M5/M6 have since been accepted; M7 remains unstarted.
+
 This pass addresses the gaps found after M4 closure. M5 remains planned and has not been started. No database schema, dependency or locked product-scope changes were required.
 
 ## Implementation
@@ -16,7 +18,7 @@ This pass addresses the gaps found after M4 closure. M5 remains planned and has 
 
 ## Verification boundaries
 
-The user confirmed Firebase is currently down and no provider test keys are configured. Initial native live-sync attempts reached manifest access and failed; those results are not a passing live acceptance check. No Firebase rules, remote dataset, production data or real provider key was changed.
+At the October 25 run, the user confirmed Firebase was down and no provider test keys were configured. Initial native live-sync attempts reached manifest access and failed; those results are not a passing live acceptance check. No Firebase rules, remote dataset, production data or real provider key was changed.
 
 `integration_test/m1_m3_acceptance_test.dart` uses real native secure storage, preferences, filesystem, SQLite, onboarding UI, provider repositories and capability gates. Its M2 test replaces only Firebase transport with a synthetic manifest/dataset; checksum validation, parsing, import, unchanged-manifest handling, disk reopening, offline search/filter/detail and the exercise detail screen remain real.
 

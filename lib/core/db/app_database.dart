@@ -81,7 +81,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? AppDatabase._openConnection());
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -89,7 +89,7 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
       await _createProgressMediaIndexes();
       await _seedSchemaMeta(m);
-      await _logMigration(m, fromVersion: 0, toVersion: 20);
+      await _logMigration(m, fromVersion: 0, toVersion: 21);
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -233,6 +233,17 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(progressMediaItems);
         await m.createTable(progressMediaReminderSettings);
         await _createProgressMediaIndexes();
+      }
+      if (from < 21) {
+        final columns = (await customSelect(
+          'PRAGMA table_info(body_measurements)',
+        ).get()).map((row) => row.read<String>('name')).toSet();
+        if (!columns.contains('body_fat_percent')) {
+          await m.addColumn(bodyMeasurements, bodyMeasurements.bodyFatPercent);
+        }
+        if (!columns.contains('neck_cm')) {
+          await m.addColumn(bodyMeasurements, bodyMeasurements.neckCm);
+        }
       }
       if (from < to) {
         await _logMigration(m, fromVersion: from, toVersion: to);

@@ -139,6 +139,41 @@ void main() {
       },
     );
 
+    test(
+      'bodyweight history is committed once at completion, never by draft autosave',
+      () async {
+        final draft = makeDraft();
+        await repository.saveOnboardingDraft(draft);
+        expect(await db.select(db.bodyMeasurements).get(), isEmpty);
+        await repository.completeOnboarding(draft);
+        await repository.completeOnboarding(draft);
+        final measurements = await db.select(db.bodyMeasurements).get();
+        expect(measurements, hasLength(1));
+        expect(measurements.single.bodyweightKg, 70);
+        expect(
+          (await db.select(db.userProfile).get()).single.bodyweightLoggedAt,
+          isNotNull,
+        );
+      },
+    );
+
+    test(
+      'measurement write failure rolls back the entire onboarding completion',
+      () async {
+        await db.readiness();
+        await db.customStatement(
+          "CREATE TRIGGER fail_bodyweight BEFORE INSERT ON body_measurements BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END",
+        );
+        await expectLater(
+          repository.completeOnboarding(makeDraft()),
+          throwsA(anything),
+        );
+        expect(await db.select(db.userProfile).get(), isEmpty);
+        expect(await db.select(db.strengthAnchors).get(), isEmpty);
+        expect(await db.select(db.bodyMeasurements).get(), isEmpty);
+      },
+    );
+
     test('completeOnboarding persists completion flag and data', () async {
       final draft = makeDraft();
 

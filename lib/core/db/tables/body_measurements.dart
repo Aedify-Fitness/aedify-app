@@ -4,6 +4,8 @@ class BodyMeasurements extends Table {
   TextColumn get id => text()();
   DateTimeColumn get measuredAt => dateTime()();
   RealColumn get bodyweightKg => real().nullable()();
+  RealColumn get bodyFatPercent => real().nullable()();
+  RealColumn get neckCm => real().nullable()();
   RealColumn get waistCm => real().nullable()();
   RealColumn get chestCm => real().nullable()();
   RealColumn get hipsCm => real().nullable()();

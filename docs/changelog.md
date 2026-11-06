@@ -1,5 +1,19 @@
 # Aedify — Changelog
 
+## 2026-11-06 — Remove gap-closure helper files
+
+- Removed the three Python helpers and three newly added YAML issue templates at the user's request. Removed their CI step and updated governance guidance, traceability attribution and the closure file inventory.
+- The existing Foundation workflow and Markdown PR checklist remain. The GitHub board/labels and saved verification/traceability evidence are retained.
+- Verification: `dart format .`, remaining workflow YAML parsing, local documentation links, removed-file/reference checks and `git diff --check` passed. Flutter analysis/tests were not rerun for this tooling/documentation-only cleanup; the prior 2,009-test result remains the last app regression gate. Verification holds and the instruction not to start M7 are unchanged.
+
+## 2026-11-06 — M0–M6 reviewed gaps closed
+
+- Added body measurement history/charts and ten-field entry, programme adherence, and explicit reviewed analytics CSV export with canonical DTOs, spreadsheet formula protection, bounded payloads and native destinations.
+- Added nullable body-fat/neck fields in schema v21, transactional profile/onboarding weight history and FlutterFragmentActivity compatibility for the installed Health plugin. Existing records are preserved; package versions are unchanged.
+- Established the private linked M0 board with all 129 locked tickets, six closure cards and two verification holds, M0–M14 labels, workstream/change-control/dependency metadata, templates, ready/done/fixture governance and 231-occurrence requirement traceability.
+- Verification: format checked 910 files, analysis clean, **2,009/2,009 host tests passed**, zero failures/skips. New gap, M6 and foundation native journeys passed on both platforms; Android CSV system save/readback and Health registration passed. A stale migration-test version expectation was corrected before the passing full gate.
+- M2/M3 live checks and M6 physical-device checks remain held by explicit user instruction. **M7 remains unstarted.** [Scope, evidence and files](m0-m6-gap-closure.md).
+
 ## 2026-11-06 — M6 completion approved
 
 - Recorded the user's acceptance of M6 as complete across all eight tickets. M7 remains unstarted under the explicit instruction not to begin it.
